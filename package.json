@@ -1,6 +1,12 @@
 {
   "name": "v-cana",
   "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "TextTree"
+  },
+  "description": "App to translate Scripture step by step",
+  "homepage": "https://v-cana.netlify.app/",
   "private": true,
   "scripts": {
     "dev": "next dev",
