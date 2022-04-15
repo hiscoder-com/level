@@ -35,7 +35,7 @@
 <h3 align="center">V-CANA</h3>
 
   <p align="center">
-    project_description
+    App to translate Scripture step by step
     <br />
     <a href="https://github.com/texttree/v-cana"><strong>Explore the docs »</strong></a>
     <br />
@@ -96,8 +96,6 @@
 **Background**
 - What led us to this point? How did we get here?
 
-Here's a blank template to get started: To avoid retyping too much info. Do a search and replace with your text editor for the following: `texttree`, `v-cana`, `email`, `email_client`, `project_title`, `project_description`
-
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 
@@ -105,13 +103,8 @@ Here's a blank template to get started: To avoid retyping too much info. Do a se
 ### Built With
 
 * [Next.js](https://nextjs.org/)
-* [React.js](https://reactjs.org/)
-* [Vue.js](https://vuejs.org/)
-* [Angular](https://angular.io/)
-* [Svelte](https://svelte.dev/)
-* [Laravel](https://laravel.com)
-* [Bootstrap](https://getbootstrap.com)
-* [JQuery](https://jquery.com)
+* [Tailwind CSS](https://tailwindcss.com/)
+* [Supabase](https://supabase.com/)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -184,7 +177,7 @@ Contributions are what make the open source community such an amazing place to l
 You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
-If you would like to fork the repo and create a pull request. 
+If you would like to fork the repo and create a pull request.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
@@ -199,7 +192,7 @@ If you would like to fork the repo and create a pull request.
 <!-- LICENSE -->
 ## License
 
-Distributed under the MIT License. See [LICENSE](license-url) for more information.
+Distributed under the MIT License. See [LICENSE][license-url] for more information.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -208,7 +201,7 @@ Distributed under the MIT License. See [LICENSE](license-url) for more informati
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@twitter_handle](https://twitter.com/twitter_handle) - email@email_client.com
+Discord: [V-CANA](https://discord.com/channels/867746700390563850/943625065415716905)
 
 Project Link: [https://github.com/texttree/v-cana](https://github.com/texttree/v-cana)
 
@@ -239,4 +232,3 @@ Project Link: [https://github.com/texttree/v-cana](https://github.com/texttree/v
 [issues-url]: https://github.com/texttree/v-cana/issues
 [license-shield]: https://img.shields.io/github/license/texttree/v-cana.svg?style=for-the-badge
 [license-url]: https://github.com/texttree/v-cana/blob/master/LICENSE
-[product-screenshot]: images/screenshot.png
