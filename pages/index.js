@@ -20,7 +20,7 @@ export default function Home() {
             Sign up
           </a>
         </Link>
-        <Link href="/sign-up">
+        <Link href="/sign-in">
           <a
             className={
               'text-3xl py-3 px-4 rounded-xl bg-blue-300 border-blue-500 border max-w-xs text-center my-2'

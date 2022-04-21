@@ -5,20 +5,15 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [userName, setUserName] = useState('')
 
   const handleLogin = async () => {
     try {
       setLoading(true)
-      const { user, session, error } = await supabase.auth.signUp(
-        {
-          email,
-          password,
-        },
-        {
-          data: { userName },
-        }
-      )
+      const { user, session, error } = await supabase.auth.signUp({
+        email,
+        password,
+      })
+      console.log({ user })
       if (error) throw error
       alert('Check your email to confirm registration.')
     } catch (error) {
@@ -32,16 +27,6 @@ export default function SignUp() {
     <div className="flex justify-center flex-col text-center text-3xl my-5">
       <h1 className="my-5">Sign up</h1>
 
-      <div>
-        <label>Login</label>
-        <input
-          className="border border-green-600 p-2"
-          type="text"
-          placeholder="Your login"
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
-        />
-      </div>
       <div>
         <label>Email</label>
         <input
