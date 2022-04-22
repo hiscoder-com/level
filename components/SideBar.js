@@ -1,4 +1,8 @@
+import { useLanguages } from '../utils/hooks'
+
 function SideBar({ isOpen, setIsOpen }) {
+  const [languages] = useLanguages()
+
   return (
     <div
       className={`absolute ${
@@ -67,7 +71,7 @@ function SideBar({ isOpen, setIsOpen }) {
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">Inbox</span>
                   <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">
-                    New
+                    {languages?.length}
                   </span>
                 </a>
               </li>

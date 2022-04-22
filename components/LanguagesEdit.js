@@ -1,13 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { supabase } from '../utils/supabaseClient'
+import { useLanguages } from '../utils/hooks'
 
 export default function LanguagesEdit() {
   const [loading, setLoading] = useState(false)
   const [eng, setEng] = useState('')
   const [code, setCode] = useState('')
   const [origName, setOrigName] = useState('')
-  const [listLanguages, setListLanguages] = useState()
-
+  const [languages, { mutate }] = useLanguages()
   const handleSave = async () => {
     try {
       setLoading(true)
@@ -15,26 +15,36 @@ export default function LanguagesEdit() {
         .from('languages')
         .insert([{ eng, code, orig_name: origName }])
       if (error) throw error
-      alert('Check your email for the login link!')
+      mutate()
     } catch (error) {
       alert(error.error_description || error.message)
     } finally {
       setLoading(false)
     }
   }
-  useEffect(() => {
-    const main = async () => {
-      const { data: languages, error } = await supabase.from('languages').select('*')
-      setListLanguages(languages)
-    }
-    main()
-  }, [])
+  const handleDelete = async (id) => {
+    const { error } = await supabase.from('languages').delete().match({ id })
+    if (error) throw error
+    mutate()
+  }
 
   return (
     <div className="flex justify-center flex-col text-center text-3xl my-5">
       <h1 className="my-5">Sign in</h1>
-      {listLanguages?.map((el) => {
-        return <p key={el.code}>{el.code + ' ' + el.orig_name}</p>
+      {languages?.map((el) => {
+        return (
+          <>
+            <p key={el.code}>
+              {el.code + ' ' + el.orig_name}
+              <span
+                className="text-black inline-block ml-10 cursor-pointer bg-slate-400 rounded-lg p-1"
+                onClick={() => handleDelete(el.id)}
+              >
+                Delete
+              </span>
+            </p>
+          </>
+        )
       })}
       <div>
         <label>eng</label>
