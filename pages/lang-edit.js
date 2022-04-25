@@ -6,13 +6,13 @@ import LanguagesEdit from '../components/LanguagesEdit'
 export default function LanguagesEditPage() {
   const [session, setSession] = useState(null)
 
-  useEffect(() => {
-    setSession(supabase.auth.session())
+  // useEffect(() => {
+  //   setSession(supabase.auth.session())
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-  }, [])
+  //   supabase.auth.onAuthStateChange((_event, session) => {
+  //     setSession(session)
+  //   })
+  // }, [])
 
   return (
     <div className="container">
