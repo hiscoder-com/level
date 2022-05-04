@@ -1,8 +1,4 @@
-import { useLanguages } from '../utils/hooks'
-import { supabase } from '../utils/supabaseClient'
-
 function SideBar({ isOpen, setIsOpen }) {
-  const [languages] = useLanguages()
 
   return (
     <div
@@ -72,7 +68,7 @@ function SideBar({ isOpen, setIsOpen }) {
                   </span>
                   <span className="ml-2 text-sm tracking-wide truncate">Inbox</span>
                   <span className="px-2 py-0.5 ml-auto text-xs font-medium tracking-wide text-indigo-500 bg-indigo-50 rounded-full">
-                    {languages?.length}
+                    12
                   </span>
                 </a>
               </li>
@@ -253,7 +249,6 @@ function SideBar({ isOpen, setIsOpen }) {
               <li>
                 <a
                   href="#"
-                  onClick={() => supabase.auth.signOut()}
                   className="relative flex flex-row items-center h-11 focus:outline-none hover:bg-gray-50 text-gray-600 hover:text-gray-800 border-l-4 border-transparent hover:border-indigo-500 pr-6"
                 >
                   <span className="inline-flex justify-center items-center ml-4">
