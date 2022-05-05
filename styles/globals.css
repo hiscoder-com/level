@@ -1,3 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.btn{
+	@apply rounded-full py-3 px-24 uppercase text-2xl leading-7 font-medium cursor-pointer tracking-wider bg-cyan-700 text-white
+}

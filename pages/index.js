@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 export default function Home() {
   return (
-    <div className="container pt-24 px-40">
+    <div className="container pt-24 px-40 font-sans">
       <Head>
         <title>V-CANA</title>
         <meta name="description" content="VCANA" />
@@ -10,7 +10,7 @@ export default function Home() {
       </Head>
 
       <div className="">
-        <div className="flex space-x-3 text-sm font-bold pb-40">
+        <div className="flex space-x-3 text-sm font-bold pb-40 justify-end">
           <div>
             <a className="text-teal-500 " href="#">
               RU
@@ -40,8 +40,8 @@ export default function Home() {
             </div>
           </div>
         </div>
-        <div>
-          <div>ВХОД</div>
+        <div className="flex justify-center">
+          <div className="btn">ВХОД</div>
         </div>
       </div>
     </div>
