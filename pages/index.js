@@ -9,7 +9,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div className="flex absolute top-10 right-10 text-xl font-bold justify-end">
+      <div className="flex absolute top-10 right-10  font-bold justify-end text-xl lg:text-base ">
         <a className="text-teal-500 p-2" href="#">
           RU
         </a>
