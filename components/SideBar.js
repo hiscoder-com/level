@@ -1,5 +1,4 @@
 function SideBar({ isOpen, setIsOpen }) {
-
   return (
     <div
       className={`absolute ${
