@@ -1,4 +1,8 @@
+/* eslint-disable @next/next/no-img-element */
 import Head from 'next/head'
+// import Image from 'next/image'
+// import TT_Logo from '../public/TT_Logo.svg'
+// import VCANA_logo from '../public/VCANA_logo.svg'
 
 export default function Home() {
   return (
@@ -18,9 +22,12 @@ export default function Home() {
         </a>
       </div>
       <div className="flex flex-col items-center m-3 justify-center">
+        {/* <div className="h-9 mb-10 relative">
+          <Image src={TT_Logo} alt="logo TT" layout="fill" />
+        </div> */}
+
         <img className="h-9 mb-10" src="/TT_Logo.svg" alt="logo TT" />
         <img className="h-28" src="/VCANA_logo.svg" alt="logo VCANA" />
-
         <div className="mt-9 mb-16 text-2xl text-center text-slate-600">
           Вход на данный сайт только по приглашению админов ресурса.
         </div>
