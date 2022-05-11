@@ -21,8 +21,8 @@ export default function Home() {
         </a>
       </div>
       <div className="flex flex-col items-center m-3 justify-center">
-        <TT_Logo className="h-9 mb-10" />
-        <VCANA_logo className="h-28" />
+        <TT_Logo className="mb-10 w-1/3 md:w-1/5 lg:w-32 xl:w-32" />
+        <VCANA_logo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" />
 
         <div className="mt-9 mb-16 text-2xl text-center text-slate-600">
           Вход на данный сайт только по приглашению админов ресурса.
