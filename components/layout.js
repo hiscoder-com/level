@@ -6,7 +6,7 @@ function Layout({ children }) {
   const [isOpen, setIsOpen] = useState(false)
 
   return (
-    <div className="min-h-full">
+    <div className="container mx-auto min-h-full">
       <AppBar setIsOpen={setIsOpen} />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
