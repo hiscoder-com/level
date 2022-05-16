@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-.btn{
+.btn-start{
 	@apply rounded-full py-3 px-24 uppercase text-2xl leading-7 font-medium cursor-pointer tracking-wider bg-emerald-500 text-white 
 	hover:bg-emerald-600 
 	active:bg-emerald-700 inline-block
@@ -28,8 +28,11 @@
 	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-zinc-100 
 	focus:ring-2 focus:ring-teal-500  focus:outline-none
 }
-.header{
+.h1{
 	@apply text-4xl text-slate-600
+}
+.h2{
+	@apply text-2xl text-slate-600
 }
 .f-screen{
 	min-height: calc(100vh - 7rem);

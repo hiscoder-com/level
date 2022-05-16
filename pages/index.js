@@ -24,10 +24,10 @@ export default function Home() {
         <TT_Logo className="mb-10 w-1/3 md:w-1/5 lg:w-32 xl:w-32" />
         <VCANA_logo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" />
 
-        <div className="mt-9 mb-16 text-2xl text-center text-slate-600">
+        <div className="h2 mt-9 mb-16 text-center">
           Вход на данный сайт только по приглашению админов ресурса.
         </div>
-        <div className="btn">ВХОД</div>
+        <div className="btn-start">ВХОД</div>
       </div>
     </div>
   )
