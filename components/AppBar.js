@@ -25,8 +25,8 @@ export default function AppBar({ setIsOpen }) {
                   <Burger onClick={() => setIsOpen((prev) => !prev)} className=" h-8 " />
                   <VCANA_logo className="h-6 " />
                 </div>
-                <div>Title</div>
-                <div>Optional info</div>
+                <div className="text-emerald-500">Title</div>
+                <div className="text-teal-500">Optional info</div>
 
                 {/* <div className="flex space-x-4">
                   {navigation.map((item) => (
