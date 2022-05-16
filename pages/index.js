@@ -16,11 +16,11 @@ export default function Home() {
         <a className="text-teal-500 p-2" href="#">
           RU
         </a>
-        <a className="text-teal-500 opacity-50 p-2" href="#">
+        <a className="opacity-50 text-teal-500 p-2" href="#">
           EN
         </a>
       </div>
-      <div className="flex flex-col items-center m-3 justify-center">
+      <div className="flex flex-col justify-center items-center m-3">
         <TT_Logo className="mb-10 w-1/3 md:w-1/5 lg:w-32 xl:w-32" />
         <VCANA_logo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" />
 
