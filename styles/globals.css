@@ -3,5 +3,35 @@
 @tailwind utilities;
 
 .btn{
-	@apply rounded-full py-3 px-24 uppercase text-2xl leading-7 font-medium cursor-pointer tracking-wider bg-emerald-500 text-white hover:bg-emerald-600 active:bg-emerald-700 inline-block
+	@apply rounded-full py-3 px-24 uppercase text-2xl leading-7 font-medium cursor-pointer tracking-wider bg-emerald-500 text-white 
+	hover:bg-emerald-600 
+	active:bg-emerald-700 inline-block
 }
+.btn-active{
+	@apply border-2 rounded-md text-teal-500 border-teal-500
+	}
+.btn-active-filled{
+	@apply bg-teal-500  rounded-md text-white 
+	hover:bg-teal-600 
+	active:bg-teal-700 inline-block
+}
+.btn-disabled{
+	@apply border-2 rounded-md text-slate-400
+}
+.container-center{
+	@apply container flex justify-center font-sans
+}
+.form-invalid{
+	@apply text-red-600 ring-red-600 
+}
+.form-valid{
+	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-zinc-100 
+	focus:ring-2 focus:ring-teal-500  focus:outline-none
+}
+.header{
+	@apply text-4xl text-slate-600
+}
+.f-screen{
+	min-height: calc(100vh - 7rem);
+}
+

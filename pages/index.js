@@ -5,7 +5,7 @@ import VCANA_logo from '../public/VCANA_logo.svg'
 
 export default function Home() {
   return (
-    <div className="container mx-auto relative px-3 font-sans min-h-screen flex flex-col justify-center">
+    <div className="container-center mx-auto relative px-3 min-h-screen flex-col ">
       <Head>
         <title>V-CANA</title>
         <meta name="description" content="VCANA" />
