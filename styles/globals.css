@@ -7,25 +7,23 @@
 	hover:bg-emerald-600 
 	active:bg-emerald-700 inline-block
 }
-.btn-active{
+.btn-transparent{
 	@apply border-2 rounded-md text-teal-500 border-teal-500
+	disabled:border-2 disabled:rounded-md disabled:text-slate-400 disabled:border-slate-200 disabled:bg-transparent
 	}
-.btn-active-filled{
+.btn-filled{
 	@apply bg-teal-500  rounded-md text-white 
 	hover:bg-teal-600 
 	active:bg-teal-700 inline-block
-	
-}
-.btn-disabled{
-	@apply border-2 rounded-md text-slate-400
+	disabled:border-2 disabled:rounded-md disabled:text-slate-400 disabled:bg-transparent
+
 }
 .container-center{
 	@apply container flex justify-center font-sans
 }
 .form{
 	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-slate-100 
-	focus:ring-2 focus:ring-slate-500  focus:outline-none
-	
+	focus:ring-2 focus:ring-slate-300  focus:outline-none
 }
 .form-invalid{
 	@apply w-full text-sm leading-6 text-red-600 ring-red-600 border-red-600 bg-red-100 rounded-md py-2 pl-2 ring-1

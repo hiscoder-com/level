@@ -6,36 +6,29 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [styleLogin, setStyleLogin] = useState(['form'])
   const [stylePassword, setStylePassword] = useState(['form'])
-  const [styleBtnNext, setStyleBtnNext] = useState(['w-4/12 btn-active-filled'])
-  const [styleBtnReport, setStyleBtnReport] = useState(['w-8/12 btn-disabled'])
-
-  useEffect(() => {
-    if (login !== '' && password !== '') {
-      setStyleBtnNext(['w-4/12 btn-active-filled'])
-    }
-  }, [password, login])
-
+  const [styleBtnReport, setStyleBtnReport] = useState(['w-8/12 btn-transparent'])
   const examinationLogPass = () => {
+    const ss = document.getElementById('start')
     if (login === 'qwerty' && password === '1234') {
       setStyleLogin(['form-valid'])
       setStylePassword(['form-valid'])
+      setStyleBtnReport(['w-8/12 btn-transparent'])
     }
     if (login !== 'qwerty' && password === '1234') {
       setStyleLogin(['form-invalid active:form'])
       setStylePassword(['form-valid'])
-      setStyleBtnReport(['w-8/12 btn-active'])
+      setStyleBtnReport(['w-8/12 btn-transparent'])
     }
     if (login === 'qwerty' && password !== '1234') {
       setStyleLogin(['form-valid'])
       setStylePassword(['form-invalid'])
-      setStyleBtnReport(['w-8/12 btn-active'])
+      setStyleBtnReport(['w-8/12 btn-transparent'])
     }
     if (login !== 'qwerty' && password !== '1234') {
-      const ss = document.getElementById('start')
       ss.removeAttribute('disabled')
       setStyleLogin(['form-invalid focus:form'])
       setStylePassword(['form-invalid'])
-      setStyleBtnReport(['w-8/12 btn-active'])
+      setStyleBtnReport(['w-8/12 btn-transparent'])
     }
   }
   const report = () => {
@@ -55,20 +48,26 @@ export default function Login() {
             className={styleLogin}
             type="text"
             placeholder="Логин:"
-            onChange={(event) => setLogin(event.target.value)}
+            onChange={(event) => {
+              setLogin(event.target.value)
+              setStyleLogin(['form'])
+            }}
           />
           <input
             className={stylePassword}
             type="password"
             placeholder="Пароль:"
-            onChange={(event) => setPassword(event.target.value)}
+            onChange={(event) => {
+              setPassword(event.target.value)
+              setStylePassword(['form'])
+            }}
           />
         </form>
         <div className="flex gap-2.5 mt-2 h-9">
           <button id="start" disabled onClick={report} className={styleBtnReport}>
             Написать админу
           </button>
-          <button onClick={examinationLogPass} className={styleBtnNext}>
+          <button onClick={examinationLogPass} className="w-4/12 btn-filled">
             Далее
           </button>
         </div>
