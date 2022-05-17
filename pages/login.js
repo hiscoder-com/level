@@ -6,7 +6,7 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [styleLogin, setStyleLogin] = useState(['form'])
   const [stylePassword, setStylePassword] = useState(['form'])
-  const [styleBtnNext, setStyleBtnNext] = useState(['w-4/12 btn-disabled'])
+  const [styleBtnNext, setStyleBtnNext] = useState(['w-4/12 btn-active-filled'])
   const [styleBtnReport, setStyleBtnReport] = useState(['w-8/12 btn-disabled'])
 
   useEffect(() => {

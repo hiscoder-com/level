@@ -14,6 +14,7 @@
 	@apply bg-teal-500  rounded-md text-white 
 	hover:bg-teal-600 
 	active:bg-teal-700 inline-block
+	
 }
 .btn-disabled{
 	@apply border-2 rounded-md text-slate-400
