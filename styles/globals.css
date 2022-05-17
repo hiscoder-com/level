@@ -21,12 +21,18 @@
 .container-center{
 	@apply container flex justify-center font-sans
 }
+.form{
+	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-slate-100 
+	focus:ring-2 focus:ring-slate-500  focus:outline-none
+	
+}
 .form-invalid{
-	@apply text-red-600 ring-red-600 
+	@apply w-full text-sm leading-6 text-red-600 ring-red-600 border-red-600 bg-red-100 rounded-md py-2 pl-2 ring-1
+	focus:outline-none focus:ring-2 
 }
 .form-valid{
-	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-zinc-100 
-	focus:ring-2 focus:ring-teal-500  focus:outline-none
+	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-teal-100 
+	focus:ring-2 focus:ring-teal-500  focus:outline-none 
 }
 .h1{
 	@apply text-4xl text-slate-600
