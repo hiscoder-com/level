@@ -6,31 +6,26 @@ export default function Login() {
   const [password, setPassword] = useState('')
   const [styleLogin, setStyleLogin] = useState(['form'])
   const [stylePassword, setStylePassword] = useState(['form'])
-  const [styleBtnReport, setStyleBtnReport] = useState(['w-8/12 btn-transparent'])
   const [formValid, setFormValid] = useState(false)
 
   const examinationLogPass = () => {
     if (login === 'qwerty' && password === '1234') {
       setStyleLogin(['form-valid'])
       setStylePassword(['form-valid'])
-      setStyleBtnReport(['w-8/12 btn-transparent'])
     }
     if (login !== 'qwerty' && password === '1234') {
       setStyleLogin(['form-invalid active:form'])
       setStylePassword(['form-valid'])
-      setStyleBtnReport(['w-8/12 btn-transparent'])
       setFormValid(true)
     }
     if (login === 'qwerty' && password !== '1234') {
       setStyleLogin(['form-valid'])
       setStylePassword(['form-invalid'])
-      setStyleBtnReport(['w-8/12 btn-transparent'])
       setFormValid(true)
     }
     if (login !== 'qwerty' && password !== '1234') {
       setStyleLogin(['form-invalid focus:form'])
       setStylePassword(['form-invalid'])
-      setStyleBtnReport(['w-8/12 btn-transparent'])
       setFormValid(true)
     }
   }
@@ -69,7 +64,11 @@ export default function Login() {
           />
         </form>
         <div className="flex gap-2.5 mt-2 h-9">
-          <button disabled={!formValid} onClick={report} className={styleBtnReport}>
+          <button
+            disabled={!formValid}
+            onClick={report}
+            className="w-8/12 btn-transparent"
+          >
             Написать админу
           </button>
           <button onClick={examinationLogPass} className="w-4/12 btn-filled">
