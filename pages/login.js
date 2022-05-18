@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Head from 'next/head'
 
 export default function Login() {
@@ -7,8 +7,9 @@ export default function Login() {
   const [styleLogin, setStyleLogin] = useState(['form'])
   const [stylePassword, setStylePassword] = useState(['form'])
   const [styleBtnReport, setStyleBtnReport] = useState(['w-8/12 btn-transparent'])
+  const [formValid, setFormValid] = useState(false)
+
   const examinationLogPass = () => {
-    const ss = document.getElementById('start')
     if (login === 'qwerty' && password === '1234') {
       setStyleLogin(['form-valid'])
       setStylePassword(['form-valid'])
@@ -18,17 +19,19 @@ export default function Login() {
       setStyleLogin(['form-invalid active:form'])
       setStylePassword(['form-valid'])
       setStyleBtnReport(['w-8/12 btn-transparent'])
+      setFormValid(true)
     }
     if (login === 'qwerty' && password !== '1234') {
       setStyleLogin(['form-valid'])
       setStylePassword(['form-invalid'])
       setStyleBtnReport(['w-8/12 btn-transparent'])
+      setFormValid(true)
     }
     if (login !== 'qwerty' && password !== '1234') {
-      ss.removeAttribute('disabled')
       setStyleLogin(['form-invalid focus:form'])
       setStylePassword(['form-invalid'])
       setStyleBtnReport(['w-8/12 btn-transparent'])
+      setFormValid(true)
     }
   }
   const report = () => {
@@ -51,8 +54,8 @@ export default function Login() {
             onChange={(event) => {
               setLogin(event.target.value)
               setStyleLogin(['form'])
+              setFormValid(false)
             }}
-            // onFocus={() => setStyleLogin(['form'])}
           />
           <input
             className={stylePassword}
@@ -61,12 +64,12 @@ export default function Login() {
             onChange={(event) => {
               setPassword(event.target.value)
               setStylePassword(['form'])
+              setFormValid(false)
             }}
-            // onFocus={() => setStylePassword(['form'])}
           />
         </form>
         <div className="flex gap-2.5 mt-2 h-9">
-          <button id="start" disabled onClick={report} className={styleBtnReport}>
+          <button disabled={!formValid} onClick={report} className={styleBtnReport}>
             Написать админу
           </button>
           <button onClick={examinationLogPass} className="w-4/12 btn-filled">
