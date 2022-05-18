@@ -52,6 +52,7 @@ export default function Login() {
               setLogin(event.target.value)
               setStyleLogin(['form'])
             }}
+            // onFocus={() => setStyleLogin(['form'])}
           />
           <input
             className={stylePassword}
@@ -61,6 +62,7 @@ export default function Login() {
               setPassword(event.target.value)
               setStylePassword(['form'])
             }}
+            // onFocus={() => setStylePassword(['form'])}
           />
         </form>
         <div className="flex gap-2.5 mt-2 h-9">

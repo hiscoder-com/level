@@ -23,7 +23,7 @@
 }
 .form{
 	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-slate-100 
-	focus:ring-2 focus:ring-slate-300  focus:outline-none
+	focus:ring-2 focus:ring-slate-300  focus:outline-none valid:border-blue-500
 }
 .form-invalid{
 	@apply w-full text-sm leading-6 text-red-600 ring-red-600 border-red-600 bg-red-100 rounded-md py-2 pl-2 ring-1
