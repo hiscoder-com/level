@@ -4,28 +4,28 @@ import Head from 'next/head'
 export default function Login() {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-  const [styleLogin, setStyleLogin] = useState(['form'])
-  const [stylePassword, setStylePassword] = useState(['form'])
+  const [styleLogin, setStyleLogin] = useState('form')
+  const [stylePassword, setStylePassword] = useState('form')
   const [formValid, setFormValid] = useState(false)
 
   const examinationLogPass = () => {
     if (login === 'qwerty' && password === '1234') {
-      setStyleLogin(['form-valid'])
-      setStylePassword(['form-valid'])
+      setStyleLogin('form-valid')
+      setStylePassword('form-valid')
     }
     if (login !== 'qwerty' && password === '1234') {
-      setStyleLogin(['form-invalid active:form'])
-      setStylePassword(['form-valid'])
+      setStyleLogin('form-invalid')
+      setStylePassword('form-valid')
       setFormValid(true)
     }
     if (login === 'qwerty' && password !== '1234') {
-      setStyleLogin(['form-valid'])
-      setStylePassword(['form-invalid'])
+      setStyleLogin('form-valid')
+      setStylePassword('form-invalid')
       setFormValid(true)
     }
     if (login !== 'qwerty' && password !== '1234') {
-      setStyleLogin(['form-invalid focus:form'])
-      setStylePassword(['form-invalid'])
+      setStyleLogin('form-invalid')
+      setStylePassword('form-invalid')
       setFormValid(true)
     }
   }
@@ -48,7 +48,7 @@ export default function Login() {
             placeholder="Логин:"
             onChange={(event) => {
               setLogin(event.target.value)
-              setStyleLogin(['form'])
+              setStyleLogin('form')
               setFormValid(false)
             }}
           />
@@ -58,7 +58,7 @@ export default function Login() {
             placeholder="Пароль:"
             onChange={(event) => {
               setPassword(event.target.value)
-              setStylePassword(['form'])
+              setStylePassword('form')
               setFormValid(false)
             }}
           />
