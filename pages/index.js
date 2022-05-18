@@ -27,7 +27,7 @@ export default function Home() {
         <div className="h2 mt-9 mb-16 text-center">
           Вход на данный сайт только по приглашению админов ресурса.
         </div>
-        <div className="btn-start">ВХОД</div>
+        <button className="btn-start">ВХОД</button>
       </div>
     </div>
   )

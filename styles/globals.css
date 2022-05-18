@@ -4,16 +4,18 @@
 
 .btn-start{
 	@apply rounded-full py-3 px-24 uppercase text-2xl leading-7 font-medium cursor-pointer tracking-wider bg-emerald-500 text-white 
-	hover:bg-emerald-600 
+	hover:bg-emerald-600 duration-300
 	active:bg-emerald-700 inline-block
 }
 .btn-transparent{
 	@apply border-2 rounded-md text-teal-500 border-teal-500
+	hover:bg-teal-100 duration-300
+	active:bg-teal-200 inline-block
 	disabled:border-2 disabled:rounded-md disabled:text-slate-400 disabled:border-slate-200 disabled:bg-transparent
 	}
 .btn-filled{
 	@apply bg-teal-500  rounded-md text-white 
-	hover:bg-teal-600 
+	hover:bg-teal-600 duration-300
 	active:bg-teal-700 inline-block
 	disabled:border-2 disabled:rounded-md disabled:text-slate-400 disabled:bg-transparent
 
