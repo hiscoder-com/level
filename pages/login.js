@@ -36,7 +36,7 @@ export default function Login() {
   return (
     <div className="container-center f-screen items-center">
       <div className="max-w-xs">
-        <h1 className="h1 mb-8">Вход:</h1>
+        <p className="h1 mb-8">Вход:</p>
         <p>{errorText}</p>
         <form className=" mb-4 space-y-2.5">
           <input

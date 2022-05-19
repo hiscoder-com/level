@@ -41,6 +41,14 @@
 .h2{
 	@apply text-2xl text-slate-600
 }
+.h5{
+	@apply text-sm text-slate-600
+
+}
+.h6{
+	@apply text-xs text-slate-600
+
+}
 .f-screen{
 	min-height: calc(100vh - 12rem);
 }
