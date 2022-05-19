@@ -1,6 +1,3 @@
-import React, { useState } from 'react'
-import Head from 'next/head'
+import React from 'react'
 
-export default function Confession_text() {
-  // return ()
-}
+export default function Confession_text() {}
