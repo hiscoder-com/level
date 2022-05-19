@@ -23,7 +23,9 @@ export default function AppBar({ setIsOpen }) {
               <div className="flex-1 flex row items-center justify-between ">
                 <div className="flex items-center gap-7">
                   <Burger onClick={() => setIsOpen((prev) => !prev)} className=" h-8 " />
-                  <VCANA_logo className="h-6 " />
+                  <a href="http://localhost:3000">
+                    <VCANA_logo className="h-6 " />
+                  </a>
                 </div>
                 {/* Title */}
                 <div className="text-emerald-500"></div>

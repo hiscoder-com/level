@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import Head from 'next/head'
 
 export default function Login() {
+  const [errorText, setErrorText] = useState('')
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [styleLogin, setStyleLogin] = useState('form')
@@ -12,22 +13,23 @@ export default function Login() {
     if (login === 'qwerty' && password === '1234') {
       setStyleLogin('form-valid')
       setStylePassword('form-valid')
-    }
-    if (login !== 'qwerty' && password === '1234') {
-      setStyleLogin('form-invalid')
-      setStylePassword('form-valid')
-      setFormValid(true)
-    }
-    if (login === 'qwerty' && password !== '1234') {
-      setStyleLogin('form-valid')
-      setStylePassword('form-invalid')
-      setFormValid(true)
-    }
-    if (login !== 'qwerty' && password !== '1234') {
+      setErrorText('')
+    } else {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')
       setFormValid(true)
+      setErrorText('Неверный логин или пароль')
     }
+    // if (login === 'qwerty' && password !== '1234') {
+    //   setStyleLogin('form-valid')
+    //   setStylePassword('form-invalid')
+    //   setFormValid(true)
+    // }
+    // if (login !== 'qwerty' && password !== '1234') {
+    //   setStyleLogin('form-invalid')
+    //   setStylePassword('form-invalid')
+    //   setFormValid(true)
+    // }
   }
   const report = () => {
     alert('Вы написали админу')
@@ -40,8 +42,9 @@ export default function Login() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="max-w-xs">
-        <h1 className="h1">Вход:</h1>
-        <form className="mt-8 mb-4 space-y-2.5">
+        <h1 className="h1 mb-8">Вход:</h1>
+        <p>{errorText}</p>
+        <form className=" mb-4 space-y-2.5">
           <input
             className={styleLogin}
             type="text"
@@ -49,7 +52,6 @@ export default function Login() {
             onChange={(event) => {
               setLogin(event.target.value)
               setStyleLogin('form')
-              setFormValid(false)
             }}
           />
           <input
@@ -59,7 +61,6 @@ export default function Login() {
             onChange={(event) => {
               setPassword(event.target.value)
               setStylePassword('form')
-              setFormValid(false)
             }}
           />
         </form>
