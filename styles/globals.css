@@ -8,32 +8,32 @@
 	active:bg-emerald-700 inline-block
 }
 .btn-transparent{
-	@apply border-2 rounded-md text-teal-500 border-teal-500
+	@apply border-2  rounded-md text-teal-500 border-teal-500
 	hover:bg-teal-100 duration-300
 	active:bg-teal-200 inline-block
-	disabled:border-2 disabled:rounded-md disabled:text-slate-400 disabled:border-slate-200 disabled:bg-transparent
+	disabled:border-2 disabled:rounded-md disabled:bg-transparent disabled:text-slate-400 disabled:border-slate-200 
 	}
 .btn-filled{
-	@apply bg-teal-500  rounded-md text-white 
+	@apply rounded-md bg-teal-500 text-white 
 	hover:bg-teal-600 duration-300
 	active:bg-teal-700 inline-block
-	disabled:border-2 disabled:rounded-md disabled:text-slate-400 disabled:bg-transparent
+	disabled:bg-transparent disabled:border-2 disabled:rounded-md disabled:text-slate-400 
 
 }
 .container-center{
 	@apply container flex justify-center font-sans
 }
 .form{
-	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-slate-100 
-	focus:ring-2 focus:ring-slate-300  focus:outline-none valid:border-blue-500
+	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 ring-1 shadow-sm text-slate-600 placeholder-slate-400  ring-slate-200  bg-slate-100 
+	focus:ring-2 focus:outline-none focus:ring-slate-300
 }
 .form-invalid{
-	@apply w-full text-sm leading-6 text-red-600 ring-red-600 border-red-600 bg-red-100 rounded-md py-2 pl-2 ring-1
-	focus:outline-none focus:ring-2 
+	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2 shadow-sm text-red-600 ring-red-600 border-red-600 bg-red-100 
+	focus:ring-1 focus:outline-none  
 }
 .form-valid{
-	@apply w-full text-sm leading-6 text-slate-600 placeholder-slate-400 rounded-md py-2 pl-2 ring-1 ring-slate-200 shadow-sm bg-teal-100 
-	focus:ring-2 focus:ring-teal-500  focus:outline-none 
+	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2  shadow-sm text-slate-600 ring-teal-600 border-teal-600 bg-teal-100  
+	focus:ring-1 focus:outline-none focus:ring-teal-500   
 }
 .h1{
 	@apply text-4xl text-slate-600
