@@ -1,17 +1,9 @@
-/* eslint-disable @next/next/no-img-element */
-import Head from 'next/head'
 import TT_Logo from '../public/TT_Logo.svg'
 import VCANA_logo from '../public/VCANA_logo.svg'
 
 export default function Home() {
   return (
     <div className="container-center mx-auto relative px-3 min-h-screen flex-col ">
-      <Head>
-        <title>V-CANA</title>
-        <meta name="description" content="VCANA" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <div className="flex absolute top-10 right-10  font-bold justify-end text-xl lg:text-base disabled:opacity-50">
         <a className="text-teal-500 p-2" href="#">
           RU
@@ -28,6 +20,7 @@ export default function Home() {
           Вход на данный сайт только по приглашению админов ресурса.
         </div>
         <a href="http://localhost:3000/login">
+          {/* <a href="../pages/login.js"> */}
           <button className="btn-start">ВХОД</button>
         </a>
       </div>
