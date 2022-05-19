@@ -42,6 +42,6 @@
 	@apply text-2xl text-slate-600
 }
 .f-screen{
-	min-height: calc(100vh - 7rem);
+	min-height: calc(100vh - 12rem);
 }
 
