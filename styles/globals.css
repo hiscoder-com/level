@@ -8,13 +8,13 @@
 	active:bg-emerald-700 inline-block
 }
 .btn-transparent{
-	@apply border-2  rounded-md text-teal-500 border-teal-500
+	@apply border-2 p-1 rounded-md text-teal-500 border-teal-500
 	hover:bg-teal-100 duration-300
 	active:bg-teal-200 inline-block
 	disabled:border-2 disabled:rounded-md disabled:bg-transparent disabled:text-slate-400 disabled:border-slate-200 
 	}
 .btn-filled{
-	@apply rounded-md bg-teal-500 text-white 
+	@apply rounded-md p-1 bg-teal-500 text-white 
 	hover:bg-teal-600 duration-300
 	active:bg-teal-700 inline-block
 	disabled:bg-transparent disabled:border-2 disabled:rounded-md disabled:text-slate-400 
