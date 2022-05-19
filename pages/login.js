@@ -34,8 +34,8 @@ export default function Login() {
     alert('Вы написали админу')
   }
   return (
-    <div className="container-center f-screen items-center">
-      <div className="max-w-xs">
+    <div className="flex-center">
+      <div>
         <p className="h1 mb-8">Вход:</p>
         <p>{errorText}</p>
         <form className=" mb-4 space-y-2.5">

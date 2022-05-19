@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Confession_description() {
   return (
-    <div className="container-center f-screen items-center">
+    <div className="flex-center">
       <div className="text-center max-w-lg px-2">
         <p className="h1 mb-6">Исповедание веры:</p>
         <p className="h5 mb-2">
