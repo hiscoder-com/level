@@ -21,7 +21,7 @@
 
 }
 .container-center{
-	@apply container flex justify-center font-sans
+	@apply flex justify-center font-sans
 }
 .form{
 	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 ring-1 shadow-sm text-slate-600 placeholder-slate-400  ring-slate-200  bg-slate-100 

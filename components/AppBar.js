@@ -15,7 +15,7 @@ function classNames(...classes) {
 
 export default function AppBar({ setIsOpen }) {
   return (
-    <Disclosure as="nav" className=" ">
+    <Disclosure as="nav" className="border-b">
       {({ open }) => (
         <>
           <div className=" max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
