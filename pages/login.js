@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import Head from 'next/head'
 
 export default function Login() {
   const [errorText, setErrorText] = useState('')
@@ -35,6 +36,11 @@ export default function Login() {
   }
   return (
     <div className="container-center f-screen items-center">
+      <Head>
+        <title>V-CANA login</title>
+        <meta name="description" content="VCANA" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <div className="max-w-xs">
         <h1 className="h1 mb-8">Вход:</h1>
         <p>{errorText}</p>
