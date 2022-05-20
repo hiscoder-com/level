@@ -2,12 +2,18 @@ import React from 'react'
 
 export default function Footer() {
   return (
-    <div className="flex w-11/12 h-20 justify-end items-center border-t">
-      <div className=" flex  items-center  ">
-        <input type="checkbox" id="scales" name="scales" />
-        <label className="ml-2 ">Согласен</label>
+    <div className="border-t">
+      <div className="max-w-7xl mx-auto px-2 flex justify-end items-center">
+        <div className="relative flex items-center justify-between h-16 ">
+          <div className="flex flex-row items-center space-x-6">
+            <div>
+              <input type="checkbox" id="scales" name="scales" />
+              <label className="mx-1.5 ">Согласен</label>
+            </div>
+            <button className=" btn-filled w-28">Далее</button>
+          </div>
+        </div>
       </div>
-      <button className=" ml-5 w-1/12 btn-filled">Далее</button>
     </div>
   )
 }
