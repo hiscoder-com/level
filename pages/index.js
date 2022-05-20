@@ -20,7 +20,6 @@ export default function Home() {
           Вход на данный сайт только по приглашению админов ресурса.
         </div>
         <a href="/login">
-          {/* <a href="../pages/login.js"> */}
           <button className="btn-start">ВХОД</button>
         </a>
       </div>

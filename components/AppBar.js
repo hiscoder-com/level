@@ -21,6 +21,7 @@ export default function AppBar({ setIsOpen }) {
           <div className=" max-w-7xl mx-auto px-4">
             <div className="relative flex items-center justify-between h-16 ">
               <div className="flex-1 flex row items-center justify-between ">
+                {/* menu & logo */}
                 <div className="flex items-center gap-7">
                   <Burger onClick={() => setIsOpen((prev) => !prev)} className=" h-8 " />
                   <a href="/">

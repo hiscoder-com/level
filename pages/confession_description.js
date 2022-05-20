@@ -14,7 +14,9 @@ export default function Confession_description() {
           Официальная версия этого документа находится на сайте
           <a href="https://www.unfoldingword.org/"> https://www.unfoldingword.org/</a>
         </p>
-        <button className="btn-filled w-28 mt-7">Начать</button>
+        <a href="/confession_text">
+          <button className="btn-filled w-28 mt-7">Начать</button>
+        </a>
       </div>
     </div>
   )
