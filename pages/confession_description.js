@@ -21,3 +21,4 @@ export default function Confession_description() {
     </div>
   )
 }
+Confession_description.layoutType = 'appbar'

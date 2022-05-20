@@ -27,4 +27,4 @@ export default function Home() {
   )
 }
 
-Home.emptyLayout = true
+Home.layoutType = 'empty'

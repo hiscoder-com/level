@@ -1,36 +1,32 @@
 import React from 'react'
-import Footer from '../components/footer'
 
 export default function Agreements_text() {
   return (
-    <div>
-      <div className="flex-center">
-        <div className="w-4/6">
-          <h1 className="h1">Соглашение</h1>
-          <p className="w-3/4 mt-7">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elit at odio eget
-            orci, purus gravida aliquam tellus ridiculus. Vestibulum id egestas lacus nisl
-            sagittis pellentesque id vitae dignissim. Adipiscing mollis porta libero
-            cursus et sed faucibus. A rhoncus massa est, dignissim ac lorem vel imperdiet
-            aliquet.
-          </p>
-          <p className="w-3/4 mt-3">
-            Sed diam phasellus justo, gravida nulla felis viverra lobortis. Eget vulputate
-            morbi sapien tincidunt. Sit hac ornare maecenas lectus lectus turpis et sed
-            lectus. Posuere sit sed est sed integer at nunc etiam amet. Convallis viverra
-            sit vulputate in velit massa ac aliquet. Ut ipsum pellentesque bibendum nunc,
-            eget porttitor luctus magna. Non pellentesque faucibus diam sed. Blandit nulla
-            sodales ut ornare ultricies in urna mi nisl. lorem vel imperdiet aliquet.
-          </p>
-          <p className="w-3/4 mt-3">
-            Sed diam phasellus justo, gravida nulla felis viverra lobortis. Eget vulputate
-            morbi sapien tincidunt. Sit hac ornare maecenas lectus lectus turpis et sed
-            lectus. Posuere sit sed est sed integer at nunc etiam amet. Convallis viverra
-            sit vulputate in velit massa ac aliquet. Ut ipsum pellentesque bibendum nunc,
-            eget porttitor luctus magna. Non pellentesque faucibus diam sed. Blandit nulla
-            sodales ut ornare ultricies in urna mi nisl.
-          </p>
-        </div>
+    <div className="flex-center">
+      <div className="w-4/6">
+        <h1 className="h1">Соглашение</h1>
+        <p className="h5 w-3/4 mt-7">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elit at odio eget orci,
+          purus gravida aliquam tellus ridiculus. Vestibulum id egestas lacus nisl
+          sagittis pellentesque id vitae dignissim. Adipiscing mollis porta libero cursus
+          et sed faucibus. A rhoncus massa est, dignissim ac lorem vel imperdiet aliquet.
+        </p>
+        <p className="h5 w-3/4 mt-3">
+          Sed diam phasellus justo, gravida nulla felis viverra lobortis. Eget vulputate
+          morbi sapien tincidunt. Sit hac ornare maecenas lectus lectus turpis et sed
+          lectus. Posuere sit sed est sed integer at nunc etiam amet. Convallis viverra
+          sit vulputate in velit massa ac aliquet. Ut ipsum pellentesque bibendum nunc,
+          eget porttitor luctus magna. Non pellentesque faucibus diam sed. Blandit nulla
+          sodales ut ornare ultricies in urna mi nisl. lorem vel imperdiet aliquet.
+        </p>
+        <p className="h5 w-3/4 mt-3">
+          Sed diam phasellus justo, gravida nulla felis viverra lobortis. Eget vulputate
+          morbi sapien tincidunt. Sit hac ornare maecenas lectus lectus turpis et sed
+          lectus. Posuere sit sed est sed integer at nunc etiam amet. Convallis viverra
+          sit vulputate in velit massa ac aliquet. Ut ipsum pellentesque bibendum nunc,
+          eget porttitor luctus magna. Non pellentesque faucibus diam sed. Blandit nulla
+          sodales ut ornare ultricies in urna mi nisl.
+        </p>
       </div>
     </div>
   )

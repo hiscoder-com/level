@@ -19,16 +19,6 @@ export default function Login() {
       setFormValid(true)
       setErrorText('Неверный логин или пароль')
     }
-    // if (login === 'qwerty' && password !== '1234') {
-    //   setStyleLogin('form-valid')
-    //   setStylePassword('form-invalid')
-    //   setFormValid(true)
-    // }
-    // if (login !== 'qwerty' && password !== '1234') {
-    //   setStyleLogin('form-invalid')
-    //   setStylePassword('form-invalid')
-    //   setFormValid(true)
-    // }
   }
   const report = () => {
     alert('Вы написали админу')
@@ -74,3 +64,4 @@ export default function Login() {
     </div>
   )
 }
+Login.layoutType = 'appbar'
