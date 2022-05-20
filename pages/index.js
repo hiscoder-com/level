@@ -3,7 +3,7 @@ import VCANA_logo from '../public/VCANA_logo.svg'
 
 export default function Home() {
   return (
-    <div className="index-page">
+    <div className="LTEmpty">
       <div className="flex absolute top-10 right-10  font-bold justify-end text-xl lg:text-base disabled:opacity-50">
         <a className="text-teal-500 p-2" href="#">
           RU

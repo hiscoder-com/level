@@ -3,7 +3,7 @@ import Footer from '../components/footer'
 
 export default function Confession_text() {
   return (
-    <div className="flex-center">
+    <div className="LTAppbar">
       <div className="max-w-7xl px-2 space-y-7">
         <p className="h1">Исповедание веры:</p>
         <p className="h3">

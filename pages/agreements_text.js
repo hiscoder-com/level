@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Agreements_text() {
   return (
-    <div className="flex-center">
+    <div className="LTAppbar">
       <div className="w-4/6">
         <h1 className="h1">Соглашение</h1>
         <p className="h5 w-3/4 mt-7">

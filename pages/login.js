@@ -24,7 +24,7 @@ export default function Login() {
     alert('Вы написали админу')
   }
   return (
-    <div className="flex-center">
+    <div className="LTAppbar">
       <div>
         <p className="h1 mb-8">Вход:</p>
         <p>{errorText}</p>
