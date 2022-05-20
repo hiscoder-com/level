@@ -32,7 +32,6 @@ export default function Agreements_text() {
           </p>
         </div>
       </div>
-      <Footer />
     </div>
   )
 }
