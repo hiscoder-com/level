@@ -24,7 +24,7 @@
 	@apply flex justify-center font-sans mx-auto relative px-3 min-h-screen flex-col
 }
 .flex-center{
-	@apply flex justify-center f-screen items-center font-sans 
+	@apply flex justify-center f-screen px-2 items-center font-sans 
 }
 .form{
 	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 ring-1 shadow-sm text-slate-600 placeholder-slate-400  ring-slate-200  bg-slate-100 
@@ -43,6 +43,10 @@
 }
 .h2{
 	@apply text-2xl text-slate-600
+}
+.h3{
+	@apply text-lg text-slate-600
+
 }
 .h5{
 	@apply text-sm text-slate-600

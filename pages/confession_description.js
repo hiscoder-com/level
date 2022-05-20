@@ -3,7 +3,7 @@ import React from 'react'
 export default function Confession_description() {
   return (
     <div className="flex-center">
-      <div className="text-center max-w-lg px-2">
+      <div className="text-center max-w-lg">
         <p className="h1 mb-6">Исповедание веры:</p>
         <p className="h5 mb-2">
           согласуется с историческими символами веры:
