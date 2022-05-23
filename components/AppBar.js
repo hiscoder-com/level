@@ -23,10 +23,10 @@ export default function AppBar({ setIsOpen }) {
               <div className="flex-1 flex row items-center justify-between ">
                 {/* menu & logo */}
                 <div className="flex items-center gap-7">
-                  <Burger onClick={() => setIsOpen((prev) => !prev)} className=" h-8 " />
+                  <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6" />
                   <a href="/">
                     {/* <a href="../pages/index.js"> */}
-                    <VCANA_logo className="h-6 " />
+                    <VCANA_logo className="h-5" />
                   </a>
                 </div>
                 {/* Title */}

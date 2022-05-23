@@ -10,7 +10,7 @@ export default function Agreements_home() {
         <a href="/confession_description">
           <button className="btn-transparent w-64">Исповедание веры</button>
         </a>
-        <a href="/">
+        <a href="/agreements_text">
           <button className="btn-filled w-64">Далее</button>
         </a>
       </div>
