@@ -8,7 +8,7 @@ export default function Footer() {
           {/* the confirmation & button "Next" */}
           <div className="flex flex-row items-center space-x-6">
             {/* the confirmation button */}
-            <div className="">
+            <div>
               <input type="checkbox" id="scales" name="scales" />
               <label className="h4 mx-1.5">Согласен</label>
             </div>

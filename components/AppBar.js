@@ -19,11 +19,12 @@ export default function AppBar({ setIsOpen }) {
     <Disclosure as="nav" className="border-b">
       {({ open }) => (
         <>
-          <div className=" max-w-7xl mx-auto px-4">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            {/* <div className="w-4/6 mx-auto px-4"> */}
             <div className="relative flex items-center justify-between h-16 ">
               <div className="flex-1 flex row items-center justify-between ">
                 {/* menu & logo */}
-                <div className="flex items-center gap-7">
+                <div className="flex items-center gap-7 cursor-pointer">
                   <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6" />
                   <Link href="/" passHref>
                     <VCANA_logo className="h-5" />

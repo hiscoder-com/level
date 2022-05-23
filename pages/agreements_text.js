@@ -3,7 +3,7 @@ import React from 'react'
 export default function Agreements_text() {
   return (
     <div className="LTAppbar">
-      <div className="w-4/6">
+      <div className="max-w-7xl text-alignment">
         <h1 className="h1">Соглашение</h1>
         <p className="h5 w-3/4 mt-7">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Elit at odio eget orci,

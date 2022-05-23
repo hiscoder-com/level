@@ -3,7 +3,7 @@ import React from 'react'
 export default function Confession_text() {
   return (
     <div className="LTAppbar">
-      <div className="max-w-7xl px-2 space-y-7">
+      <div className="text-alignment space-y-7">
         <p className="h1">Исповедание веры:</p>
         <p className="h3">
           Главные верования являются определяющими для последователей Иисуса Христа.
