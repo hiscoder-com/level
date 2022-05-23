@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
+import Link from 'next/link'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
 import Burger from '../public/Burger.svg'
 import VCANA_logo from '../public/VCANA_logo.svg'
@@ -24,10 +25,9 @@ export default function AppBar({ setIsOpen }) {
                 {/* menu & logo */}
                 <div className="flex items-center gap-7">
                   <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6" />
-                  <a href="/">
-                    {/* <a href="../pages/index.js"> */}
+                  <Link href="/" passHref>
                     <VCANA_logo className="h-5" />
-                  </a>
+                  </Link>
                 </div>
                 {/* Title */}
                 <div className="text-emerald-500"></div>

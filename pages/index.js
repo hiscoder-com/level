@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import TT_Logo from '../public/TT_Logo.svg'
 import VCANA_logo from '../public/VCANA_logo.svg'
 
@@ -19,9 +20,9 @@ export default function Home() {
         <div className="h2 mt-9 mb-16 text-center">
           Вход на данный сайт только по приглашению админов ресурса.
         </div>
-        <a href="/login">
-          <button className="btn-start">ВХОД</button>
-        </a>
+        <Link href="/login">
+          <a className="btn-start">ВХОД</a>
+        </Link>
       </div>
     </div>
   )

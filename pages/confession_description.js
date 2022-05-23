@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 export default function Confession_description() {
   return (
@@ -14,9 +15,9 @@ export default function Confession_description() {
           Официальная версия этого документа находится на сайте
           <a href="https://www.unfoldingword.org/"> https://www.unfoldingword.org/</a>
         </p>
-        <a href="/confession_text">
-          <button className="btn-filled w-28 mt-7">Начать</button>
-        </a>
+        <Link href="/confession_text">
+          <a className="btn-filled w-28 mt-7">Начать</a>
+        </Link>
       </div>
     </div>
   )
