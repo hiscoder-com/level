@@ -12,16 +12,16 @@ function MyApp({ Component, pageProps }) {
         <Component {...pageProps} />
       </Layout>
     )
-  } else {
-    return (
-      <>
-        <Layout>
-          <Component {...pageProps} />
-          <Footer />
-        </Layout>
-      </>
-    )
   }
+
+  return (
+    <>
+      <Layout>
+        <Component {...pageProps} />
+        <Footer />
+      </Layout>
+    </>
+  )
 }
 
 export default MyApp
