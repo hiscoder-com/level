@@ -75,7 +75,7 @@
 }
 
 .sidebar-link-a {
-	@apply flex transition transform hover:-translate-x-0.5 p-4 focus:outline-none hover:text-[#0E7490] text-[#3C3C41]
+	@apply flex transition transform hover:-translate-x-0.5 px-4 py-3 focus:outline-none hover:text-[#0E7490] text-[#3C3C41]
 } 
 .sidebar-hr {
 	@apply border-b border-[#c4c4c4]
