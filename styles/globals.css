@@ -74,3 +74,12 @@
 	min-height: calc(100vh - 23rem);
 }
 
+.sidebar-link-a {
+	@apply flex transition transform hover:-translate-x-0.5 p-4 focus:outline-none hover:text-[#0E7490] text-[#3C3C41]
+} 
+.sidebar-hr {
+	@apply border-b border-[#c4c4c4]
+}
+.sidebar-absolute {
+	@apply absolute font-medium left-0 top-0 right-0 bottom-0
+}
