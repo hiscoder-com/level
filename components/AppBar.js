@@ -25,7 +25,10 @@ export default function AppBar({ setIsOpen }) {
               <div className="flex-1 flex row items-center justify-between ">
                 {/* menu & logo */}
                 <div className="flex items-center gap-7 cursor-pointer">
-                  <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6" />
+                  <Burger
+                    onClick={() => setIsOpen((prev) => !prev)}
+                    className="h-6 stroke-1 hover:stroke-[#0E7490]"
+                  />
                   <Link href="/" passHref>
                     <VCANA_logo className="h-5" />
                   </Link>

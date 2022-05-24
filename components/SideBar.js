@@ -1,19 +1,23 @@
 import SideBarLink from './SideBarLink'
+import TextTreeLogo from '../public/TT_Logo.svg'
+import Burger from '../public/Burger.svg'
 
 function SideBar({ isOpen, setIsOpen }) {
   const condition = `sidebar-absolute ${isOpen ? '' : 'hidden'}`
   return (
     <div className={condition}>
       <div className="fixed top-0 left-0 w-64 bg-[#c1c1c1]/50 h-full text-lg">
-        <div className="flex items-center justify-center h2 py-4 sidebar-hr">
-          <div className="text-[#3C3C41]">TextTree logo</div>
+        <div className="sidebar-hr">
+          <div className="flex items-center justify-between px-4 py-3 text-[#3C3C41]">
+            <Burger
+              onClick={() => setIsOpen((prev) => !prev)}
+              className="h-6 cursor-pointer stroke-1 hover:stroke-[#0E7490]"
+            />
+            <TextTreeLogo className="h-10" />
+          </div>
         </div>
         <div className="flex items-center h2 py-4 sidebar-hr">
-          <a
-            onClick={() => setIsOpen((prev) => !prev)}
-            href="#"
-            className="sidebar-link-a"
-          >
+          <a href="#" className="sidebar-link-a">
             <span className="tracking-wide truncate">Личный Кабинет</span>
           </a>
         </div>
