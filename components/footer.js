@@ -1,12 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export default function Footer() {
   const [checked, setChecked] = useState(false)
-  const [formValid, setFormValid] = useState(false)
+  const [disabledButton, setDisabledButton] = useState(false)
 
-  // if (checked) {
-  //   setFormValid(true)
-  // }
+  useEffect(() => {
+    setDisabledButton(!disabledButton)
+  }, [checked])
+
   return (
     <div className="border-t">
       <div className="max-w-7xl mx-auto flex justify-end items-center px-4">
@@ -22,7 +23,7 @@ export default function Footer() {
               />
               <label>Согласен</label>
             </div>
-            <button className="btn-filled w-28" disabled={!formValid}>
+            <button className="btn-filled w-28" disabled={disabledButton}>
               Далее
             </button>
           </div>
