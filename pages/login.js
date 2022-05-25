@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import React, { useState } from 'react'
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eyeIcon.svg'
@@ -35,8 +36,8 @@ export default function Login() {
     } else {
       setPassType('password')
       setSvg([<EyeIcon />])
-
-    }}
+    }
+  }
   return (
     <div className="LTAppbar">
       <div className="">
@@ -51,21 +52,25 @@ export default function Login() {
               setStyleLogin('form')
             }}
           />
-            <input
-              className={stylePassword}
-              type={passType}
-              placeholder="Пароль:"
-              onChange={(event) => {
-                setPassword(event.target.value)
-                setStylePassword('form')
-              }}
-            />
-            <button className="eye" onClick={show_hide_password}>{svg}
-            </button>
+          <input
+            className={stylePassword}
+            type={passType}
+            placeholder="Пароль:"
+            onChange={(event) => {
+              setPassword(event.target.value)
+              setStylePassword('form')
+            }}
+          />
+          <button className="eye" onClick={show_hide_password}>
+            {svg}
+          </button>
         </form>
-        <div class="flex items-center justify-between">
-        <p className='flex text-xs text-red-600'>{errorText}</p>
-        <a href="#" class="font-medium underline text-sky-500 hover:text-sky-600"> Забыли пароль? </a>
+        <div className="flex items-center justify-between">
+          <p className="flex text-xs text-red-600">{errorText}</p>
+          <a href="#" className="font-medium underline text-sky-500 hover:text-sky-600">
+            {' '}
+            Забыли пароль?{' '}
+          </a>
         </div>
         <div className="flex gap-2.5 mt-5 h-9">
           <button
