@@ -42,6 +42,7 @@ create table public.languages (
 
 
 -- authorize with role-based access control (RBAC)
+-- https://supabase.com/docs/reference/javascript/rpc
 create function public.authorize(
   requested_permission app_permission,
   user_id uuid

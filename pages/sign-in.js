@@ -1,19 +1,9 @@
-import { useState, useEffect } from 'react'
 import Head from 'next/head'
-import { supabase } from '../utils/supabaseClient'
+import { useUser } from '../lib/UserContext'
 import SignIn from '../components/SignIn'
 
 export default function SignInPage() {
-  const [session, setSession] = useState(null)
-
-  // useEffect(() => {
-  //   setSession(supabase.auth.session())
-
-  //   supabase.auth.onAuthStateChange((_event, session) => {
-  //     setSession(session)
-  //   })
-  // }, [])
-
+  const { user, session } = useUser()
   return (
     <div className="container">
       <Head>
@@ -21,7 +11,7 @@ export default function SignInPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {session ? JSON.stringify(supabase.auth.user()) : 'Нет такого юзера!!'}
+      {session ? JSON.stringify(user) : 'Нет такого юзера!!'}
       <SignIn />
     </div>
   )
