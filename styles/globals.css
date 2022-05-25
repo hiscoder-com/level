@@ -33,9 +33,12 @@
 .text-alignment{
 	@apply max-w-7xl px-4 sm:px-6 lg:pr-48 
 }
+.eye{
+	@apply  flex absolute inset-y-0 right-2 bottom-2 items-end
+}
 .form{
-	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 ring-1 shadow-sm text-slate-600 placeholder-slate-400  ring-slate-200  bg-slate-100 
-	focus:ring-2 focus:outline-none focus:ring-slate-300
+	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2 shadow-sm text-slate-600 placeholder-slate-400  border-slate-200  bg-slate-100 
+	focus:border-2 focus:outline-none focus:border-slate-300
 }
 .form-invalid{
 	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2 shadow-sm text-red-600 ring-red-600 border-red-600 bg-red-100 

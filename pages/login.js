@@ -9,7 +9,7 @@ export default function Login() {
   const [styleLogin, setStyleLogin] = useState('form')
   const [stylePassword, setStylePassword] = useState('form')
   const [formValid, setFormValid] = useState(false)
-  const [passType, setPassType] = useState('text')
+  const [passType, setPassType] = useState('password')
 
   const examinationLogPass = () => {
     if (login === 'qwerty' && password === '1234') {
@@ -27,17 +27,13 @@ export default function Login() {
     alert('Вы написали админу')
   }
   const show_hide_password = () => {
-    if (passType == 'password') {
-      setPassType('text')    
-    } else {
-      setPassType('password')    
-    }
+    passType == 'password' ? setPassType('text') : setPassType('password')
   }
   return (
     <div className="LTAppbar">
-      <div>
+      <div className="">
         <p className="h1 mb-8">Вход:</p>
-        <form className=" mb-4 space-y-2.5">
+        <form className="relative mb-4 space-y-2.5">
           <input
             className={styleLogin}
             type="text"
@@ -47,16 +43,17 @@ export default function Login() {
               setStyleLogin('form')
             }}
           />
-          <input
-            className={stylePassword}
-            type={passType}
-            placeholder="Пароль:"
-            onChange={(event) => {
-              setPassword(event.target.value)
-              setStylePassword('form')
-            }}
+            <input
+              className={stylePassword}
+              type={passType}
+              placeholder="Пароль:"
+              onChange={(event) => {
+                setPassword(event.target.value)
+                setStylePassword('form')
+              }}
             />
-            <EyeIcon className="absolute" onClick={show_hide_password}/>
+            <button className="eye" onClick={show_hide_password}><EyeIcon />
+            </button>
         </form>
         <div class="flex items-center justify-between">
         <p className='text-xs text-red-600'>{errorText}</p>
