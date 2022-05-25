@@ -31,7 +31,7 @@
 	@apply flex justify-center f-screen-full items-center font-sans 
 }
 .text-alignment{
-	@apply max-w-7xl px-4 sm:px-6 lg:px-8 
+	@apply max-w-7xl px-4 sm:px-6 lg:pr-48 
 }
 .form{
 	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 ring-1 shadow-sm text-slate-600 placeholder-slate-400  ring-slate-200  bg-slate-100 
@@ -42,8 +42,8 @@
 	focus:ring-1 focus:outline-none  
 }
 .form-valid{
-	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2  shadow-sm text-slate-600 ring-teal-600 border-teal-600 bg-teal-100  
-	focus:ring-1 focus:outline-none focus:ring-teal-600   
+	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2  shadow-sm text-slate-600 ring-green-600 border-green-600 bg-teal-100  
+	focus:ring-1 focus:outline-none focus:ring-green-600   
 }
 .h1{
 	@apply text-4xl text-slate-600
@@ -82,4 +82,11 @@
 }
 .sidebar-absolute {
 	@apply absolute font-medium left-0 top-0 right-0 bottom-0
+}
+
+.password-control {
+		background: url(/public/eyeIcon.svg) 0 0 no-repeat;
+}
+.password-control.view {
+	background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 }
