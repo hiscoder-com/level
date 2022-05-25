@@ -14,7 +14,7 @@ function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
 
-export default function AppBar({ setIsOpen }) {
+export default function AppBar({ isOpen, setIsOpen }) {
   return (
     <Disclosure as="nav" className="border-b">
       {({ open }) => (
@@ -24,12 +24,23 @@ export default function AppBar({ setIsOpen }) {
             <div className="relative flex items-center justify-between h-16 ">
               <div className="flex-1 flex row items-center justify-between ">
                 {/* menu & logo */}
-                <div className="flex items-center gap-7 cursor-pointer">
-                  <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6" />
-                  <Link href="/" passHref>
-                    <VCANA_logo className="h-5" />
-                  </Link>
-                </div>
+                {isOpen ? (
+                  <div className="flex items-center gap-7 cursor-pointer">
+                    <Link href="/" passHref>
+                      <VCANA_logo className="h-5" />
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-7 cursor-pointer">
+                    <Burger
+                      onClick={() => setIsOpen((prev) => !prev)}
+                      className="h-6 stroke-1 hover:stroke-[#0E7490]"
+                    />
+                    <Link href="/" passHref>
+                      <VCANA_logo className="h-5" />
+                    </Link>
+                  </div>
+                )}
                 {/* Title */}
                 <div className="text-emerald-500"></div>
                 {/* Optional info */}
