@@ -6,6 +6,7 @@ export default function Footer() {
 
   useEffect(() => {
     setDisabledButton(!disabledButton)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [checked])
 
   return (
