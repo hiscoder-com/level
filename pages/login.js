@@ -22,7 +22,7 @@ export default function Login() {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')
       setFormValid(true)
-      setErrorText('Неверный логин или пароль')
+      setErrorText([<Report />, 'Неверный логин или пароль'])
     }
   }
   const report = () => {
@@ -64,8 +64,8 @@ export default function Login() {
             </button>
         </form>
         <div class="flex items-center justify-between">
-        <p className='text-xs text-red-600'>{errorText}</p>
-        <a href="#" class="font-medium text-sky-500 hover:text-sky-600"> Забыли пароль? </a>
+        <p className='flex text-xs text-red-600'>{errorText}</p>
+        <a href="#" class="font-medium underline text-sky-500 hover:text-sky-600"> Забыли пароль? </a>
         </div>
         <div className="flex gap-2.5 mt-5 h-9">
           <button
