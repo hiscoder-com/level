@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eyeIcon.svg'
+import EyeOffIcon from '../public/eyeOffIcon.svg'
 
 export default function Login() {
   const [errorText, setErrorText] = useState('')
@@ -10,6 +11,7 @@ export default function Login() {
   const [stylePassword, setStylePassword] = useState('form')
   const [formValid, setFormValid] = useState(false)
   const [passType, setPassType] = useState('password')
+  const [svg, setSvg] = useState([<EyeIcon />])
 
   const examinationLogPass = () => {
     if (login === 'qwerty' && password === '1234') {
@@ -27,8 +29,14 @@ export default function Login() {
     alert('Вы написали админу')
   }
   const show_hide_password = () => {
-    passType == 'password' ? setPassType('text') : setPassType('password')
-  }
+    if (passType == 'password') {
+      setPassType('text')
+      setSvg([<EyeOffIcon />])
+    } else {
+      setPassType('password')
+      setSvg([<EyeIcon />])
+
+    }}
   return (
     <div className="LTAppbar">
       <div className="">
@@ -52,7 +60,7 @@ export default function Login() {
                 setStylePassword('form')
               }}
             />
-            <button className="eye" onClick={show_hide_password}><EyeIcon />
+            <button className="eye" onClick={show_hide_password}>{svg}
             </button>
         </form>
         <div class="flex items-center justify-between">
