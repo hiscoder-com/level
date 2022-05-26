@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../utils/supabaseClient'
 import { useLanguages } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
+import { useTranslation } from 'next-i18next'
 
 export default function LanguagesEdit() {
+  const { t } = useTranslation('common')
   const { user, session } = useUser()
   const [loading, setLoading] = useState(false)
   const [eng, setEng] = useState('')
@@ -23,7 +25,6 @@ export default function LanguagesEdit() {
     if (user) {
       canEditLanguages()
     }
-    console.log({ editLanguages })
   }, [user])
 
   const handleSave = async () => {
@@ -48,7 +49,7 @@ export default function LanguagesEdit() {
 
   return (
     <div className="flex justify-center flex-col text-center text-3xl my-5">
-      <h1 className="my-5">Languages:</h1>
+      <h1 className="my-5">{t('Languages')}:</h1>
       {languages?.map((el, index) => {
         return (
           <div key={index}>

@@ -13,7 +13,6 @@ export default function SignUp() {
         email,
         password,
       })
-      console.log({ user })
       if (error) throw error
       alert('Check your email to confirm registration.')
     } catch (error) {
