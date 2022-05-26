@@ -55,6 +55,7 @@ export default function Login() {
           <input
             className={stylePassword}
             type={passType}
+            value={password.slice(0, 40)}
             placeholder="Пароль:"
             onChange={(event) => {
               setPassword(event.target.value)
@@ -68,8 +69,7 @@ export default function Login() {
         <div className="flex items-center justify-between">
           <p className="flex text-xs text-red-600">{errorText}</p>
           <a href="#" className="font-medium underline text-sky-500 hover:text-sky-600">
-            {' '}
-            Забыли пароль?{' '}
+            Забыли пароль?
           </a>
         </div>
         <div className="flex gap-2.5 mt-5 h-9">
