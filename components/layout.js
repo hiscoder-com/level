@@ -6,7 +6,7 @@ import SideBar from './SideBar'
 function Layout({ children }) {
   const [isOpen, setIsOpen] = useState(false)
   return isOpen ? (
-    <div className="ml-60">
+    <div className="sm:ml-60 ml-0">
       <AppBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
