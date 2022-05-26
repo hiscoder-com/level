@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
 
 export default function Footer() {
   const [checked, setChecked] = useState(false)
   const [disabledButton, setDisabledButton] = useState(false)
+  const [nextHref, setNextHref] = useState('')
+
+  useEffect(() => {
+    if (checkUrl('agreements_text')) {
+      setNextHref('confession_description')
+    } else if (checkUrl('confession_text')) {
+      setNextHref('') // пока нет страницы личный кабинет перевод сделал на главную
+    }
+  }, [nextHref])
 
   useEffect(() => {
     setDisabledButton(!disabledButton)
@@ -23,12 +33,18 @@ export default function Footer() {
               />
               <label>Согласен</label>
             </div>
-            <button className="btn-filled w-28" disabled={disabledButton}>
-              Далее
-            </button>
+            <Link href={`/${nextHref}`}>
+              <button className="btn-filled w-28" disabled={disabledButton}>
+                <a>Далее</a>
+              </button>
+            </Link>
           </div>
         </div>
       </div>
     </div>
   )
+}
+
+const checkUrl = (url) => {
+  return window.location.href.toString().includes(url)
 }
