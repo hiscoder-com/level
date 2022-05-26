@@ -1,8 +1,8 @@
 /* eslint-disable react/jsx-key */
 import React, { useState } from 'react'
-import Report from '../public/report.svg'
-import EyeIcon from '../public/eyeIcon.svg'
-import EyeOffIcon from '../public/eyeOffIcon.svg'
+import Report from '../public/Report.svg'
+import EyeIcon from '../public/EyeIcon.svg'
+import EyeOffIcon from '../public/EyeOffIcon.svg'
 
 export default function Login() {
   const [errorText, setErrorText] = useState('')
