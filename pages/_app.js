@@ -1,27 +1,45 @@
+import LayoutStart from '../components/layoutStart'
+import LayoutStartFooter from '../components/layoutStartFooter'
+import LayoutBurger from '../components/layoutBurger'
+import LayoutBurgerFooter from '../components/layoutBurgerFooter'
 import '../styles/globals.css'
-import Layout from '../components/layout'
-import Footer from '../components/footer'
 
 function MyApp({ Component, pageProps }) {
-  if (Component.layoutType === 'empty') {
-    return <Component {...pageProps} />
+  switch (Component.layoutType) {
+    case 'empty':
+      return <Component {...pageProps} />
+      break
+    case 'appbar':
+      return (
+        <LayoutBurger>
+          <Component {...pageProps} />
+        </LayoutBurger>
+      )
+      break
+    case 'appbarStart':
+      return (
+        <LayoutStart>
+          <Component {...pageProps} />
+        </LayoutStart>
+      )
+      break
+    case 'appbarStartFooter':
+      return (
+        <LayoutStartFooter>
+          <Component {...pageProps} />
+        </LayoutStartFooter>
+      )
+      break
+    default:
+      return (
+        <>
+          <LayoutBurgerFooter>
+            <Component {...pageProps} />
+          </LayoutBurgerFooter>
+        </>
+      )
+      break
   }
-  if (Component.layoutType === 'appbar') {
-    return (
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    )
-  }
-
-  return (
-    <>
-      <Layout>
-        <Component {...pageProps} />
-        <Footer />
-      </Layout>
-    </>
-  )
 }
 
 export default MyApp

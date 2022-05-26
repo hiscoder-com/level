@@ -18,4 +18,4 @@ export default function Agreements_home() {
     </div>
   )
 }
-Agreements_home.layoutType = 'appbar'
+Agreements_home.layoutType = 'appbarStart'

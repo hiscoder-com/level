@@ -73,3 +73,4 @@ export default function Confession_text() {
     </div>
   )
 }
+Confession_text.layoutType = 'appbarStartFooter'

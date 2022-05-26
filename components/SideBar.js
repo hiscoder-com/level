@@ -1,5 +1,4 @@
 import SideBarLink from './SideBarLink'
-import TextTreeLogo from '../public/TT_Logo.svg'
 import Burger from '../public/Burger.svg'
 
 function SideBar({ isOpen, setIsOpen }) {
@@ -13,7 +12,6 @@ function SideBar({ isOpen, setIsOpen }) {
               onClick={() => setIsOpen((prev) => !prev)}
               className="h-6 cursor-pointer stroke-1 hover:stroke-[#0E7490]"
             />
-            <TextTreeLogo className="h-10" />
           </div>
         </div>
         <div className="flex items-center h2 py-4 sidebar-hr">

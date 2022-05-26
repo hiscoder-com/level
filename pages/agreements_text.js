@@ -31,3 +31,4 @@ export default function Agreements_text() {
     </div>
   )
 }
+Agreements_text.layoutType = 'appbarStartFooter'

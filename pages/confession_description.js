@@ -13,7 +13,10 @@ export default function Confession_description() {
         </p>
         <p className="h6 font-light">
           Официальная версия этого документа находится на сайте
-          <a href="https://www.unfoldingword.org/"> https://www.unfoldingword.org/</a>
+          <a href="https://texttree.org/" className="text-teal-500">
+            {' '}
+            https://texttree.org/
+          </a>
         </p>
         <Link href="/confession_text">
           <a className="btn-filled w-28 mt-7">Начать</a>
@@ -22,4 +25,4 @@ export default function Confession_description() {
     </div>
   )
 }
-Confession_description.layoutType = 'appbar'
+Confession_description.layoutType = 'appbarStart'

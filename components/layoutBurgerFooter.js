@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import AppBar from './AppBar'
-import Footer from './footer'
 import SideBar from './SideBar'
+import Footer from './footer'
 
-function Layout({ children }) {
+function LayoutBurgerFooter({ children }) {
   const [isOpen, setIsOpen] = useState(false)
   return isOpen ? (
     <div className="sm:ml-60 ml-0">
@@ -12,6 +12,7 @@ function Layout({ children }) {
       <main>
         <div className="py-6 sm:px-6 lg:px-8">{children}</div>
       </main>
+      <Footer />
     </div>
   ) : (
     <div className="mx-auto min-h-screen">
@@ -20,8 +21,9 @@ function Layout({ children }) {
       <main>
         <div className="py-6 sm:px-6 lg:px-8">{children}</div>
       </main>
+      <Footer />
     </div>
   )
 }
 
-export default Layout
+export default LayoutBurgerFooter

@@ -88,4 +88,4 @@ export default function Login() {
     </div>
   )
 }
-Login.layoutType = 'appbar'
+Login.layoutType = 'appbarStart'
