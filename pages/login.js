@@ -29,7 +29,7 @@ export default function Login() {
   const report = () => {
     alert('Вы написали админу')
   }
-  const show_hide_password = () => {
+  const showHidePassword = () => {
     if (passType == 'password') {
       setPassType('text')
       setSvg([<EyeOffIcon />])
@@ -62,9 +62,9 @@ export default function Login() {
               setStylePassword('form')
             }}
           />
-          <button className="eye" onClick={show_hide_password}>
+          <span className="eye cursor-pointer" onClick={showHidePassword}>
             {svg}
-          </button>
+          </span>
         </form>
         <div className="flex items-center justify-between">
           <p className="flex text-xs text-red-600">{errorText}</p>
