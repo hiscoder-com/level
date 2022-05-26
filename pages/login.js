@@ -1,6 +1,6 @@
 /* eslint-disable react/jsx-key */
 import React, { useState } from 'react'
-import Report from '../public/Report.svg'
+import Report from '../public/report.svg'
 import EyeIcon from '../public/EyeIcon.svg'
 import EyeOffIcon from '../public/EyeOffIcon.svg'
 
