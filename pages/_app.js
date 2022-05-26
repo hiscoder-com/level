@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import Layout from '../components/layout'
 import { UserContextProvider } from '../lib/UserContext'
 import { supabase } from '../utils/supabaseClient'
-import { useEffect } from 'react'
+import { appWithTranslation } from 'next-i18next'
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -14,4 +14,4 @@ function MyApp({ Component, pageProps }) {
   )
 }
 
-export default MyApp
+export default appWithTranslation(MyApp)

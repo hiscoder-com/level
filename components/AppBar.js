@@ -1,6 +1,9 @@
 import { Fragment } from 'react'
+import { useRouter } from 'next/router'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
+
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
+import Link from 'next/link'
 
 const navigation = [
   { name: 'Home', href: '/', current: true },
@@ -14,6 +17,8 @@ function classNames(...classes) {
 }
 
 export default function AppBar({ setIsOpen }) {
+  const { locale, pathname, query, asPath } = useRouter()
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -47,7 +52,7 @@ export default function AppBar({ setIsOpen }) {
                     alt="Workflow"
                   />
                 </div>
-                <div className="hidden sm:block sm:ml-6">
+                <div className=" sm:block sm:ml-6">
                   <div className="flex space-x-4">
                     {navigation.map((item) => (
                       <a
@@ -67,7 +72,14 @@ export default function AppBar({ setIsOpen }) {
                   </div>
                 </div>
               </div>
-              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 ">
+                <Link href={{ pathname, query }} as={asPath} locale="en">
+                  <a className="bg-white">{'en'}</a>
+                </Link>
+                <Link replace href={{ pathname, query }} as={asPath} locale={'ru'}>
+                  <a className="bg-white">{'ru'}</a>
+                </Link>
+
                 <button
                   type="button"
                   className="bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
@@ -75,7 +87,6 @@ export default function AppBar({ setIsOpen }) {
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
-
                 {/* Profile dropdown */}
                 <Menu as="div" className="ml-3 relative">
                   <div>
