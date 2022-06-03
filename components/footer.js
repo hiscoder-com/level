@@ -10,7 +10,8 @@ export default function Footer() {
   }, [checked])
 
   return (
-    <div className="border-t">
+    // <div className="border-t">
+    <div>
       <div className="max-w-7xl mx-auto flex justify-end items-center px-4">
         <div className="relative flex items-center h-16 ">
           {/* the confirmation & button "Next" */}
