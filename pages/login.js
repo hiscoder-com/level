@@ -6,6 +6,7 @@ import EyeOffIcon from '../public/EyeOffIcon.svg'
 
 export default function Login() {
   const [errorText, setErrorText] = useState('')
+  const [remindBtn, setRemindBtn] = useState('')
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
   const [styleLogin, setStyleLogin] = useState('form')
@@ -19,11 +20,13 @@ export default function Login() {
       setStyleLogin('form-valid')
       setStylePassword('form-valid')
       setErrorText('')
+      setRemindBtn('')
     } else {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')
       setFormValid(true)
       setErrorText([<Report />, 'Неверный логин или пароль'])
+      setRemindBtn('Забыли пароль?')
     }
   }
   const report = () => {
@@ -40,9 +43,9 @@ export default function Login() {
   }
   return (
     <div className="LTAppbar">
-      <div className="">
+      <div>
         <p className="h1 mb-8">Вход:</p>
-        <form className="relative mb-4 space-y-2.5">
+        <form className="relative mb-2 space-y-2.5">
           <input
             className={styleLogin}
             type="text"
@@ -66,13 +69,13 @@ export default function Login() {
             {svg}
           </span>
         </form>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <p className="flex text-xs text-red-600">{errorText}</p>
           <a href="#" className="font-medium underline text-sky-500 hover:text-sky-600">
-            Забыли пароль?
+            {remindBtn}
           </a>
         </div>
-        <div className="flex gap-2.5 mt-5 h-9">
+        <div className="flex gap-2.5 h-9">
           <button
             disabled={!formValid}
             onClick={report}
