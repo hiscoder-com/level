@@ -19,7 +19,7 @@ function LayoutStartFooter({ children }) {
       <AppBarStart setIsOpen={setIsOpen} />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
-        <div className="py-6 sm:px-6 lg:px-8">{children}</div>
+        <div className="py-6 bg-blue-150 sm:px-6 lg:px-8">{children}</div>
       </main>
       <Footer />
     </div>

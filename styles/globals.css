@@ -17,7 +17,7 @@
 	@apply rounded-md p-1 bg-cyan-600 text-white 
 	hover:bg-cyan-700 duration-300
 	active:bg-cyan-800 inline-block
-	disabled:bg-transparent disabled:border-2 disabled:rounded-md disabled:text-gray-400 
+	disabled:bg-gray-300 disabled:border-2 disabled:rounded-md disabled:text-gray-400 
 
 }
 /* layoutType */
@@ -25,7 +25,7 @@
 	@apply flex justify-center font-sans mx-auto relative px-3 min-h-screen flex-col
 }
 .LTAppbar{
-	@apply flex justify-center f-screen-appbar items-center font-sans px-2
+	@apply flex justify-center f-screen-appbar items-center font-sans px-2  
 }
 .LTFull{
 	@apply flex justify-center f-screen-full items-center font-sans 
