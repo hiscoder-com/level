@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+
+.arrow{
+	@apply flex flex-col justify-center p-6
+}
 .btn-start{
 	@apply rounded-full py-3 px-24 uppercase text-2xl leading-7 font-medium cursor-pointer tracking-wider bg-cyan-600 text-white 
 	hover:bg-cyan-700 duration-300
@@ -19,6 +23,9 @@
 	active:bg-cyan-800 inline-block
 	disabled:bg-gray-300 disabled:border-2 disabled:rounded-md disabled:text-gray-400 
 
+}
+.confession-text{
+	@apply h4 bg-white rounded-lg px-12 flex flex-col justify-center text-center
 }
 /* layoutType */
 .LTEmpty{

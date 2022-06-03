@@ -13,7 +13,7 @@ export default function Confession_description() {
         </p>
         <p className="h6 font-light">
           Официальная версия этого документа находится на сайте
-          <a href="https://texttree.org/" className="text-teal-500">
+          <a href="https://texttree.org/" className="underline  text-cyan-600">
             {' '}
             https://texttree.org/
           </a>
