@@ -9,6 +9,7 @@ export default function Confession_text() {
   const [page, setPage] = useState(0)
   const [disabledLeftArrow, setDisabledLeftArrow] = useState(false)
   const [disabledRightArrow, setDisabledRightArrow] = useState(false)
+  const [confirm, setConfirm] = useState('')
 
   useEffect(() => {
     setDisabledButton(!disabledButton)
@@ -16,9 +17,30 @@ export default function Confession_text() {
   }, [checked])
 
   useEffect(() => {
+    const objConfirm = (
+      <div className="flex flex-row items-center space-x-6">
+        <div className="space-x-1.5 items-center h4">
+          <input
+            type="checkbox"
+            checked={checked}
+            onChange={() => setChecked(!checked)}
+          />
+          <label>Согласен</label>
+        </div>
+        <button className="btn-filled w-28" disabled={disabledButton}>
+          Далее
+        </button>
+      </div>
+    )
     page == 0 ? setDisabledLeftArrow(true) : setDisabledLeftArrow(false)
-    page == 5 ? setDisabledRightArrow(true) : setDisabledRightArrow(false)
-  }, [page])
+    if (page == 5) {
+      setDisabledRightArrow(true)
+      setConfirm(objConfirm)
+    } else {
+      setDisabledRightArrow(false)
+      setConfirm('')
+    }
+  }, [checked, disabledButton, page])
 
   const arrConfText = [
     <p>
@@ -119,20 +141,7 @@ export default function Confession_text() {
           </button>
         </div>
       </div>
-      <div className="flex flex-row items-center space-x-6">
-        {/* the confirmation button */}
-        <div className="space-x-1.5 items-center h4">
-          <input
-            type="checkbox"
-            checked={checked}
-            onChange={() => setChecked(!checked)}
-          />
-          <label>Согласен</label>
-        </div>
-        <button className="btn-filled w-28" disabled={disabledButton}>
-          Далее
-        </button>
-      </div>
+      {confirm}
     </div>
   )
 }
