@@ -41,7 +41,7 @@
 	@apply flex justify-center f-screen-full items-center font-sans 
 }
 .text-alignment{
-	@apply max-w-7xl px-4 sm:px-6 lg:pr-48 
+	@apply max-w-7xl px-6 lg:pr-48 
 }
 .eye{
 	@apply  flex absolute inset-y-0 right-2 bottom-2 items-end
@@ -88,7 +88,7 @@
 }
 
 .sidebar-link-a {
-	@apply flex transition transform hover:-translate-x-0.5 px-4 py-3 focus:outline-none hover:text-[#0E7490] text-[#3C3C41]
+	@apply flex transition transform hover:-translate-x-0.5 px-4 py-3 text-[#3C3C41] focus:outline-none hover:text-[#0E7490]
 } 
 .sidebar-hr {
 	@apply border-b border-[#c4c4c4]
