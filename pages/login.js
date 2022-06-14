@@ -42,7 +42,7 @@ export default function Login() {
     }
   }
   return (
-    <div className="LTAppbar">
+    <div className="layout-appbar">
       <div>
         <p className="h1 mb-8">Вход:</p>
         <form className="relative mb-2 space-y-2.5">

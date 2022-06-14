@@ -1,8 +1,9 @@
 /** @type {import('next').NextConfig} */
+const { i18n } = require('./next-i18next.config')
 const nextConfig = {
   reactStrictMode: true,
   eslint: {
-    dirs: ['pages', 'utils', 'components'], // Only run ESLint on the 'pages' and 'utils' directories during production builds (next build)
+    dirs: ['pages', 'utils', 'lib', 'components'], // Only run ESLint on the 'pages' and 'utils' directories during production builds (next build)
   },
   webpack(config) {
     config.module.rules.push({
@@ -11,6 +12,8 @@ const nextConfig = {
     })
     return config
   },
+  i18n,
+  react: { useSuspense: false }, // TODO проверить, надо ли это
 }
 
 module.exports = nextConfig

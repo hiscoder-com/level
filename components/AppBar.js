@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'

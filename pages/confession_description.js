@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 export default function Confession_description() {
   return (
-    <div className="LTAppbar">
+    <div className="layout-appbar">
       <div className="text-center max-w-lg">
         <p className="h1 mb-6">Исповедание веры:</p>
         <p className="h5 mb-2">

@@ -2,44 +2,57 @@ import LayoutStart from '../components/layoutStart'
 import LayoutStartFooter from '../components/layoutStartFooter'
 import LayoutBurger from '../components/layoutBurger'
 import LayoutBurgerFooter from '../components/layoutBurgerFooter'
+import { UserContextProvider } from '../lib/UserContext'
+import { supabase } from '../utils/supabaseClient'
+import { appWithTranslation } from 'next-i18next'
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {
   switch (Component.layoutType) {
     case 'empty':
-      return <Component {...pageProps} />
+      return (
+        <UserContextProvider supabaseClient={supabase}>
+          <Component {...pageProps} />
+        </UserContextProvider>
+      )
       break
     case 'appbar':
       return (
-        <LayoutBurger>
-          <Component {...pageProps} />
-        </LayoutBurger>
+        <UserContextProvider supabaseClient={supabase}>
+          <LayoutBurger>
+            <Component {...pageProps} />
+          </LayoutBurger>
+        </UserContextProvider>
       )
       break
     case 'appbarStart':
       return (
-        <LayoutStart>
-          <Component {...pageProps} />
-        </LayoutStart>
+        <UserContextProvider supabaseClient={supabase}>
+          <LayoutStart>
+            <Component {...pageProps} />
+          </LayoutStart>
+        </UserContextProvider>
       )
       break
     case 'appbarStartFooter':
       return (
-        <LayoutStartFooter>
-          <Component {...pageProps} />
-        </LayoutStartFooter>
+        <UserContextProvider supabaseClient={supabase}>
+          <LayoutStartFooter>
+            <Component {...pageProps} />
+          </LayoutStartFooter>
+        </UserContextProvider>
       )
       break
     default:
       return (
-        <>
+        <UserContextProvider supabaseClient={supabase}>
           <LayoutBurgerFooter>
             <Component {...pageProps} />
           </LayoutBurgerFooter>
-        </>
+        </UserContextProvider>
       )
       break
   }
 }
 
-export default MyApp
+export default appWithTranslation(MyApp)

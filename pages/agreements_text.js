@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Agreements_text() {
   return (
-    <div className="LTAppbar">
+    <div className="layout-appbar">
       <div className="max-w-7xl text-alignment bg-white rounded-lg p-4">
         <p className="h1 pt-4">Соглашение:</p>
         <p className="h6 mt-7">
