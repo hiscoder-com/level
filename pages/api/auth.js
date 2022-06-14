@@ -1,7 +1,7 @@
 /**
  * Это надо для SSR (getServerSideProps)!
- * 
- * Вот так устанавливаем куку 
+ *
+ * Вот так устанавливаем куку
  * fetch('/api/auth', {
         method: 'POST',
         headers: new Headers({ 'Content-Type': 'application/json' }),
@@ -23,7 +23,7 @@ export async function getServerSideProps({ req }) {
   return { props: { user } }
 }
  */
-import { supabase } from '../../utils/initSupabase'
+import { supabase } from ' ../../utils/supabaseClient'
 
 export default function handler(req, res) {
   supabase.auth.api.setAuthCookie(req, res)
