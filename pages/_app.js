@@ -1,10 +1,13 @@
+import { appWithTranslation } from 'next-i18next'
+
 import LayoutStart from '../components/layoutStart'
 import LayoutStartFooter from '../components/layoutStartFooter'
 import LayoutBurger from '../components/layoutBurger'
 import LayoutBurgerFooter from '../components/layoutBurgerFooter'
-import { UserContextProvider } from '../lib/UserContext'
+
 import { supabase } from '../utils/supabaseClient'
-import { appWithTranslation } from 'next-i18next'
+import { UserContextProvider } from '../lib/UserContext'
+
 import '../styles/globals.css'
 
 function MyApp({ Component, pageProps }) {

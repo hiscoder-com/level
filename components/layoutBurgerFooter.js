@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
+
 import AppBar from './AppBar'
 import SideBar from './SideBar'
 import Footer from './footer'

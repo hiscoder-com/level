@@ -6,7 +6,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 
-import { VcanaLogo, TtLogo } from '../public'
+import VcanaLogo from '../public/vcana-logo.svg'
+import TtLogo from '../public/tt-logo.svg'
 
 export default function Home() {
   const { locale, pathname, query, asPath } = useRouter()

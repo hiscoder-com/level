@@ -1,6 +1,6 @@
-/* eslint-disable react/jsx-key */
-import React, { useEffect, useState } from 'react'
-import { LeftArrow, RightArrow } from '../public'
+import { useEffect, useState } from 'react'
+import LeftArrow from '../public/left-arrow.svg'
+import RightArrow from '../public/right-arrow.svg'
 
 export default function Confession_text({ setBgBlue }) {
   const [checked, setChecked] = useState(false)
@@ -42,11 +42,11 @@ export default function Confession_text({ setBgBlue }) {
   }, [checked, disabledButton, page])
 
   const arrConfText = [
-    <p className="text-center">
+    <p key={1} className="text-center">
       Главные верования являются определяющими для последователей Иисуса Христа.
       <br /> С ними нельзя идти на компромисс и их нельзя игнорировать.
     </p>,
-    <ul className="list-disc ">
+    <ul key={2} className="list-disc ">
       <li className="leading-10">
         Мы верим в то, что Библия – единственное Боговдохновенное, непогрешимое,
         достаточное, авторитетное Божье Слово (1 Фессалоникийцам 2:13; 2 Тимофею 3:16-17).
@@ -60,7 +60,7 @@ export default function Confession_text({ setBgBlue }) {
         1:1).
       </li>
     </ul>,
-    <ul className="list-disc">
+    <ul key={3} className="list-disc">
       <li className="leading-10">
         Мы верим в человеческую природу Иисуса Христа, в Его непорочное зачатие,
         безгрешную жизнь, чудеса, заместительную и искупительную смерть через Его пролитую
@@ -72,7 +72,7 @@ export default function Confession_text({ setBgBlue }) {
         вечный ад (Римлянам 3:23; Исаия 64:6-7).
       </li>
     </ul>,
-    <ul className="list-disc">
+    <ul key={4} className="list-disc">
       <li className="leading-10">
         Мы верим, что спасение от греха является Божьим даром через жертвенную смерть и
         воскресение Иисуса Христа и принимается по благодати верой, а не делами (Иоанна
@@ -88,7 +88,7 @@ export default function Confession_text({ setBgBlue }) {
         14:15-26; Ефесянам 2:10; Галатам 5:16-18).
       </li>
     </ul>,
-    <ul className="list-disc">
+    <ul key={5} className="list-disc">
       <li className="leading-10">
         Мы верим в духовное единство всех верующих в Господа Иисуса Христа из всех наций,
         языков и народов (Филиппийцам 2:1-4; Ефесянам 1:22-23; 1 Коринфянам 12:12,27).
@@ -103,7 +103,7 @@ export default function Confession_text({ setBgBlue }) {
         (Евреям 9:27-28; Матфея 16:27; Иоанна 14:1-3; Матфея 25:31-46).
       </li>
     </ul>,
-    <p className="text-center">
+    <p key={6} className="text-center">
       Второстепенными являются все остальные верования в Писании, с которыми искренние
       последователи Христа могут расходиться во мнениях (напр., крещение, вечеря Господня,
       вознесение и т.п.). Мы соглашаемся оставаться несогласными в этих вопросах и вместе

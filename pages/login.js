@@ -1,8 +1,10 @@
-/* eslint-disable react/jsx-key */
-import React, { useState } from 'react'
+import { useState } from 'react'
+
 import { useUser } from '../lib/UserContext'
 import { supabase } from '../utils/supabaseClient'
-import { Report, EyeIcon, EyeOffIcon } from '../public'
+import Report from '../public/report.svg'
+import EyeIcon from '../public/eye-icon.svg'
+import EyeOffIcon from '../public/eye-off-icon.svg'
 
 export default function Login({ bgBlue, setBgBlue }) {
   const [loading, setLoading] = useState(false)
@@ -14,7 +16,7 @@ export default function Login({ bgBlue, setBgBlue }) {
   const [stylePassword, setStylePassword] = useState('form')
   const [formValid, setFormValid] = useState(false)
   const [passType, setPassType] = useState('password')
-  const [svg, setSvg] = useState([<EyeIcon />])
+  const [svg, setSvg] = useState([<EyeIcon key={1} />])
   const { user, session } = useUser()
 
   const handleLogin = async () => {
@@ -33,7 +35,7 @@ export default function Login({ bgBlue, setBgBlue }) {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')
       setFormValid(true)
-      setErrorText([<Report />, 'Неверный логин или пароль'])
+      setErrorText([<Report key={2} />, 'Неверный логин или пароль'])
       setRemindBtn('Забыли пароль?')
       alert(error.error_description || error.message)
     } finally {
@@ -47,10 +49,10 @@ export default function Login({ bgBlue, setBgBlue }) {
   const showHidePassword = () => {
     if (passType == 'password') {
       setPassType('text')
-      setSvg([<EyeOffIcon />])
+      setSvg([<EyeOffIcon key={3} />])
     } else {
       setPassType('password')
-      setSvg([<EyeIcon />])
+      setSvg([<EyeIcon key={4} />])
     }
   }
   return (
