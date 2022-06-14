@@ -1,5 +1,5 @@
 import SideBarLink from './SideBarLink'
-import Burger from '../public/Burger.svg'
+import { Burger } from '../public'
 
 function SideBar({ isOpen, setIsOpen }) {
   const condition = `sidebar-absolute ${isOpen ? '' : 'hidden'}`

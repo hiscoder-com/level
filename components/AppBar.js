@@ -1,8 +1,8 @@
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-import Burger from '../public/Burger.svg'
-import VCANA_logo from '../public/VCANA_logo.svg'
+import { Burger } from '../public'
+import { VCANA_logo } from '../public'
 
 // const navigation = [
 //   { name: 'Home', href: '/', current: false },

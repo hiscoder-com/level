@@ -1,7 +1,6 @@
 /* eslint-disable react/jsx-key */
 import React, { useEffect, useState } from 'react'
-import Left_arrow from '../public/left_arrow.svg'
-import Right_arrow from '../public/right_arrow.svg'
+import { LeftArrow, RightArrow } from '../public'
 
 export default function Confession_text({ setBgBlue }) {
   const [checked, setChecked] = useState(false)
@@ -130,13 +129,13 @@ export default function Confession_text({ setBgBlue }) {
       <div className="flex flex-row h-72 gap-4">
         <div className="flex items-center">
           <button disabled={disabledLeftArrow} onClick={prevPage} className="arrow">
-            <Left_arrow />
+            <LeftArrow />
           </button>
         </div>
         <div className="confession-text">{arrConfText[page]}</div>
         <div className="flex items-center">
           <button disabled={disabledRightArrow} onClick={nextPage} className="arrow">
-            <Right_arrow />
+            <RightArrow />
           </button>
         </div>
       </div>

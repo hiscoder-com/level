@@ -2,8 +2,8 @@ import { Fragment } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import Link from 'next/link'
 import { BellIcon, MenuIcon, XIcon } from '@heroicons/react/outline'
-import Burger from '../public/Burger.svg'
-import VCANA_logo from '../public/VCANA_logo.svg'
+import Burger from '../public'
+import { VcanaLogo } from '../public'
 
 // const navigation = [
 //   { name: 'Home', href: '/', current: false },
@@ -37,7 +37,7 @@ export default function AppBar({ isOpen, setIsOpen }) {
                       className="h-6 stroke-1 hover:stroke-[#0E7490]"
                     /> */}
                     <Link href="/" passHref>
-                      <VCANA_logo className="h-5" />
+                      <VcanaLogo className="h-5" />
                     </Link>
                   </div>
                 )}
