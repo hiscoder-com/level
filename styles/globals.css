@@ -28,7 +28,7 @@
 
 }
 .confession-text{
-	@apply h4 bg-white rounded-lg px-12 flex flex-col justify-center text-center 
+	@apply h4 bg-white rounded-lg px-12 flex flex-col justify-center 
 }
 /* layoutType */
 .LTEmpty{

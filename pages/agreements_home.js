@@ -6,7 +6,7 @@ export default function Agreements_home() {
     <div className="LTAppbar">
       <div className="flex flex-col text-center space-y-2.5">
         <Link href="/agreements_text">
-          <a className="btn-transparent w-64">Соглашения</a>
+          <a className="btn-transparent w-64">Соглашение</a>
         </Link>
         <Link href="/confession_description">
           <a className="btn-transparent w-64">Исповедание веры</a>

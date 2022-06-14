@@ -10,7 +10,6 @@ export default function Footer() {
   }, [checked])
 
   return (
-    // <div className="border-t">
     <div>
       <div className="max-w-full mx-auto flex justify-end items-center px-4 bg-blue-150">
         {/* <div className="max-w-7xl mx-auto flex justify-end items-center px-4 bg-blue-150"> */}
