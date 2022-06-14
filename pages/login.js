@@ -4,7 +4,7 @@ import Report from '../public/report.svg'
 import EyeIcon from '../public/EyeIcon.svg'
 import EyeOffIcon from '../public/EyeOffIcon.svg'
 
-export default function Login() {
+export default function Login({ bgBlue, setBgBlue }) {
   const [errorText, setErrorText] = useState('')
   const [remindBtn, setRemindBtn] = useState('')
   const [login, setLogin] = useState('')

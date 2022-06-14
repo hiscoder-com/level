@@ -40,9 +40,7 @@
 }
 
 .text-alignment{
-	@apply max-w-7xl px-4
-  sm:px-6
-  lg:pr-48
+	@apply max-w-7xl px-6 lg:pr-48
 }
 .eye{
 	@apply flex absolute inset-y-0 right-2 bottom-2 items-end
