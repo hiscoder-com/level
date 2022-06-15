@@ -11,7 +11,7 @@ import Burger from '../public/burger.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
 
 export default function AppBar({ isOpen, setIsOpen }) {
-  const user = useUser()
+  const { user } = useUser()
   const [access, setAccess] = useState(false)
   useEffect(() => {
     const hasAccess = async (user_id) => {
@@ -21,8 +21,8 @@ export default function AppBar({ isOpen, setIsOpen }) {
 
       setAccess(data)
     }
-    if (user?.user) {
-      hasAccess(user.user.id)
+    if (user?.id) {
+      hasAccess(user.id)
     }
   }, [user])
 
