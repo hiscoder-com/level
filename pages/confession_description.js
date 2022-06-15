@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Confession_description() {
+export default function ConfessionDescription() {
   return (
     <div className="layout-appbar">
       <div className="text-center max-w-lg">
@@ -24,4 +24,3 @@ export default function Confession_description() {
     </div>
   )
 }
-Confession_description.layoutType = 'appbarStart'

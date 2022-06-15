@@ -25,18 +25,18 @@ function SideBar({ isOpen, setIsOpen }) {
           <ul className="flex flex-col py-4">
             <div className="text-xs font-light px-4 text-[#3C3C41]">ПРОЕКТ:</div>
             <div className="sidebar-hr">
-              <SideBarLink href={{ path: '#' }} link={{ text: 'ОБИ' }} />
-              <SideBarLink href={{ path: '#' }} link={{ text: 'Библия' }} />
-              <SideBarLink href={{ path: '#' }} link={{ text: '+ Новый проект' }} />
+              <SideBarLink href={'#'} text={'ОБИ'} />
+              <SideBarLink href={'#'} text={'Библия'} />
+              <SideBarLink href={'#'} text={'+ Новый проект'} />
             </div>
             <div className="sidebar-hr">
-              <SideBarLink href={{ path: '#' }} link={{ text: 'Администрирование' }} />
-              <SideBarLink href={{ path: '#' }} link={{ text: 'Словарь' }} />
-              <SideBarLink href={{ path: '#' }} link={{ text: 'Прогресс' }} />
-              <SideBarLink href={{ path: '#' }} link={{ text: 'Цель перевода' }} />
+              <SideBarLink href={'#'} text={'Администрирование'} />
+              <SideBarLink href={'#'} text={'Словарь'} />
+              <SideBarLink href={'#'} text={'Прогресс'} />
+              <SideBarLink href={'#'} text={'Цель перевода'} />
             </div>
-            <SideBarLink href={{ path: '#' }} link={{ text: 'Обучение' }} />
-            <SideBarLink href={{ path: '#' }} link={{ text: 'Настройки' }} />
+            <SideBarLink href={'#'} text={'Обучение'} />
+            <SideBarLink href={'#'} text={'Настройки'} />
           </ul>
         </div>
       </div>

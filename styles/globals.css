@@ -21,14 +21,14 @@
 }
 
 .btn {
-@apply rounded-md duration-300 inline-block p-1
+@apply rounded-md duration-300 inline-block p-1 cursor-pointer
 }
 
 .btn-transparent{
 	@apply border-2 text-cyan-600 border-cyan-600 btn
 	hover:bg-cyan-100
 	active:bg-cyan-200
-	disabled:bg-transparent	disabled:text-gray-400 disabled:border-gray-200
+	disabled:bg-transparent	disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
 }
 
 .btn-filled{
@@ -51,20 +51,29 @@
 	@apply max-w-7xl px-6 lg:pr-48
 }
 .eye{
-	@apply flex absolute inset-y-0 right-2 bottom-2 items-end
+	@apply absolute right-2 bottom-2 cursor-pointer
 }
+
+.form-base{
+	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm
+  focus:outline-none
+}
+
 .form{
-	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm text-gray-600 placeholder-gray-400  border-gray-200 bg-gray-100
-  focus:border-2 focus:outline-none focus:border-gray-300
+	@apply form-base text-gray-600 placeholder-gray-400  border-gray-200 bg-gray-100
+  focus:border-gray-300
 }
+
 .form-invalid{
-	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm text-red-600 ring-red-600 border-red-600 bg-red-100
-	focus:ring-1 focus:outline-none
+	@apply form-base text-red-600 border-red-600 bg-red-100
+	focus:ring-1 focus:ring-red-600
 }
+
 .form-valid{
-	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm text-gray-600 ring-green-600 border-green-600 bg-teal-100
-	focus:ring-1 focus:outline-none focus:ring-green-600
+	@apply form-base text-gray-600 border-green-600 bg-teal-100
+	focus:ring-1 focus:ring-green-600
 }
+
 .h1{
 	@apply text-4xl text-gray-800
 }

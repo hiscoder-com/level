@@ -1,8 +1,8 @@
-const SideBarLink = ({ href, link }) => {
+const SideBarLink = ({ href, text }) => {
   return (
     <li>
-      <a href={href.path} className="sidebar-link-a">
-        <span className="tracking-wide truncate">{link.text}</span>
+      <a href={href} className="sidebar-link-a">
+        <span className="tracking-wide truncate">{text}</span>
       </a>
     </li>
   )

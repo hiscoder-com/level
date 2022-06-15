@@ -1,118 +1,110 @@
 import { useState } from 'react'
 
-import { useUser } from '../lib/UserContext'
 import { supabase } from '../utils/supabaseClient'
+
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
 import EyeOffIcon from '../public/eye-off-icon.svg'
 
-export default function Login({ bgBlue, setBgBlue }) {
+export default function Login() {
   const [loading, setLoading] = useState(false)
-  const [errorText, setErrorText] = useState('')
-  const [remindBtn, setRemindBtn] = useState('')
+  const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
+
   const [styleLogin, setStyleLogin] = useState('form')
   const [stylePassword, setStylePassword] = useState('form')
-  const [formValid, setFormValid] = useState(false)
-  const [passType, setPassType] = useState('password')
-  const [svg, setSvg] = useState([<EyeIcon key={1} />])
-  const { user, session } = useUser()
+  const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
+  const [showPassword, setShowPassword] = useState(false)
 
-  const handleLogin = async () => {
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setLoading(true)
     try {
-      setLoading(true)
-      const { user, error } = await supabase.auth.signIn({
+      const { error } = await supabase.auth.signIn({
         email: login,
         password,
       })
       if (error) throw error
-      setStyleLogin('form-valid')
-      setStylePassword('form-valid')
-      setErrorText('')
-      setRemindBtn('')
+      setStyleLogin('form')
+      setStylePassword('form')
+      setError(false)
     } catch (error) {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')
-      setFormValid(true)
-      setErrorText([<Report key={2} />, 'Неверный логин или пароль'])
-      setRemindBtn('Забыли пароль?')
-      alert(error.error_description || error.message)
+      setHideWriteAdminButton(false)
+      setError(true)
     } finally {
       setLoading(false)
     }
   }
 
-  const report = () => {
+  const report = (e) => {
+    e.preventDefault()
     alert('Вы написали админу')
   }
-  const showHidePassword = () => {
-    if (passType == 'password') {
-      setPassType('text')
-      setSvg([<EyeOffIcon key={3} />])
-    } else {
-      setPassType('password')
-      setSvg([<EyeIcon key={4} />])
-    }
-  }
+
   return (
     <div className="layout-appbar">
-      {user ? (
-        <div className="flex flex-col text-center">
-          <div>{`Добро пожаловать в V-Cana ${user.email} `} </div>
-
-          <a classhref="#" onClick={() => supabase.auth.signOut()}>
-            {' Logout'}
-          </a>
-        </div>
-      ) : (
-        <div>
-          <p className="h1 mb-8">Вход:</p>
-          <form className="relative mb-2 space-y-2.5">
-            <input
-              className={styleLogin}
-              type="text"
-              placeholder="Логин:"
-              onChange={(event) => {
-                setLogin(event.target.value)
-                setStyleLogin('form')
-              }}
-            />
-            <input
-              className={stylePassword}
-              type={passType}
-              value={password.slice(0, 40)}
-              placeholder="Пароль:"
-              onChange={(event) => {
-                setPassword(event.target.value)
-                setStylePassword('form')
-              }}
-            />
-            <span className="eye cursor-pointer" onClick={showHidePassword}>
-              {svg}
-            </span>
-          </form>
+      <div>
+        <h1 className="h1 mb-8">Вход:</h1>
+        <form className="relative mb-2 space-y-2.5">
+          <input
+            className={styleLogin}
+            type="text"
+            placeholder="Логин:"
+            onChange={(event) => {
+              setLogin(event.target.value)
+              setStyleLogin('form')
+            }}
+          />
+          <input
+            className={stylePassword}
+            type={showPassword ? 'text' : 'password'}
+            value={password}
+            placeholder="Пароль:"
+            onChange={(event) => {
+              setPassword(event.target.value)
+              setStylePassword('form')
+            }}
+          />
+          <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
+            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+          </span>
           <div className="flex items-center justify-between mb-4">
-            <p className="flex text-xs text-red-600">{errorText}</p>
-            <a href="#" className="font-medium underline text-sky-500 hover:text-sky-600">
-              {remindBtn}
-            </a>
+            {error && (
+              <>
+                <p className="flex text-xs text-red-600">
+                  <Report /> Неверный логин или пароль
+                </p>
+                <a
+                  href="#"
+                  className="font-medium underline text-sky-500 hover:text-sky-600"
+                >
+                  Забыли пароль?
+                </a>
+              </>
+            )}
           </div>
           <div className="flex gap-2.5 h-9">
             <button
-              disabled={!formValid}
+              disabled={hideWriteAdminButton}
               onClick={report}
               className="w-8/12 btn-transparent"
             >
               Написать админу
             </button>
-            <button onClick={handleLogin} className="w-4/12 btn-filled">
-              Далее
-            </button>
+            <input
+              type="submit"
+              disabled={loading}
+              onClick={handleLogin}
+              className="w-4/12 btn-filled"
+              value={'Далее'}
+            />
           </div>
-        </div>
-      )}
+        </form>
+      </div>
     </div>
   )
 }
-Login.layoutType = 'appbarStart'
+Login.backgroundColor = 'bg-white'

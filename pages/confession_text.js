@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import LeftArrow from '../public/left-arrow.svg'
 import RightArrow from '../public/right-arrow.svg'
 
-export default function Confession_text({ setBgBlue }) {
+export default function Confession_text() {
   const [checked, setChecked] = useState(false)
   const [disabledButton, setDisabledButton] = useState(false)
   const [page, setPage] = useState(0)

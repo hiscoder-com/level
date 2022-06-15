@@ -1,6 +1,6 @@
 import { appWithTranslation } from 'next-i18next'
 
-import Layout from '../components/layout'
+import Layout from '../components/Layout'
 
 import { supabase } from '../utils/supabaseClient'
 import { UserContextProvider } from '../lib/UserContext'
@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }) {
   }
   return (
     <UserContextProvider supabaseClient={supabase}>
-      <Layout>
+      <Layout backgroundColor={Component.backgroundColor ?? 'bg-[#DCE4E9]'}>
         <Component {...pageProps} />
       </Layout>
     </UserContextProvider>
