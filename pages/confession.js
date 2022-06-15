@@ -21,7 +21,7 @@ export default function Confession() {
             https://texttree.org/
           </a>
         </p>
-        <Link href="/confession_text">
+        <Link href="/confession-steps">
           <a className="btn-filled w-28 mt-7">Начать</a>
         </Link>
       </div>
