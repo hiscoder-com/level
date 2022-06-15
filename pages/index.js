@@ -13,13 +13,13 @@ export default function Home() {
   const { locale, pathname, query, asPath } = useRouter()
   const { t } = useTranslation('common')
   return (
-    <div className="layout-empty">
+    <main className="layout-empty">
       <Head>
         <title>V-CANA</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex absolute top-10 right-10 font-bold justify-end text-xl lg:text-base">
+      <div className="absolute top-10 right-10 font-bold text-xl lg:text-base">
         <Link href={{ pathname, query }} as={asPath} locale={'ru'}>
           <a className={`text-teal-500 p-2 ${locale === 'ru' ? 'opacity-50' : ''}`}>RU</a>
         </Link>
@@ -32,10 +32,10 @@ export default function Home() {
         <VcanaLogo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" />
         <h2 className="h2 mt-9 mb-16 text-center">{t('Welcome')}</h2>
         <Link href="/login">
-          <a className="btn-start">{t('SignIn')}</a>
+          <a className="btn-start py-3 px-24">{t('SignIn')}</a>
         </Link>
       </div>
-    </div>
+    </main>
   )
 }
 

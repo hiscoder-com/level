@@ -9,22 +9,30 @@
 	disabled:opacity-30
   disabled:hover:bg-transparent
 }
-.btn-start{
-	@apply rounded-full py-3 px-24 uppercase text-2xl leading-7 font-medium cursor-pointer tracking-wider bg-cyan-600 text-white duration-300 inline-block
+
+.btn-cyan {
+@apply bg-cyan-600
 	hover:bg-cyan-700
 	active:bg-cyan-800
 }
+
+.btn-start{
+	@apply rounded-full uppercase text-2xl font-medium cursor-pointer text-white duration-300 inline-block btn-cyan
+}
+
+.btn {
+@apply rounded-md duration-300 inline-block p-1
+}
+
 .btn-transparent{
-	@apply border-2 p-1 rounded-md text-cyan-600 border-cyan-600 duration-300 inline-block
+	@apply border-2 text-cyan-600 border-cyan-600 btn
 	hover:bg-cyan-100
 	active:bg-cyan-200
 	disabled:bg-transparent	disabled:text-gray-400 disabled:border-gray-200
 }
 
 .btn-filled{
-	@apply rounded-md p-1 bg-cyan-600 text-white duration-300 inline-block
-	hover:bg-cyan-700
-	active:bg-cyan-800
+	@apply text-white btn-cyan btn
 	disabled:bg-gray-300 disabled:border-2 disabled:text-gray-400
 }
 
@@ -33,7 +41,7 @@
 }
 
 .layout-empty{
-	@apply flex justify-center font-sans mx-auto relative px-3 min-h-screen flex-col
+	@apply flex justify-center font-sans px-3 min-h-screen flex-col
 }
 .layout-appbar{
 	@apply flex justify-center f-screen-appbar items-center font-sans px-2
@@ -46,15 +54,15 @@
 	@apply flex absolute inset-y-0 right-2 bottom-2 items-end
 }
 .form{
-	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2 shadow-sm text-gray-600 placeholder-gray-400  border-gray-200 bg-gray-100
+	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm text-gray-600 placeholder-gray-400  border-gray-200 bg-gray-100
   focus:border-2 focus:outline-none focus:border-gray-300
 }
 .form-invalid{
-	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2 shadow-sm text-red-600 ring-red-600 border-red-600 bg-red-100
+	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm text-red-600 ring-red-600 border-red-600 bg-red-100
 	focus:ring-1 focus:outline-none
 }
 .form-valid{
-	@apply w-full text-sm leading-6 rounded-md py-2 pl-2 border-2 shadow-sm text-gray-600 ring-green-600 border-green-600 bg-teal-100
+	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm text-gray-600 ring-green-600 border-green-600 bg-teal-100
 	focus:ring-1 focus:outline-none focus:ring-green-600
 }
 .h1{

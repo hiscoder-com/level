@@ -4,7 +4,7 @@ import AppBar from './AppBar'
 import SideBar from './SideBar'
 import Footer from './footer'
 
-function LayoutBurgerFooter({ children }) {
+function Layout({ children }) {
   const [isOpen, setIsOpen] = useState(false)
   return isOpen ? (
     <div className="sm:ml-60 ml-0">
@@ -27,4 +27,4 @@ function LayoutBurgerFooter({ children }) {
   )
 }
 
-export default LayoutBurgerFooter
+export default Layout
