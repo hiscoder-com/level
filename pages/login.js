@@ -1,12 +1,18 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+
+import { useRouter } from 'next/router'
 
 import { supabase } from '../utils/supabaseClient'
+import { useUser } from '../lib/UserContext'
 
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
 import EyeOffIcon from '../public/eye-off-icon.svg'
 
 export default function Login() {
+  const router = useRouter()
+  const { user } = useUser()
+
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
@@ -16,6 +22,14 @@ export default function Login() {
   const [stylePassword, setStylePassword] = useState('form')
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
+
+  useEffect(() => {
+    console.log(user)
+    if (user) {
+      router.push('/agreements')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -29,6 +43,7 @@ export default function Login() {
       setStyleLogin('form')
       setStylePassword('form')
       setError(false)
+      router.push('/agreements')
     } catch (error) {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')

@@ -1,10 +1,12 @@
-export default function Agreements_text() {
+import Footer from '../components/Footer'
+
+export default function UserAgreement() {
   return (
     <div className="layout-appbar">
-      <div className="max-w-7xl text-alignment bg-white rounded-lg p-4">
-        <p className="h1 pt-4">Соглашение:</p>
+      <div className="text-alignment bg-white rounded-lg p-4">
+        <h1 className="h1 pt-4">Соглашение:</h1>
         <p className="h6 mt-7">
-          <span className="font-bold">Лицензия</span>
+          <b className="font-bold">Лицензия</b>
           <br />
           <br />
           «Attribution-ShareAlike» («Атрибуция-СохранениеУсловий») 4.0 Всемирная (CC BY-SA
@@ -61,7 +63,7 @@ export default function Agreements_text() {
           <br />
           <br />
           <br />
-          <span className="font-bold">Рекомендации для перевода</span>
+          <b className="font-bold">Рекомендации для перевода</b>
           <br />
           <br />
           Все организации-члены и все участники проекта «unfoldingWord» обязательно
@@ -113,7 +115,7 @@ export default function Agreements_text() {
           <br />
           <br />
           <br />
-          <span className="font-bold">Определение и обеспечение качества перевода</span>
+          <b className="font-bold">Определение и обеспечение качества перевода</b>
           <br />
           <br />
           Под качеством перевода обычно подразумевается верно переданный смысл оригинала и
@@ -157,7 +159,7 @@ export default function Agreements_text() {
           «unfoldingWord»
         </p>
       </div>
+      <Footer textButton="Далее" textCheckbox={'Согласен'} href="/confession" />
     </div>
   )
 }
-Agreements_text.layoutType = 'appbarStartFooter'

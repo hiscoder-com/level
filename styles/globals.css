@@ -22,6 +22,7 @@
 
 .btn {
 @apply rounded-md duration-300 inline-block p-1 cursor-pointer
+ disabled:cursor-not-allowed
 }
 
 .btn-transparent{
@@ -37,14 +38,14 @@
 }
 
 .confession-text{
-	@apply h4 bg-white rounded-lg px-12 flex flex-col justify-center text-center
+	@apply h4 bg-white rounded-lg px-12 py-6 flex flex-col justify-center
 }
 
 .layout-empty{
 	@apply flex justify-center font-sans px-3 min-h-screen flex-col
 }
 .layout-appbar{
-	@apply flex justify-center f-screen-appbar items-center font-sans px-2
+	@apply flex flex-col justify-center f-screen-appbar items-center font-sans px-2
 }
 
 .text-alignment{
@@ -92,9 +93,11 @@
 .h6{
 	@apply text-xs text-gray-800
 }
+/* нужно ли? */
 .f-screen-appbar{
 	min-height: calc(100vh - 11.5rem);
 }
+/* нужно ли? */
 .f-screen-full{
 	min-height: calc(100vh - 23rem);
 }
