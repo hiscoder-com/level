@@ -108,7 +108,7 @@ export default function Login() {
             <button
               disabled={hideWriteAdminButton}
               onClick={report}
-              className="w-8/12 btn-transparent"
+              className="w-8/12 btn-white"
             >
               {t('WriteAdmin')}
             </button>
