@@ -29,7 +29,7 @@
 	@apply btn border-2 text-cyan-600 border-cyan-600 
 	hover:bg-cyan-100
 	active:bg-cyan-200
-	disabled:bg-transparent	disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
+	disabled:bg-transparent disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
 }
 
 .btn-filled{
