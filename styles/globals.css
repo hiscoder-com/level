@@ -70,11 +70,6 @@
 	focus:border-red-700
 }
 
-.form-valid{
-	@apply form-base text-gray-600 border-green-500 bg-teal-50
-	focus:border-green-700
-}
-
 .h1{
 	@apply text-4xl text-gray-800
 }
