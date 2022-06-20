@@ -56,7 +56,7 @@
 }
 
 .form-base{
-	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm
+	@apply w-full text-sm rounded-md py-2 pl-2 border-2
   focus:outline-none
 }
 
@@ -66,13 +66,8 @@
 }
 
 .form-invalid{
-	@apply form-base text-red-600 border-red-600 bg-red-100
-	focus:ring-1 focus:ring-red-600
-}
-
-.form-valid{
-	@apply form-base text-gray-600 border-green-600 bg-teal-100
-	focus:ring-1 focus:ring-green-600
+	@apply form-base text-red-600 border-red-500 bg-red-50
+	focus:border-red-700
 }
 
 .h1{
