@@ -65,7 +65,7 @@ export default function Login() {
   return (
     <div className="layout-appbar">
       <div>
-        <h1 className="h1 mb-8">Вход:</h1>
+        <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
             className={styleLogin}

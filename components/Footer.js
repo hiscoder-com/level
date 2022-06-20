@@ -31,7 +31,3 @@ export default function Footer({ textCheckbox, textButton, href }) {
     </div>
   )
 }
-
-const checkUrl = (url) => {
-  return window.location.href.toString().includes(url)
-}
