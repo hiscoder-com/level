@@ -22,19 +22,18 @@
 
 .btn {
 @apply border-2 rounded-md duration-300 inline-block p-1 cursor-pointer
- disabled:cursor-not-allowed
+ disabled:cursor-not-allowed disabled:border-gray-200 disabled:text-gray-400
 }
 
 .btn-white{
-	@apply btn text-cyan-600 border-cyan-600 
+	@apply btn bg-white text-cyan-600 border-cyan-600 
 	hover:bg-cyan-50
 	active:bg-cyan-200
-	disabled:bg-transparent disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
 }
 
 .btn-filled{
 	@apply btn btn-cyan text-white
-	disabled:bg-gray-300 disabled:text-gray-400 disabled:border-gray-200
+	disabled:bg-gray-300 
 }
 
 .confession-text{
