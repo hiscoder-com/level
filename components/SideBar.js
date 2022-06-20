@@ -1,8 +1,10 @@
+import { useTranslation } from 'next-i18next'
 import SideBarLink from './SideBarLink'
 
 import Burger from '../public/burger.svg'
 
 function SideBar({ isOpen, setIsOpen }) {
+  const { t } = useTranslation('common')
   const condition = `sidebar-absolute ${isOpen ? '' : 'hidden'}`
   return (
     <div className={condition}>
@@ -17,26 +19,26 @@ function SideBar({ isOpen, setIsOpen }) {
         </div>
         <div className="flex items-center h2 py-4 sidebar-hr">
           <a href="#" className="sidebar-link-a">
-            <span className="tracking-wide truncate">Личный Кабинет</span>
+            <span className="tracking-wide truncate">{t('Account')}</span>
           </a>
         </div>
 
         <div>
           <ul className="flex flex-col py-4">
-            <div className="text-xs font-light px-4 text-[#3C3C41]">ПРОЕКТ:</div>
+            <div className="text-xs font-light px-4 text-[#3C3C41]">{t('Project')}:</div>
             <div className="sidebar-hr">
-              <SideBarLink href={'#'} text={'ОБИ'} />
-              <SideBarLink href={'#'} text={'Библия'} />
-              <SideBarLink href={'#'} text={'+ Новый проект'} />
+              <SideBarLink href={'#'} text={t('OBS')} />
+              <SideBarLink href={'#'} text={t('Bible')} />
+              <SideBarLink href={'#'} text={t('NewProject')} />
             </div>
             <div className="sidebar-hr">
-              <SideBarLink href={'#'} text={'Администрирование'} />
-              <SideBarLink href={'#'} text={'Словарь'} />
-              <SideBarLink href={'#'} text={'Прогресс'} />
-              <SideBarLink href={'#'} text={'Цель перевода'} />
+              <SideBarLink href={'#'} text={t('Management')} />
+              <SideBarLink href={'#'} text={t('Dictionary')} />
+              <SideBarLink href={'#'} text={t('Progress')} />
+              <SideBarLink href={'#'} text={t('PurposeTranslation')} />
             </div>
-            <SideBarLink href={'#'} text={'Обучение'} />
-            <SideBarLink href={'#'} text={'Настройки'} />
+            <SideBarLink href={'#'} text={t('Training')} />
+            <SideBarLink href={'#'} text={t('Settings')} />
           </ul>
         </div>
       </div>

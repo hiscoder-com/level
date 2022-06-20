@@ -1,17 +1,22 @@
 import Link from 'next/link'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default function Confession() {
+  const { t } = useTranslation('common')
   return (
     <div className="layout-appbar">
-      <div className="text-center max-w-lg">
-        <h1 className="h1 mb-6">Исповедание веры:</h1>
-        <p className="h5 mb-2">
-          согласуется с историческими символами веры:
-          <br /> Апостольский символ веры, Никейский символ веры, и Афанасьевский символ
-          веры; а также Lausanne Covenant.
-        </p>
+      <div className="text-center max-w-lg whitespace-pre-line">
+        <h1 className="h1 mb-6">{t('ConfessionFaith')}:</h1>
+
+        <p
+          dangerouslySetInnerHTML={{
+            __html: t('DescriptionConfession', { interpolation: { escapeValue: false } }),
+          }}
+          className="h5 mb-2"
+        />
         <p className="h6 font-light">
-          Официальная версия этого документа находится на сайте &nbsp;
+          {t('OfficialVersion')}
           <a
             href="https://texttree.org/"
             target={'_blank'}
@@ -22,10 +27,19 @@ export default function Confession() {
           </a>
         </p>
         <Link href="/confession-steps">
-          <a className="btn-filled w-28 mt-7">Начать</a>
+          <a className="btn-filled w-28 mt-7">{t('Start')}</a>
         </Link>
       </div>
     </div>
   )
 }
 Confession.backgroundColor = 'bg-white'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}

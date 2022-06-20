@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 
+import { useTranslation } from 'next-i18next'
+
 import { useRouter } from 'next/router'
 
 import { supabase } from '../utils/supabaseClient'
@@ -10,6 +12,8 @@ import EyeIcon from '../public/eye-icon.svg'
 import EyeOffIcon from '../public/eye-off-icon.svg'
 
 export default function Login() {
+  const { t } = useTranslation('common')
+
   const router = useRouter()
   const { user } = useUser()
 
@@ -24,7 +28,6 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false)
 
   useEffect(() => {
-    console.log(user)
     if (user) {
       router.push('/agreements')
     }
@@ -67,7 +70,7 @@ export default function Login() {
           <input
             className={styleLogin}
             type="text"
-            placeholder="Логин:"
+            placeholder={`${t('Login')}:`}
             onChange={(event) => {
               setLogin(event.target.value)
               setStyleLogin('form')
@@ -77,7 +80,7 @@ export default function Login() {
             className={stylePassword}
             type={showPassword ? 'text' : 'password'}
             value={password}
-            placeholder="Пароль:"
+            placeholder={`${t('Password')}:`}
             onChange={(event) => {
               setPassword(event.target.value)
               setStylePassword('form')
@@ -90,13 +93,13 @@ export default function Login() {
             {error && (
               <>
                 <p className="flex text-xs text-red-600">
-                  <Report /> Неверный логин или пароль
+                  <Report /> {t('WrongLoginPassword')}
                 </p>
                 <a
                   href="#"
                   className="font-medium underline text-sky-500 hover:text-sky-600"
                 >
-                  Забыли пароль?
+                  {t('ForgotPassword')}?
                 </a>
               </>
             )}
@@ -107,14 +110,14 @@ export default function Login() {
               onClick={report}
               className="w-8/12 btn-transparent"
             >
-              Написать админу
+              {t('WriteAdmin')}
             </button>
             <input
               type="submit"
               disabled={loading}
               onClick={handleLogin}
               className="w-4/12 btn-filled"
-              value={'Далее'}
+              value={t('Next')}
             />
           </div>
         </form>
