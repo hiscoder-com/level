@@ -1,41 +1,46 @@
-import Head from 'next/head'
 import Link from 'next/link'
-import { useTranslation } from 'next-i18next'
+import Head from 'next/head'
+
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
+
+import VcanaLogo from '../public/vcana-logo.svg'
+import TtLogo from '../public/tt-logo.svg'
+
 export default function Home() {
+  const { locale, pathname, query, asPath } = useRouter()
   const { t } = useTranslation('common')
   return (
-    <div className="container p-10">
+    <main className="layout-empty">
       <Head>
         <title>V-CANA</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={'text-6xl py-8'}>{t('Welcome')}</div>
-      <div className="flex flex-col">
-        <Link href="/sign-up">
-          <a
-            className={
-              'text-3xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2'
-            }
-          >
-            {t('SignUp')}
-          </a>
+      <div className="absolute top-10 right-10 font-bold text-xl lg:text-base">
+        <Link href={{ pathname, query }} as={asPath} locale={'ru'}>
+          <a className={`text-teal-500 p-2 ${locale === 'ru' ? 'opacity-50' : ''}`}>RU</a>
         </Link>
-        <Link href="/sign-in">
-          <a
-            className={
-              'text-3xl py-3 px-4 rounded-xl bg-blue-300 border-blue-500 border max-w-xs text-center my-2'
-            }
-          >
-            {t('SignIn')}
-          </a>
+        <Link replace href={{ pathname, query }} as={asPath} locale={'en'}>
+          <a className={`text-teal-500 p-2 ${locale === 'en' ? 'opacity-50' : ''}`}>EN</a>
         </Link>
       </div>
-    </div>
+      <div className="flex flex-col justify-center items-center m-3">
+        <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-32" />
+        <VcanaLogo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" />
+        <h2 className="h2 mt-9 mb-16 text-center">{t('Welcome')}</h2>
+        <Link href="/login">
+          <a className="btn-start py-3 px-24">{t('SignIn')}</a>
+        </Link>
+      </div>
+    </main>
   )
 }
+
+Home.layoutType = 'empty'
+
 export async function getStaticProps({ locale }) {
   return {
     props: {

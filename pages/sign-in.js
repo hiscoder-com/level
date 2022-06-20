@@ -1,6 +1,6 @@
 import Head from 'next/head'
+
 import { useUser } from '../lib/UserContext'
-import SignIn from '../components/SignIn'
 
 export default function SignInPage() {
   const { user, session } = useUser()
@@ -12,7 +12,6 @@ export default function SignInPage() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {session ? JSON.stringify(user) : 'Нет такого юзера!!'}
-      <SignIn />
     </div>
   )
 }

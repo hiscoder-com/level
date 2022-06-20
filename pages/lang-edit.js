@@ -1,6 +1,8 @@
 import Head from 'next/head'
-import LanguagesEdit from '../components/LanguagesEdit'
+
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import LanguagesEdit from '../components/LanguagesEdit'
 
 export default function LanguagesEditPage() {
   return (

@@ -5,6 +5,13 @@ const nextConfig = {
   eslint: {
     dirs: ['pages', 'utils', 'lib', 'components'], // Only run ESLint on the 'pages' and 'utils' directories during production builds (next build)
   },
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.svg$/,
+      use: '@svgr/webpack',
+    })
+    return config
+  },
   i18n,
   react: { useSuspense: false }, // TODO проверить, надо ли это
 }

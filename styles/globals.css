@@ -1,3 +1,122 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.arrow{
+	@apply px-6 py-5 rounded-full duration-300
+	hover:bg-white
+	active:bg-gray-100
+	disabled:opacity-30
+  disabled:hover:bg-transparent
+}
+
+.btn-cyan {
+@apply bg-cyan-600
+	hover:bg-cyan-700
+	active:bg-cyan-800
+}
+
+.btn-start{
+	@apply rounded-full uppercase text-2xl font-medium cursor-pointer text-white duration-300 inline-block btn-cyan
+}
+
+.btn {
+@apply rounded-md duration-300 inline-block p-1 cursor-pointer
+ disabled:cursor-not-allowed
+}
+
+.btn-transparent{
+	@apply border-2 text-cyan-600 border-cyan-600 btn
+	hover:bg-cyan-100
+	active:bg-cyan-200
+	disabled:bg-transparent	disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
+}
+
+.btn-filled{
+	@apply text-white btn-cyan btn
+	disabled:bg-gray-300 disabled:border-2 disabled:text-gray-400
+}
+
+.confession-text{
+	@apply h4 bg-white rounded-lg px-12 py-6 flex flex-col justify-center
+}
+
+.layout-empty{
+	@apply flex justify-center font-sans px-3 min-h-screen flex-col
+}
+.layout-appbar{
+	@apply flex flex-col justify-center f-screen-appbar items-center font-sans px-2
+}
+
+.text-alignment{
+	@apply max-w-7xl px-6 lg:pr-48
+}
+.eye{
+	@apply absolute right-2 bottom-2 cursor-pointer
+}
+
+.form-base{
+	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm
+  focus:outline-none
+}
+
+.form{
+	@apply form-base text-gray-600 placeholder-gray-400  border-gray-200 bg-gray-100
+  focus:border-gray-300
+}
+
+.form-invalid{
+	@apply form-base text-red-600 border-red-600 bg-red-100
+	focus:ring-1 focus:ring-red-600
+}
+
+.form-valid{
+	@apply form-base text-gray-600 border-green-600 bg-teal-100
+	focus:ring-1 focus:ring-green-600
+}
+
+.h1{
+	@apply text-4xl text-gray-800
+}
+.h2{
+	@apply text-2xl text-gray-800
+}
+.h3{
+	@apply text-lg text-gray-800
+}
+.h4{
+	@apply text-base text-gray-800
+}
+.h5{
+	@apply text-sm text-gray-800
+}
+.h6{
+	@apply text-xs text-gray-800
+}
+/* нужно ли? */
+.f-screen-appbar{
+	min-height: calc(100vh - 11.5rem);
+}
+/* нужно ли? */
+.f-screen-full{
+	min-height: calc(100vh - 23rem);
+}
+
+.sidebar-link-a {
+	@apply flex transition transform px-4 py-3 text-[#3C3C41]
+  hover:-translate-x-0.5 hover:text-[#0E7490]
+  focus:outline-none
+}
+.sidebar-hr {
+	@apply border-b border-[#c4c4c4]
+}
+.sidebar-absolute {
+	@apply absolute font-medium left-0 top-0 right-0 bottom-0
+}
+
+.password-control {
+		background: url(/public/eyeIcon.svg) 0 0 no-repeat;
+}
+.password-control.view {
+	background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
+}
