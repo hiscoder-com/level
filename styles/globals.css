@@ -11,9 +11,9 @@
 }
 
 .btn-cyan {
-@apply bg-cyan-600
-	hover:bg-cyan-700
-	active:bg-cyan-800
+@apply bg-cyan-600 border-cyan-600
+	hover:bg-cyan-700 hover:border-cyan-700
+	active:bg-cyan-800 active:border-cyan-800
 }
 
 .btn-start{
@@ -21,19 +21,19 @@
 }
 
 .btn {
-@apply rounded-md duration-300 inline-block p-1 cursor-pointer
+@apply border-2 rounded-md duration-300 inline-block p-1 cursor-pointer
  disabled:cursor-not-allowed
 }
 
-.btn-transparent{
-	@apply btn border-2 text-cyan-600 border-cyan-600 
-	hover:bg-cyan-100
+.btn-white{
+	@apply btn text-cyan-600 border-cyan-600 
+	hover:bg-cyan-50
 	active:bg-cyan-200
 	disabled:bg-transparent disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
 }
 
 .btn-filled{
-	@apply btn border-2 btn-cyan text-white   
+	@apply btn btn-cyan text-white
 	disabled:bg-gray-300 disabled:text-gray-400
 }
 
