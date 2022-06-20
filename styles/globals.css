@@ -56,7 +56,7 @@
 }
 
 .form-base{
-	@apply w-full text-sm rounded-md py-2 pl-2 border-2 shadow-sm
+	@apply w-full text-sm rounded-md py-2 pl-2 border-2
   focus:outline-none
 }
 
