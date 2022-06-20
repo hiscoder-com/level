@@ -34,7 +34,7 @@
 
 .btn-filled{
 	@apply text-white btn-cyan btn
-	disabled:bg-gray-300 disabled:border-2 disabled:text-gray-400
+	disabled:bg-gray-300 disabled:text-gray-400
 }
 
 .confession-text{
