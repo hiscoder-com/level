@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .arrow{
-	@apply px-6 py-5 rounded-full duration-300
+	@apply p-2 sm:px-6 sm:py-5 rounded-full duration-300
 	hover:bg-white
 	active:bg-gray-100
 	disabled:opacity-30
@@ -38,18 +38,18 @@
 }
 
 .confession-text{
-	@apply h4 bg-white rounded-lg px-12 py-6 flex flex-col justify-center
+	@apply h4 bg-white rounded-lg py-6 px-10 flex flex-col justify-center
 }
 
 .layout-empty{
 	@apply flex justify-center font-sans px-3 min-h-screen flex-col
 }
 .layout-appbar{
-	@apply flex flex-col justify-center f-screen-appbar items-center font-sans px-2
+	@apply flex flex-col justify-around sm:justify-center f-screen-appbar items-center font-sans px-5
 }
 
 .text-alignment{
-	@apply max-w-7xl px-6 lg:pr-48
+	@apply max-w-7xl 2xl:w-4/5 pb-6 px-6 lg:px-8 bg-white rounded-lg 
 }
 .eye{
 	@apply absolute right-2 bottom-2 cursor-pointer

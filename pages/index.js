@@ -29,7 +29,8 @@ export default function Home() {
       </div>
       <div className="flex flex-col justify-center items-center m-3">
         <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-32" />
-        <VcanaLogo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" />
+        {/* <VcanaLogo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" /> */}
+        <VcanaLogo className="max-w-xs sm:max-w-md" />
         <h2 className="h2 mt-9 mb-16 text-center">{t('Welcome')}</h2>
         <Link href="/login">
           <a className="btn-start py-3 px-24">{t('SignIn')}</a>
