@@ -27,7 +27,7 @@ export default function Confession() {
           </a>
         </p>
         <Link href="/confession-steps">
-          <a className="btn-filled w-28 mt-7">{t('Start')}</a>
+          <a className="btn-cyan w-28 mt-7">{t('Start')}</a>
         </Link>
       </div>
     </div>

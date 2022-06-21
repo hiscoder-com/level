@@ -16,7 +16,7 @@ export default function Agreements() {
           <a className="btn-white w-64">{t('ConfessionFaith')}</a>
         </Link>
         <Link href="/user-agreement">
-          <a className="btn-filled w-64">{t('Next')}</a>
+          <a className="btn-cyan w-64">{t('Next')}</a>
         </Link>
       </div>
     </div>

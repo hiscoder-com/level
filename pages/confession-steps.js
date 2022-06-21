@@ -99,7 +99,7 @@ export default function ConfessionSteps() {
           />
           <label htmlFor="cb">{t('Agree', { ns: 'common' })}</label>
         </div>
-        <button className="btn-filled w-28" disabled={!checked}>
+        <button className="btn-cyan w-28" disabled={!checked}>
           {t('Next', { ns: 'common' })}
         </button>
       </div>

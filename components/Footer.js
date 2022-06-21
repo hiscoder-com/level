@@ -22,7 +22,7 @@ export default function Footer({ textCheckbox, textButton, href }) {
             </label>
           </div>
           <Link href={href}>
-            <button className="btn-filled w-28" disabled={!checked}>
+            <button className="btn-cyan w-28" disabled={!checked}>
               {textButton}
             </button>
           </Link>
