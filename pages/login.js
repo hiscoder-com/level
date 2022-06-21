@@ -64,7 +64,7 @@ export default function Login() {
 
   return (
     <div className="layout-appbar">
-      <div>
+      <div className="w-5/6 md:max-w-xs">
         <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
@@ -76,19 +76,21 @@ export default function Login() {
               setStyleLogin('form')
             }}
           />
-          <input
-            className={stylePassword}
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            placeholder={`${t('Password')}:`}
-            onChange={(event) => {
-              setPassword(event.target.value)
-              setStylePassword('form')
-            }}
-          />
-          <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
-            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-          </span>
+          <div className="relative">
+            <input
+              className={stylePassword}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              placeholder={`${t('Password')}:`}
+              onChange={(event) => {
+                setPassword(event.target.value)
+                setStylePassword('form')
+              }}
+            />
+            <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </span>
+          </div>
           <div className="flex items-center justify-between mb-4">
             {error && (
               <>
@@ -108,7 +110,7 @@ export default function Login() {
             <button
               disabled={hideWriteAdminButton}
               onClick={report}
-              className="w-8/12 btn-white"
+              className="btn-white w-2/3"
             >
               {t('WriteAdmin')}
             </button>
@@ -116,7 +118,7 @@ export default function Login() {
               type="submit"
               disabled={loading}
               onClick={handleLogin}
-              className="btn-cyan w-4/12"
+              className="btn-cyan w-1/3"
               value={t('Next')}
             />
           </div>
