@@ -16,3 +16,9 @@ export function useLanguages(token) {
   const languages = data?.languages
   return [languages, { mutate, loading, error }]
 }
+export function useAllUsers(token) {
+  const { data, mutate, error } = useSWR(token ? ['/api/users', token] : null, fetcher)
+  const loading = !data && !error
+  const users = data
+  return [users, { mutate, loading, error }]
+}
