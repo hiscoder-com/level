@@ -10,31 +10,31 @@
   disabled:hover:bg-transparent
 }
 
-.btn-cyan {
-@apply bg-cyan-600
-	hover:bg-cyan-700
-	active:bg-cyan-800
+.btn {
+@apply border-2 rounded-md duration-300 inline-block p-1 cursor-pointer
+disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white 
+ disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400
+}
+
+.btn-cyan-base{
+	@apply text-white bg-cyan-600 border-cyan-600
+	hover:bg-cyan-700 hover:border-cyan-700
+	active:bg-cyan-800 active:border-cyan-800
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
 }
 
 .btn-start{
-	@apply rounded-full uppercase text-2xl font-medium cursor-pointer text-white duration-300 inline-block btn-cyan
+	@apply btn-cyan-base rounded-full duration-300 uppercase text-2xl font-medium cursor-pointer
 }
 
-.btn {
-@apply rounded-md duration-300 inline-block p-1 cursor-pointer
- disabled:cursor-not-allowed
+.btn-cyan {
+	@apply btn btn-cyan-base
 }
 
-.btn-transparent{
-	@apply border-2 text-cyan-600 border-cyan-600 btn
-	hover:bg-cyan-100
+.btn-white{
+	@apply btn bg-white text-cyan-600 border-cyan-600 
+	hover:bg-cyan-50
 	active:bg-cyan-200
-	disabled:bg-transparent	disabled:text-gray-400 disabled:border-gray-200 disabled:cursor-not-allowed
-}
-
-.btn-filled{
-	@apply text-white btn-cyan btn
-	disabled:bg-gray-300 disabled:border-2 disabled:text-gray-400
 }
 
 .confession-text{
