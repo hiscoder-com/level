@@ -116,7 +116,7 @@ export default function Login() {
               type="submit"
               disabled={loading}
               onClick={handleLogin}
-              className="w-4/12 btn-filled"
+              className="btn-cyan w-4/12"
               value={t('Next')}
             />
           </div>
