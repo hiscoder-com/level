@@ -6,7 +6,7 @@ export default function Confession() {
   const { t } = useTranslation('common')
   return (
     <div className="layout-appbar">
-      <div className="text-center max-w-lg whitespace-pre-line">
+      <div className="text-center mx-5 max-w-lg whitespace-pre-line">
         <h1 className="h1 mb-6">{t('ConfessionFaith')}:</h1>
 
         <p

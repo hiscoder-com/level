@@ -10,7 +10,7 @@ function Layout({ backgroundColor, children }) {
       <AppBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
-        <div className="py-6 sm:px-6 lg:px-8">{children}</div>
+        <div className="pt-6 sm:p-6 lg:px-8">{children}</div>
       </main>
     </div>
   )
