@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -26,6 +26,13 @@ export default function Login() {
   const [stylePassword, setStylePassword] = useState('form')
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
+  const inputRef = useRef(null)
+
+  useEffect(() => {
+    if (password) {
+      inputRef.current.focus()
+    }
+  }, [password, showPassword])
 
   useEffect(() => {
     if (user) {
@@ -86,6 +93,13 @@ export default function Login() {
                 setPassword(event.target.value)
                 setStylePassword('form')
               }}
+              ref={inputRef}
+              onFocus={(e) =>
+                e.currentTarget.setSelectionRange(
+                  e.currentTarget.value.length,
+                  e.currentTarget.value.length
+                )
+              }
             />
             <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
