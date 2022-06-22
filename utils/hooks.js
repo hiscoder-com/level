@@ -22,3 +22,15 @@ export function useAllUsers(token) {
   const users = data
   return [users, { mutate, loading, error }]
 }
+export function useProjects(token) {
+  const { data, mutate, error } = useSWR(token ? ['/api/projects', token] : null, fetcher)
+  const loading = !data && !error
+  const projects = data
+  return [projects, { mutate, loading, error }]
+}
+export function useMethod(token) {
+  const { data, mutate, error } = useSWR(token ? ['/api/methods', token] : null, fetcher)
+  const loading = !data && !error
+  const methods = data
+  return [methods, { mutate, loading, error }]
+}

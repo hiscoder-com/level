@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useUser } from '../lib/UserContext'
 
 import { supabase } from '../utils/supabaseClient'
 
@@ -6,6 +7,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const { user, session } = useUser()
 
   const handleLogin = async () => {
     try {
@@ -16,6 +18,17 @@ export default function SignUp() {
       })
       if (error) throw error
       alert('Check your email to confirm registration.')
+    } catch (error) {
+      alert(error.error_description || error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
+  const handleLogout = async () => {
+    try {
+      setLoading(true)
+      const { user, session, error } = await supabase.auth.signOut()
+      if (error) throw error
     } catch (error) {
       alert(error.error_description || error.message)
     } finally {
@@ -55,6 +68,16 @@ export default function SignUp() {
         >
           Register
         </button>
+        <div>
+          <button
+            disabled={loading}
+            onClick={handleLogout}
+            className="text-3xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2 disabled:text-gray-400"
+          >
+            Sign out
+          </button>
+        </div>
+        Your Login : {user ? user.email : 'no authenticate'}
       </div>
     </div>
   )
