@@ -72,7 +72,7 @@ export default function ConfessionSteps() {
   return (
     <div className="layout-appbar gap-7">
       <h1 className="h1">{t('ConfessionFaith', { ns: 'common' })}:</h1>
-      <div className="flex flex-row h-full justify-center sm:w-4/5 max-w-7xl gap-4">
+      <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center sm:w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
             <LeftArrow />
