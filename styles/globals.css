@@ -38,14 +38,14 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .confession-text{
-	@apply h4 bg-white rounded-lg mb-10 sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none
+	@apply w-full min-h-[18rem] h4 bg-white rounded-lg mb-10 sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none 
 }
 
 .layout-empty{
 	@apply flex justify-center font-sans px-3 min-h-screen flex-col
 }
 .layout-appbar{
-	@apply flex flex-col justify-around sm:justify-center f-screen-appbar items-center font-sans px-5
+	@apply flex flex-col justify-around sm:justify-center f-screen-appbar items-center font-sans px-5 gap-7
 }
 
 .text-alignment{
