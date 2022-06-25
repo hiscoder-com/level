@@ -4,7 +4,7 @@ import NotFound from '../public/404-error.svg'
 const PageNotFound = () => {
   return (
     <div className="layout-appbar">
-      <NotFound />
+      <NotFound className="max-w-4xl" />
       <div className="text-xl">
         <h2>That page cannot be found.</h2>
         <p>
