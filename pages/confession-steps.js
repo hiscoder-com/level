@@ -70,15 +70,15 @@ export default function ConfessionSteps() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
   return (
-    <div className="layout-appbar gap-7">
-      <h1 className="h1">{t('ConfessionFaith', { ns: 'common' })}:</h1>
-      <div className="flex flex-row h-full justify-center sm:w-4/5 max-w-7xl gap-4">
+    <div className="layout-appbar">
+      <h1 className="h1 text-center">{t('ConfessionFaith', { ns: 'common' })}:</h1>
+      <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
             <LeftArrow />
           </button>
         </div>
-        <div className="confession-text w-full min-h-[18rem]">{arrConfText[page]}</div>
+        <div className="confession-text">{arrConfText[page]}</div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
             <RightArrow />
@@ -87,7 +87,7 @@ export default function ConfessionSteps() {
       </div>
       <div
         className={`flex flex-row items-center space-x-6 ${
-          page === 5 ? '' : 'invisible'
+          page === 5 ? 'block' : 'hidden'
         }`}
       >
         <div className="space-x-1.5 items-center h4">
