@@ -21,9 +21,8 @@ export default function Login() {
   const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-
-  const [styleLogin, setStyleLogin] = useState('input')
-  const [stylePassword, setStylePassword] = useState('input')
+  const [isLoginError, setIsLoginError] = useState(false)
+  const [isPasswordError, setIsPasswordError] = useState(false)
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const inputRef = useRef(null)
@@ -51,13 +50,13 @@ export default function Login() {
         password,
       })
       if (error) throw error
-      setStyleLogin('input')
-      setStylePassword('input')
+      setIsLoginError(false)
+      setIsPasswordError(false)
       setError(false)
       router.push('/agreements')
     } catch (error) {
-      setStyleLogin('input-invalid')
-      setStylePassword('input-invalid')
+      setIsLoginError(true)
+      setIsPasswordError(true)
       setHideWriteAdminButton(false)
       setError(true)
     } finally {
@@ -76,23 +75,23 @@ export default function Login() {
         <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
-            className={styleLogin}
+            className={`input ${isLoginError && 'input-invalid'}`}
             type="text"
             placeholder={`${t('Login')}:`}
             onChange={(event) => {
               setLogin(event.target.value)
-              setStyleLogin('input')
+              setIsLoginError(false)
             }}
           />
           <div className="relative">
             <input
-              className={stylePassword}
+              className={`input ${isPasswordError && 'input-invalid'}`}
               type={showPassword ? 'text' : 'password'}
               value={password}
               placeholder={`${t('Password')}:`}
               onChange={(event) => {
                 setPassword(event.target.value)
-                setStylePassword('input')
+                setIsPasswordError(false)
               }}
               ref={inputRef}
               onFocus={(e) =>
