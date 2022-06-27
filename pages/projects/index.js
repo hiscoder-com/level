@@ -12,15 +12,7 @@ export default function ProjectsPage() {
   const { user, session } = useUser()
 
   const [projects, { mutate }] = useProjects(session?.access_token)
-  console.log(user)
-
-  // const canAddRole = async (role, toUser) => {
-  //   const { data, error } = await supabase.rpc('can_change_role', role, user.id, toUser)
-  //   console.log({ data })
-  //   return data
-  // }
-
-  // console.log(users)
+  console.log(projects)
   return (
     <>
       <div className="container">
@@ -31,8 +23,16 @@ export default function ProjectsPage() {
         </Head>
       </div>
       <div>Проекты:</div>
+      {projects &&
+        projects.data.map((project) => {
+          return (
+            <div key={project.id}>
+              {`${project.id} ${project.title} ${project.code}`}{' '}
+            </div>
+          )
+        })}
       <Link href={'/projects/create'}>
-        <a>Add New</a>
+        <a className="btn-filled btn">Add New</a>
       </Link>
     </>
   )
