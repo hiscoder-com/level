@@ -1,32 +1,34 @@
 import { useState } from 'react'
 import { useUser } from '../../lib/UserContext'
-import { useAllUsers, useLanguages, useMethod } from '../../utils/hooks'
+import { useAllUsers, useLanguages, useMethod, useProjectType } from '../../utils/hooks'
+import { supabase } from '../../utils/supabaseClient'
 
 function CreateProjectPage() {
   const [language, setLanguage] = useState(null)
   const [title, setTitle] = useState('')
-  const [coordinator, setCoordinator] = useState('')
+
   const [styleTitle, setStyleTitle] = useState('form')
   const [method, setMethod] = useState(null)
+  const [type, setType] = useState(null)
   const [code, setCode] = useState(null)
 
   const { user, session } = useUser()
   const [languages, { mutate }] = useLanguages(session?.access_token)
   const [methods] = useMethod(session?.access_token)
   const [users] = useAllUsers(session?.access_token)
+  const projectTypes = ['obs', 'bible']
 
   const createProject = async () => {
-    if (!title || !language || !coordinator || code) {
+    if (!title || !language || !code || !method || !type) {
       setStyleTitle('form-invalid')
       return
     }
     setStyleTitle('form')
+    console.log({ title, language, code, method, type })
     const { data, error } = await supabase
       .from('projects')
-      .insert([{ title: title, language_id: language }])
-    const { data: project_coordinator } = await supabase
-      .from('project_coordinator')
-      .insert([{ project_id: data.id, user_id: coordinator }])
+      .insert([{ title, language_id: language, type, method_id: method, code }])
+    console.log({ data, error })
   }
 
   return (
@@ -45,21 +47,38 @@ function CreateProjectPage() {
       <select onChange={(e) => setLanguage(e.target.value)} className="form max-w-sm">
         {languages &&
           languages.map((el) => {
-            return <option key={el.id}>{el.orig_name}</option>
+            return (
+              <option key={el.id} value={el.id}>
+                {el.orig_name}
+              </option>
+            )
           })}
       </select>
-      <div>Координатор проекта</div>
-      <select onChange={(e) => setCoordinator(e.target.value)} className="form max-w-sm">
-        {users &&
-          users.data.map((el) => {
-            return <option key={el.id}>{el.email}</option>
-          })}
-      </select>
+
       <div>Метод</div>
-      <select onChange={(e) => setMethod(e.target.value)} className="form max-w-sm">
+      <select
+        onChange={(e) => {
+          setMethod(e.target.value)
+        }}
+        className="form max-w-sm"
+      >
         {methods &&
           methods.data.map((el) => {
-            return <option key={el.id}>{el.title}</option>
+            return (
+              <option key={el.id} value={el.id}>
+                {el.title}
+              </option>
+            )
+          })}
+      </select>
+      <select onChange={(e) => setType(e.target.value)} className="form max-w-sm">
+        {projectTypes &&
+          projectTypes.map((el) => {
+            return (
+              <option key={el} value={el}>
+                {el}
+              </option>
+            )
           })}
       </select>
       <button onClick={createProject} className="btn btn-cyan btn-filled">
