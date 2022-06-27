@@ -25,14 +25,24 @@ export default function Login() {
   const [isPasswordError, setIsPasswordError] = useState(false)
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
-  const inputRef = useRef(null)
+  const loginRef = useRef(null)
+  const passwordRef = useRef(null)
 
   useEffect(() => {
-    if (password) {
-      inputRef.current.focus()
-    }
+    // if (password) {
+    console.log(showPassword)
+    passwordRef.current.focus()
+    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showPassword])
+
+  useEffect(() => {
+    // if (password) {
+    console.log(showPassword)
+    loginRef.current.focus()
+    // }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   useEffect(() => {
     if (user) {
@@ -75,6 +85,7 @@ export default function Login() {
         <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
+            ref={loginRef}
             className={`input ${isLoginError && 'input-invalid'}`}
             type="text"
             placeholder={`${t('Login')}:`}
@@ -93,15 +104,21 @@ export default function Login() {
                 setPassword(event.target.value)
                 setIsPasswordError(false)
               }}
-              ref={inputRef}
-              onFocus={(e) =>
-                e.currentTarget.setSelectionRange(
-                  e.currentTarget.value.length,
-                  e.currentTarget.value.length
-                )
-              }
+              ref={passwordRef}
+              // onFocus={(e) =>
+              //   e.currentTarget.setSelectionRange(
+              //     e.currentTarget.value.length,
+              //     e.currentTarget.value.length
+              //   )
+              // }
             />
-            <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
+            <span
+              className="eye"
+              onClick={() => {
+                setShowPassword((prev) => !prev)
+                // passwordRef.current.focus()
+              }}
+            >
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
             </span>
           </div>
