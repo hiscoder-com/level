@@ -29,19 +29,12 @@ export default function Login() {
   const passwordRef = useRef(null)
 
   useEffect(() => {
-    // if (password) {
-    console.log(showPassword)
     passwordRef.current.focus()
-    // }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showPassword])
 
   useEffect(() => {
-    // if (password) {
-    console.log(showPassword)
     loginRef.current.focus()
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -96,6 +89,7 @@ export default function Login() {
           />
           <div className="relative">
             <input
+              ref={passwordRef}
               className={`input ${isPasswordError && 'input-invalid'}`}
               type={showPassword ? 'text' : 'password'}
               value={password}
@@ -104,7 +98,6 @@ export default function Login() {
                 setPassword(event.target.value)
                 setIsPasswordError(false)
               }}
-              ref={passwordRef}
               // onFocus={(e) =>
               //   e.currentTarget.setSelectionRange(
               //     e.currentTarget.value.length,
