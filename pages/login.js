@@ -131,13 +131,13 @@ export default function Login() {
             )}
           </div>
           <div className="flex gap-2.5 h-9">
-            <button
+            <div
               disabled={hideWriteAdminButton}
               onClick={report}
               className="btn-white w-2/3"
             >
               {t('WriteAdmin')}
-            </button>
+            </div>
             <input
               type="submit"
               disabled={loading}
