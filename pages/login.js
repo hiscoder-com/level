@@ -22,8 +22,8 @@ export default function Login() {
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
 
-  const [styleLogin, setStyleLogin] = useState('form')
-  const [stylePassword, setStylePassword] = useState('form')
+  const [styleLogin, setStyleLogin] = useState('input')
+  const [stylePassword, setStylePassword] = useState('input')
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
   const inputRef = useRef(null)
@@ -32,7 +32,8 @@ export default function Login() {
     if (password) {
       inputRef.current.focus()
     }
-  }, [password, showPassword])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showPassword])
 
   useEffect(() => {
     if (user) {
@@ -50,13 +51,13 @@ export default function Login() {
         password,
       })
       if (error) throw error
-      setStyleLogin('form')
-      setStylePassword('form')
+      setStyleLogin('input')
+      setStylePassword('input')
       setError(false)
       router.push('/agreements')
     } catch (error) {
-      setStyleLogin('form-invalid')
-      setStylePassword('form-invalid')
+      setStyleLogin('input-invalid')
+      setStylePassword('input-invalid')
       setHideWriteAdminButton(false)
       setError(true)
     } finally {
@@ -80,7 +81,7 @@ export default function Login() {
             placeholder={`${t('Login')}:`}
             onChange={(event) => {
               setLogin(event.target.value)
-              setStyleLogin('form')
+              setStyleLogin('input')
             }}
           />
           <div className="relative">
@@ -91,7 +92,7 @@ export default function Login() {
               placeholder={`${t('Password')}:`}
               onChange={(event) => {
                 setPassword(event.target.value)
-                setStylePassword('form')
+                setStylePassword('input')
               }}
               ref={inputRef}
               onFocus={(e) =>
