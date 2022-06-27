@@ -45,6 +45,7 @@ function CreateProjectPage() {
       />
       <div>Язык</div>
       <select onChange={(e) => setLanguage(e.target.value)} className="form max-w-sm">
+        placeholder={'Choose your language'}
         {languages &&
           languages.map((el) => {
             return (

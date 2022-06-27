@@ -12,7 +12,8 @@ export default function ProjectsPage() {
   const { user, session } = useUser()
 
   const [projects, { mutate }] = useProjects(session?.access_token)
-  console.log(projects)
+  const router = useRouter()
+
   return (
     <>
       <div className="container">
@@ -26,9 +27,9 @@ export default function ProjectsPage() {
       {projects &&
         projects.data.map((project) => {
           return (
-            <div key={project.id}>
-              {`${project.id} ${project.title} ${project.code}`}{' '}
-            </div>
+            <Link key={project.id} href={`projects/${project.code}`}>
+              <a className="block text-blue-600">{`${project.id} ${project.title} ${project.code}`}</a>
+            </Link>
           )
         })}
       <Link href={'/projects/create'}>
