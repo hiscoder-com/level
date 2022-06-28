@@ -98,18 +98,11 @@ export default function Login() {
                 setPassword(event.target.value)
                 setIsPasswordError(false)
               }}
-              // onFocus={(e) =>
-              //   e.currentTarget.setSelectionRange(
-              //     e.currentTarget.value.length,
-              //     e.currentTarget.value.length
-              //   )
-              // }
             />
             <span
               className="eye"
               onClick={() => {
                 setShowPassword((prev) => !prev)
-                // passwordRef.current.focus()
               }}
             >
               {showPassword ? <EyeOffIcon /> : <EyeIcon />}
