@@ -1,234 +1,152 @@
 <div id="top"></div>
-<!--
-*** Thanks for checking out the Best-README-Template. If you have a suggestion
-*** that would make this better, please fork the repo and create a pull request
-*** or simply open an issue with the tag "enhancement".
-*** Don't forget to give the project a star!
-*** Thanks again! Now go create something AMAZING! :D
--->
 
-
-
-<!-- PROJECT SHIELDS -->
-<!--
-*** I'm using markdown "reference style" links for readability.
-*** Reference links are enclosed in brackets [ ] instead of parentheses ( ).
-*** See the bottom of this document for the declaration of the reference variables
-*** for contributors-url, forks-url, etc. This is an optional, concise syntax you may use.
-*** https://www.markdownguide.org/basic-syntax/#reference-style-links
--->
-[![Contributors][contributors-shield]][contributors-url]
-[![Forks][forks-shield]][forks-url]
-[![Stargazers][stars-shield]][stars-url]
-[![Issues][issues-shield]][issues-url]
-[![MIT License][license-shield]][license-url]
-
-
-
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
   <a href="https://github.com/texttree/v-cana">
     <img src="images/logo.jpg" alt="Logo" width="80" height="80">
   </a>
 
-<h3 align="center">V-CANA</h3>
+<h1 align="center">TextTree Dev Team Workflow</h1>
 
   <p align="center">
-    App to translate Scripture step by step
-    <br />
-    <a href="https://github.com/texttree/v-cana"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://v-cana.netlify.app/">View Demo</a>
-    ·
-    <a href="https://github.com/texttree/v-cana/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/texttree/v-cana/issues">Request Feature</a>
+    <a href="https://github.com/texttree/v-cana/issues#workspaces/v-cana-project-620deae51595a40010a913fe/board">Zenhub Workspaces</a>
   </p>
 </div>
+<br>
+<h2 align="center">Подготовка к спринту</h2>
+<h4 align="center">Владелец продукта / Product Owner (PO)</h4>
+<br>
+<ul>
+<li>Новые задачи создаются и добавляются в полосе <span style="font-weight:bold">New issues</span></li>
+<li><span style="font-weight:bold">Planned - Needs Definition</span> - здесь карточки, которые нужно сформулировать в конкретные задачи. Если задача получается очень большой, то превращаем карточку в <span style="font-weight:bold">Epic</span> и создаем подзадачи так, чтобы на их выполнение уходило не больше недели</li>
+<li>Поместите задачи в колонку <span style="font-weight:bold">Product Backlog</span> после завершения определения. Четко определенная проблема будет включать в себя описание требования, ключевые результаты/определение выполненного, макеты, если нужно.</li>
+<li>Расставить карточки по порядку приоритета, что самое важное – вверх. Можно обсудить с командой</li>
+</ul>
+
+> Примечание:
+>
+> Спринт длится 2 недели. Определяем что мы будем делать: исправлять ошибки, добавлять новые функции, или все вместе.
+><br>
+
+<br>
+<h4 align="center">Разработчик / Developer (DEV)</h4>
+<br>
+
+<ul>
+<li>Сначала проверьте, нет ли <span style="font-weight:bold">PR, Issues</span>, которые назначены вам, они в приоритете</li>
+<li>Выберите задачу из <span style="font-weight:bold">Product Backlog</span></li>
+<li>Перенесите карточки в <span style="font-weight:bold">In Progress</span>, которые собираетесь сделать за 2 недели</li>
+<li>Проверьте что задача четко определена</li>
+<li>Назначьте себя исполнителем задачи</li>
+</ul>
+
+> Примечание:
+>
+> После окончания спринта делать релиз в ветку master
+> <br>
+
+<span style="font-weight:bold"></span>
+
+<br>
+<h4 align="center">когда вы начинаете над чем-то работать (DEV):</h4>
+<br>
+<ul>
+<li>Создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span>, например,<span style="font-weight:bold">feature-john-1234</span></li>
+<li>Решите задачу</li>
+<li>Создайте <span style="font-weight:bold">PR</span> для <span style="font-weight:bold">feature-ветки</span> в <span style="font-weight:bold">develop</span> (<span style="font-weight:bold">master</span>, если нет ветки <span style="font-weight:bold">develop</span>)</li>
+<li>Проведите ручную проверку кода, чтобы убедиться, что нет простых ошибок, таких как оставшиеся console.log(), отладчики или локальные файлы конфигурации</li>
+<li>Убедитесь, что <span style="font-weight:bold">PR</span> связан с соответствующей рассматриваемой проблемой</li>
+<li>Если изменения вносятся до рассмотрения <span style="font-weight:bold">PR</span>, обязательно сообщите, что <span style="font-weight:bold">PR</span> все еще находится на стадии «черновик» или <span style="font-weight:bold">WIP</span></li>
+<li>Убедитесь, что на каждую задачу, созданную для проверки <span style="font-weight:bold">PR</span>, назначено 2 человека. Уведомите основного и дополнительного рецензентов, назначенных для задачи</li>
+<li>При создании <span style="font-weight:bold">PR</span> необходимо тезисно описать проделанную работу в истории изменений</li>
+<li>Если есть замечания по коду от рецензентов, вы получите комментарии по недостаткам кода</li>
+<li>Если объём правок слишком большой, то необходимо создать <span style="font-weight:bold">issue</span>, исправить код в текущей ветке и прикрепить новую <span style="font-weight:bold">issue</span></li>
+<li>Как только получаете два одобрения, подтверждаете запрос на слияние веток (<span style="font-weight:bold">merge pull request</span>)</li>
+<li>карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span></li>
+<li>Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите сам <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span></li>
+<li>Во время проверки (<span style="font-weight:bold">Review</span>) показываете что сделали; если все в порядке, то команда решает, делать релиз или нет</li>
+<li>Переносим карточку в <span style="font-weight:bold">Done</span></li>
+<li>Если делаем релиз, то делаем слияние веток <span style="font-weight:bold">develop</span> и <span style="font-weight:bold">master</span></li>
+<li>Переносим карточку в <span style="font-weight:bold">Closed</span></li>
+</ul>
+
+<br>
+<h2 align="center">Как исправлять ошибки</h2>
+<br>
+<ul>
+<li>Убедитесь, что шаги для воспроизведения ясны и точны</li>
+<li>Если ошибка критичная, то делаем <span style="font-weight:bold">hotfix</span> ветку от master, проходим все шаги; если все в порядке, то публикуем в master и в develop</li>
+<li>Если ошибка не критичная, то работаем по обычной схеме</li>
+</ul>
+<br>
+<h4 align="center">При проверке запроса на слияние / Pull Request (PR)</h4>
+<br>
+<ul>
+<li>Не допускать закомментированных кусков кода, console.log()</li>
+<li>В коде должны быть понятные имена для переменных</li>
+<li>Стараться фиксировать (коммитить) небольшие изменения, и давать им понятные названия</li>
+<li>Changelog.md и version в package.json надо поменять на актуальные</li>
+<li>Стараться придерживаться codestyle. Если есть какие-то добавления, замечания - дополнять ими стандарт оформления кода</li>
+<li>Не забывать про документацию. Если внесены изменения в UI/UX, отметить это в документации, обновить скриншоты</li>
+<li>Дублирование кода - выносить дублируемые куски кода в helper</li>
+<li>Не более 100 строк для одного файла</li>
+<li>Искать возможность вынести код в <span style="font-weight:bold">RCL</span>, или расширить существующую библиотеку</li>
+<li>Не делать слишком перегруженный код с множеством <span style="font-weight:bold">if/else</span></li>
+<li>Разделять логику и представление (отдельно custom hook и jsx)</li>
+<li>Использовать <span style="font-weight:bold">hooks</span> для того чтобы оптимизировать приложение</li>
+<li>После себя оставлять код чуточку чище и лучше</li>
+<li>Если кусок кода сложен для понимания - надо добавить комментарии в формате <span style="font-weight:bold">jsdocs</span></li>
+</ul>
+<br>
+<h2 align="center">Zenhub</h2>
+<br>
+
+**Scrum** - фреймворк, предоставляющий спектр возможностей для продуктивной и  творческой разработки продуктов с максимально возможной ценностью и решения  нетривиальных задач в процессе работы. 
+
+**Kanban** - это метод, в основе которого лежит система вытягивания (pull system) производства, то есть, ограничение на количество незавершенной работы (work-in-process). Здесь все устроено так, чтобы застоявшиеся задачи легко было отследить и перераспределить внутри команды. Это позволяет обнаруживать операционные проблемы и мотивировать сотрудников к улучшениям.
+
+**Pipeline**  - колонки доски, которые служат для разбиения этапов работы над задачами
+
+**Issue** - задача, созданная в репозитории или в ZenHub. Обладает свойствами:
+<ul>
+<li>Labels - ярлыки, помогающие классифицировать задачи, для каждой задачи можно поставить один или несколько ярлыков</li>
+<li>Milestones - фазы проекта, позволяет соотносить задачи с фазами в которых они должны быть реализованы</li>
+<li>Estimates - оценка трудоемкости задачи (измеряется в story points). Без данного показателя невозможно использовать диаграммы ZenHub</li>
+<li>Assignees - исполнители задачи</li>
+<li>Dependencies - зависимости. Позволяет определить те задачи, которые зависят от исполнения других</li>
+</ul>
 
+**Bug** - ошибки в системе. Задачи с данным лейблом имеют наивысший приоритет и должны быть взяты в работу первыми.
 
+**Feature** - новая функциональность
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
-      </ul>
-    </li>
-    <li><a href="#usage">Usage</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
-    <li><a href="#acknowledgments">Acknowledgments</a></li>
-  </ol>
-</details>
+**Refactoring** - задачи, связанные с корректировкой ранее написанного кода
 
+**WIP** - задачи, находящиеся в работе
 
+**New Issues**
+Этот Pipeline является отправной точкой для новых задач/проблем. Любой из команды может создать задачу в любое время и знать, что благодаря этому процессу она будет видна всем.
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+**Icebox**
+Задачи с низким приоритетом, которые не будут нужны в ближайшее время
 
-[![Product Name Screen Shot][product-screenshot]](https://github.com)
+**Epics**
+ это тема работы, которая содержит несколько подзадач или проблем. Эпики — это лучший способ сгруппировать связанные проблемы в более крупные цели, охватывающие спринты
 
+**Planned - Needs Definition**
+Задачи, которые нужно рассмотреть и оценить. Если задача получается очень большой, то превращаем карточку в Epic
 
-**Purpose**
-- The purpose of this project
+**Product Backlog**
+Предстоящие проблемы, которые были рассмотрены, оценены и расставлены по приоритетам сверху вниз
 
-**Problem**
-- The problem statement
+**Sprint Backlog**
+Проблемы, готовые к работе в спринте, с приоритетом сверху донизу.
 
-**Scope**
-- What's in scope and out of scope for this project?
+**In Progress**
+Задачи, над которыми сейчас работает команда
 
-**Background**
-- What led us to this point? How did we get here?
+**Review/QA**
+Задачи, которые открыты для тестирования. Код завершен, ожидается отзыв
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-### Built With
-
-* [Next.js](https://nextjs.org/)
-* [Tailwind CSS](https://tailwindcss.com/)
-* [Supabase](https://supabase.com/)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- GETTING STARTED -->
-## Getting Started
-
-This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
-
-### Prerequisites
-
-**Data**
-what is the source of the data and data formats are covered by this project?
-
-
-This is an example of how to list things you need to use the software and how to install them.
-* npm
-  ```sh
-  npm install npm@latest -g
-  ```
-
-### Installation/First Steps
-
-1. Get a free API Key at [https://example.com](https://example.com)
-2. Clone the repo
-   ```sh
-   git clone https://github.com/texttree/v-cana.git
-   ```
-3. Install NPM packages
-   ```sh
-   npm install
-   ```
-4. Enter your API in `config.js`
-   ```js
-   const API_KEY = 'ENTER YOUR API';
-   ```
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- USAGE EXAMPLES -->
-## Usage/Integration
-
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [] Feature 1
-- [] Feature 2
-- [] Feature 3
-    - [] Nested Feature
-
-See the [open issues](https://github.com/texttree/v-cana/issues) for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- CONTRIBUTING -->
-## Contributing
-
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.  [Guidelines for external contributions.](https://forum.door43.org)
-
-You can also simply open an issue with the tag "enhancement".
-Don't forget to give the project a star! Thanks again!
-
-If you would like to fork the repo and create a pull request.
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- LICENSE -->
-## License
-
-Distributed under the MIT License. See [LICENSE][license-url] for more information.
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- CONTACT -->
-## Contact
-
-Discord: [V-CANA](https://discord.com/channels/867746700390563850/943625065415716905)
-
-Project Link: [https://github.com/texttree/v-cana](https://github.com/texttree/v-cana)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ACKNOWLEDGMENTS -->
-## Acknowledgments
-
-* []()
-* []()
-* []()
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/texttree/v-cana.svg?style=for-the-badge
-[contributors-url]: https://github.com/texttree/v-cana/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/texttree/v-cana.svg?style=for-the-badge
-[forks-url]: https://github.com/texttree/v-cana/network/members
-[stars-shield]: https://img.shields.io/github/stars/texttree/v-cana.svg?style=for-the-badge
-[stars-url]: https://github.com/texttree/v-cana/stargazers
-[issues-shield]: https://img.shields.io/github/issues/texttree/v-cana.svg?style=for-the-badge
-[issues-url]: https://github.com/texttree/v-cana/issues
-[license-shield]: https://img.shields.io/github/license/texttree/v-cana.svg?style=for-the-badge
-[license-url]: https://github.com/texttree/v-cana/blob/master/LICENSE
+**Done**
+Проблемы протестированы и готовы к развертыванию в рабочей среде
