@@ -1,9 +1,9 @@
-import CreateProject from '../../components/CreateProject'
+import ProjectCreate from '../../components/ProjectCreate'
 
 function CreateProjectPage() {
   return (
     <>
-      <CreateProject />
+      <ProjectCreate />
     </>
   )
 }

@@ -4,7 +4,7 @@ import { useLanguages, useMethod, useAllUsers } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 
-function CreateProject() {
+function ProjectCreate() {
   const router = useRouter()
   const [languageId, setLanguageId] = useState(null)
   const [title, setTitle] = useState('')
@@ -108,4 +108,4 @@ function CreateProject() {
   )
 }
 
-export default CreateProject
+export default ProjectCreate
