@@ -13,7 +13,10 @@ export default async function userHandler(req, res) {
 
   switch (method) {
     case 'GET':
-      const { data, error } = await supabase.from('projects').select('*').eq('code', code)
+      const { data, error } = await supabase
+        .from('projects')
+        .select('title, code, type, methods(title), languages(orig_name)')
+        .eq('code', code)
       if (error) {
         res.status(404).json({ error })
       }
