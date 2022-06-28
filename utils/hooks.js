@@ -46,3 +46,12 @@ export function useProject({ token, code }) {
   const loading = !project && !error
   return [project, { mutate, loading, error }]
 }
+export function useCoordinator({ token, id }) {
+  const {
+    data: coordinator,
+    mutate,
+    error,
+  } = useSWR(token ? [`/api/coordinators/${id}`, token] : null, fetcher)
+  const loading = !coordinator && !error
+  return [coordinator, { mutate, loading, error }]
+}

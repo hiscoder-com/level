@@ -7,20 +7,21 @@ export default async function userHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   const {
-    query: { code },
+    query: { id },
     method,
   } = req
 
   switch (method) {
     case 'GET':
       const { data, error } = await supabase
-        .from('projects')
-        .select('id, title, code, type, methods(title), languages(orig_name)')
-        .eq('code', code)
+        .from('project_roles')
+        .select('users(email)')
+        .eq('project_id', id)
       if (error) {
         res.status(404).json({ error })
       }
-      res.status(200).json({ ...data[0] })
+      console.log({ data })
+      res.status(200).json({ ...data?.[0] })
       break
     case 'PUT':
       res.status(200).json({ code: `Project ${code}` })

@@ -1,13 +1,36 @@
-import React from 'react'
-import { useProject, useUsers } from '../utils/hooks'
+import React, { useState } from 'react'
+import { useCoordinator, useProject, useUsers } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 
 function Project({ code }) {
+  const [userId, setUserId] = useState(null)
   const { session } = useUser()
+
   const [project, { mutate }] = useProject({ token: session?.access_token, code })
+  const [coordinator] = useCoordinator({ token: session?.access_token, id: project?.id })
   const [users] = useUsers(session?.access_token)
-  console.log({ project, users })
+  console.log({ project, users: users && Object.values(users), coordinator })
+  const handleSetCoordinator = async () => {
+    if (!project?.id || !userId) {
+      alert('неправильный координатор')
+      return
+    }
+    console.log(project?.id, userId)
+    axios.defaults.headers.common['token'] = session?.access_token
+    axios
+      .post('/api/coordinators', {
+        user_id: userId,
+        project_id: project?.id,
+      })
+      .then((result) => {
+        const { data, status } = result
+
+        console.log({ data, status })
+        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
+      })
+      .catch((error) => console.log(error, 'from axios'))
+  }
   return (
     <div>
       <h3>Project</h3>
@@ -25,6 +48,27 @@ function Project({ code }) {
       </p>
       <p>
         type <b>{project?.type}</b>
+      </p>
+      <p>
+        Coordinator
+        <b>
+          {coordinator && Object.values(coordinator) > 0
+            ? coordinator.users.email
+            : ' not assigned'}
+        </b>
+        <select onChange={(e) => setUserId(e.target.value)} className="form max-w-sm">
+          {users &&
+            Object.values(users).map((el) => {
+              return (
+                <option key={el.id} value={el.id}>
+                  {el.email}
+                </option>
+              )
+            })}
+        </select>
+        <button onClick={handleSetCoordinator} className="btn btn-cyan btn-filled">
+          Set coordinator
+        </button>
       </p>
     </div>
   )
