@@ -16,10 +16,13 @@ export function useLanguages(token) {
   const languages = data?.languages
   return [languages, { mutate, loading, error }]
 }
-export function useAllUsers(token) {
-  const { data, mutate, error } = useSWR(token ? ['/api/users', token] : null, fetcher)
-  const loading = !data && !error
-  const users = data
+export function useUsers(token) {
+  const {
+    data: users,
+    mutate,
+    error,
+  } = useSWR(token ? ['/api/users', token] : null, fetcher)
+  const loading = !users && !error
   return [users, { mutate, loading, error }]
 }
 export function useProjects(token) {
@@ -34,12 +37,12 @@ export function useMethod(token) {
   const methods = data
   return [methods, { mutate, loading, error }]
 }
-export function useProject({ token, id }) {
-  const { data, mutate, error } = useSWR(
-    token ? [`/api/projects/${id}`, token] : null,
-    fetcher
-  )
-  const loading = !data && !error
-  const projects = data
-  return [projects, { mutate, loading, error }]
+export function useProject({ token, code }) {
+  const {
+    data: project,
+    mutate,
+    error,
+  } = useSWR(token ? [`/api/projects/${code}`, token] : null, fetcher)
+  const loading = !project && !error
+  return [project, { mutate, loading, error }]
 }

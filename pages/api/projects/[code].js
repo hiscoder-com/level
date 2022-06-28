@@ -1,4 +1,4 @@
-import { supabase } from '../../utils/supabaseClient'
+import { supabase } from '../../../utils/supabaseClient'
 
 export default async function userHandler(req, res) {
   if (!req.headers.token) {
@@ -7,20 +7,20 @@ export default async function userHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   const {
-    query: { id, name },
+    query: { code },
     method,
   } = req
 
   switch (method) {
     case 'GET':
-      const { data, error } = await supabase.from('projects').select('*').eq('id', id)
+      const { data, error } = await supabase.from('projects').select('*').eq('code', code)
       if (error) {
         res.status(404).json({ error })
       }
-      res.status(200).json({ data })
+      res.status(200).json({ ...data[0] })
       break
     case 'PUT':
-      res.status(200).json({ id, name: name || `User ${id}` })
+      res.status(200).json({ code: `Project ${code}` })
       break
     default:
       res.setHeader('Allow', ['GET', 'PUT'])

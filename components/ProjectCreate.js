@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
-import { useLanguages, useMethod, useAllUsers } from '../utils/hooks'
+import { useLanguages, useMethod } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 
@@ -17,7 +17,6 @@ function ProjectCreate() {
   const { user, session } = useUser()
   const [languages, { mutate }] = useLanguages(session?.access_token)
   const [methods] = useMethod(session?.access_token)
-  const [users] = useAllUsers(session?.access_token)
   const projectTypes = ['obs', 'bible']
 
   const create = async () => {
@@ -25,7 +24,6 @@ function ProjectCreate() {
       setStyleTitle('form-invalid')
       return
     }
-    console.log({ title, languageId, code, methodId, type })
     setStyleTitle('form')
     axios.defaults.headers.common['token'] = session?.access_token
     axios
