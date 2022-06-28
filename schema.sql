@@ -186,7 +186,7 @@ CREATE TABLE PUBLIC .briefs (
   project_id bigint references PUBLIC .projects ON
   DELETE
     CASCADE NOT NULL UNIQUE,
-    "text" text NOT NULL
+    "text" text DEFAULT NULL
 );
 
 -- STEPS
