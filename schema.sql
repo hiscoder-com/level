@@ -423,9 +423,9 @@ ALTER TABLE
 ALTER TABLE
   PUBLIC .languages replica identity full;
 
--- inserts a row into public.users and assigns roles
+-- inserts a row into public.users
 CREATE
-OR replace FUNCTION PUBLIC .handle_new_user() returns TRIGGER LANGUAGE plpgsql security definer AS $$ -- declare is_admin boolean;
+OR replace FUNCTION PUBLIC .handle_new_user() returns TRIGGER LANGUAGE plpgsql security definer AS $$
 BEGIN
   INSERT INTO
     PUBLIC .users (id, email)
@@ -444,6 +444,28 @@ DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 CREATE TRIGGER on_auth_user_created after
 INSERT
   ON auth.users FOR each ROW EXECUTE PROCEDURE PUBLIC .handle_new_user();
+
+-- inserts a row into public.briefs
+CREATE
+OR replace FUNCTION PUBLIC .handle_new_project() returns TRIGGER LANGUAGE plpgsql security definer AS $$
+BEGIN
+  INSERT INTO
+    PUBLIC .briefs (project_id)
+  VALUES
+    (NEW .id);
+
+RETURN NEW;
+
+END;
+
+$$;
+
+-- trigger the function every time a project is created
+DROP TRIGGER IF EXISTS on_public_project_created ON public.projects;
+
+CREATE TRIGGER on_public_project_created after
+INSERT
+  ON public.projects FOR each ROW EXECUTE PROCEDURE PUBLIC .handle_new_project();
 
 /**
  * REALTIME SUBSCRIPTIONS
@@ -470,15 +492,6 @@ ADD
   TABLE PUBLIC .users;
 
 -- DUMMY DATA
-DELETE FROM
-  PUBLIC .languages;
-
-INSERT INTO
-  PUBLIC .languages (eng, code, orig_name)
-VALUES
-  ('russian', 'ru', 'русский'),
-  ('english', 'en', 'english');
-
 DELETE FROM
   PUBLIC .users;
 
@@ -573,19 +586,19 @@ DELETE FROM
   PUBLIC .languages;
 
 INSERT INTO
-  PUBLIC .languages (eng, code, orig_name)
+  PUBLIC .languages (id, eng, code, orig_name)
 VALUES
-  ('russian', 'ru', 'русский'),
-  ('english', 'en', 'english');
+  (1, 'russian', 'ru', 'русский'),
+  (2, 'english', 'en', 'english');
 
 DELETE FROM
   PUBLIC .methods;
 
 INSERT INTO
-  PUBLIC .methods (title)
+  PUBLIC .methods (id, title)
 VALUES
-  ('Vcana Bible'),
-  ('Vcana OBS');
+  (1, 'Vcana Bible'),
+  (2, 'Vcana OBS');
 
 DELETE FROM
   PUBLIC .role_permissions;
@@ -600,3 +613,12 @@ VALUES
   ('coordinator', 'verses.set'),
   ('coordinator', 'moderator.set'),
   ('coordinator', 'user_projects');
+
+DELETE FROM
+  PUBLIC .projects;
+
+INSERT INTO
+  PUBLIC .projects (id, title, code, language_id, method_id, type)
+VALUES
+  (1, 'Russian Literal Open Bible', 'rlob', 1, 1, 'bible'),
+  (2, 'Russian Simplified Open Bible', 'rsob', 1, 1, 'bible');
