@@ -1,13 +1,16 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import { useLanguages, useMethod, useAllUsers } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
+
 function CreateProject() {
-  const [language, setLanguage] = useState(null)
+  const router = useRouter()
+  const [languageId, setLanguageId] = useState(null)
   const [title, setTitle] = useState('')
 
   const [styleTitle, setStyleTitle] = useState('form')
-  const [method, setMethod] = useState(null)
+  const [methodId, setMethodId] = useState(null)
   const [type, setType] = useState(null)
   const [code, setCode] = useState(null)
 
@@ -18,18 +21,31 @@ function CreateProject() {
   const projectTypes = ['obs', 'bible']
 
   const create = async () => {
-    if (!title || !language || !code || !method || !type) {
+    if (!title || !languageId || !code || !methodId || !type) {
       setStyleTitle('form-invalid')
       return
     }
-
+    console.log({ title, languageId, code, methodId, type })
     setStyleTitle('form')
     axios.defaults.headers.common['token'] = session?.access_token
     axios
-      .post('/api/projects', { title, language, code, method, type })
+      .post('/api/projects', {
+        title,
+        language_id: languageId,
+        code,
+        method_id: methodId,
+        type,
+      })
       .then((result) => {
-        const { data, status, headers } = result
-        console.log({ data, status, headers })
+        const {
+          data,
+          status,
+          headers: { location },
+        } = result
+        if (status === 201) {
+          router.push(location)
+        }
+        console.log({ data, status, location })
         //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
       .catch((error) => console.log(error, 'from axios'))
@@ -48,7 +64,7 @@ function CreateProject() {
         className={`${styleTitle} max-w-sm`}
       />
       <div>Язык</div>
-      <select onChange={(e) => setLanguage(e.target.value)} className="form max-w-sm">
+      <select onChange={(e) => setLanguageId(e.target.value)} className="form max-w-sm">
         placeholder={'Choose your language'}
         {languages &&
           languages.map((el) => {
@@ -62,7 +78,7 @@ function CreateProject() {
       <div>Метод</div>
       <select
         onChange={(e) => {
-          setMethod(e.target.value)
+          setMethodId(e.target.value)
         }}
         className="form max-w-sm"
       >
