@@ -1,8 +1,10 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
 import { useRouter } from 'next/router'
+
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { supabase } from '../utils/supabaseClient'
 import { useUser } from '../lib/UserContext'
@@ -21,11 +23,21 @@ export default function Login() {
   const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-
-  const [styleLogin, setStyleLogin] = useState('form')
-  const [stylePassword, setStylePassword] = useState('form')
+  const [isLoginError, setIsLoginError] = useState(false)
+  const [isPasswordError, setIsPasswordError] = useState(false)
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
+  const loginRef = useRef(null)
+  const passwordRef = useRef(null)
+
+  useEffect(() => {
+    passwordRef.current.focus()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showPassword])
+
+  useEffect(() => {
+    loginRef.current.focus()
+  }, [])
 
   useEffect(() => {
     if (user) {
@@ -43,13 +55,13 @@ export default function Login() {
         password,
       })
       if (error) throw error
-      setStyleLogin('form')
-      setStylePassword('form')
+      setIsLoginError(false)
+      setIsPasswordError(false)
       setError(false)
       router.push('/agreements')
     } catch (error) {
-      setStyleLogin('form-invalid')
-      setStylePassword('form-invalid')
+      setIsLoginError(true)
+      setIsPasswordError(true)
       setHideWriteAdminButton(false)
       setError(true)
     } finally {
@@ -64,31 +76,40 @@ export default function Login() {
 
   return (
     <div className="layout-appbar">
-      <div>
+      <div className="w-5/6 md:max-w-xs">
         <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
-            className={styleLogin}
+            ref={loginRef}
+            className={`input ${isLoginError && 'input-invalid'}`}
             type="text"
             placeholder={`${t('Login')}:`}
             onChange={(event) => {
               setLogin(event.target.value)
-              setStyleLogin('form')
+              setIsLoginError(false)
             }}
           />
-          <input
-            className={stylePassword}
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            placeholder={`${t('Password')}:`}
-            onChange={(event) => {
-              setPassword(event.target.value)
-              setStylePassword('form')
-            }}
-          />
-          <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
-            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-          </span>
+          <div className="relative">
+            <input
+              ref={passwordRef}
+              className={`input ${isPasswordError && 'input-invalid'}`}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              placeholder={`${t('Password')}:`}
+              onChange={(event) => {
+                setPassword(event.target.value)
+                setIsPasswordError(false)
+              }}
+            />
+            <span
+              className="eye"
+              onClick={() => {
+                setShowPassword((prev) => !prev)
+              }}
+            >
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </span>
+          </div>
           <div className="flex items-center justify-between mb-4">
             {error && (
               <>
@@ -105,18 +126,18 @@ export default function Login() {
             )}
           </div>
           <div className="flex gap-2.5 h-9">
-            <button
+            <div
               disabled={hideWriteAdminButton}
               onClick={report}
-              className="w-8/12 btn-white"
+              className="btn-white w-2/3"
             >
               {t('WriteAdmin')}
-            </button>
+            </div>
             <input
               type="submit"
               disabled={loading}
               onClick={handleLogin}
-              className="btn-cyan w-4/12"
+              className="btn-cyan w-1/3"
               value={t('Next')}
             />
           </div>
@@ -126,3 +147,12 @@ export default function Login() {
   )
 }
 Login.backgroundColor = 'bg-white'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}
