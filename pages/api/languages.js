@@ -9,5 +9,5 @@ export default async function handler(req, res) {
   if (error) {
     res.status(404).json({ error })
   }
-  res.status(200).json({ languages, token: req.headers.token })
+  res.status(200).json({ languages })
 }
