@@ -34,3 +34,12 @@ export function useMethod(token) {
   const methods = data
   return [methods, { mutate, loading, error }]
 }
+export function useProject({ token, id }) {
+  const { data, mutate, error } = useSWR(
+    token ? [`/api/projects/${id}`, token] : null,
+    fetcher
+  )
+  const loading = !data && !error
+  const projects = data
+  return [projects, { mutate, loading, error }]
+}
