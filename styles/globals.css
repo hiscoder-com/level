@@ -11,7 +11,7 @@
 }
 
 .btn {
-@apply border-2 rounded-md duration-300 inline-block p-1 cursor-pointer
+@apply text-center border-2 rounded-md duration-300 inline-block p-1 cursor-pointer
 disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white 
  disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400
 }
