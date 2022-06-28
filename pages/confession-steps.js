@@ -87,7 +87,7 @@ export default function ConfessionSteps() {
       </div>
       <div
         className={`flex flex-row items-center space-x-6 ${
-          page === 5 ? 'block' : 'hidden'
+          page === 5 ? '' : 'hidden sm:flex sm:invisible'
         }`}
       >
         <div className="space-x-1.5 items-center h4">
