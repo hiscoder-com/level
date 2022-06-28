@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next'
 
 import { useRouter } from 'next/router'
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { supabase } from '../utils/supabaseClient'
 import { useUser } from '../lib/UserContext'
 
@@ -145,3 +147,12 @@ export default function Login() {
   )
 }
 Login.backgroundColor = 'bg-white'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}
