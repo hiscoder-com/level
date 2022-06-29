@@ -49,7 +49,10 @@
 <br>
 
 <ul>
-<li>Создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span>, например,<span style="font-weight:bold">feature-john-1234</span></li>
+<li>Если над проектом идёт командная работа, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub и своим псевдонимом</span>, например,<span style="font-weight:bold">feature-john-1234</span></li>
+<li>Если вы один работаете над проектом, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span>, например,<span style="font-weight:bold">feature-1234</span></li>
+<li>Если вы работаете над созданием <span style="font-weight:bold">новой функциональности</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">feature</span></li>
+<li>Если вы работаете над <span style="font-weight:bold">исправлением ошибок</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">fix</span></li>
 <li>Решите issue</li>
 <li>Во время работы над issue старайтесь фиксировать (коммитить) небольшие изменения, и давать им понятные названия</li>
 <li>Создайте <span style="font-weight:bold">PR</span> для <span style="font-weight:bold">feature-ветки</span> в <span style="font-weight:bold">develop</span></li>
