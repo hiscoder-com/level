@@ -11,6 +11,7 @@ function Project({ code }) {
   const [coordinator] = useCoordinator({ token: session?.access_token, id: project?.id })
   const [users] = useUsers(session?.access_token)
   console.log({ project, users: users && Object.values(users), coordinator })
+
   const handleSetCoordinator = async () => {
     if (!project?.id || !userId) {
       alert('неправильный координатор')
@@ -31,6 +32,7 @@ function Project({ code }) {
       })
       .catch((error) => console.log(error, 'from axios'))
   }
+
   return (
     <div>
       <h3>Project</h3>
@@ -52,8 +54,8 @@ function Project({ code }) {
       <p>
         Coordinator
         <b>
-          {coordinator && Object.values(coordinator) > 0
-            ? coordinator.users.email
+          {coordinator && Object.keys(coordinator).length > 0
+            ? coordinator?.users?.email
             : ' not assigned'}
         </b>
         <select onChange={(e) => setUserId(e.target.value)} className="form max-w-sm">
