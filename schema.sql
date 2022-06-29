@@ -586,19 +586,19 @@ DELETE FROM
   PUBLIC .languages;
 
 INSERT INTO
-  PUBLIC .languages (id, eng, code, orig_name)
+  PUBLIC .languages (eng, code, orig_name, is_gl)
 VALUES
-  (1, 'russian', 'ru', 'русский'),
-  (2, 'english', 'en', 'english');
+  ('russian', 'ru', 'русский', true),
+  ('english', 'en', 'english', true);
 
 DELETE FROM
   PUBLIC .methods;
 
 INSERT INTO
-  PUBLIC .methods (id, title)
+  PUBLIC .methods (title)
 VALUES
-  (1, 'Vcana Bible'),
-  (2, 'Vcana OBS');
+  ('Vcana Bible'),
+  ('Vcana OBS');
 
 DELETE FROM
   PUBLIC .role_permissions;
@@ -618,7 +618,7 @@ DELETE FROM
   PUBLIC .projects;
 
 INSERT INTO
-  PUBLIC .projects (id, title, code, language_id, method_id, type)
+  PUBLIC .projects (title, code, language_id, method_id, type)
 VALUES
-  (1, 'Russian Literal Open Bible', 'rlob', 1, 1, 'bible'),
-  (2, 'Russian Simplified Open Bible', 'rsob', 1, 1, 'bible');
+  ('Russian Literal Open Bible', 'rlob', 1, 1, 'bible'),
+  ('Russian Simplified Open Bible', 'rsob', 1, 1, 'bible');
