@@ -16,6 +16,7 @@ export default async function handler(req, res) {
         .eq('role', 'coordinator')
       if (errorGet) {
         res.status(404).json({ errorGet })
+        return
       }
       res.status(200).json({ data: dataGet })
       break
@@ -28,6 +29,7 @@ export default async function handler(req, res) {
 
       if (errorPost) {
         res.status(404).json({ errorPost })
+        return
       }
 
       res.status(200).json({ dataPost })

@@ -19,8 +19,8 @@ export default async function userHandler(req, res) {
         .eq('project_id', id)
       if (error) {
         res.status(404).json({ error })
+        return
       }
-      console.log({ data })
       res.status(200).json({ ...data?.[0] })
       break
     case 'PUT':
