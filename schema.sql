@@ -139,7 +139,7 @@ CREATE TABLE PUBLIC .languages (
   eng text NOT NULL,
   code text NOT NULL UNIQUE,
   orig_name text NOT NULL,
-  is_GL BOOLEAN NOT NULL DEFAULT FALSE
+  is_gl BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 -- METHODS
