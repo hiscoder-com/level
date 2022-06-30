@@ -124,7 +124,7 @@
   - заголовок изменения
 
 <br>
-<h2 id="codestyle" align="center">Правила организации кода проекта</h2>
+<h4 id="codestyle" align="center">Правила организации кода проекта (codestyle)</h4>
 <h4 align="center">Поддержка читаемости кода</h4>
 <br>
 
@@ -206,6 +206,27 @@ import { useRouter } from 'next/router'
 import Layout from '../components/Layout'
 
 import VcanaLogo from '../public/vcana-logo.svg'
+```
+
+<br>
+<h4 align="center">Порядок написания классов в Tailwind CSS</h4>
+<br>
+
+ - Макет
+ - Флексбокс и Сетка
+ - Интервал
+ - Размеры
+ - Типография
+ - Фоны
+ - Границы
+ - Эффекты
+ - Фильтры
+ - Переходы и анимация
+
+ Например
+
+```javascript
+className="flex pt-0 w-1/3 text-xl text-slate-100 bg-orange-500 border-r-2 border-stone-800 shadow-md cursor-pointer"
 ```
 
 <br>
