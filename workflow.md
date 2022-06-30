@@ -45,8 +45,8 @@
 <h4 align="center">Начало работы над issue (DEV):</h4>
 <br>
 
-- Если над проектом идёт командная работа, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub и своим псевдонимом</span>, например,<span style="font-weight:bold">feature-john-1234</span>
-- Если вы один работаете над проектом, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span>, например,<span style="font-weight:bold">feature-1234</span>
+- Если над проектом идёт командная работа, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub и своим псевдонимом</span> (<span style="font-weight:bold">feature-john-1234</span>)
+- Если вы один работаете над проектом, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span> (<span style="font-weight:bold">feature-1234</span>)
 - Если вы работаете над созданием <span style="font-weight:bold">новой функциональности</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">feature</span>
 - Если вы работаете над <span style="font-weight:bold">исправлением ошибок</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">fix</span>
 - Решите issue
@@ -57,7 +57,7 @@
 - Убедитесь, что для проверки PR, назначено <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers
 - Проведите ручную проверку кода, чтобы убедиться, что нет простых ошибок, таких как оставшиеся комментарии и console.log()
 - карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span>
-- Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите сам <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span>
+- Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите  <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span>
 - Если есть замечания по коду от Reviewers, вы получите комментарии по недостаткам кода
 - Если объём правок слишком большой, то необходимо создать <span style="font-weight:bold">issue</span>, исправить код в текущей ветке и прикрепить новую <span style="font-weight:bold">issue</span>
 - Как только получаете два одобрения, подтверждаете запрос на слияние веток (<span style="font-weight:bold">merge pull request</span>)
@@ -66,7 +66,7 @@
 
 > Примечание:
 >
-> После окончания спринта делать release в ветку master
+> По окончании спринта делать release в ветку master
 > <br>
 
 <br>
