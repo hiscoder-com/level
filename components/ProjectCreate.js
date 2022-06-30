@@ -1,10 +1,20 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form'
+
 import { useLanguages, useMethod } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 
 function ProjectCreate() {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm()
+  const onSubmit = (data) => console.log(data, 'data')
+  console.log(errors, 'errors')
+
   const router = useRouter()
   const [languageId, setLanguageId] = useState(null)
   const [title, setTitle] = useState('')
@@ -51,57 +61,67 @@ function ProjectCreate() {
 
   return (
     <div>
-      <div>Имя проекта</div>
-      <input
-        onBlur={(e) => setTitle(e.target.value)}
-        className={`${styleTitle} max-w-sm`}
-      />
-      <div>Код проекта</div>
-      <input
-        onBlur={(e) => setCode(e.target.value)}
-        className={`${styleTitle} max-w-sm`}
-      />
-      <div>Язык</div>
-      <select onChange={(e) => setLanguageId(e.target.value)} className="form max-w-sm">
-        placeholder={'Choose your language'}
-        {languages &&
-          languages.map((el) => {
-            return (
-              <option key={el.id} value={el.id}>
-                {el.orig_name}
-              </option>
-            )
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div>Имя проекта</div>
+        <input
+          onBlur={(e) => setTitle(e.target.value)}
+          className={`${styleTitle} max-w-sm`}
+        />
+        <div>Код проекта</div>
+        <input
+          onBlur={(e) => setCode(e.target.value)}
+          className={`${styleTitle} max-w-sm`}
+          placeholder="Identifier"
+          {...register('Identifier', {
+            required: true,
+            minLength: 3,
+            maxLength: 4,
+            pattern: /^[a-z]+$/i,
           })}
-      </select>
-      <div>Метод</div>
-      <select
-        onChange={(e) => {
-          setMethodId(e.target.value)
-        }}
-        className="form max-w-sm"
-      >
-        {methods &&
-          methods.data.map((el) => {
-            return (
-              <option key={el.id} value={el.id}>
-                {el.title}
-              </option>
-            )
-          })}
-      </select>
-      <select onChange={(e) => setType(e.target.value)} className="form max-w-sm">
-        {projectTypes &&
-          projectTypes.map((el) => {
-            return (
-              <option key={el} value={el}>
-                {el}
-              </option>
-            )
-          })}
-      </select>
-      <button onClick={create} className="btn btn-cyan btn-filled">
-        Создать проект
-      </button>
+        />
+        <div>Язык</div>
+        <select onChange={(e) => setLanguageId(e.target.value)} className="form max-w-sm">
+          placeholder={'Choose your language'}
+          {languages &&
+            languages.map((el) => {
+              return (
+                <option key={el.id} value={el.id}>
+                  {el.orig_name}
+                </option>
+              )
+            })}
+        </select>
+        <div>Метод</div>
+        <select
+          onChange={(e) => {
+            setMethodId(e.target.value)
+          }}
+          className="form max-w-sm"
+        >
+          {methods &&
+            methods.data.map((el) => {
+              return (
+                <option key={el.id} value={el.id}>
+                  {el.title}
+                </option>
+              )
+            })}
+        </select>
+        <select onChange={(e) => setType(e.target.value)} className="form max-w-sm">
+          {projectTypes &&
+            projectTypes.map((el) => {
+              return (
+                <option key={el} value={el}>
+                  {el}
+                </option>
+              )
+            })}
+        </select>
+        <button onClick={create} className="btn btn-cyan btn-filled">
+          Создать проект
+        </button>
+        <input className="btn btn-cyan btn-filled" type="submit" />
+      </form>
     </div>
   )
 }
