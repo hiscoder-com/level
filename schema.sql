@@ -115,6 +115,7 @@ CREATE TYPE PUBLIC .book_code AS enum (
 CREATE TABLE PUBLIC .users (
   id uuid NOT NULL primary key,
   email text NOT NULL UNIQUE,
+  user_name text NOT NULL UNIQUE,
   agreement BOOLEAN NOT NULL DEFAULT FALSE,
   confession BOOLEAN NOT NULL DEFAULT FALSE,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE,
@@ -428,9 +429,9 @@ CREATE
 OR replace FUNCTION PUBLIC .handle_new_user() returns TRIGGER LANGUAGE plpgsql security definer AS $$
 BEGIN
   INSERT INTO
-    PUBLIC .users (id, email)
+    PUBLIC .users (id, email, user_name)
   VALUES
-    (NEW .id, NEW .email);
+    (NEW .id, NEW .email, NEW .raw_user_meta_data ->> 'user_name');
 
 RETURN NEW;
 
@@ -499,6 +500,7 @@ INSERT INTO
   PUBLIC .users (
     id,
     email,
+    user_name,
     agreement,
     confession,
     blocked
@@ -507,6 +509,7 @@ VALUES
   (
     '21ae6e79-3f1d-4b87-bcb1-90256f63c167',
     'translator@mail.com',
+    'translator',
     FALSE,
     FALSE,
     NULL
@@ -514,6 +517,7 @@ VALUES
   (
     '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2',
     'coordinator2@mail.com',
+    'coordinator2',
     FALSE,
     FALSE,
     NULL
@@ -521,6 +525,7 @@ VALUES
   (
     '2e108465-9c20-46cd-9e43-933730229762',
     'moderator3@mail.com',
+    'moderator3',
     FALSE,
     FALSE,
     NULL
@@ -528,6 +533,7 @@ VALUES
   (
     '54358d8e-0144-47fc-a290-a6882023a3d6',
     'coordinator3@mail.com',
+    'coordinator3',
     FALSE,
     FALSE,
     NULL
@@ -535,6 +541,7 @@ VALUES
   (
     '83282f7a-c4b7-4387-97c9-4c356e56af5c',
     'coordinator@mail.com',
+    'coordinator',
     FALSE,
     FALSE,
     NULL
@@ -542,6 +549,7 @@ VALUES
   (
     '8331e952-5771-49a6-a679-c44736f5581b',
     'moderator2@mail.com',
+    'moderator2',
     FALSE,
     FALSE,
     NULL
@@ -549,6 +557,7 @@ VALUES
   (
     'ae891f6d-0f04-4b01-aa15-1ed46d0ef91d',
     'admin2@mail.com',
+    'admin2',
     FALSE,
     FALSE,
     NULL
@@ -556,6 +565,7 @@ VALUES
   (
     'bba5a95e-33b7-431d-8c43-aedc517a1aa6',
     'translator2@mail.com',
+    'translator2',
     FALSE,
     FALSE,
     NULL
@@ -563,6 +573,7 @@ VALUES
   (
     'cba74237-0801-4e3b-93f6-012aeab6eb91',
     'admin@mail.com',
+    'admin',
     FALSE,
     FALSE,
     NULL
@@ -570,6 +581,7 @@ VALUES
   (
     'e50d5d0a-4fdb-4de3-b431-119e684d775e',
     'moderator@mail.com',
+    'moderator',
     FALSE,
     FALSE,
     NULL
@@ -577,6 +589,7 @@ VALUES
   (
     'f193af4d-ca5e-4847-90ef-38f969792dd5',
     'translator3@mail.com',
+    'translator3',
     FALSE,
     FALSE,
     NULL

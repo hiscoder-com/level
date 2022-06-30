@@ -1,7 +1,5 @@
-import React from 'react'
-
-function edit() {
-  return <div>edit</div>
+function UserPage() {
+  return <div>UserPage</div>
 }
 
-export default edit
+export default UserPage
