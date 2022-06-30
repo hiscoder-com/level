@@ -19,12 +19,12 @@
 <h4 align="center">Владелец продукта / Product Owner (PO)</h4>
 <br>
 
-<ul>
-<li>Новые issues создаются и добавляются в столбце <span style="font-weight:bold">New issues</span></li>
-<li><span style="font-weight:bold">Planned - Needs Definition</span> - здесь карточки, которые нужно сформулировать в конкретные issues. Если issue получается очень большая, то превращаем карточку в <span style="font-weight:bold">Epic</span> и создаем подзадачи так, чтобы на их выполнение уходило не больше недели</li>
-<li>Поместите issue в колонку <span style="font-weight:bold">Product Backlog</span> после завершения определения. Четко определенная issue будет включать в себя описание требования, ключевые результаты/определение выполненного, макеты, если нужно.</li>
-<li>Расставить карточки по порядку приоритета, что самое важное – вверх. Можно обсудить с командой</li>
-</ul>
+
+- Новые issues создаются и добавляются в столбце <span style="font-weight:bold">New issues</span>
+- <span style="font-weight:bold">Planned - Needs Definition</span> - здесь карточки, которые нужно сформулировать в конкретные issues. Если issue получается очень большая, то превращаем карточку в <span style="font-weight:bold">Epic</span> и создаем подзадачи так, чтобы на их выполнение уходило не больше недели
+- Поместите issue в колонку <span style="font-weight:bold">Product Backlog</span> после завершения определения. Четко определенная issue будет включать в себя описание требования, ключевые результаты/определение выполненного, макеты, если нужно
+- Расставить карточки по порядку приоритета, что самое важное – вверх. Можно обсудить с командой
+
 
 > Примечание:
 >
@@ -35,39 +35,34 @@
 <h4 align="center">Разработчик / Developer (DEV)</h4>
 <br>
 
-<ul>
-<li>Сначала проверьте, нет ли <span style="font-weight:bold">PR, Issues</span>, которые назначены вам, они в приоритете</li>
-<li>Выберите задачу из <span style="font-weight:bold">Product Backlog</span></li>
-<li>Проверьте что задача четко определена</li>
-<li>Назначьте себя исполнителем issue</li>
-<li>Перенесите карточку в <span style="font-weight:bold">In Progress</span></li>
-</ul>
-<span style="font-weight:bold"></span>
+- Сначала проверьте, нет ли <span style="font-weight:bold">PR, Issues</span>, которые назначены вам, они в приоритете
+- Выберите задачу из <span style="font-weight:bold">Product Backlog</span>
+- Проверьте что задача четко определена
+- Назначьте себя исполнителем issue
+- Перенесите карточку в <span style="font-weight:bold">In Progress</span>
 
 <br>
 <h4 align="center">Начало работы над issue (DEV):</h4>
 <br>
 
-<ul>
-<li>Если над проектом идёт командная работа, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub и своим псевдонимом</span>, например,<span style="font-weight:bold">feature-john-1234</span></li>
-<li>Если вы один работаете над проектом, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span>, например,<span style="font-weight:bold">feature-1234</span></li>
-<li>Если вы работаете над созданием <span style="font-weight:bold">новой функциональности</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">feature</span></li>
-<li>Если вы работаете над <span style="font-weight:bold">исправлением ошибок</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">fix</span></li>
-<li>Решите issue</li>
-<li>Во время работы над issue старайтесь фиксировать (коммитить) небольшие изменения, и давать им понятные названия</li>
-<li>Создайте <span style="font-weight:bold">PR</span> для <span style="font-weight:bold">feature-ветки</span> в <span style="font-weight:bold">develop</span></li>
-<li>При создании PR необходимо <span style="font-weight:bold">коротко описать проделанную работу</span> в <span style="font-weight:bold">Description</span></li>
-<li>Убедитесь, что PR связан с соответствующей рассматриваемой issue</li>
-<li>Убедитесь, что для проверки PR, назначено <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers</li>
-<li>Проведите ручную проверку кода, чтобы убедиться, что нет простых ошибок, таких как оставшиеся комментарии и console.log()</li>
-<li>карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span></li>
-<li>Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите сам <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span></li>
-<li>Если есть замечания по коду от Reviewers, вы получите комментарии по недостаткам кода</li>
-<li>Если объём правок слишком большой, то необходимо создать <span style="font-weight:bold">issue</span>, исправить код в текущей ветке и прикрепить новую <span style="font-weight:bold">issue</span></li>
-<li>Как только получаете два одобрения, подтверждаете запрос на слияние веток (<span style="font-weight:bold">merge pull request</span>)</li>
-<li>Переносим карточку в <span style="font-weight:bold">Done</span></li>
-<li><span style="font-weight:bold">По окончании Sprint Review</span> переносим карточку в <span style="font-weight:bold">Closed</span></li>
-</ul>
+- Если над проектом идёт командная работа, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub и своим псевдонимом</span>, например,<span style="font-weight:bold">feature-john-1234</span>
+- Если вы один работаете над проектом, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span>, например,<span style="font-weight:bold">feature-1234</span>
+- Если вы работаете над созданием <span style="font-weight:bold">новой функциональности</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">feature</span>
+- Если вы работаете над <span style="font-weight:bold">исправлением ошибок</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">fix</span>
+- Решите issue
+- Во время работы над issue старайтесь фиксировать (коммитить) небольшие изменения, и давать им понятные названия
+- Создайте <span style="font-weight:bold">PR</span> для <span style="font-weight:bold">feature-ветки</span> в <span style="font-weight:bold">develop</span>
+- При создании PR необходимо <span style="font-weight:bold">коротко описать проделанную работу</span> в <span style="font-weight:bold">Description</span>
+- Убедитесь, что PR связан с соответствующей рассматриваемой issue
+- Убедитесь, что для проверки PR, назначено <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers
+- Проведите ручную проверку кода, чтобы убедиться, что нет простых ошибок, таких как оставшиеся комментарии и console.log()
+- карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span>
+- Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите сам <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span>
+- Если есть замечания по коду от Reviewers, вы получите комментарии по недостаткам кода
+- Если объём правок слишком большой, то необходимо создать <span style="font-weight:bold">issue</span>, исправить код в текущей ветке и прикрепить новую <span style="font-weight:bold">issue</span>
+- Как только получаете два одобрения, подтверждаете запрос на слияние веток (<span style="font-weight:bold">merge pull request</span>)
+- Переносим карточку в <span style="font-weight:bold">Done</span>
+- <span style="font-weight:bold">По окончании Sprint Review</span> переносим карточку в <span style="font-weight:bold">Closed</span>
 
 > Примечание:
 >
@@ -78,35 +73,29 @@
 <h2 align="center">Как исправлять ошибки</h2>
 <br>
 
-<ul>
-<li>Убедитесь, что шаги для воспроизведения ошибки ясны и точны</li>
-<li>Если ошибка критичная, то делаем <span style="font-weight:bold">hotfix</span> ветку от master, проходим все шаги; если все в порядке, то публикуем в master и в develop</li>
-<li>Если ошибка не критичная, то работаем по обычной схеме</li>
-</ul>
+- Убедитесь, что шаги для воспроизведения ошибки ясны и точны
+- Если ошибка критичная, то делаем <span style="font-weight:bold">hotfix</span> ветку от master, проходим все шаги; если все в порядке, то публикуем в master и в develop
+- Если ошибка не критичная, то работаем по обычной схеме
 
 <br>
 <h4 align="center">Проверка PR</h4>
 <br>
 
-<ul>
-<li>Не допускать закомментированных кусков кода, console.log()</li>
-<li>Changelog.md и version в package.json надо поменять на актуальные (<a href="#sermver">sermver</a>)</li>
-<li>Стараться придерживаться <a href="#codestyle">codestyle</a>. Если есть какие-то добавления, замечания - дополнять ими стандарт оформления кода</li>
-<li>Не забывать про документацию. Если внесены изменения в UI/UX, отметить это в документации, обновить скриншоты</li>
-<li>Использовать <span style="font-weight:bold">hooks</span> для того чтобы оптимизировать приложение</li>
-
-</ul>
+- Не допускать закомментированных кусков кода, console.log()
+- Changelog.md и version в package.json надо поменять на актуальные (<a href="#sermver">sermver</a>)
+- Стараться придерживаться <a href="#codestyle">codestyle</a>. Если есть какие-то добавления, замечания - дополнять ими стандарт оформления кода
+- Не забывать про документацию. Если внесены изменения в UI/UX, отметить это в документации, обновить скриншоты
 
 <br>
 <h4 id="sermver" align="center">Семантическое версионирование 2.0.0 (sermver)</h4>
 <br>
 
 Учитывая номер версии <span style="font-weight:bold">{major}.{minor}.{patch}</span>, следует увеличивать:
-<ul>
-<li><span style="font-weight:bold">major</span>-версию, когда сделаны обратно несовместимые изменения API</li>
-<li><span style="font-weight:bold">minor</span>-версию, когда вы добавляете новую функциональность, не нарушая обратной совместимости</li>
-<li><span style="font-weight:bold">patch</span>-версию, когда вы делаете обратно совместимые исправления</li>
-</ul>
+
+- <span style="font-weight:bold">major</span>-версию, когда сделаны обратно несовместимые изменения API
+- <span style="font-weight:bold">minor</span>-версию, когда вы добавляете новую функциональность, не нарушая обратной совместимости
+- <span style="font-weight:bold">patch</span>-версию, когда вы делаете обратно совместимые исправления
+
 Семантическое версионирование также поддерживает и дополнительные части, идущие после патч версии. Например, там могут быть метки о том что это предварительный релиз или какой-то конкретный билд. Например: 1.2.3-beta.1, 1.2.3+abc123 или 1.2.3-beta.1+abc123 — обратите внимание что билд отделяется + (плюс), а наименование предварительного релиза - (дефис). Данные дополнительные указатели говорят о том, что релиз не стабильный, и в нём могут как всё поменять, так и вовсе удалить, либо добавить совершенной новый функционал в будущем.
 <br>
 <br>
@@ -117,16 +106,14 @@
 <h4 align="center">Поддержка читаемости кода</h4>
 <br>
 
-<ul>
-<li>В коде должны быть понятные имена для переменных</li>
-<li>Дублирование кода - выносить дублируемые куски кода в helper</li>
-<li>Стараться создавать файлы, код которых не превышает  100 строк</li>
-<li>Искать возможность вынести код в <span style="font-weight:bold">RCL</span>, или расширить существующую библиотеку</li>
-<li>Не делать слишком перегруженный код с множеством <span style="font-weight:bold">if/else</span></li>
-<li>После себя оставлять код чуточку чище и лучше</li>
-<li>Если кусок кода сложен для понимания - надо добавить комментарии в формате <span style="font-weight:bold">jsdocs</span></li>
-</ul>
-
+- В коде должны быть понятные имена для переменных
+- Выносить дублируемые куски кода в helper
+- Стараться создавать файлы, код которых не превышает  100 строк
+- Искать возможность вынести код в <span style="font-weight:bold">RCL</span>, или расширить существующую библиотеку
+- Использовать <span style="font-weight:bold">hooks</span> для того чтобы оптимизировать приложение
+- Не делать слишком перегруженный код с множеством <span style="font-weight:bold">if/else</span>
+- После себя оставлять код чуточку чище и лучше
+- Если кусок кода сложен для понимания - надо добавить комментарии в формате <a href="#jsdoc">jsdocs</a>
 
 <h4 align="center">Форматирование кода</h4>
 <br>
@@ -144,13 +131,13 @@
 <h4 align="center">Структура папок и файлов</h4>
 <br>
 
-Одна важная особенность Next.js — это компактная структура папок. У вас есть минимум для запуска приложения Next.js. То, что вы получите по мере роста приложения, зависит от вас больше, чем от фреймворка.
-
 Единственными конкретными папками Next.js являются папки pages, public и styles
 ```
+- components
+    - Appbar.js
 - pages
     - api
-        - hello.js
+        - getUser.js
     - _app.js
     - index.js
 - public
@@ -158,12 +145,46 @@
     - vercel.svg
 - styles
     - globals.css
+- utils
+    - hooks.css
+    - supabaseClient.js
 ```
 
-pages - это компоненты React. Каждый файл — это страница, а каждая страница — это компонент React. 
+**components** - Здесь находятся компоненты приложения, которые переиспользуются на страницах
 
-_app.js - Это пользовательский компонент, который находится в папке страниц. Next.js использует этот компонент для инициализации страниц
+**pages** - Это компоненты React. Каждый файл — это страница, а каждая страница — это компонент React. 
 
+**_app.js** - Это пользовательский компонент, который находится в папке страниц. Next.js использует этот компонент для инициализации страниц
+
+**index.js** - Это страница, которая отображается, когда пользователь посещает корень приложения
+
+**api** - Здесь находятся маршруты API (API routes) и сопоставляются с конечной точкой
+
+<br>
+<h4 align="center">Порядок импорта</h4>
+<br>
+
+Импорт стараемся группировать.
+ - реакт
+ - некст
+ - сторонние контексты/компоненты/хуки
+ - наши контексты/компоненты/хуки
+ - наши константы/конфиги/хэлперы
+ - картинки/иконки
+
+ Например
+
+```javascript
+import { useState, useEffect, useRef } from 'react'
+
+import Head from 'next/head'
+
+import { useRouter } from 'next/router'
+
+import Layout from '../components/Layout'
+
+import VcanaLogo from '../public/vcana-logo.svg'
+```
 
 <br>
 <h2 align="center">Zenhub</h2>
@@ -197,6 +218,10 @@ _app.js - Это пользовательский компонент, котор
 **WIP** - issue, находящиеся в работе
 
 **Deploy** — это процедура переноса сайта на сервер
+
+<div id="jsdoc"></div>
+
+**JSDoc** — генератор документации в HTML-формате из комментариев исходного кода на JavaScript
 
 **New Issues**
 Этот Pipeline является отправной точкой для новых issues. Любой из команды может создать issue в любое время и знать, что благодаря этому процессу она будет видна всем.
