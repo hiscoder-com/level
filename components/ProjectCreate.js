@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
@@ -7,34 +7,29 @@ import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 
 function ProjectCreate() {
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm()
-  const onSubmit = (data) => console.log(data, 'data')
-  console.log(errors, 'errors')
-
   const router = useRouter()
-  const [languageId, setLanguageId] = useState(null)
-  const [title, setTitle] = useState('')
 
   const [styleTitle, setStyleTitle] = useState('form')
-  const [methodId, setMethodId] = useState(null)
-  const [type, setType] = useState(null)
-  const [code, setCode] = useState(null)
+  const [styleCode, setStyleCode] = useState('form')
 
-  const { user, session } = useUser()
+  const [errorTitle, setErrorTitle] = useState('')
+  const [errorCode, setErrorCode] = useState('')
+
+  const { session } = useUser()
   const [languages, { mutate }] = useLanguages(session?.access_token)
   const [methods] = useMethod(session?.access_token)
   const projectTypes = ['obs', 'bible']
 
-  const create = async () => {
-    if (!title || !languageId || !code || !methodId || !type) {
-      setStyleTitle('form-invalid')
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onChange' })
+  const onSubmit = async (data) => {
+    const { title, code, languageId, methodId, type } = data
+    if (!title || !code || !languageId || !methodId || !type) {
       return
     }
-    setStyleTitle('form')
     axios.defaults.headers.common['token'] = session?.access_token
     axios
       .post('/api/projects', {
@@ -58,30 +53,102 @@ function ProjectCreate() {
       })
       .catch((error) => console.log(error, 'from axios'))
   }
+  useEffect(() => {
+    if (Object.keys(errors).length === 0) {
+      setStyleTitle('form')
+      setStyleCode('form')
+      setErrorTitle('')
+      setErrorCode('')
+      return
+    }
+    if (!errors.title) {
+      setStyleTitle('form')
+    }
+    if (!errors.identifier) {
+      setStyleCode('form')
+    }
+    for (const key in errors) {
+      switch (key) {
+        case 'title':
+          console.log(errors[key])
+          setStyleTitle('form-invalid')
+          setErrorTitle(errors[key].message)
+
+          break
+        case 'code':
+          console.log(errors[key])
+          setStyleCode('form-invalid')
+          setErrorCode(errors[key].message)
+          break
+
+        default:
+          setStyleTitle('form')
+          setStyleCode('form')
+          setErrorTitle('')
+          setErrorCode('')
+          break
+      }
+    }
+  }, [errors.title, errors.identifier])
+
+  const inputs = [
+    {
+      title: 'Имя проекта',
+      classname: styleTitle,
+      placeholder: 'Title',
+      register: {
+        ...register('title', {
+          required: true,
+          pattern: {
+            value: /^[A-za-z\s]+$/i,
+            message: 'You need type just latins symbols',
+          },
+        }),
+      },
+      errorMessage: errorTitle,
+    },
+    {
+      title: 'Код проекта',
+      classname: styleCode,
+      placeholder: 'Code',
+      register: {
+        ...register('code', {
+          required: true,
+          minLength: { value: 3, message: 'Need more than 3 characters' },
+          maxLength: { value: 4, message: 'Need less than 3 characters' },
+          pattern: {
+            value: /^[a-z]+$/i,
+            message: 'only small letters of the Latin alphabet are needed',
+          },
+        }),
+      },
+      errorMessage: errorCode,
+    },
+  ]
 
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div>Имя проекта</div>
-        <input
-          onBlur={(e) => setTitle(e.target.value)}
-          className={`${styleTitle} max-w-sm`}
-        />
-        <div>Код проекта</div>
-        <input
-          onBlur={(e) => setCode(e.target.value)}
-          className={`${styleTitle} max-w-sm`}
-          placeholder="Identifier"
-          {...register('Identifier', {
-            required: true,
-            minLength: 3,
-            maxLength: 4,
-            pattern: /^[a-z]+$/i,
-          })}
-        />
+        {inputs.map((el) => {
+          return (
+            <>
+              <div>{el.title}</div>
+              <input
+                className={`${el.classname} max-w-sm`}
+                placeholder={el.placeholder}
+                {...el.register}
+              />
+              {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
+            </>
+          )
+        })}
+
         <div>Язык</div>
-        <select onChange={(e) => setLanguageId(e.target.value)} className="form max-w-sm">
-          placeholder={'Choose your language'}
+        <select
+          className="form max-w-sm"
+          placeholder="Language"
+          {...register('languageId')}
+        >
           {languages &&
             languages.map((el) => {
               return (
@@ -92,12 +159,7 @@ function ProjectCreate() {
             })}
         </select>
         <div>Метод</div>
-        <select
-          onChange={(e) => {
-            setMethodId(e.target.value)
-          }}
-          className="form max-w-sm"
-        >
+        <select placeholder="Method" {...register('methodId')} className="form max-w-sm">
           {methods &&
             methods.data.map((el) => {
               return (
@@ -107,7 +169,7 @@ function ProjectCreate() {
               )
             })}
         </select>
-        <select onChange={(e) => setType(e.target.value)} className="form max-w-sm">
+        <select {...register('type')} className="form max-w-sm">
           {projectTypes &&
             projectTypes.map((el) => {
               return (
@@ -117,9 +179,7 @@ function ProjectCreate() {
               )
             })}
         </select>
-        <button onClick={create} className="btn btn-cyan btn-filled">
-          Создать проект
-        </button>
+
         <input className="btn btn-cyan btn-filled" type="submit" />
       </form>
     </div>
