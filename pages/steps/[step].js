@@ -2,7 +2,8 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 export default function StepPage() {
-  const { user } = useRouter()
+  const router = useRouter()
+  const { step } = router.query
   return (
     <div className="container">
       <Head>
@@ -10,7 +11,7 @@ export default function StepPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>Step: {step}</div>
+      <div>Step:{step}</div>
     </div>
   )
 }

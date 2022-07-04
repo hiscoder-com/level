@@ -13,6 +13,8 @@ import VCANA_logo from '../public/vcana-logo.svg'
 export default function AppBar({ isOpen, setIsOpen }) {
   const { user } = useUser()
   const [access, setAccess] = useState(false)
+  const [step, setStep] = useState(1)
+
   useEffect(() => {
     const hasAccess = async (user_id) => {
       const { data, error } = await supabase.rpc('has_access', {
@@ -25,6 +27,90 @@ export default function AppBar({ isOpen, setIsOpen }) {
       hasAccess(user.id)
     }
   }, [user])
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step])
+
+  const prevStep = () => {
+    if (step > 1) {
+      setStep((prev) => {
+        return prev > 0 ? prev - 1 : prev
+      })
+    }
+  }
+
+  const nextStep = () => {
+    setStep((prev) => {
+      return prev < 8 ? prev + 1 : prev
+    })
+  }
+
+  const handleKeyDown = (e) => {
+    switch (e.keyCode) {
+      case 37:
+        prevStep()
+        break
+      case 39:
+        nextStep()
+        break
+    }
+  }
+
+  const steps = {
+    1: {
+      title: 'Шаг 1: Самостоятельное изучение',
+      users: 1,
+      time: 60,
+      tools: {},
+    },
+    2: {
+      title: 'Шаг 2: Командное изучение текста',
+      users: 1,
+      time: 60,
+      tools: {},
+    },
+    3: {
+      title: 'Шаг 3: Командное изучение текста',
+      users: 1,
+      time: 60,
+      tools: {},
+    },
+    4: {
+      title: 'Шаг 4: Набросок “Вслепую”',
+      users: 1,
+      time: 60,
+      tools: {},
+    },
+    5: {
+      title: 'Шаг 5: Самостоятельная проверка',
+      users: 1,
+      time: 60,
+      tools: {},
+    },
+    6: {
+      title: 'Шаг 6: Взаимная проверка',
+      users: 2,
+      time: 60,
+      tools: {},
+    },
+    7: {
+      title: 'Шаг 7: Проверка ключевых слов',
+      users: 2,
+      time: 60,
+      tools: {},
+    },
+    8: {
+      title: 'Шаг 8: Командный обзор перевода',
+      users: 2,
+      time: 60,
+      tools: {},
+    },
+  }
 
   return (
     <Disclosure as="nav" className={'bg-white'}>
@@ -46,9 +132,9 @@ export default function AppBar({ isOpen, setIsOpen }) {
                 </Link>
               </div>
               {/* Title */}
-              <div className="text-emerald-500"></div>
+              <div className="h4">{steps[step].title}</div>
               {/* Optional info */}
-              <div className="text-teal-500"></div>
+              <div className=""></div>
             </div>
           </div>
         </div>
