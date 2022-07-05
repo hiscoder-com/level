@@ -4,8 +4,7 @@ import Time from '../public/time.svg'
 
 
 function Timer() {
-	const [item, setItem] = useState('')
-	const [timeLeft, setTimeLeft] = useState(item ? item : 60 * 60)
+	const [timeLeft, setTimeLeft] = useState(60 * 60)
 	const [isCounting, setIsCounting] = useState(false)
 
 	const minutes = getPadTime(Math.floor(timeLeft / 60))
@@ -22,8 +21,6 @@ useEffect(() => {
 
 useEffect(() => {
 	localStorage.setItem('time left', timeLeft)
-  setItem(localStorage.getItem('time left')) 
-	console.log(item);
 }, [timeLeft])
 
 	const handleStart = () => {
