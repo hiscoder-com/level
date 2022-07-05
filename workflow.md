@@ -19,7 +19,6 @@
 <h4 align="center">Владелец продукта / Product Owner (PO)</h4>
 <br>
 
-
 - Новые issues создаются и добавляются в столбце <span style="font-weight:bold">New issues</span>
 - <span style="font-weight:bold">Planned - Needs Definition</span> - здесь карточки, которые нужно сформулировать в конкретные issues. Если issue получается очень большая, то превращаем карточку в <span style="font-weight:bold">Epic</span> и создаем подзадачи так, чтобы на их выполнение уходило не больше недели
 - Поместите issue в колонку <span style="font-weight:bold">Product Backlog</span> после завершения определения. Четко определенная issue будет включать в себя описание требования, ключевые результаты/определение выполненного, макеты, если нужно
@@ -33,6 +32,7 @@
 
 <br>
 <h4 align="center">Разработчик / Developer (DEV)</h4>
+<h4 align="center">Начало работы над issue (DEV)</h4>
 <br>
 
 - Сначала проверьте, нет ли <span style="font-weight:bold">PR, Issues</span>, которые назначены вам, они в приоритете
@@ -40,15 +40,6 @@
 - Проверьте что задача четко определена
 - Назначьте себя исполнителем issue
 - Перенесите карточку в <span style="font-weight:bold">In Progress</span>
-
-<br>
-<h4 align="center">Начало работы над issue (DEV):</h4>
-<br>
-
-- Если над проектом идёт командная работа, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub и своим псевдонимом</span> (<span style="font-weight:bold">feature-john-1234</span>)
-- Если вы один работаете над проектом, создайте новую ветку с соответствующим номером <span style="font-weight:bold">issue GitHub</span> (<span style="font-weight:bold">feature-1234</span>)
-- Если вы работаете над созданием <span style="font-weight:bold">новой функциональности</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">feature</span>
-- Если вы работаете над <span style="font-weight:bold">исправлением ошибок</span> проекта, то ветвь начинается со слова <span style="font-weight:bold">fix</span>
 - Решите issue
 - Во время работы над issue старайтесь фиксировать (коммитить) небольшие изменения, и давать им понятные названия
 - Создайте <span style="font-weight:bold">PR</span> для <span style="font-weight:bold">feature-ветки</span> в <span style="font-weight:bold">develop</span>
@@ -56,10 +47,9 @@
 - Убедитесь, что PR связан с соответствующей рассматриваемой issue
 - Убедитесь, что для проверки PR, назначено <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers
 - Проведите ручную проверку кода, чтобы убедиться, что нет простых ошибок, таких как оставшиеся комментарии и console.log()
-- карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span>
+- Карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span>
 - Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите  <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span>
 - Если есть замечания по коду от Reviewers, вы получите комментарии по недостаткам кода
-- Если объём правок слишком большой, то необходимо создать <span style="font-weight:bold">issue</span>, исправить код в текущей ветке и прикрепить новую <span style="font-weight:bold">issue</span>
 - Как только получаете два одобрения, подтверждаете запрос на слияние веток (<span style="font-weight:bold">merge pull request</span>)
 - Переносим карточку в <span style="font-weight:bold">Done</span>
 - <span style="font-weight:bold">По окончании Sprint Review</span> переносим карточку в <span style="font-weight:bold">Closed</span>
@@ -67,6 +57,24 @@
 > Примечание:
 >
 > По окончании спринта делать release в ветку master
+> <br>
+
+<br>
+<h4 align="center">Правильное именование веток</h4>
+<br>
+
+  <h5 align="center" style="font-weight:bold">{type}-{name}-{number}</h5>
+<br>
+
+где <span style="font-weight:bold">type</span> - тип ветви (feature, fix)
+    <span style="font-weight:bold">name</span> - псевдоним разработчика, работающего над ветвью 
+    <span style="font-weight:bold">number</span> - номер прикрепленного issue GitHub
+
+Например, <span style="font-weight:bold">feature-john-34</span>
+
+> Примечание:
+>
+> Если над проектом идёт командная работа, то при создании ветви необходимо указывать псевдонимы разработчиков, работающих над ветвью. Если вы один работаете над проектом, то псевдоним указывать не надо (<span style="font-weight:bold">feature-12</span>)
 > <br>
 
 <br>
@@ -168,7 +176,7 @@
 - styles
     - globals.css
 - utils
-    - hooks.css
+    - hooks.js
     - supabaseClient.js
 ```
 
@@ -233,7 +241,7 @@ className="flex pt-0 w-1/3 text-xl text-slate-100 bg-orange-500 border-r-2 borde
 <h2 align="center">Справочник</h2>
 <br>
 
-**Scrum** - фреймворк, предоставляющий спектр возможностей для продуктивной и  творческой разработки продуктов с максимально возможной ценностью и решения  нетривиальных задач в процессе работы. 
+**Scrum** - методология управления проектами. 
 
 **Kanban** - это метод, в основе которого лежит система вытягивания (pull system) производства, то есть, ограничение на количество незавершенной работы (work-in-process). Здесь все устроено так, чтобы застоявшиеся issue легко было отследить и перераспределить внутри команды. Это позволяет обнаруживать операционные проблемы и мотивировать сотрудников к улучшениям.
 
@@ -253,6 +261,8 @@ className="flex pt-0 w-1/3 text-xl text-slate-100 bg-orange-500 border-r-2 borde
 **Bug** - ошибки в системе. issue с данным лейблом имеют наивысший приоритет и должны быть взяты в работу первыми.
 
 **Feature** - новая функциональность
+
+**fix** - Если вы работаете над исправлением ошибок проекта, то ветвь начинается со слова fix
 
 **Refactoring** - issue, связанные с корректировкой ранее написанного кода
 
