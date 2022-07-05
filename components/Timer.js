@@ -4,7 +4,8 @@ import Time from '../public/time.svg'
 
 
 function Timer() {
-	const [timeLeft, setTimeLeft] = useState(60 * 60)
+	const [item, setItem] = useState('')
+	const [timeLeft, setTimeLeft] = useState(item ? item : 60 * 60)
 	const [isCounting, setIsCounting] = useState(false)
 
 	const minutes = getPadTime(Math.floor(timeLeft / 60))
@@ -19,6 +20,12 @@ useEffect(() => {
 		}
 }, [timeLeft, isCounting])
 
+useEffect(() => {
+	localStorage.setItem('time left', timeLeft)
+  setItem(localStorage.getItem('time left')) 
+	console.log(item);
+}, [timeLeft])
+
 	const handleStart = () => {
 		if(timeLeft === 0) setTimeLeft(60 * 60)
 		setIsCounting(true)
@@ -32,6 +39,7 @@ useEffect(() => {
 		setIsCounting(false)
 		setTimeLeft(60 * 60)
 	}
+
 
 	return (
 		<div className="flex row items-center gap-1 cursor-default">
