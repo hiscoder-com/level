@@ -8,6 +8,9 @@ import { supabase } from '../utils/supabaseClient'
 import { useUser } from '../lib/UserContext'
 
 import Burger from '../public/burger.svg'
+import User from '../public/user.svg'
+import Time from '../public/time.svg'
+import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
 
 export default function AppBar({ isOpen, setIsOpen }) {
@@ -65,76 +68,85 @@ export default function AppBar({ isOpen, setIsOpen }) {
     1: {
       title: 'Шаг 1: Самостоятельное изучение',
       users: 1,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
     2: {
       title: 'Шаг 2: Командное изучение текста',
       users: 1,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
     3: {
       title: 'Шаг 3: Командное изучение текста',
       users: 1,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
     4: {
       title: 'Шаг 4: Набросок “Вслепую”',
       users: 1,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
     5: {
       title: 'Шаг 5: Самостоятельная проверка',
       users: 1,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
     6: {
       title: 'Шаг 6: Взаимная проверка',
       users: 2,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
     7: {
       title: 'Шаг 7: Проверка ключевых слов',
       users: 2,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
     8: {
       title: 'Шаг 8: Командный обзор перевода',
       users: 2,
-      time: 60,
+      time: '60 мин',
       tools: {},
     },
   }
 
   return (
-    <Disclosure as="nav" className={'bg-white'}>
+    <Disclosure as="nav" className="bg-white">
       <>
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative flex items-center justify-between h-16 ">
-            <div className="flex-1 flex row items-center justify-between ">
-              <div className="flex items-center gap-7 cursor-pointer">
-                {access && (
-                  <Burger
-                    onClick={() => setIsOpen((prev) => !prev)}
-                    className="h-6 stroke-1 hover:stroke-[#0E7490]"
-                  />
-                )}
-                <Link href="/">
-                  <a>
-                    <VCANA_logo className="h-5" />
-                  </a>
-                </Link>
+        <div className="appbar">
+          <div className="flex flex-1 flex-col items-center justify-between md:flex-row">
+            <div className="flex items-center gap-7 cursor-pointer">
+              {access && (
+                <Burger
+                  onClick={() => setIsOpen((prev) => !prev)}
+                  className="h-6 stroke-1 hover:stroke-[#0E7490]"
+                />
+              )}
+              <Link href="/">
+                <a>
+                  <VCANA_logo className="h-5" />
+                </a>
+              </Link>
+            </div>
+            {/* Title */}
+            <div className="h3">{steps[step].title}</div>
+            {/* Optional info */}
+            <div className="flex row items-center gap-4">
+              <div className="flex row h3 items-center gap-1">
+                <User />
+                {steps[step].users}
               </div>
-              {/* Title */}
-              <div className="h4">{steps[step].title}</div>
-              {/* Optional info */}
-              <div className=""></div>
+              <div className="flex row items-center gap-1">
+                <Time />
+                {steps[step].time}
+              </div>
+              <button className="btn-cyan w-28">Цель шага</button>
+              <Tools />
             </div>
           </div>
         </div>
