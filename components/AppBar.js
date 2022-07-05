@@ -7,9 +7,10 @@ import { Disclosure } from '@headlessui/react'
 import { supabase } from '../utils/supabaseClient'
 import { useUser } from '../lib/UserContext'
 
+import Timer from './Timer'
+
 import Burger from '../public/burger.svg'
 import User from '../public/user.svg'
-import Time from '../public/time.svg'
 import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
 
@@ -68,49 +69,41 @@ export default function AppBar({ isOpen, setIsOpen }) {
     1: {
       title: 'Шаг 1: Самостоятельное изучение',
       users: 1,
-      time: '60 мин',
       tools: {},
     },
     2: {
       title: 'Шаг 2: Командное изучение текста',
       users: 1,
-      time: '60 мин',
       tools: {},
     },
     3: {
       title: 'Шаг 3: Командное изучение текста',
       users: 1,
-      time: '60 мин',
       tools: {},
     },
     4: {
       title: 'Шаг 4: Набросок “Вслепую”',
       users: 1,
-      time: '60 мин',
       tools: {},
     },
     5: {
       title: 'Шаг 5: Самостоятельная проверка',
       users: 1,
-      time: '60 мин',
       tools: {},
     },
     6: {
       title: 'Шаг 6: Взаимная проверка',
       users: 2,
-      time: '60 мин',
       tools: {},
     },
     7: {
       title: 'Шаг 7: Проверка ключевых слов',
       users: 2,
-      time: '60 мин',
       tools: {},
     },
     8: {
       title: 'Шаг 8: Командный обзор перевода',
       users: 2,
-      time: '60 мин',
       tools: {},
     },
   }
@@ -134,17 +127,14 @@ export default function AppBar({ isOpen, setIsOpen }) {
               </Link>
             </div>
             {/* Title */}
-            <div className="h3">{steps[step].title}</div>
+            <div className="h2">{steps[step].title}</div>
             {/* Optional info */}
             <div className="flex row items-center gap-4">
-              <div className="flex row h3 items-center gap-1">
+              <div className="flex row items-center gap-1 cursor-default">
                 <User />
                 {steps[step].users}
               </div>
-              <div className="flex row items-center gap-1">
-                <Time />
-                {steps[step].time}
-              </div>
+              <Timer />
               <button className="btn-cyan w-28">Цель шага</button>
               <Tools />
             </div>
