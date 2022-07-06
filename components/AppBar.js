@@ -141,10 +141,10 @@ export default function AppBar({ isOpen, setIsOpen }) {
               <User />
               {steps[step].users}
             </div>
-              <Timer time={steps[step].timeLeft} />
-              <button className="btn-cyan w-28">Цель шага</button>
-              <Tools />
-            </div>
+            <Timer time={steps[step].timeLeft} />
+            <button className="btn-cyan w-28">Цель шага</button>
+            <Tools />
+          </div>
         </div>
       </>
     </Disclosure>
