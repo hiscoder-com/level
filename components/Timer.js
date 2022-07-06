@@ -22,8 +22,7 @@ useEffect(() => {
       clearInterval(interval)
     }
   }, [timeLeft, isCounting])
-console.log(timeLeft);
-console.log(time);
+  
   useEffect(() => {
     localStorage.setItem('time left', timeLeft)
   }, [timeLeft])
