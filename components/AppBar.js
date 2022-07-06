@@ -14,10 +14,12 @@ import User from '../public/user.svg'
 import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
 
-export default function AppBar({ isOpen, setIsOpen }) {
+export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntroduction }) {
   const { user } = useUser()
   const [access, setAccess] = useState(false)
   const [step, setStep] = useState(1)
+
+// setIsIntroduction(true)
 
   useEffect(() => {
     const hasAccess = async (user_id) => {
@@ -116,6 +118,9 @@ export default function AppBar({ isOpen, setIsOpen }) {
     },
   }
 
+  const conditionTitle = `h2 text-center ${isIntroduction ? '' : 'hidden'}`
+  const conditionOptionalInfo = `flex row items-center gap-4 ${isIntroduction ? '' : 'hidden'}`
+
   return (
     <Disclosure as="nav" className="bg-white">
       <>
@@ -134,9 +139,9 @@ export default function AppBar({ isOpen, setIsOpen }) {
             </Link>
           </div>
           {/* Title */}
-          <div className="h2 text-center">{steps[step].title}</div>
+          <div className={conditionTitle}>{steps[step].title}</div>
           {/* Optional info */}
-          <div className="flex row items-center gap-4">
+          <div className={conditionOptionalInfo}>
             <div className="flex row items-center gap-1 cursor-default">
               <User />
               {steps[step].users}
