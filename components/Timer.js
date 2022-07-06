@@ -9,6 +9,10 @@ function Timer({ time }) {
   const minutes = getPadTime(Math.floor(timeLeft / 60))
   const seconds = getPadTime(timeLeft - minutes * 60)
 
+useEffect(() => {
+	setTimeLeft(time)
+}, [time])
+
   useEffect(() => {
     const interval = setInterval(() => {
       isCounting && setTimeLeft((timeLeft) => (timeLeft >= 1 ? timeLeft - 1 : 0))
@@ -18,7 +22,8 @@ function Timer({ time }) {
       clearInterval(interval)
     }
   }, [timeLeft, isCounting])
-
+console.log(timeLeft);
+console.log(time);
   useEffect(() => {
     localStorage.setItem('time left', timeLeft)
   }, [timeLeft])
