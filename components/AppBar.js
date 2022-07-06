@@ -69,41 +69,49 @@ export default function AppBar({ isOpen, setIsOpen }) {
     1: {
       title: 'Шаг 1: Самостоятельное изучение',
       users: 1,
+      timeLeft: 60 * 60,
       tools: {},
     },
     2: {
       title: 'Шаг 2: Командное изучение текста',
       users: 1,
+      timeLeft: 50 * 60,
       tools: {},
     },
     3: {
       title: 'Шаг 3: Подготовка к переводу',
       users: 1,
+      timeLeft: 60 * 60,
       tools: {},
     },
     4: {
       title: 'Шаг 4: Набросок “Вслепую”',
       users: 1,
+      timeLeft: 60 * 60,
       tools: {},
     },
     5: {
       title: 'Шаг 5: Самостоятельная проверка',
       users: 1,
+      timeLeft: 60 * 60,
       tools: {},
     },
     6: {
       title: 'Шаг 6: Взаимная проверка',
       users: 2,
+      timeLeft: 60 * 60,
       tools: {},
     },
     7: {
       title: 'Шаг 7: Проверка ключевых слов',
       users: 2,
+      timeLeft: 60 * 60,
       tools: {},
     },
     8: {
       title: 'Шаг 8: Командный обзор перевода',
       users: 2,
+      timeLeft: 60 * 60,
       tools: {},
     },
   }
@@ -134,7 +142,7 @@ export default function AppBar({ isOpen, setIsOpen }) {
                 <User />
                 {steps[step].users}
               </div>
-              <Timer />
+              <Timer time={steps[step].timeLeft} />
               <button className="btn-cyan w-28">Цель шага</button>
               <Tools />
             </div>

@@ -3,8 +3,8 @@ import { getPadTime } from '../utils/hooks'
 import Time from '../public/time.svg'
 
 
-function Timer() {
-	const [timeLeft, setTimeLeft] = useState(60 * 60)
+function Timer({time}) {
+	const [timeLeft, setTimeLeft] = useState(time)
 	const [isCounting, setIsCounting] = useState(false)
 
 	const minutes = getPadTime(Math.floor(timeLeft / 60))
@@ -25,7 +25,7 @@ useEffect(() => {
 }, [timeLeft])
 
 	const handleStart = () => {
-		if(timeLeft === 0) setTimeLeft(60 * 60)
+		if(timeLeft === 0) setTimeLeft(time)
 		setIsCounting(true)
 	}
 
@@ -35,7 +35,7 @@ useEffect(() => {
 
 	const handleReset = () => {
 		setIsCounting(false)
-		setTimeLeft(60 * 60)
+		setTimeLeft(time)
 	}
 
 	return (
