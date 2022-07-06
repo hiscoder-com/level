@@ -12,7 +12,7 @@ function Timer({ time }) {
   useEffect(() => {
     const interval = setInterval(() => {
       isCounting && setTimeLeft((timeLeft) => (timeLeft >= 1 ? timeLeft - 1 : 0))
-		    }, 1000)
+    }, 1000)
     if (timeLeft === 0) setIsCounting(false)
     return () => {
       clearInterval(interval)
