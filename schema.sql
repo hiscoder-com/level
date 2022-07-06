@@ -499,6 +499,7 @@ DELETE FROM
 INSERT INTO
   PUBLIC .users (
     id,
+    login,
     email,
     agreement,
     confession,
