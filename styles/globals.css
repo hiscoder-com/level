@@ -49,7 +49,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .appbar{
-	@apply relative mx-auto flex max-w-7xl items-center justify-between h-16 px-5 sm:px-10 lg:px-12 xl:px-0 xl:w-11/12 2xl:w-4/5 2xl:px-0 
+	@apply relative mx-auto py-3 flex max-w-7xl items-center justify-between h-36 px-5 flex-1 flex-col sm:px-10 md:h-16 md:flex-row lg:px-12 xl:px-0 xl:w-11/12 2xl:w-4/5 2xl:px-0 
 }
 
 .text-alignment{

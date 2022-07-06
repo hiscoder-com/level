@@ -120,7 +120,6 @@ export default function AppBar({ isOpen, setIsOpen }) {
     <Disclosure as="nav" className="bg-white">
       <>
         <div className="appbar">
-          <div className="flex flex-1 flex-col items-center justify-between md:flex-row">
             <div className="flex items-center gap-7 cursor-pointer">
               {access && (
                 <Burger
@@ -135,7 +134,7 @@ export default function AppBar({ isOpen, setIsOpen }) {
               </Link>
             </div>
             {/* Title */}
-            <div className="h2">{steps[step].title}</div>
+            <div className="h2 text-center">{steps[step].title}</div>
             {/* Optional info */}
             <div className="flex row items-center gap-4">
               <div className="flex row items-center gap-1 cursor-default">
@@ -146,7 +145,6 @@ export default function AppBar({ isOpen, setIsOpen }) {
               <button className="btn-cyan w-28">Цель шага</button>
               <Tools />
             </div>
-          </div>
         </div>
       </>
     </Disclosure>
