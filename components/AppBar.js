@@ -120,27 +120,27 @@ export default function AppBar({ isOpen, setIsOpen }) {
     <Disclosure as="nav" className="bg-white">
       <>
         <div className="appbar">
-            <div className="flex items-center gap-7 cursor-pointer">
-              {access && (
-                <Burger
-                  onClick={() => setIsOpen((prev) => !prev)}
-                  className="h-6 stroke-1 hover:stroke-[#0E7490]"
-                />
-              )}
-              <Link href="/">
-                <a>
-                  <VCANA_logo className="h-5" />
-                </a>
-              </Link>
+          <div className="flex items-center gap-7 cursor-pointer">
+            {access && (
+              <Burger
+                onClick={() => setIsOpen((prev) => !prev)}
+                className="h-6 stroke-1 hover:stroke-[#0E7490]"
+              />
+            )}
+            <Link href="/">
+              <a>
+                <VCANA_logo className="h-5" />
+              </a>
+            </Link>
+          </div>
+          {/* Title */}
+          <div className="h2 text-center">{steps[step].title}</div>
+          {/* Optional info */}
+          <div className="flex row items-center gap-4">
+            <div className="flex row items-center gap-1 cursor-default">
+              <User />
+              {steps[step].users}
             </div>
-            {/* Title */}
-            <div className="h2 text-center">{steps[step].title}</div>
-            {/* Optional info */}
-            <div className="flex row items-center gap-4">
-              <div className="flex row items-center gap-1 cursor-default">
-                <User />
-                {steps[step].users}
-              </div>
               <Timer time={steps[step].timeLeft} />
               <button className="btn-cyan w-28">Цель шага</button>
               <Tools />

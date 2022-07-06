@@ -3,7 +3,7 @@ import { getPadTime } from '../utils/hooks'
 import Time from '../public/time.svg'
 
 
-function Timer({time}) {
+function Timer({ time }) {
 	const [timeLeft, setTimeLeft] = useState(time)
 	const [isCounting, setIsCounting] = useState(false)
 
