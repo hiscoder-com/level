@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { getPadTime } from '../utils/hooks'
 import Time from '../public/time.svg'
 
-
 function Timer({ time }) {
   const [timeLeft, setTimeLeft] = useState(time)
   const [isCounting, setIsCounting] = useState(false)
@@ -12,8 +11,8 @@ function Timer({ time }) {
 
   useEffect(() => {
     const interval = setInterval(() => {
-			isCounting &&
-      setTimeLeft((timeLeft) => (timeLeft >= 1 ? timeLeft - 1 : 0))}, 1000)
+      isCounting && setTimeLeft((timeLeft) => (timeLeft >= 1 ? timeLeft - 1 : 0))
+		    }, 1000)
     if (timeLeft === 0) setIsCounting(false)
     return () => {
       clearInterval(interval)
