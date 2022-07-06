@@ -77,7 +77,7 @@ export default function AppBar({ isOpen, setIsOpen }) {
       tools: {},
     },
     3: {
-      title: 'Шаг 3: Командное изучение текста',
+      title: 'Шаг 3: Подготовка к переводу',
       users: 1,
       tools: {},
     },

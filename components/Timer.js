@@ -8,6 +8,7 @@ function Timer() {
 	const [isCounting, setIsCounting] = useState(false)
 
 	const minutes = getPadTime(Math.floor(timeLeft / 60))
+	const seconds = getPadTime(timeLeft - minutes * 60)
 
 useEffect(() => {
 	const interval = setInterval(() => {
@@ -37,16 +38,15 @@ useEffect(() => {
 		setTimeLeft(60 * 60)
 	}
 
-
 	return (
 		<div className="flex row items-center gap-1 cursor-default">
 			<Time onClick={handleReset} />
-			<div onClick={handleStart}>
+			<div onClick={isCounting ? handleStop : handleStart}>
 				<span>{minutes}</span>
-				<span> мин</span>
+				<span>:</span>
+				<span>{seconds}</span>
 			</div>
 		</div>
-
 	)
 }
 
