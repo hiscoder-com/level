@@ -131,7 +131,7 @@ function ProjectCreate() {
       <form onSubmit={handleSubmit(onSubmit)}>
         {inputs.map((el) => {
           return (
-            <>
+            <div key={el.title}>
               <div>{el.title}</div>
               <input
                 className={`${el.classname} max-w-sm`}
@@ -139,7 +139,7 @@ function ProjectCreate() {
                 {...el.register}
               />
               {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
-            </>
+            </div>
           )
         })}
 
