@@ -11,7 +11,7 @@ export default function IntroPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>Intro:{step}</div>
+      <div>intro:{step}</div>
     </div>
   )
 }
