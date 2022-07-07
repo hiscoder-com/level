@@ -4,11 +4,13 @@ import Link from 'next/link'
 import { useProjects } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 
-export default function Projects() {
+export default function Projects({ languageCode }) {
   const { session } = useUser()
 
-  const [projects] = useProjects(session?.access_token)
-
+  const [projects] = useProjects({
+    token: session?.access_token,
+    language_id: languageCode,
+  })
   return (
     <>
       <div className="container">
@@ -17,12 +19,11 @@ export default function Projects() {
           <meta name="description" content="VCANA" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-      </div>
-      <div>Проекты:</div>
-      {projects &&
+        <div>Проекты:</div>
+      { projects?.data &&
         projects.data.map((project) => {
           return (
-            <Link key={project.id} href={`projects/${project.code}`}>
+            <Link key={project.id} href={`/projects/${project.code}`}>
               <a className="block text-blue-600">{`${project.id} ${project.title} ${project.code}`}</a>
             </Link>
           )
@@ -30,6 +31,8 @@ export default function Projects() {
       <Link href={'/projects/create'}>
         <a className="btn-filled btn">Add New</a>
       </Link>
+      </div>
+     
     </>
   )
 }

@@ -2,8 +2,21 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../utils/hooks'
+import { useRouter } from 'next/router'
 
 export default function Agreements() {
+  const router = useRouter()
+  const { user, session } = useUser()
+  const [data] = useCurrentUser({ token: session?.access_token, id: user?.id })
+
+  if (data) {
+    const { agreement, confession } = data
+    if ((agreement, confession)) {
+      router.push(`account/${user?.id}`)
+    }
+  }
   const { t } = useTranslation('common')
 
   return (

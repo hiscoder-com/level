@@ -12,8 +12,9 @@ export function useLanguages(token) {
     token ? ['/api/languages', token] : null,
     fetcher
   )
+  
   const loading = !data && !error
-  const languages = data?.languages
+  const languages = data?.data
   return [languages, { mutate, loading, error }]
 }
 export function useUsers(token) {
@@ -25,8 +26,8 @@ export function useUsers(token) {
   const loading = !users && !error
   return [users, { mutate, loading, error }]
 }
-export function useProjects(token) {
-  const { data, mutate, error } = useSWR(token ? ['/api/projects', token] : null, fetcher)
+export function useProjects({ token, language_id }) {
+  const { data, mutate, error } = useSWR(token ? [`/api/languages/${language_id}/projects`, token] : null, fetcher)
   const loading = !data && !error
   const projects = data
   return [projects, { mutate, loading, error }]
@@ -42,16 +43,25 @@ export function useProject({ token, code }) {
     data: project,
     mutate,
     error,
-  } = useSWR(token ? [`/api/projects/${code}`, token] : null, fetcher)
+  } = useSWR(token ? [`/api/languages/ru/projects/${code}`, token] : null, fetcher)
   const loading = !project && !error
   return [project, { mutate, loading, error }]
 }
-export function useCoordinator({ token, id }) {
+export function useCoordinators({ token, code }) {
   const {
-    data: coordinator,
+    data: coordinators,
     mutate,
     error,
-  } = useSWR(token ? [`/api/coordinators/${id}`, token] : null, fetcher)
-  const loading = !coordinator && !error
-  return [coordinator, { mutate, loading, error }]
+  } = useSWR(token ? [`/api/languages/ru/projects/${code}/coordinators`, token] : null, fetcher)
+  const loading = !coordinators && !error
+  return [coordinators, { mutate, loading, error }]
+}
+export function useCurrentUser({ token, id }) {
+  const {
+    data: user,
+    mutate,
+    error,
+  } = useSWR(token ? [`/api/users/${id}`, token] : null, fetcher)
+  const loading = !user && !error
+  return [user, { mutate, loading, error }]
 }

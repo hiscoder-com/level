@@ -5,7 +5,11 @@ import { useLanguages } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import { useTranslation } from 'next-i18next'
 
-export default function LanguagesEdit() {
+export default function LanguagesEdit({
+  setShowLanguages,
+  setShowProjects,
+  setLanguageCode,
+}) {
   const { t } = useTranslation('common')
   const { user, session } = useUser()
   const [loading, setLoading] = useState(false)
@@ -50,11 +54,19 @@ export default function LanguagesEdit() {
   }
 
   return (
-    <div className="flex justify-center flex-col text-center text-3xl my-5">
+    <div className="flex justify-center flex-col text-center text-xl my-5">
       <h1 className="my-5">{t('Languages')}:</h1>
       {languages?.map((el, index) => {
+        
         return (
-          <div key={index}>
+          <div
+            onClick={() => {
+              setShowLanguages((prev) => !prev)
+              setShowProjects((prev) => !prev)
+              setLanguageCode(el.code)
+            }}
+            key={index}
+          >
             <p key={el.code}>
               {el.code + ' ' + el.orig_name}
               {editLanguages ? (

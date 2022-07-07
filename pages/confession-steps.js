@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from '../public/left-arrow.svg'
 import RightArrow from '../public/right-arrow.svg'
+import { useUsers } from '../utils/hooks'
+import { useUser } from '../lib/UserContext'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])
-
+  const { user } = useUser()
+  const router = useRouter()
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
 
@@ -99,7 +103,12 @@ export default function ConfessionSteps() {
           />
           <label htmlFor="cb">{t('Agree', { ns: 'common' })}</label>
         </div>
-        <button className="btn-filled w-28" disabled={!checked}>
+
+        <button
+          onClick={() => router.push(`/account/${user && user.id}`)}
+          className="btn-filled w-28"
+          disabled={user && !checked}
+        >
           {t('Next', { ns: 'common' })}
         </button>
       </div>

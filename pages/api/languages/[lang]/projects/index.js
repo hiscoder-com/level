@@ -1,4 +1,4 @@
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from "../../../../../utils/supabaseClient"
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -6,33 +6,32 @@ export default async function handler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
 
-  const { body, method } = req
-
+  const { query: { lang },body, method } = req
+  
   switch (method) {
     case 'GET':
       const { data: dataGet, error: errorGet } = await supabase
-        .from('projects_roles')
-        .select('user_id,projects(title)')
-        .eq('role', 'coordinator')
+        .from('projects')
+        .select('*,languages!inner(*)').eq('languages.code',lang)
       if (errorGet) {
         res.status(404).json({ errorGet })
         return
       }
+      
       res.status(200).json({ data: dataGet })
       break
     case 'POST':
-      const { project_id, user_id } = body
+      const { language_id, method_id, type, code, title } = body
       // TODO валидацию
       const { data: dataPost, error: errorPost } = await supabase
-        .from('project_roles')
-        .insert([{ project_id, user_id, role: 'coordinator' }])
+        .from('projects')
+        .insert([{ language_id, method_id, type, code, title }])
 
       if (errorPost) {
         res.status(404).json({ errorPost })
-        return
       }
-
-      res.status(200).json({ dataPost })
+      res.setHeader('Location', `/projects/${dataPost[0].code}`)
+      res.status(201).json({})
       break
     default:
       res.setHeader('Allow', ['GET', 'POST'])

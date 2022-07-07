@@ -28,7 +28,6 @@ export default function UsersPage() {
     return data
   }
 
-  // console.log(users)
   return (
     <>
       <div className="container">
@@ -47,7 +46,7 @@ export default function UsersPage() {
           ? users.map((user) => {
               return (
                 <>
-                  <div onClick={() => console.log(user.users.id)} key={user.users.id}>
+                  <div onClick={() => } key={user.users.id}>
                     {user.users.email} : {user.role} ,{user.users.id}
                   </div>
                   <div className="inline-block"></div>

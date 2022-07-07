@@ -10,12 +10,14 @@ import { useUser } from '../lib/UserContext'
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
 import EyeOffIcon from '../public/eye-off-icon.svg'
+import { useCurrentUser } from '../utils/hooks'
 
 export default function Login() {
   const { t } = useTranslation('common')
 
   const router = useRouter()
-  const { user } = useUser()
+  const { user, session } = useUser()
+  const [data] = useCurrentUser({ token: session?.access_token, id: user?.id })
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
@@ -46,7 +48,14 @@ export default function Login() {
       setStyleLogin('form')
       setStylePassword('form')
       setError(false)
-      router.push('/agreements')
+      if (data) {
+        const { agreement, confession } = data
+        if ((agreement, confession)) {
+          router.push(`account/${user?.id}`)
+        } else {
+          router.push('/agreements')
+        }
+      }
     } catch (error) {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')

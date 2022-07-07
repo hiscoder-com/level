@@ -32,7 +32,7 @@ function ProjectCreate() {
     }
     axios.defaults.headers.common['token'] = session?.access_token
     axios
-      .post('/api/projects', {
+      .post('/api/languages/ru/projects', {
         title,
         language_id: languageId,
         code,
@@ -70,13 +70,11 @@ function ProjectCreate() {
     for (const key in errors) {
       switch (key) {
         case 'title':
-          console.log(errors[key])
           setStyleTitle('form-invalid')
           setErrorTitle(errors[key].message)
 
           break
         case 'code':
-          console.log(errors[key])
           setStyleCode('form-invalid')
           setErrorCode(errors[key].message)
           break
@@ -92,7 +90,7 @@ function ProjectCreate() {
   }, [errors.title, errors.identifier])
 
   const inputs = [
-    {
+    {id:1,
       title: 'Имя проекта',
       classname: styleTitle,
       placeholder: 'Title',
@@ -107,7 +105,7 @@ function ProjectCreate() {
       },
       errorMessage: errorTitle,
     },
-    {
+    {id:2,
       title: 'Код проекта',
       classname: styleCode,
       placeholder: 'Code',
@@ -131,7 +129,7 @@ function ProjectCreate() {
       <form onSubmit={handleSubmit(onSubmit)}>
         {inputs.map((el) => {
           return (
-            <>
+            <div key={el.id}>
               <div>{el.title}</div>
               <input
                 className={`${el.classname} max-w-sm`}
@@ -139,7 +137,7 @@ function ProjectCreate() {
                 {...el.register}
               />
               {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
-            </>
+            </div>
           )
         })}
 
