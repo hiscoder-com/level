@@ -1,9 +1,8 @@
 import { useTranslation } from 'next-i18next'
-import { useState } from 'react'
 import Footer from '../components/Footer'
 
 function IntroStep({ step }) {
-  const { t } = useTranslation(['user-agreement', 'common'])
+  const { t } = useTranslation(['common'])
 
   const IntroSteps = {
     1: {
