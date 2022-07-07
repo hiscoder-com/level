@@ -12,7 +12,7 @@ export default function IntroPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <IntroStep />
+      <IntroStep step={step} />
     </div>
   )
 }
