@@ -8,8 +8,7 @@ function IntroStep({ step }) {
   const IntroSteps = {
     1: {
       title: 'Первый шаг - самостоятельное изучение',
-      video:
-        'https://www.youtube.com/watch?v=gxawAAQ9xbQ&list=PLHrvE1f96ESDTJtL2mFWdP0f8y6N0c3Hf&index=3&t=2s',
+      video: 'https://www.youtube.com/embed/gxawAAQ9xbQ',
       description: [
         'Это индивидуальная работа и выполняется без участия других членов команды. Каждый читает материалы самостоятельно, не обсуждая прочитанное, но записывая свои комментарии. Если ваш проект по переводу ведется онлайн, то этот шаг можно выполнить до встречи с другими участниками команды переводчиков.',
         'ЦЕЛЬ этого шага: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.',
@@ -22,8 +21,7 @@ function IntroStep({ step }) {
     },
     2: {
       title: 'Второй шаг - командное изучение текста',
-      video:
-        'https://www.youtube.com/watch?v=HK6SXnU5zEw&list=PLHrvE1f96ESDTJtL2mFWdP0f8y6N0c3Hf&index=4',
+      video: 'https://www.youtube.com/embed/HK6SXnU5zEw',
       description: [
         'ВТОРОЙ шаг - КОМАНДНОЕ ИЗУЧЕНИЕ ТЕКСТА',
         'Это командная работа и мы рекомендуем потратить на нее не более 60 минут.',
@@ -37,8 +35,7 @@ function IntroStep({ step }) {
     },
     3: {
       title: 'Третий шаг - подготовка к переводу',
-      video:
-        'https://www.youtube.com/watch?v=jlhwA9SIWXQ&list=PLHrvE1f96ESDTJtL2mFWdP0f8y6N0c3Hf&index=5',
+      video: 'https://www.youtube.com/embed/jlhwA9SIWXQ',
       description: [
         'ТРЕТИЙ шаг - ПОДГОТОВКА К ПЕРЕВОДУ',
         'Это работа в паре и мы рекомендуем потратить на нее не более 20 минут.',
@@ -52,8 +49,7 @@ function IntroStep({ step }) {
     },
     4: {
       title: 'Четвертый шаг - набросок «вслепую»',
-      video:
-        'https://www.youtube.com/watch?v=HVXOiKUsXSI&list=PLHrvE1f96ESDTJtL2mFWdP0f8y6N0c3Hf&index=6',
+      video: 'https://www.youtube.com/embed/HVXOiKUsXSI',
       description: [
         'ЧЕТВЕРТЫЙ ШАГ - НАБРОСОК «ВСЛЕПУЮ»',
         'Это индивидуальная работа и мы рекомендуем потратить на нее не более 20 минут.',
@@ -64,8 +60,7 @@ function IntroStep({ step }) {
     },
     5: {
       title: 'Пятый шаг - самостоятельная проверка',
-      video:
-        'https://www.youtube.com/watch?v=p3p8c_K-O3c&list=PLHrvE1f96ESDTJtL2mFWdP0f8y6N0c3Hf&index=7',
+      video: 'https://www.youtube.com/embed/p3p8c_K-O3c',
       description: [
         'ПЯТЫЙ ШАГ - САМОСТОЯТЕЛЬНАЯ ПРОВЕРКА',
         'Это индивидуальная работа и мы рекомендуем потратить на нее не более 30 минут.',
@@ -78,8 +73,7 @@ function IntroStep({ step }) {
     },
     6: {
       title: 'Шестой шаг - взаимная проверка',
-      video:
-        'https://www.youtube.com/watch?v=cAgypQsWgQk&list=PLHrvE1f96ESDTJtL2mFWdP0f8y6N0c3Hf&index=8',
+      video: 'https://www.youtube.com/embed/cAgypQsWgQk',
       description: [
         'ШЕСТОЙ ШАГ - ВЗАИМНАЯ ПРОВЕРКА',
         'Это работа в паре и мы рекомендуем потратить на нее не более 40 минут.',
@@ -94,8 +88,7 @@ function IntroStep({ step }) {
     },
     7: {
       title: 'Седьмой шаг - командный обзор перевода',
-      video:
-        'https://www.youtube.com/watch?v=P2MbEKDw8U4&list=PLHrvE1f96ESDTJtL2mFWdP0f8y6N0c3Hf&index=9',
+      video: 'https://www.youtube.com/embed/P2MbEKDw8U4',
       description: [
         'СЕДЬМОЙ шаг - КОМАНДНЫЙ ОБЗОР ПЕРЕВОДА',
         'Это командная работа и мы рекомендуем потратить на нее не более 60 минут.',
@@ -109,20 +102,19 @@ function IntroStep({ step }) {
       ],
     },
   }
-  console.log(step)
   return (
     <div className="layout-appbar">
       <div className="text-alignment">
-        <h1 className="h1 pt-4">Введние в шаг:</h1>
-        <div className="h3 mt-7">{step && IntroSteps[step].title}</div>
-        <div className="aspect-w-16 aspect-h-9">
+        <h1 className="h1 my-8">Введние в шаг:</h1>
+        <div className="h2">{step && IntroSteps[step].title}</div>
+        <div className="aspect-w-16 aspect-h-9 my-7">
           <iframe
-            src="https://www.youtube.com/embed/gxawAAQ9xbQ"
+            src={step && IntroSteps[step].video}
             title="YouTube video player"
             frameBorder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
-          ></iframe>
+          />
         </div>
         <div>
           {step &&
@@ -145,5 +137,3 @@ function IntroStep({ step }) {
 }
 
 export default IntroStep
-
-// 'Это индивидуальная работа и выполняется без участия других членов команды. Каждый читает материалы самостоятельно, не обсуждая прочитанное, но записывая свои комментарии. Если ваш проект по переводу ведется онлайн, то этот шаг можно выполнить до встречи с другими участниками команды переводчиков. ЦЕЛЬ этого шага: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод. ЗАДАНИЯ ДЛЯ ПЕРВОГО ШАГА:	В этом шаге вам необходимо выполнить несколько заданий:	ИСТОРИЯ - Прочитайте историю (главу, над которой предстоит работа). Запишите для обсуждения командой предложения и слова, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. ОБЗОР ИНСТРУМЕНТА «СЛОВА» - Прочитайте СЛОВА к главе. Необходимо прочитать статьи к каждому слову. Отметьте для обсуждения командой статьи к словам, которые могут быть полезными для перевода Открытых Библейских Историй. ОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ» - Прочитайте ЗАМЕТКИ к главе. Необходимо прочитать ЗАМЕТКИ к каждому отрывку. Отметьте для обсуждения командой ЗАМЕТКИ, которые могут быть полезными для перевода Открытых Библейских Историй.'
