@@ -1,6 +1,9 @@
-import React from 'react'
+import { useTranslation } from 'next-i18next'
+import Footer from '../components/Footer'
 
 function IntroStep() {
+  const { t } = useTranslation(['user-agreement', 'common'])
+
   const IntroSteps = {
     1: {
       title: 'Первый шаг - самостоятельное изучение',
@@ -53,7 +56,21 @@ function IntroStep() {
     },
   }
 
-  return <div>IntroStep</div>
+  return (
+    <div className="layout-appbar">
+      <div className="text-alignment">
+        <h1 className="h1 pt-4">Введние в шаг:</h1>
+        <div className="h3 mt-7">Первый шаг - самостоятельное изучение</div>
+        <div>video</div>
+        <div>description</div>
+      </div>
+      <Footer
+        textButton={t('Next', { ns: 'common' })}
+        textCheckbox={t('Made', { ns: 'common' })}
+        href="/confession"
+      />
+    </div>
+  )
 }
 
 export default IntroStep

@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import IntroStep from '../../components/IntroStep'
 
 export default function IntroPage() {
   const router = useRouter()
@@ -11,7 +12,7 @@ export default function IntroPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div>intro:{step}</div>
+      <IntroStep />
     </div>
   )
 }

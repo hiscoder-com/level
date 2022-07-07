@@ -8,7 +8,7 @@ function StartIntroPage() {
     <>
       <button
         onClick={() => {
-          router.push('/intro/1')
+          router.push('/intro-steps/1')
         }}
       >
         StartIntroPage
