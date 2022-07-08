@@ -1,17 +1,16 @@
 import { useEffect, useState } from 'react'
-import { getPadTime } from '../utils/hooks'
 import Time from '../public/time.svg'
 
 function Timer({ time }) {
   const [timeLeft, setTimeLeft] = useState(time)
   const [isCounting, setIsCounting] = useState(false)
-
+  const getPadTime = (time) => time.toString().padStart(2, '0')
   const minutes = getPadTime(Math.floor(timeLeft / 60))
   const seconds = getPadTime(timeLeft - minutes * 60)
 
-useEffect(() => {
-	setTimeLeft(time)
-}, [time])
+  useEffect(() => {
+    setTimeLeft(time)
+  }, [time])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -22,9 +21,9 @@ useEffect(() => {
       clearInterval(interval)
     }
   }, [timeLeft, isCounting])
-  
+
   useEffect(() => {
-    localStorage.setItem('time left', timeLeft)
+    localStorage.setItem('timeLeft', timeLeft)
   }, [timeLeft])
 
   const handleStart = () => {

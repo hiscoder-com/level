@@ -16,5 +16,3 @@ export function useLanguages(token) {
   const languages = data?.languages
   return [languages, { mutate, loading, error }]
 }
-
-export const getPadTime = (time) => time.toString().padStart(2, '0')

@@ -19,8 +19,6 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
   const [access, setAccess] = useState(false)
   const [step, setStep] = useState(1)
 
-  setIsIntroduction(true)
-
   useEffect(() => {
     const hasAccess = async (user_id) => {
       const { data, error } = await supabase.rpc('has_access', {
@@ -119,7 +117,9 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
   }
 
   const conditionTitle = `h2 text-center ${isIntroduction ? '' : 'hidden'}`
-  const conditionOptionalInfo = `flex row items-center gap-4 ${isIntroduction ? '' : 'hidden'}`
+  const conditionOptionalInfo = `flex row items-center gap-4 ${
+    isIntroduction ? '' : 'hidden'
+  }`
 
   return (
     <Disclosure as="nav" className="bg-white">
