@@ -35,7 +35,7 @@ function Account({ id }) {
       {data && (
         <div className="divide-y divide-gray-400">
           <div>
-            <p>Login: {data.id}</p>
+            <p>Id: {data.id}</p>
             <p>Login: {data.login}</p>
             <p>Email:{data.email}</p>
             <SignOut />

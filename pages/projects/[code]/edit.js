@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
-import Project from '../../components/Project'
+import ProjectEdit from '../../../components/ProjectEdit'
 function Projects() {
   const router = useRouter()
   const { code } = router.query
 
-  return <Project code={code} />
+  return <ProjectEdit code={code} />
 }
 
 export default Projects

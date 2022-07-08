@@ -8,6 +8,7 @@ import {
 } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
+import Link from 'next/link'
 
 function Project({ code }) {
   const { user } = useUser()
@@ -16,11 +17,12 @@ function Project({ code }) {
   const [userId, setUserId] = useState(null)
 
   const [project, { mutate }] = useProject({ token: session?.access_token, code })
+  console.log({ project })
   const [roles] = useRoles({
     token: session?.access_token,
     code: project?.code,
   })
-  console.log({ roles })
+  console.log(data?.is_admin)
   const [coordinators] = useCoordinators({
     token: session?.access_token,
     code: project?.code,
@@ -67,24 +69,18 @@ function Project({ code }) {
       <div>
         {roles && (
           <>
-            {roles.data.map((el) => {
+            {roles.data.map((el, key) => {
               return (
-                <div key={el.users.id}>
-                  {`${el.role} ${el.users.login} ${el.users.email}`}
-                </div>
+                <div key={key}>{`${el.role} ${el.users.login} ${el.users.email}`}</div>
               )
             })}
           </>
         )}
-        {/* Coordinators
-        <b>
-          {coordinators && coordinators?.data.length > 0
-            ? coordinators.data.map((el) => {
-                return <div key={el.users.id}>{el.users.email}</div>
-              })
-            : ' not assigned'}
-        </b> */}
-
+        {data?.is_admin && (
+          <Link key={project?.id} href={`/projects/${project?.code}/management`}>
+            <a className="btn btn-filled btn-cyan">Редактирование проекта</a>
+          </Link>
+        )}
         {data?.isAdmin && (
           <>
             <select onChange={(e) => setUserId(e.target.value)} className="form max-w-sm">
