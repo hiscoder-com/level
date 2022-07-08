@@ -130,7 +130,7 @@ function IntroStep({ step }) {
       <Footer
         textButton={t('Next', { ns: 'common' })}
         textCheckbox={t('Made', { ns: 'common' })}
-        href="/intro-steps/2"
+        href={`/intro-steps/${String(parseInt(step) + 1)}`}
       />
     </div>
   )
