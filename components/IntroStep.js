@@ -101,6 +101,7 @@ function IntroStep({ step }) {
       ],
     },
   }
+
   return (
     <div className="layout-appbar">
       <div className="text-alignment">
@@ -129,7 +130,7 @@ function IntroStep({ step }) {
       <Footer
         textButton={t('Next', { ns: 'common' })}
         textCheckbox={t('Made', { ns: 'common' })}
-        href="/confession"
+        href="/intro-steps/2"
       />
     </div>
   )
