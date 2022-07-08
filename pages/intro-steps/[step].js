@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import IntroStep from '../../components/IntroStep'
 
 export default function IntroPage() {
@@ -15,4 +16,13 @@ export default function IntroPage() {
       <IntroStep step={step} />
     </div>
   )
+}
+
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['intro-steps', 'common'])),
+      // Will be passed to the page component as props
+    },
+  }
 }
