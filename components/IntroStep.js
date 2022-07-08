@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import Footer from '../components/Footer'
 
 function IntroStep({ step }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['intro-steps', 'common'])
 
   const IntroSteps = {
     1: {
@@ -104,7 +104,7 @@ function IntroStep({ step }) {
   return (
     <div className="layout-appbar">
       <div className="text-alignment">
-        <h1 className="h1 my-8">Введние в шаг:</h1>
+        <h1 className="h1 my-8">{t('StepIntroduction')}:</h1>
         <div className="h2">{step && IntroSteps[step].title}</div>
         <div className="aspect-w-16 aspect-h-9 my-7">
           <iframe
