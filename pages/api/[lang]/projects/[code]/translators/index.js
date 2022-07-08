@@ -1,4 +1,4 @@
-import { supabase } from '../../../../../../../utils/supabaseClient'
+import { supabase } from '../../../../../../utils/supabaseClient'
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -6,17 +6,20 @@ export default async function handler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
 
-  const { body, method, query: { code }, } = req
+  const {
+    body,
+    method,
+    query: { code },
+  } = req
 
   switch (method) {
-
     case 'GET':
       const { data: dataGet, error: errorGet } = await supabase
         .from('project_roles')
         .select('projects!inner(code),users!inner(*)')
-        .eq('role', 'coordinator').eq('projects.code',code)
+        .eq('role', 'translator')
+        .eq('projects.code', code)
       if (errorGet) {
-        
         res.status(404).json({ errorGet })
         return
       }
@@ -25,7 +28,7 @@ export default async function handler(req, res) {
     case 'POST':
       const { project_id, user_id } = body
       // TODO валидацию
-      
+
       const { data: dataPost, error: errorPost } = await supabase
         .from('project_roles')
         .insert([{ project_id, user_id, role: 'coordinator' }])

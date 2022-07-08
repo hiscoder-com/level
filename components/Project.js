@@ -1,13 +1,26 @@
 import React, { useState } from 'react'
-import { useCoordinators, useProject, useUsers } from '../utils/hooks'
+import {
+  useCoordinators,
+  useCurrentUser,
+  useProject,
+  useRoles,
+  useUsers,
+} from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 
 function Project({ code }) {
-  const [userId, setUserId] = useState(null)
+  const { user } = useUser()
   const { session } = useUser()
+  const [data] = useCurrentUser({ token: session?.access_token, id: user?.id })
+  const [userId, setUserId] = useState(null)
 
   const [project, { mutate }] = useProject({ token: session?.access_token, code })
+  const [roles] = useRoles({
+    token: session?.access_token,
+    code: project?.code,
+  })
+  console.log({ roles })
   const [coordinators] = useCoordinators({
     token: session?.access_token,
     code: project?.code,
@@ -52,27 +65,43 @@ function Project({ code }) {
         type <b>{project?.type}</b>
       </div>
       <div>
-        Coordinators
+        {roles && (
+          <>
+            {roles.data.map((el) => {
+              return (
+                <div key={el.users.id}>
+                  {`${el.role} ${el.users.login} ${el.users.email}`}
+                </div>
+              )
+            })}
+          </>
+        )}
+        {/* Coordinators
         <b>
           {coordinators && coordinators?.data.length > 0
             ? coordinators.data.map((el) => {
-                return(<div key={el.users.id}>{el.users.email}</div>)
+                return <div key={el.users.id}>{el.users.email}</div>
               })
             : ' not assigned'}
-        </b>
-        <select onChange={(e) => setUserId(e.target.value)} className="form max-w-sm">
-          {users &&
-            Object.values(users).map((el) => {
-              return (
-                <option key={el.id} value={el.id}>
-                  {el.email}
-                </option>
-              )
-            })}
-        </select>
-        <button onClick={handleSetCoordinator} className="btn btn-cyan btn-filled">
-          Set coordinator
-        </button>
+        </b> */}
+
+        {data?.isAdmin && (
+          <>
+            <select onChange={(e) => setUserId(e.target.value)} className="form max-w-sm">
+              {users &&
+                Object.values(users).map((el) => {
+                  return (
+                    <option key={el.id} value={el.id}>
+                      {el.email}
+                    </option>
+                  )
+                })}
+            </select>
+            <button onClick={handleSetCoordinator} className="btn btn-cyan btn-filled">
+              Set coordinator
+            </button>
+          </>
+        )}
       </div>
     </div>
   )

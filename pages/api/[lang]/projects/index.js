@@ -1,4 +1,4 @@
-import { supabase } from "../../../../../utils/supabaseClient"
+import { supabase } from '../../../../utils/supabaseClient'
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -6,18 +6,23 @@ export default async function handler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
 
-  const { query: { lang },body, method } = req
-  
+  const {
+    query: { lang },
+    body,
+    method,
+  } = req
+
   switch (method) {
     case 'GET':
       const { data: dataGet, error: errorGet } = await supabase
         .from('projects')
-        .select('*,languages!inner(*)').eq('languages.code',lang)
+        .select('*,languages!inner(*)')
+        .eq('languages.code', lang)
       if (errorGet) {
         res.status(404).json({ errorGet })
         return
       }
-      
+
       res.status(200).json({ data: dataGet })
       break
     case 'POST':

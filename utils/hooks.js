@@ -12,7 +12,7 @@ export function useLanguages(token) {
     token ? ['/api/languages', token] : null,
     fetcher
   )
-  
+
   const loading = !data && !error
   const languages = data?.data
   return [languages, { mutate, loading, error }]
@@ -26,8 +26,21 @@ export function useUsers(token) {
   const loading = !users && !error
   return [users, { mutate, loading, error }]
 }
-export function useProjects({ token, language_id }) {
-  const { data, mutate, error } = useSWR(token ? [`/api/languages/${language_id}/projects`, token] : null, fetcher)
+export function useProjects({ token, language_code }) {
+  const { data, mutate, error } = useSWR(
+    token ? [`/api/${language_code}/projects`, token] : null,
+    fetcher
+  )
+  const loading = !data && !error
+  const projects = data
+  return [projects, { mutate, loading, error }]
+}
+export function useUserProjects({ token, id }) {
+  const { data, mutate, error } = useSWR(
+    token ? [`/api/users/${id}/projects`, token] : null,
+    fetcher
+  )
+
   const loading = !data && !error
   const projects = data
   return [projects, { mutate, loading, error }]
@@ -43,7 +56,7 @@ export function useProject({ token, code }) {
     data: project,
     mutate,
     error,
-  } = useSWR(token ? [`/api/languages/ru/projects/${code}`, token] : null, fetcher)
+  } = useSWR(token ? [`/api/[id]/projects/${code}`, token] : null, fetcher)
   const loading = !project && !error
   return [project, { mutate, loading, error }]
 }
@@ -52,7 +65,7 @@ export function useCoordinators({ token, code }) {
     data: coordinators,
     mutate,
     error,
-  } = useSWR(token ? [`/api/languages/ru/projects/${code}/coordinators`, token] : null, fetcher)
+  } = useSWR(token ? [`/api/[id]/projects/${code}/coordinators`, token] : null, fetcher)
   const loading = !coordinators && !error
   return [coordinators, { mutate, loading, error }]
 }
@@ -64,4 +77,13 @@ export function useCurrentUser({ token, id }) {
   } = useSWR(token ? [`/api/users/${id}`, token] : null, fetcher)
   const loading = !user && !error
   return [user, { mutate, loading, error }]
+}
+export function useRoles({ token, code }) {
+  const {
+    data: roles,
+    mutate,
+    error,
+  } = useSWR(token ? [`/api/[id]/projects/${code}/roles`, token] : null, fetcher)
+  const loading = !roles && !error
+  return [roles, { mutate, loading, error }]
 }

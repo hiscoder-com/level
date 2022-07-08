@@ -4,12 +4,16 @@ import { supabase } from '../utils/supabaseClient'
 import { useLanguages } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 export default function LanguagesEdit({
   setShowLanguages,
   setShowProjects,
   setLanguageCode,
+  isAdmin,
 }) {
+  const router = useRouter()
   const { t } = useTranslation('common')
   const { user, session } = useUser()
   const [loading, setLoading] = useState(false)
@@ -54,37 +58,31 @@ export default function LanguagesEdit({
   }
 
   return (
-    <div className="flex justify-center flex-col text-center text-xl my-5">
+    <div className="flex justify-center flex-col  text-xl my-5 ">
       <h1 className="my-5">{t('Languages')}:</h1>
       {languages?.map((el, index) => {
-        
         return (
-          <div
-            onClick={() => {
-              setShowLanguages((prev) => !prev)
-              setShowProjects((prev) => !prev)
-              setLanguageCode(el.code)
-            }}
-            key={index}
-          >
-            <p key={el.code}>
-              {el.code + ' ' + el.orig_name}
-              {editLanguages ? (
-                <span
-                  className="text-black inline-block ml-10 cursor-pointer bg-slate-400 rounded-lg p-1"
-                  onClick={() => handleDelete(el.id)}
-                >
-                  Delete
-                </span>
-              ) : (
-                ''
-              )}
-            </p>
+          <div key={index}>
+            <Link href={`/languages/${el.code}`}>
+              <a className="block text-blue-600">{el.code + ' ' + el.orig_name}</a>
+            </Link>
+            {isAdmin ? (
+              <span
+                className="mx-5 btn btn-cyan btn-filled"
+                onClick={() => handleDelete(el.id)}
+              >
+                Delete
+              </span>
+            ) : (
+              ''
+            )}
           </div>
         )
       })}
-      {editLanguages && (
+      {isAdmin && (
         <>
+          <div className="my-6">Добавить новый язык</div>
+
           <div>
             <label>eng</label>
             <input
@@ -119,7 +117,7 @@ export default function LanguagesEdit({
             <button
               disabled={loading}
               onClick={handleSave}
-              className="text-3xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2 disabled:text-gray-400"
+              className="text-xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2 disabled:text-gray-400"
             >
               Save
             </button>
