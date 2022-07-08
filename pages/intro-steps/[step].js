@@ -18,7 +18,7 @@ export default function IntroPage() {
   )
 }
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['intro-steps', 'common'])),
