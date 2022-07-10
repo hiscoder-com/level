@@ -15,7 +15,6 @@ export default function Projects({ languageCode, id }) {
     token: session?.access_token,
     language_code: languageCode,
   })
-  console.log({ data })
   const [userProjects] = useUserProjects({
     token: session?.access_token,
     id: user?.id,

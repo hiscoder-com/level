@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   useCoordinators,
   useCurrentUser,
   useProject,
   useRoles,
+  useUserProjectRole,
   useUsers,
 } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
@@ -13,22 +14,47 @@ import Link from 'next/link'
 function Project({ code }) {
   const { user } = useUser()
   const { session } = useUser()
-  const [data] = useCurrentUser({ token: session?.access_token, id: user?.id })
+  const [currentUser] = useCurrentUser({ token: session?.access_token, id: user?.id })
   const [userId, setUserId] = useState(null)
 
-  const [project, { mutate }] = useProject({ token: session?.access_token, code })
-  console.log({ project })
+  const [project] = useProject({ token: session?.access_token, code })
+  const [userProjectRoles] = useUserProjectRole({
+    token: session?.access_token,
+    code,
+    id: user?.id,
+  })
+  const rolesCurrentUser = userProjectRoles?.data.map((el) => el.role)
+  const [projectRole, setProjectRole] = useState(null)
+
+  useEffect(() => {
+    if (!rolesCurrentUser) {
+      return
+    }
+
+    if (rolesCurrentUser.length === 0) {
+      return
+    }
+    if (projectRole === 'admin') {
+      return
+    }
+    const arr = ['coordinator', 'moderator', 'translator']
+    for (let i = 0; i < arr.length; ++i) {
+      if (rolesCurrentUser.includes(arr[i])) {
+        setProjectRole(arr[i])
+        break
+      }
+    }
+  }, [rolesCurrentUser])
   const [roles] = useRoles({
     token: session?.access_token,
     code: project?.code,
   })
-  console.log(data?.is_admin)
   const [coordinators] = useCoordinators({
     token: session?.access_token,
     code: project?.code,
   })
   const [users] = useUsers(session?.access_token)
-
+  console.log(project)
   const handleSetCoordinator = async () => {
     if (!project?.id || !userId) {
       alert('неправильный координатор')
@@ -47,7 +73,7 @@ function Project({ code }) {
       })
       .catch((error) => console.log(error, 'from axios'))
   }
-
+  console.log(projectRole)
   return (
     <div>
       <h3>Project</h3>
@@ -76,28 +102,15 @@ function Project({ code }) {
             })}
           </>
         )}
-        {data?.is_admin && (
-          <Link key={project?.id} href={`/projects/${project?.code}/management`}>
-            <a className="btn btn-filled btn-cyan">Редактирование проекта</a>
-          </Link>
-        )}
-        {data?.isAdmin && (
-          <>
-            <select onChange={(e) => setUserId(e.target.value)} className="form max-w-sm">
-              {users &&
-                Object.values(users).map((el) => {
-                  return (
-                    <option key={el.id} value={el.id}>
-                      {el.email}
-                    </option>
-                  )
-                })}
-            </select>
-            <button onClick={handleSetCoordinator} className="btn btn-cyan btn-filled">
-              Set coordinator
-            </button>
-          </>
-        )}
+        {currentUser?.isAdmin ||
+          (['coordinator', 'moderator'].includes(projectRole) && (
+            <Link
+              key={project?.id}
+              href={`/projects/${project?.code}/edit/${projectRole}`}
+            >
+              <a className="btn btn-filled btn-cyan">Редактирование проекта</a>
+            </Link>
+          ))}
       </div>
     </div>
   )

@@ -24,7 +24,6 @@ export default function UsersPage() {
 
   const canAddRole = async (role, toUser) => {
     const { data, error } = await supabase.rpc('can_change_role', role, user.id, toUser)
-    console.log({ data })
     return data
   }
 

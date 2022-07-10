@@ -13,7 +13,6 @@ function Account({ id }) {
 
   const [showLanguages, setShowLanguages] = useState(data?.is_admin)
   const [languageCode, setLanguageCode] = useState(null)
-  // console.log(first)
   useEffect(() => {
     if (!data) {
       return

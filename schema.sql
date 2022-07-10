@@ -47,7 +47,8 @@ CREATE TYPE PUBLIC .app_permission AS enum (
   'project_source',
   'coordinator.set',
   'languages',
-  'user_languages'
+  'user_languages',
+  'translator.set'
 );
 
 CREATE TYPE PUBLIC .project_role AS enum ('coordinator', 'moderator', 'translator');
@@ -621,11 +622,13 @@ INSERT INTO
 VALUES
   ('moderator', 'dictionaries'),
   ('moderator', 'notes'),
+  ('moderator', 'translator.set'),
   ('coordinator', 'dictionaries'),
   ('coordinator', 'notes'),
   ('coordinator', 'verses.set'),
   ('coordinator', 'moderator.set'),
-  ('coordinator', 'user_projects');
+  ('coordinator', 'user_projects'),
+  ('coordinator', 'translator.set');
 
 DELETE FROM
   PUBLIC .projects;

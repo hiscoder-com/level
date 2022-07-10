@@ -37,25 +37,25 @@ export default function LanguagesEdit({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
-  const handleSave = async () => {
-    try {
-      setLoading(true)
-      const { user, error } = await supabase
-        .from('languages')
-        .insert([{ eng, code, orig_name: origName }])
-      if (error) throw error
-      mutate()
-    } catch (error) {
-      alert(error.error_description || error.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-  const handleDelete = async (id) => {
-    const { error } = await supabase.from('languages').delete().match({ id })
-    if (error) throw error
-    mutate()
-  }
+  // const handleSave = async () => {
+  //   try {
+  //     setLoading(true)
+  //     const { user, error } = await supabase
+  //       .from('languages')
+  //       .insert([{ eng, code, orig_name: origName }])
+  //     if (error) throw error
+  //     mutate()
+  //   } catch (error) {
+  //     alert(error.error_description || error.message)
+  //   } finally {
+  //     setLoading(false)
+  //   }
+  // }
+  // const handleDelete = async (id) => {
+  //   const { error } = await supabase.from('languages').delete().match({ id })
+  //   if (error) throw error
+  //   mutate()
+  // }
 
   return (
     <div className="flex justify-center flex-col  text-xl my-5 ">
@@ -64,15 +64,10 @@ export default function LanguagesEdit({
         return (
           <div key={index}>
             <Link href={`/languages/${el.code}`}>
-              <a className="block text-blue-600">{el.code + ' ' + el.orig_name}</a>
+              <a className=" text-blue-600">{el.code + ' ' + el.orig_name}</a>
             </Link>
             {isAdmin ? (
-              <span
-                className="mx-5 btn btn-cyan btn-filled"
-                onClick={() => handleDelete(el.id)}
-              >
-                Delete
-              </span>
+              <span className="mx-5 my-2 btn btn-cyan btn-filled">Edit</span>
             ) : (
               ''
             )}
@@ -81,45 +76,9 @@ export default function LanguagesEdit({
       })}
       {isAdmin && (
         <>
-          <div className="my-6">Добавить новый язык</div>
-
           <div>
-            <label>eng</label>
-            <input
-              className="border border-green-600 p-2"
-              type="text"
-              placeholder="Your eng"
-              value={eng}
-              onChange={(e) => setEng(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>code</label>
-            <input
-              className="border border-green-600 p-2"
-              type="text"
-              placeholder="Your code"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-            />
-          </div>
-          <div>
-            <label>orig_name</label>
-            <input
-              className="border border-green-600 p-2"
-              type="text"
-              placeholder="Your orig_name"
-              value={origName}
-              onChange={(e) => setOrigName(e.target.value)}
-            />
-          </div>
-          <div>
-            <button
-              disabled={loading}
-              onClick={handleSave}
-              className="text-xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2 disabled:text-gray-400"
-            >
-              Save
+            <button disabled={loading} className="mt-5 btn btn-cyan btn-filled">
+              Добавить
             </button>
           </div>
         </>

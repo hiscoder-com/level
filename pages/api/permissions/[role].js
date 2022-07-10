@@ -1,4 +1,4 @@
-import { supabase } from '../../../../../../utils/supabaseClient'
+import { supabase } from '../../../utils/supabaseClient'
 
 export default async function userHandler(req, res) {
   if (!req.headers.token) {
@@ -7,21 +7,19 @@ export default async function userHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   const {
-    query: { code, id },
+    query: { role },
     method,
   } = req
-
   switch (method) {
     case 'GET':
       const { data, error } = await supabase
-        .from('project_roles')
-        .select('role,users!inner(id),projects!inner(code)')
-        .eq('users.id', id)
-        .eq('projects.code', code)
+        .from('role_permissions')
+        .select('permission')
+        .eq('role', role)
       if (error) {
+        res.status(404).json({ error })
         return
       }
-      console.log(data)
       res.status(200).json({ data })
       break
     case 'PUT':

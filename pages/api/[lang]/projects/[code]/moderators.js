@@ -1,4 +1,4 @@
-import { supabase } from '../../../../../../utils/supabaseClient'
+import { supabase } from '../../../../../utils/supabaseClient'
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -17,7 +17,7 @@ export default async function handler(req, res) {
       const { data: dataGet, error: errorGet } = await supabase
         .from('project_roles')
         .select('projects!inner(code),users!inner(*)')
-        .eq('role', 'translator')
+        .eq('role', 'moderator')
         .eq('projects.code', code)
       if (errorGet) {
         res.status(404).json({ errorGet })
