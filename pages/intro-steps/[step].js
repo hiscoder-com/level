@@ -6,6 +6,7 @@ import IntroStep from '../../components/IntroStep'
 export default function IntroPage() {
   const router = useRouter()
   const { step } = router.query
+
   return (
     <div className="container">
       <Head>
