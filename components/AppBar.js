@@ -17,6 +17,7 @@ import VCANA_logo from '../public/vcana-logo.svg'
 export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntroduction }) {
   const { user } = useUser()
   const [access, setAccess] = useState(false)
+
   const [step, setStep] = useState(1)
 
   useEffect(() => {
