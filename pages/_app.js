@@ -5,7 +5,7 @@ import Layout from '../components/Layout'
 
 import { supabase } from '../utils/supabaseClient'
 import { UserContextProvider } from '../lib/UserContext'
-import AppContextProvider from '../lib/AppContext'
+import { AppContextProvider } from '../lib/AppContext'
 
 import '../styles/globals.css'
 

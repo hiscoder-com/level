@@ -1,12 +1,17 @@
 import { useTranslation } from 'next-i18next'
+import { useContext, useEffect } from 'react'
 import Footer from '../components/Footer'
+import { AppContext } from '../lib/AppContext'
 
 function IntroStep({ step }) {
   const { t } = useTranslation(['intro-steps', 'common'])
+  const {
+    actions: { setIntroductionStep },
+  } = useContext(AppContext)
 
-  // useEffect(() => {
-
-  // }, [step])
+  useEffect(() => {
+    setIntroductionStep(step)
+  }, [step])
 
   const IntroSteps = {
     1: {

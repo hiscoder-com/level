@@ -1,13 +1,19 @@
-import { useContext } from 'react'
+import { useContext, useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { AppContext } from '../lib/AppContext'
 
 export default function Footer({ textCheckbox, textButton, href }) {
-  // const [checked, setChecked] = useState(false)
+  const [checked, setChecked] = useState(false)
   // const { introductionStep, setIntroductionStep } = useContext(AppContext)
-  const { state } = useContext(AppContext)
-  console.log(state)
+  const {
+    state: { introductionStep },
+    actions: { setIntroductionStep },
+  } = useContext(AppContext)
+  console.log(checked)
+  useEffect(() => {
+    setChecked(false)
+  }, [introductionStep])
 
   return (
     <div className="max-w-7xl w-full mx-auto flex justify-end items-center px-4 bg-blue-150">
@@ -18,15 +24,15 @@ export default function Footer({ textCheckbox, textButton, href }) {
               className="cursor-pointer"
               id="cb"
               type="checkbox"
-              checked={introductionStep}
-              onChange={() => setIntroductionStep((prev) => !prev)}
+              checked={checked}
+              onChange={() => setChecked((prev) => !prev)}
             />
             <label className="cursor-pointer" htmlFor="cb">
               {textCheckbox}
             </label>
           </div>
           <Link href={href}>
-            <button className="btn-cyan w-28" disabled={!introductionStep}>
+            <button className="btn-cyan w-28" disabled={!checked}>
               {textButton}
             </button>
           </Link>
