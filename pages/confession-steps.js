@@ -7,10 +7,11 @@ import LeftArrow from '../public/left-arrow.svg'
 import RightArrow from '../public/right-arrow.svg'
 import { useUsers } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
+import axios from 'axios'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])
-  const { user } = useUser()
+  const { user, session } = useUser()
   const router = useRouter()
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
@@ -73,6 +74,20 @@ export default function ConfessionSteps() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
+  // console.log(user)
+  const handleSetConfession = async () => {
+    axios.defaults.headers.common['token'] = session?.access_token
+    axios
+      .put('/api/agreements/confession', {
+        user_id: user.id,
+      })
+      .then((result) => {
+        const { data, status } = result
+
+        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
+      })
+      .catch((error) => console.log(error, 'from axios'))
+  }
   return (
     <div className="layout-appbar gap-7">
       <h1 className="h1">{t('ConfessionFaith', { ns: 'common' })}:</h1>
@@ -105,7 +120,9 @@ export default function ConfessionSteps() {
         </div>
 
         <button
-          onClick={() => router.push(`/account/${user && user.id}`)}
+          onClick={() => {
+            handleSetConfession(), router.push(`/account/${user && user.id}`)
+          }}
           className="btn-filled w-28"
           disabled={user && !checked}
         >

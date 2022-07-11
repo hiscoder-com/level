@@ -3,7 +3,9 @@ import {
   useCoordinators,
   useCurrentUser,
   useProject,
+  useProjectRole,
   useRoles,
+  useTranslators,
   useUserProjectRole,
   useUsers,
 } from '../utils/hooks'
@@ -15,99 +17,71 @@ function Project({ code }) {
   const { user } = useUser()
   const { session } = useUser()
   const [currentUser] = useCurrentUser({ token: session?.access_token, id: user?.id })
-  const [userId, setUserId] = useState(null)
 
   const [project] = useProject({ token: session?.access_token, code })
-  const [userProjectRoles] = useUserProjectRole({
+
+  const [translators] = useTranslators({
+    token: session?.access_token,
+    code: project?.code,
+  })
+
+  const projectRole = useProjectRole({
     token: session?.access_token,
     code,
-    id: user?.id,
+    userId: user?.id,
+    isAdmin: currentUser?.is_admin,
   })
-  const rolesCurrentUser = userProjectRoles?.data.map((el) => el.role)
-  const [projectRole, setProjectRole] = useState(null)
-
-  useEffect(() => {
-    if (!rolesCurrentUser) {
-      return
-    }
-
-    if (rolesCurrentUser.length === 0) {
-      return
-    }
-    if (projectRole === 'admin') {
-      return
-    }
-    const arr = ['coordinator', 'moderator', 'translator']
-    for (let i = 0; i < arr.length; ++i) {
-      if (rolesCurrentUser.includes(arr[i])) {
-        setProjectRole(arr[i])
-        break
-      }
-    }
-  }, [rolesCurrentUser])
-  const [roles] = useRoles({
-    token: session?.access_token,
-    code: project?.code,
-  })
-  const [coordinators] = useCoordinators({
-    token: session?.access_token,
-    code: project?.code,
-  })
-  const [users] = useUsers(session?.access_token)
-  console.log(project)
-  const handleSetCoordinator = async () => {
-    if (!project?.id || !userId) {
-      alert('неправильный координатор')
-      return
-    }
-    axios.defaults.headers.common['token'] = session?.access_token
-    axios
-      .post('/api/languages/ru/projects/rlob/coordinators', {
-        user_id: userId,
-        project_id: project?.id,
-      })
-      .then((result) => {
-        const { data, status } = result
-
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
-      })
-      .catch((error) => console.log(error, 'from axios'))
-  }
   console.log(projectRole)
+  // const handleSetCoordinator = async () => {
+  //   if (!project?.id || !userId) {
+  //     alert('неправильный координатор')
+  //     return
+  //   }
+  //   axios.defaults.headers.common['token'] = session?.access_token
+  //   axios
+  //     .post('/api/languages/ru/projects/rlob/coordinators', {
+  //       user_id: userId,
+  //       project_id: project?.id,
+  //     })
+  //     .then((result) => {
+  //       const { data, status } = result
+
+  //       //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
+  //     })
+  //     .catch((error) => console.log(error, 'from axios'))
+  // }
+  console.log(project?.languages)
   return (
     <div>
-      <h3>Project</h3>
-      <div>
-        Title <b>{project?.title}</b>
-      </div>
+      <h3 className="text-3xl">
+        <b>{project?.title}</b>
+      </h3>
+
       <div>
         Code <b>{project?.code}</b>
       </div>
       <div>
-        Language <b>{project?.languages?.orig_name}</b>
+        Language <b>{project?.languages?.orig_name + ' '}</b>
+        <b>{project?.languages?.code}</b>
       </div>
+
       <div>
-        Method <b>{project?.methods?.title}</b>
-      </div>
-      <div>
-        type <b>{project?.type}</b>
-      </div>
-      <div>
-        {roles && (
+        {translators && (
           <>
-            {roles.data.map((el, key) => {
+            Translators:
+            {translators.data.map((el, key) => {
               return (
-                <div key={key}>{`${el.role} ${el.users.login} ${el.users.email}`}</div>
+                <div
+                  className="font-bold"
+                  key={key}
+                >{`${el.users.login} ${el.users.email}`}</div>
               )
             })}
           </>
         )}
         {currentUser?.isAdmin ||
-          (['coordinator', 'moderator'].includes(projectRole) && (
-            <Link
-              key={project?.id}
-              href={`/projects/${project?.code}/edit/${projectRole}`}
-            >
+          (['admin', 'coordinator', 'moderator'].includes(projectRole) && (
+            <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
               <a className="btn btn-filled btn-cyan">Редактирование проекта</a>
             </Link>
           ))}

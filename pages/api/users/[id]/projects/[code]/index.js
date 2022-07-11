@@ -21,7 +21,6 @@ export default async function userHandler(req, res) {
       if (error) {
         return
       }
-      console.log(data)
       res.status(200).json({ data })
       break
     case 'PUT':

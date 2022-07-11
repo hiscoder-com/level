@@ -5,7 +5,7 @@ import Projects from '../../components/Projects'
 
 export default function LanguagesEditPage() {
   const router = useRouter()
-  const { code } = router.query
+  const { lang } = router.query
   return (
     <div className="container">
       <Head>
@@ -13,7 +13,7 @@ export default function LanguagesEditPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Projects languageCode={code} />
+      <Projects languageCode={lang} />
     </div>
   )
 }

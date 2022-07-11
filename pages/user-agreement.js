@@ -35,6 +35,7 @@ export default function UserAgreement() {
         </div>
       </div>
       <Footer
+        agreement={'user-agreement'}
         textButton={t('Next', { ns: 'common' })}
         textCheckbox={t('Agree', { ns: 'common' })}
         href="/confession"

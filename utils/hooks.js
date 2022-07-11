@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
 const fetcher = (url, token) =>
@@ -31,6 +32,7 @@ export function useProjects({ token, language_code }) {
     token ? [`/api/${language_code}/projects`, token] : null,
     fetcher
   )
+
   const loading = !data && !error
   const projects = data
   return [projects, { mutate, loading, error }]
@@ -116,7 +118,6 @@ export function useRoles({ token, code }) {
   return [roles, { mutate, loading, error }]
 }
 export function usePermissions({ token, role }) {
-  // console.log({ role }, 'hooks')
   const {
     data: permissions,
     mutate,
@@ -124,4 +125,38 @@ export function usePermissions({ token, role }) {
   } = useSWR(token ? [`/api/permissions/${role}`, token] : null, fetcher)
   const loading = !permissions && !error
   return [permissions, { mutate, loading, error }]
+}
+
+export function useProjectRole({ token, code, userId, isAdmin }) {
+  const [userProjectRoles] = useUserProjectRole({
+    token,
+    code,
+    id: userId,
+  })
+  const rolesCurrentUser = userProjectRoles?.data.map((el) => el.role)
+  const [projectRole, setProjectRole] = useState(null)
+
+  useEffect(() => {
+    if (isAdmin) {
+      setProjectRole('admin')
+      return
+    }
+    if (!rolesCurrentUser) {
+      return
+    }
+
+    if (rolesCurrentUser.length === 0) {
+      return
+    }
+
+    const arr = ['coordinator', 'moderator', 'translator']
+    for (let i = 0; i < arr.length; ++i) {
+      if (rolesCurrentUser.includes(arr[i])) {
+        setProjectRole(arr[i])
+        break
+      }
+    }
+  }, [isAdmin, projectRole, rolesCurrentUser])
+
+  return projectRole
 }

@@ -7,12 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-export default function LanguagesEdit({
-  setShowLanguages,
-  setShowProjects,
-  setLanguageCode,
-  isAdmin,
-}) {
+export default function Languages({ isAdmin }) {
   const router = useRouter()
   const { t } = useTranslation('common')
   const { user, session } = useUser()
@@ -21,42 +16,8 @@ export default function LanguagesEdit({
   const [code, setCode] = useState('')
   const [origName, setOrigName] = useState('')
   const [editLanguages, setEditLanguages] = useState(false)
-  const [languages, { mutate }] = useLanguages(session?.access_token)
-  const canEditLanguages = async () => {
-    const { data, error } = await supabase.rpc('authorize', {
-      requested_permission: 'languages',
-      user_id: user.id,
-    })
-    setEditLanguages(data)
-    return data
-  }
-  useEffect(() => {
-    if (user) {
-      canEditLanguages()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
-
-  // const handleSave = async () => {
-  //   try {
-  //     setLoading(true)
-  //     const { user, error } = await supabase
-  //       .from('languages')
-  //       .insert([{ eng, code, orig_name: origName }])
-  //     if (error) throw error
-  //     mutate()
-  //   } catch (error) {
-  //     alert(error.error_description || error.message)
-  //   } finally {
-  //     setLoading(false)
-  //   }
-  // }
-  // const handleDelete = async (id) => {
-  //   const { error } = await supabase.from('languages').delete().match({ id })
-  //   if (error) throw error
-  //   mutate()
-  // }
-
+  const [languages] = useLanguages(session?.access_token)
+  console.log(languages)
   return (
     <div className="flex justify-center flex-col  text-xl my-5 ">
       <h1 className="my-5">{t('Languages')}:</h1>

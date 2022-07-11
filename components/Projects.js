@@ -5,29 +5,22 @@ import { useCurrentUser, useProjects, useUserProjects } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import { useEffect, useState } from 'react'
 
-export default function Projects({ languageCode, id }) {
+export default function Projects({ languageCode }) {
   const { user, session } = useUser()
 
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [currentUser] = useCurrentUser({ token: session?.access_token, id: user?.id })
 
-  const [data] = useCurrentUser({ token: session?.access_token, id: user?.id })
   const [adminProjects] = useProjects({
     token: session?.access_token,
     language_code: languageCode,
   })
+
   const [userProjects] = useUserProjects({
     token: session?.access_token,
     id: user?.id,
   })
-  useEffect(() => {
-    if (!data) {
-      return
-    }
 
-    setIsAdmin(data?.is_admin)
-  }, [data])
-
-  const projects = isAdmin ? adminProjects : userProjects
+  const projects = currentUser?.is_admin ? adminProjects : userProjects
   return (
     <>
       <div className="container">
@@ -36,7 +29,7 @@ export default function Projects({ languageCode, id }) {
           <meta name="description" content="VCANA" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <div>Проекты:</div>
+        <div>{`${currentUser?.is_admin ? 'Проекты' : 'Мои проекты'}`}</div>
         {projects &&
           projects?.data &&
           projects.data.map((project) => {
@@ -46,7 +39,7 @@ export default function Projects({ languageCode, id }) {
               </Link>
             )
           })}
-        {isAdmin && (
+        {currentUser?.is_admin && (
           <Link href={'/projects/create'}>
             <a className="btn-filled btn">Add New</a>
           </Link>
