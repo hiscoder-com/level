@@ -4,6 +4,10 @@ import Footer from '../components/Footer'
 function IntroStep({ step }) {
   const { t } = useTranslation(['intro-steps', 'common'])
 
+  // useEffect(() => {
+
+  // }, [step])
+
   const IntroSteps = {
     1: {
       title: 'Первый шаг - самостоятельное изучение',
