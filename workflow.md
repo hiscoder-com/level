@@ -20,8 +20,8 @@
 <br>
 
 - Новые issues создаются и добавляются в столбце <span style="font-weight:bold">New issues</span>
-- <span style="font-weight:bold">Planned - Needs Definition</span> - здесь карточки, которые нужно сформулировать в конкретные issues. Если issue получается очень большая, то превращаем карточку в <span style="font-weight:bold">Epic</span> и создаем подзадачи так, чтобы на их выполнение уходило не больше недели
-- Поместите issue в колонку <span style="font-weight:bold">Product Backlog</span> после завершения определения. Четко определенная issue будет включать в себя описание требования, ключевые результаты/определение выполненного, макеты, если нужно
+- <span style="font-weight:bold">Planned - Needs Definition</span> - здесь карточки, которые нужно сформулировать в конкретные issues. Если issue получается очень большая, то разбиваем ёё на небольшие issue так, чтобы на их выполнение уходило не больше недели. Создаём <span style="font-weight:bold">Epic</span> и группируем связанные issue в этом Epic 
+- Поместите issue либо Epic в колонку <span style="font-weight:bold">Product Backlog</span> после завершения определения. Четко определенная issue будет включать в себя описание требования, ключевые результаты/определение выполненного, макеты, если нужно
 - Расставить карточки по порядку приоритета, что самое важное – вверх. Можно обсудить с командой
 
 
@@ -38,21 +38,24 @@
 - Сначала проверьте, нет ли <span style="font-weight:bold">Pull Request, Issues</span>, которые назначены вам, они в приоритете
 - Выберите одну, или несколько задач из <span style="font-weight:bold">Product Backlog</span>
 - Проверьте что задача четко определена
+- Перенесите карточку либо карточки в <span style="font-weight:bold">Sprint Backlog</span>
 - Назначьте себя исполнителем issue
 - Перенесите карточку в <span style="font-weight:bold">In Progress</span>
+- Создайте новую ветвь от текущей рабочей ветви (develop)
 - Решите issue
 - Во время работы над issue старайтесь фиксировать (коммитить) небольшие изменения, и давать им понятные названия
 - Создайте <span style="font-weight:bold">PR</span> для <span style="font-weight:bold">feature-ветки</span> в <span style="font-weight:bold">develop</span>
 - При создании PR необходимо <span style="font-weight:bold">коротко описать проделанную работу</span> в <span style="font-weight:bold">Description</span>
 - Убедитесь, что PR связан с соответствующей рассматриваемой issue
-- Убедитесь, что для проверки PR, назначено как минимум <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers
+- Убедитесь, что для проверки PR, назначено как минимум <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers о том, что им необходимо проверить PR
 - Проведите ручную проверку кода, чтобы убедиться, что нет простых ошибок, таких как оставшиеся комментарии и console.log()
 - При создании PR карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span>
 - Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите  <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span>
 - Если есть замечания по коду от Reviewers, вы получите комментарии по недостаткам кода
 - Как только получаете два одобрения, подтверждаете запрос на слияние веток (<span style="font-weight:bold">merge pull request</span>)
-- Переносим карточку в <span style="font-weight:bold">Done</span>
-- <span style="font-weight:bold">По окончании Sprint Review</span> переносим карточку в <span style="font-weight:bold">Closed</span>
+- После слияния веток удалите ветку, над которой вы работали
+- Перенесите карточку в <span style="font-weight:bold">Done</span>
+- <span style="font-weight:bold">По окончании Sprint Review</span> перенесите карточку в <span style="font-weight:bold">Closed</span>
 
 > Примечание:
 >
@@ -137,7 +140,7 @@
 <br>
 
 - В коде должны быть понятные имена для переменных
-- Выносить дублируемые куски кода в helper
+- Выносить дублируемые куски кода в файл helper.js, который находится в корне проекта
 - Стараться создавать файлы, код которых не превышает  100 строк
 - Искать возможность вынести код в <span style="font-weight:bold">RCL</span>, или расширить существующую библиотеку
 - Использовать <span style="font-weight:bold">hooks</span> для того чтобы оптимизировать приложение
@@ -178,6 +181,14 @@
 - utils
     - hooks.js
     - supabaseClient.js
+- CHANGELOG.md
+
+- .env.local.example
+
+- helper.js
+
+- workflow.md
+
 ```
 
 **components** - Здесь находятся компоненты приложения, которые переиспользуются на страницах
