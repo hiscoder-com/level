@@ -51,7 +51,7 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
 
   const nextStep = () => {
     setStep((prev) => {
-      return prev < 8 ? prev + 1 : prev
+      return prev < 7 ? prev + 1 : prev
     })
   }
 
@@ -104,13 +104,7 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
       tools: {},
     },
     7: {
-      title: 'Шаг 7: Проверка ключевых слов',
-      users: 2,
-      time: 3600,
-      tools: {},
-    },
-    8: {
-      title: 'Шаг 8: Командный обзор перевода',
+      title: 'Шаг 7: Командная проверка',
       users: 2,
       time: 3600,
       tools: {},

@@ -5,7 +5,7 @@ import SideBar from './SideBar'
 
 function Layout({ backgroundColor, children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [isIntroduction, setIsIntroduction] = useState(true)
+  const [isIntroduction, setIsIntroduction] = useState(false)
   return (
     <div className={`mx-auto min-h-screen ${backgroundColor}`}>
       <AppBar
