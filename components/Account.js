@@ -1,29 +1,36 @@
-import React, { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import React from 'react'
 import { useUser } from '../lib/UserContext'
-import { useCurrentUser } from '../utils/hooks'
+import { useAuthenticated } from '../utils/hooks'
 import Languages from './Languages'
 import Projects from './Projects'
 import SignOut from './SignOut'
 
-function Account({ id }) {
-  const { user, session } = useUser()
-  const [currentUser] = useCurrentUser({ token: session?.access_token, id })
+function Account() {
+  const { session } = useUser()
+  const router = useRouter()
+  const { id } = router?.query
+
+  const [authenticated] = useAuthenticated({
+    token: session?.access_token,
+    id,
+  })
   return (
     <div className="container">
       <h1>Личный кабинет</h1>
-      {currentUser && (
+      {authenticated && (
         <div className="divide-y divide-gray-400">
           <div>
-            <p>Id: {currentUser.id}</p>
-            <p>Login: {currentUser.login}</p>
-            <p>Email:{currentUser.email}</p>
+            <p>Id: {authenticated.id}</p>
+            <p>Login: {authenticated.login}</p>
+            <p>Email:{authenticated.email}</p>
             <SignOut />
           </div>
 
-          {currentUser?.is_admin ? (
-            <Languages isAdmin={currentUser?.is_admin} />
+          {authenticated?.is_admin ? (
+            <Languages isAdmin={authenticated?.is_admin} />
           ) : (
-            <Projects id={currentUser?.data?.id} />
+            <Projects id={authenticated?.data?.id} />
           )}
         </div>
       )}

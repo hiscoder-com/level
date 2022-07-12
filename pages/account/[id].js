@@ -1,11 +1,7 @@
-import { useRouter } from 'next/router'
 import Account from '../../components/Account'
 
-function Projects() {
-  const router = useRouter()
-  const { id } = router.query
-
-  return <Account id={id} />
+function AccountPage() {
+  return <Account />
 }
 
-export default Projects
+export default AccountPage

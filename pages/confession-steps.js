@@ -73,7 +73,6 @@ export default function ConfessionSteps() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
-  // console.log(user)
   const handleSetConfession = async () => {
     axios.defaults.headers.common['token'] = session?.access_token
     axios

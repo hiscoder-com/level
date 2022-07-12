@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useUser } from '../lib/UserContext'
-import { useCurrentUser, useRedirect } from '../utils/hooks'
+import { useAuthenticated, useRedirect } from '../utils/hooks'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
@@ -11,7 +11,7 @@ export default function Agreements() {
   const router = useRouter()
   const { user, session } = useUser()
   const { href } = useRedirect({
-    user,
+    userId: user?.id,
     token: session?.access_token,
     startLink: '/agreements',
   })

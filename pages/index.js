@@ -9,15 +9,16 @@ import { useRouter } from 'next/router'
 import VcanaLogo from '../public/vcana-logo.svg'
 import TtLogo from '../public/tt-logo.svg'
 import { useUser } from '../lib/UserContext'
-import { useCurrentUser, useRedirect } from '../utils/hooks'
-import { useEffect, useState } from 'react'
+import { useRedirect } from '../utils/hooks'
+
 export default function Home() {
   const { user, session } = useUser()
   const { href } = useRedirect({
-    user,
+    userId: user?.id,
     token: session?.access_token,
     startLink: '/login',
   })
+
   const { locale, pathname, query, asPath } = useRouter()
   const { t } = useTranslation('common')
 

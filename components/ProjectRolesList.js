@@ -16,7 +16,6 @@ function ProjectRolesEdit({
   const [translatorId, setTranslatorId] = useState(null)
 
   const handleSet = async () => {
-    // console.log(id)
     if (!project?.id) {
       return
     }
@@ -46,7 +45,6 @@ function ProjectRolesEdit({
       .then((result) => {
         const { data, status } = result
         mutate()
-        console.log(data)
         //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
       .catch((error) => console.log(error, 'from axios'))

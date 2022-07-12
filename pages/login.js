@@ -10,7 +10,7 @@ import { useUser } from '../lib/UserContext'
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
 import EyeOffIcon from '../public/eye-off-icon.svg'
-import { useCurrentUser, useRedirect } from '../utils/hooks'
+import { useAuthenticated, useRedirect } from '../utils/hooks'
 
 export default function Login() {
   const { t } = useTranslation('common')
@@ -19,7 +19,7 @@ export default function Login() {
   const { user, session } = useUser()
 
   const { href } = useRedirect({
-    user,
+    userId: user?.id,
     token: session?.access_token,
     startLink: '/agreements',
   })

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   useCoordinators,
-  useCurrentUser,
+  useAuthenticated,
   useProject,
   useProjectRole,
   useRoles,
@@ -15,7 +15,7 @@ import Link from 'next/link'
 function Project({ code }) {
   const { user, session } = useUser()
 
-  const [currentUser] = useCurrentUser({ token: session?.access_token, id: user?.id })
+  const [authenticated] = useAuthenticated({ token: session?.access_token, id: user?.id })
 
   const [project] = useProject({ token: session?.access_token, code })
 
@@ -28,7 +28,7 @@ function Project({ code }) {
     token: session?.access_token,
     code,
     userId: user?.id,
-    isAdmin: currentUser?.is_admin,
+    isAdmin: authenticated?.is_admin,
   })
   // const handleSetCoordinator = async () => {
   //   if (!project?.id || !userId) {
@@ -76,7 +76,7 @@ function Project({ code }) {
             })}
           </>
         )}
-        {currentUser?.isAdmin ||
+        {authenticated?.isAdmin ||
           (['admin', 'coordinator', 'moderator'].includes(projectRole) && (
             <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
               <a className="btn btn-filled btn-cyan">Редактирование проекта</a>

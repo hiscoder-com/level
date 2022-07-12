@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 
 import {
   useCoordinators,
-  useCurrentUser,
+  useAuthenticated,
   useModerators,
   usePermissions,
   useProject,
@@ -18,7 +18,7 @@ function ProjectEdit({ code }) {
   const [showSelectTranslator, setShowSelectTranslator] = useState(false)
   const { user, session } = useUser()
   const [users] = useUsers(session?.access_token)
-  const [currentUser] = useCurrentUser({
+  const [authenticated] = useAuthenticated({
     token: session?.access_token,
     id: user?.id,
   })
@@ -27,7 +27,7 @@ function ProjectEdit({ code }) {
     token: session?.access_token,
     code,
     userId: user?.id,
-    isAdmin: currentUser?.is_admin,
+    isAdmin: authenticated?.is_admin,
   })
 
   const [permissions] = usePermissions({ token: session?.access_token, role })

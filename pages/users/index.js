@@ -14,9 +14,9 @@ export default function UsersPage() {
     if (!users || !user) {
       return
     }
-    const currentUser = users.find((el) => el.users.id === user.id)
-    if (currentUser) {
-      setCurrentRole(currentUser.role)
+    const authenticated = users.find((el) => el.users.id === user.id)
+    if (authenticated) {
+      setCurrentRole(authenticated.role)
     }
   }, [user, users])
 
