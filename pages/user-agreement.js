@@ -8,7 +8,7 @@ export default function UserAgreement() {
 
   return (
     <div className="layout-appbar">
-      <div className="text-alignment">
+      <div className="text-alignment text-justify">
         <h1 className="h1 pt-4">{t('Agreement')}:</h1>
         <div className="h6 mt-7">
           <b className="font-bold">{t('License')}</b>
