@@ -1,6 +1,10 @@
-import React, { useEffect, useState } from 'react'
-
+import React, { useEffect, useMemo, useState } from 'react'
+import axios from 'axios'
 function ProjectRolesEdit({
+  session,
+  code,
+  mutate,
+  project,
   users,
   type,
   role,
@@ -9,6 +13,45 @@ function ProjectRolesEdit({
   showSelectTranslator,
   setShowSelectTranslator,
 }) {
+  const [translatorId, setTranslatorId] = useState(null)
+
+  const handleSet = async () => {
+    // console.log(id)
+    if (!project?.id) {
+      return
+    }
+    axios.defaults.headers.common['token'] = session?.access_token
+    axios
+      .post(`/api/${project?.languages?.code}/projects/${code}/translators/`, {
+        user_id: translatorId,
+        project_id: project?.id,
+      })
+      .then((result) => {
+        const { data } = result
+        mutate()
+        setShowSelectTranslator(false)
+        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
+      })
+      .catch((error) => console.log(error, 'from axios'))
+  }
+  const handleDelete = async (id) => {
+    if (!project?.id) {
+      return
+    }
+    axios.defaults.headers.common['token'] = session?.access_token
+    axios
+      .delete(`/api/${project?.languages?.code}/projects/${code}/translators/${id}`, {
+        data: { projectId: project?.id },
+      })
+      .then((result) => {
+        const { data, status } = result
+        mutate()
+        console.log(data)
+        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
+      })
+      .catch((error) => console.log(error, 'from axios'))
+  }
+
   const availableTranslators = useMemo(
     () =>
       roles &&
@@ -52,7 +95,7 @@ function ProjectRolesEdit({
                         .includes(config.permission)) ||
                       role === 'admin') && (
                       <button
-                        onClick={() => handleDeleteTranslator(el.users.id)}
+                        onClick={() => handleDelete(el.users.id)}
                         className="btn-filled w-28 my-1"
                         disabled={showSelectTranslator}
                       >
@@ -82,7 +125,7 @@ function ProjectRolesEdit({
                       })}
                     </select>
                     <button
-                      onClick={handleSetTranslator}
+                      onClick={handleSet}
                       className="inline-block ml-2 btn-filled w-28 my-1"
                     >
                       Назначить

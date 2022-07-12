@@ -167,12 +167,13 @@ export function useProjectRole({ token, code, userId, isAdmin }) {
 export function useRedirect({ user, token, startLink }) {
   const [currentUser] = useCurrentUser({ token, id: user?.id })
   const [href, setHref] = useState(startLink)
+  console.log(currentUser)
 
   useEffect(() => {
     if (!currentUser) {
       return
     }
-
+    const { agreement, confession } = currentUser
     if (!agreement) {
       setHref('/agreements')
       return
