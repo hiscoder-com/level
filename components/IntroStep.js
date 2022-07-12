@@ -11,6 +11,7 @@ function IntroStep({ step }) {
 
   useEffect(() => {
     setIntroductionStep(step)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step])
 
   const IntroSteps = {

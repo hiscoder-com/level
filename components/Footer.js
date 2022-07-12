@@ -5,12 +5,11 @@ import { AppContext } from '../lib/AppContext'
 
 export default function Footer({ textCheckbox, textButton, href }) {
   const [checked, setChecked] = useState(false)
-  // const { introductionStep, setIntroductionStep } = useContext(AppContext)
+
   const {
     state: { introductionStep },
-    actions: { setIntroductionStep },
   } = useContext(AppContext)
-  console.log(checked)
+
   useEffect(() => {
     setChecked(false)
   }, [introductionStep])
