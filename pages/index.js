@@ -8,10 +8,19 @@ import { useRouter } from 'next/router'
 
 import VcanaLogo from '../public/vcana-logo.svg'
 import TtLogo from '../public/tt-logo.svg'
-
+import { useUser } from '../lib/UserContext'
+import { useCurrentUser, useRedirect } from '../utils/hooks'
+import { useEffect, useState } from 'react'
 export default function Home() {
+  const { user, session } = useUser()
+  const { href } = useRedirect({
+    user,
+    token: session?.access_token,
+    startLink: '/login',
+  })
   const { locale, pathname, query, asPath } = useRouter()
   const { t } = useTranslation('common')
+
   return (
     <main className="layout-empty">
       <Head>
@@ -31,7 +40,7 @@ export default function Home() {
         <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-32" />
         <VcanaLogo className="md:w-4/5 lg:w-3/6 xl:w-5/12 2xl:w-1/3" />
         <h2 className="h2 mt-9 mb-16 text-center">{t('Welcome')}</h2>
-        <Link href="/login">
+        <Link href={href}>
           <a className="btn-start py-3 px-24">{t('SignIn')}</a>
         </Link>
       </div>

@@ -2,10 +2,11 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '../components/Footer'
+import { useUser } from '../lib/UserContext'
 
 export default function UserAgreement() {
   const { t } = useTranslation(['user-agreement', 'common'])
-
+  const { user, session } = useUser()
   return (
     <div className="layout-appbar">
       <div className="text-alignment bg-white rounded-lg p-4">
@@ -35,6 +36,8 @@ export default function UserAgreement() {
         </div>
       </div>
       <Footer
+        userId={user?.id}
+        session={session}
         agreement={'user-agreement'}
         textButton={t('Next', { ns: 'common' })}
         textCheckbox={t('Agree', { ns: 'common' })}

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useUser } from '../lib/UserContext'
-import { useUsers, useCurrentUser } from '../utils/hooks'
+import { useCurrentUser } from '../utils/hooks'
 import Languages from './Languages'
 import Projects from './Projects'
 import SignOut from './SignOut'

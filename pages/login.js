@@ -10,14 +10,19 @@ import { useUser } from '../lib/UserContext'
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
 import EyeOffIcon from '../public/eye-off-icon.svg'
-import { useCurrentUser } from '../utils/hooks'
+import { useCurrentUser, useRedirect } from '../utils/hooks'
 
 export default function Login() {
   const { t } = useTranslation('common')
 
   const router = useRouter()
   const { user, session } = useUser()
-  const [data] = useCurrentUser({ token: session?.access_token, id: user?.id })
+
+  const { href } = useRedirect({
+    user,
+    token: session?.access_token,
+    startLink: '/agreements',
+  })
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
@@ -28,13 +33,6 @@ export default function Login() {
   const [stylePassword, setStylePassword] = useState('form')
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
-
-  useEffect(() => {
-    if (user) {
-      router.push('/agreements')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -48,14 +46,7 @@ export default function Login() {
       setStyleLogin('form')
       setStylePassword('form')
       setError(false)
-      if (data) {
-        const { agreement, confession } = data
-        if ((agreement, confession)) {
-          router.push(`account/${user?.id}`)
-        } else {
-          router.push('/agreements')
-        }
-      }
+      router.push(href)
     } catch (error) {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')

@@ -1,4 +1,4 @@
-import { supabase } from '../../../../../utils/supabaseClient'
+import { supabase } from '../../../../../../utils/supabaseClient'
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
       const { data: dataPost, error: errorPost } = await supabase
         .from('project_roles')
-        .insert([{ project_id, user_id, role: 'coordinator' }])
+        .insert([{ project_id, user_id, role: 'translator' }])
 
       if (errorPost) {
         res.status(404).json({ errorPost })

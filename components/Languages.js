@@ -8,16 +8,11 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 export default function Languages({ isAdmin }) {
-  const router = useRouter()
   const { t } = useTranslation('common')
-  const { user, session } = useUser()
+  const { session } = useUser()
   const [loading, setLoading] = useState(false)
-  const [eng, setEng] = useState('')
-  const [code, setCode] = useState('')
-  const [origName, setOrigName] = useState('')
-  const [editLanguages, setEditLanguages] = useState(false)
+
   const [languages] = useLanguages(session?.access_token)
-  console.log(languages)
   return (
     <div className="flex justify-center flex-col  text-xl my-5 ">
       <h1 className="my-5">{t('Languages')}:</h1>

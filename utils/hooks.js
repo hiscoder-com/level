@@ -13,7 +13,6 @@ export function useLanguages(token) {
     token ? ['/api/languages', token] : null,
     fetcher
   )
-
   const loading = !data && !error
   const languages = data?.data
   return [languages, { mutate, loading, error }]
@@ -126,7 +125,11 @@ export function usePermissions({ token, role }) {
   const loading = !permissions && !error
   return [permissions, { mutate, loading, error }]
 }
-
+/**
+ *
+ * @param {тгь} param0
+ * @returns
+ */
 export function useProjectRole({ token, code, userId, isAdmin }) {
   const [userProjectRoles] = useUserProjectRole({
     token,
@@ -159,4 +162,29 @@ export function useProjectRole({ token, code, userId, isAdmin }) {
   }, [isAdmin, projectRole, rolesCurrentUser])
 
   return projectRole
+}
+
+export function useRedirect({ user, token, startLink }) {
+  const [currentUser] = useCurrentUser({ token, id: user?.id })
+  const [href, setHref] = useState(startLink)
+
+  useEffect(() => {
+    if (!currentUser) {
+      return
+    }
+
+    if (!agreement) {
+      setHref('/agreements')
+      return
+    }
+
+    if (!confession) {
+      setHref('/confession')
+      return
+    }
+
+    setHref('/account')
+  }, [currentUser])
+
+  return { href }
 }

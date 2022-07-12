@@ -9,9 +9,7 @@ import { useRouter } from 'next/router'
 export default function UsersPage() {
   const { user, session } = useUser()
   const [currentRole, setCurrentRole] = useState('')
-  const [canChangeRole, setCanChangeRole] = useState(false)
   const [users, { mutate }] = useUsers(session?.access_token)
-  const roles = ['admin', 'translator', 'coordinator', 'moderator']
   useEffect(() => {
     if (!users || !user) {
       return

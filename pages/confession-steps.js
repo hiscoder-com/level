@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import LeftArrow from '../public/left-arrow.svg'
 import RightArrow from '../public/right-arrow.svg'
-import { useUsers } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 

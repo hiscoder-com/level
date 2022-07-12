@@ -6,7 +6,6 @@ import {
   useProjectRole,
   useRoles,
   useTranslators,
-  useUserProjectRole,
   useUsers,
 } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
@@ -14,8 +13,8 @@ import axios from 'axios'
 import Link from 'next/link'
 
 function Project({ code }) {
-  const { user } = useUser()
-  const { session } = useUser()
+  const { user, session } = useUser()
+
   const [currentUser] = useCurrentUser({ token: session?.access_token, id: user?.id })
 
   const [project] = useProject({ token: session?.access_token, code })
@@ -31,7 +30,6 @@ function Project({ code }) {
     userId: user?.id,
     isAdmin: currentUser?.is_admin,
   })
-  console.log(projectRole)
   // const handleSetCoordinator = async () => {
   //   if (!project?.id || !userId) {
   //     alert('неправильный координатор')
@@ -50,7 +48,6 @@ function Project({ code }) {
   //     })
   //     .catch((error) => console.log(error, 'from axios'))
   // }
-  console.log(project?.languages)
   return (
     <div>
       <h3 className="text-3xl">

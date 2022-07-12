@@ -32,7 +32,7 @@ function ProjectCreate() {
     }
     axios.defaults.headers.common['token'] = session?.access_token
     axios
-      .post('/api/languages/ru/projects', {
+      .post('/api/[lang]/projects', {
         title,
         language_id: languageId,
         code,
