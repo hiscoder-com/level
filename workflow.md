@@ -32,11 +32,11 @@
 
 <br>
 <h4 align="center">Разработчик / Developer (DEV)</h4>
-<h4 align="center">Начало работы над issue (DEV)</h4>
+<h4 align="center">Начало работы над issue</h4>
 <br>
 
-- Сначала проверьте, нет ли <span style="font-weight:bold">PR, Issues</span>, которые назначены вам, они в приоритете
-- Выберите задачу из <span style="font-weight:bold">Product Backlog</span>
+- Сначала проверьте, нет ли <span style="font-weight:bold">Pull Request, Issues</span>, которые назначены вам, они в приоритете
+- Выберите одну, или несколько задач из <span style="font-weight:bold">Product Backlog</span>
 - Проверьте что задача четко определена
 - Назначьте себя исполнителем issue
 - Перенесите карточку в <span style="font-weight:bold">In Progress</span>
@@ -45,9 +45,9 @@
 - Создайте <span style="font-weight:bold">PR</span> для <span style="font-weight:bold">feature-ветки</span> в <span style="font-weight:bold">develop</span>
 - При создании PR необходимо <span style="font-weight:bold">коротко описать проделанную работу</span> в <span style="font-weight:bold">Description</span>
 - Убедитесь, что PR связан с соответствующей рассматриваемой issue
-- Убедитесь, что для проверки PR, назначено <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers
+- Убедитесь, что для проверки PR, назначено как минимум <span style="font-weight:bold">2 Reviewers</span>. Уведомите Reviewers
 - Проведите ручную проверку кода, чтобы убедиться, что нет простых ошибок, таких как оставшиеся комментарии и console.log()
-- Карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span>
+- При создании PR карточка автоматически перемещается в <span style="font-weight:bold">Review/QA</span>
 - Если сделана последняя задача из <span style="font-weight:bold">Epic</span> то перенесите  <span style="font-weight:bold">Epic</span> в <span style="font-weight:bold">Review/QA</span>
 - Если есть замечания по коду от Reviewers, вы получите комментарии по недостаткам кода
 - Как только получаете два одобрения, подтверждаете запрос на слияние веток (<span style="font-weight:bold">merge pull request</span>)
@@ -112,7 +112,7 @@
 <h2 id="changelog" align="center">Журнализация изменений проекта (Changelog)</h2>
 <br>
 
-Все заметные изменения будут задокументированы в этом файле
+Все заметные изменения необходимо задокументировать в этом файле
 
 #### Changelog
 
