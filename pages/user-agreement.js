@@ -1,4 +1,4 @@
-import Router, { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -6,7 +6,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from '../components/Footer'
 
 import { useUser } from '../lib/UserContext'
-import { useState } from 'react'
 import axios from 'axios'
 
 export default function UserAgreement() {

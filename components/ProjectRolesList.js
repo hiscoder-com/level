@@ -131,7 +131,9 @@ function ProjectRolesEdit({
                     .includes('translator.set')) ||
                   role === 'admin') && (
                   <>
-                    {!showRadio ? (
+                    {moderators?.id === el.users.id ? (
+                      'Мoderator'
+                    ) : !showRadio ? (
                       <button
                         onClick={() => handleDelete(el.users.id)}
                         className="btn-filled w-28 my-1"
@@ -182,7 +184,7 @@ function ProjectRolesEdit({
                   onClick={handleSet}
                   className="inline-block ml-2 btn-filled w-28 my-1"
                 >
-                  Назначить
+                  Назначить переводчика
                 </button>
                 <button
                   onClick={() => setShowSelectTranslator(false)}
@@ -197,18 +199,19 @@ function ProjectRolesEdit({
               className="btn-filled w-28 my-1"
               disabled={showSelectTranslator || showRadio}
             >
-              Добавить
+              Добавить переводчика
             </button>
-            {permissions?.data &&
-              permissions.data.map((el) => el.permission).includes('moderator.set') && (
-                <button
-                  onClick={() => setShowRadio((prev) => !prev)}
-                  className="btn-filled w-28 my-1"
-                  disabled={showSelectTranslator || showRadio}
-                >
-                  Выбрать модератора
-                </button>
-              )}
+            {((permissions?.data &&
+              permissions.data.map((el) => el.permission).includes('moderator.set')) ||
+              role === 'admin') && (
+              <button
+                onClick={() => setShowRadio((prev) => !prev)}
+                className="btn-filled w-28 my-1"
+                disabled={showSelectTranslator || showRadio}
+              >
+                Выбрать модератора
+              </button>
+            )}
             {showRadio && (
               <>
                 <button
@@ -222,7 +225,7 @@ function ProjectRolesEdit({
                   onClick={handleSetModerator}
                   className="btn-filled w-28 my-1"
                 >
-                  Назначить
+                  Назначить модератора
                 </button>
               </>
             )}
