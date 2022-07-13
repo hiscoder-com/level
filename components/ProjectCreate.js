@@ -52,63 +52,28 @@ function ProjectCreate() {
       })
       .catch((error) => console.log(error, 'from axios'))
   }
-  useEffect(() => {
-    if (Object.keys(errors).length === 0) {
-      setStyleTitle('form')
-      setStyleCode('form')
-      setErrorTitle('')
-      setErrorCode('')
-      return
-    }
-    if (!errors.title) {
-      setStyleTitle('form')
-    }
-    if (!errors.identifier) {
-      setStyleCode('form')
-    }
-    for (const key in errors) {
-      switch (key) {
-        case 'title':
-          setStyleTitle('form-invalid')
-          setErrorTitle(errors[key].message)
-
-          break
-        case 'code':
-          setStyleCode('form-invalid')
-          setErrorCode(errors[key].message)
-          break
-
-        default:
-          setStyleTitle('form')
-          setStyleCode('form')
-          setErrorTitle('')
-          setErrorCode('')
-          break
-      }
-    }
-  }, [errors.title, errors.identifier])
 
   const inputs = [
     {
       id: 1,
       title: 'Имя проекта',
-      classname: styleTitle,
+      classname: errors?.title ? 'form-invalid' : 'form',
       placeholder: 'Title',
       register: {
         ...register('title', {
           required: true,
           pattern: {
-            value: /^[A-za-z\s]+$/i,
+            value: /^(?! )[A-za-z\s]+$/i,
             message: 'You need type just latins symbols',
           },
         }),
       },
-      errorMessage: errorTitle,
+      errorMessage: errors?.title ? errors?.title.message : '',
     },
     {
       id: 2,
       title: 'Код проекта',
-      classname: styleCode,
+      classname: errors?.code ? 'form-invalid' : 'form',
       placeholder: 'Code',
       register: {
         ...register('code', {
@@ -116,12 +81,12 @@ function ProjectCreate() {
           minLength: { value: 3, message: 'Need more than 3 characters' },
           maxLength: { value: 4, message: 'Need less than 3 characters' },
           pattern: {
-            value: /^[a-z]+$/i,
+            value: /^(?! )[a-z]+$/i,
             message: 'only small letters of the Latin alphabet are needed',
           },
         }),
       },
-      errorMessage: errorCode,
+      errorMessage: errors?.code ? errors?.code.message : '',
     },
   ]
 

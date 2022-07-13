@@ -8,7 +8,6 @@ function AccountHomePage() {
   const { user } = useUser()
   useEffect(() => {
     if (user) {
-      console.log(user)
       router.push(`/account/${user?.id}`)
     }
   }, [router, user])
