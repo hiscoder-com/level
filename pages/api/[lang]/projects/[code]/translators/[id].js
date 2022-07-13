@@ -1,16 +1,15 @@
 import { supabase } from '../../../../../../utils/supabaseClient'
 
-export default async function userHandler(req, res) {
+export default async function languageProjectTranslatorHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
   supabase.auth.setAuth(req.headers.token)
   const {
     body,
-    query: { code, id },
+    query: { id },
     method,
   } = req
-  // const projectId = await supabase.from('projects').select('id').eq('code', code)
   switch (method) {
     case 'GET':
       break

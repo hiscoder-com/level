@@ -1,6 +1,6 @@
 import { supabase } from '../../../utils/supabaseClient'
 
-export default async function userHandler(req, res) {
+export default async function rolePermissionHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }

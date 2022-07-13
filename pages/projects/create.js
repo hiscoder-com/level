@@ -1,11 +1,7 @@
 import ProjectCreate from '../../components/ProjectCreate'
 
-function CreateProjectPage() {
-  return (
-    <>
-      <ProjectCreate />
-    </>
-  )
+function ProjectCreatePage() {
+  return <ProjectCreate />
 }
 
-export default CreateProjectPage
+export default ProjectCreatePage

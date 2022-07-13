@@ -1,11 +1,13 @@
+import { useEffect } from 'react'
+
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { useUser } from '../lib/UserContext'
-import { useAuthenticated, useRedirect } from '../utils/hooks'
-import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useRedirect } from '../utils/hooks'
 
 export default function Agreements() {
   const router = useRouter()

@@ -2,24 +2,28 @@ import { useState } from 'react'
 import axios from 'axios'
 
 import Link from 'next/link'
+import { useUser } from '../lib/UserContext'
+import { useRouter } from 'next/router'
+import { useRedirect } from '../utils/hooks'
 
-export default function Footer({
-  userId,
-  session,
-  agreement,
-  textCheckbox,
-  textButton,
-  href,
-}) {
+export default function Footer({ textCheckbox, textButton }) {
+  const { user, session } = useUser()
+  const { href } = useRedirect({
+    userId: user?.id,
+    token: session?.access_token,
+    startLink: '/confession',
+  })
+
+  const router = useRouter()
   const [checked, setChecked] = useState(false)
   const handleSetAgreement = async () => {
-    if (!userId) {
+    if (!user?.id) {
       return
     }
     axios.defaults.headers.common['token'] = session?.access_token
     axios
       .put('/api/agreements/user', {
-        user_id: userId,
+        user_id: user.id,
       })
       .then((result) => {
         const { data, status } = result
@@ -29,9 +33,10 @@ export default function Footer({
       .catch((error) => console.log(error, 'from axios'))
   }
   const handleClick = () => {
-    if (agreement === 'user-agreement') {
-      handleSetAgreement()
+    if (!router) {
+      return
     }
+    if (router.route === '/user-agreement') handleSetAgreement()
   }
   return (
     <div className="max-w-7xl w-full mx-auto flex justify-end items-center px-4 bg-blue-150">

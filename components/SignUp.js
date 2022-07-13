@@ -7,7 +7,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { user, session } = useUser()
+  const { user } = useUser()
 
   const handleLogin = async () => {
     try {

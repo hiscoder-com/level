@@ -2,13 +2,14 @@ import { useRouter } from 'next/router'
 import Account from '../../components/Account'
 import { useUser } from '../../lib/UserContext'
 
-function AccountPage() {
+function AccountHomePage() {
   const router = useRouter()
+
   const { user } = useUser()
   if (user) {
     router.push(`/account/${user?.id}`)
   }
-  return <Account /> //TODO сделать, чтобы ничего не возвращалось, реально?
+  return <Account />
 }
 
-export default AccountPage
+export default AccountHomePage

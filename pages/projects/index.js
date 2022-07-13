@@ -3,11 +3,7 @@ import Projects from '../../components/Projects'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default function ProjectsPage() {
-  return (
-    <>
-      <Projects />
-    </>
-  )
+  return <Projects />
 }
 export async function getStaticProps({ locale }) {
   return {

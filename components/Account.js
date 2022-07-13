@@ -10,7 +10,6 @@ function Account() {
   const { session } = useUser()
   const router = useRouter()
   const { id } = router?.query
-
   const [authenticated] = useAuthenticated({
     token: session?.access_token,
     id,

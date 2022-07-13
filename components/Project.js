@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
+
+import Link from 'next/link'
+
+import { useUser } from '../lib/UserContext'
+
 import {
-  useCoordinators,
   useAuthenticated,
   useProject,
   useProjectRole,
-  useRoles,
   useTranslators,
-  useUsers,
 } from '../utils/hooks'
-import { useUser } from '../lib/UserContext'
-import axios from 'axios'
-import Link from 'next/link'
 
 function Project({ code }) {
   const { user, session } = useUser()
@@ -30,24 +29,7 @@ function Project({ code }) {
     userId: user?.id,
     isAdmin: authenticated?.is_admin,
   })
-  // const handleSetCoordinator = async () => {
-  //   if (!project?.id || !userId) {
-  //     alert('неправильный координатор')
-  //     return
-  //   }
-  //   axios.defaults.headers.common['token'] = session?.access_token
-  //   axios
-  //     .post('/api/languages/ru/projects/rlob/coordinators', {
-  //       user_id: userId,
-  //       project_id: project?.id,
-  //     })
-  //     .then((result) => {
-  //       const { data, status } = result
 
-  //       //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
-  //     })
-  //     .catch((error) => console.log(error, 'from axios'))
-  // }
   return (
     <div>
       <h3 className="text-3xl">
@@ -58,12 +40,17 @@ function Project({ code }) {
         Code <b>{project?.code}</b>
       </div>
       <div>
-        Language <b>{project?.languages?.orig_name + ' '}</b>
-        <b>{project?.languages?.code}</b>
+        Language{' '}
+        {project?.languages && (
+          <>
+            <b>{project?.languages?.orig_name + ' '}</b>
+            <b>{project?.languages?.code}</b>
+          </>
+        )}
       </div>
 
       <div>
-        {translators && (
+        {translators && translators?.data && Object.keys(translators?.data).length > 0 && (
           <>
             Translators:
             {translators.data.map((el, key) => {

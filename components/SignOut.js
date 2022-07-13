@@ -8,12 +8,10 @@ export default function SignOut() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
 
-  const { user, session } = useUser()
-
   const handleLogout = async () => {
     try {
       setLoading(true)
-      const { user, session, error } = await supabase.auth.signOut()
+      const { error } = await supabase.auth.signOut()
       if (error) throw error
     } catch (error) {
       alert(error.error_description || error.message)

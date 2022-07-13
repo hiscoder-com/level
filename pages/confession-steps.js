@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
+
 import { useRouter } from 'next/router'
+
+import axios from 'axios'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { useUser } from '../lib/UserContext'
+
 import LeftArrow from '../public/left-arrow.svg'
 import RightArrow from '../public/right-arrow.svg'
-import { useUser } from '../lib/UserContext'
-import axios from 'axios'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])
@@ -119,7 +123,10 @@ export default function ConfessionSteps() {
 
         <button
           onClick={() => {
-            handleSetConfession(), router.push(`/account/${user && user.id}`)
+            {
+              handleSetConfession()
+              router.push(`/account/${user && user.id}`)
+            }
           }}
           className="btn-filled w-28"
           disabled={user && !checked}

@@ -1,16 +1,16 @@
-import { useState, useEffect } from 'react'
-
-import { useTranslation } from 'next-i18next'
+import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+
 import { supabase } from '../utils/supabaseClient'
 import { useUser } from '../lib/UserContext'
+import { useRedirect } from '../utils/hooks'
 
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
 import EyeOffIcon from '../public/eye-off-icon.svg'
-import { useAuthenticated, useRedirect } from '../utils/hooks'
 
 export default function Login() {
   const { t } = useTranslation('common')

@@ -427,6 +427,14 @@ ALTER TABLE
 ALTER TABLE
   PUBLIC .languages replica identity full;
 
+-- create policy "политика с джойном"
+--   on teams
+--   for update using (
+--     auth.uid() in (
+--       select user_id from members
+--       where team_id = id
+--     )
+--   );
 -- inserts a row into public.users
 CREATE
 OR replace FUNCTION PUBLIC .handle_new_user() returns TRIGGER LANGUAGE plpgsql security definer AS $$ BEGIN

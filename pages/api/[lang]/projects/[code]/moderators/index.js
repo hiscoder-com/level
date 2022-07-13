@@ -1,6 +1,6 @@
-import { supabase } from '../../../../../utils/supabaseClient'
+import { supabase } from '../../../../../../utils/supabaseClient'
 
-export default async function handler(req, res) {
+export default async function languageProjectModeratorsHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         res.status(404).json({ errorGet })
         return
       }
-      res.status(200).json({ data: dataGet })
+      res.status(200).json({ data: dataGet[0].users })
       break
     case 'POST':
       const { project_id, user_id } = body
@@ -31,7 +31,7 @@ export default async function handler(req, res) {
 
       const { data: dataPost, error: errorPost } = await supabase
         .from('project_roles')
-        .insert([{ project_id, user_id, role: 'coordinator' }])
+        .insert([{ project_id, user_id, role: 'moderator' }])
 
       if (errorPost) {
         res.status(404).json({ errorPost })

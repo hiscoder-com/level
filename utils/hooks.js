@@ -110,10 +110,10 @@ export function useCoordinators({ token, code }) {
   return [coordinators, { mutate, loading, error }]
 }
 /**
- *hook returns all users on specific project with role 'moderator'
+ *hook returns first user on specific project with role 'moderator'
  * @param {string} code code of project
  * @param {string} token token of current session of authenticated user
- * @returns {array}
+ * @returns {object}
  */
 export function useModerators({ token, code }) {
   const {
@@ -122,7 +122,7 @@ export function useModerators({ token, code }) {
     error,
   } = useSWR(token ? [`/api/[id]/projects/${code}/moderators`, token] : null, fetcher)
   const loading = !moderators && !error
-  return [moderators, { mutate, loading, error }]
+  return [moderators?.data, { mutate, loading, error }]
 }
 /**
  *hook returns all users on specific project with role 'translator'
@@ -248,26 +248,30 @@ export function useProjectRole({ userId, token, code, isAdmin }) {
  * @param {string} userId id of authenticated user
  * @param {string} token token of current session of authenticated user
  * @param {string} startLink the default link that the application needs to follow if the user has not passed the agreement
- * @returns
+ * @returns {string}
  */
 export function useRedirect({ userId, token, startLink }) {
-  const [authenticated] = useAuthenticated({ token, id: userId })
+  const [authenticated, { loading }] = useAuthenticated({ token, id: userId })
   const [href, setHref] = useState(startLink)
+
   useEffect(() => {
     if (!authenticated) {
       return
     }
-    const { agreement, confession } = authenticated
-    if (!agreement) {
-      setHref('/agreements')
-      return
+    if (!loading) {
+      const { agreement, confession } = authenticated
+      if (!agreement) {
+        setHref('/agreements')
+        return
+      }
+      if (!confession) {
+        setHref('/confession')
+        return
+      }
+
+      setHref(`/account/${userId}`)
     }
-    if (!confession) {
-      setHref('/confession')
-      return
-    }
-    setHref('/account')
-  }, [authenticated])
+  }, [authenticated, loading, userId])
 
   return { href }
 }

@@ -1,19 +1,15 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
-import { useAuthenticated, useLanguages } from '../utils/hooks'
+import { , useLanguages } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import { useTranslation } from 'next-i18next'
 
 import Link from 'next/link'
 
 export default function Languages() {
-  const { user, session } = useUser()
-  const [authenticated] = useAuthenticated({
-    token: session?.access_token,
-    id: user?.id,
-  })
+  const { session } = useUser()
+
   const { t } = useTranslation('common')
-  const [loading, setLoading] = useState(false)
 
   const [languages] = useLanguages(session?.access_token)
   return (

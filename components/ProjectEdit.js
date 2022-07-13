@@ -41,40 +41,11 @@ function ProjectEdit({ code }) {
     token: session?.access_token,
     code,
   })
-  const [moderators] = useModerators({
-    token: session?.access_token,
-    code,
-  })
 
   return (
     <div>
       <div className="text-3xl mb-10">{project?.title}</div>
       <div className="divide-y divide-gray-500 ">
-        <div>
-          Moderators:
-          <div className=" my-5 flex flex-col ">
-            {moderators?.data.length > 0 ? (
-              moderators.data.map((el, key) => {
-                return (
-                  <div className="flex" key={key}>
-                    <div className="mx-5 flex" key={key}>
-                      {el.users.email}
-                    </div>
-                    {((permissions?.data &&
-                      permissions.data
-                        .map((el) => el.permission)
-                        .includes('moderator.set')) ||
-                      role === 'admin') && (
-                      <button className="btn-filled w-28 my-1">Изменить</button>
-                    )}
-                  </div>
-                )
-              })
-            ) : (
-              <button className="btn-filled w-28 my-1">Добавить</button>
-            )}
-          </div>
-        </div>
         <div>
           Coordinators:
           <div className="my-5 flex flex-col ">
@@ -106,7 +77,7 @@ function ProjectEdit({ code }) {
           mutate={mutate}
           project={project}
           users={users}
-          type={'translator'}
+          type={'translators'}
           role={role}
           roles={translators}
           permissions={permissions}
