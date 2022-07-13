@@ -4,15 +4,9 @@ import axios from 'axios'
 import Link from 'next/link'
 import { useUser } from '../lib/UserContext'
 import { useRouter } from 'next/router'
-import { useRedirect } from '../utils/hooks'
 
-export default function Footer({ textCheckbox, textButton }) {
+export default function Footer({ href, textCheckbox, textButton }) {
   const { user, session } = useUser()
-  const { href } = useRedirect({
-    userId: user?.id,
-    token: session?.access_token,
-    startLink: '/confession',
-  })
 
   const router = useRouter()
   const [checked, setChecked] = useState(false)

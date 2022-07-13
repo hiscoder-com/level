@@ -28,6 +28,7 @@ export default async function languageProjectTranslatorsHandler(req, res) {
     case 'POST':
       const { project_id, user_id } = body
       // TODO валидацию
+      console.log({ project_id, user_id })
 
       const { data: dataPost, error: errorPost } = await supabase
         .from('project_roles')

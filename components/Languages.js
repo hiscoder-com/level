@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { , useLanguages } from '../utils/hooks'
+import { useLanguages } from '../utils/hooks'
 import { useUser } from '../lib/UserContext'
 import { useTranslation } from 'next-i18next'
 

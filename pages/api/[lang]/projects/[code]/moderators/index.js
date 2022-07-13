@@ -23,7 +23,7 @@ export default async function languageProjectModeratorsHandler(req, res) {
         res.status(404).json({ errorGet })
         return
       }
-      res.status(200).json({ data: dataGet[0].users })
+      res.status(200).json({ data: dataGet[0]?.users })
       break
     case 'POST':
       const { project_id, user_id } = body

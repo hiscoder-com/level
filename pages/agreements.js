@@ -12,20 +12,22 @@ import { useRedirect } from '../utils/hooks'
 export default function Agreements() {
   const router = useRouter()
   const { user, session } = useUser()
-  const { href } = useRedirect({
-    userId: user?.id,
-    token: session?.access_token,
-    startLink: '/agreements',
-  })
-  useEffect(() => {
-    if (!user) {
-      return
-    }
-    if (href === 'agreeements') {
-      return
-    }
-    router.push(href)
-  }, [href, router, user])
+
+  // const { href } = useRedirect({
+  //   userId: user?.id,
+  //   token: session?.access_token,
+  //   startLink: '/user-agreement',
+  // })
+
+  // useEffect(() => {
+  //   if (!user) {
+  //     return
+  //   }
+  //   if (href === 'agreeements') {
+  //     return
+  //   }
+  //   router.push(href)
+  // }, [href, router, user])
 
   const { t } = useTranslation('common')
 

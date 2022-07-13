@@ -14,6 +14,19 @@ export default async function languageProjectModeratorHandler(req, res) {
     case 'GET':
       break
     case 'PUT':
+      const { project_id, prev_id } = body
+      // TODO валидацию
+
+      const { data: dataPut, error: errorPut } = await supabase
+        .from('project_roles')
+        .update({ user_id: id })
+        .match({ user_id: prev_id, role: 'moderator' })
+      if (errorPut) {
+        res.status(404).json({ errorPut })
+        return
+      }
+
+      res.status(200).json({ dataPut })
       break
     case 'DELETE':
       const { data, error } = await supabase
