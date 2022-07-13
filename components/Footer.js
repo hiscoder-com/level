@@ -1,18 +1,15 @@
-import { useContext, useEffect, useState } from 'react'
-
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { AppContext } from '../lib/AppContext'
 
 export default function Footer({ textCheckbox, textButton, href }) {
   const [checked, setChecked] = useState(false)
-
-  const {
-    state: { introductionStep },
-  } = useContext(AppContext)
+  const router = useRouter()
+  const { step } = router?.query
 
   useEffect(() => {
     setChecked(false)
-  }, [introductionStep])
+  }, [step])
 
   return (
     <div className="max-w-7xl w-full mx-auto flex justify-end items-center px-4 bg-blue-150">
