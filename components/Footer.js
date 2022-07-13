@@ -5,27 +5,11 @@ import Link from 'next/link'
 import { useUser } from '../lib/UserContext'
 import { useRouter } from 'next/router'
 
-export default function Footer({ href, textCheckbox, textButton }) {
+export default function Footer({ href, textCheckbox, textButton, handleSetAgreement }) {
   const { user, session } = useUser()
 
   const router = useRouter()
   const [checked, setChecked] = useState(false)
-  const handleSetAgreement = async () => {
-    if (!user?.id) {
-      return
-    }
-    axios.defaults.headers.common['token'] = session?.access_token
-    axios
-      .put('/api/agreements/user', {
-        user_id: user.id,
-      })
-      .then((result) => {
-        const { data, status } = result
-
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
-      })
-      .catch((error) => console.log(error, 'from axios'))
-  }
   const handleClick = () => {
     if (!router) {
       return
@@ -48,11 +32,10 @@ export default function Footer({ href, textCheckbox, textButton }) {
               {textCheckbox}
             </label>
           </div>
-          <Link href={href}>
-            <button onClick={handleClick} className="btn-filled w-28" disabled={!checked}>
-              {textButton}
-            </button>
-          </Link>
+
+          <button onClick={handleClick} className="btn-filled w-28" disabled={!checked}>
+            {textButton}
+          </button>
         </div>
       </div>
     </div>

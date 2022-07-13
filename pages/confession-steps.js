@@ -19,7 +19,7 @@ export default function ConfessionSteps() {
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
 
-  const arrConfText = [
+  const confessionSteps = [
     <p
       dangerouslySetInnerHTML={{
         __html: t('Step1', { interpolation: { escapeValue: false } }),
@@ -84,9 +84,10 @@ export default function ConfessionSteps() {
         user_id: user.id,
       })
       .then((result) => {
-        const { data, status } = result
-
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
+        const { status } = result
+        if (status === 200) {
+          router.push(`/account/${user.id}`)
+        }
       })
       .catch((error) => console.log(error, 'from axios'))
   }
@@ -99,7 +100,7 @@ export default function ConfessionSteps() {
             <LeftArrow />
           </button>
         </div>
-        <div className="confession-text w-full">{arrConfText[page]}</div>
+        <div className="confession-text w-full">{confessionSteps[page]}</div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
             <RightArrow />
@@ -123,10 +124,7 @@ export default function ConfessionSteps() {
 
         <button
           onClick={() => {
-            {
-              handleSetConfession()
-              router.push(`/account/${user && user.id}`)
-            }
+            handleSetConfession()
           }}
           className="btn-filled w-28"
           disabled={user && !checked}

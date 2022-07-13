@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import Router, { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -6,10 +6,30 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from '../components/Footer'
 
 import { useUser } from '../lib/UserContext'
+import { useState } from 'react'
+import axios from 'axios'
 
 export default function UserAgreement() {
+  const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common'])
   const { user, session } = useUser()
+  const handleSetAgreement = async () => {
+    if (!user?.id) {
+      return
+    }
+    axios.defaults.headers.common['token'] = session?.access_token
+    axios
+      .put('/api/agreements/user', {
+        user_id: user.id,
+      })
+      .then((result) => {
+        const { status } = result
+        if (status === 200) {
+          router.push('confession')
+        }
+      })
+      .catch((error) => console.log(error, 'from axios'))
+  }
 
   return (
     <div className="layout-appbar">
@@ -42,7 +62,7 @@ export default function UserAgreement() {
       <Footer
         textButton={t('Next', { ns: 'common' })}
         textCheckbox={t('Agree', { ns: 'common' })}
-        href="/confession"
+        handleSetAgreement={handleSetAgreement}
       />
     </div>
   )

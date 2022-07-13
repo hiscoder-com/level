@@ -38,15 +38,22 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signIn({
+      const { user, session, error } = await supabase.auth.signIn({
         email: login,
         password,
       })
       if (error) throw error
+      const { data: dataUser, error: errorUser } = await supabase
+        .from('users')
+        .select('agreement,confession')
+        .eq('id', user?.id)
+      if (errorUser) throw errorUser
+      const { agreement, confession } = dataUser[0]
+
       setStyleLogin('form')
       setStylePassword('form')
       setError(false)
-      router.push(href)
+      router.push(agreement && confession ? `/account/${user?.id}` : '/agreements')
     } catch (error) {
       setStyleLogin('form-invalid')
       setStylePassword('form-invalid')

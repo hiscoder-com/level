@@ -41,7 +41,6 @@ function ProjectCreate() {
       })
       .then((result) => {
         const {
-          data,
           status,
           headers: { location },
         } = result
