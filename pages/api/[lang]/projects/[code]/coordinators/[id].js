@@ -20,7 +20,7 @@ export default async function languageProjectModeratorHandler(req, res) {
       const { data: dataPut, error: errorPut } = await supabase
         .from('project_roles')
         .update({ user_id: id })
-        .match({ user_id: prev_id, role: 'moderator' })
+        .match({ user_id: prev_id, role: 'coordinator', project_id: project_id })
       if (errorPut) {
         res.status(404).json({ errorPut })
         return
@@ -32,7 +32,7 @@ export default async function languageProjectModeratorHandler(req, res) {
       const { data, error } = await supabase
         .from('project_roles')
         .delete()
-        .match({ project_id: body.projectId, role: 'moderator', user_id: id })
+        .match({ project_id: body.projectId, role: 'coordinator', user_id: id })
       if (error) {
         res.status(404).json({ error })
         return

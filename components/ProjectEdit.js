@@ -15,7 +15,6 @@ import { useUser } from '../lib/UserContext'
 import ProjectRolesList from './ProjectRolesList'
 
 function ProjectEdit({ code }) {
-  const [showSelectTranslator, setShowSelectTranslator] = useState(false)
   const { user, session } = useUser()
   const [users] = useUsers(session?.access_token)
   const [authenticated] = useAuthenticated({
@@ -32,12 +31,12 @@ function ProjectEdit({ code }) {
 
   const [permissions] = usePermissions({ token: session?.access_token, role })
   const [project] = useProject({ token: session?.access_token, code })
-  const [translators, { mutate }] = useTranslators({
+  const [translators, { mutate: mutateTranslator }] = useTranslators({
     token: session?.access_token,
     code,
   })
 
-  const [coordinators] = useCoordinators({
+  const [coordinators, { mutate: mutateCoordinator }] = useCoordinators({
     token: session?.access_token,
     code,
   })
@@ -53,29 +52,26 @@ function ProjectEdit({ code }) {
           moderators={moderators}
           session={session}
           code={code}
-          mutate={mutate}
+          mutate={mutateCoordinator}
           project={project}
           users={users}
           type={'coordinators'}
           role={role}
-          roles={translators}
+          roles={coordinators}
           permissions={permissions}
-          showSelectTranslator={showSelectTranslator}
-          setShowSelectTranslator={setShowSelectTranslator}
         />
         <ProjectRolesList
           moderators={moderators}
           session={session}
           code={code}
-          mutate={mutate}
+          mutate={mutateTranslator}
+          mutateModerator={mutateModerator}
           project={project}
           users={users}
           type={'translators'}
           role={role}
           roles={translators}
           permissions={permissions}
-          showSelectTranslator={showSelectTranslator}
-          setShowSelectTranslator={setShowSelectTranslator}
         />
       </div>
     </div>
