@@ -1,4 +1,4 @@
-import { supabase } from '../../../../../../utils/supabaseClient'
+import { supabase } from '@/utils/supabaseClient'
 
 export default async function languageProjectTranslatorsHandler(req, res) {
   if (!req.headers.token) {

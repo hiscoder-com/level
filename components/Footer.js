@@ -4,8 +4,6 @@ import { useUser } from '../lib/UserContext'
 import { useRouter } from 'next/router'
 
 export default function Footer({ href, textCheckbox, textButton, handleSetAgreement }) {
-  const { user, session } = useUser()
-
   const router = useRouter()
   const [checked, setChecked] = useState(false)
   const handleClick = () => {

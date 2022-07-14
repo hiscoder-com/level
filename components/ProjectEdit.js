@@ -9,7 +9,7 @@ import {
   useProjectRole,
   useTranslators,
   useUsers,
-} from '../utils/hooks'
+} from '@/utils/hooks'
 import { useUser } from '../lib/UserContext'
 
 import ProjectRolesList from './ProjectRolesList'
@@ -41,37 +41,30 @@ function ProjectEdit({ code }) {
     token: session?.access_token,
     code,
   })
-
+  const [moderators, { mutate: mutateModerator }] = useModerators({
+    token: session?.access_token,
+    code,
+  })
   return (
     <div>
       <div className="text-3xl mb-10">{project?.title}</div>
       <div className="divide-y divide-gray-500 ">
-        <div>
-          Coordinators:
-          <div className="my-5 flex flex-col ">
-            {coordinators?.data && coordinators.data.length > 0 ? (
-              coordinators.data.map((el, key) => {
-                return (
-                  <div className="flex" key={key}>
-                    <div className="mx-5 flex" key={key}>
-                      {el.users.email}
-                    </div>
-                    {((permissions?.data &&
-                      permissions.data
-                        .map((el) => el.permission)
-                        .includes('coordinator.set')) ||
-                      role === 'admin') && (
-                      <button className="btn-filled w-28 my-1">Изменить</button>
-                    )}
-                  </div>
-                )
-              })
-            ) : (
-              <button className="btn-filled w-28 my-1">Добавить</button>
-            )}
-          </div>
-        </div>
         <ProjectRolesList
+          moderators={moderators}
+          session={session}
+          code={code}
+          mutate={mutate}
+          project={project}
+          users={users}
+          type={'coordinators'}
+          role={role}
+          roles={translators}
+          permissions={permissions}
+          showSelectTranslator={showSelectTranslator}
+          setShowSelectTranslator={setShowSelectTranslator}
+        />
+        <ProjectRolesList
+          moderators={moderators}
           session={session}
           code={code}
           mutate={mutate}

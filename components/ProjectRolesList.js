@@ -1,7 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import axios from 'axios'
-import { useModerators } from '../utils/hooks'
+
 function ProjectRolesEdit({
+  moderators,
   session,
   code,
   mutate,
@@ -14,11 +15,6 @@ function ProjectRolesEdit({
   showSelectTranslator,
   setShowSelectTranslator,
 }) {
-  const [moderators, { mutate: mutateModerator }] = useModerators({
-    token: session?.access_token,
-    code,
-  })
-
   const [userId, setUserId] = useState(null)
   const [showRadio, setShowRadio] = useState(false)
   const [moderator, setModerator] = useState(null)

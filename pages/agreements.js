@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useUser } from '../lib/UserContext'
-import { useRedirect } from '../utils/hooks'
+import { useRedirect } from '@/utils/hooks'
 
 export default function Agreements() {
   const router = useRouter()

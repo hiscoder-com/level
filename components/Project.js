@@ -9,7 +9,7 @@ import {
   useProject,
   useProjectRole,
   useTranslators,
-} from '../utils/hooks'
+} from '@/utils/hooks'
 
 function Project({ code }) {
   const { user, session } = useUser()

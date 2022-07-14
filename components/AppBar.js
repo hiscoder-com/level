@@ -4,7 +4,7 @@ import Link from 'next/link'
 
 import { Disclosure } from '@headlessui/react'
 
-import { supabase } from '../utils/supabaseClient'
+import { supabase } from '@/utils/supabaseClient'
 import { useUser } from '../lib/UserContext'
 
 import Burger from '../public/burger.svg'

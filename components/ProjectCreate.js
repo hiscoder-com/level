@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 
-import { useLanguages, useMethod } from '../utils/hooks'
+import { useLanguages, useMethod } from '@/utils/hooks'
 import { useUser } from '../lib/UserContext'
 import axios from 'axios'
 

@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 
 import { useUser } from '../lib/UserContext'
 
-import { useRedirect } from '../utils/hooks'
+import { useRedirect } from '@/utils/hooks'
 
 import VcanaLogo from '../public/vcana-logo.svg'
 import TtLogo from '../public/tt-logo.svg'
