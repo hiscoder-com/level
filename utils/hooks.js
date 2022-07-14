@@ -190,7 +190,8 @@ export function usePermissions({ role, token }) {
  * @param {string} id id of authenticated user
  * @param {string} token token of current session of authenticated user
  * @param {string} code code of project
- * @returns {array}
+ * @returns {array} array
+
  */
 export function useUserProjectRole({ token, id, code }) {
   const { data, mutate, error } = useSWR(

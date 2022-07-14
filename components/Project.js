@@ -64,7 +64,7 @@ function Project({ code }) {
           </>
         )}
         {authenticated?.isAdmin ||
-          (['admin', 'coordinator', 'moderator'].includes(projectRole) && (
+          (['admin', 'coordinator'].includes(projectRole) && (
             <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
               <a className="btn btn-filled btn-cyan">Редактирование проекта</a>
             </Link>

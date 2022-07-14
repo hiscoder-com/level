@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React from 'react'
 import { useUser } from '../lib/UserContext'
-import { useAuthenticated } from '../utils/hooks'
+import { useAuthenticated, useUserProjectRole } from '../utils/hooks'
 import Languages from './Languages'
 import Projects from './Projects'
 import SignOut from './SignOut'

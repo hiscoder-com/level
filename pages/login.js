@@ -16,13 +16,6 @@ export default function Login() {
   const { t } = useTranslation('common')
 
   const router = useRouter()
-  const { user, session } = useUser()
-
-  const { href } = useRedirect({
-    userId: user?.id,
-    token: session?.access_token,
-    startLink: '/agreements',
-  })
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
@@ -38,7 +31,7 @@ export default function Login() {
     e.preventDefault()
     setLoading(true)
     try {
-      const { user, session, error } = await supabase.auth.signIn({
+      const { user, error } = await supabase.auth.signIn({
         email: login,
         password,
       })
@@ -71,11 +64,11 @@ export default function Login() {
 
   return (
     <div className="layout-appbar">
-      <div>
+      <div className="w-5/6 md:max-w-xs">
         <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
-            className={styleLogin}
+            className={'input'}
             type="text"
             placeholder={`${t('Login')}:`}
             onChange={(event) => {
@@ -83,19 +76,21 @@ export default function Login() {
               setStyleLogin('form')
             }}
           />
-          <input
-            className={stylePassword}
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            placeholder={`${t('Password')}:`}
-            onChange={(event) => {
-              setPassword(event.target.value)
-              setStylePassword('form')
-            }}
-          />
-          <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
-            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-          </span>
+          <div className="relative">
+            <input
+              className={'input'}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              placeholder={`${t('Password')}:`}
+              onChange={(event) => {
+                setPassword(event.target.value)
+                setStylePassword('form')
+              }}
+            />
+            <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </span>
+          </div>
           <div className="flex items-center justify-between mb-4">
             {error && (
               <>
