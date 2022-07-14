@@ -120,7 +120,7 @@ function IntroStep({ step }) {
           {step &&
             IntroSteps[step].description.map((paragraph, i) => {
               return (
-                <p className="pb-5" key={i}>
+                <p className="pb-5 h4" key={i}>
                   {paragraph}
                 </p>
               )
