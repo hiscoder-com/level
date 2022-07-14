@@ -103,9 +103,9 @@ function IntroStep({ step }) {
   }
 
   return (
-    <div className="layout-appbar">
-      <div className="text-alignment">
-        <h1 className="h1 my-8">{t('StepIntroduction')}:</h1>
+    <div>
+      <div className="text-alignment text-justify">
+        <h1 className="h1 my-8 pt-5">{t('StepIntroduction')}:</h1>
         <div className="h2">{step && IntroSteps[step].title}</div>
         <div className="aspect-w-16 aspect-h-9 my-7">
           <iframe

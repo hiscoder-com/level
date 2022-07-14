@@ -8,7 +8,7 @@ export default function IntroPage() {
   const { step } = router.query
 
   return (
-    <div className="container">
+    <div className="layout-appbar">
       <Head>
         <title>V-CANA Intro {step}</title>
         <meta name="description" content="VCANA" />
