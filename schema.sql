@@ -115,7 +115,7 @@ CREATE TYPE PUBLIC .book_code AS enum (
 CREATE TABLE PUBLIC .users (
   id uuid NOT NULL primary key,
   email text NOT NULL UNIQUE,
-  user_name text NOT NULL UNIQUE,
+  login text NOT NULL UNIQUE,
   agreement BOOLEAN NOT NULL DEFAULT FALSE,
   confession BOOLEAN NOT NULL DEFAULT FALSE,
   is_admin BOOLEAN NOT NULL DEFAULT FALSE,
@@ -429,9 +429,9 @@ CREATE
 OR replace FUNCTION PUBLIC .handle_new_user() returns TRIGGER LANGUAGE plpgsql security definer AS $$
 BEGIN
   INSERT INTO
-    PUBLIC .users (id, email, user_name)
+    PUBLIC .users (id, email, login)
   VALUES
-    (NEW .id, NEW .email, NEW .raw_user_meta_data ->> 'user_name');
+    (NEW .id, NEW .email, NEW .raw_user_meta_data ->> 'login');
 
 RETURN NEW;
 
@@ -500,7 +500,7 @@ INSERT INTO
   PUBLIC .users (
     id,
     email,
-    user_name,
+    login,
     agreement,
     confession,
     blocked

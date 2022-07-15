@@ -5,13 +5,13 @@ import Link from 'next/link'
 import { Disclosure } from '@headlessui/react'
 
 import { supabase } from '../utils/supabaseClient'
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 
 import Burger from '../public/burger.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
 
 export default function AppBar({ isOpen, setIsOpen }) {
-  const { user } = useUser()
+  const { user } = useCurrentUser()
   const [access, setAccess] = useState(false)
   useEffect(() => {
     const hasAccess = async (user_id) => {

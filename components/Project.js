@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { useCoordinator, useProject, useUsers } from '../utils/hooks'
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 import axios from 'axios'
 
 function Project({ code }) {
   const [userId, setUserId] = useState(null)
-  const { session } = useUser()
+  const { session } = useCurrentUser()
 
   const [project, { mutate }] = useProject({ token: session?.access_token, code })
   const [coordinator] = useCoordinator({ token: session?.access_token, id: project?.id })

@@ -1,15 +1,27 @@
 import axios from 'axios'
-import { useUser } from '../../lib/UserContext'
+import { useCurrentUser } from '../../lib/UserContext'
 import { useState } from 'react'
 
 function UserCreatePage() {
-  const { session } = useUser()
+  const { session } = useCurrentUser()
   const [email, setEmail] = useState('')
+  const [message, setMessage] = useState('')
   const [password, setPassword] = useState('')
-  const [userName, setUserName] = useState('')
+  const [login, setLogin] = useState('')
   const handleSaveUser = () => {
     axios.defaults.headers.common['token'] = session?.access_token
-    axios.post('/api/users', { email, password, userName }).then((res) => {})
+    axios
+      .post('/api/users', { email, password, login })
+      .then((res) => {
+        setMessage('')
+        setLogin('')
+        setPassword('')
+        setEmail('')
+      })
+      .catch((err) => {
+        console.log(err)
+        setMessage(err?.response?.data?.error?.message)
+      })
   }
   return (
     <div>
@@ -18,6 +30,7 @@ function UserCreatePage() {
         Создавать может только админ, по этому надо убедиться что доступ к этой странице
         ограничен
       </p>
+      <div>Email</div>
       <input
         className={'form'}
         type="text"
@@ -25,6 +38,7 @@ function UserCreatePage() {
         onChange={(e) => setEmail(e.target.value)}
       />{' '}
       <br />
+      <div>Password</div>
       <input
         className={'form'}
         type="text"
@@ -32,13 +46,15 @@ function UserCreatePage() {
         onChange={(e) => setPassword(e.target.value)}
       />{' '}
       <br />
+      <div>Login</div>
       <input
         className={'form'}
         type="text"
-        value={userName}
-        onChange={(e) => setUserName(e.target.value)}
+        value={login}
+        onChange={(e) => setLogin(e.target.value)}
       />{' '}
       <br />
+      <div className="text-red-500">{message}</div>
       <button className={'btn btn-cyan'} onClick={handleSaveUser}>
         Save
       </button>

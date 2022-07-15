@@ -1,9 +1,9 @@
 import Head from 'next/head'
 
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 
 export default function SignInPage() {
-  const { user, session } = useUser()
+  const { user, session } = useCurrentUser()
   return (
     <div className="container">
       <Head>

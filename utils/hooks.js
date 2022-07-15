@@ -25,6 +25,16 @@ export function useUsers(token) {
   const loading = !users && !error
   return [users, { mutate, loading, error }]
 }
+
+export function useUser(token, login) {
+  const {
+    data: user,
+    mutate,
+    error,
+  } = useSWR(token && login ? ['/api/users/' + login, token] : null, fetcher)
+  const loading = !user && !error
+  return [user, { mutate, loading, error }]
+}
 export function useProjects(token) {
   const { data, mutate, error } = useSWR(token ? ['/api/projects', token] : null, fetcher)
   const loading = !data && !error
@@ -42,7 +52,7 @@ export function useProject({ token, code }) {
     data: project,
     mutate,
     error,
-  } = useSWR(token ? [`/api/projects/${code}`, token] : null, fetcher)
+  } = useSWR(token && code ? [`/api/projects/${code}`, token] : null, fetcher)
   const loading = !project && !error
   return [project, { mutate, loading, error }]
 }

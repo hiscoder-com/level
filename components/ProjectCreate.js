@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { useLanguages, useMethod } from '../utils/hooks'
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 import axios from 'axios'
 
 function ProjectCreate() {
@@ -14,7 +14,7 @@ function ProjectCreate() {
   const [type, setType] = useState(null)
   const [code, setCode] = useState(null)
 
-  const { user, session } = useUser()
+  const { user, session } = useCurrentUser()
   const [languages, { mutate }] = useLanguages(session?.access_token)
   const [methods] = useMethod(session?.access_token)
   const projectTypes = ['obs', 'bible']

@@ -2,12 +2,12 @@ import { useState, useEffect } from 'react'
 
 import { supabase } from '../utils/supabaseClient'
 import { useLanguages } from '../utils/hooks'
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 import { useTranslation } from 'next-i18next'
 
 export default function LanguagesEdit() {
   const { t } = useTranslation('common')
-  const { user, session } = useUser()
+  const { user, session } = useCurrentUser()
   const [loading, setLoading] = useState(false)
   const [eng, setEng] = useState('')
   const [code, setCode] = useState('')

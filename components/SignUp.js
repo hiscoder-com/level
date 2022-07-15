@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 
 import { supabase } from '../utils/supabaseClient'
 
@@ -7,7 +7,7 @@ export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { user, session } = useUser()
+  const { user, session } = useCurrentUser()
 
   const handleLogin = async () => {
     try {

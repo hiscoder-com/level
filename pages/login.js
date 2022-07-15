@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 
 import { supabase } from '../utils/supabaseClient'
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
@@ -15,7 +15,7 @@ export default function Login() {
   const { t } = useTranslation('common')
 
   const router = useRouter()
-  const { user } = useUser()
+  const { user } = useCurrentUser()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)

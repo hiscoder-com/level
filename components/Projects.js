@@ -2,10 +2,10 @@ import Head from 'next/head'
 import Link from 'next/link'
 
 import { useProjects } from '../utils/hooks'
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 
 export default function Projects() {
-  const { session } = useUser()
+  const { session } = useCurrentUser()
 
   const [projects] = useProjects(session?.access_token)
 
@@ -27,9 +27,6 @@ export default function Projects() {
             </Link>
           )
         })}
-      <Link href={'/projects/create'}>
-        <a className="btn-filled btn">Add New</a>
-      </Link>
     </>
   )
 }
