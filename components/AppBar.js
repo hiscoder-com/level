@@ -129,9 +129,11 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
             )}
             <Link href="/">
               <a>
-                <VCANA_logo className="h-5 invisible md:visible" />
+                <VCANA_logo className="h-5" />
+                {/* <VCANA_logo className="h-5 invisible md:visible" /> */}
               </a>
             </Link>
+            <Burger />
           </div>
           {/* Title */}
           <div className={conditionTitle}>{steps[step].title}</div>
