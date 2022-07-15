@@ -71,7 +71,7 @@ export default function ConfessionSteps() {
   }, [page])
   return (
     <div className="layout-appbar gap-7">
-      <h1 className="h1">{t('ConfessionFaith', { ns: 'common' })}:</h1>
+      <h1 className="h1">{t('common:ConfessionFaith')}:</h1>
       <div className="flex flex-row min-h-[18rem] w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
@@ -97,10 +97,10 @@ export default function ConfessionSteps() {
             checked={checked}
             onChange={() => setChecked((prev) => !prev)}
           />
-          <label htmlFor="cb">{t('Agree', { ns: 'common' })}</label>
+          <label htmlFor="cb">{t('common:Agree')}</label>
         </div>
         <button className="btn-filled w-28" disabled={!checked}>
-          {t('Next', { ns: 'common' })}
+          {t('common:Next')}
         </button>
       </div>
     </div>

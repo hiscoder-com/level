@@ -2,11 +2,12 @@
   "Account": "Личный кабинет",
   "Agree": "Согласен",
   "Agreements": "Соглашение",
-  "Start": "Начать",
   "Bible": "Библия",
   "ConfessionFaith": "Исповедание веры",
   "DescriptionConfession": "согласуется с историческими символами веры:<br />Апостольский символ веры, Никейский символ веры, и Афанасьевский символ веры; а также Lausanne Covenant.",
   "Dictionary": "Словарь",
+  "ForgotPassword": "Забыли пароль",
+  "Loading": "Загрузка",
   "Login": "Логин",
   "Management": "Администрирование",
   "NewProject": "Новый проект",
@@ -19,9 +20,11 @@
   "PurposeTranslation": "Цель перевода",
   "Settings": "Настройки",
   "SignIn": "Вход",
+  "Start": "Начать",
   "Training": "Обучение",
   "Welcome": "Вход на данный сайт только по приглашению админов ресурса.",
-  "WrongLoginPassword":"Неверный логин или пароль",
-  "ForgotPassword":"Забыли пароль",
-  "WriteAdmin":"Написать админу"
+  "WriteAdmin": "Написать админу",
+  "WrongLoginPassword": "Неверный логин или пароль",
+  "Yes": "Да",
+  "No": "Нет"
 }

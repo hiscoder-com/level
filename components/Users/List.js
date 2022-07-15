@@ -13,7 +13,7 @@ function UsersList({ access_token }) {
         <tr className="text-left bg-gray-100">
           <th className="border-b p-2 border-slate-200">{t('login')}</th>
           <th className="border-b p-2 border-slate-200">{t('email')}</th>
-          <th className="border-b p-2 border-slate-200">{t('is_admin')}</th>
+          <th className="border-b p-2 border-slate-200">{t('IsAdmin')}</th>
           <th className="border-b p-2 border-slate-200">{t('agreement')}</th>
           <th className="border-b p-2 border-slate-200">{t('confession')}</th>
           <th className="border-b p-2 border-slate-200">{t('blocked')}</th>
@@ -67,7 +67,9 @@ function UsersList({ access_token }) {
           })
         ) : (
           <tr>
-            <td colSpan={6}>{t('no_users')}</td>
+            <td colSpan={6} className="p-3 text-center">
+              {t('NoUsers')}
+            </td>
           </tr>
         )}
       </tbody>
