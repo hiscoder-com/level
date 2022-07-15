@@ -38,6 +38,7 @@ function ProjectRolesEdit({
       })
       .catch((error) => console.log(error, 'from axios'))
   }
+
   const handleUpdate = async (id) => {
     if (!project?.id) {
       return
@@ -47,7 +48,7 @@ function ProjectRolesEdit({
       axios
         .put(`/api/${project?.languages?.code}/projects/${code}/${type}/${userId}`, {
           project_id: project?.id,
-          prev_id: roles?.data[0]?.users?.id,
+          prev_id: roles[0].users?.id,
         })
         .then((result) => {
           const { data } = result
@@ -70,12 +71,12 @@ function ProjectRolesEdit({
       })
       .catch((error) => console.log(error, 'from axios'))
   }
-
   const handleSetModerator = async () => {
     if (!project?.id) {
       return
     }
-    if (!moderators) {
+
+    if (moderators && moderators.length === 0) {
       axios.defaults.headers.common['token'] = session?.access_token
       axios
         .post(`/api/${project?.languages?.code}/projects/${code}/moderators/`, {
@@ -96,7 +97,7 @@ function ProjectRolesEdit({
           `/api/${project?.languages?.code}/projects/${code}/moderators/${moderator}`,
           {
             project_id: project?.id,
-            prev_id: moderators?.id,
+            prev_id: moderators[0].users?.id,
           }
         )
         .then((result) => {
@@ -116,7 +117,7 @@ function ProjectRolesEdit({
         .filter((el) => el.agreement && el.confession)
         .filter(
           (user) =>
-            !roles?.data
+            !roles
               .map((el) => {
                 return el.users.id
               })
@@ -129,12 +130,14 @@ function ProjectRolesEdit({
     <div>
       <div className="capitalize ">{`${type}`}:</div>
       <div className="my-5 flex flex-col ">
-        {roles?.data &&
-          roles.data.map((el, key) => {
+        {roles &&
+          roles.map((el, key) => {
             return (
               <div className="flex" key={key}>
                 <div
-                  className={`mx-5  ${moderators?.id === el.users.id && 'text-gray-500'}`}
+                  className={`mx-5  ${
+                    moderators[0]?.users?.id === el.users.id && 'text-gray-500'
+                  }`}
                 >
                   {el.users.email}
                 </div>
@@ -145,7 +148,7 @@ function ProjectRolesEdit({
                       .includes('translator.set')) ||
                     role === 'admin') && (
                     <>
-                      {moderators?.id === el.users.id ? (
+                      {moderators[0]?.users?.id === el.users.id ? (
                         'Мoderator'
                       ) : !showRadio ? (
                         <button
@@ -155,7 +158,9 @@ function ProjectRolesEdit({
                               : setShowSelect(true)
                           }
                           className="btn-filled w-28 my-1"
-                          disabled={showSelect || moderators?.id === el.users.id}
+                          disabled={
+                            showSelect || moderators[0]?.users?.id === el.users.id
+                          }
                         >
                           Удалить
                         </button>
@@ -163,9 +168,9 @@ function ProjectRolesEdit({
                         <div className="form-check">
                           <input
                             onChange={(e) => setModerator(e.target.value)}
-                            disabled={moderators?.id === el.users.id}
+                            disabled={moderators[0]?.users?.id === el.users.id}
                             className={`form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 my-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 ${
-                              moderators?.id !== el.users.id && 'cursor-pointer'
+                              moderators[0]?.users?.id !== el.users.id && 'cursor-pointer'
                             }`}
                             type="radio"
                             name="flexRadioDefault"
@@ -200,8 +205,8 @@ function ProjectRolesEdit({
                 </select>
                 <button
                   onClick={() => {
-                    if (roles?.data.length !== 0 && type === 'coordinators') {
-                      handleUpdate(roles.data[0].users.id)
+                    if (roles && roles.length !== 0 && type === 'coordinators') {
+                      handleUpdate(roles[0].users.id)
                       return
                     }
                     handleSet()
@@ -228,7 +233,7 @@ function ProjectRolesEdit({
             >
               {type !== 'coordinators'
                 ? 'Добавить переводчика'
-                : `${roles?.data.length > 0 ? 'Поменять' : 'Добавить'} координатора`}
+                : `${roles && roles.length > 0 ? 'Поменять' : 'Добавить'} координатора`}
             </button>
 
             {((permissions?.data &&

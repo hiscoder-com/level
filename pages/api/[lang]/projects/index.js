@@ -33,7 +33,7 @@ export default async function languageProjectsHandler(req, res) {
           .from('projects')
           .insert([{ language_id, method_id, type, code, title }])
         if (error) throw error
-        res.setHeader('Location', `/projects/${dataPost[0].code}`)
+        res.setHeader('Location', `/projects/${data[0].code}`)
         res.status(201).json({})
       } catch (error) {
         res.status(404).json({ error })

@@ -29,7 +29,6 @@ function Project({ code }) {
     userId: user?.id,
     isAdmin: authenticated?.is_admin,
   })
-  console.log(projectRole)
   return (
     <div>
       <h3 className="text-3xl">

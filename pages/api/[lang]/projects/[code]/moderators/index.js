@@ -20,7 +20,6 @@ export default async function languageProjectModeratorsHandler(req, res) {
           .select('projects!inner(code),users!inner(*)')
           .eq('role', 'moderator')
           .eq('projects.code', code)
-
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {

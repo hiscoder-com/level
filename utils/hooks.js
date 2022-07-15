@@ -123,7 +123,7 @@ export function useModerators({ token, code }) {
     error,
   } = useSWR(token ? [`/api/[id]/projects/${code}/moderators`, token] : null, fetcher)
   const loading = !moderators && !error
-  return [moderators?.data, { mutate, loading, error }]
+  return [moderators, { mutate, loading, error }]
 }
 /**
  *hook returns all users on specific project with role 'translator'
