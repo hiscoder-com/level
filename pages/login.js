@@ -5,8 +5,6 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { supabase } from '@/utils/supabaseClient'
-import { useUser } from '../lib/UserContext'
-import { useRedirect } from '@/utils/hooks'
 
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
@@ -68,7 +66,7 @@ export default function Login() {
         <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
-            className={'input'}
+            className={styleLogin}
             type="text"
             placeholder={`${t('Login')}:`}
             onChange={(event) => {
@@ -76,9 +74,9 @@ export default function Login() {
               setStyleLogin('form')
             }}
           />
-          <div className="relative">
+          <div className=" styleLogin relative">
             <input
-              className={'input'}
+              className={stylePassword}
               type={showPassword ? 'text' : 'password'}
               value={password}
               placeholder={`${t('Password')}:`}

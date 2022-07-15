@@ -6,29 +6,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useUser } from '../lib/UserContext'
-import { useRedirect } from '@/utils/hooks'
-
 export default function Agreements() {
-  const router = useRouter()
-  const { user, session } = useUser()
-
-  // const { href } = useRedirect({
-  //   userId: user?.id,
-  //   token: session?.access_token,
-  //   startLink: '/user-agreement',
-  // })
-
-  // useEffect(() => {
-  //   if (!user) {
-  //     return
-  //   }
-  //   if (href === 'agreeements') {
-  //     return
-  //   }
-  //   router.push(href)
-  // }, [href, router, user])
-
   const { t } = useTranslation('common')
 
   return (

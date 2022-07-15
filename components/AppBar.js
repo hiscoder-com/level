@@ -15,11 +15,16 @@ export default function AppBar({ isOpen, setIsOpen }) {
   const [access, setAccess] = useState(false)
   useEffect(() => {
     const hasAccess = async (user_id) => {
-      const { data, error } = await supabase.rpc('has_access', {
-        user_id,
-      })
-
-      setAccess(data)
+      try {
+        const { data, error } = await supabase.rpc('has_access', {
+          user_id,
+        })
+        if (error) throw error
+        setAccess(data)
+      } catch (error) {
+        res.status(404).json({ error })
+        return
+      }
     }
     if (user?.id) {
       hasAccess(user.id)

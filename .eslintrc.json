@@ -9,5 +9,10 @@
         }
     ],
     "@next/next/no-img-element": "off"
-  }
+  },
+  "overrides": [
+    {
+      "files": [ "src/**/*.js" ]
+    }
+  ]
 }

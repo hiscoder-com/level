@@ -10,28 +10,29 @@ export default async function languagesHandler(req, res) {
 
   switch (method) {
     case 'GET':
-      const { data: dataGet, error: errorGet } = await supabase
-        .from('languages')
-        .select('*')
-      if (errorGet) {
-        res.status(404).json({ errorGet })
+      try {
+        const { data, error } = await supabase.from('languages').select('*')
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-      res.status(200).json({ data: dataGet })
       break
     case 'POST':
-      const { project_id, user_id } = body
-      // TODO валидацию
-      const { data: dataPost, error: errorPost } = await supabase
-        .from('project_roles')
-        .insert([{ project_id, user_id, role: 'coordinator' }])
-
-      if (errorPost) {
-        res.status(404).json({ errorPost })
+      //TODO проверить используется и ли нет
+      try {
+        const { project_id, user_id } = body
+        // TODO валидацию
+        const { data, error } = await supabase
+          .from('project_roles')
+          .insert([{ project_id, user_id, role: 'coordinator' }])
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-
-      res.status(200).json({ dataPost })
       break
     default:
       res.setHeader('Allow', ['GET', 'POST'])

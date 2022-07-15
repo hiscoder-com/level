@@ -16,17 +16,18 @@ export default async function languageProjectTranslatorHandler(req, res) {
     case 'PUT':
       break
     case 'DELETE':
-      const { data, error } = await supabase
-        .from('project_roles')
-        .delete()
-        .match({ project_id: body.projectId, role: 'translator', user_id: id })
-      if (error) {
+      try {
+        const { data, error } = await supabase
+          .from('project_roles')
+          .delete()
+          .match({ project_id: body.projectId, role: 'translator', user_id: id })
+
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
         res.status(404).json({ error })
         return
       }
-
-      res.status(200).json({ data })
-
       break
     default:
       res.setHeader('Allow', ['GET', 'PUT'])

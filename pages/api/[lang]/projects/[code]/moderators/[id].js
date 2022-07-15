@@ -14,32 +14,33 @@ export default async function languageProjectModeratorHandler(req, res) {
     case 'GET':
       break
     case 'PUT':
-      const { project_id, prev_id } = body
-      // TODO валидацию
+      try {
+        const { prev_id } = body
+        const { data, error } = await supabase
+          .from('project_roles')
+          .update({ user_id: id })
+          .match({ user_id: prev_id, role: 'moderator' })
 
-      const { data: dataPut, error: errorPut } = await supabase
-        .from('project_roles')
-        .update({ user_id: id })
-        .match({ user_id: prev_id, role: 'moderator' })
-      if (errorPut) {
-        res.status(404).json({ errorPut })
-        return
-      }
-
-      res.status(200).json({ dataPut })
-      break
-    case 'DELETE':
-      const { data, error } = await supabase
-        .from('project_roles')
-        .delete()
-        .match({ project_id: body.projectId, role: 'moderator', user_id: id })
-      if (error) {
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
         res.status(404).json({ error })
         return
       }
+      break
+    case 'DELETE': //TODO проверить - работает ли и нужен ли
+      try {
+        const { data, error } = await supabase
+          .from('project_roles')
+          .delete()
+          .match({ project_id: body.projectId, role: 'moderator', user_id: id })
 
-      res.status(200).json({ data })
-
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
+        res.status(404).json({ error })
+        return
+      }
       break
     default:
       res.setHeader('Allow', ['GET', 'PUT'])

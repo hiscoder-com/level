@@ -10,6 +10,7 @@ export default function Languages() {
   const { t } = useTranslation('common')
 
   const [languages] = useLanguages(session?.access_token)
+  console.log(languages)
   return (
     <div className="flex justify-center flex-col  text-xl my-5 ">
       <h1 className="my-5">{t('Languages')}:</h1>

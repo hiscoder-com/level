@@ -30,8 +30,7 @@ export default function Projects({ languageCode }) {
         </Head>
         <div>{`${authenticated?.is_admin ? 'Проекты' : 'Мои проекты'}`}</div>
         {projects &&
-          projects?.data &&
-          projects.data.map((project) => {
+          projects.map((project) => {
             return (
               <Link key={project.id} href={`/projects/${project.code}`}>
                 <a className="block text-blue-600">{`${project.id} ${project.title} ${project.code}`}</a>

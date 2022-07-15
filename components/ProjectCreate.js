@@ -9,17 +9,10 @@ import axios from 'axios'
 function ProjectCreate() {
   const router = useRouter()
 
-  const [styleTitle, setStyleTitle] = useState('form')
-  const [styleCode, setStyleCode] = useState('form')
-
-  const [errorTitle, setErrorTitle] = useState('')
-  const [errorCode, setErrorCode] = useState('')
-
   const { session } = useUser()
-  const [languages, { mutate }] = useLanguages(session?.access_token)
+  const [languages] = useLanguages(session?.access_token)
   const [methods] = useMethod(session?.access_token)
   const projectTypes = ['obs', 'bible']
-
   const {
     register,
     handleSubmit,
@@ -125,7 +118,7 @@ function ProjectCreate() {
         <div>Метод</div>
         <select placeholder="Method" {...register('methodId')} className="form max-w-sm">
           {methods &&
-            methods.data.map((el) => {
+            methods.map((el) => {
               return (
                 <option key={el.id} value={el.id}>
                   {el.title}

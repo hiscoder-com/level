@@ -12,15 +12,17 @@ export default async function rolePermissionHandler(req, res) {
   } = req
   switch (method) {
     case 'GET':
-      const { data, error } = await supabase
-        .from('role_permissions')
-        .select('permission')
-        .eq('role', role)
-      if (error) {
+      try {
+        const { data, error } = await supabase
+          .from('role_permissions')
+          .select('permission')
+          .eq('role', role)
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
         res.status(404).json({ error })
         return
       }
-      res.status(200).json({ data })
       break
     case 'PUT':
       res.status(200).json({ code: `Project ${code}` })

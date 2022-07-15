@@ -9,23 +9,19 @@ export default async function userConfessionHandler(req, res) {
   const { body, method } = req
 
   switch (method) {
-    case 'GET':
-      break
     case 'PUT':
-      const { user_id } = body
-
-      // TODO валидацию
-      const { data: dataPost, error: errorPost } = await supabase
-        .from('users')
-        .update({ confession: 'true' })
-        .match({ id: user_id })
-
-      if (errorPost) {
-        res.status(404).json({ errorPost })
+      try {
+        const { user_id } = body // TODO валидацию
+        const { data, error } = await supabase
+          .from('users')
+          .update({ confession: 'true' })
+          .match({ id: user_id })
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-
-      res.status(200).json({ dataPost })
       break
     default:
       res.setHeader('Allow', ['GET', 'POST'])
