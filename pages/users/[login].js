@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from '../../lib/UserContext'
@@ -15,8 +16,16 @@ export default function UserPage() {
   const { session } = useCurrentUser()
   const [user, { mutate }] = useUser(session?.access_token, login)
 
-  const handleBlock = (block) => {
-    console.log({ block })
+  const handleBlock = (blocked) => {
+    axios.defaults.headers.common['token'] = session?.access_token
+    axios
+      .post('/api/users/' + user?.login, { blocked })
+      .then((res) => {
+        console.log('success', res)
+      })
+      .catch((err) => {
+        console.log('error', err)
+      })
   }
   return (
     <>

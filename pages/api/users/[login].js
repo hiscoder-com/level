@@ -1,4 +1,5 @@
 import { supabase } from '../../../utils/supabaseClient'
+import { supabaseService } from '../../../utils/supabaseServer'
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -27,15 +28,16 @@ export default async function handler(req, res) {
       // TODO валидацию
       // is it admin
       try {
-        const { error: errorPost } = await supabase
+        const { error: errorPost } = await supabaseService
           .from('users')
           .update({
             blocked: blocked ? new Date().toISOString().toLocaleString('en-US') : null,
           })
-          .eq('login', login)
+          .match({ login })
 
         if (errorPost) throw errorPost
       } catch (error) {
+        console.log(error)
         res.status(404).json({ error })
         return
       }
