@@ -11,8 +11,6 @@ export default async function languageProjectModeratorHandler(req, res) {
     method,
   } = req
   switch (method) {
-    case 'GET':
-      break
     case 'PUT':
       try {
         const { project_id, prev_id } = body

@@ -11,10 +11,6 @@ export default async function languageProjectTranslatorHandler(req, res) {
     method,
   } = req
   switch (method) {
-    case 'GET':
-      break
-    case 'PUT':
-      break
     case 'DELETE':
       try {
         const { data, error } = await supabase

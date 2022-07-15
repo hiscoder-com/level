@@ -24,9 +24,6 @@ export default async function rolePermissionHandler(req, res) {
         return
       }
       break
-    case 'PUT':
-      res.status(200).json({ code: `Project ${code}` })
-      break
     default:
       res.setHeader('Allow', ['GET', 'PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)
