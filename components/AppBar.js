@@ -111,7 +111,7 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
     },
   }
 
-  const conditionTitle = `h2 text-center ${isIntroduction ? '' : 'hidden'}`
+  const conditionTitle = `conditionTitle ${isIntroduction ? '' : 'hidden'}`
   const conditionOptionalInfo = `flex row items-center gap-4 ${
     isIntroduction ? '' : 'hidden'
   }`
@@ -129,7 +129,7 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
             )}
             <Link href="/">
               <a>
-                <VCANA_logo className="h-5" />
+                <VCANA_logo className="h-5 invisible md:visible" />
               </a>
             </Link>
           </div>

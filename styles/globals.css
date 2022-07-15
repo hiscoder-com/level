@@ -41,6 +41,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] h4 bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none 
 }
 
+.conditionTitle{
+	@apply text-center h3 lg:text-2xl text-gray-800
+}
+
 .layout-appbar{
 	@apply flex flex-col px-5 items-center f-screen-appbar font-sans gap-7 sm:justify-center
 }
@@ -50,23 +54,23 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .layout-step{
-	@apply mx-auto flex flex-col gap-8 f-screen-appbar items-center lg:max-w-7xl  lg:items-stretch lg:flex-row
+	@apply mx-auto flex flex-col gap-3 items-center f-screen-appbar lg:max-w-7xl  lg:items-stretch lg:flex-row
 }
 
 .layout-step-col{
-	@apply flex flex-col gap-6 w-11/12 lg:w-1/2
+	@apply flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0 lg:w-1/2
 }
 
 .layout-step-col-card{
-	@apply flex flex-col h-96 bg-white rounded-lg lg:h-full
+	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full
 }
 
 .layout-step-col-card-title{
-	@apply h4 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg
+	@apply h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg
 }
 
 .appbar{
-	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-10 md:flex-row md:h-24 lg:px-12 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
+	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-24 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
 }
 
 .text-alignment{
@@ -98,6 +102,9 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 .h2{
 	@apply text-2xl text-gray-800
+}
+.h2-3{
+	@apply text-xl text-gray-800
 }
 .h3{
 	@apply text-lg text-gray-800

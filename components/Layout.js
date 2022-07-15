@@ -16,7 +16,7 @@ function Layout({ backgroundColor, children }) {
       />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
-        <div className="pt-6 sm:p-6 lg:px-8">{children}</div>
+        <div className="pt-3 lg:pt-5 lg:px-8">{children}</div>
       </main>
     </div>
   )

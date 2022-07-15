@@ -32,7 +32,7 @@ export default function IntroPage() {
           </div>
           <div className="layout-step-col-card">
             <div className="layout-step-col-card-title">Глава 1</div>
-            <div className="h4 p-4">Текст:</div>
+            <div className="h5 p-4">Текст:</div>
           </div>
         </div>
         <div className="layout-step-col">
@@ -52,7 +52,7 @@ export default function IntroPage() {
           </div>
           <div className="layout-step-col-card">
             <div className="layout-step-col-card-title"></div>
-            <div className="h4 p-4">Текст:</div>
+            <div className="h5 p-4">Текст:</div>
           </div>
         </div>
       </div>

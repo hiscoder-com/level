@@ -17,7 +17,7 @@ function MyApp({ Component, pageProps }) {
   }
   return (
     <UserContextProvider supabaseClient={supabase}>
-      <Layout backgroundColor={Component.backgroundColor ?? 'bg-[#DCE4E9]'}>
+      <Layout backgroundColor={Component.backgroundColor ?? 'bg-blue-150'}>
         <Component {...pageProps} />
       </Layout>
     </UserContextProvider>
