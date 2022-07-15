@@ -1,7 +1,7 @@
-import { useState } from 'react'
 
-import { useUser } from '../lib/UserContext'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import { useUser } from '../lib/UserContext'
 
 export default function Footer({ href, textCheckbox, textButton, handleSetAgreement }) {
   const router = useRouter()
@@ -11,7 +11,12 @@ export default function Footer({ href, textCheckbox, textButton, handleSetAgreem
       return
     }
     if (router.route === '/user-agreement') handleSetAgreement()
-  }
+  } 
+  const { step } = router?.query
+  useEffect(() => {
+    setChecked(false)
+  }, [step])
+
   return (
     <div className="max-w-7xl w-full mx-auto flex justify-end items-center px-4 bg-blue-150">
       <div className="relative flex items-center h-16">
@@ -29,9 +34,11 @@ export default function Footer({ href, textCheckbox, textButton, handleSetAgreem
             </label>
           </div>
 
-          <button onClick={handleClick} className="btn-filled w-28" disabled={!checked}>
+
+          <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
             {textButton}
           </button>
+
         </div>
       </div>
     </div>

@@ -5,9 +5,10 @@ module.exports = {
       colors: {
         blue: {
           150: '#DCE4E9',
+          350: '#AECCDF',
         },
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/aspect-ratio')],
 }
