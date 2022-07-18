@@ -42,11 +42,8 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .condition-title{
-	@apply text-center h3  lg:text-2xl text-gray-800 md:visible
+	@apply text-center h3 md:visible  lg:text-2xl text-gray-800 
 }
-/* .condition-title{
-	@apply text-center h3 invisible md:visible lg:text-2xl text-gray-800
-} */
 
 .condition-optional-info{
 	@apply flex items-center gap-4 md:visible

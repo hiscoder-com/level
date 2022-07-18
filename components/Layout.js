@@ -5,7 +5,7 @@ import SideBar from './SideBar'
 
 function Layout({ backgroundColor, children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [isIntroduction, setIsIntroduction] = useState(true)
+  const [isStepPage, setIsStepPage] = useState(false)
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
 
   return (
@@ -16,8 +16,8 @@ function Layout({ backgroundColor, children }) {
       <AppBar
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        isIntroduction={isIntroduction}
-        setIsIntroduction={setIsIntroduction}
+        isStepPage={isStepPage}
+        setIsStepPage={setIsStepPage}
         showModalStepGoal={showModalStepGoal}
         setShowModalStepGoal={setShowModalStepGoal}
       />

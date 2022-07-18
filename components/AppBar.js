@@ -17,8 +17,8 @@ import VCANA_logo from '../public/vcana-logo.svg'
 export default function AppBar({
   isOpen,
   setIsOpen,
-  isIntroduction,
-  setIsIntroduction,
+  isStepPage,
+  setIsStepPage,
   showModalStepGoal,
   setShowModalStepGoal,
 }) {
@@ -131,12 +131,10 @@ export default function AppBar({
   }
 
   const conditionAppbar = `appbar ${showFullAppbar ? 'h-28' : 'h-10'}`
-  const conditionTitle = `condition-title ${
-    isIntroduction && showFullAppbar ? 'visible' : 'invisible'
-  }`
-  const conditionOptionalInfo = `condition-optional-info ${
-    isIntroduction && showFullAppbar ? 'visible' : 'invisible'
-  }`
+  const checkShowFullAppbar = showFullAppbar ? 'visible' : 'invisible'
+
+  const conditionTitle = `condition-title ${checkShowFullAppbar}`
+  const conditionOptionalInfo = `condition-optional-info ${checkShowFullAppbar}`
 
   return (
     <Disclosure as="nav" className="bg-white">
