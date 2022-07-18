@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
-export default function Footer({ href, textCheckbox, textButton, handleSetAgreement }) {
+export default function Footer({ textCheckbox, textButton, handleSetAgreement }) {
   const router = useRouter()
   const [checked, setChecked] = useState(false)
   const handleClick = () => {
