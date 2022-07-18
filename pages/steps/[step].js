@@ -1,17 +1,17 @@
 import Head from 'next/head'
-import Account from '../../components/Account'
+import { useRouter } from 'next/router'
 
-function AccountPage() {
+export default function StepPage() {
+  const router = useRouter()
+  const { step } = router.query
   return (
     <div className="container">
       <Head>
-        <title>V-CANA Intro {step}</title>
+        <title>V-CANA Step {step}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Account />
+      <div>Step:{step}</div>
     </div>
   )
 }
-
-export default AccountPage

@@ -1,27 +1,13 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useUser } from '../lib/UserContext'
-
-import { useRedirect } from '@/utils/hooks'
-
 export default function Confession() {
   const { t } = useTranslation('common')
-  const router = useRouter()
-
-  const { user, session } = useUser()
-  const { href } = useRedirect({
-    userId: user?.id,
-    token: session?.access_token,
-    startLink: '/confession-steps',
-  })
-
   return (
     <div className="layout-appbar">
-      <div className="text-center max-w-lg whitespace-pre-line">
+      <div className="text-center mx-5 max-w-lg whitespace-pre-line">
         <h1 className="h1 mb-6">{t('ConfessionFaith')}:</h1>
 
         <p
@@ -41,8 +27,8 @@ export default function Confession() {
             https://texttree.org/
           </a>
         </p>
-        <Link href={router?.route === '/confession' ? '/confession-steps' : href}>
-          <a className="btn-filled w-28 mt-7">{t('Start')}</a>
+        <Link href="/confession-steps">
+          <a className="btn-cyan w-28 mt-7">{t('Start')}</a>
         </Link>
       </div>
     </div>
