@@ -13,7 +13,7 @@ function SideBar({ isOpen, setIsOpen }) {
           <div className="flex items-center justify-between px-4 py-3 text-[#3C3C41]">
             <Burger
               onClick={() => setIsOpen((prev) => !prev)}
-              className="h-6 cursor-pointer stroke-1 hover:stroke-[#0E7490]"
+              className="h-6 cursor-pointer stroke-1"
             />
           </div>
         </div>

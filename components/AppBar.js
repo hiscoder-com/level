@@ -132,9 +132,13 @@ export default function AppBar({
 
   const conditionAppbar = `appbar ${showFullAppbar ? 'h-28' : 'h-10'}`
   const checkShowFullAppbar = showFullAppbar ? 'visible' : 'invisible'
+  const showBtnForMobile = `${isStepPage ? 'md:hidden' : 'hidden'}`
 
   const conditionTitle = `condition-title ${checkShowFullAppbar}`
   const conditionOptionalInfo = `condition-optional-info ${checkShowFullAppbar}`
+
+  const showTitle = isStepPage ? conditionTitle : 'invisible'
+  const showOptionalInfo = isStepPage ? conditionOptionalInfo : 'invisible'
 
   return (
     <Disclosure as="nav" className="bg-white">
@@ -144,7 +148,7 @@ export default function AppBar({
             {access && (
               <Burger
                 onClick={() => setIsOpen((prev) => !prev)}
-                className="h-6 stroke-1 hover:stroke-[#0E7490]"
+                className="h-6 stroke-1"
               />
             )}
             <Link href="/">
@@ -155,13 +159,13 @@ export default function AppBar({
             </Link>
             <Burger
               onClick={() => setShowFullAppbar(!showFullAppbar)}
-              className="md:hidden"
+              className={showBtnForMobile}
             />
           </div>
           {/* Title */}
-          <div className={conditionTitle}>{steps[step].title}</div>
+          <div className={showTitle}>{steps[step].title}</div>
           {/* Optional info */}
-          <div className={conditionOptionalInfo}>
+          <div className={showOptionalInfo}>
             <div className="flex row items-center gap-1 cursor-default">
               <User />
               {steps[step].users}
@@ -169,7 +173,9 @@ export default function AppBar({
             <Timer time={steps[step].time} />
             <button
               className="btn-cyan w-28"
-              onClick={(e) => (setShowModalStepGoal(true), e.stopPropagation())}
+              onClick={(e) => (
+                setShowModalStepGoal(!showModalStepGoal), e.stopPropagation()
+              )}
             >
               Цель шага
             </button>
