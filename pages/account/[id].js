@@ -5,7 +5,7 @@ function AccountPage() {
   return (
     <div className="container">
       <Head>
-        <title>V-CANA Intro {step}</title>
+        <title>V-CANA Account</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

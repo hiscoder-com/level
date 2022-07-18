@@ -25,8 +25,6 @@ export default async function languageProjectRolesHandler(req, res) {
         res.status(404).json({ error })
         return
       }
-    case 'POST':
-      break
     default:
       res.setHeader('Allow', ['GET', 'POST'])
       res.status(405).end(`Method ${method} Not Allowed`)

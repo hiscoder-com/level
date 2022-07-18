@@ -6,14 +6,14 @@ export default async function languageProjectModeratorHandler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
   const {
-    body,
+    body: { project_id, prev_id },
     query: { id },
     method,
   } = req
+
   switch (method) {
     case 'PUT':
       try {
-        const { project_id, prev_id } = body
         // TODO валидацию
         const { data, error } = await supabase
           .from('project_roles')

@@ -36,7 +36,7 @@ function ProjectRolesEdit({
         setShowSelect(false)
         //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
-      .catch((error) => console.log(error, 'from axios'))
+      .catch((error) => console.log(error))
   }
 
   const handleUpdate = async (id) => {
@@ -48,15 +48,13 @@ function ProjectRolesEdit({
       axios
         .put(`/api/${project?.languages?.code}/projects/${code}/${type}/${userId}`, {
           project_id: project?.id,
-          prev_id: roles[0].users?.id,
+          prev_id: roles && roles.length > 0 && roles[0].users?.id,
         })
         .then((result) => {
-          const { data } = result
           mutate()
           setShowSelect(false)
-          //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
         })
-        .catch((error) => console.log(error, 'from axios'))
+        .catch((error) => console.log(error))
       return
     }
     axios.defaults.headers.common['token'] = session?.access_token
@@ -65,11 +63,9 @@ function ProjectRolesEdit({
         data: { projectId: project?.id },
       })
       .then((result) => {
-        const { data, status } = result
         mutate()
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
-      .catch((error) => console.log(error, 'from axios'))
+      .catch((error) => console.log(error))
   }
   const handleSetModerator = async () => {
     if (!project?.id) {
@@ -84,10 +80,8 @@ function ProjectRolesEdit({
           project_id: project?.id,
         })
         .then((result) => {
-          const { data } = result
           mutateModerator()
           setShowRadio(false)
-          //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
         })
         .catch((error) => console.log(error, 'from axios'))
     } else {
@@ -101,10 +95,8 @@ function ProjectRolesEdit({
           }
         )
         .then((result) => {
-          const { data } = result
           mutateModerator()
           setShowRadio(false)
-          //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
         })
         .catch((error) => console.log(error, 'from axios'))
     }
@@ -136,7 +128,10 @@ function ProjectRolesEdit({
               <div className="flex" key={key}>
                 <div
                   className={`mx-5  ${
-                    moderators[0]?.users?.id === el.users.id && 'text-gray-500'
+                    moderators &&
+                    moderators.length > 0 &&
+                    moderators[0]?.users?.id === el.users.id &&
+                    'text-gray-500'
                   }`}
                 >
                   {el.users.email}
@@ -148,7 +143,9 @@ function ProjectRolesEdit({
                       .includes('translator.set')) ||
                     role === 'admin') && (
                     <>
-                      {moderators[0]?.users?.id === el.users.id ? (
+                      {moderators &&
+                      moderators.length > 0 &&
+                      moderators[0]?.users?.id === el.users.id ? (
                         'Мoderator'
                       ) : !showRadio ? (
                         <button
@@ -159,7 +156,10 @@ function ProjectRolesEdit({
                           }
                           className="btn-filled w-28 my-1"
                           disabled={
-                            showSelect || moderators[0]?.users?.id === el.users.id
+                            showSelect ||
+                            (moderators &&
+                              moderators.length > 0 &&
+                              moderators[0]?.users?.id === el.users.id)
                           }
                         >
                           Удалить
@@ -168,9 +168,16 @@ function ProjectRolesEdit({
                         <div className="form-check">
                           <input
                             onChange={(e) => setModerator(e.target.value)}
-                            disabled={moderators[0]?.users?.id === el.users.id}
+                            disabled={
+                              moderators &&
+                              moderators.length > 0 &&
+                              moderators[0]?.users?.id === el.users.id
+                            }
                             className={`form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 my-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 ${
-                              moderators[0]?.users?.id !== el.users.id && 'cursor-pointer'
+                              moderators &&
+                              moderators.length > 0 &&
+                              moderators[0]?.users?.id !== el.users.id &&
+                              'cursor-pointer'
                             }`}
                             type="radio"
                             name="flexRadioDefault"

@@ -29,8 +29,7 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
         if (error) throw error
         setAccess(data)
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return error
       }
     }
     if (user?.id) {
