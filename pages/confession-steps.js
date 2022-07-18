@@ -128,7 +128,6 @@ export default function ConfessionSteps() {
           className="btn-cyan w-28"
           disabled={!checked}
         >
-
           {t('Next', { ns: 'common' })}
         </button>
       </div>

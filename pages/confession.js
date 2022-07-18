@@ -1,12 +1,10 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default function Confession() {
   const { t } = useTranslation('common')
-  const router = useRouter()
   return (
     <div className="layout-appbar">
       <div className="text-center mx-5 max-w-lg whitespace-pre-line">

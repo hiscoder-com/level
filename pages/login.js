@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useRef } from 'react'
 
 import { useRouter } from 'next/router'
@@ -7,7 +6,6 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { supabase } from '@/utils/supabaseClient'
-import { useUser } from '../lib/UserContext'
 
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'

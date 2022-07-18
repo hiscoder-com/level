@@ -9,12 +9,6 @@ import axios from 'axios'
 function ProjectCreate() {
   const router = useRouter()
 
-  const [styleTitle, setStyleTitle] = useState('form')
-  const [styleCode, setStyleCode] = useState('form')
-
-  const [errorTitle, setErrorTitle] = useState('')
-  const [errorCode, setErrorCode] = useState('')
-
   const { session } = useUser()
   const [languages, { mutate }] = useLanguages(session?.access_token)
   const [methods] = useMethod(session?.access_token)
