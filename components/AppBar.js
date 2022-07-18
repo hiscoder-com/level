@@ -14,11 +14,18 @@ import User from '../public/user.svg'
 import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
 
-export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntroduction }) {
+export default function AppBar({
+  isOpen,
+  setIsOpen,
+  isIntroduction,
+  setIsIntroduction,
+  showModalStepGoal,
+  setShowModalStepGoal,
+}) {
   const { user } = useUser()
   const [access, setAccess] = useState(false)
-
   const [step, setStep] = useState(1)
+  const [showFullAppbar, setShowFullAppbar] = useState(false)
 
   useEffect(() => {
     const hasAccess = async (user_id) => {
@@ -71,55 +78,70 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
       title: 'Шаг 1: Самостоятельное изучение',
       users: 1,
       time: 2400,
+      stepGoal:
+        'ЦЕЛЬ этого шага: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.',
       tools: {},
     },
     2: {
       title: 'Шаг 2: Командное изучение текста',
       users: 4,
       time: 3000,
+      stepGoal:
+        'ЦЕЛЬ этого шага: хорошо понять смысл текста и слов всей командой, а также принять командное решение по переводу некоторых слов перед тем, как начать основную работу.',
       tools: {},
     },
     3: {
       title: 'Шаг 3: Подготовка к переводу',
       users: 2,
       time: 1200,
+      stepGoal: 'ЦЕЛЬ этого шага: подготовиться к переводу текста естественным языком.',
       tools: {},
     },
     4: {
       title: 'Шаг 4: Набросок “Вслепую”',
       users: 1,
       time: 1200,
+      stepGoal: 'ЦЕЛЬ этого шага: сделать первый набросок естественным языком.',
       tools: {},
     },
     5: {
       title: 'Шаг 5: Самостоятельная проверка',
       users: 1,
       time: 1800,
+      stepGoal:
+        'ЦЕЛЬ этого шага: поработать над ошибками в тексте и убедиться, что первый набросок перевода получился достаточно точным и естественным.',
       tools: {},
     },
     6: {
       title: 'Шаг 6: Взаимная проверка',
       users: 2,
       time: 2400,
+      stepGoal:
+        'ЦЕЛЬ этого шага: улучшить набросок перевода, пригласив другогого человека, чтобы проверить перевод на точность и естественность.',
       tools: {},
     },
     7: {
       title: 'Шаг 7: Командная проверка',
       users: 4,
       time: 3600,
+      stepGoal:
+        'ЦЕЛЬ этого шага: улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.',
       tools: {},
     },
   }
 
-  const conditionTitle = `conditionTitle ${isIntroduction ? '' : 'hidden'}`
-  const conditionOptionalInfo = `flex row items-center gap-4 ${
-    isIntroduction ? '' : 'hidden'
+  const conditionAppbar = `appbar ${showFullAppbar ? 'h-28' : 'h-10'}`
+  const conditionTitle = `condition-title ${
+    isIntroduction && showFullAppbar ? 'visible' : 'invisible'
+  }`
+  const conditionOptionalInfo = `condition-optional-info ${
+    isIntroduction && showFullAppbar ? 'visible' : 'invisible'
   }`
 
   return (
     <Disclosure as="nav" className="bg-white">
-      <>
-        <div className="appbar">
+      <div className="">
+        <div className={conditionAppbar}>
           <div className="flex items-center gap-7 cursor-pointer">
             {access && (
               <Burger
@@ -133,7 +155,10 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
                 {/* <VCANA_logo className="h-5 invisible md:visible" /> */}
               </a>
             </Link>
-            <Burger />
+            <Burger
+              onClick={() => setShowFullAppbar(!showFullAppbar)}
+              className="md:hidden"
+            />
           </div>
           {/* Title */}
           <div className={conditionTitle}>{steps[step].title}</div>
@@ -144,11 +169,32 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntrodu
               {steps[step].users}
             </div>
             <Timer time={steps[step].time} />
-            <button className="btn-cyan w-28">Цель шага</button>
+            <button
+              className="btn-cyan w-28"
+              onClick={(e) => (setShowModalStepGoal(true), e.stopPropagation())}
+            >
+              Цель шага
+            </button>
             <Tools />
           </div>
         </div>
-      </>
+        {showModalStepGoal ? (
+          <div
+            className="mt-10 flex fixed bg-white justify-center items-center flex-col w-1/2 rounded-lg shadow-xl h-auto p-2 cursor-default ml-36 sm:ml-44 md:ml-60 lg:ml-80 xl:ml-96"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 className="text-base mt-2 mx-4 text-gray-400 font-semibold text-center">
+              {steps[step].stepGoal}
+            </h2>
+            <button
+              className="my-5 w-auto px-8 h-10 bg-blue-600 text-white rounded-md shadow hower:shadow-lg font-semibold"
+              onClick={() => setShowModalStepGoal(false)}
+            >
+              Close
+            </button>
+          </div>
+        ) : null}
+      </div>
     </Disclosure>
   )
 }

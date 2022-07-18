@@ -6,13 +6,20 @@ import SideBar from './SideBar'
 function Layout({ backgroundColor, children }) {
   const [isOpen, setIsOpen] = useState(false)
   const [isIntroduction, setIsIntroduction] = useState(true)
+  const [showModalStepGoal, setShowModalStepGoal] = useState(false)
+
   return (
-    <div className={`mx-auto min-h-screen ${backgroundColor}`}>
+    <div
+      className={`mx-auto min-h-screen ${backgroundColor}`}
+      onClick={() => setShowModalStepGoal(false)}
+    >
       <AppBar
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         isIntroduction={isIntroduction}
         setIsIntroduction={setIsIntroduction}
+        showModalStepGoal={showModalStepGoal}
+        setShowModalStepGoal={setShowModalStepGoal}
       />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>

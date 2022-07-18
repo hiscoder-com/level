@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 export default function IntroPage() {
   const router = useRouter()
   const { step } = router.query
-  // const condition = `${step > 3 ? 'btn-white' : 'hidden'}`
 
   return (
     <div>
