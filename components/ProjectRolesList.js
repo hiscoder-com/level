@@ -72,7 +72,7 @@ function ProjectRolesEdit({
       return
     }
 
-    if (moderators && moderators.length === 0) {
+    if (moderators && Object.keys(moderators).length === 0) {
       axios.defaults.headers.common['token'] = session?.access_token
       axios
         .post(`/api/${project?.languages?.code}/projects/${code}/moderators/`, {
@@ -91,7 +91,7 @@ function ProjectRolesEdit({
           `/api/${project?.languages?.code}/projects/${code}/moderators/${moderator}`,
           {
             project_id: project?.id,
-            prev_id: moderators[0].users?.id,
+            prev_id: moderators.users?.id,
           }
         )
         .then((result) => {
@@ -128,10 +128,7 @@ function ProjectRolesEdit({
               <div className="flex" key={key}>
                 <div
                   className={`mx-5  ${
-                    moderators &&
-                    moderators.length > 0 &&
-                    moderators[0]?.users?.id === el.users.id &&
-                    'text-gray-500'
+                    moderators?.users?.id === el.users.id && 'text-gray-500'
                   }`}
                 >
                   {el.users.email}
@@ -143,9 +140,7 @@ function ProjectRolesEdit({
                       .includes('translator.set')) ||
                     role === 'admin') && (
                     <>
-                      {moderators &&
-                      moderators.length > 0 &&
-                      moderators[0]?.users?.id === el.users.id ? (
+                      {moderators?.users?.id === el.users.id ? (
                         'Мoderator'
                       ) : !showRadio ? (
                         <button
@@ -155,12 +150,7 @@ function ProjectRolesEdit({
                               : setShowSelect(true)
                           }
                           className="btn-filled w-28 my-1"
-                          disabled={
-                            showSelect ||
-                            (moderators &&
-                              moderators.length > 0 &&
-                              moderators[0]?.users?.id === el.users.id)
-                          }
+                          disabled={showSelect || moderators?.users?.id === el.users.id}
                         >
                           Удалить
                         </button>
@@ -168,16 +158,9 @@ function ProjectRolesEdit({
                         <div className="form-check">
                           <input
                             onChange={(e) => setModerator(e.target.value)}
-                            disabled={
-                              moderators &&
-                              moderators.length > 0 &&
-                              moderators[0]?.users?.id === el.users.id
-                            }
+                            disabled={moderators?.users?.id === el.users.id}
                             className={`form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 my-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 ${
-                              moderators &&
-                              moderators.length > 0 &&
-                              moderators[0]?.users?.id !== el.users.id &&
-                              'cursor-pointer'
+                              moderators?.users?.id !== el.users.id && 'cursor-pointer'
                             }`}
                             type="radio"
                             name="flexRadioDefault"
