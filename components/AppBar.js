@@ -13,6 +13,7 @@ import Burger from '../public/burger.svg'
 import User from '../public/user.svg'
 import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
+import { useRouter } from 'next/router'
 
 export default function AppBar({
   isOpen,
@@ -21,11 +22,18 @@ export default function AppBar({
   setIsStepPage,
   showModalStepGoal,
   setShowModalStepGoal,
+  step,
+  setStep,
 }) {
   const { user } = useUser()
   const [access, setAccess] = useState(false)
-  const [step, setStep] = useState(1)
   const [showFullAppbar, setShowFullAppbar] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    router.pathname === '/steps/[step]' ? setIsStepPage(true) : setIsStepPage(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname])
 
   useEffect(() => {
     const hasAccess = async (user_id) => {

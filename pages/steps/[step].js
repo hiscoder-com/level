@@ -1,8 +1,12 @@
+import { useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
+import Footer from '/components/Footer'
 
 export default function IntroPage() {
+  const { t } = useTranslation(['common'])
   const router = useRouter()
   const { step } = router.query
 
@@ -55,6 +59,11 @@ export default function IntroPage() {
           </div>
         </div>
       </div>
+      <Footer
+        textButton={t('Next', { ns: 'common' })}
+        textCheckbox={t('Made', { ns: 'common' })}
+        href={`/intro-steps/${String(parseInt(step) + 1)}`}
+      />
     </div>
   )
 }
@@ -62,7 +71,7 @@ export default function IntroPage() {
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['intro-steps', 'common'])),
+      ...(await serverSideTranslations(locale, ['common'])),
       // Will be passed to the page component as props
     },
   }
