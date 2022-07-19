@@ -39,7 +39,7 @@ export default function Projects({ languageCode }) {
           })}
         {authenticated?.is_admin && (
           <Link href={'/projects/create'}>
-            <a className="btn-filled btn">Add New</a>
+            <a className="btn-cyan">Add New</a>
           </Link>
         )}
       </div>
