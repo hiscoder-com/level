@@ -36,12 +36,12 @@ export function useUsers(token) {
   return [users, { mutate, loading, error }]
 }
 
-export function useUser(token, login) {
+export function useUser(token, id) {
   const {
     data: user,
     mutate,
     error,
-  } = useSWR(token && login ? ['/api/users/' + login, token] : null, fetcher)
+  } = useSWR(token && id ? ['/api/users/' + id, token] : null, fetcher)
   const loading = !user && !error
   return [user, { mutate, loading, error }]
 }
@@ -160,7 +160,7 @@ export function useAuthenticated({ token, id }) {
     data: authenticated,
     mutate,
     error,
-  } = useSWR(token ? [`/api/users/${id}`, token] : null, fetcher)
+  } = useSWR(token && id ? [`/api/users/${id}`, token] : null, fetcher)
   const loading = !authenticated && !error
   return [authenticated, { mutate, loading, error }]
 }
@@ -205,7 +205,7 @@ export function usePermissions({ role, token }) {
  */
 export function useUserProjectRole({ token, id, code }) {
   const { data, mutate, error } = useSWR(
-    token ? [`/api/users/${id}/projects/${code}`, token] : null,
+    token && id && code ? [`/api/users/${id}/projects/${code}`, token] : null,
     fetcher
   )
 
@@ -261,28 +261,25 @@ export function useProjectRole({ userId, token, code, isAdmin }) {
  * @param {string} startLink the default link that the application needs to follow if the user has not passed the agreement
  * @returns {string}
  */
-export function useRedirect({ userId, token, startLink }) {
-  const [authenticated, { loading }] = useAuthenticated({ token, id: userId })
+export function useRedirect({ user, startLink }) {
   const [href, setHref] = useState(startLink)
 
   useEffect(() => {
-    if (!authenticated) {
+    if (!user?.id) {
       return
     }
-    if (!loading) {
-      const { agreement, confession } = authenticated
-      if (!agreement) {
-        setHref('/agreements')
-        return
-      }
-      if (!confession) {
-        setHref('/confession')
-        return
-      }
-
-      setHref(`/account/${userId}`)
+    const { agreement, confession } = user
+    if (!agreement) {
+      setHref('/agreements')
+      return
     }
-  }, [authenticated, loading, userId])
+    if (!confession) {
+      setHref('/confession')
+      return
+    }
+
+    setHref(`/account`)
+  }, [user])
 
   return { href }
 }

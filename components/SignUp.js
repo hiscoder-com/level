@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { useCurrentUser } from '../lib/UserContext'
 
 import { supabase } from '@/utils/supabaseClient'
+import { useCurrentUser } from '../lib/UserContext'
 
 export default function SignUp() {
   const [loading, setLoading] = useState(false)

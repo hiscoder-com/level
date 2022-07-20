@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
 import { useRouter } from 'next/router'
+
+import axios from 'axios'
 import { useForm } from 'react-hook-form'
 
 import { useLanguages, useMethod } from '@/utils/hooks'
 import { useCurrentUser } from '../lib/UserContext'
-import axios from 'axios'
 
 function ProjectCreate() {
   const router = useRouter()
 
-  const { session } = useCurrentUser()
-  const [languages] = useLanguages(session?.access_token)
-  const [methods] = useMethod(session?.access_token)
+  const { user } = useCurrentUser()
+  const [languages] = useLanguages(user?.access_token)
+  const [methods] = useMethod(user?.access_token)
   const projectTypes = ['obs', 'bible']
 
   const {
@@ -24,7 +24,7 @@ function ProjectCreate() {
     if (!title || !code || !languageId || !methodId || !type) {
       return
     }
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/[lang]/projects', {
         title,

@@ -25,7 +25,7 @@ function UsersList({ access_token }) {
             return (
               <tr key={user.login}>
                 <td className="border-b p-2 border-slate-200">
-                  <Link href={'/users/' + user.login}>
+                  <Link href={'/users/' + user.id}>
                     <a>{user.login}</a>
                   </Link>
                 </td>

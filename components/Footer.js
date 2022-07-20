@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
 
+// handleSetAgreement почему оно тут? Тут надо только ссылку на следующий шаг
 export default function Footer({ textCheckbox, textButton, handleSetAgreement }) {
   const router = useRouter()
   const [checked, setChecked] = useState(false)

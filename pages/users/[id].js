@@ -1,8 +1,8 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import axios from 'axios'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from '../../lib/UserContext'
@@ -12,14 +12,14 @@ export default function UserPage() {
   const { t } = useTranslation(['users', 'common'])
 
   const router = useRouter()
-  const { login } = router.query
-  const { session } = useCurrentUser()
-  const [user, { mutate }] = useUser(session?.access_token, login)
+  const { id } = router.query
+  const { user: currentUser } = useCurrentUser()
+  const [user] = useUser(currentUser?.access_token, id)
 
   const handleBlock = (blocked) => {
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = currentUser?.access_token
     axios
-      .post('/api/users/' + user?.login, { blocked })
+      .post('/api/users/' + user?.id, { blocked })
       .then((res) => {
         console.log('success', res)
       })

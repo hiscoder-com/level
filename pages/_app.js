@@ -15,6 +15,7 @@ function MyApp({ Component, pageProps }) {
       </UserContextProvider>
     )
   }
+  // TODO цвет надо вынести в конфиг
   return (
     <UserContextProvider supabaseClient={supabase}>
       <Layout backgroundColor={Component.backgroundColor ?? 'bg-[#DCE4E9]'}>

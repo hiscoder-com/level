@@ -1,15 +1,17 @@
-import axios from 'axios'
-import { useCurrentUser } from '../../lib/UserContext'
 import { useState } from 'react'
 
+import axios from 'axios'
+
+import { useCurrentUser } from '../../lib/UserContext'
+
 function UserCreatePage() {
-  const { session } = useCurrentUser()
+  const { user } = useCurrentUser()
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [password, setPassword] = useState('')
   const [login, setLogin] = useState('')
   const handleSaveUser = () => {
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/users', { email, password, login })
       .then((res) => {
@@ -19,7 +21,6 @@ function UserCreatePage() {
         setEmail('')
       })
       .catch((err) => {
-        console.log(err)
         setMessage(err?.response?.data?.error?.message)
       })
   }
@@ -36,7 +37,7 @@ function UserCreatePage() {
         type="text"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-      />{' '}
+      />
       <br />
       <div>Password</div>
       <input
@@ -44,7 +45,7 @@ function UserCreatePage() {
         type="text"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
-      />{' '}
+      />
       <br />
       <div>Login</div>
       <input
@@ -52,7 +53,7 @@ function UserCreatePage() {
         type="text"
         value={login}
         onChange={(e) => setLogin(e.target.value)}
-      />{' '}
+      />
       <br />
       <div className="text-red-500">{message}</div>
       <button className={'btn btn-cyan'} onClick={handleSaveUser}>

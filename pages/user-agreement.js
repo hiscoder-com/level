@@ -1,24 +1,25 @@
 import { useRouter } from 'next/router'
 
+import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '../components/Footer'
-
 import { useCurrentUser } from '../lib/UserContext'
-import axios from 'axios'
 
 export default function UserAgreement() {
   const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common'])
-  const { user, session } = useCurrentUser()
+  const { user } = useCurrentUser()
   const handleSetAgreement = async () => {
     if (!user?.id) {
       return
     }
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put('/api/agreements/user', {
+        // TODO agreements это свойство юзера, по этому надо просто делать апдейт юзера
+        // post('/api/users/${user.id}', {agreements: true})
         user_id: user.id,
       })
       .then((result) => {

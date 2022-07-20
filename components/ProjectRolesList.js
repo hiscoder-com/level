@@ -1,9 +1,12 @@
-import React, { useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
+
 import axios from 'axios'
 
-function ProjectRolesEdit({
+// TODO где это используется
+
+function ProjectRolesList({
   moderators,
-  session,
+  user,
   code,
   mutate,
   mutateModerator,
@@ -24,7 +27,7 @@ function ProjectRolesEdit({
       return
     }
 
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post(`/api/${project?.languages?.code}/projects/${code}/${type}/`, {
         user_id: userId,
@@ -43,7 +46,7 @@ function ProjectRolesEdit({
       return
     }
     if (type === 'coordinators') {
-      axios.defaults.headers.common['token'] = session?.access_token
+      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/${project?.languages?.code}/projects/${code}/${type}/${userId}`, {
           project_id: project?.id,
@@ -58,7 +61,7 @@ function ProjectRolesEdit({
         .catch((error) => console.log(error, 'from axios'))
       return
     }
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/${project?.languages?.code}/projects/${code}/${type}/${id}`, {
         data: { projectId: project?.id },
@@ -76,7 +79,7 @@ function ProjectRolesEdit({
       return
     }
     if (!moderators) {
-      axios.defaults.headers.common['token'] = session?.access_token
+      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post(`/api/${project?.languages?.code}/projects/${code}/moderators/`, {
           user_id: moderator,
@@ -90,7 +93,7 @@ function ProjectRolesEdit({
         })
         .catch((error) => console.log(error, 'from axios'))
     } else {
-      axios.defaults.headers.common['token'] = session?.access_token
+      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(
           `/api/${project?.languages?.code}/projects/${code}/moderators/${moderator}`,
@@ -240,7 +243,7 @@ function ProjectRolesEdit({
               type === 'translators' && (
                 <button
                   onClick={() => setShowRadio((prev) => !prev)}
-                  className="btn-cyan w-32 w-28 my-1"
+                  className="btn-cyan w-28 my-1"
                   disabled={showSelect || showRadio}
                 >
                   Выбрать модератора
@@ -270,4 +273,4 @@ function ProjectRolesEdit({
   )
 }
 
-export default ProjectRolesEdit
+export default ProjectRolesList

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -14,7 +13,7 @@ import RightArrow from '../public/right-arrow.svg'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])
-  const { user, session } = useCurrentUser()
+  const { user } = useCurrentUser()
   const router = useRouter()
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
@@ -78,8 +77,10 @@ export default function ConfessionSteps() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
   const handleSetConfession = async () => {
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = user?.access_token
     axios
+      // TODO confession это свойство юзера, по этому надо просто делать апдейт юзера
+      // post('/api/users/${user.id}', {confession: true})
       .put('/api/agreements/confession', {
         user_id: user.id,
       })
@@ -122,13 +123,11 @@ export default function ConfessionSteps() {
           <label htmlFor="cb">{t('common:Agree')}</label>
         </div>
         <button
-          onClick={() => {
-            handleSetConfession()
-          }}
+          onClick={handleSetConfession}
           className="btn-cyan w-28"
           disabled={!checked}
         >
-          {t('Next', { ns: 'common' })}
+          {t('common:Next')}
         </button>
       </div>
     </div>

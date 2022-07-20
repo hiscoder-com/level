@@ -10,7 +10,7 @@ import { useCurrentUser } from '../../lib/UserContext'
 export default function UsersPage() {
   const { t } = useTranslation(['users'])
 
-  const { session } = useCurrentUser()
+  const { user } = useCurrentUser()
 
   return (
     <>
@@ -21,7 +21,7 @@ export default function UsersPage() {
       </Head>
       <div className="container">
         <div>{t('users')}</div>
-        <UsersList access_token={session?.access_token} />
+        <UsersList access_token={user?.access_token} />
         <Link href={'/users/create'}>
           <a className="btn btn-filled">{t('CreateNewUser')}</a>
         </Link>

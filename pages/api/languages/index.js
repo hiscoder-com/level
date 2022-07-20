@@ -20,6 +20,7 @@ export default async function languagesHandler(req, res) {
       res.status(200).json({ data: dataGet })
       break
     case 'POST':
+      // TODO почему тут запрос в project_roles
       const { project_id, user_id } = body
       // TODO валидацию
       const { data: dataPost, error: errorPost } = await supabase

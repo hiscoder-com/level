@@ -1,5 +1,5 @@
 import { supabase } from '@/utils/supabaseClient'
-
+// TODO Это надо убрать
 export default async function userConfessionHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
