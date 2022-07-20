@@ -191,7 +191,7 @@ export function usePermissions({ role, token }) {
     data: permissions,
     mutate,
     error,
-  } = useSWR(token ? [`/api/permissions/${role}`, token] : null, fetcher)
+  } = useSWR(token && role ? [`/api/permissions/${role}`, token] : null, fetcher)
   const loading = !permissions && !error
   return [permissions, { mutate, loading, error }]
 }

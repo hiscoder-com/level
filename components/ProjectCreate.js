@@ -26,6 +26,9 @@ function ProjectCreate() {
     }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
+      // TODO тут точно написано правильно? Мне кажется надо '/api/'+languageId+'/projects'
+      // Не ругается скорее всего потому что это значение не используется, так как тут передается в теле айди языка
+      // надо подумать как сделать правильно. Поздаем мы не внутри языка, по этому вроде надо запрос на api/projects делать, но когда у нас будет список и юзер будет открывать проект, какой будет юрл. Будем ли мы показывать там язык проекта, или просто vcana.com/project/rlob
       .post('/api/[lang]/projects', {
         title,
         language_id: languageId,
