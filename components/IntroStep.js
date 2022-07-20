@@ -1,4 +1,5 @@
 import { useTranslation } from 'next-i18next'
+
 import Footer from '../components/Footer'
 
 function IntroStep({ step }) {

@@ -1,9 +1,9 @@
 import { appWithTranslation } from 'next-i18next'
 
-import Layout from '../components/Layout'
-
 import { UserContextProvider } from '../lib/UserContext'
 import { supabase } from '../utils/supabaseClient'
+
+import Layout from '../components/Layout'
 
 import '../styles/globals.css'
 

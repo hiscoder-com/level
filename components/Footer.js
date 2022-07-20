@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+
 import Fulfilled from '../public/fulfilled.svg'
 
 export default function Footer({ textCheckbox, textButton, href }) {
