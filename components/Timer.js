@@ -41,7 +41,7 @@ function Timer({ time }) {
   }
 
   return (
-    <div className="flex row items-center gap-1 cursor-default">
+    <div className="flex items-center gap-1 cursor-default">
       <Time onClick={handleReset} />
       <div onClick={isCounting ? handleStop : handleStart}>
         <span>{minutes}</span>

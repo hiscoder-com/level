@@ -1,19 +1,14 @@
 import { useState, useEffect } from 'react'
-
-import Link from 'next/link'
-
 import { Disclosure } from '@headlessui/react'
-
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 import { supabase } from '../utils/supabaseClient'
 import { useUser } from '../lib/UserContext'
-
 import Timer from './Timer'
-
 import Burger from '../public/burger.svg'
 import User from '../public/user.svg'
 import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
-import { useRouter } from 'next/router'
 
 const steps = {
   1: {
@@ -102,7 +97,7 @@ export default function AppBar({ isOpen, setIsOpen }) {
 
   const conditionAppbar = `appbar ${showFullAppbar ? 'h-28' : 'h-10'}`
   const checkShowFullAppbar = showFullAppbar ? 'visible' : 'invisible'
-  const showBtnForMobile = `${isStepPage ? 'md:hidden' : 'hidden'}`
+  const showFullAppbarBtn = `${isStepPage ? 'md:hidden' : 'hidden'}`
   const conditionTitle = `condition-title ${checkShowFullAppbar}`
   const conditionOptionalInfo = `condition-optional-info ${checkShowFullAppbar}`
 
@@ -122,9 +117,14 @@ export default function AppBar({ isOpen, setIsOpen }) {
                 <VCANA_logo className="h-5" />
               </a>
             </Link>
+            {isStepPage && (
+              <div className="md:hidden">
+                <Timer time={steps[step].time} />
+              </div>
+            )}
             <Burger
               onClick={() => setShowFullAppbar(!showFullAppbar)}
-              className={showBtnForMobile}
+              className={showFullAppbarBtn}
             />
           </div>
           {isStepPage && (
@@ -135,7 +135,9 @@ export default function AppBar({ isOpen, setIsOpen }) {
                   <User />
                   {steps[step].users}
                 </div>
-                <Timer time={steps[step].time} />
+                <div className="w-0 invisible md:w-14 md:visible">
+                  <Timer time={steps[step].time} />
+                </div>
                 <button
                   className="btn-cyan w-28"
                   onClick={(e) => (
@@ -150,19 +152,13 @@ export default function AppBar({ isOpen, setIsOpen }) {
           )}
         </div>
         {showModalStepGoal ? (
-          <div
-            className="fixed flex justify-center items-center top-0 left-0 w-screen h-screen bg-black bg-opacity-40"
-            onClick={() => setShowModalStepGoal(false)}
-          >
-            <div
-              className="relative flex flex-col items-center px-8 py-10 max-w-xl rounded-lg bg-white"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <h2 className="mt-2 mx-4 h4 font-semibold text-center">
+          <div className="modal-step-goal-bg" onClick={() => setShowModalStepGoal(false)}>
+            <div className="modal-step-goal" onClick={(e) => e.stopPropagation()}>
+              <h2 className="text-justify mt-2 mx-4 h4 font-semibold indent-4">
                 {steps[step].stepGoal}
               </h2>
               <button
-                className="my-5 w-auto px-8 h-10 bg-blue-600 text-white rounded-md shadow hower:shadow-lg font-semibold"
+                className="btn-cyan w-24"
                 onClick={() => setShowModalStepGoal(false)}
               >
                 Close

@@ -19,8 +19,8 @@ export default function Footer({ textCheckbox, textButton, href }) {
   }, [router.pathname])
 
   return (
-    <div className="max-w-7xl w-full mx-auto flex flex-row-reverse justify-between items-center bg-blue-150">
-      <div className="relative flex items-center h-16">
+    <div className="layout-footer">
+      <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
           <div className="space-x-1.5 items-center h4">
             <input
@@ -43,8 +43,8 @@ export default function Footer({ textCheckbox, textButton, href }) {
       </div>
       {isStepPage && (
         <>
-          <div>stepper</div>
-          <div className="flex gap-2.5 h5 items-center">
+          <div className="pb-3 md:pb-0">stepper</div>
+          <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
             <div>Выполнили:</div>
             <Fulfilled />
           </div>
