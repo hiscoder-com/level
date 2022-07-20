@@ -5,37 +5,23 @@ export default async function languagesHandler(req, res) {
     res.status(401).json({ error: 'Access denied!' })
   }
   supabase.auth.setAuth(req.headers.token)
-
-  const { body, method } = req
+  let data = {}
+  const { method } = req
 
   switch (method) {
     case 'GET':
       try {
-        const { data, error } = await supabase.from('languages').select('*')
+        const { data: value, error } = await supabase.from('languages').select('*')
         if (error) throw error
-        res.status(200).json(data)
+        data = value
       } catch (error) {
         res.status(404).json({ error })
         return
       }
-      break
-    case 'POST':
-      //TODO проверить используется и ли нет
-      try {
-        const { project_id, user_id } = body
-        // TODO валидацию
-        const { data, error } = await supabase
-          .from('project_roles')
-          .insert([{ project_id, user_id, role: 'coordinator' }])
-        if (error) throw error
-        res.status(200).json(data)
-      } catch (error) {
-        res.status(404).json({ error })
-        return
-      }
+      res.status(200).json(data)
       break
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['GET'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

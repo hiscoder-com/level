@@ -5,7 +5,7 @@ export default async function rolePermissionHandler(req, res) {
     res.status(401).json({ error: 'Access denied!' })
   }
   supabase.auth.setAuth(req.headers.token)
-
+  let data = {}
   const {
     query: { role },
     method,
@@ -13,19 +13,20 @@ export default async function rolePermissionHandler(req, res) {
   switch (method) {
     case 'GET':
       try {
-        const { data, error } = await supabase
+        const { data: value, error } = await supabase
           .from('role_permissions')
           .select('permission')
           .eq('role', role)
         if (error) throw error
-        res.status(200).json(data)
+        data = value
       } catch (error) {
         res.status(404).json({ error })
         return
       }
+      res.status(200).json(data)
       break
     default:
-      res.setHeader('Allow', ['GET', 'PUT'])
+      res.setHeader('Allow', ['GET'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

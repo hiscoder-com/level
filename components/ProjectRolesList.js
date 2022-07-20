@@ -8,17 +8,16 @@ function ProjectRolesEdit({
   mutate,
   mutateModerator,
   project,
-  users,
   type,
   role,
-  roles,
+  coordinator,
+  translators,
   permissions,
 }) {
   const [userId, setUserId] = useState(null)
   const [showRadio, setShowRadio] = useState(false)
   const [moderator, setModerator] = useState(null)
   const [showSelect, setShowSelect] = useState(false)
-
   const handleSet = async () => {
     if (!project?.id) {
       return
@@ -48,7 +47,7 @@ function ProjectRolesEdit({
       axios
         .put(`/api/${project?.languages?.code}/projects/${code}/${type}/${userId}`, {
           project_id: project?.id,
-          prev_id: roles && roles.length > 0 && roles[0].users?.id,
+          prev_id: coordinator && coordinator.users?.id,
         })
         .then((result) => {
           mutate()
@@ -101,29 +100,15 @@ function ProjectRolesEdit({
         .catch((error) => console.log(error, 'from axios'))
     }
   }
-  const availableTranslators = useMemo(
-    () =>
-      roles &&
-      users &&
-      Object.values(users)
-        .filter((el) => el.agreement && el.confession)
-        .filter(
-          (user) =>
-            !roles
-              .map((el) => {
-                return el.users.id
-              })
-              .includes(user.id)
-        ),
-    [roles, users]
-  )
 
   return (
     <div>
       <div className="capitalize ">{`${type}`}:</div>
       <div className="my-5 flex flex-col ">
-        {roles &&
-          roles.map((el, key) => {
+        {coordinator && Object.keys(coordinator).length > 0 && coordinator.users.email}
+        {translators &&
+          type === 'translators' &&
+          translators.map((el, key) => {
             return (
               <div className="flex" key={key}>
                 <div
@@ -185,18 +170,18 @@ function ProjectRolesEdit({
                   onChange={(event) => setUserId(event.target.value)}
                   className="form max-w-sm"
                 >
-                  {availableTranslators.map((el) => {
+                  {translators.map((el) => {
                     return (
-                      <option key={el.id} value={el.id}>
-                        {el.email}
+                      <option key={el.users.id} value={el.users.id}>
+                        {el.users.email}
                       </option>
                     )
                   })}
                 </select>
                 <button
                   onClick={() => {
-                    if (roles && roles.length !== 0 && type === 'coordinators') {
-                      handleUpdate(roles[0].users.id)
+                    if (coordinator && type === 'coordinators') {
+                      handleUpdate(coordinator.users.id)
                       return
                     }
                     handleSet()
@@ -223,7 +208,11 @@ function ProjectRolesEdit({
             >
               {type !== 'coordinators'
                 ? 'Добавить переводчика'
-                : `${roles && roles.length > 0 ? 'Поменять' : 'Добавить'} координатора`}
+                : `${
+                    coordinator && Object.values(coordinator).length > 0
+                      ? 'Поменять'
+                      : 'Добавить'
+                  } координатора`}
             </button>
 
             {((permissions?.data &&

@@ -7,21 +7,21 @@ export default async function methodsHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   const { method } = req
-
+  let data = {}
   switch (method) {
     case 'GET':
       try {
-        const { data, error } = await supabase.from('methods').select('*')
+        const { data: value, error } = await supabase.from('methods').select('*')
         if (error) throw error
-        res.status(200).json(data)
+        data = value
       } catch (error) {
         res.status(404).json({ error })
         return
       }
+      res.status(200).json(data)
       break
-
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['GET'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 
-import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -14,7 +12,7 @@ import RightArrow from '../public/right-arrow.svg'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])
-  const { user, session } = useUser()
+  const { user } = useUser()
   const router = useRouter()
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
@@ -77,20 +75,7 @@ export default function ConfessionSteps() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
-  const handleSetConfession = async () => {
-    axios.defaults.headers.common['token'] = session?.access_token
-    axios
-      .put('/api/agreements/confession', {
-        user_id: user.id,
-      })
-      .then((result) => {
-        const { status } = result
-        if (status === 200) {
-          router.push(`/account/${user.id}`)
-        }
-      })
-      .catch((error) => console.log(error, 'from axios'))
-  }
+
   return (
     <div className="layout-appbar">
       <h1 className="h1 text-center">{t('ConfessionFaith', { ns: 'common' })}:</h1>
@@ -123,7 +108,7 @@ export default function ConfessionSteps() {
         </div>
         <button
           onClick={() => {
-            handleSetConfession()
+            router.push(`/account/${user.id}`)
           }}
           className="btn-cyan w-28"
           disabled={!checked}

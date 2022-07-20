@@ -16,10 +16,11 @@ export default async function userProjectshandler(req, res) {
       try {
         const { data: value, error } = await supabase
           .from('projects')
-          .select('*,users!inner(*),project_roles!inner(*)')
+          .select('*,users!inner(id),project_roles!inner(*)')
           .eq('users.id', id)
+
         if (error) throw error
-        data = { ...value }
+        data = value
       } catch (error) {
         res.status(404).json({ error })
         return
