@@ -48,13 +48,13 @@ export default function AppBar({
     }
   }, [user])
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step])
+  // useEffect(() => {
+  //   window.addEventListener('keydown', handleKeyDown)
+  //   return () => {
+  //     window.removeEventListener('keydown', handleKeyDown)
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [step])
 
   const prevStep = () => {
     if (step > 1) {
@@ -70,16 +70,16 @@ export default function AppBar({
     })
   }
 
-  const handleKeyDown = (e) => {
-    switch (e.keyCode) {
-      case 37:
-        prevStep()
-        break
-      case 39:
-        nextStep()
-        break
-    }
-  }
+  // const handleKeyDown = (e) => {
+  // switch (e.keyCode) {
+  //   case 37:
+  //     prevStep()
+  //     break
+  //   case 39:
+  //     nextStep()
+  //     break
+  // }
+  // }
 
   const steps = {
     1: {
