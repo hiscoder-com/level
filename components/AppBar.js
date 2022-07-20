@@ -143,14 +143,14 @@ export default function AppBar({
   const showBtnForMobile = `${isStepPage ? 'md:hidden' : 'hidden'}`
 
   const conditionTitle = `condition-title ${checkShowFullAppbar}`
-  const conditionOptionalInfo = `condition-optional-info ${checkShowFullAppbar}`
-
   const showTitle = isStepPage ? conditionTitle : 'invisible'
+
+  const conditionOptionalInfo = `condition-optional-info ${checkShowFullAppbar}`
   const showOptionalInfo = isStepPage ? conditionOptionalInfo : 'invisible'
 
   return (
     <Disclosure as="nav" className="bg-white">
-      <div className="">
+      <div>
         <div className={conditionAppbar}>
           <div className="flex items-center gap-7 cursor-pointer">
             {access && (

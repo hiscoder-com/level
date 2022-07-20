@@ -62,11 +62,14 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .layout-step-col{
-	@apply flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0 lg:w-1/2
+	@apply flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0
 }
 
 .layout-step-col-card{
 	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full
+}
+.layout-step-col-card-body-audio{
+	@apply flex flex-col items-center gap-5 py-24 lg:py-56 h5
 }
 
 .layout-step-col-card-title{

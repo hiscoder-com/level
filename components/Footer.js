@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Fulfilled from '../public/fulfilled.svg'
 
 export default function Footer({ textCheckbox, textButton, href }) {
   const [checked, setChecked] = useState(false)
@@ -12,7 +13,12 @@ export default function Footer({ textCheckbox, textButton, href }) {
   }, [step])
 
   return (
-    <div className="max-w-7xl w-full mx-auto flex justify-end items-center px-4 bg-blue-150">
+    <div className="max-w-7xl w-full mx-auto flex justify-between items-center bg-blue-150">
+      <div className="flex gap-2.5 h5 items-center">
+        <div>Выполнили:</div>
+        <Fulfilled />
+      </div>
+      <div>stepper</div>
       <div className="relative flex items-center h-16">
         <div className="flex flex-row items-center space-x-6">
           <div className="space-x-1.5 items-center h4">
