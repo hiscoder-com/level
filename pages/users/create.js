@@ -13,7 +13,7 @@ function UserCreatePage() {
   const handleSaveUser = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post('/api/users', { email, password, login })
+      .put('/api/users', { email, password, login })
       .then((res) => {
         setMessage('')
         setLogin('')
