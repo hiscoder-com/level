@@ -1,4 +1,4 @@
-import { supabase } from '../../utils/supabaseClient'
+import { supabase } from '../@/utils/supabaseClient'
 
 // как делать запросы на стороне сервера (т.е. api запросы)
 // Мы используем SWR, и передаем в header наш token.

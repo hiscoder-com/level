@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react'
-
-import { useTranslation } from 'next-i18next'
+import { useState, useEffect, useRef } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { supabase } from '../utils/supabaseClient'
-import { useCurrentUser } from '../lib/UserContext'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { supabase } from '@/utils/supabaseClient'
 
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
@@ -15,41 +15,49 @@ export default function Login() {
   const { t } = useTranslation('common')
 
   const router = useRouter()
-  const { user } = useCurrentUser()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
-
-  const [styleLogin, setStyleLogin] = useState('form')
-  const [stylePassword, setStylePassword] = useState('form')
+  const [isLoginError, setIsLoginError] = useState(false)
+  const [isPasswordError, setIsPasswordError] = useState(false)
   const [hideWriteAdminButton, setHideWriteAdminButton] = useState(true)
   const [showPassword, setShowPassword] = useState(false)
+  const loginRef = useRef(null)
+  const passwordRef = useRef(null)
 
   useEffect(() => {
-    if (user) {
-      router.push('/agreements')
-    }
+    passwordRef.current.focus()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [showPassword])
+
+  useEffect(() => {
+    loginRef.current.focus()
+  }, [])
 
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signIn({
+      const { user, error } = await supabase.auth.signIn({
         email: login,
         password,
       })
       if (error) throw error
-      setStyleLogin('form')
-      setStylePassword('form')
+      const { data: dataUser, error: errorUser } = await supabase
+        .from('users')
+        .select('agreement,confession')
+        .eq('id', user?.id)
+      if (errorUser) throw errorUser
+      const { agreement, confession } = dataUser[0]
+      setIsLoginError(false)
+      setIsPasswordError(false)
       setError(false)
-      router.push('/agreements')
+      router.push(agreement && confession ? `/account/${user?.id}` : '/agreements')
     } catch (error) {
-      setStyleLogin('form-invalid')
-      setStylePassword('form-invalid')
+      setIsLoginError(true)
+      setIsPasswordError(true)
       setHideWriteAdminButton(false)
       setError(true)
     } finally {
@@ -64,31 +72,40 @@ export default function Login() {
 
   return (
     <div className="layout-appbar">
-      <div>
+      <div className="w-5/6 md:max-w-xs">
         <h1 className="h1 mb-8">{t('SignIn')}:</h1>
         <form className="relative mb-2 space-y-2.5">
           <input
-            className={styleLogin}
+            ref={loginRef}
+            className={`input ${isLoginError && 'input-invalid'}`}
             type="text"
             placeholder={`${t('Login')}:`}
             onChange={(event) => {
               setLogin(event.target.value)
-              setStyleLogin('form')
+              setIsLoginError(false)
             }}
           />
-          <input
-            className={stylePassword}
-            type={showPassword ? 'text' : 'password'}
-            value={password}
-            placeholder={`${t('Password')}:`}
-            onChange={(event) => {
-              setPassword(event.target.value)
-              setStylePassword('form')
-            }}
-          />
-          <span className="eye" onClick={() => setShowPassword((prev) => !prev)}>
-            {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-          </span>
+          <div className="relative">
+            <input
+              ref={passwordRef}
+              className={`input ${isPasswordError && 'input-invalid'}`}
+              type={showPassword ? 'text' : 'password'}
+              value={password}
+              placeholder={`${t('Password')}:`}
+              onChange={(event) => {
+                setPassword(event.target.value)
+                setIsPasswordError(false)
+              }}
+            />
+            <span
+              className="eye"
+              onClick={() => {
+                setShowPassword((prev) => !prev)
+              }}
+            >
+              {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+            </span>
+          </div>
           <div className="flex items-center justify-between mb-4">
             {error && (
               <>
@@ -105,18 +122,18 @@ export default function Login() {
             )}
           </div>
           <div className="flex gap-2.5 h-9">
-            <button
+            <div
               disabled={hideWriteAdminButton}
               onClick={report}
-              className="w-8/12 btn-transparent"
+              className="btn-white w-2/3"
             >
               {t('WriteAdmin')}
-            </button>
+            </div>
             <input
               type="submit"
               disabled={loading}
               onClick={handleLogin}
-              className="w-4/12 btn-filled"
+              className="btn-cyan w-1/3"
               value={t('Next')}
             />
           </div>
@@ -126,3 +143,12 @@ export default function Login() {
   )
 }
 Login.backgroundColor = 'bg-white'
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}

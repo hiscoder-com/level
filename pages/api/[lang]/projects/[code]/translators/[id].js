@@ -1,29 +1,32 @@
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from '@/utils/supabaseClient'
 
-export default async function userHandler(req, res) {
+export default async function languageProjectTranslatorHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
   supabase.auth.setAuth(req.headers.token)
-
   const {
-    query: { code },
+    body,
+    query: { id },
     method,
   } = req
-
   switch (method) {
     case 'GET':
-      const { data, error } = await supabase
-        .from('projects')
-        .select('id, title, code, type, methods(title), languages(orig_name)')
-        .eq('code', code)
-      if (error) {
-        res.status(404).json({ error })
-      }
-      res.status(200).json({ ...data[0] })
       break
     case 'PUT':
-      res.status(200).json({ code: `Project ${code}` })
+      break
+    case 'DELETE':
+      const { data, error } = await supabase
+        .from('project_roles')
+        .delete()
+        .match({ project_id: body.projectId, role: 'translator', user_id: id })
+      if (error) {
+        res.status(404).json({ error })
+        return
+      }
+
+      res.status(200).json({ data })
+
       break
     default:
       res.setHeader('Allow', ['GET', 'PUT'])

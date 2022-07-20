@@ -1,32 +1,49 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { useProjects } from '../utils/hooks'
+import { useAuthenticated, useProjects, useUserProjects } from '@/utils/hooks'
 import { useCurrentUser } from '../lib/UserContext'
 
-export default function Projects() {
-  const { session } = useCurrentUser()
+export default function Projects({ languageCode }) {
+  const { user, session } = useCurrentUser()
 
-  const [projects] = useProjects(session?.access_token)
+  const [authenticated] = useAuthenticated({ token: session?.access_token, id: user?.id })
 
+  const [adminProjects] = useProjects({
+    token: session?.access_token,
+    language_code: languageCode,
+  })
+
+  const [userProjects] = useUserProjects({
+    token: session?.access_token,
+    id: user?.id,
+  })
+
+  const projects = authenticated?.is_admin ? adminProjects : userProjects
   return (
     <>
       <div className="container">
         <Head>
-          <title>V-CANA Sign up</title>
+          <title>V-CANA projects</title>
           <meta name="description" content="VCANA" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
+        <div>{`${authenticated?.is_admin ? 'Проекты' : 'Мои проекты'}`}</div>
+        {projects &&
+          projects?.data &&
+          projects.data.map((project) => {
+            return (
+              <Link key={project.id} href={`/projects/${project.code}`}>
+                <a className="block text-blue-600">{`${project.id} ${project.title} ${project.code}`}</a>
+              </Link>
+            )
+          })}
+        {authenticated?.is_admin && (
+          <Link href={'/projects/create'}>
+            <a className="btn-cyan">Add New</a>
+          </Link>
+        )}
       </div>
-      <div>Проекты:</div>
-      {projects &&
-        projects.data.map((project) => {
-          return (
-            <Link key={project.id} href={`projects/${project.code}`}>
-              <a className="block text-blue-600">{`${project.id} ${project.title} ${project.code}`}</a>
-            </Link>
-          )
-        })}
     </>
   )
 }

@@ -1,4 +1,4 @@
-import { supabase } from '../../../utils/supabaseClient'
+import { supabase } from '@/utils/supabaseClient'
 
 export default async function userHandler(req, res) {
   if (!req.headers.token) {
@@ -13,10 +13,7 @@ export default async function userHandler(req, res) {
 
   switch (method) {
     case 'GET':
-      const { data, error } = await supabase
-        .from('project_roles')
-        .select('users(email)')
-        .eq('project_id', id)
+      const { data, error } = await supabase.from('users').select('*').eq('id', id)
       if (error) {
         res.status(404).json({ error })
         return

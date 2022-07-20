@@ -1,17 +1,25 @@
 import { useState, useEffect } from 'react'
+
+import { useRouter } from 'next/router'
+
+import axios from 'axios'
+
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import { useCurrentUser } from '../lib/UserContext'
 
 import LeftArrow from '../public/left-arrow.svg'
 import RightArrow from '../public/right-arrow.svg'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])
-
+  const { user, session } = useCurrentUser()
+  const router = useRouter()
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
 
-  const arrConfText = [
+  const confessionSteps = [
     <p
       dangerouslySetInnerHTML={{
         __html: t('Step1', { interpolation: { escapeValue: false } }),
@@ -69,16 +77,30 @@ export default function ConfessionSteps() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
+  const handleSetConfession = async () => {
+    axios.defaults.headers.common['token'] = session?.access_token
+    axios
+      .put('/api/agreements/confession', {
+        user_id: user.id,
+      })
+      .then((result) => {
+        const { status } = result
+        if (status === 200) {
+          router.push(`/account/${user.id}`)
+        }
+      })
+      .catch((error) => console.log(error, 'from axios'))
+  }
   return (
-    <div className="layout-appbar gap-7">
-      <h1 className="h1">{t('common:ConfessionFaith')}:</h1>
-      <div className="flex flex-row min-h-[18rem] w-4/5 max-w-7xl gap-4">
+    <div className="layout-appbar">
+      <h1 className="h1 text-center">{t('common:ConfessionFaith')}:</h1>
+      <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
             <LeftArrow />
           </button>
         </div>
-        <div className="confession-text w-full">{arrConfText[page]}</div>
+        <div className="confession-text">{confessionSteps[page]}</div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
             <RightArrow />
@@ -87,7 +109,7 @@ export default function ConfessionSteps() {
       </div>
       <div
         className={`flex flex-row items-center space-x-6 ${
-          page === 5 ? '' : 'invisible'
+          page === 5 ? '' : 'hidden sm:flex sm:invisible'
         }`}
       >
         <div className="space-x-1.5 items-center h4">
@@ -99,8 +121,14 @@ export default function ConfessionSteps() {
           />
           <label htmlFor="cb">{t('common:Agree')}</label>
         </div>
-        <button className="btn-filled w-28" disabled={!checked}>
-          {t('common:Next')}
+        <button
+          onClick={() => {
+            handleSetConfession()
+          }}
+          className="btn-cyan w-28"
+          disabled={!checked}
+        >
+          {t('Next', { ns: 'common' })}
         </button>
       </div>
     </div>
