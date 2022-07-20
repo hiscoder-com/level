@@ -14,7 +14,7 @@ function ProjectRolesEdit({
   translators,
   permissions,
 }) {
-  const [userId, setUserId] = useState(null)
+  const [userId, setUserId] = useState('')
   const [showRadio, setShowRadio] = useState(false)
   const [moderator, setModerator] = useState(null)
   const [showSelect, setShowSelect] = useState(false)
@@ -167,8 +167,11 @@ function ProjectRolesEdit({
             {showSelect && (
               <div className="inline-block">
                 <select
-                  onChange={(event) => setUserId(event.target.value)}
-                  className="form max-w-sm"
+                  onChange={(event) => {
+                    setUserId(event.target.value)
+                  }}
+                  value={userId}
+                  className="input max-w-sm"
                 >
                   {translators.map((el) => {
                     return (
@@ -186,7 +189,7 @@ function ProjectRolesEdit({
                     }
                     handleSet()
                   }}
-                  className="inline-block ml-2 btn-filled w-28 my-1"
+                  className="inline-block ml-2 btn-cyan w-32 my-1"
                 >
                   {`Назначить ${
                     type !== 'coordinators' ? 'переводчика' : 'координатора'
@@ -194,7 +197,7 @@ function ProjectRolesEdit({
                 </button>
                 <button
                   onClick={() => setShowSelect(false)}
-                  className="inline-block mx-2 btn-filled w-28 my-1"
+                  className="inline-block mx-2 btn-cyan w-32 my-1"
                 >
                   Отменить
                 </button>
@@ -203,7 +206,7 @@ function ProjectRolesEdit({
 
             <button
               onClick={() => setShowSelect(true)}
-              className="btn-filled w-28 my-1"
+              className="btn-cyan w-32 my-1"
               disabled={showSelect || showRadio}
             >
               {type !== 'coordinators'
@@ -221,7 +224,7 @@ function ProjectRolesEdit({
               type === 'translators' && (
                 <button
                   onClick={() => setShowRadio((prev) => !prev)}
-                  className="btn-filled w-28 my-1"
+                  className="btn-cyan w-32 w-28 my-1"
                   disabled={showSelect || showRadio}
                 >
                   Выбрать модератора
@@ -231,14 +234,14 @@ function ProjectRolesEdit({
               <>
                 <button
                   onClick={() => setShowRadio((prev) => !prev)}
-                  className="btn-filled w-28 my-1"
+                  className="btn-cyan w-32 my-1"
                 >
                   Отменить
                 </button>
                 <button
                   disabled={!moderator}
                   onClick={handleSetModerator}
-                  className="btn-filled w-28 my-1"
+                  className="btn-cyan w-32 my-1"
                 >
                   Назначить модератора
                 </button>

@@ -50,7 +50,7 @@ function ProjectCreate() {
     {
       id: 1,
       title: 'Имя проекта',
-      classname: errors?.title ? 'form-invalid' : 'form',
+      classname: errors?.title ? 'input-invalid' : 'input',
       placeholder: 'Title',
       register: {
         ...register('title', {
@@ -66,7 +66,7 @@ function ProjectCreate() {
     {
       id: 2,
       title: 'Код проекта',
-      classname: errors?.code ? 'form-invalid' : 'form',
+      classname: errors?.code ? 'input-invalid' : 'input',
       placeholder: 'Code',
       register: {
         ...register('code', {
@@ -102,7 +102,7 @@ function ProjectCreate() {
 
         <div>Язык</div>
         <select
-          className="form max-w-sm"
+          className="input max-w-sm"
           placeholder="Language"
           {...register('languageId')}
         >
@@ -116,7 +116,7 @@ function ProjectCreate() {
             })}
         </select>
         <div>Метод</div>
-        <select placeholder="Method" {...register('methodId')} className="form max-w-sm">
+        <select placeholder="Method" {...register('methodId')} className="input max-w-sm">
           {methods &&
             methods.map((el) => {
               return (
@@ -126,7 +126,7 @@ function ProjectCreate() {
               )
             })}
         </select>
-        <select {...register('type')} className="form max-w-sm">
+        <select {...register('type')} className="input max-w-sm">
           {projectTypes &&
             projectTypes.map((el) => {
               return (
@@ -137,7 +137,7 @@ function ProjectCreate() {
             })}
         </select>
 
-        <input className="btn btn-cyan btn-filled" type="submit" />
+        <input className="btn-cyan btn-filled" type="submit" />
       </form>
     </div>
   )
