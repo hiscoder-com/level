@@ -58,7 +58,7 @@ export default function Login() {
       setIsLoginError(false)
       setIsPasswordError(false)
       setError(false)
-      router.push(agreement && confession ? `/account/${user?.id}` : '/agreements')
+      router.push(agreement && confession ? `/account` : '/agreements')
     } catch (error) {
       setIsLoginError(true)
       setIsPasswordError(true)

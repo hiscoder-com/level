@@ -1,6 +1,6 @@
 import { supabase } from '@/utils/supabaseClient'
 
-// TODO  создание языка нужно вернуть
+// TODO  создание и редактирование языка нужно вернуть
 export default async function languagesHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })

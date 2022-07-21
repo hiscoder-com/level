@@ -130,16 +130,8 @@ function IntroStep({ step }) {
       </div>
       <Footer
         textButton={t('common:Next')}
-        textCheckbox={
-          t(
-            'common:Made'
-          ) /** не корректное слово на англ, вроде как. Сделано в России - тогда made, а если сделано в смысле выполнено то наверное Done или Completed */
-        }
-        href={
-          `/intro-steps/${String(
-            parseInt(step) + 1
-          )}` /** TODO тут точно надо к строке приводить? */
-        }
+        textCheckbox={t('common:Made')}
+        href={`/intro-steps/${parseInt(step) + 1}`}
       />
     </div>
   )

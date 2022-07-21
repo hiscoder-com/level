@@ -26,11 +26,7 @@ function Account() {
             <SignOut />
           </div>
 
-          {user?.is_admin ? (
-            <Languages isAdmin={user.is_admin /** TODO что это за параметр */} />
-          ) : (
-            <Projects id={user.id} />
-          )}
+          {user?.is_admin ? <Languages /> : <Projects id={user.id} />}
         </div>
       )}
     </div>

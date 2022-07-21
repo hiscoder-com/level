@@ -1,8 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 import axios from 'axios'
-
-// TODO где это используется
 
 function ProjectRolesList({
   moderators,
@@ -85,7 +83,7 @@ function ProjectRolesList({
           mutateModerator()
           setShowRadio(false)
         })
-        .catch((error) => console.log(error, 'from axios'))
+        .catch((error) => console.log(error))
     } else {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
@@ -100,7 +98,7 @@ function ProjectRolesList({
           mutateModerator()
           setShowRadio(false)
         })
-        .catch((error) => console.log(error, 'from axios'))
+        .catch((error) => console.log(error))
     }
   }
 

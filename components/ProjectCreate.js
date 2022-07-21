@@ -43,10 +43,8 @@ function ProjectCreate() {
         if (status === 201) {
           router.push(location)
         }
-
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
-      .catch((error) => console.log(error, 'from axios'))
+      .catch((error) => console.log(error))
   }
 
   const inputs = [

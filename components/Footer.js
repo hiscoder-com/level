@@ -31,9 +31,9 @@ export default function Footer({ href, textCheckbox, textButton, handleClick }) 
           </div>
           {href ? (
             <Link href={href}>
-              <a className="btn-cyan w-28" disabled={!checked}>
+              <button className="btn-cyan w-28" disabled={!checked}>
                 {textButton}
-              </a>
+              </button>
             </Link>
           ) : (
             <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
