@@ -45,16 +45,12 @@ export default function AppBar({ setIsOpen }) {
     }
   }, [user])
 
-  const conditionAppbar = `appbar ${showFullAppbar ? 'h-28' : 'h-10'}`
   const checkShowFullAppbar = showFullAppbar ? 'visible' : 'invisible'
-  const showFullAppbarBtn = `${isStepPage ? 'md:hidden' : 'hidden'}`
-  const conditionTitle = `condition-title ${checkShowFullAppbar}`
-  const conditionOptionalInfo = `condition-optional-info ${checkShowFullAppbar}`
 
   return (
     <Disclosure as="nav" className="bg-white">
       <div>
-        <div className={conditionAppbar}>
+        <div className={`appbar ${showFullAppbar ? 'h-28' : 'h-10'}`}>
           <div className="flex items-center gap-7 cursor-pointer">
             {access && (
               <Burger
@@ -74,13 +70,15 @@ export default function AppBar({ setIsOpen }) {
             )}
             <Burger
               onClick={() => setShowFullAppbar(!showFullAppbar)}
-              className={showFullAppbarBtn}
+              className={`${isStepPage ? 'md:hidden' : 'hidden'}`}
             />
           </div>
           {isStepPage && (
             <>
-              <div className={conditionTitle}>{t(steps[step].title)}</div>
-              <div className={conditionOptionalInfo}>
+              <div className={`condition-title ${checkShowFullAppbar}`}>
+                {t(steps[step].title)}
+              </div>
+              <div className={`condition-optional-info ${checkShowFullAppbar}`}>
                 <div className="flex row items-center gap-1 cursor-default">
                   <User />
                   {steps[step].users}
