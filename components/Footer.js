@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
+import { useTranslation } from 'next-i18next'
+
 import Fulfilled from '../public/fulfilled.svg'
 
 export default function Footer({ textCheckbox, textButton, href }) {
@@ -10,6 +12,7 @@ export default function Footer({ textCheckbox, textButton, href }) {
   const [isStepPage, setIsStepPage] = useState(false)
   const router = useRouter()
   const { step } = router?.query
+  const { t } = useTranslation(['common'])
 
   useEffect(() => {
     setChecked(false)
@@ -47,7 +50,7 @@ export default function Footer({ textCheckbox, textButton, href }) {
         <>
           <div className="pb-3 md:pb-0">stepper</div>
           <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
-            <div>Выполнили:</div>
+            <div>{t('Fulfilled')}:</div>
             <Fulfilled />
           </div>
         </>

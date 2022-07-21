@@ -1,0 +1,51 @@
+export const steps = {
+  1: {
+    title: 'Cana.Step1.Title',
+    users: 1,
+    time: 2400,
+    stepGoal: 'Cana.Step1.StepGoal',
+    tools: {},
+  },
+  2: {
+    title: 'Cana.Step2.Title',
+    users: 4,
+    time: 3000,
+    stepGoal: 'Cana.Step2.StepGoal',
+    tools: {},
+  },
+  3: {
+    title: 'Cana.Step3.Title',
+    users: 2,
+    time: 1200,
+    stepGoal: 'Cana.Step3.StepGoal',
+    tools: {},
+  },
+  4: {
+    title: 'Cana.Step4.Title',
+    users: 1,
+    time: 1200,
+    stepGoal: 'Cana.Step4.StepGoal',
+    tools: {},
+  },
+  5: {
+    title: 'Cana.Step5.Title',
+    users: 1,
+    time: 1800,
+    stepGoal: 'Cana.Step5.StepGoal',
+    tools: {},
+  },
+  6: {
+    title: 'Cana.Step6.Title',
+    users: 2,
+    time: 2400,
+    stepGoal: 'Cana.Step6.StepGoal',
+    tools: {},
+  },
+  7: {
+    title: 'Cana.Step7.Title',
+    users: 4,
+    time: 3600,
+    stepGoal: 'Cana.Step7.StepGoal',
+    tools: {},
+  },
+}
