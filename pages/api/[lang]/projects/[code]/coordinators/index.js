@@ -6,6 +6,7 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
 
+  let data = {}
   const {
     body,
     method,
@@ -14,31 +15,36 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
 
   switch (method) {
     case 'GET':
-      const { data: dataGet, error: errorGet } = await supabase
-        .from('project_roles')
-        .select('projects!inner(code),users!inner(*)')
-        .eq('role', 'coordinator')
-        .eq('projects.code', code)
-      if (errorGet) {
-        res.status(404).json({ errorGet })
+      try {
+        const { data: value, error } = await supabase
+          .from('project_roles')
+          .select('projects!inner(code),users!inner(*)')
+          .eq('role', 'coordinator')
+          .eq('projects.code', code)
+          .limit(1)
+          .maybeSingle()
+
+        if (error) throw error
+        data = value
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-      res.status(200).json({ data: dataGet })
+      res.status(200).json(data)
       break
     case 'POST':
-      const { project_id, user_id } = body
-      // TODO валидацию
-
-      const { data: dataPost, error: errorPost } = await supabase
-        .from('project_roles')
-        .insert([{ project_id, user_id, role: 'coordinator' }])
-
-      if (errorPost) {
-        res.status(404).json({ errorPost })
+      try {
+        const { project_id, user_id } = body
+        const { data: value, error } = await supabase
+          .from('project_roles')
+          .insert([{ project_id, user_id, role: 'coordinator' }])
+        if (error) throw error
+        data = value
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-
-      res.status(200).json({ dataPost })
+      res.status(200).json(data)
       break
     default:
       res.setHeader('Allow', ['GET', 'POST'])

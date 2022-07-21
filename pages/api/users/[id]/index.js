@@ -13,15 +13,15 @@ export default async function userHandler(req, res) {
 
   switch (method) {
     case 'GET':
-      const { data, error } = await supabase.from('users').select('*').eq('id', id)
-      if (error) {
+      try {
+        const { data, error } = await supabase.from('users').select('*').eq('id', id)
+        if (error) throw error
+        res.status(200).json(data[0])
+      } catch (error) {
         res.status(404).json({ error })
         return
       }
-      res.status(200).json({ ...data?.[0] })
-      break
-    case 'PUT':
-      res.status(200).json({ code: `Project ${code}` })
+
       break
     default:
       res.setHeader('Allow', ['GET', 'PUT'])

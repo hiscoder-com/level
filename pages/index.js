@@ -19,9 +19,9 @@ export default function Home() {
     token: session?.access_token,
     startLink: '/login',
   })
+
   const { locale, pathname, query, asPath } = useRouter()
   const { t } = useTranslation('common')
-
   return (
     <main className="layout-empty">
       <Head>

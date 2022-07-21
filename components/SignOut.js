@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { useUser } from '../lib/UserContext'
 import { useRouter } from 'next/router'
 
 import { supabase } from '@/utils/supabaseClient'

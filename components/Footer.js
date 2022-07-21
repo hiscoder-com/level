@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
-export default function Footer({ textCheckbox, textButton, handleSetAgreement }) {
+export default function Footer({ href, textCheckbox, textButton, handleClick }) {
   const router = useRouter()
   const [checked, setChecked] = useState(false)
-  const handleClick = () => {
-    if (!router) {
-      return
-    }
-    if (router.route === '/user-agreement') handleSetAgreement()
-  }
+
   const { step } = router?.query
+
   useEffect(() => {
     setChecked(false)
   }, [step])
@@ -31,10 +28,11 @@ export default function Footer({ textCheckbox, textButton, handleSetAgreement })
               {textCheckbox}
             </label>
           </div>
-
-          <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
-            {textButton}
-          </button>
+          <Link href={href}>
+            <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
+              {textButton}
+            </button>
+          </Link>
         </div>
       </div>
     </div>

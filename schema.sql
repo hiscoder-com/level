@@ -186,8 +186,16 @@ CREATE TABLE PUBLIC .project_roles (
     user_id uuid references PUBLIC .users ON
   DELETE
     CASCADE NOT NULL,
-    UNIQUE (project_id, user_id, role)
+    UNIQUE (project_id, user_id, role)    
 );
+
+CREATE UNIQUE INDEX unique_moderator_project
+ON project_roles(project_id)
+WHERE ROLE = 'moderator';
+
+CREATE UNIQUE INDEX unique_coordinator_project
+ON project_roles(project_id)
+WHERE ROLE = 'coordinator';
 
 -- BRIEFS
 CREATE TABLE PUBLIC .briefs (
