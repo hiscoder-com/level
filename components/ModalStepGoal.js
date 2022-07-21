@@ -18,7 +18,7 @@ function ModalStepGoal() {
         className="btn-cyan w-28"
         onClick={(e) => (setShowModalStepGoal(!showModalStepGoal), e.stopPropagation())}
       >
-        {t('Step goal', { ns: 'common' })}
+        {t('Goal', { ns: 'common' })}
       </button>
 
       {showModalStepGoal ? (
