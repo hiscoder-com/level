@@ -1,17 +1,17 @@
-import React, { useState } from 'react'
 import { useRouter } from 'next/router'
+
+import axios from 'axios'
 import { useForm } from 'react-hook-form'
 
 import { useLanguages, useMethod } from '@/utils/hooks'
-import { useUser } from '../lib/UserContext'
-import axios from 'axios'
+import { useCurrentUser } from '../lib/UserContext'
 
 function ProjectCreate() {
   const router = useRouter()
 
-  const { session } = useUser()
-  const [languages] = useLanguages(session?.access_token)
-  const [methods] = useMethod(session?.access_token)
+  const { user } = useCurrentUser()
+  const [languages] = useLanguages(user?.access_token)
+  const [methods] = useMethod(user?.access_token)
   const projectTypes = ['obs', 'bible']
   const {
     register,
@@ -23,8 +23,11 @@ function ProjectCreate() {
     if (!title || !code || !languageId || !methodId || !type) {
       return
     }
-    axios.defaults.headers.common['token'] = session?.access_token
+    axios.defaults.headers.common['token'] = user?.access_token
     axios
+      // TODO тут точно написано правильно? Мне кажется надо '/api/'+languageId+'/projects'
+      // Не ругается скорее всего потому что это значение не используется, так как тут передается в теле айди языка
+      // надо подумать как сделать правильно. Поздаем мы не внутри языка, по этому вроде надо запрос на api/projects делать, но когда у нас будет список и юзер будет открывать проект, какой будет юрл. Будем ли мы показывать там язык проекта, или просто vcana.com/project/rlob
       .post('/api/[lang]/projects', {
         title,
         language_id: languageId,

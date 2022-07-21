@@ -1,8 +1,10 @@
+import Link from 'next/link'
+
 import { useTranslation } from 'next-i18next'
+
 import SideBarLink from './SideBarLink'
 
 import Close from '../public/close.svg'
-import Link from 'next/link'
 
 function SideBar({ isOpen, setIsOpen }) {
   const { t } = useTranslation('common')

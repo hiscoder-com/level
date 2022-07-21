@@ -37,8 +37,8 @@ export default function UserAgreement() {
         </div>
       </div>
       <Footer
-        textButton={t('Next', { ns: 'common' })}
-        textCheckbox={t('Agree', { ns: 'common' })}
+        textButton={t('common:Next')}
+        textCheckbox={t('common:Agree')}
         handleClick={() => router.push(`/confession`)}
       />
     </div>

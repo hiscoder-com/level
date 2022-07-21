@@ -1,8 +1,5 @@
-import React, { useMemo, useState } from 'react'
-
 import {
   useCoordinators,
-  useAuthenticated,
   useModerators,
   usePermissions,
   useProject,
@@ -10,38 +7,33 @@ import {
   useTranslators,
   useUsers,
 } from '@/utils/hooks'
-import { useUser } from '../lib/UserContext'
-
 import ProjectRolesList from './ProjectRolesList'
+import { useCurrentUser } from '../lib/UserContext'
 
 function ProjectEdit({ code }) {
-  const { user, session } = useUser()
-  const [users] = useUsers(session?.access_token)
-  const [authenticated] = useAuthenticated({
-    token: session?.access_token,
-    id: user?.id,
-  })
+  const { user } = useCurrentUser()
+  const [users] = useUsers(user?.access_token)
 
   const role = useProjectRole({
-    token: session?.access_token,
+    token: user?.access_token,
     code,
     userId: user?.id,
-    isAdmin: authenticated?.is_admin,
+    isAdmin: user?.is_admin,
   })
 
-  const [permissions] = usePermissions({ token: session?.access_token, role })
-  const [project] = useProject({ token: session?.access_token, code })
+  const [permissions] = usePermissions({ token: user?.access_token, role })
+  const [project] = useProject({ token: user?.access_token, code })
   const [translators, { mutate: mutateTranslator }] = useTranslators({
-    token: session?.access_token,
+    token: user?.access_token,
     code,
   })
 
   const [coordinator, { mutate: mutateCoordinator }] = useCoordinators({
-    token: session?.access_token,
+    token: user?.access_token,
     code,
   })
   const [moderators, { mutate: mutateModerator }] = useModerators({
-    token: session?.access_token,
+    token: user?.access_token,
     code,
   })
   return (
@@ -51,7 +43,7 @@ function ProjectEdit({ code }) {
         <ProjectRolesList
           moderators={moderators}
           coordinator={coordinator}
-          session={session}
+          user={user}
           code={code}
           mutate={mutateCoordinator}
           project={project}
@@ -65,7 +57,7 @@ function ProjectEdit({ code }) {
           moderators={moderators}
           coordinator={coordinator}
           translators={translators}
-          session={session}
+          user={user}
           code={code}
           mutate={mutateTranslator}
           mutateModerator={mutateModerator}

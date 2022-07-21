@@ -1,5 +1,8 @@
 import Link from 'next/link'
+
 import NotFound from '../public/404-error.svg'
+
+// TODO перевод
 
 const PageNotFound = () => {
   return (

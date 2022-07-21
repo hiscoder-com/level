@@ -1,33 +1,23 @@
-import React from 'react'
-
 import Link from 'next/link'
 
-import { useUser } from '../lib/UserContext'
-
-import {
-  useAuthenticated,
-  useProject,
-  useProjectRole,
-  useTranslators,
-} from '@/utils/hooks'
+import { useCurrentUser } from '../lib/UserContext'
+import { useProject, useProjectRole, useTranslators } from '@/utils/hooks'
 
 function Project({ code }) {
-  const { user, session } = useUser()
+  const { user } = useCurrentUser()
 
-  const [authenticated] = useAuthenticated({ token: session?.access_token, id: user?.id })
-
-  const [project] = useProject({ token: session?.access_token, code })
+  const [project] = useProject({ token: user?.access_token, code })
 
   const [translators] = useTranslators({
-    token: session?.access_token,
+    token: user?.access_token,
     code: project?.code,
   })
 
   const projectRole = useProjectRole({
-    token: session?.access_token,
+    token: user?.access_token,
     code,
     userId: user?.id,
-    isAdmin: authenticated?.is_admin,
+    isAdmin: user?.is_admin,
   })
   return (
     <div>
@@ -62,7 +52,7 @@ function Project({ code }) {
             })}
           </>
         )}
-        {authenticated?.isAdmin ||
+        {user?.is_admin ||
           (['admin', 'coordinator'].includes(projectRole) && (
             <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
               <a className="btn btn-filled btn-cyan">Редактирование проекта</a>

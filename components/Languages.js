@@ -1,15 +1,15 @@
-import { useLanguages } from '@/utils/hooks'
-import { useUser } from '../lib/UserContext'
-import { useTranslation } from 'next-i18next'
-
 import Link from 'next/link'
 
+import { useLanguages } from '@/utils/hooks'
+import { useCurrentUser } from '../lib/UserContext'
+import { useTranslation } from 'next-i18next'
+
 export default function Languages() {
-  const { session } = useUser()
+  const { user } = useCurrentUser()
 
   const { t } = useTranslation('common')
 
-  const [languages] = useLanguages(session?.access_token)
+  const [languages] = useLanguages(user?.access_token)
   return (
     <div className="flex justify-center flex-col  text-xl my-5 ">
       <h1 className="my-5">{t('Languages')}:</h1>

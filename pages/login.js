@@ -45,12 +45,16 @@ export default function Login() {
         password,
       })
       if (error) throw error
+      // TODO может попробовать использовать useCurrentUser.
+      // По идее обновится состояние и он вернет текущего юзера,
+      // у которого можно будет проверить поля и редиректить куда надо
       const { data: dataUser, error: errorUser } = await supabase
         .from('users')
         .select('agreement,confession')
         .eq('id', user?.id)
       if (errorUser) throw errorUser
       const { agreement, confession } = dataUser[0]
+      // TODO END
       setIsLoginError(false)
       setIsPasswordError(false)
       setError(false)

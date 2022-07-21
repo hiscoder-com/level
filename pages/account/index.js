@@ -1,18 +1,18 @@
-import { useEffect } from 'react'
+import Head from 'next/head'
 
-import { useRouter } from 'next/router'
-
-import { useUser } from '../../lib/UserContext'
+import Account from '../../components/Account'
 
 function AccountHomePage() {
-  const router = useRouter()
-
-  const { user } = useUser()
-  useEffect(() => {
-    if (user) {
-      router.push(`/account/${user?.id}`)
-    }
-  }, [router, user])
+  return (
+    <div className="container">
+      <Head>
+        <title>V-CANA Account</title>
+        <meta name="description" content="VCANA" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <Account />
+    </div>
+  )
 }
 
 export default AccountHomePage

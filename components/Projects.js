@@ -1,25 +1,23 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { useAuthenticated, useProjects, useUserProjects } from '@/utils/hooks'
-import { useUser } from '../lib/UserContext'
+import { useProjects, useUserProjects } from '@/utils/hooks'
+import { useCurrentUser } from '../lib/UserContext'
 
 export default function Projects({ languageCode }) {
-  const { user, session } = useUser()
-
-  const [authenticated] = useAuthenticated({ token: session?.access_token, id: user?.id })
+  const { user } = useCurrentUser()
 
   const [adminProjects] = useProjects({
-    token: session?.access_token,
+    token: user?.access_token,
     language_code: languageCode,
   })
 
   const [userProjects] = useUserProjects({
-    token: session?.access_token,
+    token: user?.access_token,
     id: user?.id,
   })
 
-  const projects = authenticated?.is_admin ? adminProjects : userProjects
+  const projects = user?.is_admin ? adminProjects : userProjects
   return (
     <>
       <div className="container">
@@ -28,7 +26,7 @@ export default function Projects({ languageCode }) {
           <meta name="description" content="VCANA" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <div>{`${authenticated?.is_admin ? 'Проекты' : 'Мои проекты'}`}</div>
+        <div>{`${user?.is_admin ? 'Проекты' : 'Мои проекты'}`}</div>
         {projects &&
           projects.map((project) => {
             return (
@@ -37,11 +35,6 @@ export default function Projects({ languageCode }) {
               </Link>
             )
           })}
-        {authenticated?.is_admin && (
-          <Link href={'/projects/create'}>
-            <a className="btn-cyan">Add New</a>
-          </Link>
-        )}
       </div>
     </>
   )

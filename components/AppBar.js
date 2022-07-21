@@ -4,18 +4,19 @@ import Link from 'next/link'
 
 import { Disclosure } from '@headlessui/react'
 
-import { supabase } from '@/utils/supabaseClient'
-import { useUser } from '../lib/UserContext'
-
 import Timer from './Timer'
+import { supabase } from '@/utils/supabaseClient'
+import { useCurrentUser } from '../lib/UserContext'
 
 import Burger from '../public/burger.svg'
 import User from '../public/user.svg'
 import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
 
-export default function AppBar({ isOpen, setIsOpen, isIntroduction, setIsIntroduction }) {
-  const { user } = useUser()
+// TODO тут надо все проверить
+
+export default function AppBar({ isOpen, setIsOpen, isIntroduction }) {
+  const { user } = useCurrentUser()
   const [access, setAccess] = useState(false)
 
   const [step, setStep] = useState(1)

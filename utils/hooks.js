@@ -35,6 +35,16 @@ export function useUsers(token) {
   const loading = !users && !error
   return [users, { mutate, loading, error }]
 }
+
+export function useUser(token, id) {
+  const {
+    data: user,
+    mutate,
+    error,
+  } = useSWR(token && id ? ['/api/users/' + id, token] : null, fetcher)
+  const loading = !user && !error
+  return [user, { mutate, loading, error }]
+}
 /**
  *hook returns information about projects in a specific language
  * @param {string} language_code code of language
@@ -91,7 +101,7 @@ export function useProject({ token, code }) {
     data: project,
     mutate,
     error,
-  } = useSWR(token ? [`/api/[lang]/projects/${code}`, token] : null, fetcher)
+  } = useSWR(token && code ? [`/api/[lang]/projects/${code}`, token] : null, fetcher)
   const loading = !project && !error
   return [project, { mutate, loading, error }]
 }
@@ -140,21 +150,6 @@ export function useTranslators({ token, code }) {
   const loading = !translators && !error
   return [translators, { mutate, loading, error }]
 }
-/**
- *hook returns information about current authenticated user from table "users"
- * @param {string} id id of user
- * @param {string} token token of current session of authenticated user
- * @returns {array}
- */
-export function useAuthenticated({ token, id }) {
-  const {
-    data: authenticated,
-    mutate,
-    error,
-  } = useSWR(token ? [`/api/users/${id}`, token] : null, fetcher)
-  const loading = !authenticated && !error
-  return [authenticated, { mutate, loading, error }]
-}
 
 /**
  *hook returns all roles  of current project with information about users
@@ -182,7 +177,7 @@ export function usePermissions({ role, token }) {
     data: permissions,
     mutate,
     error,
-  } = useSWR(token ? [`/api/permissions/${role}`, token] : null, fetcher)
+  } = useSWR(token && role ? [`/api/permissions/${role}`, token] : null, fetcher)
   const loading = !permissions && !error
   return [permissions, { mutate, loading, error }]
 }
@@ -196,7 +191,7 @@ export function usePermissions({ role, token }) {
  */
 export function useUserProjectRole({ token, id, code }) {
   const { data, mutate, error } = useSWR(
-    token ? [`/api/users/${id}/projects/${code}`, token] : null,
+    token && id && code ? [`/api/users/${id}/projects/${code}`, token] : null,
     fetcher
   )
 
@@ -252,28 +247,25 @@ export function useProjectRole({ userId, token, code, isAdmin }) {
  * @param {string} startLink the default link that the application needs to follow if the user has not passed the agreement
  * @returns {string}
  */
-export function useRedirect({ userId, token, startLink }) {
-  const [authenticated, { loading }] = useAuthenticated({ token, id: userId })
+export function useRedirect({ user, startLink }) {
   const [href, setHref] = useState(startLink)
 
   useEffect(() => {
-    if (!authenticated) {
+    if (!user?.id) {
       return
     }
-    if (!loading) {
-      const { agreement, confession } = authenticated
-      if (!agreement) {
-        setHref('/agreements')
-        return
-      }
-      if (!confession) {
-        setHref('/confession')
-        return
-      }
-
-      setHref(`/account/${userId}`)
+    const { agreement, confession } = user
+    if (!agreement) {
+      setHref('/agreements')
+      return
     }
-  }, [authenticated, loading, userId])
+    if (!confession) {
+      setHref('/confession')
+      return
+    }
+
+    setHref(`/account`)
+  }, [user])
 
   return { href }
 }
