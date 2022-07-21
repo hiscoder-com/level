@@ -28,7 +28,7 @@ function ProjectEdit({ code }) {
     code,
   })
 
-  const [coordinators, { mutate: mutateCoordinator }] = useCoordinators({
+  const [coordinator, { mutate: mutateCoordinator }] = useCoordinators({
     token: user?.access_token,
     code,
   })
@@ -42,6 +42,7 @@ function ProjectEdit({ code }) {
       <div className="divide-y divide-gray-500 ">
         <ProjectRolesList
           moderators={moderators}
+          coordinator={coordinator}
           user={user}
           code={code}
           mutate={mutateCoordinator}
@@ -49,11 +50,13 @@ function ProjectEdit({ code }) {
           users={users}
           type={'coordinators'}
           role={role}
-          roles={coordinators}
+          translators={translators}
           permissions={permissions}
         />
         <ProjectRolesList
           moderators={moderators}
+          coordinator={coordinator}
+          translators={translators}
           user={user}
           code={code}
           mutate={mutateTranslator}
@@ -62,7 +65,6 @@ function ProjectEdit({ code }) {
           users={users}
           type={'translators'}
           role={role}
-          roles={translators}
           permissions={permissions}
         />
       </div>

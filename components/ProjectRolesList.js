@@ -11,17 +11,16 @@ function ProjectRolesList({
   mutate,
   mutateModerator,
   project,
-  users,
   type,
   role,
-  roles,
+  coordinator,
+  translators,
   permissions,
 }) {
   const [userId, setUserId] = useState('')
   const [showRadio, setShowRadio] = useState(false)
   const [moderator, setModerator] = useState(null)
   const [showSelect, setShowSelect] = useState(false)
-
   const handleSet = async () => {
     if (!project?.id) {
       return
@@ -39,8 +38,9 @@ function ProjectRolesList({
         setShowSelect(false)
         //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
-      .catch((error) => console.log(error, 'from axios'))
+      .catch((error) => console.log(error))
   }
+
   const handleUpdate = async (id) => {
     if (!project?.id) {
       return
@@ -50,15 +50,13 @@ function ProjectRolesList({
       axios
         .put(`/api/${project?.languages?.code}/projects/${code}/${type}/${userId}`, {
           project_id: project?.id,
-          prev_id: roles?.data[0]?.users?.id,
+          prev_id: coordinator && coordinator.users?.id,
         })
         .then((result) => {
-          const { data } = result
           mutate()
           setShowSelect(false)
-          //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
         })
-        .catch((error) => console.log(error, 'from axios'))
+        .catch((error) => console.log(error))
       return
     }
     axios.defaults.headers.common['token'] = user?.access_token
@@ -67,18 +65,16 @@ function ProjectRolesList({
         data: { projectId: project?.id },
       })
       .then((result) => {
-        const { data, status } = result
         mutate()
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
-      .catch((error) => console.log(error, 'from axios'))
+      .catch((error) => console.log(error))
   }
-
   const handleSetModerator = async () => {
     if (!project?.id) {
       return
     }
-    if (!moderators) {
+
+    if (moderators && Object.keys(moderators).length === 0) {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post(`/api/${project?.languages?.code}/projects/${code}/moderators/`, {
@@ -86,10 +82,8 @@ function ProjectRolesList({
           project_id: project?.id,
         })
         .then((result) => {
-          const { data } = result
           mutateModerator()
           setShowRadio(false)
-          //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
         })
         .catch((error) => console.log(error, 'from axios'))
     } else {
@@ -99,45 +93,31 @@ function ProjectRolesList({
           `/api/${project?.languages?.code}/projects/${code}/moderators/${moderator}`,
           {
             project_id: project?.id,
-            prev_id: moderators?.id,
+            prev_id: moderators.users?.id,
           }
         )
         .then((result) => {
-          const { data } = result
           mutateModerator()
           setShowRadio(false)
-          //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
         })
         .catch((error) => console.log(error, 'from axios'))
     }
   }
-  const availableTranslators = useMemo(
-    () =>
-      roles &&
-      users &&
-      Object.values(users)
-        .filter((el) => el.agreement && el.confession)
-        .filter(
-          (user) =>
-            !roles?.data
-              .map((el) => {
-                return el.users.id
-              })
-              .includes(user.id)
-        ),
-    [roles, users]
-  )
 
   return (
     <div>
       <div className="capitalize ">{`${type}`}:</div>
       <div className="my-5 flex flex-col ">
-        {roles?.data &&
-          roles.data.map((el, key) => {
+        {coordinator && Object.keys(coordinator).length > 0 && coordinator.users.email}
+        {translators &&
+          type === 'translators' &&
+          translators.map((el, key) => {
             return (
               <div className="flex" key={key}>
                 <div
-                  className={`mx-5  ${moderators?.id === el.users.id && 'text-gray-500'}`}
+                  className={`mx-5  ${
+                    moderators?.users?.id === el.users.id && 'text-gray-500'
+                  }`}
                 >
                   {el.users.email}
                 </div>
@@ -148,7 +128,7 @@ function ProjectRolesList({
                       .includes('translator.set')) ||
                     role === 'admin') && (
                     <>
-                      {moderators?.id === el.users.id ? (
+                      {moderators?.users?.id === el.users.id ? (
                         'Мoderator'
                       ) : !showRadio ? (
                         <button
@@ -157,8 +137,8 @@ function ProjectRolesList({
                               ? handleUpdate(el.users.id)
                               : setShowSelect(true)
                           }
-                          className="btn-cyan w-32 my-1"
-                          disabled={showSelect || moderators?.id === el.users.id}
+                          className="btn-filled w-28 my-1"
+                          disabled={showSelect || moderators?.users?.id === el.users.id}
                         >
                           Удалить
                         </button>
@@ -166,9 +146,9 @@ function ProjectRolesList({
                         <div className="form-check">
                           <input
                             onChange={(e) => setModerator(e.target.value)}
-                            disabled={moderators?.id === el.users.id}
+                            disabled={moderators?.users?.id === el.users.id}
                             className={`form-check-input appearance-none rounded-full h-4 w-4 border border-gray-300 bg-white checked:bg-blue-600 checked:border-blue-600 focus:outline-none transition duration-200 my-1 align-top bg-no-repeat bg-center bg-contain float-left mr-2 ${
-                              moderators?.id !== el.users.id && 'cursor-pointer'
+                              moderators?.users?.id !== el.users.id && 'cursor-pointer'
                             }`}
                             type="radio"
                             name="flexRadioDefault"
@@ -196,18 +176,18 @@ function ProjectRolesList({
                   value={userId}
                   className="input max-w-sm"
                 >
-                  {availableTranslators.map((el) => {
+                  {translators.map((el) => {
                     return (
-                      <option key={el.id} value={el.id}>
-                        {el.email}
+                      <option key={el.users.id} value={el.users.id}>
+                        {el.users.email}
                       </option>
                     )
                   })}
                 </select>
                 <button
                   onClick={() => {
-                    if (roles?.data.length !== 0 && type === 'coordinators') {
-                      handleUpdate(roles.data[0].users.id)
+                    if (coordinator && type === 'coordinators') {
+                      handleUpdate(coordinator.users.id)
                       return
                     }
                     handleSet()
@@ -234,7 +214,11 @@ function ProjectRolesList({
             >
               {type !== 'coordinators'
                 ? 'Добавить переводчика'
-                : `${roles?.data.length > 0 ? 'Поменять' : 'Добавить'} координатора`}
+                : `${
+                    coordinator && Object.values(coordinator).length > 0
+                      ? 'Поменять'
+                      : 'Добавить'
+                  } координатора`}
             </button>
 
             {((permissions?.data &&

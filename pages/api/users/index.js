@@ -14,13 +14,16 @@ export default async function handler(req, res) {
 
   switch (method) {
     case 'GET':
-      const { data: users, error: errorGet } = await supabase
-        .from('users')
-        .select('id, login, email, blocked, agreement, confession, is_admin')
-      if (errorGet) {
-        res.status(404).json({ error: errorGet })
+      try {
+        const { data: users, error: errorGet } = await supabase
+          .from('users')
+          .select('id, login, email, blocked, agreement, confession, is_admin')
+        if (errorGet) throw errorGet
+        res.status(200).json(users)
+      } catch (error) {
+        res.status(404).json({ error })
+        return
       }
-      res.status(200).json(users)
       break
     case 'POST':
       // TODO валидацию

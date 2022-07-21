@@ -89,7 +89,7 @@ export default function Login() {
               setIsLoginError(false)
             }}
           />
-          <div className="relative">
+          <div className=" styleLogin relative">
             <input
               ref={passwordRef}
               className={`input ${isPasswordError && 'input-invalid'}`}

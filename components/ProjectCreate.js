@@ -13,7 +13,6 @@ function ProjectCreate() {
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
   const projectTypes = ['obs', 'bible']
-
   const {
     register,
     handleSubmit,
@@ -122,7 +121,7 @@ function ProjectCreate() {
         <div>Метод</div>
         <select placeholder="Method" {...register('methodId')} className="input max-w-sm">
           {methods &&
-            methods.data.map((el) => {
+            methods.map((el) => {
               return (
                 <option key={el.id} value={el.id}>
                   {el.title}

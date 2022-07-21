@@ -6,6 +6,7 @@ export default async function languageProjectHandler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
 
+  let data = {}
   const {
     query: { code },
     method,
@@ -13,20 +14,21 @@ export default async function languageProjectHandler(req, res) {
 
   switch (method) {
     case 'GET':
-      const { data, error } = await supabase
-        .from('projects')
-        .select('id, title, code, type, methods(title), languages(orig_name,code)')
-        .eq('code', code)
-      if (error) {
+      try {
+        const { data: value, error } = await supabase
+          .from('projects')
+          .select('id, title, code, type, methods(title), languages(orig_name,code)')
+          .eq('code', code)
+        if (error) throw error
+        data = value
+      } catch (error) {
         res.status(404).json({ error })
+        return
       }
       res.status(200).json({ ...data[0] })
       break
-    case 'PUT':
-      res.status(200).json({ code: `Project ${code}` })
-      break
     default:
-      res.setHeader('Allow', ['GET', 'PUT'])
+      res.setHeader('Allow', ['GET'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

@@ -19,7 +19,6 @@ function Project({ code }) {
     userId: user?.id,
     isAdmin: user?.is_admin,
   })
-
   return (
     <div>
       <h3 className="text-3xl">
@@ -40,10 +39,10 @@ function Project({ code }) {
       </div>
 
       <div>
-        {translators && translators?.data && Object.keys(translators?.data).length > 0 && (
+        {translators && Object.keys(translators).length > 0 && (
           <>
             Translators:
-            {translators.data.map((el, key) => {
+            {translators.map((el, key) => {
               return (
                 <div
                   className="font-bold"

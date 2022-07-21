@@ -8,34 +8,39 @@ export default async function languageProjectsHandler(req, res) {
 
   const {
     query: { lang },
-    body,
+    body: { language_id, method_id, type, code, title },
     method,
   } = req
 
+  let data = {}
+
   switch (method) {
     case 'GET':
-      const { data: dataGet, error: errorGet } = await supabase
-        .from('projects')
-        .select('*,languages!inner(*)')
-        .eq('languages.code', lang)
-      if (errorGet) {
-        res.status(404).json({ errorGet })
+      try {
+        const { data: value, error } = await supabase
+          .from('projects')
+          .select('*,languages!inner(*)')
+          .eq('languages.code', lang)
+        if (error) throw error
+        data = value
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-
-      res.status(200).json({ data: dataGet })
+      res.status(200).json(data)
       break
     case 'POST':
-      const { language_id, method_id, type, code, title } = body
-      // TODO валидацию
-      const { data: dataPost, error: errorPost } = await supabase
-        .from('projects')
-        .insert([{ language_id, method_id, type, code, title }])
-
-      if (errorPost) {
-        res.status(404).json({ errorPost })
+      try {
+        const { data: value, error } = await supabase
+          .from('projects')
+          .insert([{ language_id, method_id, type, code, title }])
+        if (error) throw error
+        data = value
+      } catch (error) {
+        res.status(404).json({ error })
+        return
       }
-      res.setHeader('Location', `/projects/${dataPost[0].code}`)
+      res.setHeader('Location', `/projects/${data[0].code}`)
       res.status(201).json({})
       break
     default:

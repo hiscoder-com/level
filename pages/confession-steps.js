@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 
-import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
@@ -76,22 +75,7 @@ export default function ConfessionSteps() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
-  const handleSetConfession = async () => {
-    axios.defaults.headers.common['token'] = user?.access_token
-    axios
-      // TODO confession это свойство юзера, по этому надо просто делать апдейт юзера
-      // post('/api/users/${user.id}', {confession: true})
-      .put('/api/agreements/confession', {
-        user_id: user.id,
-      })
-      .then((result) => {
-        const { status } = result
-        if (status === 200) {
-          router.push(`/account/${user.id}`)
-        }
-      })
-      .catch((error) => console.log(error, 'from axios'))
-  }
+
   return (
     <div className="layout-appbar">
       <h1 className="h1 text-center">{t('common:ConfessionFaith')}:</h1>
@@ -123,7 +107,9 @@ export default function ConfessionSteps() {
           <label htmlFor="cb">{t('common:Agree')}</label>
         </div>
         <button
-          onClick={handleSetConfession}
+          onClick={() => {
+            router.push(`/account`)
+          }}
           className="btn-cyan w-28"
           disabled={!checked}
         >

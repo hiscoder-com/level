@@ -18,7 +18,7 @@ export function useLanguages(token) {
     fetcher
   )
   const loading = !data && !error
-  const languages = data?.data
+  const languages = data
   return [languages, { mutate, loading, error }]
 }
 /**
@@ -56,6 +56,7 @@ export function useProjects({ token, language_code }) {
     token ? [`/api/${language_code}/projects`, token] : null,
     fetcher
   )
+
   const loading = !data && !error
   const projects = data
   return [projects, { mutate, loading, error }]
@@ -132,7 +133,7 @@ export function useModerators({ token, code }) {
     error,
   } = useSWR(token ? [`/api/[id]/projects/${code}/moderators`, token] : null, fetcher)
   const loading = !moderators && !error
-  return [moderators?.data, { mutate, loading, error }]
+  return [moderators, { mutate, loading, error }]
 }
 /**
  *hook returns all users on specific project with role 'translator'
@@ -148,21 +149,6 @@ export function useTranslators({ token, code }) {
   } = useSWR(token ? [`/api/[id]/projects/${code}/translators`, token] : null, fetcher)
   const loading = !translators && !error
   return [translators, { mutate, loading, error }]
-}
-/**
- *hook returns information about current authenticated user from table "users"
- * @param {string} id id of user
- * @param {string} token token of current session of authenticated user
- * @returns {array}
- */
-export function useAuthenticated({ token, id }) {
-  const {
-    data: authenticated,
-    mutate,
-    error,
-  } = useSWR(token && id ? [`/api/users/${id}`, token] : null, fetcher)
-  const loading = !authenticated && !error
-  return [authenticated, { mutate, loading, error }]
 }
 
 /**
@@ -227,7 +213,7 @@ export function useProjectRole({ userId, token, code, isAdmin }) {
     code,
     id: userId,
   })
-  const rolesAuthenticated = userProjectRoles?.data.map((el) => el.role)
+  const rolesAuthenticated = userProjectRoles && userProjectRoles.map((el) => el.role)
   const [projectRole, setProjectRole] = useState(null)
 
   useEffect(() => {

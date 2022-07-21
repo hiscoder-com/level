@@ -1,4 +1,4 @@
-import { supabase } from '../../../../../../utils/supabaseClient'
+import { supabase } from '@/utils/supabaseClient'
 
 export default async function languageProjectModeratorsHandler(req, res) {
   if (!req.headers.token) {
@@ -7,38 +7,44 @@ export default async function languageProjectModeratorsHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   const {
-    body,
+    body: { project_id, user_id },
     method,
     query: { code },
   } = req
 
+  let data = {}
+
   switch (method) {
     case 'GET':
-      const { data: dataGet, error: errorGet } = await supabase
-        .from('project_roles')
-        .select('projects!inner(code),users!inner(*)')
-        .eq('role', 'moderator')
-        .eq('projects.code', code)
-      if (errorGet) {
-        res.status(404).json({ errorGet })
+      try {
+        const { data: value, error } = await supabase
+          .from('project_roles')
+          .select('projects!inner(code),users!inner(*)')
+          .eq('role', 'moderator')
+          .eq('projects.code', code)
+          .limit(1)
+          .maybeSingle()
+        if (error) throw error
+        data = { ...value }
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-      res.status(200).json({ data: dataGet[0]?.users })
+      res.status(200).json(data)
       break
     case 'POST':
-      const { project_id, user_id } = body
-      // TODO валидацию
+      try {
+        const { data: value, error } = await supabase
+          .from('project_roles')
+          .insert([{ project_id, user_id, role: 'moderator' }])
 
-      const { data: dataPost, error: errorPost } = await supabase
-        .from('project_roles')
-        .insert([{ project_id, user_id, role: 'moderator' }])
-
-      if (errorPost) {
-        res.status(404).json({ errorPost })
+        if (error) throw error
+        data = { ...value }
+      } catch (error) {
+        res.status(404).json({ error })
         return
       }
-
-      res.status(200).json({ dataPost })
+      res.status(200).json(data)
       break
     default:
       res.setHeader('Allow', ['GET', 'POST'])
