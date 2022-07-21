@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router'
-import React from 'react'
 
 function StartStepPage() {
   const router = useRouter()

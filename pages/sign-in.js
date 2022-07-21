@@ -1,9 +1,9 @@
 import Head from 'next/head'
 
-import { useUser } from '../lib/UserContext'
+import { useCurrentUser } from '../lib/UserContext'
 
 export default function SignInPage() {
-  const { user, session } = useUser()
+  const { user } = useCurrentUser()
   return (
     <div className="container">
       <Head>
@@ -11,7 +11,7 @@ export default function SignInPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {session ? JSON.stringify(user) : 'Нет такого юзера!!'}
+      {user ? JSON.stringify(user) : 'Нет такого юзера!!'}
     </div>
   )
 }

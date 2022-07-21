@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-export default function Footer({ textCheckbox, textButton, href }) {
-  const [checked, setChecked] = useState(false)
+export default function Footer({ href, textCheckbox, textButton, handleClick }) {
   const router = useRouter()
+  const [checked, setChecked] = useState(false)
+
   const { step } = router?.query
 
   useEffect(() => {
@@ -27,11 +29,17 @@ export default function Footer({ textCheckbox, textButton, href }) {
               {textCheckbox}
             </label>
           </div>
-          <Link href={href}>
-            <button className="btn-cyan w-28" disabled={!checked}>
+          {href ? (
+            <Link href={href}>
+              <button className="btn-cyan w-28" disabled={!checked}>
+                {textButton}
+              </button>
+            </Link>
+          ) : (
+            <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
               {textButton}
             </button>
-          </Link>
+          )}
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import Time from '../public/time.svg'
 
 function Timer({ time }) {

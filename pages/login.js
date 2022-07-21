@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react'
 
-import { useTranslation } from 'next-i18next'
-
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { supabase } from '../utils/supabaseClient'
-import { useUser } from '../lib/UserContext'
+import { supabase } from '@/utils/supabaseClient'
 
 import Report from '../public/report.svg'
 import EyeIcon from '../public/eye-icon.svg'
@@ -17,7 +15,6 @@ export default function Login() {
   const { t } = useTranslation('common')
 
   const router = useRouter()
-  const { user } = useUser()
 
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(false)
@@ -39,26 +36,29 @@ export default function Login() {
     loginRef.current.focus()
   }, [])
 
-  useEffect(() => {
-    if (user) {
-      router.push('/agreements')
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
-
   const handleLogin = async (e) => {
     e.preventDefault()
     setLoading(true)
     try {
-      const { error } = await supabase.auth.signIn({
+      const { user, error } = await supabase.auth.signIn({
         email: login,
         password,
       })
       if (error) throw error
+      // TODO может попробовать использовать useCurrentUser.
+      // По идее обновится состояние и он вернет текущего юзера,
+      // у которого можно будет проверить поля и редиректить куда надо
+      const { data: dataUser, error: errorUser } = await supabase
+        .from('users')
+        .select('agreement,confession')
+        .eq('id', user?.id)
+      if (errorUser) throw errorUser
+      const { agreement, confession } = dataUser[0]
+      // TODO END
       setIsLoginError(false)
       setIsPasswordError(false)
       setError(false)
-      router.push('/agreements')
+      router.push(agreement && confession ? `/account` : '/agreements')
     } catch (error) {
       setIsLoginError(true)
       setIsPasswordError(true)
@@ -89,7 +89,7 @@ export default function Login() {
               setIsLoginError(false)
             }}
           />
-          <div className="relative">
+          <div className=" styleLogin relative">
             <input
               ref={passwordRef}
               className={`input ${isPasswordError && 'input-invalid'}`}

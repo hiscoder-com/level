@@ -1,9 +1,11 @@
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useRouter } from 'next/router'
 
 import Footer from '../components/Footer'
 
 export default function UserAgreement() {
+  const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common'])
 
   return (
@@ -35,9 +37,9 @@ export default function UserAgreement() {
         </div>
       </div>
       <Footer
-        textButton={t('Next', { ns: 'common' })}
-        textCheckbox={t('Agree', { ns: 'common' })}
-        href="/confession"
+        textButton={t('common:Next')}
+        textCheckbox={t('common:Agree')}
+        handleClick={() => router.push(`/confession`)}
       />
     </div>
   )
