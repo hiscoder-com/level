@@ -22,16 +22,16 @@ export default async function handler(req, res) {
       }
       res.status(200).json(users)
       break
-    case 'PUT':
+    case 'POST':
       // TODO валидацию
       // is it admin
       try {
-        const { error: errorPut } = await supabaseService.auth.api.createUser({
+        const { error: errorPost } = await supabaseService.auth.api.createUser({
           email,
           password,
           user_metadata: { login },
         })
-        if (errorPut) throw errorPut
+        if (errorPost) throw errorPost
       } catch (error) {
         res.status(404).json({ error })
         return
@@ -39,7 +39,7 @@ export default async function handler(req, res) {
       res.status(201).json({})
       break
     default:
-      res.setHeader('Allow', ['GET', 'PUT'])
+      res.setHeader('Allow', ['GET', 'POST'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
