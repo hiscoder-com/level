@@ -7,21 +7,21 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 import { supabase } from '../utils/supabaseClient'
+import { steps } from '../utils/steps'
 import { useUser } from '../lib/UserContext'
 
 import Timer from './Timer'
+import ModalStepGoal from './ModalStepGoal'
 import Burger from '../public/burger.svg'
 import User from '../public/user.svg'
 import Tools from '../public/tools.svg'
 import VCANA_logo from '../public/vcana-logo.svg'
-import { steps } from '../utils/steps'
 
-export default function AppBar({ isOpen, setIsOpen }) {
+export default function AppBar({ setIsOpen }) {
   const { user } = useUser()
   const [access, setAccess] = useState(false)
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
-  const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const { t } = useTranslation(['steps', 'common'])
 
   const router = useRouter()
@@ -88,34 +88,12 @@ export default function AppBar({ isOpen, setIsOpen }) {
                 <div className="w-0 invisible md:w-14 md:visible">
                   <Timer time={steps[step].time} />
                 </div>
-                <button
-                  className="btn-cyan w-28"
-                  onClick={(e) => (
-                    setShowModalStepGoal(!showModalStepGoal), e.stopPropagation()
-                  )}
-                >
-                  {t('Step goal', { ns: 'common' })}
-                </button>
+                <ModalStepGoal />
                 <Tools />
               </div>
             </>
           )}
         </div>
-        {showModalStepGoal ? (
-          <div className="modal-step-goal-bg" onClick={() => setShowModalStepGoal(false)}>
-            <div className="modal-step-goal" onClick={(e) => e.stopPropagation()}>
-              <h2 className="text-justify mt-2 mx-4 h4 font-semibold indent-4">
-                {t(steps[step].stepGoal)}
-              </h2>
-              <button
-                className="btn-cyan w-24"
-                onClick={() => setShowModalStepGoal(false)}
-              >
-                {t('Close')}
-              </button>
-            </div>
-          </div>
-        ) : null}
       </div>
     </Disclosure>
   )
