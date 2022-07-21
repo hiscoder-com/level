@@ -45,8 +45,6 @@ export default function AppBar({ setIsOpen }) {
     }
   }, [user])
 
-  const checkShowFullAppbar = showFullAppbar ? 'visible' : 'invisible'
-
   return (
     <Disclosure as="nav" className="bg-white">
       <div>
@@ -75,10 +73,16 @@ export default function AppBar({ setIsOpen }) {
           </div>
           {isStepPage && (
             <>
-              <div className={`condition-title ${checkShowFullAppbar}`}>
+              <div
+                className={`condition-title ${showFullAppbar ? 'visible' : 'invisible'}`}
+              >
                 {t(steps[step].title)}
               </div>
-              <div className={`condition-optional-info ${checkShowFullAppbar}`}>
+              <div
+                className={`condition-optional-info ${
+                  showFullAppbar ? 'visible' : 'invisible'
+                }`}
+              >
                 <div className="flex row items-center gap-1 cursor-default">
                   <User />
                   {steps[step].users}
