@@ -1,11 +1,11 @@
 import { Fragment, useState } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
 
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
 import { steps } from '../utils/steps'
-import { Dialog, Transition } from '@headlessui/react'
 
 function ModalStepGoal() {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
@@ -51,7 +51,7 @@ function ModalStepGoal() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all">
+                <Dialog.Panel className="modal-step-goal">
                   <Dialog.Title as="h3" className="h3 font-medium leading-6">
                     Цель этого шага:
                   </Dialog.Title>
