@@ -7,7 +7,7 @@ import { Dialog, Transition } from '@headlessui/react'
 
 import { steps } from '../utils/steps'
 
-function ModalStepGoal() {
+function Modal() {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const router = useRouter()
   const { step } = router.query
@@ -53,7 +53,7 @@ function ModalStepGoal() {
               >
                 <Dialog.Panel className="modal-step-goal">
                   <Dialog.Title as="h3" className="h3 font-medium leading-6">
-                    {t('Cana.GoalTitle')}:
+                    {t('common:Goal')}:
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">{t(steps[step].stepGoal)}</p>
@@ -74,4 +74,4 @@ function ModalStepGoal() {
   )
 }
 
-export default ModalStepGoal
+export default Modal

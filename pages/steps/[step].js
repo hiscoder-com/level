@@ -1,14 +1,15 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '/components/Footer'
 
 export default function IntroPage() {
-  const { t } = useTranslation(['common', 'steps'])
   const router = useRouter()
   const { step } = router.query
+  const { t } = useTranslation(['common', 'steps'])
 
   return (
     <div>

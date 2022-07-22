@@ -23,10 +23,6 @@ function Timer({ time }) {
     }
   }, [timeLeft, isCounting])
 
-  useEffect(() => {
-    localStorage.setItem('timeLeft', timeLeft)
-  }, [timeLeft])
-
   const handleStart = () => {
     if (timeLeft === 0) setTimeLeft(time)
     setIsCounting(true)

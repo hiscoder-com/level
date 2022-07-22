@@ -8,7 +8,7 @@ function Layout({ backgroundColor, children }) {
 
   return (
     <div className={`mx-auto min-h-screen ${backgroundColor}`}>
-      <AppBar isOpen={isOpen} setIsOpen={setIsOpen} />
+      <AppBar setIsOpen={setIsOpen} />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
         <div className="pt-3 lg:pt-5 lg:px-8">{children}</div>
