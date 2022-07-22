@@ -62,14 +62,11 @@ export default function AppBar({ setIsOpen }) {
               </a>
             </Link>
             {isStepPage && (
-              <div className="md:hidden">
+              <div className="flex gap-7 md:hidden">
                 <Timer time={steps[step].time} />
+                <Burger />
               </div>
             )}
-            <Burger
-              onClick={() => setShowFullAppbar(!showFullAppbar)}
-              className={`${isStepPage ? 'md:hidden' : 'hidden'}`}
-            />
           </div>
           {isStepPage && (
             <>

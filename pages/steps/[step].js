@@ -35,7 +35,7 @@ export default function IntroPage() {
               </button>
             </div>
             <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title">{t('Chapter 1')}</div>
+              <div className="layout-step-col-card-title">{t('Chapter1')}</div>
               <div className="h5 p-4">{t('Text')}:</div>
             </div>
           </div>
@@ -43,8 +43,8 @@ export default function IntroPage() {
             <div className="layout-step-col-card">
               <div className="layout-step-col-card-title">{t('Audio')}</div>
               <div className="layout-step-col-card-body-audio">
-                <p>{t('Audio title')}</p>
-                <button className="btn-cyan">{t('Audio button')}</button>
+                <p>{t('AudioTitle')}</p>
+                <button className="btn-cyan">{t('AudioButton')}</button>
               </div>
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function IntroPage() {
               </button>
             </div>
             <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title">{t('Chapter 1')}</div>
+              <div className="layout-step-col-card-title">{t('Chapter1')}</div>
               <div className="h5 p-4">{t('Text')}:</div>
             </div>
           </div>
@@ -77,7 +77,7 @@ export default function IntroPage() {
                 <a className="btn-cyan">{t('Translation')}</a>
               </button>
               <button>
-                <a className="btn-white">{t('My notes')}</a>
+                <a className="btn-white">{t('MyNotes')}</a>
               </button>
               <button>
                 <a className="btn-white">{t('Notes')}</a>
@@ -95,7 +95,7 @@ export default function IntroPage() {
       )}
       <Footer
         textButton={t('Next')}
-        textCheckbox={t('Made')}
+        textCheckbox={t('Done')}
         href={`/intro-steps/${String(parseInt(step) + 1)}`}
       />
     </div>
