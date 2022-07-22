@@ -46,11 +46,11 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .condition-title{
-	@apply text-center h3 md:visible  lg:text-2xl text-gray-800 
+	@apply text-center h3 lg:text-2xl md:flex
 }
 
 .condition-optional-info{
-	@apply flex items-center gap-4 md:visible
+	@apply items-center gap-4 md:flex
 }
 
 .eye{
@@ -131,7 +131,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .modal-step-goal{
-	@apply w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-center align-middle shadow-xl transition-all
+	@apply transform overflow-hidden p-6 w-full max-w-md text-center align-middle bg-white rounded-2xl shadow-xl transition-all
 }
 
 .password-control{

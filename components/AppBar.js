@@ -48,7 +48,7 @@ export default function AppBar({ setIsOpen }) {
   return (
     <Disclosure as="nav" className="bg-white">
       <div>
-        <div className={`appbar ${showFullAppbar ? 'h-28' : 'h-10'}`}>
+        <div className="appbar">
           <div className="flex items-center gap-7 cursor-pointer">
             {access && (
               <Burger
@@ -64,27 +64,25 @@ export default function AppBar({ setIsOpen }) {
             {isStepPage && (
               <div className="flex gap-7 md:hidden">
                 <Timer time={steps[step].time} />
-                <Burger />
+                <Burger onClick={() => setShowFullAppbar(!showFullAppbar)} />
               </div>
             )}
           </div>
           {isStepPage && (
             <>
-              <div
-                className={`condition-title ${showFullAppbar ? 'visible' : 'invisible'}`}
-              >
+              <div className={`condition-title ${showFullAppbar ? '' : 'hidden '}`}>
                 {t(steps[step].title)}
               </div>
               <div
                 className={`condition-optional-info ${
-                  showFullAppbar ? 'visible' : 'invisible'
+                  showFullAppbar ? 'flex' : 'hidden '
                 }`}
               >
                 <div className="flex row items-center gap-1 cursor-default">
                   <User />
                   {steps[step].users}
                 </div>
-                <div className="w-0 invisible md:w-14 md:visible">
+                <div className="hidden md:flex">
                   <Timer time={steps[step].time} />
                 </div>
                 <ModalStepGoal />
