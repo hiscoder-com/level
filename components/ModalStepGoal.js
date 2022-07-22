@@ -1,9 +1,9 @@
 import { Fragment, useState } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
 
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
+import { Dialog, Transition } from '@headlessui/react'
 
 import { steps } from '../utils/steps'
 
@@ -23,7 +23,7 @@ function ModalStepGoal() {
         className="btn-cyan w-28"
         onClick={(e) => (setShowModalStepGoal(!showModalStepGoal), e.stopPropagation())}
       >
-        {t('Goal', { ns: 'common' })}
+        {t('common:Goal')}
       </button>
 
       <Transition appear show={showModalStepGoal} as={Fragment}>
@@ -53,7 +53,7 @@ function ModalStepGoal() {
               >
                 <Dialog.Panel className="modal-step-goal">
                   <Dialog.Title as="h3" className="h3 font-medium leading-6">
-                    Цель этого шага:
+                    {t('Cana.GoalTitle')}:
                   </Dialog.Title>
                   <div className="mt-2">
                     <p className="text-sm text-gray-500">{t(steps[step].stepGoal)}</p>
@@ -61,7 +61,7 @@ function ModalStepGoal() {
 
                   <div className="mt-4">
                     <button className="btn-cyan w-24" onClick={closeModal}>
-                      {t('Close', { ns: 'common' })}
+                      {t('common:Close')}
                     </button>
                   </div>
                 </Dialog.Panel>

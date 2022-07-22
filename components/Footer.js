@@ -12,7 +12,7 @@ export default function Footer({ textCheckbox, textButton, href }) {
   const [isStepPage, setIsStepPage] = useState(false)
   const router = useRouter()
   const { step } = router?.query
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation('common')
 
   useEffect(() => {
     setChecked(false)

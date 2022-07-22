@@ -129,8 +129,8 @@ function IntroStep({ step }) {
         </div>
       </div>
       <Footer
-        textButton={t('Next', { ns: 'common' })}
-        textCheckbox={t('Understood', { ns: 'common' })}
+        textButton={t('common:Next')}
+        textCheckbox={t('common:Understood')}
         href={`/steps/${step}`}
       />
     </div>

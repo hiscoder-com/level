@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import Footer from '/components/Footer'
 
 export default function IntroPage() {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'steps'])
   const router = useRouter()
   const { step } = router.query
 
@@ -94,8 +94,8 @@ export default function IntroPage() {
         </div>
       )}
       <Footer
-        textButton={t('Next', { ns: 'common' })}
-        textCheckbox={t('Made', { ns: 'common' })}
+        textButton={t('Next')}
+        textCheckbox={t('Made')}
         href={`/intro-steps/${String(parseInt(step) + 1)}`}
       />
     </div>
@@ -105,7 +105,7 @@ export default function IntroPage() {
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['steps', 'common'])),
+      ...(await serverSideTranslations(locale, ['common', 'steps'])),
       // Will be passed to the page component as props
     },
   }

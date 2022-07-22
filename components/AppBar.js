@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Disclosure } from '@headlessui/react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
+import { Disclosure } from '@headlessui/react'
 
 import { supabase } from '../utils/supabaseClient'
 import { steps } from '../utils/steps'
@@ -22,7 +22,7 @@ export default function AppBar({ setIsOpen }) {
   const [access, setAccess] = useState(false)
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
-  const { t } = useTranslation(['steps', 'common'])
+  const { t } = useTranslation('steps')
 
   const router = useRouter()
   const { step } = router.query
