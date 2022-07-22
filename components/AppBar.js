@@ -9,7 +9,7 @@ import { supabase } from '../utils/supabaseClient'
 import { steps } from '../utils/steps'
 import { useUser } from '../lib/UserContext'
 
-import ModalStepGoal from './ModalStepGoal'
+import Modal from './Modal'
 import Timer from './Timer'
 
 import Burger from '../public/burger.svg'
@@ -79,7 +79,7 @@ export default function AppBar({ setIsOpen }) {
               <div className="hidden md:flex">
                 <Timer time={steps[step].time} />
               </div>
-              <ModalStepGoal />
+              <Modal />
               <Tools />
             </div>
           </>
