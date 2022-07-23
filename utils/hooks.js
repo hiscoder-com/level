@@ -1,12 +1,21 @@
 import { useEffect, useState } from 'react'
 import useSWR from 'swr'
 
-const fetcher = (url, token) =>
-  fetch(url, {
+const fetcher = async (url, token) => {
+  const res = await fetch(url, {
     method: 'GET',
     headers: new Headers({ 'Content-Type': 'application/json', token }),
     credentials: 'same-origin',
-  }).then((res) => res.json())
+  })
+
+  if (!res.ok) {
+    const error = await res.json()
+    error.status = res.status
+    throw error
+  }
+
+  return res.json()
+}
 /**
  *hook returns information about all languages from table ''
  * @param {string} token token of current session of authenticated user

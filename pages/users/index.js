@@ -11,7 +11,6 @@ export default function UsersPage() {
   const { t } = useTranslation(['users'])
 
   const { user } = useCurrentUser()
-
   return (
     <>
       <Head>
