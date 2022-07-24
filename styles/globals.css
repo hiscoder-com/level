@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.appbar{
+	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-24 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
+}
+
 .arrow{
 	@apply px-6 py-5 rounded-full duration-300
 	hover:bg-white
@@ -10,8 +14,8 @@
   disabled:hover:bg-transparent
 }
 
-.btn {
-@apply text-center border-2 rounded-md duration-300 inline-block px-3 py-1 cursor-pointer
+.btn{
+@apply text-center border-2 rounded-md inline-block px-3 py-1 cursor-pointer
 disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white 
  disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400
 }
@@ -27,7 +31,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply btn-cyan-base rounded-full duration-300 uppercase text-2xl font-medium cursor-pointer
 }
 
-.btn-cyan {
+.btn-cyan{
 	@apply btn btn-cyan-base
 }
 
@@ -41,22 +45,43 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] h4 bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none 
 }
 
-.layout-empty{
-	@apply flex justify-center font-sans px-3 min-h-screen flex-col
-}
-.layout-appbar{
-	@apply flex flex-col sm:justify-center f-screen-appbar items-center font-sans px-5 gap-7
+.condition-title{
+	@apply text-center h3 lg:text-2xl md:flex
 }
 
-.appbar{
-	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-10 md:flex-row md:h-20 lg:px-12 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
+.condition-optional-info{
+	@apply items-center gap-4 md:flex
 }
 
-.text-alignment{
-	@apply max-w-7xl pb-6 px-6 lg:px-8 2xl:w-4/5 bg-white rounded-lg 
-}
 .eye{
 	@apply absolute right-2 bottom-2 cursor-pointer
+}
+
+/* нужно ли? */
+.f-screen-appbar{
+	min-height: calc(100vh - 11.5rem);
+}
+
+.h1{
+	@apply text-4xl text-gray-800
+}
+.h2{
+	@apply text-2xl text-gray-800
+}
+.h2-3{
+	@apply text-xl text-gray-800
+}
+.h3{
+	@apply text-lg text-gray-800
+}
+.h4{
+	@apply text-base text-gray-800
+}
+.h5{
+	@apply text-sm text-gray-800
+}
+.h6{
+	@apply text-xs text-gray-800
 }
 
 .input-base{
@@ -74,44 +99,60 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	focus:border-red-700
 }
 
-.h1{
-	@apply text-4xl text-gray-800
-}
-.h2{
-	@apply text-2xl text-gray-800
-}
-.h3{
-	@apply text-lg text-gray-800
-}
-.h4{
-	@apply text-base text-gray-800
-}
-.h5{
-	@apply text-sm text-gray-800
-}
-.h6{
-	@apply text-xs text-gray-800
-}
-/* нужно ли? */
-.f-screen-appbar{
-	min-height: calc(100vh - 11.5rem);
+.layout-footer{
+	@apply flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-blue-150 md:flex-row-reverse lg:px-0
 }
 
-.sidebar-link-a {
+.layout-appbar{
+	@apply flex flex-col gap-7 items-center px-5 f-screen-appbar font-sans sm:justify-center
+}
+
+.layout-empty{
+	@apply flex flex-col justify-center font-sans px-3 min-h-screen
+}
+
+.layout-step{
+	@apply flex flex-col gap-3 items-center f-screen-appbar mx-auto lg:max-w-7xl lg:items-stretch lg:flex-row
+}
+
+.layout-step-col{
+	@apply flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0
+}
+
+.layout-step-col-card{
+	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full
+}
+.layout-step-col-card-body-audio{
+	@apply flex flex-col items-center gap-5 py-24 lg:py-56 h5
+}
+
+.layout-step-col-card-title{
+	@apply h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg
+}
+
+.modal-step-goal{
+	@apply transform overflow-hidden p-6 w-full max-w-md text-center align-middle bg-white rounded-2xl shadow-xl transition-all
+}
+
+.password-control{
+	background: url(/public/eyeIcon.svg) 0 0 no-repeat;
+}
+.password-control.view{
+background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
+}
+
+.sidebar-link-a{
 	@apply flex transition transform px-4 py-3 text-[#3C3C41]
   hover:-translate-x-0.5 hover:text-[#0E7490]
   focus:outline-none
 }
-.sidebar-hr {
+.sidebar-hr{
 	@apply border-b border-[#c4c4c4]
 }
-.sidebar-absolute {
+.sidebar-absolute{
 	@apply absolute font-medium left-0 top-0 right-0 bottom-0
 }
 
-.password-control {
-		background: url(/public/eyeIcon.svg) 0 0 no-repeat;
-}
-.password-control.view {
-	background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
+.text-alignment{
+	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg 
 }

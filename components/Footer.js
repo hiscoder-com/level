@@ -3,19 +3,30 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-export default function Footer({ href, textCheckbox, textButton, handleClick }) {
+import { useTranslation } from 'next-i18next'
+
+import Fulfilled from '../public/fulfilled.svg'
+
+export default function Footer({ textCheckbox, textButton, href, handleClick }) {
+  const [isStepPage, setIsStepPage] = useState(false)
   const router = useRouter()
   const [checked, setChecked] = useState(false)
 
   const { step } = router?.query
+  const { t } = useTranslation('common')
 
   useEffect(() => {
     setChecked(false)
   }, [step])
 
+  useEffect(() => {
+    setIsStepPage(router.pathname === '/steps/[step]')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname])
+
   return (
-    <div className="max-w-7xl w-full mx-auto flex justify-end items-center px-4 bg-blue-150">
-      <div className="relative flex items-center h-16">
+    <div className="layout-footer">
+      <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
           <div className="space-x-1.5 items-center h4">
             <input
@@ -42,6 +53,15 @@ export default function Footer({ href, textCheckbox, textButton, handleClick }) 
           )}
         </div>
       </div>
+      {isStepPage && (
+        <>
+          <div className="pb-3 md:pb-0">stepper</div>
+          <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
+            <div>{t('Fulfilled')}:</div>
+            <Fulfilled />
+          </div>
+        </>
+      )}
     </div>
   )
 }
