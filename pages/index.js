@@ -3,6 +3,8 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import ProgressBar from '../components/ProgressBar'
+
 import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from '../lib/UserContext'
@@ -43,6 +45,7 @@ export default function Home() {
           <a className="btn-start py-3 px-24">{t('SignIn')}</a>
         </Link>
       </div>
+      <ProgressBar />
     </main>
   )
 }

@@ -2,6 +2,70 @@
 @tailwind components;
 @tailwind utilities;
 
+.appbar{
+	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-24 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
+}
+.step{
+	display: flex;
+	align-items: center;
+  justify-content: center;
+	width: 0.9rem;
+  height: 0.9rem;
+	border-radius: 50%;
+	box-shadow: 0px 0px 0px 5px gray;
+}
+.active{
+	border-color: white;
+	background: blue;
+	box-shadow: 0px 0px 0px 5px blue;
+}
+.progress-bar {
+  position: relative;
+  display: flex;
+	align-items: center;
+  justify-content: center;
+	
+}
+.zero{
+  display: flex;
+	align-items: center;
+  justify-content: center;
+	width: 0.9rem;
+  height: 0.9rem;
+	border-radius: 50%;
+	border: 0.15rem solid #0E7490
+
+}
+.progress-step {
+  width: 0.4rem;
+  height: 0.4rem;
+  background-color: #0E7490;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tire{
+	width: 0.5rem;
+	height: 0.2rem;
+	margin: 0.2rem;
+	border: 0.1rem solid #0E7490;
+	background-color: #0E7490;
+}
+.tire-activ{
+	border: 0.1rem solid #9CA3AF;
+	background-color: #9CA3AF;
+}
+.zero-activ{
+	border: 0.15rem solid #9CA3AF;
+	
+}
+ .progress-step-activ{
+ visibility: hidden;
+}
+
+
 .arrow{
 	@apply px-6 py-5 rounded-full duration-300
 	hover:bg-white
