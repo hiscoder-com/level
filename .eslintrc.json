@@ -1,0 +1,13 @@
+{
+  "extends": ["next","prettier"],
+  "plugins": ["prettier"],
+  "rules": {
+    "prettier/prettier": [
+        "error",
+        {
+            "endOfLine": "auto"
+        }
+    ],
+    "@next/next/no-img-element": "off"
+  }
+}
