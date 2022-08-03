@@ -2,5 +2,5 @@
   "logo": "https://raw.githubusercontent.com/texttree/v-cana/master/images/logo.jpg",
   "version": "0.10.0",
   "date": "2022-06-06",
-  "dependencies": ["@texttree/projector-mode-rcl", "scripture-resources-rcl"]
+  "dependencies": ["@texttree/projector-mode-rcl", "scripture-resources-rcl", "@texttree/filter-translation-words-rcl"]
 }
