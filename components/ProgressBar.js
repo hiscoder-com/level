@@ -1,39 +1,38 @@
 import { useEffect, useState } from 'react'
 
-export { useState } from 'react'
-const countStepsNum = 7
+export default function ProgressBar({ amountSteps, currentStep }) {
+  const [steps, setStep] = useState([])
 
-export default function ProgressBar() {
-  const [currentStepNum, setCurrentStepNum] = useState(5)
-  const [currentSteps, setCurrentStep] = useState([])
   useEffect(() => {
     let steps = []
 
-    for (const step = 0; step < countStepsNum; step++) {
+    for (const step = 0; step < amountSteps; step++) {
       const circle = (
-        <>
-          <div className={`${step < currentStepNum ? 'step active' : 'step'}`}></div>
+        <div key={step} className="flex items-center justify-center">
           <div
-            className={`${step < currentStepNum - 1 ? 'tire tire-active ' : 'tire'} ${
-              step == countStepsNum - 1 ? 'hidden' : ''
+            className={`step ${step < currentStep - 1 ? 'passed' : ''} ${
+              step == currentStep - 1 ? 'active' : ''
             }`}
           ></div>
-        </>
+          <div
+            className={`dash ${step < currentStep - 1 ? 'active' : ''} ${
+              step == amountSteps - 1 ? 'hidden' : ''
+            }`}
+          ></div>
+        </div>
       )
       steps.push(circle)
     }
-    const lastStep = steps[steps.length - 1]
-    console.log(lastStep)
-    setCurrentStep(steps)
-  }, [currentStepNum])
+    setStep(steps)
+  }, [amountSteps, currentStep])
 
   return (
     <>
-      <div className="progress-bar">
+      <div className="relative flex items-center justify-center">
         <p className="mr-2 mb-1 text-2xl ">
-          {currentStepNum}/{countStepsNum}:
+          {currentStep}/{amountSteps}:
         </p>
-        {currentSteps}
+        {steps}
       </div>
     </>
   )
