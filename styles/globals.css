@@ -7,27 +7,17 @@
 }
 
 .progress-bar {
-  position: relative;
-  display: flex;
-	align-items: center;
-  justify-content: center;
-	
+	@apply relative flex items-center justify-center	
 }
 
 .step{
-	display:inline-block;
-	width: 20px;
-	height: 20px;
+	@apply inline-block w-5 h-5 rounded-full m-1.5 bg-white;
 	border: 4px solid transparent;
-	background: white;
-	border-radius: 100px;
-	margin: 5px;
-	box-shadow: 0px 0px 0px 3px gray;
+	box-shadow: 0px 0px 0px 3px #9CA3AF;
 }
 
 .active{
-	border-color: white;
-	background: #0E7490;
+	@apply border-white bg-cyan-800;
 	box-shadow: 0px 0px 0px 3px #0E7490;
 }
 
@@ -35,8 +25,8 @@
 	width: 0.5rem;
 	height: 0.2rem;
 	margin: 0.2rem;
-	border: 0.1rem solid gray;
-	background-color: gray;
+	border: 0.1rem solid #9CA3AF;
+	background-color: #9CA3AF;
 }
 
 .tire-active{
