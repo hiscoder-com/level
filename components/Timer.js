@@ -8,7 +8,6 @@ function Timer({ time }) {
   const getPadTime = (time) => time.toString().padStart(2, '0')
   const minutes = getPadTime(Math.floor(timeLeft / 60))
   const seconds = getPadTime(timeLeft - minutes * 60)
-  console.log(time - 1)
   useEffect(() => {
     setTimeLeft(time)
   }, [time])
@@ -42,7 +41,7 @@ function Timer({ time }) {
       <Time onClick={handleReset} />
       <div onClick={isCounting ? handleStop : handleStart}>
         <span>{minutes}</span>
-        <span>:</span>
+        <span className={isCounting ? 'separator' : ''}>:</span>
         <span>{seconds}</span>
       </div>
     </div>
