@@ -55,7 +55,6 @@ export default function AppBar({ setIsOpen }) {
     <div className="bg-white">
       <div className="appbar">
         <div className="flex items-center gap-7 cursor-pointer">
-          <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6 stroke-1" />
           {access && (
             <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6 stroke-1" />
           )}

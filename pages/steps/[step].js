@@ -7,10 +7,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from '/components/Footer'
 
 export default function IntroPage() {
-  const router = useRouter()
-  const { step } = router.query
+  const { query } = useRouter()
+  const { step } = query
   const { t } = useTranslation(['common', 'steps'])
-
   return (
     <div>
       <Head>
@@ -103,11 +102,14 @@ export default function IntroPage() {
   )
 }
 
-export async function getServerSideProps({ locale }) {
+export async function getServerSideProps({ locale, params }) {
+  if (params.step > 7 || params.step <= 0) {
+    return { notFound: true }
+  }
+
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'steps'])),
-      // Will be passed to the page component as props
     },
   }
 }

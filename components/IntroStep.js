@@ -99,13 +99,11 @@ const IntroSteps = {
     ],
   },
 }
-
 function IntroStep({ step }) {
   const { t } = useTranslation(['intro-steps', 'common'])
-
   return (
-    <div>
-      <div className="text-alignment text-justify">
+    <div className="mb-4">
+      <div className="text-alignment text-justify mb-4">
         <h1 className="h1 my-4 pt-5">{t('StepIntroduction')}:</h1>
         <div className="h2">{step && IntroSteps[step].title}</div>
         <div className="aspect-w-16 aspect-h-9 my-7">
