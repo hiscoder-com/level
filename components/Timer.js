@@ -8,7 +8,7 @@ function Timer({ time }) {
   const getPadTime = (time) => time.toString().padStart(2, '0')
   const minutes = getPadTime(Math.floor(timeLeft / 60))
   const seconds = getPadTime(timeLeft - minutes * 60)
-
+  console.log(time - 1)
   useEffect(() => {
     setTimeLeft(time)
   }, [time])
@@ -24,7 +24,7 @@ function Timer({ time }) {
   }, [timeLeft, isCounting])
 
   const handleStart = () => {
-    if (timeLeft === 0) setTimeLeft(time)
+    timeLeft != 0 ? setTimeLeft(timeLeft - 1) : setTimeLeft(time)
     setIsCounting(true)
   }
 
