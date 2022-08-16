@@ -5,18 +5,13 @@ import SideBar from './SideBar'
 
 function Layout({ backgroundColor, children }) {
   const [isOpen, setIsOpen] = useState(false)
-  const [isIntroduction, setIsIntroduction] = useState(false)
+
   return (
     <div className={`mx-auto min-h-screen ${backgroundColor}`}>
-      <AppBar
-        isOpen={isOpen}
-        setIsOpen={setIsOpen}
-        isIntroduction={isIntroduction}
-        setIsIntroduction={setIsIntroduction}
-      />
+      <AppBar setIsOpen={setIsOpen} />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
-        <div className="pt-6 sm:p-6 lg:px-8">{children}</div>
+        <div className="pt-3 lg:pt-5 lg:px-8">{children}</div>
       </main>
     </div>
   )

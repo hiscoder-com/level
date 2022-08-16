@@ -99,14 +99,12 @@ const IntroSteps = {
     ],
   },
 }
-
 function IntroStep({ step }) {
   const { t } = useTranslation(['intro-steps', 'common'])
-
   return (
-    <div className="layout-appbar">
-      <div className="text-alignment">
-        <h1 className="h1 my-8">{t('StepIntroduction')}:</h1>
+    <div className="mb-4">
+      <div className="text-alignment text-justify mb-4">
+        <h1 className="h1 my-4 pt-5">{t('StepIntroduction')}:</h1>
         <div className="h2">{step && IntroSteps[step].title}</div>
         <div className="aspect-w-16 aspect-h-9 my-7">
           <iframe
@@ -130,8 +128,8 @@ function IntroStep({ step }) {
       </div>
       <Footer
         textButton={t('common:Next')}
-        textCheckbox={t('common:Made')}
-        href={`/intro-steps/${parseInt(step) + 1}`}
+        textCheckbox={t('common:Understood')}
+        href={`/steps/${step}`}
       />
     </div>
   )

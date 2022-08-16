@@ -23,10 +23,6 @@ function Timer({ time }) {
     }
   }, [timeLeft, isCounting])
 
-  useEffect(() => {
-    localStorage.setItem('timeLeft', timeLeft)
-  }, [timeLeft])
-
   const handleStart = () => {
     if (timeLeft === 0) setTimeLeft(time)
     setIsCounting(true)
@@ -42,7 +38,7 @@ function Timer({ time }) {
   }
 
   return (
-    <div className="flex row items-center gap-1 cursor-default">
+    <div className="flex items-center gap-1 cursor-default">
       <Time onClick={handleReset} />
       <div onClick={isCounting ? handleStop : handleStart}>
         <span>{minutes}</span>
