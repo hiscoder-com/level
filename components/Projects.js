@@ -1,11 +1,10 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { useProjects, useUserProjects } from '@/utils/hooks'
 import { useCurrentUser } from '../lib/UserContext'
 
-import Fulfilled from '../public/fulfilled.png'
+import Avatars from './Avatars'
 
 export default function Projects({ languageCode }) {
   const { user } = useCurrentUser()
@@ -56,7 +55,7 @@ export default function Projects({ languageCode }) {
                   </div>
                   <div className="flex gap-2.5 text-gray-500">
                     <p className="text-gray-500">Переводчики:</p>
-                    <Image src={Fulfilled} alt="Fulfilled" width="154" height="32" />
+                    <Avatars />
                   </div>
                 </div>
               )
