@@ -20,7 +20,6 @@ export default function Projects({ languageCode }) {
   })
 
   const projects = user?.is_admin ? adminProjects : userProjects
-
   return (
     <>
       <div className="container">
