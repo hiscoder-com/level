@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useProjects, useUserProjects } from '@/utils/hooks'
 import { useCurrentUser } from '../lib/UserContext'
 
-import Avatars from './Avatars'
+import Translators from './Translators'
 
 export default function Projects({ languageCode }) {
   const { user } = useCurrentUser()
@@ -55,7 +55,7 @@ export default function Projects({ languageCode }) {
                   </div>
                   <div className="flex gap-2.5">
                     <p className="text-gray-500">Переводчики:</p>
-                    <Avatars projectCode={project.code} />
+                    <Translators projectCode={project.code} />
                   </div>
                 </div>
               )
