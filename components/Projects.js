@@ -56,7 +56,7 @@ export default function Projects({ languageCode }) {
                   </div>
                   <div className="flex gap-2.5 text-gray-500">
                     <p className="text-gray-500">Переводчики:</p>
-                    <Image src={Fulfilled} alt="Fulfilled" width="308" height="64" />
+                    <Image src={Fulfilled} alt="Fulfilled" width="154" height="32" />
                   </div>
                 </div>
               )
