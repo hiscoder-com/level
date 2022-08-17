@@ -2,7 +2,7 @@ import Image from 'next/image'
 
 import Fulfilled from '../public/fulfilled.png'
 
-function Avatars(code) {
+function Avatars({ projectCode }) {
   return <Image src={Fulfilled} alt="Fulfilled" width="154" height="32" />
 }
 
