@@ -1,0 +1,63 @@
+const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7dae27', '#27ae9b', '#9d27ae']
+
+function TImage({ item }) {
+  const isDone = () => {
+    const res = item.status ? 'bg-green-500' : 'bg-red-500'
+    return res
+  }
+
+  return (
+    <>
+      {item.avatar ? (
+        <>
+          <div
+            style={{ backgroundImage: 'url(' + item.url + ')' }}
+            className={
+              'w-[34px] h-[34px] rounded-full border-2 bg-contain bg-center bg-no-repeat'
+            }
+          ></div>
+          <span
+            className={`absolute w-1.5 h-1.5 ml-[27px] -mt-[30px] rounded-full ${isDone()}`}
+          >
+            <span
+              className={`custom-animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isDone()}`}
+            ></span>
+          </span>
+        </>
+      ) : (
+        <div
+          title={`${item.users.login} ${item.users.email}`}
+          className="border-2 rounded-full overflow-hidden cursor-default"
+        >
+          <svg
+            viewBox="0 0 168 168"
+            fill="white"
+            width="30"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <rect
+              width="100%"
+              height="100%"
+              fill={defaultColor[item.users.login.length % 6]}
+            />
+            <text
+              x="84"
+              y="110"
+              textAnchor="middle"
+              className="text-7xl text-white font-bold"
+            >
+              {item.users.login.toUpperCase().slice(0, 2)}
+            </text>
+          </svg>
+          <span className={`absolute w-1.5 h-1.5 ml-6 -mt-7 rounded-full ${isDone()}`}>
+            <span
+              className={`absolute inline-flex h-full w-full rounded-full opacity-75 custom-animate-ping ${isDone()}`}
+            ></span>
+          </span>
+        </div>
+      )}
+    </>
+  )
+}
+
+export default TImage

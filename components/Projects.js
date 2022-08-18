@@ -52,7 +52,7 @@ export default function Projects({ languageCode }) {
                     <p className="text-gray-500">Прогресс:</p>
                     <p>10%</p>
                   </div>
-                  <div className="flex gap-2.5">
+                  <div className="flex gap-3">
                     <p className="text-gray-500">Переводчики:</p>
                     <Translators projectCode={project.code} />
                   </div>
