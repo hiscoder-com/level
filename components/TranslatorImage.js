@@ -25,7 +25,7 @@ function TranslatorImage({ item }) {
           <svg
             viewBox="0 0 168 168"
             fill="white"
-            width="30"
+            width="34px"
             xmlns="http://www.w3.org/2000/svg"
           >
             <rect
@@ -43,7 +43,7 @@ function TranslatorImage({ item }) {
             </text>
           </svg>
           <span
-            className={`absolute w-1.5 h-1.5 ml-6 -mt-7 rounded-full ${
+            className={`absolute w-1.5 h-1.5 ml-[26px] -mt-8 rounded-full ${
               item.status ? 'bg-green-500' : 'bg-red-500'
             }`}
           ></span>

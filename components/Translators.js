@@ -18,7 +18,7 @@ function Translators({ projectCode }) {
           {translators.map((item, key) => {
             return (
               <div key={key}>
-                <TranslatorImage item={item} />
+                <TranslatorImage item={item} size />
               </div>
             )
           })}
