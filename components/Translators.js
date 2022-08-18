@@ -1,7 +1,7 @@
 import { useCurrentUser } from '../lib/UserContext'
 import { useTranslators } from '@/utils/hooks'
 
-import TImage from './TImage'
+import TranslatorImage from './TranslatorImage'
 
 function Translators({ projectCode }) {
   const { user } = useCurrentUser()
@@ -18,7 +18,7 @@ function Translators({ projectCode }) {
           {translators.map((item, key) => {
             return (
               <div key={key}>
-                <TImage item={item} />
+                <TranslatorImage item={item} />
               </div>
             )
           })}

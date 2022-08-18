@@ -1,11 +1,6 @@
 const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7dae27', '#27ae9b', '#9d27ae']
 
-function TImage({ item }) {
-  const isDone = () => {
-    const res = item.status ? 'bg-green-500' : 'bg-red-500'
-    return res
-  }
-
+function TranslatorImage({ item }) {
   return (
     <>
       {item.avatar ? (
@@ -17,17 +12,15 @@ function TImage({ item }) {
             }
           ></div>
           <span
-            className={`absolute w-1.5 h-1.5 ml-[27px] -mt-[30px] rounded-full ${isDone()}`}
-          >
-            <span
-              className={`custom-animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${isDone()}`}
-            ></span>
-          </span>
+            className={`absolute w-1.5 h-1.5 ml-[27px] -mt-[30px] rounded-full ${
+              item.status ? 'bg-green-500' : 'bg-red-500'
+            }`}
+          ></span>
         </>
       ) : (
         <div
           title={`${item.users.login} ${item.users.email}`}
-          className="border-2 rounded-full overflow-hidden cursor-default"
+          className="border-2 rounded-full overflow-hidden cursor-default select-none"
         >
           <svg
             viewBox="0 0 168 168"
@@ -49,15 +42,15 @@ function TImage({ item }) {
               {item.users.login.toUpperCase().slice(0, 2)}
             </text>
           </svg>
-          <span className={`absolute w-1.5 h-1.5 ml-6 -mt-7 rounded-full ${isDone()}`}>
-            <span
-              className={`absolute inline-flex h-full w-full rounded-full opacity-75 custom-animate-ping ${isDone()}`}
-            ></span>
-          </span>
+          <span
+            className={`absolute w-1.5 h-1.5 ml-6 -mt-7 rounded-full ${
+              item.status ? 'bg-green-500' : 'bg-red-500'
+            }`}
+          ></span>
         </div>
       )}
     </>
   )
 }
 
-export default TImage
+export default TranslatorImage
