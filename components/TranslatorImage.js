@@ -1,4 +1,4 @@
-const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7dae27', '#27ae9b', '#9d27ae']
+const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9D27AE']
 
 function TranslatorImage({ item }) {
   return (
