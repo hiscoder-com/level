@@ -12,7 +12,7 @@ function Translators({ projectCode }) {
 
   return (
     <div className="flex gap-1.5">
-      {translators && Object.keys(translators).length > 0 && (
+      {translators && translators.length > 0 && (
         <>
           {translators.map((item, key) => {
             return (
