@@ -2,12 +2,7 @@ import { useCurrentUser } from '../lib/UserContext'
 import { useTranslators } from '@/utils/hooks'
 
 import TranslatorImage from './TranslatorImage'
-const test = [
-  { url: 'https://avatars.githubusercontent.com/u/60795829?v=4', status: true },
-  { url: 'https://avatars.githubusercontent.com/u/74174349?v=4', status: false },
-  { url: 'https://avatars.githubusercontent.com/u/30548361?v=4', status: true },
-  { url: 'https://avatars.githubusercontent.com/u/68908261?v=4', status: false },
-]
+
 function Translators({ projectCode }) {
   const { user } = useCurrentUser()
   const [translators] = useTranslators({
