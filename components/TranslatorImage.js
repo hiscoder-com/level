@@ -1,27 +1,28 @@
 const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9D27AE']
 
-function TranslatorImage({ item }) {
+function TranslatorImage({ item, size }) {
   return (
     <>
-      {item.avatar ? (
-        <>
+      <div
+        title={`${item.users.login} ${item.users.email}`}
+        className="relative border-2 rounded-full cursor-default select-none"
+      >
+        {item.avatar ? (
           <div
-            style={{ backgroundImage: 'url(' + item.url + ')' }}
-            className={
-              'w-[34px] h-[34px] rounded-full border-2 bg-contain bg-center bg-no-repeat'
-            }
-          ></div>
-          <span
-            className={`absolute w-1.5 h-1.5 ml-[27px] -mt-[30px] rounded-full ${
-              item.status ? 'bg-green-500' : 'bg-red-500'
-            }`}
-          ></span>
-        </>
-      ) : (
-        <div
-          title={`${item.users.login} ${item.users.email}`}
-          className="relative border-2 rounded-full cursor-default select-none"
-        >
+            style={{
+              backgroundImage: 'url(' + item.url + ')',
+              width: size,
+              height: size,
+            }}
+            className={`relative rounded-full border-2 bg-contain bg-center bg-no-repeat`}
+          >
+            <span
+              className={`absolute w-[20%] h-[20%] ml-[76%] -mt-[-4%] rounded-full ${
+                item.status ? 'bg-green-500' : 'bg-red-500'
+              }`}
+            ></span>
+          </div>
+        ) : (
           <svg
             viewBox="0 0 168 168"
             fill="white"
@@ -43,13 +44,13 @@ function TranslatorImage({ item }) {
               {item.users.login.toUpperCase().slice(0, 2)}
             </text>
           </svg>
-          <span
-            className={`absolute w-[17.68%] h-[17.68%] ml-[76.47%] -mt-[95%] rounded-full ${
-              item.status ? 'bg-green-500' : 'bg-red-500'
-            }`}
-          ></span>
-        </div>
-      )}
+        )}
+        <span
+          className={`absolute w-[17.68%] h-[17.68%] ml-[76.47%] -mt-[95%] rounded-full ${
+            item.status ? 'bg-green-500' : 'bg-red-500'
+          }`}
+        ></span>
+      </div>
     </>
   )
 }
