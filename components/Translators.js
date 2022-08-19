@@ -3,7 +3,7 @@ import { useTranslators } from '@/utils/hooks'
 
 import TranslatorImage from './TranslatorImage'
 
-function Translators({ projectCode }) {
+function Translators({ projectCode, size }) {
   const { user } = useCurrentUser()
   const [translators] = useTranslators({
     token: user?.access_token,
@@ -17,7 +17,7 @@ function Translators({ projectCode }) {
           {translators.map((item, key) => {
             return (
               <div key={key}>
-                <TranslatorImage item={item} size="34px" />
+                <TranslatorImage item={item} size={size} />
               </div>
             )
           })}

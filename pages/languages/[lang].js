@@ -6,6 +6,7 @@ import Projects from '../../components/Projects'
 export default function LanguagesPage() {
   const router = useRouter()
   const { lang } = router.query
+
   return (
     <div className="px-5 mx-auto pb-16 lg:max-w-7xl">
       <Head>

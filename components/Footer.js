@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import Fulfilled from '../public/fulfilled.svg'
+import Translators from './Translators'
 
 export default function Footer({ textCheckbox, textButton, href, handleClick }) {
   const [isStepPage, setIsStepPage] = useState(false)
@@ -58,7 +58,7 @@ export default function Footer({ textCheckbox, textButton, href, handleClick }) 
           <div className="pb-3 md:pb-0">stepper</div>
           <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
             <div>{t('Fulfilled')}:</div>
-            <Fulfilled />
+            <Translators projectCode="rlob" size="34px" />
           </div>
         </>
       )}

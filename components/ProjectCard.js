@@ -4,7 +4,7 @@ import Translators from './Translators'
 
 function ProjectCard({ project }) {
   return (
-    <div className="block p-6 h-full text-xl bg-white rounded-xl sm:h-52">
+    <div className="block p-6 h-full bg-white rounded-xl sm:h-52">
       <Link href={`/projects/${project.code}`}>
         <a className="block text-2xl mb-4 text-blue-450 underline decoration-2 underline-offset-4">
           {project.title}
@@ -20,7 +20,7 @@ function ProjectCard({ project }) {
       </div>
       <div className="flex gap-3">
         <p className="text-gray-500">Переводчики:</p>
-        <Translators projectCode={project.code} />
+        <Translators projectCode={project.code} size="25px" />
       </div>
     </div>
   )
