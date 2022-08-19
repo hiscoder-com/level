@@ -45,7 +45,6 @@ export default function Home() {
           <a className="btn-start py-3 px-24">{t('SignIn')}</a>
         </Link>
       </div>
-      <ProgressBar amountSteps={7} currentStep={4} />
     </main>
   )
 }
