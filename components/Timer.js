@@ -8,7 +8,6 @@ function Timer({ time }) {
   const getPadTime = (time) => time.toString().padStart(2, '0')
   const minutes = getPadTime(Math.floor(timeLeft / 60))
   const seconds = getPadTime(timeLeft - minutes * 60)
-
   useEffect(() => {
     setTimeLeft(time)
   }, [time])
@@ -23,12 +22,8 @@ function Timer({ time }) {
     }
   }, [timeLeft, isCounting])
 
-  useEffect(() => {
-    localStorage.setItem('timeLeft', timeLeft)
-  }, [timeLeft])
-
   const handleStart = () => {
-    if (timeLeft === 0) setTimeLeft(time)
+    timeLeft != 0 ? setTimeLeft(timeLeft - 1) : setTimeLeft(time)
     setIsCounting(true)
   }
 
@@ -42,11 +37,11 @@ function Timer({ time }) {
   }
 
   return (
-    <div className="flex row items-center gap-1 cursor-default">
+    <div className="flex items-center gap-1 cursor-default">
       <Time onClick={handleReset} />
       <div onClick={isCounting ? handleStop : handleStart}>
         <span>{minutes}</span>
-        <span>:</span>
+        <span className={isCounting ? 'separator' : ''}>:</span>
         <span>{seconds}</span>
       </div>
     </div>

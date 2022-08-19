@@ -6,11 +6,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import IntroStep from '../../components/IntroStep'
 
 export default function IntroPage() {
-  const router = useRouter()
-  const { step } = router.query
-
+  const { query } = useRouter()
+  const { step } = query
   return (
-    <div className="container">
+    <div className="layout-appbar">
       <Head>
         <title>V-CANA Intro {step}</title>
         <meta name="description" content="VCANA" />
@@ -21,11 +20,13 @@ export default function IntroPage() {
   )
 }
 
-export async function getServerSideProps({ locale }) {
+export async function getServerSideProps({ locale, params }) {
+  if (params.step > 7 || params.step <= 0) {
+    return { notFound: true }
+  }
   return {
     props: {
       ...(await serverSideTranslations(locale, ['intro-steps', 'common'])),
-      // Will be passed to the page component as props
     },
   }
 }
