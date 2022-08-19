@@ -20,7 +20,7 @@ function TranslatorImage({ item }) {
       ) : (
         <div
           title={`${item.users.login} ${item.users.email}`}
-          className="border-2 rounded-full overflow-hidden cursor-default select-none"
+          className="relative border-2 rounded-full cursor-default select-none"
         >
           <svg
             viewBox="0 0 168 168"
@@ -28,14 +28,15 @@ function TranslatorImage({ item }) {
             width="34px"
             xmlns="http://www.w3.org/2000/svg"
           >
-            <rect
-              width="100%"
-              height="100%"
+            <circle
+              cx="84"
+              cy="84"
+              r="50%"
               fill={defaultColor[item.users.login.length % 6]}
             />
             <text
-              x="84"
-              y="110"
+              x="50%"
+              y="65%"
               textAnchor="middle"
               className="text-7xl text-white font-bold"
             >
@@ -43,7 +44,7 @@ function TranslatorImage({ item }) {
             </text>
           </svg>
           <span
-            className={`absolute w-1.5 h-1.5 ml-[26px] -mt-8 rounded-full ${
+            className={`absolute w-[17.68%] h-[17.68%] ml-[76.47%] -mt-[95%] rounded-full ${
               item.status ? 'bg-green-500' : 'bg-red-500'
             }`}
           ></span>
