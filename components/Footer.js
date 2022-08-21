@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 import Fulfilled from '../public/fulfilled.svg'
+import ProgressBar from './ProgressBar'
 
 export default function Footer({ textCheckbox, textButton, href, handleClick }) {
   const [isStepPage, setIsStepPage] = useState(false)
@@ -14,7 +15,6 @@ export default function Footer({ textCheckbox, textButton, href, handleClick }) 
 
   const { step } = router?.query
   const { t } = useTranslation('common')
-
   useEffect(() => {
     setChecked(false)
   }, [step])
@@ -55,7 +55,9 @@ export default function Footer({ textCheckbox, textButton, href, handleClick }) 
       </div>
       {isStepPage && (
         <>
-          <div className="pb-3 md:pb-0">stepper</div>
+          <div className="pb-3 md:pb-0">
+            <ProgressBar amountSteps={7} currentStep={step} />
+          </div>
           <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
             <div>{t('Fulfilled')}:</div>
             <Fulfilled />
