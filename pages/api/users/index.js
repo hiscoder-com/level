@@ -32,6 +32,7 @@ export default async function handler(req, res) {
           email,
           password,
           user_metadata: { login },
+          email_confirm: true,
         })
         if (errorPost) throw errorPost
         res.status(201).json({})

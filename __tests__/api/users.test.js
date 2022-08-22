@@ -7,12 +7,14 @@ jest.mock('../../utils/supabaseServer', () => ({
   supabaseService: {
     auth: {
       api: {
-        createUser: jest.fn(({ email, password, user_metadata: { login } }) => {
-          if (!email || !password || !login) {
-            supabaseService.error.message = 'ERROR'
+        createUser: jest.fn(
+          ({ email, password, user_metadata: { login }, email_confirm = false }) => {
+            if (!email || !password || !login) {
+              supabaseService.error.message = 'ERROR'
+            }
+            return supabaseService
           }
-          return supabaseService
-        }),
+        ),
       },
     },
     error: undefined,
@@ -76,16 +78,16 @@ const mockResponse = () => {
  * 4.4. Если нет - создает юзера
  * 5. Проверять и status и json
  */
-
-const res = mockResponse()
-
+let res
 beforeEach(() => {
+  res = mockResponse()
   supabase.token = false
   supabase.error = undefined
   supabase.data = undefined
 
   supabaseService.error = undefined
 })
+
 describe('проверим api/users', () => {
   it('если нет токена то 401 ошибка', async () => {
     const req = {
@@ -94,8 +96,9 @@ describe('проверим api/users', () => {
       method: 'GET',
     }
     await handler(req, res)
-    expect(res.status).toHaveBeenLastCalledWith(401)
+    expect(res.status).toHaveBeenCalledWith(401)
   })
+
   it('если неправильный токен то 404 ошибка', async () => {
     const req = {
       headers: { token: 'incorrect' },
@@ -103,17 +106,19 @@ describe('проверим api/users', () => {
       method: 'GET',
     }
     await handler(req, res)
-    expect(res.status).toHaveBeenLastCalledWith(404)
+    expect(res.status).toHaveBeenCalledWith(404)
   })
+
   it('если PUT запрос то 405 ошибка', async () => {
     const req = {
       headers: { token: 'correct' },
       method: 'PUT',
     }
     await handler(req, res)
-    expect(res.status).toHaveBeenLastCalledWith(405)
-    expect(res.end).toHaveBeenLastCalledWith('Method PUT Not Allowed')
+    expect(res.status).toHaveBeenCalledWith(405)
+    expect(res.end).toHaveBeenCalledWith('Method PUT Not Allowed')
   })
+
   it('если DELETE запрос то 405 ошибка', async () => {
     const req = {
       headers: { token: 'correct' },
@@ -121,9 +126,10 @@ describe('проверим api/users', () => {
       method: 'DELETE',
     }
     await handler(req, res)
-    expect(res.status).toHaveBeenLastCalledWith(405)
-    expect(res.end).toHaveBeenLastCalledWith('Method DELETE Not Allowed')
+    expect(res.status).toHaveBeenCalledWith(405)
+    expect(res.end).toHaveBeenCalledWith('Method DELETE Not Allowed')
   })
+
   it('GET запрос вернул массив юзеров', async () => {
     const req = {
       headers: { token: 'correct' },
@@ -131,9 +137,10 @@ describe('проверим api/users', () => {
       method: 'GET',
     }
     await handler(req, res)
-    expect(res.status).toHaveBeenLastCalledWith(200)
-    //expect(res.json).toHaveBeenLastCalledWith({ username: 'hugo' })
+    expect(res.status).toHaveBeenCalledWith(200)
+    expect(res.json).toHaveBeenCalledWith([{ id: '1', login: 'admin', agreement: true }])
   })
+
   it('POST запрос вернул 404 потому что не прошла валидация', async () => {
     const req = {
       headers: { token: 'correct' },
@@ -141,9 +148,9 @@ describe('проверим api/users', () => {
       method: 'POST',
     }
     await handler(req, res)
-    expect(res.status).toHaveBeenLastCalledWith(404)
-    //expect(res.json).toHaveBeenLastCalledWith({ username: 'hugo' })
+    expect(res.status).toHaveBeenCalledWith(404)
   })
+
   it('POST запрос вернул 201 и создал юзера', async () => {
     const req = {
       headers: { token: 'correct' },
@@ -151,7 +158,7 @@ describe('проверим api/users', () => {
       method: 'POST',
     }
     await handler(req, res)
-    expect(res.status).toHaveBeenLastCalledWith(201)
-    //expect(res.json).toHaveBeenLastCalledWith({ username: 'hugo' })
+    expect(res.status).toHaveBeenCalledWith(201)
+    expect(res.json).toHaveBeenCalledWith({})
   })
 })
