@@ -15,12 +15,14 @@ export default function UsersPage() {
   return (
     <>
       <Head>
-        <title>V-CANA - {t('UsersList')}</title>
+        <title>
+          {t('common:V-CANA')} - {t('UsersList')}
+        </title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="container">
-        <div>{t('users')}</div>
+        <div>{t('Users')}</div>
         <UsersList access_token={user?.access_token} />
         <Link href={'/users/create'}>
           <a className="btn btn-filled">{t('CreateNewUser')}</a>

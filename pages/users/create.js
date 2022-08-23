@@ -2,6 +2,9 @@ import { useState } from 'react'
 
 import axios from 'axios'
 
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { useCurrentUser } from '../../lib/UserContext'
 
 function UserCreatePage() {
@@ -10,6 +13,8 @@ function UserCreatePage() {
   const [message, setMessage] = useState('')
   const [password, setPassword] = useState('')
   const [login, setLogin] = useState('')
+  const { t } = useTranslation(['users', 'common'])
+
   const handleSaveUser = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
@@ -26,12 +31,9 @@ function UserCreatePage() {
   }
   return (
     <div>
-      <h3>UserCreatePage</h3>
-      <p>
-        Создавать может только админ, по этому надо убедиться что доступ к этой странице
-        ограничен
-      </p>
-      <div>Email</div>
+      <h3>{t('UserCreatePage')}</h3>
+      <p>{t('Explanation')}</p>
+      <div>{t('Email')}</div>
       <input
         className={'form'}
         type="text"
@@ -39,7 +41,7 @@ function UserCreatePage() {
         onChange={(e) => setEmail(e.target.value)}
       />
       <br />
-      <div>Password</div>
+      <div>{t('Password')}</div>
       <input
         className={'form'}
         type="text"
@@ -47,7 +49,7 @@ function UserCreatePage() {
         onChange={(e) => setPassword(e.target.value)}
       />
       <br />
-      <div>Login</div>
+      <div>{t('Login')}</div>
       <input
         className={'form'}
         type="text"
@@ -57,10 +59,19 @@ function UserCreatePage() {
       <br />
       <div className="text-red-500">{message}</div>
       <button className={'btn btn-cyan'} onClick={handleSaveUser}>
-        Save
+        {t('Save')}
       </button>
     </div>
   )
 }
 
 export default UserCreatePage
+
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['users', 'common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}

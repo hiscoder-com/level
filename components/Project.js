@@ -3,7 +3,11 @@ import Link from 'next/link'
 import { useCurrentUser } from '../lib/UserContext'
 import { useProject, useProjectRole, useTranslators } from '@/utils/hooks'
 
+import { useTranslation } from 'next-i18next'
+
 function Project({ code }) {
+  const { t } = useTranslation(['projects'])
+
   const { user } = useCurrentUser()
 
   const [project] = useProject({ token: user?.access_token, code })
@@ -26,10 +30,10 @@ function Project({ code }) {
       </h3>
 
       <div>
-        Code <b>{project?.code}</b>
+        {t('Code')} <b>{project?.code}</b>
       </div>
       <div>
-        Language{' '}
+        {t('Language')}{' '}
         {project?.languages && (
           <>
             <b>{project?.languages?.orig_name + ' '}</b>
@@ -41,7 +45,7 @@ function Project({ code }) {
       <div>
         {translators && Object.keys(translators).length > 0 && (
           <>
-            Translators:
+            {t('Translators')}:
             {translators.map((el, key) => {
               return (
                 <div
@@ -55,7 +59,7 @@ function Project({ code }) {
         {user?.is_admin ||
           (['admin', 'coordinator'].includes(projectRole) && (
             <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
-              <a className="btn btn-filled btn-cyan">Редактирование проекта</a>
+              <a className="btn btn-filled btn-cyan">{t('ProjectEditing')}</a>
             </Link>
           ))}
       </div>
