@@ -9,7 +9,6 @@ import Translators from './Translators'
 
 import ProgressBar from './ProgressBar'
 
-
 export default function Footer({ textCheckbox, textButton, href, handleClick }) {
   const [isStepPage, setIsStepPage] = useState(false)
   const router = useRouter()
