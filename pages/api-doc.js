@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react'
-// import spec from '../public/swagger.json'
+import { useEffect } from 'react'
 
 import 'swagger-ui/dist/swagger-ui.css'
 import { useCurrentUser } from 'lib/UserContext'
 import axios from 'axios'
 
-function Doc() {
-  const { user, loading } = useCurrentUser()
+function ApiDoc() {
+  const { user } = useCurrentUser()
   console.log(user && user.access_token)
   useEffect(() => {
     async function init() {
@@ -20,4 +19,4 @@ function Doc() {
   return <div id="swagger">loading...</div>
 }
 
-export default Doc
+export default ApiDoc

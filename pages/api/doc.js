@@ -2,10 +2,12 @@ import { withSwagger } from 'next-swagger-doc'
 
 const swaggerHandler = withSwagger({
   definition: {
-    consumes: ['application/json'],
-    produces: ['application/json'],
-    schemes: ['https', 'http'],
-    swagger: '2.0',
+    openapi: '3.0.3',
+    consumes: ['application/json', 'application/x-www-form-urlencoded'],
+    produces: ['application/json', 'application/x-www-form-urlencoded'],
+    components: {
+      securitySchemes: { ApiKeyAuth: { type: 'apiKey', in: 'header', name: 'token' } },
+    },
     info: {
       description: 'This documentation describes the V-Cana API.',
       title: 'V-CANA API.',
@@ -13,21 +15,8 @@ const swaggerHandler = withSwagger({
         name: 'MIT',
         url: 'http://opensource.org/licenses/MIT',
       },
-      version: '1.0.0',
+      version: '1.0.11',
     },
-
-    securityDefinitions: {
-      AuthorizationHeaderToken: {
-        type: 'apiKey',
-        name: 'token',
-        in: 'header',
-      },
-    },
-    security: [
-      {
-        AuthorizationHeaderToken: [],
-      },
-    ],
   },
   apiFolder: 'pages/api',
 })
