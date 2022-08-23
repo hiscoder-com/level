@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 export default function Languages() {
   const { user } = useCurrentUser()
 
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('users')
 
   const [languages] = useLanguages(user?.access_token)
   return (
