@@ -2,16 +2,21 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'next-i18next'
 
 import IntroStep from '../../components/IntroStep'
 
 export default function IntroPage() {
   const { query } = useRouter()
   const { step } = query
+  const { t } = useTranslation(['intro-steps'])
+
   return (
     <div className="layout-appbar">
       <Head>
-        <title>V-CANA Intro {step}</title>
+        <title>
+          {t('V-CANAIntro')} {step}
+        </title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

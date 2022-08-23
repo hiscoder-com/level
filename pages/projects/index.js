@@ -13,16 +13,17 @@ export default function ProjectsPage() {
       <Projects />
       {user?.is_admin && (
         <Link href={'/projects/create'}>
-          <a className="btn-cyan">Add New</a>
+          <a className="btn-cyan">{t('AddNew')}</a>
         </Link>
       )}
     </>
   )
 }
-export async function getStaticProps({ locale }) {
+
+export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['projects'])),
       // Will be passed to the page component as props
     },
   }

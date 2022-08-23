@@ -1,16 +1,20 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import Projects from '../../components/Projects'
 
 export default function LanguagesPage() {
   const router = useRouter()
   const { lang } = router.query
+  const { t } = useTranslation(['projects', 'common'])
 
   return (
     <div className="px-5 mx-auto pb-16 lg:max-w-7xl">
       <Head>
-        <title>V-CANA languages</title>
+        <title>{t('V-CANALanguages')}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -20,10 +24,21 @@ export default function LanguagesPage() {
           <Projects languageCode={lang} />
         </div>
         <div>
-          <div className="text-3xl leading-9 font-medium mb-5">Мой прогресс:</div>
-          <div>прогресс...</div>
+          <div className="text-3xl leading-9 font-medium mb-5">
+            {t('common:MyProgress')}:
+          </div>
+          <div>{t('common:Progress')}...</div>
         </div>
       </div>
     </div>
   )
+}
+
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['projects', 'common'])),
+      // Will be passed to the page component as props
+    },
+  }
 }
