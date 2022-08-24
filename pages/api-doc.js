@@ -1,12 +1,22 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+
+import axios from 'axios'
 
 import 'swagger-ui/dist/swagger-ui.css'
+
 import { useCurrentUser } from 'lib/UserContext'
-import axios from 'axios'
 
 function ApiDoc() {
   const { user } = useCurrentUser()
-  console.log(user && user.access_token)
+  const [copySuccess, setCopySuccess] = useState(null)
+  const copyToClipBoard = async (copyMe) => {
+    try {
+      await navigator.clipboard.writeText(copyMe)
+      setCopySuccess('Copied!')
+    } catch (err) {
+      setCopySuccess('Failed to copy!')
+    }
+  }
   useEffect(() => {
     async function init() {
       const spec = await axios.get('/api/doc')
@@ -16,7 +26,18 @@ function ApiDoc() {
     init()
   }, [])
 
-  return <div id="swagger">loading...</div>
+  return (
+    <>
+      <div id="swagger">loading...</div>
+      <button
+        className="btn-cyan"
+        disabled={copySuccess}
+        onClick={() => copyToClipBoard(user?.access_token)}
+      >
+        {copySuccess ?? 'Copy to clipboard api-key'}
+      </button>
+    </>
+  )
 }
 
 export default ApiDoc
