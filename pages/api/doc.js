@@ -3,8 +3,8 @@ import { withSwagger } from 'next-swagger-doc'
 const swaggerHandler = withSwagger({
   definition: {
     openapi: '3.0.3',
-    consumes: ['application/json', 'application/x-www-form-urlencoded'],
-    produces: ['application/json', 'application/x-www-form-urlencoded'],
+    consumes: ['application/json'],
+    produces: ['application/json'],
     components: {
       securitySchemes: { ApiKeyAuth: { type: 'apiKey', in: 'header', name: 'token' } },
     },
