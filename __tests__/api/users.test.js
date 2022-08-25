@@ -97,6 +97,7 @@ describe('проверим api/users', () => {
     }
     await handler(req, res)
     expect(res.status).toHaveBeenCalledWith(401)
+    expect(res.json).toHaveBeenCalledWith({ error: 'Access denied!' })
   })
 
   it('если неправильный токен то 404 ошибка', async () => {
