@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import { useCurrentUser } from '../lib/UserContext'
-import { useProject, useProjectRole, useTranslators } from '@/utils/hooks'
+import { useProject, useProjectRole, useTranslators } from 'utils/hooks'
 
 function Project({ code }) {
   const { user } = useCurrentUser()

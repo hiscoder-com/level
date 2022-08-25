@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { supabase } from '@/utils/supabaseClient'
+import { supabase } from 'utils/supabaseClient'
 
 export default function SignOut() {
   const [loading, setLoading] = useState(false)

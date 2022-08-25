@@ -6,7 +6,7 @@ import {
   useProjectRole,
   useTranslators,
   useUsers,
-} from '@/utils/hooks'
+} from 'utils/hooks'
 import ProjectRolesList from './ProjectRolesList'
 import { useCurrentUser } from '../lib/UserContext'
 

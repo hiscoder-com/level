@@ -1,4 +1,4 @@
-import { supabase } from '@/utils/supabaseClient'
+import { supabase } from 'utils/supabaseClient'
 
 // TODO  создание и редактирование языка нужно вернуть
 export default async function languagesHandler(req, res) {

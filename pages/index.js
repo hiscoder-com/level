@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from '../lib/UserContext'
-import { useRedirect } from '@/utils/hooks'
+import { useRedirect } from 'utils/hooks'
 
 import VcanaLogo from '../public/vcana-logo.svg'
 import TtLogo from '../public/tt-logo.svg'

@@ -5,13 +5,13 @@ import Link from 'next/link'
 import { Disclosure } from '@headlessui/react'
 
 import Timer from './Timer'
-import { supabase } from '@/utils/supabaseClient'
-import { useCurrentUser } from '../lib/UserContext'
+import { supabase } from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 
-import Burger from '../public/burger.svg'
-import User from '../public/user.svg'
-import Tools from '../public/tools.svg'
-import VCANA_logo from '../public/vcana-logo.svg'
+import Burger from 'public/burger.svg'
+import User from 'public/user.svg'
+import Tools from 'public/tools.svg'
+import VCANA_logo from 'public/vcana-logo.svg'
 
 // TODO тут надо все проверить
 

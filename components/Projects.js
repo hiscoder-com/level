@@ -1,7 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { useProjects, useUserProjects } from '@/utils/hooks'
+import { useProjects, useUserProjects } from 'utils/hooks'
 import { useCurrentUser } from '../lib/UserContext'
 
 export default function Projects({ languageCode }) {
