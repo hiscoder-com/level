@@ -2,20 +2,23 @@ import { useEffect, useState } from 'react'
 
 import axios from 'axios'
 
-import 'swagger-ui/dist/swagger-ui.css'
-
 import { useCurrentUser } from 'lib/UserContext'
+
+import 'swagger-ui/dist/swagger-ui.css'
 
 function ApiDoc() {
   const { user } = useCurrentUser()
-  const [copySuccess, setCopySuccess] = useState(null)
-  const copyToClipBoard = async (copyMe) => {
+  const [labelButton, setLabelButton] = useState(null)
+  const copyToClipBoard = async (token) => {
     try {
-      await navigator.clipboard.writeText(copyMe)
-      setCopySuccess('Copied!')
+      await navigator.clipboard.writeText(token)
+      setLabelButton('Copied!')
     } catch (err) {
-      setCopySuccess('Failed to copy!')
+      setLabelButton('Failed to copy!')
     }
+    setTimeout(() => {
+      setLabelButton(null)
+    }, 10000)
   }
   useEffect(() => {
     async function init() {
@@ -29,13 +32,15 @@ function ApiDoc() {
   return (
     <>
       <div id="swagger">loading...</div>
-      <button
-        className="btn-cyan"
-        disabled={copySuccess}
-        onClick={() => copyToClipBoard(user?.access_token)}
-      >
-        {copySuccess ?? 'Copy to clipboard api-key'}
-      </button>
+      <div className="flex justify-center">
+        <button
+          className="btn-cyan"
+          disabled={labelButton}
+          onClick={() => copyToClipBoard(user?.access_token)}
+        >
+          {labelButton ?? 'Copy to clipboard api-key'}
+        </button>
+      </div>
     </>
   )
 }
