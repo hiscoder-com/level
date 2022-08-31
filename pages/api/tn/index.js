@@ -72,36 +72,25 @@ function tsvToJson(tsv) {
   return result
 }
 
-const verses = ['1', '2', '4', '5']
 export default async function bibleHandler(req, res) {
-  // if (!req.headers.token) {
-  //   res.status(401).json({ error: 'Access denied!' })
-  // }
-  //
-  let data = {}
-  const {
-    query: { repo, owner, commit, bookPath, language, chapter },
-  } = req
-  console.log(req.query)
-
+  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+  let verses = req.query['verses[]']
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
+
   try {
     const _data = await axios.get(url)
-    // await console.log(_data)
+
     const jsonData = await tsvToJson(_data.data)
-    // console.log(jsonData)
-    // data = jsonData
-    // console.log(jsonData.chapters[1][1].verseObjects)
-    // if (error) throw error
 
-    const test = jsonData.filter((el) => {
-      return el.Chapter === chapter && verses.includes(el.Verse)
-    })
+    const test =
+      verses && verses.length > 0
+        ? jsonData.filter((el) => {
+            return el.Chapter === chapter && verses.includes(el.Verse)
+          })
+        : jsonData
 
-    console.log(test)
-    //
     res.status(200).json(test)
     return
   } catch (error) {

@@ -1,5 +1,5 @@
-function OBS() {
-  return <div>OBS</div>
+function OBSTQ() {
+  return <div>OBSTQ</div>
 }
 
-export default OBS
+export default OBSTQ

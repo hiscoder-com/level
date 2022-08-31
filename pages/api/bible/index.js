@@ -93,15 +93,7 @@ const getSection = (verseObject) => {
 
 // +
 const getUnsupported = (verseObject) => {
-  return (
-    '/' +
-    verseObject.tag +
-    ' ' +
-    (verseObject.content || verseObject.text) +
-    ' ' +
-    verseObject.tag +
-    '/'
-  )
+  return '***' + (verseObject.content || verseObject.text) + '***'
 }
 
 // +
@@ -116,7 +108,6 @@ const getVerseText = (verseObjects, showUnsupported = false) => {
 
 const getObject = (verseObject, showUnsupported) => {
   const { type } = verseObject
-
   switch (type) {
     case 'quote':
     case 'text':
@@ -143,35 +134,26 @@ const getObject = (verseObject, showUnsupported) => {
       }
   }
 }
-const verses = [1, 2, 4, 5]
-export default async function bibleHandler(req, res) {
-  // if (!req.headers.token) {
-  //   res.status(401).json({ error: 'Access denied!' })
-  // }
-  //
-  let data = {}
-  const {
-    query: { repo, owner, commit, bookPath, language, chapter },
-  } = req
-  console.log(req.query.chapter)
+const parseChapter = (chapter, verses) => {
+  let resultChapter = Object.entries(chapter)
+  if (verses && verses.length > 0) {
+    resultChapter = resultChapter.filter((el) => verses.includes(el[0]))
+  }
+  return resultChapter.map((el) => {
+    return { verse: el[0], text: getVerseText(el[1].verseObjects, true) }
+  })
+}
 
+export default async function bibleHandler(req, res) {
+  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+  let verses = req.query['verses[]']
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
   try {
     const _data = await axios.get(url)
     const jsonData = await usfm.toJSON(_data.data)
-    // data = jsonData
-    // console.log(jsonData.chapters[1][1].verseObjects)
-    // if (error) throw error
-
-    const test = await verses.map((el) => {
-      return {
-        key: el,
-        text: getVerseText(jsonData.chapters[chapter][el].verseObjects),
-      }
-    })
-
+    const test = await parseChapter(jsonData.chapters[chapter])
     res.status(200).json(test)
     return
   } catch (error) {
