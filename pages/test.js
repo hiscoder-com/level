@@ -4,7 +4,6 @@ import axios from 'axios'
 import Resources from 'components/Resources'
 
 function Test({ config }) {
-  console.log(config)
   return <Resources config={config} />
 }
 
@@ -21,7 +20,7 @@ export async function getServerSideProps(context) {
     step: step.split('-').slice(-1)[0],
     verses: ['2', '4', '6', '12'],
   }
-  // console.log(chapter)
+
   // 3. Get request to Supabase and get owner,repo,commit,manifest
 
   const manifests = await Promise.all([
@@ -32,7 +31,9 @@ export async function getServerSideProps(context) {
     axios.get('https://git.door43.org/ru_gl/ru_rsob/raw/branch/master/manifest.yaml'),
     axios.get('https://git.door43.org/ru_gl/ru_tn/raw/branch/master/manifest.yaml'),
 
-    axios.get('https://git.door43.org/ru_gl/ru_tq/raw/branch/master/manifest.yaml'),
+    axios.get(
+      'https://git.door43.org/unfoldingWord/en_tq/raw/branch/master/manifest.yaml'
+    ),
 
     axios.get('https://git.door43.org/ru_gl/ru_twl/raw/branch/master/manifest.yaml'),
 
@@ -62,7 +63,7 @@ export async function getServerSideProps(context) {
       owner: 'DevleskoDrom',
       repo: 'onpu',
       commit: '209a944b5d9e6d15833a807d8fe771c9758c7139',
-      manifest: manifest_onpu, /// "manifest": "{}" ,будет объект, передаелать
+      manifest: manifest_onpu,
     },
     {
       owner: 'ru_gl',
@@ -77,9 +78,9 @@ export async function getServerSideProps(context) {
       manifest: manifest_tn,
     },
     {
-      owner: 'ru_gl',
+      owner: 'unfoldingWord',
       repo: 'tq',
-      commit: 'd89d8e58258c1cd6fe9cb1d86803de8a4e14cb01',
+      commit: 'b09890c9166ba08d734c4acc9b232ad5f9c7a4f5',
       manifest: manifest_tq,
     },
     {
@@ -115,18 +116,15 @@ export async function getServerSideProps(context) {
   ]
 
   const resources = await mainMock.map((resource) => {
-    // console.log(resource.manifest.projects)
     const project = resource.manifest.projects.find(
       (project) => project.identifier === book
     )
-    // console.log(project)
     const {
       format,
       title,
       subject,
       language: { identifier },
     } = resource?.manifest.dublin_core
-    // console.log(format, title, subject, identifier)
     return {
       ...resource,
       bookPath: project?.path ?? null,

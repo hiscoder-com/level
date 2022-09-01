@@ -1,12 +1,12 @@
-import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
+import { tsvToJson } from '@/utils/tsvHelper'
 
 /**
  *  @swagger
- *  /api/tn:
+ *  /api/tq:
  *    get:
- *      summary: Returns tn
- *      description: Returns tn
+ *      summary: Returns tq
+ *      description: Returns tq
  *      parameters:
  *       - name: repo
  *         in: query
@@ -14,35 +14,35 @@ import axios from 'axios'
  *         required: true
  *         schema:
  *           type: string
- *           example: tn
+ *           example: tq
  *       - name: commit
  *         in: query
  *         description: sha of commit
  *         required: true
  *         schema:
  *           type: string
- *           example: f36b5a19fc6ebbd37a7baba671909cf71de775bc
+ *           example: b09890c9166ba08d734c4acc9b232ad5f9c7a4f5
  *       - name: owner
  *         in: query
  *         description: owner
  *         required: true
  *         schema:
  *           type: string
- *           example: ru_gl
+ *           example: unfoldingWord
  *       - name: bookPath
  *         in: query
  *         description: path of the book
  *         required: true
  *         schema:
  *           type: string
- *           example: ./en_tn_57-TIT.tsv
+ *           example: ./tq_TIT.tsv
  *       - name: language
  *         in: query
  *         description: code of the language
  *         required: true
  *         schema:
  *           type: string
- *           example: ru
+ *           example: en
  *       - name: chapter
  *         in: query
  *         description: number of chapter
@@ -60,14 +60,15 @@ import axios from 'axios'
  *        - git.door43
  *      responses:
  *        '200':
- *          description: Returns tn
+ *          description: Returns tq
  *
  *        '404':
  *          description: Bad request
  */
 
-export default async function bibleHandler(req, res) {
+export default async function tqHandler(req, res) {
   const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+
   let verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
     1
@@ -79,10 +80,10 @@ export default async function bibleHandler(req, res) {
     const test =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
+            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
+            return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
         : jsonData
-
     res.status(200).json(test)
     return
   } catch (error) {
