@@ -78,9 +78,9 @@ export default async function bibleHandler(req, res) {
 
     const jsonData = await usfm.toJSON(_data.data)
 
-    const test = await parseChapter(jsonData.chapters[chapter], verses)
+    const data = await parseChapter(jsonData.chapters[chapter], verses)
 
-    res.status(200).json(test)
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })

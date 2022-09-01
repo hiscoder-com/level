@@ -76,14 +76,14 @@ export default async function tnHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
-    const test =
+    const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
             return el.Chapter === chapter && verses.includes(el.Verse)
           })
         : jsonData
 
-    res.status(200).json(test)
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })

@@ -77,14 +77,14 @@ export default async function tqHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
-    const test =
+    const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
             const [chapterQuestion, verseQuestion] = el.Reference.split(':')
             return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
         : jsonData
-    res.status(200).json(test)
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })
