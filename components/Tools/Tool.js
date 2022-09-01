@@ -1,4 +1,4 @@
-import { OBS, Bible, TN, TQ } from './'
+import { OBS, Bible, TN, TQ, TWL } from './'
 
 function Tool({ config }) {
   const { resource } = config
@@ -12,6 +12,10 @@ function Tool({ config }) {
   }
 
   switch (resource?.subject) {
+    case 'TSV Translation Words Links':
+      CurrentTool = TWL
+      break
+
     case 'TSV Translation Notes':
       CurrentTool = TN
       break

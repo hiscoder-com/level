@@ -44,6 +44,7 @@ export async function getServerSideProps(context) {
     axios.get('https://git.door43.org/ru_gl/ru_obs-tq/raw/branch/master/manifest.yaml'),
     axios.get('https://git.door43.org/ru_gl/ru_obs-twl/raw/branch/master/manifest.yaml'),
   ])
+
   const [
     manifest_onpu,
     manifest_rsob,

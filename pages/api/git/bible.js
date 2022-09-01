@@ -1,12 +1,12 @@
-import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
-
+import usfm from 'usfm-js'
+import { parseChapter } from '@/utils/usfmHelper'
 /**
  *  @swagger
- *  /api/tn:
+ *  /api/git/bible:
  *    get:
- *      summary: Returns tn
- *      description: Returns tn
+ *      summary: Returns array of verses for specific chapter
+ *      description: Returns array of verses  for specific chapter
  *      parameters:
  *       - name: repo
  *         in: query
@@ -14,35 +14,35 @@ import axios from 'axios'
  *         required: true
  *         schema:
  *           type: string
- *           example: tn
+ *           example: onpu
  *       - name: commit
  *         in: query
  *         description: sha of commit
  *         required: true
  *         schema:
  *           type: string
- *           example: f36b5a19fc6ebbd37a7baba671909cf71de775bc
+ *           example: 209a944b5d9e6d15833a807d8fe771c9758c7139
  *       - name: owner
  *         in: query
  *         description: owner
  *         required: true
  *         schema:
  *           type: string
- *           example: ru_gl
+ *           example: DevleskoDrom
  *       - name: bookPath
  *         in: query
  *         description: path of the book
  *         required: true
  *         schema:
  *           type: string
- *           example: ./en_tn_57-TIT.tsv
+ *           example: ./57-TIT.usfm
  *       - name: language
  *         in: query
  *         description: code of the language
  *         required: true
  *         schema:
  *           type: string
- *           example: ru
+ *           example: uk
  *       - name: chapter
  *         in: query
  *         description: number of chapter
@@ -55,12 +55,12 @@ import axios from 'axios'
  *         description: array of verses
  *         schema:
  *           type: array
- *           example: [1 ,3]
+ *           example: 1
  *      tags:
  *        - git.door43
  *      responses:
  *        '200':
- *          description: Returns tn
+ *          description: Returns array of verses
  *
  *        '404':
  *          description: Bad request
@@ -68,20 +68,17 @@ import axios from 'axios'
 
 export default async function bibleHandler(req, res) {
   const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+
   let verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
-
   try {
     const _data = await axios.get(url)
-    const jsonData = await tsvToJson(_data.data)
-    const test =
-      verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
-          })
-        : jsonData
+
+    const jsonData = await usfm.toJSON(_data.data)
+
+    const test = await parseChapter(jsonData.chapters[chapter], verses)
 
     res.status(200).json(test)
     return

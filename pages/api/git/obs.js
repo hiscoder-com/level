@@ -25,7 +25,7 @@ const mdToVerses = (md) => {
 }
 /**
  *  @swagger
- *  /api/obs:
+ *  /api/git/obs:
  *    get:
  *      summary: Returns obs verses
  *      description: Returns verses

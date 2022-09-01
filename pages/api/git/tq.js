@@ -3,7 +3,7 @@ import { tsvToJson } from '@/utils/tsvHelper'
 
 /**
  *  @swagger
- *  /api/tq:
+ *  /api/git/tq:
  *    get:
  *      summary: Returns tq
  *      description: Returns tq

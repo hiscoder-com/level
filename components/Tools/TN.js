@@ -9,7 +9,7 @@ function TN({ config }) {
   } = config
   const params = { owner, repo, commit, bookPath, language, book, chapter, step, verses }
   const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
-  const { data, error } = useSWR([`/api/tn`, params], fetcher)
+  const { data, error } = useSWR([`/api/git/tn`, params], fetcher)
   const loading = !data && !error
   return (
     <ul>
