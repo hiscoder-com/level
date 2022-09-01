@@ -11,7 +11,7 @@ function Bible({ config }) {
   const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
   const { data, error } = useSWR([`/api/bible`, params], fetcher)
   const loading = !data && !error
-  // console.log(data)
+
   return (
     <ul>
       {loading

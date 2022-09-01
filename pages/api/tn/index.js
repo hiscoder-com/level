@@ -1,87 +1,80 @@
+import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
-// import usfm from 'usfm-js'
 
 /**
  *  @swagger
- *  /api/bible/{repo}:
+ *  /api/tn:
  *    get:
- *      summary: Returns specific language
- *      description: Returns specific language
+ *      summary: Returns tn
+ *      description: Returns tn
  *      parameters:
  *       - name: repo
- *         in: path
- *         description: code of the language
+ *         in: query
+ *         description: code of repo
  *         required: true
  *         schema:
  *           type: string
+ *           example: tn
  *       - name: commit
  *         in: query
- *         description: code of the language
+ *         description: sha of commit
  *         required: true
  *         schema:
  *           type: string
+ *           example: f36b5a19fc6ebbd37a7baba671909cf71de775bc
  *       - name: owner
  *         in: query
- *         description: code of the language
+ *         description: owner
  *         required: true
  *         schema:
  *           type: string
+ *           example: ru_gl
  *       - name: bookPath
  *         in: query
- *         description: code of the language
+ *         description: path of the book
  *         required: true
  *         schema:
  *           type: string
+ *           example: ./en_tn_57-TIT.tsv
  *       - name: language
  *         in: query
  *         description: code of the language
  *         required: true
  *         schema:
  *           type: string
+ *           example: ru
+ *       - name: chapter
+ *         in: query
+ *         description: number of chapter
+ *         required: true
+ *         schema:
+ *           type: string
+ *           example: 1
+ *       - name: verses
+ *         in: query
+ *         description: array of verses
+ *         schema:
+ *           type: array
+ *           example: [1 ,3]
  *      tags:
- *        - bible
+ *        - git.door43
  *      responses:
  *        '200':
- *          description: Returns usfm object
+ *          description: Returns tn
  *
  *        '404':
  *          description: Bad request
- *      security:
- *        - ApiKeyAuth: []
  */
-
-function tsvToJson(tsv) {
-  const result = []
-
-  if (tsv) {
-    const lines = tsv.trim().split('\n')
-    const headers = lines[0].split('\t')
-
-    for (let i = 1; i < lines.length; i++) {
-      const obj = {}
-      const currentline = lines[i].split('\t')
-
-      for (let j = 0; j < headers.length; j++) {
-        obj[headers[j]] = currentline[j]
-      }
-
-      result.push(obj)
-    }
-  }
-
-  return result
-}
 
 export default async function bibleHandler(req, res) {
   const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
-  let verses = req.query['verses[]']
+  let verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
 
   try {
     const _data = await axios.get(url)
-
     const jsonData = await tsvToJson(_data.data)
 
     const test =
