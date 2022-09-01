@@ -39,10 +39,16 @@ export async function getServerSideProps(context) {
 
     axios.get('https://git.door43.org/ru_gl/ru_obs/raw/branch/master/manifest.yaml'),
 
-    axios.get('https://git.door43.org/ru_gl/ru_obs-tn/raw/branch/master/manifest.yaml'),
+    axios.get(
+      'https://git.door43.org/unfoldingWord/en_obs-tn/raw/branch/master/manifest.yaml'
+    ),
 
-    axios.get('https://git.door43.org/ru_gl/ru_obs-tq/raw/branch/master/manifest.yaml'),
-    axios.get('https://git.door43.org/ru_gl/ru_obs-twl/raw/branch/master/manifest.yaml'),
+    axios.get(
+      'https://git.door43.org/unfoldingWord/en_obs-tq/raw/branch/master/manifest.yaml'
+    ),
+    axios.get(
+      'https://git.door43.org/unfoldingWord/en_obs-twl/raw/branch/master/manifest.yaml'
+    ),
   ])
 
   const [
@@ -97,29 +103,30 @@ export async function getServerSideProps(context) {
       manifest: manifest_obs,
     },
     {
-      owner: 'ru_gl',
+      owner: 'unfoldingWord',
       repo: 'obs-tn',
-      commit: '9c418b368b928e0cfdb8840cc8ddd418bcda5aec',
+      commit: 'cc11b0036f379e47fd99ada8a82e15520ac63474',
       manifest: manifest_obs_tn,
     },
     {
-      owner: 'ru_gl',
+      owner: 'unfoldingWord',
       repo: 'obs-tq',
-      commit: 'a2cf962471519f6a17b5d1039e40cbce0c630603',
+      commit: 'b160230943b89798d7a6d4693c477c621601e34c',
       manifest: manifest_obs_tq,
     },
     {
-      owner: 'ru_gl',
+      owner: 'unfoldingWord',
       repo: 'obs-twl',
-      commit: '9f3b5ac96ee5f3b86556d2a601faee4ecb1a0cad',
+      commit: '80def64e540fed5da6394bd88ac4588a98c4a3ec',
       manifest: manifest_obs_twl,
     },
   ]
 
   const resources = await mainMock.map((resource) => {
-    const project = resource.manifest.projects.find(
-      (project) => project.identifier === book
-    )
+    const project = resource.manifest.dublin_core.identifier.includes('obs')
+      ? resource.manifest.projects[0]
+      : resource.manifest.projects.find((project) => project.identifier === book)
+
     const {
       format,
       title,
@@ -137,6 +144,7 @@ export async function getServerSideProps(context) {
     }
   })
   return {
+    // props: {},
     props: { config: { resources, reference } },
   }
 }

@@ -1,34 +1,12 @@
 import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
-const mdToVerses = (md) => {
-  let _markdown = md.replaceAll('\u200B', '').split(/\n\s*\n\s*/)
-  const headerMd = _markdown.shift().trim().slice(1)
-  let linkMd = _markdown.pop().trim().slice(1, -1)
-  if (linkMd === '') {
-    linkMd = _markdown.pop().trim().slice(1, -1)
-  }
-  const versesObject = []
 
-  for (let n = 0; n < _markdown.length / 2; n++) {
-    let urlImage
-    let text
-    if (/\(([^)]*)\)/g.test(_markdown[n * 2])) {
-      urlImage = /\(([^)]*)\)/g.exec(_markdown[n * 2])[1]
-      text = _markdown[n * 2 + 1]
-    } else {
-      text = _markdown[n * 2] + '\n' + _markdown[n * 2 + 1]
-    }
-    versesObject.push({ urlImage, text, key: (n + 1).toString() })
-  }
-
-  return { versesObject, headerMd, linkMd }
-}
 /**
  *  @swagger
- *  /api/git/obs:
+ *  /api/git/obs-tn:
  *    get:
- *      summary: Returns obs verses
- *      description: Returns verses
+ *      summary: Returns obs-tn
+ *      description: Returns obs-tn
  *      parameters:
  *       - name: repo
  *         in: query
@@ -36,35 +14,35 @@ const mdToVerses = (md) => {
  *         required: true
  *         schema:
  *           type: string
- *           example: tn
+ *           example: obs-tn
  *       - name: commit
  *         in: query
  *         description: sha of commit
  *         required: true
  *         schema:
  *           type: string
- *           example: f36b5a19fc6ebbd37a7baba671909cf71de775bc
+ *           example: cc11b0036f379e47fd99ada8a82e15520ac63474
  *       - name: owner
  *         in: query
  *         description: owner
  *         required: true
  *         schema:
  *           type: string
- *           example: ru_gl
+ *           example: unfoldingWord
  *       - name: bookPath
  *         in: query
  *         description: path of the book
  *         required: true
  *         schema:
  *           type: string
- *           example: ./en_tn_57-TIT.tsv
+ *           example: ./tn_OBS.tsv
  *       - name: language
  *         in: query
  *         description: code of the language
  *         required: true
  *         schema:
  *           type: string
- *           example: ru
+ *           example: en
  *       - name: chapter
  *         in: query
  *         description: number of chapter
@@ -97,11 +75,11 @@ export default async function bibleHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
-
     const test =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
+            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
+            return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
         : jsonData
 
