@@ -18,7 +18,6 @@ function OBSTQ({ config }) {
 export default OBSTQ
 
 function TQView({ question }) {
-  console.log(question)
   return (
     <div className="grid grid-cols-1 gap-3 w-fit pt-4">
       {question?.map((el, index) => {
