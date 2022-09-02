@@ -1,34 +1,12 @@
-import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
-const mdToVerses = (md) => {
-  let _markdown = md.replaceAll('\u200B', '').split(/\n\s*\n\s*/)
-  const headerMd = _markdown.shift().trim().slice(1)
-  let linkMd = _markdown.pop().trim().slice(1, -1)
-  if (linkMd === '') {
-    linkMd = _markdown.pop().trim().slice(1, -1)
-  }
-  const versesObject = []
+import { tsvToJson } from '@/utils/tsvHelper'
 
-  for (let n = 0; n < _markdown.length / 2; n++) {
-    let urlImage
-    let text
-    if (/\(([^)]*)\)/g.test(_markdown[n * 2])) {
-      urlImage = /\(([^)]*)\)/g.exec(_markdown[n * 2])[1]
-      text = _markdown[n * 2 + 1]
-    } else {
-      text = _markdown[n * 2] + '\n' + _markdown[n * 2 + 1]
-    }
-    versesObject.push({ urlImage, text, key: (n + 1).toString() })
-  }
-
-  return { versesObject, headerMd, linkMd }
-}
 /**
  *  @swagger
- *  /api/git/obs:
+ *  /api/git/obs-twl:
  *    get:
- *      summary: Returns obs verses
- *      description: Returns verses
+ *      summary: Returns obs-twl
+ *      description: Returns obs-twl
  *      parameters:
  *       - name: repo
  *         in: query
@@ -36,35 +14,35 @@ const mdToVerses = (md) => {
  *         required: true
  *         schema:
  *           type: string
- *           example: tn
+ *           example: obs-twl
  *       - name: commit
  *         in: query
  *         description: sha of commit
  *         required: true
  *         schema:
  *           type: string
- *           example: f36b5a19fc6ebbd37a7baba671909cf71de775bc
+ *           example: 80def64e540fed5da6394bd88ac4588a98c4a3ec
  *       - name: owner
  *         in: query
  *         description: owner
  *         required: true
  *         schema:
  *           type: string
- *           example: ru_gl
+ *           example: unfoldingWord
  *       - name: bookPath
  *         in: query
  *         description: path of the book
  *         required: true
  *         schema:
  *           type: string
- *           example: ./en_tn_57-TIT.tsv
+ *           example: ./twl_OBS.tsv
  *       - name: language
  *         in: query
  *         description: code of the language
  *         required: true
  *         schema:
  *           type: string
- *           example: ru
+ *           example: en
  *       - name: chapter
  *         in: query
  *         description: number of chapter
@@ -82,13 +60,13 @@ const mdToVerses = (md) => {
  *        - git.door43
  *      responses:
  *        '200':
- *          description: Returns tn
+ *          description: Returns obs-twl
  *
  *        '404':
  *          description: Bad request
  */
 
-export default async function bibleHandler(req, res) {
+export default async function twlHandler(req, res) {
   const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
   let verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
@@ -97,15 +75,31 @@ export default async function bibleHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
-
     const test =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
+            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
+            return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
         : jsonData
+    const promises = test.map((el) => {
+      const url = `https://git.door43.org/${owner}/${language}_tw/raw/branch/master/${el.TWLink.split(
+        '/'
+      )
+        .slice(-3)
+        .join('/')}.md`
+      return axios.get(url).then((res) => {
+        const splitter = res.data.search('\n')
+        return {
+          reference: el.Reference,
+          title: res.data.slice(0, splitter),
+          text: res.data.slice(splitter),
+        }
+      })
+    })
+    const words = await Promise.all(promises)
 
-    res.status(200).json(test)
+    res.status(200).json(words)
     return
   } catch (error) {
     res.status(404).json({ error })

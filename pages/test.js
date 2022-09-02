@@ -39,9 +39,7 @@ export async function getServerSideProps(context) {
 
     axios.get('https://git.door43.org/ru_gl/ru_obs/raw/branch/master/manifest.yaml'),
 
-    axios.get(
-      'https://git.door43.org/unfoldingWord/en_obs-tn/raw/branch/master/manifest.yaml'
-    ),
+    axios.get('https://git.door43.org/ru_gl/ru_obs-tn/raw/branch/master/manifest.yaml'),
 
     axios.get(
       'https://git.door43.org/unfoldingWord/en_obs-tq/raw/branch/master/manifest.yaml'
@@ -103,9 +101,9 @@ export async function getServerSideProps(context) {
       manifest: manifest_obs,
     },
     {
-      owner: 'unfoldingWord',
+      owner: 'ru_gl',
       repo: 'obs-tn',
-      commit: 'cc11b0036f379e47fd99ada8a82e15520ac63474',
+      commit: '9c418b368b928e0cfdb8840cc8ddd418bcda5aec',
       manifest: manifest_obs_tn,
     },
     {
