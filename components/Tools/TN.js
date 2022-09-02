@@ -46,10 +46,10 @@ function TNContent({ setNote, data }) {
   return (
     <>
       {data &&
-        Object.entries(data).map((el) => {
+        Object.entries(data).map((el, index) => {
           return (
             <div
-              key={el.ID}
+              key={index}
               className="border-2 w-min-20 p-4 border-gray-500 mb-4 flex items-center mx-4"
             >
               <div className="text-5xl">{el[0]}</div>
