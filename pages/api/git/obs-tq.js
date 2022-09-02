@@ -73,13 +73,13 @@ export default async function obsTQHandler(req, res) {
     1
   )}`
   try {
-    const _data = await axios.get(url)9
+    const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
-
     const test =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
+            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
+            return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
         : jsonData
 

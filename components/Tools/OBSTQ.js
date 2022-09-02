@@ -10,7 +10,7 @@ function OBSTQ({ config }) {
   } = config
   const params = { owner, repo, commit, bookPath, language, chapter, step, verses }
   const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
-  const { data, error } = useSWR([`/api/git/obs-tn`, params], fetcher)
+  const { data, error } = useSWR([`/api/git/obs-tq`, params], fetcher)
   const loading = !data && !error
   return <>{loading ? 'loading...' : <TQView question={data} />}</>
 }
@@ -18,9 +18,10 @@ function OBSTQ({ config }) {
 export default OBSTQ
 
 function TQView({ question }) {
+  console.log(question)
   return (
     <div className="grid grid-cols-1 gap-3 w-fit pt-4">
-      {question.map((el, index) => {
+      {question?.map((el, index) => {
         return (
           <Disclosure key={index}>
             <Disclosure.Button className="py-2 btn-cyan w-fit">
