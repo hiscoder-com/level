@@ -82,8 +82,17 @@ export default async function bibleHandler(req, res) {
             return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
         : jsonData
+    const groupData = {}
+    test?.forEach((el) => {
+      const verse = el.Reference.split(':').slice(-1)[0]
+      if (!groupData[verse]) {
+        groupData[verse] = [el]
+      } else {
+        groupData[verse].push(el)
+      }
+    })
 
-    res.status(200).json(test)
+    res.status(200).json(groupData)
     return
   } catch (error) {
     res.status(404).json({ error })

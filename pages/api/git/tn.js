@@ -76,6 +76,7 @@ export default async function tnHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
+    const groupData = {}
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
@@ -83,7 +84,15 @@ export default async function tnHandler(req, res) {
           })
         : jsonData
 
-    res.status(200).json(data)
+    data?.forEach((el) => {
+      if (!groupData[el.Verse]) {
+        groupData[el.Verse] = [el]
+      } else {
+        groupData[el.Verse].push(el)
+      }
+    })
+
+    res.status(200).json(groupData)
     return
   } catch (error) {
     res.status(404).json({ error })

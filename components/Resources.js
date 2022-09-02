@@ -7,7 +7,7 @@ function Resources({ config }) {
   }
   return (
     <Tab.Group>
-      <Tab.List className="space-x-3 text-xs">
+      <Tab.List className="space-x-3 text-xs mb-7">
         {config?.resources.map((resource) => (
           <Tab
             key={resource.repo}
