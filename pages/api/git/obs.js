@@ -1,28 +1,6 @@
-import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
-const mdToVerses = (md) => {
-  let _markdown = md.replaceAll('\u200B', '').split(/\n\s*\n\s*/)
-  const headerMd = _markdown.shift().trim().slice(1)
-  let linkMd = _markdown.pop().trim().slice(1, -1)
-  if (linkMd === '') {
-    linkMd = _markdown.pop().trim().slice(1, -1)
-  }
-  const versesObject = []
+import { mdToJson } from '@/utils/mdHelper'
 
-  for (let n = 0; n < _markdown.length / 2; n++) {
-    let urlImage
-    let text
-    if (/\(([^)]*)\)/g.test(_markdown[n * 2])) {
-      urlImage = /\(([^)]*)\)/g.exec(_markdown[n * 2])[1]
-      text = _markdown[n * 2 + 1]
-    } else {
-      text = _markdown[n * 2] + '\n' + _markdown[n * 2 + 1]
-    }
-    versesObject.push({ urlImage, text, key: (n + 1).toString() })
-  }
-
-  return { versesObject, headerMd, linkMd }
-}
 /**
  *  @swagger
  *  /api/git/obs:
@@ -36,14 +14,14 @@ const mdToVerses = (md) => {
  *         required: true
  *         schema:
  *           type: string
- *           example: tn
+ *           example: obs
  *       - name: commit
  *         in: query
  *         description: sha of commit
  *         required: true
  *         schema:
  *           type: string
- *           example: f36b5a19fc6ebbd37a7baba671909cf71de775bc
+ *           example: 921aaa41e3fe2a24f1a66c789d1840abab019131
  *       - name: owner
  *         in: query
  *         description: owner
@@ -57,7 +35,7 @@ const mdToVerses = (md) => {
  *         required: true
  *         schema:
  *           type: string
- *           example: ./en_tn_57-TIT.tsv
+ *           example: ./content
  *       - name: language
  *         in: query
  *         description: code of the language
@@ -88,24 +66,24 @@ const mdToVerses = (md) => {
  *          description: Bad request
  */
 
-export default async function bibleHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+export default async function obsHandler(req, res) {
+  const { repo, owner, commit, bookPath, language, chapter, step } = req.query
   let verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
     1
-  )}`
+  )}/${String(chapter).padStart(2, '0')}.md`
   try {
     const _data = await axios.get(url)
-    const jsonData = await tsvToJson(_data.data)
-
-    const test =
+    const jsonData = await mdToJson(_data.data)
+    const { versesObjects, header, link } = jsonData
+    const data =
       verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
+        ? versesObjects.filter((el) => {
+            return verses.includes(el.key)
           })
-        : jsonData
+        : versesObjects
 
-    res.status(200).json(test)
+    res.status(200).json({ data, header })
     return
   } catch (error) {
     res.status(404).json({ error })
