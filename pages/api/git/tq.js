@@ -83,8 +83,20 @@ export default async function tqHandler(req, res) {
             const [chapterQuestion, verseQuestion] = el.Reference.split(':')
             return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
-        : jsonData
-    res.status(200).json(data)
+        : jsonData.filter((el) => {
+            const [chapterQuestion] = el.Reference.split(':')
+            return chapterQuestion === chapter
+          })
+    const groupData = {}
+    data?.forEach((el) => {
+      const verse = el.Reference.split(':').slice(-1)[0]
+      if (!groupData[verse]) {
+        groupData[verse] = [el]
+      } else {
+        groupData[verse].push(el)
+      }
+    })
+    res.status(200).json(groupData)
     return
   } catch (error) {
     res.status(404).json({ error })

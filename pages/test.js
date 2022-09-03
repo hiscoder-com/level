@@ -18,7 +18,7 @@ export async function getServerSideProps(context) {
     book,
     chapter,
     step: step.split('-').slice(-1)[0],
-    verses: ['2', '4', '6', '12'],
+    verses: [],
   }
 
   // 3. Get request to Supabase and get owner,repo,commit,manifest
