@@ -1,4 +1,17 @@
-import { OBS, Bible, TN, TQ, TWL, OBSTQ, OBSTN, OBSTWL } from './'
+import {
+  OBS,
+  Bible,
+  TN,
+  TQ,
+  TWL,
+  OBSTQ,
+  OBSTN,
+  OBSTWL,
+  Notes,
+  Dictionary,
+  OwnNotes,
+  Translate,
+} from './'
 
 function Tool({ config }) {
   const { resource } = config
@@ -41,6 +54,18 @@ function Tool({ config }) {
 
     case 'Open Bible Stories':
       CurrentTool = OBS
+      break
+    case 'translate':
+      CurrentTool = Translate
+      break
+    case 'ownNotes':
+      CurrentTool = OwnNotes
+      break
+    case 'notes':
+      CurrentTool = Notes
+      break
+    case 'dictionary':
+      CurrentTool = Dictionary
       break
 
     case 'Bible':
