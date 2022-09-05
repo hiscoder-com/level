@@ -81,7 +81,10 @@ export default async function twlHandler(req, res) {
             const [chapterQuestion, verseQuestion] = el.Reference.split(':')
             return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
-        : jsonData
+        : jsonData.filter((el) => {
+            const [chapterQuestion] = el.Reference.split(':')
+            return chapterQuestion === chapter
+          })
     const promises = test.map((el) => {
       const url = `https://git.door43.org/${owner}/${language}_tw/raw/branch/master/${el.TWLink.split(
         '/'
@@ -100,12 +103,17 @@ export default async function twlHandler(req, res) {
     const words = await Promise.all(promises)
 
     const groupData = {}
+    let countID = 0
+
     words?.forEach((el) => {
+      const id = `${el.reference}_${new Date().getTime()}_${countID}`
+      countID++
+      const twl = { id, title: el.title, text: el.text }
       const verse = el.reference.split(':').slice(-1)[0]
       if (!groupData[verse]) {
-        groupData[verse] = [el]
+        groupData[verse] = [twl]
       } else {
-        groupData[verse].push(el)
+        groupData[verse].push(twl)
       }
     })
 

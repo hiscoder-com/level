@@ -90,12 +90,14 @@ export default async function tqHandler(req, res) {
     const groupData = {}
     data?.forEach((el) => {
       const verse = el.Reference.split(':').slice(-1)[0]
+      const tq = { id: el.ID, title: el.Question, text: el.Response }
       if (!groupData[verse]) {
-        groupData[verse] = [el]
+        groupData[verse] = [tq]
       } else {
-        groupData[verse].push(el)
+        groupData[verse].push(tq)
       }
     })
+
     res.status(200).json(groupData)
     return
   } catch (error) {

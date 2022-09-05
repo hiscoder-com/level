@@ -82,16 +82,18 @@ export default async function tnHandler(req, res) {
         ? jsonData.filter((el) => {
             return el.Chapter === chapter && verses.includes(el.Verse)
           })
-        : jsonData
+        : jsonData.filter((el) => {
+            return el.Chapter === chapter
+          })
 
     data?.forEach((el) => {
+      const tn = { id: el.ID, text: el.OccurrenceNote, title: el.GLQuote }
       if (!groupData[el.Verse]) {
-        groupData[el.Verse] = [el]
+        groupData[el.Verse] = [tn]
       } else {
-        groupData[el.Verse].push(el)
+        groupData[el.Verse].push(tn)
       }
     })
-
     res.status(200).json(groupData)
     return
   } catch (error) {

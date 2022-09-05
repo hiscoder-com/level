@@ -75,20 +75,24 @@ export default async function bibleHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
-    const test =
+    const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
             const [chapterQuestion, verseQuestion] = el.Reference.split(':')
             return chapterQuestion === chapter && verses.includes(verseQuestion)
           })
-        : jsonData
+        : jsonData.filter((el) => {
+            const [chapterQuestion] = el.Reference.split(':')
+            return chapterQuestion === chapter
+          })
     const groupData = {}
-    test?.forEach((el) => {
+    data?.forEach((el) => {
       const verse = el.Reference.split(':').slice(-1)[0]
+      const tn = { id: el.ID, text: el.Note, title: el.Quote }
       if (!groupData[verse]) {
-        groupData[verse] = [el]
+        groupData[verse] = [tn]
       } else {
-        groupData[verse].push(el)
+        groupData[verse].push(tn)
       }
     })
 
