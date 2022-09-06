@@ -1,535 +1,712 @@
-DROP TABLE IF EXISTS PUBLIC .briefs;
+-- DROP ALL DATA
+  -- DROP TABLE
+    DROP TABLE IF EXISTS PUBLIC.briefs;
+    DROP TABLE IF EXISTS PUBLIC.progress;
+    DROP TABLE IF EXISTS PUBLIC.verses;
+    DROP TABLE IF EXISTS PUBLIC.chapters;
+    DROP TABLE IF EXISTS PUBLIC.books;
+    DROP TABLE IF EXISTS PUBLIC.steps;
+    DROP TABLE IF EXISTS PUBLIC.project_translators;
+    DROP TABLE IF EXISTS PUBLIC.project_coordinators;
+    DROP TABLE IF EXISTS PUBLIC.projects;
+    DROP TABLE IF EXISTS PUBLIC.methods;
+    DROP TABLE IF EXISTS PUBLIC.users;
+    DROP TABLE IF EXISTS PUBLIC.role_permissions;
+    DROP TABLE IF EXISTS PUBLIC.languages;
+  -- EDN DROP TABLE
 
-DROP TABLE IF EXISTS PUBLIC .progress;
+  -- DROP FUNCTION
+    DROP FUNCTION IF EXISTS PUBLIC.authorize;
+    DROP FUNCTION IF EXISTS PUBLIC.has_access;
+    DROP FUNCTION IF EXISTS PUBLIC.set_moderator;
+    DROP FUNCTION IF EXISTS PUBLIC.check_confession;
+    DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
+    DROP FUNCTION IF EXISTS PUBLIC.admin_only;
+    DROP FUNCTION IF EXISTS PUBLIC.block_user;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
+  -- END DROP FUNCTION
 
-DROP TABLE IF EXISTS PUBLIC .verses;
+  -- DROP TYPE
+    DROP TYPE IF EXISTS PUBLIC.app_permission;
+    DROP TYPE IF EXISTS PUBLIC.project_role;
+    DROP TYPE IF EXISTS PUBLIC.project_type;
+    DROP TYPE IF EXISTS PUBLIC.book_code;
+  -- END DROP TYPE
+-- END DROP ALL DATA
 
-DROP TABLE IF EXISTS PUBLIC .chapters;
+-- CREATE CUSTOM TYPE
+  CREATE TYPE PUBLIC.app_permission AS enum (
+    'dictionaries', 'notes', 'projects', 'verses.set', 'moderator.set', 'user_projects',
+    'project_source', 'coordinator.set', 'languages', 'user_languages', 'translator.set'
+  );
 
-DROP TABLE IF EXISTS PUBLIC .books;
+  CREATE TYPE PUBLIC.project_role AS enum ('coordinator', 'moderator', 'translator');
 
-DROP TABLE IF EXISTS PUBLIC .steps;
+  CREATE TYPE PUBLIC.project_type AS enum ('obs', 'bible');
 
-DROP TABLE IF EXISTS PUBLIC .project_translators;
+  CREATE TYPE PUBLIC.book_code AS enum (
+    'gen', 'exo', 'lev', 'num', 'deu', 'jos', 'jdg', 'rut', '1sa', '2sa', '1ki', '2ki', '1ch',
+    '2ch', 'ezr', 'neh', 'est', 'job', 'psa', 'pro', 'ecc', 'sng', 'isa', 'jer', 'lam', 'ezk',
+    'dan', 'hos', 'jol', 'amo', 'oba', 'jon', 'mic', 'nam', 'hab', 'zep', 'hag', 'zec', 'mal',
+    'mat', 'mrk', 'luk', 'jhn', 'act', 'rom', '1co', '2co', 'gal', 'eph', 'php', 'col', '1th',
+    '2th', '1ti', '2ti', 'tit', 'phm', 'heb', 'jas', '1pe', '2pe', '1jn', '2jn', '3jn', 'jud',
+    'rev', 'obs'
+  );
+-- END CREATE CUSTOM TYPE
 
-DROP TABLE IF EXISTS PUBLIC .project_coordinators;
+-- CREATE FUNCTION
+  -- пока что функция возвращает твою роль на проекте
+  -- может оставить эту функцию и написать еще одну для проверки permission на основе этой
+  CREATE FUNCTION PUBLIC.authorize(
+      user_id uuid,
+      project_id bigint
+    ) returns TEXT
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      bind_permissions INT;
+      priv RECORD;
+    BEGIN
+      SELECT u.is_admin as is_admin,
+        pc.project_id*1 IS NOT NULL as is_coordinator,
+        pt.project_id*1 IS NOT NULL as is_translator,
+        pt.is_moderator IS TRUE as is_moderator
+      FROM public.users as u
+        LEFT JOIN public.project_coordinators as pc
+          ON (u.id = pc.user_id AND pc.project_id = authorize.project_id)
+        LEFT JOIN public.project_translators as pt
+          ON (u.id = pt.user_id AND pt.project_id = authorize.project_id)
+      WHERE u.id = authorize.user_id AND u.blocked IS NULL INTO priv;
 
-DROP TABLE IF EXISTS PUBLIC .projects;
+      IF priv.is_admin THEN
+        return 'admin';
+      END IF;
 
-DROP TABLE IF EXISTS PUBLIC .methods;
+      IF priv.is_coordinator THEN
+        return 'coordinator';
+      END IF;
 
-DROP TABLE IF EXISTS PUBLIC .users;
+      IF priv.is_moderator THEN
+        return 'moderator';
+      END IF;
 
-DROP TABLE IF EXISTS PUBLIC .role_permissions;
+      IF priv.is_translator THEN
+        return 'translator';
+      END IF;
 
-DROP TABLE IF EXISTS PUBLIC .languages;
+      return 'user';
 
-DROP FUNCTION IF EXISTS PUBLIC .authorize;
+    END;
+  $$;
 
-DROP FUNCTION IF EXISTS PUBLIC .has_access;
+  -- чтобы юзер имел доступ к сайту надо чтобы стояли 2 чекбокса и он не был заблокирован
+  CREATE FUNCTION PUBLIC.has_access() returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      access INT;
 
-DROP FUNCTION IF EXISTS PUBLIC .can_change_role;
+    BEGIN
+      SELECT
+        COUNT(*) INTO access
+      FROM
+        PUBLIC.users
+      WHERE
+        users.id = auth.uid() AND users.agreement
+        AND users.confession AND users.blocked IS NULL;
 
-DROP TYPE IF EXISTS PUBLIC .app_permission;
+      RETURN access > 0;
 
-DROP TYPE IF EXISTS PUBLIC .project_role;
+    END;
+  $$;
 
-DROP TYPE IF EXISTS PUBLIC .project_type;
+  -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
+  CREATE FUNCTION PUBLIC.set_moderator(user_id uuid, project_id bigint) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      usr RECORD;
+      new_val BOOLEAN;
+    BEGIN
+      IF authorize(auth.uid(), set_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN FALSE;
+      END IF;
+      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = set_moderator.project_id AND project_translators.user_id = set_moderator.user_id;
+      IF usr.id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+      new_val := NOT usr.is_moderator;
+      UPDATE PUBLIC.project_translators SET is_moderator = new_val WHERE project_translators.id = usr.id;
 
-DROP TYPE IF EXISTS PUBLIC .book_code;
+      RETURN new_val;
 
--- Custom types
-CREATE TYPE PUBLIC .app_permission AS enum (
-  'dictionaries',
-  'notes',
-  'projects',
-  'verses.set',
-  'moderator.set',
-  'user_projects',
-  'project_source',
-  'coordinator.set',
-  'languages',
-  'user_languages',
-  'translator.set'
-);
+    END;
+  $$;
 
-CREATE TYPE PUBLIC .project_role AS enum ('coordinator', 'moderator', 'translator');
+  -- так как на прямую юзер не может исправлять поля в таблице юзеров то он вызывает этот функцию для отметки confession
+  CREATE FUNCTION PUBLIC.check_confession() returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
 
-CREATE TYPE PUBLIC .project_type AS enum ('obs', 'bible');
+    BEGIN
+      UPDATE PUBLIC.users SET confession = TRUE WHERE users.id = auth.uid();
 
-CREATE TYPE PUBLIC .book_code AS enum (
-  'gen',
-  'exo',
-  'lev',
-  'num',
-  'deu',
-  'jos',
-  'jdg',
-  'rut',
-  '1sa',
-  '2sa',
-  '1ki',
-  '2ki',
-  '1ch',
-  '2ch',
-  'ezr',
-  'neh',
-  'est',
-  'job',
-  'psa',
-  'pro',
-  'ecc',
-  'sng',
-  'isa',
-  'jer',
-  'lam',
-  'ezk',
-  'dan',
-  'hos',
-  'jol',
-  'amo',
-  'oba',
-  'jon',
-  'mic',
-  'nam',
-  'hab',
-  'zep',
-  'hag',
-  'zec',
-  'mal',
-  'mat',
-  'mrk',
-  'luk',
-  'jhn',
-  'act',
-  'rom',
-  '1co',
-  '2co',
-  'gal',
-  'eph',
-  'php',
-  'col',
-  '1th',
-  '2th',
-  '1ti',
-  '2ti',
-  'tit',
-  'phm',
-  'heb',
-  'jas',
-  '1pe',
-  '2pe',
-  '1jn',
-  '2jn',
-  '3jn',
-  'jud',
-  'rev',
-  'obs'
-);
+      RETURN TRUE;
+
+    END;
+  $$;
+
+  -- а эта функция для установки agreement
+  CREATE FUNCTION PUBLIC.check_agreement() returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+
+    BEGIN
+      UPDATE PUBLIC.users SET agreement = TRUE WHERE users.id = auth.uid();
+
+      RETURN TRUE;
+
+    END;
+  $$;
+
+  -- для rls функция которая разрешает что-то делать только админу
+  CREATE FUNCTION PUBLIC.admin_only()
+    returns BOOLEAN LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      access INT;
+
+    BEGIN
+      SELECT
+        COUNT(*) INTO access
+      FROM
+        PUBLIC.users
+      WHERE
+        PUBLIC.users.id = auth.uid() AND PUBLIC.users.is_admin;
+
+      RETURN access > 0;
+
+    END;
+  $$;
+
+  -- блокировка юзера, может вызвать только админ, заблокировать другого админа нельзя
+  CREATE FUNCTION PUBLIC.block_user(user_id uuid) returns TEXT
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      blocked_user RECORD;
+    BEGIN
+      IF NOT PUBLIC.admin_only() THEN
+        RETURN FALSE;
+      END IF;
+      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
+
+      IF blocked_user.is_admin = TRUE THEN
+        RETURN FALSE;
+      END IF;
+
+      IF blocked_user.blocked IS NULL THEN
+        UPDATE PUBLIC.users SET blocked = NOW() WHERE id = block_user.user_id;
+      ELSE
+        UPDATE PUBLIC.users SET blocked = NULL WHERE id = block_user.user_id;
+      END IF;
+
+      RETURN TRUE;
+
+    END;
+  $$;
+
+  -- create policy "политика с джойном"
+  --   on teams
+  --   for update using (
+  --     auth.uid() in (
+  --       select user_id from members
+  --       where team_id = id
+  --     )
+  --   );
+
+  -- inserts a row into public.users
+  CREATE FUNCTION PUBLIC.handle_new_user() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      INSERT INTO
+        PUBLIC.users (id, email, login)
+      VALUES
+        (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'login');
+
+      RETURN NEW;
+
+    END;
+
+  $$;
+
+  -- после создания проекта создаем бриф
+  CREATE FUNCTION PUBLIC.handle_new_project() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      INSERT INTO
+        PUBLIC.briefs (project_id)
+      VALUES
+        (NEW.id);
+
+      RETURN NEW;
+
+    END;
+  $$;
+
+  -- после создания проекта создаем бриф
+  CREATE FUNCTION PUBLIC.handle_next_step() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      IF NEW.current_step = OLD.current_step THEN
+        RETURN NEW;
+      END IF;
+      INSERT INTO
+        PUBLIC.progress (verse_id, "text", step_id)
+      VALUES
+        (NEW.id, NEW.text, OLD.current_step);
+
+      RETURN NEW;
+
+    END;
+  $$;
+-- END CREATE FUNCTION
 
 -- USERS
-CREATE TABLE PUBLIC .users (
-  id uuid NOT NULL primary key,
-  email text NOT NULL UNIQUE,
-  login text NOT NULL UNIQUE,
-  agreement BOOLEAN NOT NULL DEFAULT FALSE,
-  confession BOOLEAN NOT NULL DEFAULT FALSE,
-  is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-  blocked TIMESTAMP DEFAULT NULL
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.users (
+      id uuid NOT NULL primary key,
+      email text NOT NULL UNIQUE,
+      login text NOT NULL UNIQUE,
+      agreement BOOLEAN NOT NULL DEFAULT FALSE,
+      confession BOOLEAN NOT NULL DEFAULT FALSE,
+      is_admin BOOLEAN NOT NULL DEFAULT FALSE,
+      blocked TIMESTAMP DEFAULT NULL
+    );
+
+    ALTER TABLE
+      PUBLIC.users enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    -- На прямую работать с этой таблицей может только суперадмин
+    -- Потом поправить так чтобы можно было получить только юзеров, с которыми ты работаешь на проекте. Чтобы нельзя было одним запросом получить всех.
+    -- И поставить ограничения на то, какие поля возвращать
+    -- Если нужно будет работать админу, то или мы тут настроим, или же он будет через сервисный ключ работать (все запросы только через апи)
+    DROP POLICY IF EXISTS "Залогиненый юзер может получить список всех юзеров" ON PUBLIC.users;
+    CREATE policy "Залогиненый юзер может получить список всех юзеров" ON PUBLIC.users FOR
+    SELECT
+      TO authenticated USING (TRUE);
+
+  -- END RLS
+-- END USERS
 
 -- ROLE PERMISSIONS
-CREATE TABLE PUBLIC .role_permissions (
-  id bigint generated BY DEFAULT AS identity primary key,
-  role project_role NOT NULL,
-  permission app_permission NOT NULL,
-  UNIQUE (role, permission)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.role_permissions (
+      id bigint generated BY DEFAULT AS identity primary key,
+      role project_role NOT NULL,
+      permission app_permission NOT NULL,
+      UNIQUE (role, permission)
+    );
+    COMMENT ON TABLE PUBLIC.role_permissions IS 'Application permissions for each role.';
 
-COMMENT ON TABLE PUBLIC .role_permissions IS 'Application permissions for each role.';
+    ALTER TABLE
+      PUBLIC.role_permissions enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+  -- END RLS
+-- END ROLE PERMISSIONS
 
 -- LANGUAGES
-CREATE TABLE PUBLIC .languages (
-  id bigint generated BY DEFAULT AS identity primary key,
-  eng text NOT NULL,
-  code text NOT NULL UNIQUE,
-  orig_name text NOT NULL,
-  is_gl BOOLEAN NOT NULL DEFAULT FALSE
-);
+  --TABLE
+    CREATE TABLE PUBLIC.languages (
+      id bigint generated BY DEFAULT AS identity primary key,
+      eng text NOT NULL,
+      code text NOT NULL UNIQUE,
+      orig_name text NOT NULL,
+      is_gl BOOLEAN NOT NULL DEFAULT FALSE
+    );
+
+    -- Secure languages
+    ALTER TABLE
+      PUBLIC.languages enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    DROP POLICY IF EXISTS "Залогиненый юзер может получить список всех языков" ON PUBLIC.languages;
+
+    CREATE policy "Залогиненый юзер может получить список всех языков" ON PUBLIC.languages FOR
+    SELECT
+      TO authenticated USING (TRUE);
+
+    DROP POLICY IF EXISTS "Создавать может только админ" ON PUBLIC.languages;
+
+    CREATE policy "Создавать может только админ" ON PUBLIC.languages FOR
+    INSERT
+      WITH CHECK (admin_only());
+
+    DROP POLICY IF EXISTS "Обновлять может только админ" ON PUBLIC.languages;
+
+    CREATE policy "Обновлять может только админ" ON PUBLIC.languages FOR
+    UPDATE
+      USING (admin_only());
+
+    DROP POLICY IF EXISTS "Удалять может только админ" ON PUBLIC.languages;
+
+    CREATE policy "Удалять может только админ" ON PUBLIC.languages FOR
+    DELETE
+      USING (admin_only());
+  -- END RLS
+-- END LANGUAGES
 
 -- METHODS
-CREATE TABLE PUBLIC .methods (
-  id bigint generated BY DEFAULT AS identity primary key,
-  title text NOT NULL,
-  steps json,
-  resources json,
-  "type" project_type NOT NULL DEFAULT 'bible'::project_type
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.methods (
+      id bigint generated BY DEFAULT AS identity primary key,
+      title text NOT NULL,
+      steps json,
+      resources json,
+      "type" project_type NOT NULL DEFAULT 'bible'::project_type
+    );
+    -- Secure methods
+    ALTER TABLE
+      PUBLIC.methods enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    -- это глобальная таблица с методами. Думаю что не стоит тут разрешать редактировать админам. Может добавлять методы могут только суперадмины, чтобы все подряд тут ничего не исправляли.
+    -- Если представить что другие команды подключатся к этой платформе, то у меня две идеи. Или они во время создания проекта могут отредактировать метод. Или добавить поле с юзер айди к каждому методу в этой таблице. Чтобы в дальнейшем редактировать мог только свои методы.
+    DROP POLICY IF EXISTS "Админ может получить список всех методов" ON PUBLIC.methods;
+
+    CREATE policy "Админ может получить список всех методов" ON PUBLIC.methods FOR
+    SELECT
+      TO authenticated USING (admin_only());
+
+    -- Сейчас добавлять, удалять, исправлять может только суперадмин. Методов не много, они не появляются каждый месяц.
+  -- END RLS
+-- END METHODS
 
 -- PROJECTS
-CREATE TABLE PUBLIC .projects (
-  id bigint generated BY DEFAULT AS identity primary key,
-  title text NOT NULL,
-  code text NOT NULL,
-  language_id bigint references PUBLIC .languages ON
-  DELETE
-    CASCADE NOT NULL,
-  "type" project_type NOT NULL,
-  resources json,
-  method text NOT NULL,
-  base_manifest json,
-  UNIQUE (code, language_id)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.projects (
+      id bigint generated BY DEFAULT AS identity primary key,
+      title text NOT NULL,
+      code text NOT NULL,
+      language_id bigint references PUBLIC.languages ON
+      DELETE
+        CASCADE NOT NULL,
+      "type" project_type NOT NULL,
+      resources json,
+      method text NOT NULL,
+      base_manifest json,
+      UNIQUE (code, language_id)
+    );
 
-COMMENT ON COLUMN public.projects.type
-    IS 'копируется с таблицы методов';
+    COMMENT ON COLUMN public.projects.type
+        IS 'копируется с таблицы методов';
 
-COMMENT ON COLUMN public.projects.resources
-    IS 'копируем с таблицы методов, должны быть запонены ссылки, указываем овнера, репо, коммит';
+    COMMENT ON COLUMN public.projects.resources
+        IS 'копируем с таблицы методов, должны быть заполнены ссылки, указываем овнера, репо, коммит';
 
-COMMENT ON COLUMN public.projects.method
-    IS 'копируем без изменений название метода с таблицы шаблонов';
+    COMMENT ON COLUMN public.projects.method
+        IS 'копируем без изменений название метода с таблицы шаблонов';
+
+    ALTER TABLE
+      PUBLIC.projects enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    DROP POLICY IF EXISTS "Админ видит все проекты, остальные только те, на которых они назначены" ON PUBLIC.projects;
+
+    CREATE policy "Админ видит все проекты, остальные только те, на которых они назначены" ON PUBLIC.projects FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), id) != 'user');
+
+    DROP POLICY IF EXISTS "Создавать может только админ" ON PUBLIC.projects;
+
+    CREATE policy "Создавать может только админ" ON PUBLIC.projects FOR
+    INSERT
+      WITH CHECK (admin_only());
+
+    -- пока что сделаем что обновлять только админ может. Может для координатора сделать функцию для обновления только некоторых полей
+    DROP POLICY IF EXISTS "Обновлять может только админ" ON PUBLIC.projects;
+
+    CREATE policy "Обновлять может только админ" ON PUBLIC.projects FOR
+    UPDATE
+      USING (admin_only());
+
+    -- удалять пока что ничего не будем. Только в режиме супер админа
+  -- END RLS
+-- END PROJECTS
 
 -- PROJECT TRANSLATORS
-CREATE TABLE PUBLIC .project_translators (
-  id bigint generated BY DEFAULT AS identity primary key,
-  project_id bigint references PUBLIC .projects ON
-  DELETE
-    CASCADE NOT NULL,
-  is_moderator boolean DEFAULT false,
-  user_id uuid references PUBLIC .users ON
-  DELETE
-    CASCADE NOT NULL,
-  UNIQUE (project_id, user_id)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.project_translators (
+      id bigint generated BY DEFAULT AS identity primary key,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      is_moderator boolean DEFAULT false,
+      user_id uuid references PUBLIC.users ON
+      DELETE
+        CASCADE NOT NULL,
+      UNIQUE (project_id, user_id)
+    );
+    ALTER TABLE
+      PUBLIC.project_translators enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    DROP POLICY IF EXISTS "Админ видит всех, остальные только тех кто с ними на проекте" ON PUBLIC.project_translators;
+
+    CREATE policy "Админ видит всех, остальные только тех кто с ними на проекте" ON PUBLIC.project_translators FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
+    DROP POLICY IF EXISTS "Добавлять на проект может админ или кординатор проекта" ON PUBLIC.project_translators;
+
+    CREATE policy "Добавлять на проект может админ или кординатор проекта" ON PUBLIC.project_translators FOR
+    INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+
+    DROP POLICY IF EXISTS "Удалять с проекта может админ или кординатор проекта" ON PUBLIC.project_translators;
+
+    CREATE policy "Удалять с проекта может админ или кординатор проекта" ON PUBLIC.project_translators FOR
+    DELETE
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+
+  -- END RLS
+-- PROJECT TRANSLATORS
 
 -- PROJECT COORDINATORS
-CREATE TABLE PUBLIC .project_coordinators (
-  id bigint generated BY DEFAULT AS identity primary key,
-  project_id bigint references PUBLIC .projects ON
-  DELETE
-    CASCADE NOT NULL,
-  user_id uuid references PUBLIC .users ON
-  DELETE
-    CASCADE NOT NULL,
-  UNIQUE (project_id, user_id)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.project_coordinators (
+      id bigint generated BY DEFAULT AS identity primary key,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      user_id uuid references PUBLIC.users ON
+      DELETE
+        CASCADE NOT NULL,
+      UNIQUE (project_id, user_id)
+    );
+    ALTER TABLE
+      PUBLIC.project_coordinators enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    DROP POLICY IF EXISTS "Админ видит всех, остальные только тех кто с ними на проекте" ON PUBLIC.project_coordinators;
+
+    CREATE policy "Админ видит всех, остальные только тех кто с ними на проекте" ON PUBLIC.project_coordinators FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
+    DROP POLICY IF EXISTS "Добавлять на проект может только админ" ON PUBLIC.project_coordinators;
+
+    CREATE policy "Добавлять на проект может только админ" ON PUBLIC.project_coordinators FOR
+    INSERT
+      WITH CHECK (admin_only());
+
+    DROP POLICY IF EXISTS "Удалять только админ" ON PUBLIC.project_coordinators;
+
+    CREATE policy "Удалять только админ" ON PUBLIC.project_coordinators FOR
+    DELETE
+      USING (admin_only());
+  -- END RLS
+-- END PROJECT COORDINATORS
 
 -- BRIEFS
-CREATE TABLE PUBLIC .briefs (
-  id bigint generated BY DEFAULT AS identity primary key,
-  project_id bigint references PUBLIC .projects ON
-  DELETE
-    CASCADE NOT NULL UNIQUE,
-  "text" text DEFAULT NULL
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.briefs (
+      id bigint generated BY DEFAULT AS identity primary key,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL UNIQUE,
+      "text" text DEFAULT NULL
+    );
 
-COMMENT ON COLUMN public.briefs.text
-    IS 'бриф пишем в формате маркдаун';
+    COMMENT ON COLUMN public.briefs.text
+        IS 'бриф пишем в формате маркдаун';
+
+    ALTER TABLE
+      PUBLIC.briefs enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    DROP POLICY IF EXISTS "Видят все кто на проекте и админ" ON PUBLIC.briefs;
+
+    CREATE policy "Видят все кто на проекте и админ" ON PUBLIC.briefs FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
+    DROP POLICY IF EXISTS "Изменять может админ, кординатор и модератор" ON PUBLIC.briefs;
+
+    CREATE policy "Изменять может админ, кординатор и модератор" ON PUBLIC.briefs FOR
+    UPDATE
+      USING (authorize(auth.uid(), project_id) NOT IN ('user', 'translator'));
+    -- создавать и удалять на прямую нельзя
+  -- END RLS
+-- END BRIEFS
 
 -- STEPS
-CREATE TABLE PUBLIC .steps (
-  id bigint generated BY DEFAULT AS identity primary key,
-  title text NOT NULL,
-  "description" text DEFAULT NULL,
-  intro text DEFAULT NULL,
-  count_of_users int2 NOT NULL,
-  "time" int2 NOT NULL,
-  project_id bigint REFERENCES PUBLIC .projects ON
-  DELETE
-    CASCADE NOT NULL,
-  config json NOT NULL,
-  order_by int2 NOT NULL,
-    UNIQUE (project_id, order_by)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.steps (
+      id bigint generated BY DEFAULT AS identity primary key,
+      title text NOT NULL,
+      "description" text DEFAULT NULL,
+      intro text DEFAULT NULL,
+      count_of_users int2 NOT NULL,
+      "time" int2 NOT NULL,
+      project_id bigint REFERENCES PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      config json NOT NULL,
+      order_by int2 NOT NULL,
+        UNIQUE (project_id, order_by)
+    );
 
-COMMENT ON COLUMN public.steps.order_by
-    IS 'это поле юзер не редактирует. Мы его указываем сами.';
+    COMMENT ON COLUMN public.steps.order_by
+        IS 'это поле юзер не редактирует. Мы его указываем сами. Пока что будем получать с клиента.';
+    ALTER TABLE
+      PUBLIC.steps enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    DROP POLICY IF EXISTS "Получают данные по шагам все кто на проекте" ON PUBLIC.steps;
+
+    CREATE policy "Получают данные по шагам все кто на проекте" ON PUBLIC.steps FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
+    DROP POLICY IF EXISTS "Добавлять можно только админу. При создании проекта он указывает сразу метод. Придумать так чтобы нельзя было добавлять новые шаги после всего" ON PUBLIC.steps;
+
+    CREATE policy "Добавлять можно только админу. При создании проекта он указывает сразу метод. Придумать так чтобы нельзя было добавлять новые шаги после всего" ON PUBLIC.steps FOR
+    INSERT
+      WITH CHECK (admin_only());
+  -- END RLS
+-- END STEPS
 
 -- BOOKS
-CREATE TABLE PUBLIC .books (
-  id bigint generated BY DEFAULT AS identity primary key,
-  code book_code NOT NULL,
-  project_id bigint references PUBLIC .projects ON
-  DELETE
-    CASCADE NOT NULL,
-  "text" text DEFAULT NULL,
-  chapters json,
-  UNIQUE (project_id, code)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.books (
+      id bigint generated BY DEFAULT AS identity primary key,
+      code book_code NOT NULL,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      "text" text DEFAULT NULL,
+      chapters json,
+      UNIQUE (project_id, code)
+    );
 
-COMMENT ON TABLE public.books
-    IS 'У каждой книги потом прописать ее вес. Рассчитать на основе англ или русских ресурсов (сколько там слов). Подумать о том, что будет если удалить проект. Так как в таблице книги мы хотим хранить текст. Отобразим 66 книг Библии или 1 ОБС. В будущем парсить манифест чтобы отображать книги которые уже готовы. Или в момент когда админ нажмет "Создать книгу" проверить есть ли они, если нет то выдать предупреждение.';
+    COMMENT ON TABLE public.books
+        IS 'У каждой книги потом прописать ее вес. Рассчитать на основе англ или русских ресурсов (сколько там слов). Подумать о том, что будет если удалить проект. Так как в таблице книги мы хотим хранить текст. Отобразим 66 книг Библии или 1 ОБС. В будущем парсить манифест чтобы отображать книги которые уже готовы. Или в момент когда админ нажмет "Создать книгу" проверить есть ли они, если нет то выдать предупреждение.';
 
-COMMENT ON COLUMN public.books.text
-    IS 'Здесь мы будем собирать книгу чтобы не делать много запросов. Возьмем все главы и объединим. Так же тут со временем пропишем вес книги на основе англ или русского ресурса';
+    COMMENT ON COLUMN public.books.text
+        IS 'Здесь мы будем собирать книгу чтобы не делать много запросов. Возьмем все главы и объединим. Так же тут со временем пропишем вес книги на основе англ или русского ресурса';
+  -- END TABLE
 
+  -- RLS
+  -- END RLS
+-- END BOOK
 
 -- CHAPTERS
-CREATE TABLE PUBLIC .chapters (
-  id bigint generated BY DEFAULT AS identity primary key,
-  num int2 NOT NULL,
-  book_id bigint REFERENCES PUBLIC .books ON
-  DELETE
-    CASCADE NOT NULL,
-  "text" text DEFAULT NULL,
-  verses integer,
-    UNIQUE (book_id, num)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.chapters (
+      id bigint generated BY DEFAULT AS identity primary key,
+      num int2 NOT NULL,
+      book_id bigint REFERENCES PUBLIC.books ON
+      DELETE
+        CASCADE NOT NULL,
+      "text" text DEFAULT NULL,
+      verses integer,
+        UNIQUE (book_id, num)
+    );
+  -- END TABLE
+
+  -- RLS
+  -- END RLS
+-- END CHAPTERS
 
 -- VERSES
-CREATE TABLE PUBLIC .verses (
-  id bigint generated BY DEFAULT AS identity primary key,
-  num int2 NOT NULL,
-  "text" text DEFAULT NULL,
-  current_step bigint REFERENCES PUBLIC .steps ON
-  DELETE
-    CASCADE NOT NULL,
-  chapter_id bigint REFERENCES PUBLIC .chapters ON
-  DELETE
-    CASCADE NOT NULL,
-  project_translator_id bigint REFERENCES PUBLIC .project_translators ON
-  DELETE
-    CASCADE NOT NULL,
-    UNIQUE (chapter_id, num)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.verses (
+      id bigint generated BY DEFAULT AS identity primary key,
+      num int2 NOT NULL,
+      "text" text DEFAULT NULL,
+      current_step bigint REFERENCES PUBLIC.steps ON
+      DELETE
+        CASCADE NOT NULL,
+      chapter_id bigint REFERENCES PUBLIC.chapters ON
+      DELETE
+        CASCADE NOT NULL,
+      project_translator_id bigint REFERENCES PUBLIC.project_translators ON
+      DELETE
+        CASCADE NOT NULL,
+        UNIQUE (chapter_id, num)
+    );
 
-COMMENT ON COLUMN public.verses.text
-    IS 'тут будет храниться последний текст. Когда мы переходим на следующий шаг, мы копируем текст и номер предыдущего шага';
+    COMMENT ON COLUMN public.verses.text
+        IS 'тут будет храниться последний текст. Когда мы переходим на следующий шаг, мы копируем текст и номер предыдущего шага';
 
-COMMENT ON COLUMN public.verses.current_step
-    IS 'Скорее всего тут придется хранить айдишник шага. Так как несколько переводчиков то часть стихов может быть на одном а часть на другом шаге. Переводчик у нас на уровне проекта а не главы, чтобы можно было у переводчика хранить, на каком он шаге.';
+    COMMENT ON COLUMN public.verses.current_step
+        IS 'Скорее всего тут придется хранить айдишник шага. Так как несколько переводчиков то часть стихов может быть на одном а часть на другом шаге. Переводчик у нас на уровне проекта а не главы, чтобы можно было у переводчика хранить, на каком он шаге.';
+  -- END TABLE
+
+  -- RLS
+  -- END RLS
+-- VERSES
 
 -- PROGRESS
-CREATE TABLE PUBLIC .progress (
-  id bigint generated BY DEFAULT AS identity primary key,
-  verse_id bigint REFERENCES PUBLIC .verses ON
-  DELETE
-    CASCADE NOT NULL,
-  step_id bigint REFERENCES PUBLIC .steps ON
-  DELETE
-    CASCADE NOT NULL,
-  "text" text DEFAULT NULL,
-    UNIQUE (verse_id, step_id)
-);
+  -- TABLE
+    CREATE TABLE PUBLIC.progress (
+      id bigint generated BY DEFAULT AS identity primary key,
+      verse_id bigint REFERENCES PUBLIC.verses ON
+      DELETE
+        CASCADE NOT NULL,
+      step_id bigint REFERENCES PUBLIC.steps ON
+      DELETE
+        CASCADE NOT NULL,
+      "text" text DEFAULT NULL,
+        UNIQUE (verse_id, step_id)
+    );
+    ALTER TABLE
+      PUBLIC.progress enable ROW LEVEL security;
+  -- END TABLE
 
--- authorize with role-based access control (RBAC)
--- Вообще не актуальная штука, и не работает. Надо переписать
-CREATE
-OR replace FUNCTION PUBLIC .authorize(
-  requested_permission app_permission,
-  user_id uuid
-) returns BOOLEAN LANGUAGE plpgsql security definer AS $$
-DECLARE
-  bind_permissions INT;
+  -- Я добавил триггер, когда номер шага в таблице стихов обновляется - то мы копируем новый контент и старый айди шага
 
-BEGIN
-  SELECT
-    COUNT(*)
-  FROM
-    PUBLIC .role_permissions
-    INNER JOIN PUBLIC .project_coordinators ON role_permissions.role = project_coordinators.role
-  WHERE
-    role_permissions.permission = authorize.requested_permission
-    AND project_coordinators.user_id = authorize.user_id INTO bind_permissions;
-
-RETURN bind_permissions > 0;
-
-END;
-
-$$;
-
--- if user can work with site
-CREATE
-OR replace FUNCTION PUBLIC .has_access(user_id uuid) returns BOOLEAN LANGUAGE plpgsql security definer AS $$
-DECLARE
-  access INT;
-
-BEGIN
-  SELECT
-    COUNT(*)
-  FROM
-    PUBLIC .users
-  WHERE
-    users.id = has_access.user_id
-    AND users.agreement = TRUE
-    AND users.confession = TRUE INTO access;
-
-RETURN access > 0;
-
-END;
-
-$$;
-
--- Редактировать привилегии может координатор и администратор.
--- Координатор может поменять роль на переводчика или модератора.
--- Админ может на координатора, переводчика или модератора.
-CREATE
-OR replace FUNCTION PUBLIC .can_change_role(role project_role, from_user uuid, to_user uuid) returns BOOLEAN LANGUAGE plpgsql security definer AS $$
-DECLARE
-  from_user_role project_role;
-
-to_user_role project_role;
-
-BEGIN
-  SELECT
-    project_roles.role
-  FROM
-    project_roles
-  WHERE
-    project_roles.user_id = can_change_role.from_user INTO from_user_role;
-
-SELECT
-  project_roles.role
-FROM
-  project_roles
-WHERE
-  project_roles.user_id = can_change_role.to_user INTO to_user_role;
-
-IF can_change_role.role = 'moderator'
-AND from_user_role = 'coordinator'
-AND to_user_role = 'translator' THEN RETURN TRUE;
-
-END IF;
-
-IF can_change_role.role = 'translator'
-AND from_user_role = 'coordinator'
-AND to_user_role = 'moderator' THEN RETURN TRUE;
-
-END IF;
-
-RETURN FALSE;
-
-END;
-
-$$;
-
--- Secure the tables
--- Secure users
-ALTER TABLE
-  PUBLIC .users enable ROW LEVEL security;
-
-DROP POLICY IF EXISTS "Залогиненый юзер может получить список всех юзеров" ON PUBLIC .users;
-
-CREATE policy "Залогиненый юзер может получить список всех юзеров" ON PUBLIC .users FOR
-SELECT
-  TO authenticated USING (TRUE);
-
-DROP POLICY IF EXISTS "Создавать может только записи про себя" ON PUBLIC .users;
-
-CREATE policy "Создавать может только записи про себя" ON PUBLIC .users FOR
-INSERT
-  WITH CHECK (auth.uid() = id);
-
-DROP POLICY IF EXISTS "Обновлять может только самого себя" ON PUBLIC .users;
-
-CREATE policy "Обновлять может только самого себя" ON PUBLIC .users FOR
-UPDATE
-  USING (auth.uid() = id);
-
--- Secure languages
-ALTER TABLE
-  PUBLIC .languages enable ROW LEVEL security;
-
-DROP POLICY IF EXISTS "Залогиненый юзер может получить список всех языков" ON PUBLIC .languages;
-
-CREATE policy "Залогиненый юзер может получить список всех языков" ON PUBLIC .languages FOR
-SELECT
-  TO authenticated USING (TRUE);
-
-DROP POLICY IF EXISTS "Создавать может только тот, у кого есть привилегия" ON PUBLIC .languages;
-
-CREATE policy "Создавать может только тот, у кого есть привилегия" ON PUBLIC .languages FOR
-INSERT
-  WITH CHECK (authorize('languages', auth.uid()));
-
-DROP POLICY IF EXISTS "Обновлять может только тот, у кого есть привилегия" ON PUBLIC .languages;
-
-CREATE policy "Обновлять может только тот, у кого есть привилегия" ON PUBLIC .languages FOR
-UPDATE
-  USING (authorize('languages', auth.uid()));
-
-DROP POLICY IF EXISTS "Удалять может только тот, у кого есть привилегия" ON PUBLIC .languages;
-
-CREATE policy "Удалять может только тот, у кого есть привилегия" ON PUBLIC .languages FOR
-DELETE
-  USING (authorize('languages', auth.uid()));
-
--- Secure project_translators
-ALTER TABLE
-  PUBLIC .project_translators enable ROW LEVEL security;
-
-DROP POLICY IF EXISTS "Залогиненый юзер может получить список всех ролей любого пользователя" ON PUBLIC .project_translators;
-
-CREATE policy "Залогиненый юзер может получить список всех ролей любого пользователя" ON PUBLIC .project_translators FOR
-SELECT
-  TO authenticated USING (TRUE);
-
-DROP POLICY IF EXISTS "Редактировать привилегии может координатор и администратор. Координатор может поменять роль на переводчика или модератора. Админ может на координатора, переводчика или модератора." ON PUBLIC .project_translators;
-
--- CREATE policy "Редактировать привилегии может координатор и администратор. Координатор может поменять роль на переводчика или модератора. Админ может на координатора, переводчика или модератора." ON PUBLIC .project_translators FOR
--- UPDATE
---   USING (can_change_role(role, auth.uid(), user_id));
--- Secure role_permissions
-ALTER TABLE
-  PUBLIC .role_permissions enable ROW LEVEL security;
+  -- RLS
+  -- END RLS
+-- END PROGRESS
 
 -- Send "previous data" on change
-ALTER TABLE
-  PUBLIC .users replica identity full;
 
 ALTER TABLE
-  PUBLIC .languages replica identity full;
+  PUBLIC.users replica identity full;
 
--- create policy "политика с джойном"
---   on teams
---   for update using (
---     auth.uid() in (
---       select user_id from members
---       where team_id = id
---     )
---   );
--- inserts a row into public.users
-CREATE
-OR replace FUNCTION PUBLIC .handle_new_user() returns TRIGGER LANGUAGE plpgsql security definer AS $$ BEGIN
-  INSERT INTO
-    PUBLIC .users (id, email, login)
-  VALUES
-    (NEW .id, NEW .email, NEW .raw_user_meta_data ->> 'login');
+ALTER TABLE
+  PUBLIC.languages replica identity full;
 
-RETURN NEW;
 
-END;
+-- TRIGGERS
+  -- trigger the function every time a user is created
+  DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
-$$;
+  CREATE TRIGGER on_auth_user_created AFTER
+  INSERT
+    ON auth.users FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_user();
 
--- trigger the function every time a user is created
-DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+  -- trigger the function every time a project is created
+  DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
 
-CREATE TRIGGER on_auth_user_created after
-INSERT
-  ON auth.users FOR each ROW EXECUTE FUNCTION PUBLIC .handle_new_user();
+  CREATE TRIGGER on_public_project_created AFTER
+  INSERT
+    ON PUBLIC.projects FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_project();
 
--- inserts a row into public.briefs
-CREATE
-OR replace FUNCTION PUBLIC .handle_new_project() returns TRIGGER LANGUAGE plpgsql security definer AS $$ BEGIN
-  INSERT INTO
-    PUBLIC .briefs (project_id)
-  VALUES
-    (NEW .id);
+  -- trigger the function every time a project is created
+  DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
 
-RETURN NEW;
-
-END;
-
-$$;
-
--- trigger the function every time a project is created
-DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC .projects;
-
-CREATE TRIGGER on_public_project_created after
-INSERT
-  ON PUBLIC .projects FOR each ROW EXECUTE FUNCTION PUBLIC .handle_new_project();
+  CREATE TRIGGER on_public_verses_next_step AFTER
+  UPDATE
+    ON PUBLIC.verses FOR each ROW EXECUTE FUNCTION PUBLIC.handle_next_step();
+-- END TRIGGERS
 
 /**
  * REALTIME SUBSCRIPTIONS
@@ -549,599 +726,642 @@ COMMIT;
 -- add tables to the publication
 ALTER publication supabase_realtime
 ADD
-  TABLE PUBLIC .languages;
+  TABLE PUBLIC.languages;
 
 ALTER publication supabase_realtime
 ADD
-  TABLE PUBLIC .users;
+  TABLE PUBLIC.users;
 
 -- DUMMY DATA
-DELETE FROM
-  PUBLIC .users;
+  -- USERS
+    DELETE FROM
+      PUBLIC.users;
 
-INSERT INTO
-  PUBLIC .users (
-    id,
-    login,
-    email,
-    agreement,
-    confession,
-    blocked,
-    is_admin
-  )
-VALUES
-  (
-    '21ae6e79-3f1d-4b87-bcb1-90256f63c167',
-    'Translator',
-    'translator@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2',
-    'Coordinator2',
-    'coordinator2@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    '2e108465-9c20-46cd-9e43-933730229762',
-    'Moderator3',
-    'moderator3@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    '54358d8e-0144-47fc-a290-a6882023a3d6',
-    'Coordinator3',
-    'coordinator3@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    '83282f7a-c4b7-4387-97c9-4c356e56af5c',
-    'Coordinator',
-    'coordinator@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    '8331e952-5771-49a6-a679-c44736f5581b',
-    'Moderator2',
-    'moderator2@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    'ae891f6d-0f04-4b01-aa15-1ed46d0ef91d',
-    'Admin2',
-    'admin2@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    TRUE
-  ),
-  (
-    'bba5a95e-33b7-431d-8c43-aedc517a1aa6',
-    'Translator2',
-    'translator2@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    'cba74237-0801-4e3b-93f6-012aeab6eb91',
-    'Admin',
-    'admin@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    TRUE
-  ),
-  (
-    'e50d5d0a-4fdb-4de3-b431-119e684d775e',
-    'Moderator',
-    'moderator@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  ),
-  (
-    'f193af4d-ca5e-4847-90ef-38f969792dd5',
-    'Translator3',
-    'translator3@mail.com',
-    FALSE,
-    FALSE,
-    NULL,
-    FALSE
-  );
+    INSERT INTO
+      PUBLIC.users (
+        id,
+        login,
+        email,
+        agreement,
+        confession,
+        blocked,
+        is_admin
+      )
+    VALUES
+      (
+        '21ae6e79-3f1d-4b87-bcb1-90256f63c167',
+        'Translator',
+        'translator@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2',
+        'Coordinator2',
+        'coordinator2@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        '2e108465-9c20-46cd-9e43-933730229762',
+        'Moderator3',
+        'moderator3@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        '54358d8e-0144-47fc-a290-a6882023a3d6',
+        'Coordinator3',
+        'coordinator3@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        '9116f676-716d-470c-b3d0-2d07325d5b10',
+        'Coordinator0',
+        'coordinator0@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        '83282f7a-c4b7-4387-97c9-4c356e56af5c',
+        'Coordinator',
+        'coordinator@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        '8331e952-5771-49a6-a679-c44736f5581b',
+        'Moderator2',
+        'moderator2@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        'ae891f6d-0f04-4b01-aa15-1ed46d0ef91d',
+        'Admin2',
+        'admin2@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        TRUE
+      ),
+      (
+        '689b2ba5-717e-4237-ba3f-d5fa6a55600b',
+        'Admin0',
+        'admin0@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        TRUE
+      ),
+      (
+        'bba5a95e-33b7-431d-8c43-aedc517a1aa6',
+        'Translator2',
+        'translator2@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        'cba74237-0801-4e3b-93f6-012aeab6eb91',
+        'Admin',
+        'admin@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        TRUE
+      ),
+      (
+        'e50d5d0a-4fdb-4de3-b431-119e684d775e',
+        'Moderator',
+        'moderator@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        'f193af4d-ca5e-4847-90ef-38f969792dd5',
+        'Translator3',
+        'translator3@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      );
+  -- END USERS
 
-DELETE FROM
-  PUBLIC .languages;
+  -- LANGUAGES
+    DELETE FROM
+      PUBLIC.languages;
 
-INSERT INTO
-  PUBLIC .languages (eng, code, orig_name, is_gl)
-VALUES
-  ('english', 'en', 'english', TRUE),
-  ('russian', 'ru', 'русский', TRUE),
-  ('kazakh', 'kk', 'казахский', FALSE);
+    INSERT INTO
+      PUBLIC.languages (eng, code, orig_name, is_gl)
+    VALUES
+      ('english', 'en', 'english', TRUE),
+      ('russian', 'ru', 'русский', TRUE),
+      ('kazakh', 'kk', 'казахский', FALSE);
+  -- END LANGUAGES
 
-DELETE FROM
-  PUBLIC .methods;
+  -- METHODS
+    DELETE FROM
+      PUBLIC.methods;
 
-INSERT INTO
-  PUBLIC .methods (title, resources, steps, "type")
-VALUES
-  ('Vcana Bible', '{"literal":true, "simplified":false, "tn":false}', '[
-  {
-    "title": "Шаг один. Читаем вместе",
-    "description": "Some text here...",
-    "time": 60,
-    "count_of_users": 4,
-    "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-    "config": [
+    INSERT INTO
+      PUBLIC.methods (title, resources, steps, "type")
+    VALUES
+      ('Vcana Bible', '{"literal":true, "simplified":false, "tn":false}', '[
       {
-        "size": 4,
-        "tools": [
+        "title": "Шаг один. Читаем вместе",
+        "description": "Some text here...",
+        "time": 60,
+        "count_of_users": 4,
+        "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "config": [
           {
-            "name": "literal",
-            "config": {}
+            "size": 4,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              }
+            ]
+          },
+          {
+            "size": 2,
+            "tools": [
+              {
+                "name": "notepad",
+                "config": {"team": true}
+              },
+              {
+                "name": "notepad",
+                "config": {}
+              }
+            ]
           }
         ]
       },
       {
-        "size": 2,
-        "tools": [
+        "title": "Шаг два. Набросок",
+        "description": "Some text here2...",
+        "time": 30,
+        "count_of_users": 2,
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "config": [
           {
-            "name": "notepad",
-            "config": {"team": true}
+            "size": 3,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tn",
+                "config": {}
+              }
+            ]
           },
           {
-            "name": "notepad",
-            "config": {}
+            "size": 3,
+            "tools": [
+              {
+                "name": "editor",
+                "config": {"type":"blind"}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
           }
         ]
-      }
-    ]
-  },
-  {
-    "title": "Шаг два. Набросок",
-    "description": "Some text here2...",
-    "time": 30,
-    "count_of_users": 2,
-    "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-    "config": [
+      }]', 'bible'::project_type),
+      ('Vcana OBS', '{"obs":true, "tw":false, "tq":false}', '[
       {
-        "size": 3,
-        "tools": [
+        "title": "Шаг один. Читаем вместе OBS",
+        "description": "Some text here...",
+        "time": 45,
+        "count_of_users": 4,
+        "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "config": [
           {
-            "name": "literal",
-            "config": {}
+            "size": 4,
+            "tools": [
+              {
+                "name": "obs",
+                "config": {}
+              },
+              {
+                "name": "tw",
+                "config": {}
+              },
+              {
+                "name": "tq",
+                "config": {}
+              }
+            ]
           },
           {
-            "name": "simplified",
-            "config": {}
-          },
-          {
-            "name": "tn",
-            "config": {}
+            "size": 2,
+            "tools": [
+              {
+                "name": "notepad",
+                "config": {}
+              }
+            ]
           }
         ]
       },
       {
-        "size": 3,
-        "tools": [
+        "title": "Шаг два. Набросок OBS",
+        "description": "Some text here2...",
+        "time": 30,
+        "count_of_users": 2,
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "config": [
           {
-            "name": "editor",
-            "config": {"type":"blind"}
+            "size": 3,
+            "tools": [
+              {
+                "name": "obs",
+                "config": {}
+              }
+            ]
           },
           {
-            "name": "dictionary",
-            "config": {}
+            "size": 3,
+            "tools": [
+              {
+                "name": "editor",
+                "config": {"type":"blind"}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
           }
         ]
-      }
-    ]
-  }]', 'bible'::project_type),
-  ('Vcana OBS', '{"obs":true, "tw":false, "tq":false}', '[
-  {
-    "title": "Шаг один. Читаем вместе OBS",
-    "description": "Some text here...",
-    "time": 45,
-    "count_of_users": 4,
-    "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-    "config": [
-      {
-        "size": 4,
-        "tools": [
+      }]', 'obs'::project_type);
+  -- END METHODS
+
+  -- ROLE PERMISSIONS
+    DELETE FROM
+      PUBLIC.role_permissions;
+
+    INSERT INTO
+      PUBLIC.role_permissions (role, permission)
+    VALUES
+      ('moderator', 'dictionaries'),
+      ('moderator', 'notes'),
+      ('moderator', 'translator.set'),
+      ('coordinator', 'dictionaries'),
+      ('coordinator', 'notes'),
+      ('coordinator', 'verses.set'),
+      ('coordinator', 'moderator.set'),
+      ('coordinator', 'user_projects'),
+      ('coordinator', 'translator.set');
+  -- END ROLE PERMISSIONS
+
+  -- PROJECTS
+    DELETE FROM
+      PUBLIC.projects;
+
+    INSERT INTO
+      PUBLIC.projects (title, code, language_id, method, "type", resources, base_manifest)
+    VALUES
+      (
+        'Russian Literal Open Bible',
+        'ru_rlob',
+        2,
+        'Vcana Bible',
+        'bible'::project_type,
+        '{
+          "literal": {
+            "owner": "unfoldingword",
+            "repo": "en_ult",
+            "commit": "acf32a196",
+            "manifest": "{}"
+          },
+          "simplified": {
+            "owner": "unfoldingword",
+            "repo": "en_ust",
+            "commit": "acf32a196",
+            "manifest": "{}"
+          },
+          "tn": {
+            "owner": "unfoldingword",
+            "repo": "en_tn",
+            "commit": "acf32a196",
+            "manifest": "{}"
+          }
+        }',
+        '{
+          "resource": "literal",
+          "books": [
+            {
+              "name": "gen",
+              "link": "unfoldingword/en_ult/a3c1876/01_GEN.usfm"
+            },
+            {
+              "name": "1ti",
+              "link": "unfoldingword/en_ult/a3c1876/55_1TI.usfm"
+            },
+            {
+              "name": "tit",
+              "link": "unfoldingword/en_ult/a3c1876/57_TIT.usfm"
+            }
+          ]
+        }'
+      ),
+      (
+        'Kazakh Open Bible Story',
+        'kk_obs',
+        3,
+        'Vcana OBS',
+        'obs'::project_type,
+        '{
+          "obs": {
+            "owner": "ru_gl",
+            "repo": "ru_obs",
+            "commit": "acf32a196",
+            "manifest": "{}"
+          },
+          "tw": {
+            "owner": "ru_gl",
+            "repo": "ru_obs-twl",
+            "commit": "acf32a196",
+            "manifest": "{}"
+          },
+          "tq": {
+            "owner": "ru_gl",
+            "repo": "ru_obs-tq",
+            "commit": "acf32a196",
+            "manifest": "{}"
+          }
+        }',
+        '{
+          "resource": "obs",
+          "books": [
+            {
+              "name": "obs",
+              "link": "ru_gl/ru_obs/a3c1876/content"
+            }
+          ]
+        }'
+      );
+  -- PROJECTS
+
+  -- PROJECT TRANSLATORS
+    DELETE FROM
+      PUBLIC.project_translators;
+
+    INSERT INTO
+      PUBLIC.project_translators (project_id, user_id, is_moderator)
+    VALUES
+      (1, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
+      (1, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
+      (1, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
+      (1, '2e108465-9c20-46cd-9e43-933730229762', TRUE),
+      (2, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
+      (2, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
+      (2, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
+      (2, '8331e952-5771-49a6-a679-c44736f5581b', TRUE);
+  -- END PROJECT TRANSLATORS
+
+  -- PROJECT COORDINATORS
+    DELETE FROM
+      PUBLIC.project_coordinators;
+
+    INSERT INTO
+      PUBLIC.project_coordinators (project_id, user_id)
+    VALUES
+      (1, '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2'),
+      (2, '54358d8e-0144-47fc-a290-a6882023a3d6');
+  -- END PROJECT COORDINATORS
+
+  -- STEPS
+    DELETE FROM
+      PUBLIC.steps;
+
+    INSERT INTO
+      PUBLIC.steps (title, "description", "time", count_of_users, intro, project_id, config, order_by )
+    VALUES
+      ('Шаг один. Читаем вместе Библию', 'Тут можно перевести текст...', 60, 4,
+        '# Вводная\n\n### Как начать\n\nСсылка на видео, должна парситься\n\nhttps://youtu.be/sDcfb_f-f',
+        1,
+        '[
           {
-            "name": "obs",
-            "config": {}
+            "size": 4,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              }
+            ]
           },
           {
-            "name": "tw",
-            "config": {}
+            "size": 2,
+            "tools": [
+              {
+                "name": "notepad",
+                "config": {"team": true}
+              },
+              {
+                "name": "notepad",
+                "config": {}
+              }
+            ]
+          }
+        ]', 1),
+      ('Шаг два. Набросок', 'Some text here2...', 30, 2,
+        '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
+        1,
+        '[
+          {
+            "size": 3,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tn",
+                "config": {}
+              }
+            ]
           },
           {
-            "name": "tq",
-            "config": {}
+            "size": 3,
+            "tools": [
+              {
+                "name": "editor",
+                "config": {"type":"blind"}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
           }
-        ]
-      },
-      {
-        "size": 2,
-        "tools": [
+        ]',2),
+      ('Шаг один. Читаем вместе OBS', 'Some text here...', 45, 4,
+        '# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
+        2,
+        '[
           {
-            "name": "notepad",
-            "config": {}
-          }
-        ]
-      }
-    ]
-  },
-  {
-    "title": "Шаг два. Набросок OBS",
-    "description": "Some text here2...",
-    "time": 30,
-    "count_of_users": 2,
-    "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-    "config": [
-      {
-        "size": 3,
-        "tools": [
-          {
-            "name": "obs",
-            "config": {}
-          }
-        ]
-      },
-      {
-        "size": 3,
-        "tools": [
-          {
-            "name": "editor",
-            "config": {"type":"blind"}
+            "size": 4,
+            "tools": [
+              {
+                "name": "obs",
+                "config": {}
+              },
+              {
+                "name": "tw",
+                "config": {}
+              },
+              {
+                "name": "tq",
+                "config": {}
+              }
+            ]
           },
           {
-            "name": "dictionary",
-            "config": {}
+            "size": 2,
+            "tools": [
+              {
+                "name": "notepad",
+                "config": {}
+              }
+            ]
           }
-        ]
-      }
-    ]
-  }]', 'obs'::project_type);
-
-DELETE FROM
-  PUBLIC .role_permissions;
-
-INSERT INTO
-  PUBLIC .role_permissions (role, permission)
-VALUES
-  ('moderator', 'dictionaries'),
-  ('moderator', 'notes'),
-  ('moderator', 'translator.set'),
-  ('coordinator', 'dictionaries'),
-  ('coordinator', 'notes'),
-  ('coordinator', 'verses.set'),
-  ('coordinator', 'moderator.set'),
-  ('coordinator', 'user_projects'),
-  ('coordinator', 'translator.set');
-
-DELETE FROM
-  PUBLIC .projects;
-
-INSERT INTO
-  PUBLIC .projects (title, code, language_id, method, "type", resources, base_manifest)
-VALUES
-  (
-    'Russian Literal Open Bible',
-    'ru_rlob',
-    2,
-    'Vcana Bible',
-    'bible'::project_type,
-    '{
-      "literal": {
-        "owner": "unfoldingword",
-        "repo": "en_ult",
-        "commit": "acf32a196",
-        "manifest": "{}"
-      },
-      "simplified": {
-        "owner": "unfoldingword",
-        "repo": "en_ust",
-        "commit": "acf32a196",
-        "manifest": "{}"
-      },
-      "tn": {
-        "owner": "unfoldingword",
-        "repo": "en_tn",
-        "commit": "acf32a196",
-        "manifest": "{}"
-      }
-    }',
-    '{
-      "resource": "literal",
-      "books": [
-        {
-          "name": "gen",
-          "link": "unfoldingword/en_ult/a3c1876/01_GEN.usfm"
-        },
-        {
-          "name": "1ti",
-          "link": "unfoldingword/en_ult/a3c1876/55_1TI.usfm"
-        },
-        {
-          "name": "tit",
-          "link": "unfoldingword/en_ult/a3c1876/57_TIT.usfm"
-        }
-      ]
-    }'
-  ),
-  (
-    'Kazakh Open Bible Story',
-    'kk_obs',
-    3,
-    'Vcana OBS',
-    'obs'::project_type,
-    '{
-      "obs": {
-        "owner": "ru_gl",
-        "repo": "ru_obs",
-        "commit": "acf32a196",
-        "manifest": "{}"
-      },
-      "tw": {
-        "owner": "ru_gl",
-        "repo": "ru_obs-twl",
-        "commit": "acf32a196",
-        "manifest": "{}"
-      },
-      "tq": {
-        "owner": "ru_gl",
-        "repo": "ru_obs-tq",
-        "commit": "acf32a196",
-        "manifest": "{}"
-      }
-    }',
-    '{
-      "resource": "obs",
-      "books": [
-        {
-          "name": "obs",
-          "link": "ru_gl/ru_obs/a3c1876/content"
-        }
-      ]
-    }'
-  );
-
-DELETE FROM
-  PUBLIC .project_translators;
-
-INSERT INTO
-  PUBLIC .project_translators (project_id, user_id, is_moderator)
-VALUES
-  (1, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
-  (1, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
-  (1, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
-  (1, '2e108465-9c20-46cd-9e43-933730229762', TRUE),
-  (2, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
-  (2, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
-  (2, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
-  (2, '8331e952-5771-49a6-a679-c44736f5581b', TRUE);
-
-DELETE FROM
-  PUBLIC .project_coordinators;
-
-INSERT INTO
-  PUBLIC .project_coordinators (project_id, user_id)
-VALUES
-  (1, '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2'),
-  (2, '54358d8e-0144-47fc-a290-a6882023a3d6');
-
-DELETE FROM
-  PUBLIC .steps;
-
-INSERT INTO
-  PUBLIC .steps (title, "description", "time", count_of_users, intro, project_id, config, order_by )
-VALUES
-  ('Шаг один. Читаем вместе Библию', 'Тут можно перевести текст...', 60, 4,
-    '# Вводная\n\n### Как начать\n\nСсылка на видео, должна парситься\n\nhttps://youtu.be/sDcfb_f-f',
-    1,
-    '[
-      {
-        "size": 4,
-        "tools": [
+        ]', 1),
+      ('Шаг два. Набросок OBS', 'Some text here2...', 30, 2,
+        '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
+        2,
+        '[
           {
-            "name": "literal",
-            "config": {}
-          }
-        ]
-      },
-      {
-        "size": 2,
-        "tools": [
-          {
-            "name": "notepad",
-            "config": {"team": true}
+            "size": 3,
+            "tools": [
+              {
+                "name": "obs",
+                "config": {}
+              }
+            ]
           },
           {
-            "name": "notepad",
-            "config": {}
+            "size": 3,
+            "tools": [
+              {
+                "name": "editor",
+                "config": {"type":"blind"}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
           }
-        ]
-      }
-    ]', 1),
-  ('Шаг два. Набросок', 'Some text here2...', 30, 2,
-    '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-    1,
-    '[
-      {
-        "size": 3,
-        "tools": [
-          {
-            "name": "literal",
-            "config": {}
-          },
-          {
-            "name": "simplified",
-            "config": {}
-          },
-          {
-            "name": "tn",
-            "config": {}
-          }
-        ]
-      },
-      {
-        "size": 3,
-        "tools": [
-          {
-            "name": "editor",
-            "config": {"type":"blind"}
-          },
-          {
-            "name": "dictionary",
-            "config": {}
-          }
-        ]
-      }
-    ]',2),
-  ('Шаг один. Читаем вместе OBS', 'Some text here...', 45, 4,
-    '# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-    2,
-    '[
-      {
-        "size": 4,
-        "tools": [
-          {
-            "name": "obs",
-            "config": {}
-          },
-          {
-            "name": "tw",
-            "config": {}
-          },
-          {
-            "name": "tq",
-            "config": {}
-          }
-        ]
-      },
-      {
-        "size": 2,
-        "tools": [
-          {
-            "name": "notepad",
-            "config": {}
-          }
-        ]
-      }
-    ]', 1),
-  ('Шаг два. Набросок OBS', 'Some text here2...', 30, 2,
-    '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-    2,
-    '[
-      {
-        "size": 3,
-        "tools": [
-          {
-            "name": "obs",
-            "config": {}
-          }
-        ]
-      },
-      {
-        "size": 3,
-        "tools": [
-          {
-            "name": "editor",
-            "config": {"type":"blind"}
-          },
-          {
-            "name": "dictionary",
-            "config": {}
-          }
-        ]
-      }
-    ]',2);
+        ]',2);
+  -- END STEPS
 
-DELETE FROM
-  PUBLIC .books;
+  -- BOOKS
+    DELETE FROM
+      PUBLIC.books;
 
-INSERT INTO
-  PUBLIC .books (code, project_id, chapters)
-VALUES
-  ('tit', 1, '{ "1": 3, "2": 4, "3": 2 }'),
-  ('1ti', 1, '{ "1": 4, "2": 2, "3": 16, "4": 16, "5": 25, "6": 21 }'),
-  ('obs', 2, '{ "1": 3, "2": 17, "3": 23, "4": 19, "5": 14, "6": 16, "7": 21, "8": 16, "9": 11, "10": 15 }');
+    INSERT INTO
+      PUBLIC.books (code, project_id, chapters)
+    VALUES
+      ('tit', 1, '{ "1": 3, "2": 4, "3": 2 }'),
+      ('1ti', 1, '{ "1": 4, "2": 2, "3": 16, "4": 16, "5": 25, "6": 21 }'),
+      ('obs', 2, '{ "1": 3, "2": 17, "3": 23, "4": 19, "5": 14, "6": 16, "7": 21, "8": 16, "9": 11, "10": 15 }');
+  -- END BOOKS
 
-DELETE FROM
-  PUBLIC .chapters;
+  -- CHAPTERS
+    DELETE FROM
+      PUBLIC.chapters;
 
-INSERT INTO
-  PUBLIC .chapters (num, book_id, verses, "text")
-VALUES
-  (1, 1, 3, '1. Тут будет у нас сохраняться итоговый текст\n2. Не знаю пока в каком формате\n3. USFM нужен в итоге, но может тут MD или JSON'),
-  (2, 1, 4, '1. А тут\n2. У нас\n3. Итоговая вторая\n4. Глава'),
-  (3, 1, 2, null),
-  (1, 2, 4, '1. Тут итог\n2. другой\n3. Книги\n4. 4 стиха'),
-  (2, 2, 2, null),
-  (1, 3, 3, null);
+    INSERT INTO
+      PUBLIC.chapters (num, book_id, verses, "text")
+    VALUES
+      (1, 1, 3, '1. Тут будет у нас сохраняться итоговый текст\n2. Не знаю пока в каком формате\n3. USFM нужен в итоге, но может тут MD или JSON'),
+      (2, 1, 4, '1. А тут\n2. У нас\n3. Итоговая вторая\n4. Глава'),
+      (3, 1, 2, null),
+      (1, 2, 4, '1. Тут итог\n2. другой\n3. Книги\n4. 4 стиха'),
+      (2, 2, 2, null),
+      (1, 3, 3, null);
+  -- END CHAPTERS
 
-DELETE FROM
-  PUBLIC .verses;
+  -- VERSES
+    DELETE FROM
+      PUBLIC.verses;
 
-INSERT INTO
-  PUBLIC .verses (num, "text", chapter_id, project_translator_id, current_step)
-VALUES
-  (1, 'Тут будет у нас сохраняться итоговый текст', 1, 3, 2),
-  (2, 'Не знаю пока в каком формате', 1, 1, 2),
-  (3, 'USFM нужен в итоге, но может тут MD или JSON', 1, 2, 2),
-  (1, 'А тут', 2, 3, 2),
-  (2, 'У нас', 2, 1, 2),
-  (3, 'Итоговая вторая', 2, 2, 2),
-  (4, 'Глава', 2, 4, 2),
-  (1, null, 3, 3, 1),
-  (2, null, 3, 1, 1),
-  (1, 'Тут итог', 4, 3, 2),
-  (2, 'другой', 4, 1, 2),
-  (3, 'Книги', 4, 2, 2),
-  (4, '4 стиха', 4, 4, 2),
-  (1, null, 5, 3, 1),
-  (2, null, 5, 1, 1),
-  (1, 'Здесь начался перевод', 6, 2, 4),
-  (2, 'Какой-то главы', 6, 8, 3),
-  (3, null, 6, 8, 3);
+    INSERT INTO
+      PUBLIC.verses (num, "text", chapter_id, project_translator_id, current_step)
+    VALUES
+      (1, 'Тут будет у нас сохраняться итоговый текст', 1, 3, 2),
+      (2, 'Не знаю пока в каком формате', 1, 1, 2),
+      (3, 'USFM нужен в итоге, но может тут MD или JSON', 1, 2, 2),
+      (1, 'А тут', 2, 3, 2),
+      (2, 'У нас', 2, 1, 2),
+      (3, 'Итоговая вторая', 2, 2, 2),
+      (4, 'Глава', 2, 4, 2),
+      (1, null, 3, 3, 1),
+      (2, null, 3, 1, 1),
+      (1, 'Тут итог', 4, 3, 2),
+      (2, 'другой', 4, 1, 2),
+      (3, 'Книги', 4, 2, 2),
+      (4, '4 стиха', 4, 4, 2),
+      (1, null, 5, 3, 1),
+      (2, null, 5, 1, 1),
+      (1, 'Здесь начался перевод', 6, 2, 4),
+      (2, 'Какой-то главы', 6, 8, 3),
+      (3, null, 6, 8, 3);
+  -- END VERSES
 
-DELETE FROM
-  PUBLIC .progress;
+  -- PROGRESS
+    DELETE FROM
+      PUBLIC.progress;
 
-INSERT INTO
-  PUBLIC .progress (verse_id, step_id, "text")
-VALUES
-  (1, 1, 'Тут будет у нас сохраняться итоговый текст'),
-  (2, 1, 'Не знаю пока в каком формате'),
-  (3, 1, 'USFM нужен в итоге, но может тут MD или JSON'),
-  (4, 1, 'А тут'),
-  (5, 1, 'У нас'),
-  (6, 1, 'Итоговая вторая'),
-  (7, 1, 'Глава'),
-  (10, 1, 'Тут итог'),
-  (11, 1, 'другой'),
-  (12, 1, 'Книги'),
-  (13, 1, '4 стиха'),
-  (16, 3, 'Здесь начался перевод');
+    INSERT INTO
+      PUBLIC.progress (verse_id, step_id, "text")
+    VALUES
+      (1, 1, 'Тут будет у нас сохраняться итоговый текст'),
+      (2, 1, 'Не знаю пока в каком формате'),
+      (3, 1, 'USFM нужен в итоге, но может тут MD или JSON'),
+      (4, 1, 'А тут'),
+      (5, 1, 'У нас'),
+      (6, 1, 'Итоговая вторая'),
+      (7, 1, 'Глава'),
+      (10, 1, 'Тут итог'),
+      (11, 1, 'другой'),
+      (12, 1, 'Книги'),
+      (13, 1, '4 стиха'),
+      (16, 3, 'Здесь начался перевод');
+  -- END PROGRESS
+-- END DUMMY DATA
