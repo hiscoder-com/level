@@ -9,6 +9,7 @@ export const steps = [
         size: '4',
         tools: [
           {
+            id: 1,
             name: 'literal',
             config: {
               owner: 'DevleskoDrom',
@@ -23,6 +24,7 @@ export const steps = [
             },
           },
           {
+            id: 2,
             name: 'simplified',
             config: {
               owner: 'ru_gl',
@@ -36,6 +38,7 @@ export const steps = [
             },
           },
           {
+            id: 3,
             name: 'notes',
             config: {
               owner: 'ru_gl',
@@ -49,6 +52,7 @@ export const steps = [
             },
           },
           {
+            id: 4,
             name: 'words',
             config: {
               owner: 'ru_gl',
@@ -67,18 +71,21 @@ export const steps = [
         size: '2',
         tools: [
           {
+            id: 5,
             name: 'ownNotes',
             config: {
               subject: 'ownNotes',
             },
           },
           {
+            id: 6,
             name: 'notes',
             config: {
               subject: 'notes',
             },
           },
           {
+            id: 7,
             name: 'dictionary',
             config: {
               subject: 'dictionary',
@@ -97,6 +104,7 @@ export const steps = [
         size: '4',
         tools: [
           {
+            id: 1,
             name: 'literal',
             config: {
               owner: 'DevleskoDrom',
@@ -111,6 +119,7 @@ export const steps = [
             },
           },
           {
+            id: 2,
             name: 'simplified',
             config: {
               owner: 'ru_gl',
@@ -124,6 +133,7 @@ export const steps = [
             },
           },
           {
+            id: 3,
             name: 'notes',
             config: {
               owner: 'ru_gl',
@@ -137,6 +147,7 @@ export const steps = [
             },
           },
           {
+            id: 4,
             name: 'words',
             config: {
               owner: 'ru_gl',
@@ -155,18 +166,21 @@ export const steps = [
         size: '2',
         tools: [
           {
+            id: 5,
             name: 'ownNotes',
             config: {
               subject: 'ownNotes',
             },
           },
           {
+            id: 6,
             name: 'notes',
             config: {
               subject: 'notes',
             },
           },
           {
+            id: 7,
             name: 'dictionary',
             config: {
               subject: 'dictionary',
@@ -185,6 +199,7 @@ export const steps = [
         size: '4',
         tools: [
           {
+            id: 1,
             name: 'literal',
             config: {
               owner: 'DevleskoDrom',
@@ -199,6 +214,7 @@ export const steps = [
             },
           },
           {
+            id: 2,
             name: 'simplified',
             config: {
               owner: 'ru_gl',
@@ -212,6 +228,7 @@ export const steps = [
             },
           },
           {
+            id: 3,
             name: 'notes',
             config: {
               owner: 'ru_gl',
@@ -225,6 +242,7 @@ export const steps = [
             },
           },
           {
+            id: 4,
             name: 'words',
             config: {
               owner: 'ru_gl',
@@ -241,7 +259,7 @@ export const steps = [
       },
       {
         size: '2',
-        tools: [{ name: 'literal', subject: 'audio' }],
+        tools: [{ id: 5, name: 'literal', subject: 'audio' }],
       },
     ],
   },
@@ -254,6 +272,7 @@ export const steps = [
         size: '3',
         tools: [
           {
+            id: 1,
             name: 'literal',
             config: {
               owner: 'DevleskoDrom',
@@ -268,6 +287,7 @@ export const steps = [
             },
           },
           {
+            id: 2,
             name: 'simplified',
             config: {
               owner: 'ru_gl',
@@ -281,6 +301,7 @@ export const steps = [
             },
           },
           {
+            id: 3,
             name: 'notes',
             config: {
               owner: 'ru_gl',
@@ -294,6 +315,7 @@ export const steps = [
             },
           },
           {
+            id: 4,
             name: 'words',
             config: {
               owner: 'ru_gl',
@@ -312,6 +334,7 @@ export const steps = [
         size: '3',
         tools: [
           {
+            id: 5,
             name: 'translate',
             config: {
               subject: 'translate',
@@ -330,6 +353,7 @@ export const steps = [
         size: '3',
         tools: [
           {
+            id: 1,
             name: 'literal',
             config: {
               owner: 'DevleskoDrom',
@@ -344,6 +368,7 @@ export const steps = [
             },
           },
           {
+            id: 2,
             name: 'simplified',
             config: {
               owner: 'ru_gl',
@@ -357,6 +382,7 @@ export const steps = [
             },
           },
           {
+            id: 3,
             name: 'notes',
             config: {
               owner: 'ru_gl',
@@ -370,6 +396,7 @@ export const steps = [
             },
           },
           {
+            id: 4,
             name: 'words',
             config: {
               owner: 'ru_gl',
@@ -383,6 +410,7 @@ export const steps = [
             },
           },
           {
+            id: 5,
             name: 'tq',
             config: {
               owner: 'unfoldingWord',
@@ -401,24 +429,28 @@ export const steps = [
         size: '3',
         tools: [
           {
+            id: 6,
             name: 'translate',
             config: {
               subject: 'translate',
             },
           },
           {
+            id: 7,
             name: 'ownNotes',
             config: {
               subject: 'ownNotes',
             },
           },
           {
+            id: 8,
             name: 'notes',
             config: {
               subject: 'notes',
             },
           },
           {
+            id: 9,
             name: 'dictionary',
             config: {
               subject: 'dictionary',
@@ -542,6 +574,7 @@ export const steps = [
         size: '3',
         tools: [
           {
+            id: 1,
             name: 'literal',
             config: {
               owner: 'DevleskoDrom',
@@ -556,6 +589,7 @@ export const steps = [
             },
           },
           {
+            id: 2,
             name: 'simplified',
             config: {
               owner: 'ru_gl',
@@ -569,6 +603,7 @@ export const steps = [
             },
           },
           {
+            id: 3,
             name: 'notes',
             config: {
               owner: 'ru_gl',
@@ -582,6 +617,7 @@ export const steps = [
             },
           },
           {
+            id: 4,
             name: 'words',
             config: {
               owner: 'ru_gl',
@@ -595,6 +631,7 @@ export const steps = [
             },
           },
           {
+            id: 5,
             name: 'tq',
             config: {
               owner: 'unfoldingWord',
@@ -613,24 +650,28 @@ export const steps = [
         size: '3',
         tools: [
           {
+            id: 6,
             name: 'translate',
             config: {
               subject: 'translate',
             },
           },
           {
+            id: 7,
             name: 'ownNotes',
             config: {
               subject: 'ownNotes',
             },
           },
           {
+            id: 8,
             name: 'notes',
             config: {
               subject: 'notes',
             },
           },
           {
+            id: 9,
             name: 'dictionary',
             config: {
               subject: 'dictionary',

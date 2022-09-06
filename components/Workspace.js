@@ -4,7 +4,6 @@ import { useTranslation } from 'next-i18next'
 
 function Workspace({ config, reference }) {
   const { t } = useTranslation()
-
   return (
     <div className="layout-step">
       {config.map((el, index) => {

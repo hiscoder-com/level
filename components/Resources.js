@@ -10,7 +10,7 @@ function Resources({ tools, reference }) {
       <Tab.List className="space-x-3 text-xs">
         {tools?.map((tool) => (
           <Tab
-            key={tool?.config?.repo}
+            key={tool?.id}
             className={({ selected }) =>
               classNames(
                 'tab  text-xs md:text-sm lg:text-base btn-white ',
@@ -33,7 +33,7 @@ function Resources({ tools, reference }) {
           <Tab.Panels>
             {tools.map((tool) => {
               return (
-                <Tab.Panel key={tool?.config?.repo}>
+                <Tab.Panel key={tool?.id}>
                   <Tool config={{ reference: reference, resource: tool?.config }} />
                 </Tab.Panel>
               )
