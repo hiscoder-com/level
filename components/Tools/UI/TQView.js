@@ -1,7 +1,5 @@
 import ReactMarkdown from 'react-markdown'
-import { useState } from 'react'
 
-import Close from '../../../public/close.svg'
 import { Disclosure } from '@headlessui/react'
 
 export default function TQView({ data }) {
@@ -44,7 +42,7 @@ function ToolList({ data }) {
 function ToolContent({ item }) {
   return (
     <Disclosure>
-      <Disclosure.Button className="py-2 font-bold text-xl   w-fit">
+      <Disclosure.Button className="py-2 font-bold text-xl text-left w-fit">
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
       <Disclosure.Panel className="text-gray-800 w-fit py-4">
