@@ -1,3 +1,4 @@
+import { useTranslation } from 'next-i18next'
 import {
   Notes,
   Dictionary,
@@ -14,12 +15,14 @@ import {
 } from './'
 
 function Tool({ config }) {
+  const { t } = useTranslation('common')
+
   const { resource } = config
   let CurrentTool
   if (!resource) {
     return (
       <div>
-        <h1>No_content</h1>
+        <h1>{t('No_content')}</h1>
       </div>
     )
   }

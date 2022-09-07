@@ -1,5 +1,7 @@
 import { Tab } from '@headlessui/react'
+
 import { useTranslation } from 'next-i18next'
+
 import Tool from './Panel/Tool'
 
 function Workspace({ config, reference }) {
@@ -11,7 +13,6 @@ function Workspace({ config, reference }) {
 
         return (
           <div key={index} className={`layout-step-col ${panelSize}`}>
-            <div className="space-x-3 text-xs"></div>
             <Panel tools={el.tools} reference={reference} />
           </div>
         )
@@ -34,7 +35,7 @@ function Panel({ tools, reference }) {
             key={tool?.id}
             className={({ selected }) =>
               classNames(
-                'btn text-xs md:text-sm lg:text-base  ',
+                'btn text-xs md:text-sm lg:text-base',
                 selected ? 'btn-cyan' : 'btn-white'
               )
             }
@@ -50,7 +51,7 @@ function Panel({ tools, reference }) {
       </Tab.List>
       <div className="layout-step-col-card">
         <div className="layout-step-col-card-title">Chapter {reference.chapter}</div>
-        <div className="h5 p-4  h-screen overflow-scroll">
+        <div className="h5 p-4 h-screen overflow-scroll">
           <Tab.Panels>
             {tools.map((tool) => {
               return (

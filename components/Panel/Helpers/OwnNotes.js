@@ -1,5 +1,3 @@
-import React from 'react'
-
 function OwnNotes() {
   return <div>OwnNotes</div>
 }

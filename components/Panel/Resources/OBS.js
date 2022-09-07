@@ -2,7 +2,7 @@ import axios from 'axios'
 import ReactMarkdown from 'react-markdown'
 import useSWR from 'swr'
 
-function OBS({ config, switchOBSImages = true }) {
+function OBS({ config }) {
   const {
     reference: { book, chapter, step, verses },
     resource: { owner, repo, commit, bookPath, language },
@@ -14,21 +14,20 @@ function OBS({ config, switchOBSImages = true }) {
   return (
     <>
       <div className="text-3xl">{data?.header}</div>
-      <ul>
-        {loading
-          ? 'loading...'
-          : data.data?.map((el) => (
-              <li key={el.key} className="py-2">
-                {el.key}
-                <img
-                  className={`${!switchOBSImages && 'hidden'}`}
-                  src={el.urlImage}
-                  alt={`OBS verse #${el.key}`}
-                />
-                <ReactMarkdown>{el.text}</ReactMarkdown>
-              </li>
-            ))}
-      </ul>
+
+      {loading ? (
+        'loading...'
+      ) : (
+        <ul>
+          data.data?.map((el) => (
+          <li key={el.key} className="py-2">
+            {el.key}
+
+            <ReactMarkdown>{el.text}</ReactMarkdown>
+          </li>
+          ))
+        </ul>
+      )}
     </>
   )
 }
