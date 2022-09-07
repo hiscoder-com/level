@@ -1,7 +1,5 @@
 import { useGetResource } from 'utils/hooks'
-import Placeholder from '../UI/Placeholder'
-
-import TQView from '../UI/TQView'
+import { Placeholder, TQView } from '../UI'
 
 function OBSTQ({ config }) {
   const { loading, data, error } = useGetResource({ config, url: '/api/git/obs-tq' })

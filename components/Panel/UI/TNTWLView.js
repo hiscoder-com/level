@@ -49,7 +49,7 @@ function ToolList({ setItem, data }) {
 
 function ToolContent({ setItem, item }) {
   return (
-    <div className="relative border-2 border-gray-500 p-8 mx-4">
+    <div className="relative p-8">
       <div
         className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
         onClick={() => setItem(null)}

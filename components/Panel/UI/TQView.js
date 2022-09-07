@@ -12,15 +12,12 @@ export default function TQView({ data }) {
 
 function ToolList({ data }) {
   return (
-    <>
+    <div className="divide-y divide-gray-800 divide-dashed">
       {data &&
         Object.entries(data).map((el) => {
           return (
-            <div
-              key={el[0]}
-              className="border-2 w-min-20 p-4 border-gray-500 mb-4 flex items-center mx-4"
-            >
-              <div className="text-5xl">{el[0]}</div>
+            <div key={el[0]} className="p-4 flex mx-4">
+              <div className="text-2xl">{el[0]}</div>
               <div className="text-gray-700 pl-7">
                 <ul>
                   {el[1]?.map((item) => {
@@ -35,14 +32,14 @@ function ToolList({ data }) {
             </div>
           )
         })}
-    </>
+    </div>
   )
 }
 
 function ToolContent({ item }) {
   return (
     <Disclosure>
-      <Disclosure.Button className="py-2 font-bold text-xl text-left w-fit">
+      <Disclosure.Button className="text-left w-fit">
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
       <Disclosure.Panel className="text-gray-800 w-fit py-4">

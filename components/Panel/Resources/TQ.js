@@ -1,7 +1,5 @@
 import { useGetResource } from 'utils/hooks'
-import Placeholder from '../UI/Placeholder'
-
-import TQView from '../UI/ToolView'
+import { Placeholder, TQView } from '../UI'
 
 function TQ({ config }) {
   const { loading, data, error } = useGetResource({ config, url: '/api/git/tq' })
