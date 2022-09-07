@@ -4,15 +4,15 @@ import { useTranslation } from 'next-i18next'
 
 import Tool from './Panel/Tool'
 
+const sizes = { '3': 'lg:w-3/6', '2': 'lg:w-2/6', '4': 'lg:w-4/6', '1': 'lg:w-1/6' }
+
 function Workspace({ config, reference }) {
   const { t } = useTranslation()
   return (
     <div className="layout-step">
       {config.map((el, index) => {
-        const panelSize = `lg:w-${el.size / 6}`
-
         return (
-          <div key={index} className={`layout-step-col ${panelSize}`}>
+          <div key={index} className={`layout-step-col ${sizes[el.size]}`}>
             <Panel tools={el.tools} reference={reference} />
           </div>
         )

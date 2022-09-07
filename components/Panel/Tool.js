@@ -79,7 +79,7 @@ function Tool({ config }) {
       break
 
     default:
-      return false
+      return <div>{t('Wrong_resource')}</div>
   }
   return <CurrentTool config={config} />
 }
