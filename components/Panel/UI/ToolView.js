@@ -19,15 +19,12 @@ export default function ToolView({ data }) {
 
 function ToolList({ setItem, data }) {
   return (
-    <>
+    <div className="divide-y divide-gray-800 divide-dashed">
       {data &&
         Object.entries(data).map((el, index) => {
           return (
-            <div
-              key={index}
-              className="border-2 w-min-20 p-4 border-gray-500 mb-4 flex items-center mx-4"
-            >
-              <div className="text-5xl">{el[0]}</div>
+            <div key={index} className="p-4 flex mx-4">
+              <div className="text-2xl">{el[0]}</div>
               <div className="text-gray-700 pl-7">
                 <ul>
                   {el[1]?.map((item) => {
@@ -46,7 +43,7 @@ function ToolList({ setItem, data }) {
             </div>
           )
         })}
-    </>
+    </div>
   )
 }
 

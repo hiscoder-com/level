@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown'
 import { useGetResource } from 'utils/hooks'
+import Placeholder from '../UI/Placeholder'
 
 function OBS({ config }) {
   const { loading, data, error } = useGetResource({ config, url: `/api/git/obs` })
@@ -7,7 +8,7 @@ function OBS({ config }) {
     <>
       <div className="text-3xl">{data?.header}</div>
       {loading ? (
-        'loading...'
+        <Placeholder />
       ) : (
         <div>
           {data?.verseObjects?.map((el) => (

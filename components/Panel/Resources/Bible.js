@@ -1,10 +1,13 @@
 import ReactMarkdown from 'react-markdown'
 import { useGetResource } from 'utils/hooks'
+import Placeholder from '../UI/Placeholder'
 
 function Bible({ config }) {
   const { loading, data, error } = useGetResource({ config, url: '/api/git/bible' })
 
-  return <div>{loading ? 'loading' : <BibleView data={data} checkView={false} />}</div>
+  return (
+    <div>{loading ? <Placeholder /> : <BibleView data={data} checkView={false} />}</div>
+  )
 }
 
 export default Bible
