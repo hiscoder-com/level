@@ -1,4 +1,8 @@
 import {
+  Notes,
+  Dictionary,
+  OwnNotes,
+  Translate,
   OBS,
   Bible,
   TN,
@@ -7,10 +11,6 @@ import {
   OBSTQ,
   OBSTN,
   OBSTWL,
-  Notes,
-  Dictionary,
-  OwnNotes,
-  Translate,
 } from './'
 
 function Tool({ config }) {

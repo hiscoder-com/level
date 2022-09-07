@@ -1,6 +1,6 @@
 import { Tab } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
-import Tool from './Tools/Tool'
+import Tool from './Panel/Tool'
 
 function Workspace({ config, reference }) {
   const { t } = useTranslation()

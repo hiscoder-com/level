@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 
 import axios from 'axios'
-import ToolView from './UI/ToolView'
+import ToolView from '../UI/ToolView'
 
 const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
 

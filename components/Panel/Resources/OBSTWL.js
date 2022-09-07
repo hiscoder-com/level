@@ -1,6 +1,6 @@
 import axios from 'axios'
 import useSWR from 'swr'
-import ToolView from './UI/ToolView'
+import ToolView from '../UI/ToolView'
 
 function OBSTWL({ config }) {
   const {

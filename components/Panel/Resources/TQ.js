@@ -2,7 +2,7 @@ import axios from 'axios'
 
 import useSWR from 'swr'
 
-import TQView from './UI/TQView'
+import TQView from '../UI/ToolView'
 
 function TQ({ config }) {
   const {
