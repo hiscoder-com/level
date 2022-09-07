@@ -24,17 +24,25 @@ export const steps = [
             },
           },
           {
-            id: 2,
-            name: 'simplified',
+            id: 7,
+            name: 'dictionary',
             config: {
-              owner: 'ru_gl',
-              repo: 'rsob',
-              commit: '38c10e570082cc615e45628ae7ea3f38d9b67b8c',
-              bookPath: './57-TIT.usfm',
-              format: 'text/usfm3',
-              title: 'Russian Simplified Open Bible',
-              subject: 'Aligned Bible',
-              language: 'ru',
+              subject: 'dictionary', // убрать
+            },
+          },
+          {
+            id: 2,
+            name: 'obs-tq',
+            config: {
+              owner: 'unfoldingWord',
+              repo: 'obs-tq',
+              commit: 'b160230943b89798d7a6d4693c477c621601e34c',
+              manifest: {},
+              bookPath: './tq_OBS.tsv',
+              format: 'text/tsv',
+              title: 'unfoldingWord® Open Bible Stories Translation Questions',
+              subject: 'TSV OBS Translation Questions',
+              language: 'en',
             },
           },
           {
@@ -72,23 +80,16 @@ export const steps = [
         tools: [
           {
             id: 5,
-            name: 'ownNotes',
+            name: 'ownNotes', // notepad c пометкой личный
             config: {
               subject: 'ownNotes',
             },
           },
           {
             id: 6,
-            name: 'notes',
+            name: 'notes', //notepad
             config: {
               subject: 'notes',
-            },
-          },
-          {
-            id: 7,
-            name: 'dictionary',
-            config: {
-              subject: 'dictionary',
             },
           },
         ],

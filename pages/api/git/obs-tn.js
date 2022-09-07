@@ -1,5 +1,6 @@
-import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
+
+import { tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger

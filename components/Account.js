@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import Languages from './Languages'
 import Projects from './Projects'
 import SignOut from './SignOut'
-import { useCurrentUser } from '../lib/UserContext'
+import { useCurrentUser } from 'lib/UserContext'
 
 function Account() {
   const { user, loading } = useCurrentUser()

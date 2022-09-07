@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { Dialog, Transition } from '@headlessui/react'
 
-import { steps } from '../utils/steps'
+import { steps } from 'utils/steps'
 
 function Modal() {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)

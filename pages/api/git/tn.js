@@ -1,5 +1,6 @@
-import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
+
+import { tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger
@@ -77,17 +78,22 @@ export default async function tnHandler(req, res) {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
     const groupData = {}
+    console.log(jsonData)
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
             return el.Chapter === chapter && verses.includes(el.Verse)
           })
         : jsonData.filter((el) => {
-            return el.Chapter === chapter
+            return el.Chapter === 'front'
           })
 
     data?.forEach((el) => {
-      const tn = { id: el.ID, text: el.OccurrenceNote, title: el.GLQuote }
+      const tn = {
+        id: el.ID,
+        text: el.OccurrenceNote,
+        title: el.GLQuote ? el.GLQuote : 'title',
+      }
       if (!groupData[el.Verse]) {
         groupData[el.Verse] = [tn]
       } else {

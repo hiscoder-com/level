@@ -5,7 +5,7 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useCurrentUser } from '../../lib/UserContext'
+import { useCurrentUser } from 'lib/UserContext'
 
 function UserCreatePage() {
   const { user } = useCurrentUser()

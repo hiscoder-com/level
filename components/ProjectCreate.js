@@ -4,8 +4,8 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { useForm } from 'react-hook-form'
 
-import { useLanguages, useMethod } from '@/utils/hooks'
-import { useCurrentUser } from '../lib/UserContext'
+import { useLanguages, useMethod } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectCreate() {
   const router = useRouter()

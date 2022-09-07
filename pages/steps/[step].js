@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '/components/Footer'
 import Workspace from 'components/Workspace'
-import { steps, reference } from '@/utils/bd'
+import { steps, reference } from 'utils/bd'
 
 export default function IntroPage() {
   const { query } = useRouter()

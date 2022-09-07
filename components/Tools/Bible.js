@@ -1,6 +1,8 @@
-import axios from 'axios'
-import ReactMarkdown from 'react-markdown'
 import useSWR from 'swr'
+
+import axios from 'axios'
+
+import ReactMarkdown from 'react-markdown'
 
 function Bible({ config }) {
   const {
@@ -17,7 +19,7 @@ function Bible({ config }) {
 
 export default Bible
 
-function BibleView({ data, blurVerses, checkView, checked, setChecked }) {
+function BibleView({ data, blurVerses = ['1'], checkView, checked, setChecked }) {
   return (
     <>
       {data?.map((el) => (

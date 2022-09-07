@@ -1,5 +1,6 @@
 import axios from 'axios'
-import { mdToJson } from '@/utils/mdHelper'
+
+import { mdToJson } from 'utils/mdHelper'
 
 /**
  *  @swagger

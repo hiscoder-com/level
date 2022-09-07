@@ -4,7 +4,7 @@ const getText = (verseObject) => {
 
 // +
 const getFootnote = (verseObject) => {
-  return '/fn ' + verseObject.content + ' fn/'
+  return '<sup>' + verseObject.content + '</sup>' //TODO переделать
 }
 
 // +

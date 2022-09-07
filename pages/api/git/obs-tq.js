@@ -1,5 +1,6 @@
-import { tsvToJson } from '@/utils/tsvHelper'
 import axios from 'axios'
+
+import { tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger
@@ -75,16 +76,13 @@ export default async function obsTQHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
-    const data =
-      verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter && verses.includes(verseQuestion)
-          })
-        : jsonData.filter((el) => {
-            const [chapterQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter
-          })
+    const data = jsonData.filter((el) => {
+      const [chapterQuestion, verseQuestion] = el.Reference.split(':')
+      return (
+        chapterQuestion === chapter &&
+        (verses?.length === 0 || verses?.includes(verseQuestion))
+      )
+    }) //TODO починить
 
     const groupData = {}
     data?.forEach((el) => {

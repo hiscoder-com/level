@@ -2,8 +2,8 @@ import Head from 'next/head'
 
 import { useTranslation } from 'next-i18next'
 
-import { useProjects, useUserProjects } from '@/utils/hooks'
-import { useCurrentUser } from '../lib/UserContext'
+import { useProjects, useUserProjects } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 
 import ProjectCard from './ProjectCard'
 

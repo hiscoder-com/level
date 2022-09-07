@@ -1,7 +1,8 @@
-import ReactMarkdown from 'react-markdown'
 import { useState } from 'react'
 
-import Close from '../../../public/close.svg'
+import ReactMarkdown from 'react-markdown'
+
+import Close from 'public/close.svg'
 
 export default function ToolView({ data }) {
   const [item, setItem] = useState(null)

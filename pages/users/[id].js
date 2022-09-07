@@ -5,8 +5,8 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
-import { useCurrentUser } from '../../lib/UserContext'
-import { useUser } from '../../utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
+import { useUser } from 'utils/hooks'
 
 export default function UserPage() {
   const { t } = useTranslation(['users', 'common'])

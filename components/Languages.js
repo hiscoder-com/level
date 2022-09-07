@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-import { useLanguages } from '@/utils/hooks'
-import { useCurrentUser } from '../lib/UserContext'
+import { useLanguages } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 
 export default function Languages() {

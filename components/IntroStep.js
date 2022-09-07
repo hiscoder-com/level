@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import Footer from '../components/Footer'
+import Footer from 'components/Footer'
 
 const IntroSteps = {
   1: {

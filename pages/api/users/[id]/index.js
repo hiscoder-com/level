@@ -1,5 +1,5 @@
-import { supabase } from '@/utils/supabaseClient'
-import { supabaseService } from '@/utils/supabaseServer'
+import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
 
 export default async function userHandler(req, res) {
   if (!req.headers.token) {
