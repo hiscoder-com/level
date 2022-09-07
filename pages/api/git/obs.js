@@ -76,15 +76,15 @@ export default async function obsHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = await mdToJson(_data.data)
-    const { versesObjects, header, link } = jsonData
-    const data =
+    const { verseObjects, header, link } = jsonData
+    const _verseObjects =
       verses && verses.length > 0
-        ? versesObjects.filter((el) => {
+        ? verseObjects.filter((el) => {
             return verses.includes(el.key)
           })
-        : versesObjects
+        : verseObjects
 
-    res.status(200).json({ data, header })
+    res.status(200).json({ verseObjects: _verseObjects, header })
     return
   } catch (error) {
     res.status(404).json({ error })

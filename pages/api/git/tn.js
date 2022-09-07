@@ -78,14 +78,13 @@ export default async function tnHandler(req, res) {
     const _data = await axios.get(url)
     const jsonData = await tsvToJson(_data.data)
     const groupData = {}
-    console.log(jsonData)
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
             return el.Chapter === chapter && verses.includes(el.Verse)
           })
         : jsonData.filter((el) => {
-            return el.Chapter === 'front'
+            return el.Chapter === chapter
           })
 
     data?.forEach((el) => {

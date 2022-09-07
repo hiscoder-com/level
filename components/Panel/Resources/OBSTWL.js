@@ -1,16 +1,9 @@
-import axios from 'axios'
-import useSWR from 'swr'
+import { useGetResource } from 'utils/hooks'
 import ToolView from '../UI/ToolView'
 
 function OBSTWL({ config }) {
-  const {
-    reference: { chapter, step, verses },
-    resource: { owner, repo, commit, bookPath, language },
-  } = config
-  const params = { owner, repo, commit, bookPath, language, chapter, step, verses }
-  const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
-  const { data, error } = useSWR([`/api/git/obs-twl`, params], fetcher)
-  const loading = !data && !error
+  const { loading, data, error } = useGetResource({ config, url: '/api/git/obs-twl' })
+
   return <>{loading ? 'loading...' : <ToolView data={data} />}</>
 }
 

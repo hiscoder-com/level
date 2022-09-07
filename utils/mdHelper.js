@@ -5,7 +5,7 @@ export const mdToJson = (md) => {
   if (link === '') {
     link = _markdown.pop().trim().slice(1, -1)
   }
-  const versesObjects = []
+  const verseObjects = []
 
   for (let n = 0; n < _markdown.length / 2; n++) {
     let urlImage
@@ -16,7 +16,7 @@ export const mdToJson = (md) => {
     } else {
       text = _markdown[n * 2] + '\n' + _markdown[n * 2 + 1]
     }
-    versesObjects.push({ urlImage, text, key: (n + 1).toString() })
+    verseObjects.push({ urlImage, text, key: (n + 1).toString() })
   }
-  return { versesObjects, header, link }
+  return { verseObjects, header, link }
 }

@@ -1,16 +1,9 @@
-import axios from 'axios'
-import useSWR from 'swr'
+import { useGetResource } from 'utils/hooks'
 import ToolView from '../UI/ToolView'
 
 function TWL({ config }) {
-  const {
-    reference: { book, chapter, step, verses },
-    resource: { owner, repo, commit, bookPath, language },
-  } = config
-  const params = { owner, repo, commit, bookPath, language, book, chapter, step, verses }
-  const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
-  const { data, error } = useSWR([`/api/git/twl`, params], fetcher)
-  const loading = !data && !error
+  const { loading, data, error } = useGetResource({ config, url: '/api/git/twl' })
+
   return <>{loading ? 'loading...' : <ToolView data={data} />}</>
 }
 

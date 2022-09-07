@@ -1,18 +1,8 @@
-import useSWR from 'swr'
-
-import axios from 'axios'
-
 import ReactMarkdown from 'react-markdown'
+import { useGetResource } from 'utils/hooks'
 
 function Bible({ config }) {
-  const {
-    reference: { book, chapter, step, verses },
-    resource: { owner, repo, commit, bookPath, language },
-  } = config
-  const params = { owner, repo, commit, bookPath, language, book, chapter, step, verses }
-  const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
-  const { data, error } = useSWR([`/api/git/bible`, params], fetcher)
-  const loading = !data && !error
+  const { loading, data, error } = useGetResource({ config, url: '/api/git/bible' })
 
   return <div>{loading ? 'loading' : <BibleView data={data} checkView={false} />}</div>
 }

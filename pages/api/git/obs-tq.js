@@ -69,7 +69,7 @@ import { tsvToJson } from 'utils/tsvHelper'
 
 export default async function obsTQHandler(req, res) {
   const { repo, owner, commit, bookPath, language, chapter, step } = req.query
-  let verses = req.query['verses[]'] || req.query.verses
+  let verses = req.query['verses[]'] || req.query.verses || []
   const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
@@ -82,8 +82,7 @@ export default async function obsTQHandler(req, res) {
         chapterQuestion === chapter &&
         (verses?.length === 0 || verses?.includes(verseQuestion))
       )
-    }) //TODO починить
-
+    })
     const groupData = {}
     data?.forEach((el) => {
       const verse = el.Reference.split(':').slice(-1)[0]
