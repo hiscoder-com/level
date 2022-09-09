@@ -5,10 +5,10 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useCurrentUser } from '../lib/UserContext'
+import { useCurrentUser } from 'lib/UserContext'
 
-import LeftArrow from '../public/left-arrow.svg'
-import RightArrow from '../public/right-arrow.svg'
+import LeftArrow from 'public/left-arrow.svg'
+import RightArrow from 'public/right-arrow.svg'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])

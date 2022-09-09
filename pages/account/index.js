@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import Account from '../../components/Account'
+import Account from 'components/Account'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'

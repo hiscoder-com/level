@@ -1,5 +1,5 @@
-import { useCurrentUser } from '../lib/UserContext'
-import { useTranslators } from '@/utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
+import { useTranslators } from 'utils/hooks'
 
 import TranslatorImage from './TranslatorImage'
 

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
-import IntroStep from '../../components/IntroStep'
+import IntroStep from 'components/IntroStep'
 
 export default function IntroPage() {
   const { query } = useRouter()
