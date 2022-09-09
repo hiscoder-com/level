@@ -12,6 +12,10 @@ function Editor({ bd, editableVerses }) {
   const [verses, setVerses] = useState()
   const formRef = useRef(null)
 
+  const onChangeArea = (e, verse) => {
+    console.log('в стихе ' + verse + ' изменился текст: ' + e.target.value)
+  }
+
   useEffect(() => {
     if (!formRef?.current) return
     const _verses = Array.from(formRef?.current?.children).map((el) => {
@@ -32,6 +36,7 @@ function Editor({ bd, editableVerses }) {
             defaultValue={el.text}
             setValue={setValue}
             placeholder={'_'.repeat(50)}
+            onChange={(e) => onChangeArea(e, el.verse)}
           />
         </div>
       ))}

@@ -8,6 +8,7 @@ function AutoSizeTextArea({
   defaultValue,
   rows,
   placeholder,
+  onChange,
 }) {
   const textareaRef = useRef(null)
 
@@ -20,16 +21,15 @@ function AutoSizeTextArea({
       disabled={disabled}
       ref={textareaRef}
       defaultValue={defaultValue}
+      onBlur={(e) => e.target.value.trim()}
       onChange={(e) => {
-        textAreaChange(e)
+        onChange(e), textAreaChange(e)
       }}
       type="text"
       rows={rows}
       placeholder={placeholder}
-      className="resize-none block w-full px-3 rounded transition ease-in-out m-0 focus:outline-none focus:inline-none focus:bg-none"
-    >
-      {value}
-    </textarea>
+      className="resize-none block w-full px-3 focus:outline-none focus:inline-none focus:bg-none"
+    />
   )
 }
 
