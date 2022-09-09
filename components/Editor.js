@@ -1,40 +1,38 @@
-import { useState } from 'react'
+import { forwardRef, useEffect, useRef, useState } from 'react'
 import AutoSizeTextArea from './AutoSizeTextArea'
 
-function Editor({ bd }) {
-  const [value, setValue] = useState()
+const filterText = (verses) => {
+  return verses.map((verse) => {
+    return { ...verse, text: verse.text.trim() }
+  })
+}
 
+function Editor({ bd, editableVerses }) {
+  const [value, setValue] = useState()
+  const [verses, setVerses] = useState()
+  const formRef = useRef(null)
+
+  useEffect(() => {
+    if (!formRef?.current) return
+    const _verses = Array.from(formRef?.current?.children).map((el) => {
+      return { verse: el.id, text: Array.from(el.children)[1]?.value }
+    })
+
+    setVerses(filterText(_verses))
+  }, [value])
   return (
-    <div className="divider-y-2 div  divide-yellow-600">
+    <div ref={formRef}>
       {bd.map((el) => (
-        <div key={el.id} className="flex my-3">
+        <div key={el.id} id={el.verse} className="flex my-3">
           <div>{el.verse}</div>
           <AutoSizeTextArea
+            disabled={!editableVerses.includes(el.verse)}
+            verse={el.verse}
             value={value}
             defaultValue={el.text}
             setValue={setValue}
-            type="text"
-            rows={'5'}
-            className=" 
-         resize-none
-        block
-        w-full
-        px-3
-        
-        text-base
-        font-normal
-        text-gray-700
-        bg-white bg-clip-padding
-        rounded
-        transition
-        ease-in-out
-        m-0
-         focus:bg-white focus:border-blue-60 focus:outline-none
-        focus:inline-none
-         focus:bg-none
-      "
             placeholder={'_'.repeat(50)}
-          ></AutoSizeTextArea>
+          />
         </div>
       ))}
     </div>

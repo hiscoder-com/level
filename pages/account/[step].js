@@ -6,7 +6,10 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '/components/Footer'
 import Editor from 'components/Editor'
+
+const editableVerses = ['5', '6', '7', '8', '9']
 const bd = [
+  { id: 0, verse: '4', text: 'noneeditable' },
   {
     id: 1,
     verse: '5',
@@ -20,6 +23,7 @@ const bd = [
   { id: 3, verse: '7', text: null },
   { id: 4, verse: '8', text: null },
   { id: 5, verse: '9', text: null },
+  { id: 6, verse: '10', text: 'noneeditable' },
 ]
 
 export default function IntroPage() {
@@ -105,7 +109,7 @@ export default function IntroPage() {
             <div className="layout-step-col-card">
               <div className="layout-step-col-card-title"></div>
               <div className="h5 p-4">
-                <Editor bd={bd} />
+                <Editor bd={bd} editableVerses={editableVerses} />
               </div>
             </div>
           </div>

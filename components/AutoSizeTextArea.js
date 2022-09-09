@@ -1,35 +1,32 @@
 import { useEffect, useRef } from 'react'
 
 function AutoSizeTextArea({
+  disabled,
+  verse,
   value,
   setValue,
   defaultValue,
-  type,
   rows,
-  className,
   placeholder,
 }) {
   const textareaRef = useRef(null)
 
   const textAreaChange = (e) => {
-    setValue(e.target.value)
+    setValue({ key: verse, text: e.target.value })
   }
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = '0px'
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = scrollHeight + 'px'
-    }
-  }, [value])
+  useAutosize({ textareaRef, value })
   return (
     <textarea
+      disabled={disabled}
       ref={textareaRef}
       defaultValue={defaultValue}
-      onChange={textAreaChange}
-      type={type}
+      onChange={(e) => {
+        textAreaChange(e)
+      }}
+      type="text"
       rows={rows}
-      className={className}
       placeholder={placeholder}
+      className="resize-none block w-full px-3 rounded transition ease-in-out m-0 focus:outline-none focus:inline-none focus:bg-none"
     >
       {value}
     </textarea>
@@ -37,3 +34,13 @@ function AutoSizeTextArea({
 }
 
 export default AutoSizeTextArea
+
+function useAutosize({ textareaRef, value }) {
+  useEffect(() => {
+    if (textareaRef && textareaRef.current) {
+      textareaRef.current.style.height = '0px'
+      const scrollHeight = textareaRef.current.scrollHeight
+      textareaRef.current.style.height = scrollHeight + 'px'
+    }
+  }, [value])
+}
