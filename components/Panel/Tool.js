@@ -4,6 +4,7 @@ import {
   Dictionary,
   OwnNotes,
   Translate,
+  TranslateExtended,
   OBS,
   Bible,
   TN,
@@ -60,6 +61,9 @@ function Tool({ config }) {
       break
     case 'translate':
       CurrentTool = Translate
+      break
+    case 'translate-extended':
+      CurrentTool = TranslateExtended
       break
     case 'ownNotes':
       CurrentTool = OwnNotes

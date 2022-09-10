@@ -1,4 +1,8 @@
-export const reference = { book: 'tit', chapter: '1', verses: [] }
+export const reference = {
+  book: 'tit',
+  chapter: '1',
+  verses: ['5', '6', '7', '8', '9'],
+}
 export const steps = [
   {
     name: 'Шаг 1: Самостоятельное изучение',
@@ -376,23 +380,21 @@ export const steps = [
             id: 5,
             name: 'translate',
             config: {
-              subject: 'translate',
+              subject: 'translate-extended',
               verses: [
-                { id: 0, verse: '4', text: 'noneeditable' },
                 {
                   id: 1,
                   verse: '5',
-                  text: ' Я оставил тебя на острове Крит для того, чтобы ты завершил незавершённые дела, а также поставил старейшин в собраниях верующих в каждом городе, как я тебе поручил.',
+                  text: '',
                 },
                 {
                   id: 2,
                   verse: '6',
-                  text: ' Итак, старейшиной должен стать такой человек, который не подаёт повода для осуждения. У него должна быть одна жена, его дети также должны доверять Богу, и люди не должны считать, что его дети неуправляемые или непослушные.',
+                  text: '',
                 },
                 { id: 3, verse: '7', text: null },
                 { id: 4, verse: '8', text: null },
                 { id: 5, verse: '9', text: null },
-                { id: 6, verse: '10', text: 'noneeditable' },
               ],
             },
           },
