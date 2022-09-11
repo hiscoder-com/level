@@ -57,7 +57,7 @@ function BibleViewExtended({ data }) {
   return (
     <>
       {data?.map((el, index) => (
-        <div key={el.verse} className={`my-4 flex items-start `}>
+        <div key={el.verse} className={`my-3 flex items-start`}>
           <input
             checked={_checkBible.includes(el.verse)}
             type="checkBox"
