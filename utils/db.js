@@ -497,7 +497,6 @@ export const steps = [
             config: {
               subject: 'translate',
               verses: [
-                { id: 0, verse: '4', text: 'noneeditable', noneeditable: true },
                 {
                   id: 1,
                   verse: '5',
@@ -508,10 +507,8 @@ export const steps = [
                   verse: '6',
                   text: ' Итак, старейшиной должен стать такой человек, который не подаёт повода для осуждения. У него должна быть одна жена, его дети также должны доверять Богу, и люди не должны считать, что его дети неуправляемые или непослушные.',
                 },
-                { id: 3, verse: '7', text: null },
-                { id: 4, verse: '8', text: null },
-                { id: 5, verse: '9', text: null },
-                { id: 6, verse: '10', text: 'noneeditable', noneeditable: true },
+
+                { id: 6, verse: 'front', text: 'some text' },
               ],
             },
           },

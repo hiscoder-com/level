@@ -64,33 +64,30 @@ function BibleViewExtended({ data }) {
 
   return (
     <>
-      {data?.map((el, index) => (
-        <div key={el.verse} className={`my-3 flex items-start`}>
-          <input
-            checked={checkedVersesBible.includes(el.verse)}
-            type="checkBox"
-            className="mt-1"
-            disabled={
-              checkedVersesBible.includes(el.verse) ||
-              (index !== 0 &&
-                (!translatedVersesKeys.includes(data[index - 1].verse) ||
-                  checkedVersesBible.includes(el.verse)))
-            }
-            onChange={() => {
-              setCheckedVersesBible((prev) => [...prev, el.verse])
-            }}
-          />
-          <ReactMarkdown
-            className={`ml-4 t-0 ${
-              checkedVersesBible.includes(el.verse) ? 'blur-sm' : ''
-            }`}
-          >
-            {`${el.verse} ${
-              checkedVersesBible.includes(el.verse) ? shuffle(el.text) : el.text
-            }`}
-          </ReactMarkdown>
-        </div>
-      ))}
+      {data?.map((el, index) => {
+        const checkedCurrent = checkedVersesBible.includes(el.verse)
+        return (
+          <div key={el.verse} className={`my-3 flex items-start`}>
+            <input
+              checked={checkedCurrent}
+              type="checkBox"
+              className="mt-1"
+              disabled={
+                checkedCurrent ||
+                (index !== 0 &&
+                  (!translatedVersesKeys.includes(data[index - 1].verse) ||
+                    checkedCurrent))
+              }
+              onChange={() => {
+                setCheckedVersesBible((prev) => [...prev, el.verse])
+              }}
+            />
+            <ReactMarkdown className={`ml-4 t-0 ${checkedCurrent ? 'blur-sm' : ''}`}>
+              {`${el.verse} ${checkedCurrent ? shuffle(el.text) : el.text}`}
+            </ReactMarkdown>
+          </div>
+        )
+      })}
     </>
   )
 }
