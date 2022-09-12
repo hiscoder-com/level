@@ -67,7 +67,7 @@ function Translate({ config }) {
             }
             onBlur={(e) => onBlurTextArea(e, el.verse)}
             verse={el.verse}
-            value={translatedVerses[index]}
+            value={translatedVerses[index]?.text}
             setVerseObject={setVerseObject}
             verseObject={verseObject}
             placeholder={'_'.repeat(50)}

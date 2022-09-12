@@ -23,7 +23,7 @@ function AutoSizeTextArea({
       onBlur={onBlur}
       type="text"
       placeholder={placeholder}
-      value={value?.text}
+      value={value}
       className="resize-none block w-full px-3 focus:outline-none focus:inline-none focus:bg-none"
     />
   )
