@@ -6,7 +6,6 @@ const filterText = (verses) => {
     return { ...verse, text: verse.text.trim() }
   })
 }
-
 function Translate({ config }) {
   const [value, setValue] = useState()
   const [verses, setVerses] = useState()

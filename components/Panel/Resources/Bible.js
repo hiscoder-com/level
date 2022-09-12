@@ -60,8 +60,8 @@ function BibleViewExtended({ data }) {
     checkedVersesBibleState
   )
   const translatedVerses = useRecoilValue(translatedVersesState)
-
   const translatedVersesKeys = translatedVerses.map((el) => el.key)
+
   return (
     <>
       {data?.map((el, index) => (
@@ -71,12 +71,10 @@ function BibleViewExtended({ data }) {
             type="checkBox"
             className="mt-1"
             disabled={
-              index === 0
-                ? data[0]?.verse !== el.verse || checkedVersesBible.includes(el.verse)
-                : !translatedVersesKeys
-                    .map((el) => parseInt(el))
-                    .includes(parseInt(el.verse) - 1) ||
-                  checkedVersesBible.includes(el.verse)
+              checkedVersesBible.includes(el.verse) ||
+              (index !== 0 &&
+                (!translatedVersesKeys.includes(data[index - 1].verse) ||
+                  checkedVersesBible.includes(el.verse)))
             }
             onChange={() => {
               setCheckedVersesBible((prev) => [...prev, el.verse])

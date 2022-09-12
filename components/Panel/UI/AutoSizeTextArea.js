@@ -11,9 +11,13 @@ function AutoSizeTextArea({
   onChange,
 }) {
   const textareaRef = useRef(null)
-
+  const filterText = (verses) => {
+    return verses.map((verse) => {
+      return { ...verse, text: verse.text.trim() }
+    })
+  }
   const textAreaChange = (e) => {
-    setVerseObject({ key: verse, text: e.target.value })
+    setVerseObject({ key: verse, text: filterText(e.target.value) })
   }
   useAutosize({ textareaRef, value })
   return (

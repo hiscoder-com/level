@@ -19,9 +19,10 @@ function Translate({ config }) {
     console.log('в стихе ' + verse + ' изменился текст: ' + e.target.value)
     console.log('сделать видимой кнопку SAVE')
   }
+
   const sendToDb = (verse, index) => {
     setTranslatedVerses((prev) => [...prev, verseObject])
-    console.log('save to supabase', verseObject)
+    console.log(`save to supabase verse ${verse}`, verseObject)
 
     if (index === config?.resource?.verses.length - 1) {
       console.log(

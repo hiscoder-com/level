@@ -1,7 +1,7 @@
 export const reference = {
   book: 'tit',
   chapter: '1',
-  verses: ['5', '6', '7', '8', '9'],
+  verses: ['5', '6', 'front'],
 }
 export const steps = [
   {
@@ -385,16 +385,14 @@ export const steps = [
                 {
                   id: 1,
                   verse: '5',
-                  text: '',
+                  text: null,
                 },
                 {
                   id: 2,
                   verse: '6',
-                  text: '',
+                  text: null,
                 },
-                { id: 3, verse: '7', text: null },
-                { id: 4, verse: '8', text: null },
-                { id: 5, verse: '9', text: null },
+                { id: 6, verse: 'front', text: null },
               ],
             },
           },
