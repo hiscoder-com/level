@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import Tool from './Panel/Tool'
 
-const sizes = { '3': 'lg:w-3/6', '2': 'lg:w-2/6', '4': 'lg:w-4/6', '1': 'lg:w-1/6' }
+const sizes = { '1': 'lg:w-1/6', '2': 'lg:w-2/6', '3': 'lg:w-3/6', '4': 'lg:w-4/6' }
 
 function Workspace({ config, reference }) {
   const { t } = useTranslation()

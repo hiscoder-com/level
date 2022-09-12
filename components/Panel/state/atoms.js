@@ -1,10 +1,10 @@
 import { atom } from 'recoil'
 
-export const checkTranslate = atom({
-  key: 'checkTranslate',
+export const translatedVersesState = atom({
+  key: 'translatedVersesState',
   default: [],
 })
-export const checkBible = atom({
-  key: 'checkBible',
+export const checkedVersesBibleState = atom({
+  key: 'checkedVersesBibleState',
   default: [],
 })

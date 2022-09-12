@@ -1,10 +1,25 @@
-import ReactMarkdown from 'react-markdown'
-import { useGetResource } from 'utils/hooks'
-import Placeholder from '../UI/Placeholder'
 import { useRouter } from 'next/router'
+
+import ReactMarkdown from 'react-markdown'
+
 import { useRecoilState, useRecoilValue } from 'recoil'
 
-import { checkBible, checkTranslate } from '../state/atoms'
+import { useGetResource } from 'utils/hooks'
+import Placeholder from '../UI/Placeholder'
+
+import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
+
+function shuffle(text) {
+  let j, temp
+  const arr = text.split('')
+  for (let i = arr.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1))
+    temp = arr[j]
+    arr[j] = arr[i]
+    arr[i] = temp
+  }
+  return arr.join('')
+}
 
 function Bible({ config }) {
   const { query } = useRouter()
@@ -39,44 +54,42 @@ function BibleView({ data }) {
     </>
   )
 }
-function shuffle(s) {
-  var j, temp
-  const arr = s.split('')
-  for (var i = arr.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1))
-    temp = arr[j]
-    arr[j] = arr[i]
-    arr[i] = temp
-  }
-  return arr.join('')
-}
 
 function BibleViewExtended({ data }) {
-  const [_checkBible, setCheckBible] = useRecoilState(checkBible)
-  const _checkTranslate = useRecoilValue(checkTranslate)
+  const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
+    checkedVersesBibleState
+  )
+  const translatedVerses = useRecoilValue(translatedVersesState)
+
+  const translatedVersesKeys = translatedVerses.map((el) => el.key)
   return (
     <>
       {data?.map((el, index) => (
         <div key={el.verse} className={`my-3 flex items-start`}>
           <input
-            checked={_checkBible.includes(el.verse)}
+            checked={checkedVersesBible.includes(el.verse)}
             type="checkBox"
             className="mt-1"
             disabled={
               index === 0
-                ? data[0]?.verse !== el.verse || _checkBible.includes(el.verse)
-                : !_checkTranslate
+                ? data[0]?.verse !== el.verse || checkedVersesBible.includes(el.verse)
+                : !translatedVersesKeys
                     .map((el) => parseInt(el))
-                    .includes(parseInt(el.verse) - 1) || _checkBible.includes(el.verse)
+                    .includes(parseInt(el.verse) - 1) ||
+                  checkedVersesBible.includes(el.verse)
             }
             onChange={() => {
-              setCheckBible((prev) => [...prev, el.verse])
+              setCheckedVersesBible((prev) => [...prev, el.verse])
             }}
           />
           <ReactMarkdown
-            className={`ml-4 t-0 ${_checkBible.includes(el.verse) ? 'blur-sm' : ''}`}
+            className={`ml-4 t-0 ${
+              checkedVersesBible.includes(el.verse) ? 'blur-sm' : ''
+            }`}
           >
-            {`${el.verse} ${_checkBible.includes(el.verse) ? shuffle(el.text) : el.text}`}
+            {`${el.verse} ${
+              checkedVersesBible.includes(el.verse) ? shuffle(el.text) : el.text
+            }`}
           </ReactMarkdown>
         </div>
       ))}

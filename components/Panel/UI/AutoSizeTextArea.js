@@ -4,7 +4,7 @@ function AutoSizeTextArea({
   disabled,
   verse,
   value,
-  setValue,
+  setVerseObject,
   defaultValue,
   rows,
   placeholder,
@@ -13,7 +13,7 @@ function AutoSizeTextArea({
   const textareaRef = useRef(null)
 
   const textAreaChange = (e) => {
-    setValue({ key: verse, text: e.target.value })
+    setVerseObject({ key: verse, text: e.target.value })
   }
   useAutosize({ textareaRef, value })
   return (
@@ -28,6 +28,7 @@ function AutoSizeTextArea({
       type="text"
       rows={rows}
       placeholder={placeholder}
+      value={value?.text}
       className="resize-none block w-full px-3 focus:outline-none focus:inline-none focus:bg-none"
     />
   )

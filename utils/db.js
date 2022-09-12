@@ -398,6 +398,13 @@ export const steps = [
               ],
             },
           },
+          {
+            id: 9,
+            name: 'dictionary',
+            config: {
+              subject: 'dictionary',
+            },
+          },
         ],
       },
     ],
