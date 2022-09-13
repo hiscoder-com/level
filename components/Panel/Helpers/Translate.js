@@ -21,7 +21,7 @@ function Translate({ config }) {
   }, [verseObject])
   return (
     <div ref={formRef}>
-      {config?.resource?.verses.map((el, index) => (
+      {config?.resource?.verses?.map((el, index) => (
         <div key={el.id} id={el.verse} className="flex my-3">
           <div>{el.verse}</div>
           <AutoSizeTextArea

@@ -40,18 +40,13 @@ function Panel({ tools, reference }) {
               )
             }
           >
-            {tool?.config?.title
-              ? tool?.config?.title
-                  .split(' ')
-                  .reduce((prevVal, curWord) => prevVal + (curWord ? curWord[0] : ''), '')
-                  .toUpperCase()
-              : tool?.config?.subject}
+            {tool.name}
           </Tab>
         ))}
       </Tab.List>
       <div className="layout-step-col-card">
         <div className="layout-step-col-card-title">Chapter {reference.chapter}</div>
-        <div className="h5 p-4 h-screen overflow-scroll">
+        <div className="h5 p-4 h-screen overflow-x-hidden overflow-y-scroll">
           <Tab.Panels>
             {tools.map((tool) => {
               return (

@@ -9,17 +9,7 @@ import Placeholder from '../UI/Placeholder'
 
 import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 
-function shuffle(text) {
-  let j, temp
-  const arr = text.split('')
-  for (let i = arr.length - 1; i > 0; i--) {
-    j = Math.floor(Math.random() * (i + 1))
-    temp = arr[j]
-    arr[j] = arr[i]
-    arr[i] = temp
-  }
-  return arr.join('')
-}
+import { shuffle } from 'utils/helpers'
 
 function Bible({ config }) {
   const { query } = useRouter()
@@ -33,7 +23,7 @@ function Bible({ config }) {
       ) : step === '4' ? (
         <BibleViewExtended data={data} />
       ) : (
-        <BibleView data={data} checkView={false} />
+        <BibleView data={data} />
       )}
     </div>
   )
