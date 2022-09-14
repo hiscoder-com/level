@@ -64,7 +64,14 @@ function VersesExtended({ data }) {
               }}
             />
             <ReactMarkdown className={`ml-4 t-0 ${checkedCurrent ? 'blur-sm' : ''}`}>
-              {`${el.verse} ${checkedCurrent ? shuffle(el.text) : el.text}`}
+              {`${el.verse} ${
+                checkedCurrent
+                  ? el.text
+                      .split(' ')
+                      .map((word) => shuffle(word))
+                      .join(' ')
+                  : el.text
+              }`}
             </ReactMarkdown>
           </div>
         )
@@ -73,14 +80,14 @@ function VersesExtended({ data }) {
   )
 }
 
-const shuffle = (text) => {
+const shuffle = (arr) => {
   let j, temp
-  const arr = text.split('')
-  for (let i = arr.length - 1; i > 0; i--) {
+  let newArr = [...arr]
+  for (let i = newArr.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1))
-    temp = arr[j]
-    arr[j] = arr[i]
-    arr[i] = temp
+    temp = newArr[j]
+    newArr[j] = newArr[i]
+    newArr[i] = temp
   }
-  return arr.join('')
+  return newArr
 }

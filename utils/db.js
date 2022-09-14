@@ -1,7 +1,7 @@
 export const reference = {
   book: 'tit',
   chapter: '1',
-  verses: ['5', '6', '7', 'front'],
+  verses: ['4', '5', '6', '7', 'front'],
 }
 export const stepsForBible = [
   {
@@ -354,6 +354,11 @@ export const stepsForBible = [
               subject: 'translate',
               verses: [
                 {
+                  id: 0,
+                  verse: '4',
+                  text: null,
+                },
+                {
                   id: 1,
                   verse: '5',
                   text: null,
@@ -363,7 +368,12 @@ export const stepsForBible = [
                   verse: '6',
                   text: null,
                 },
-                { id: 6, verse: 'front', text: null },
+                {
+                  id: 3,
+                  verse: '7',
+                  text: null,
+                },
+                { id: 8, verse: 'front', text: null },
               ],
               stepOption: 'draft',
             },
