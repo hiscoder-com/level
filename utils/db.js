@@ -297,6 +297,7 @@ export const stepsForBible = [
                 'Biblica® Open New Ukrainian Translation 2022 (New Testament and Psalms)',
               subject: 'Aligned Bible',
               language: 'uk',
+              stepOption: 'draft',
             },
           },
           {
@@ -350,7 +351,7 @@ export const stepsForBible = [
             id: 5,
             name: 'translate',
             config: {
-              subject: 'translate-extended',
+              subject: 'translate',
               verses: [
                 {
                   id: 1,
@@ -364,6 +365,7 @@ export const stepsForBible = [
                 },
                 { id: 6, verse: 'front', text: null },
               ],
+              stepOption: 'draft',
             },
           },
         ],
@@ -447,6 +449,7 @@ export const stepsForBible = [
               title: 'unfoldingWord® Translation Questions',
               subject: 'TSV Translation Questions',
               language: 'en',
+              stepOption: 'view-all',
             },
           },
         ],
@@ -1183,7 +1186,7 @@ export const stepsForOBS = [
             id: 5,
             name: 'translate',
             config: {
-              subject: 'translate-extended',
+              subject: 'translate',
               verses: [
                 {
                   id: 1,
@@ -1196,6 +1199,7 @@ export const stepsForOBS = [
                   text: null,
                 },
               ],
+              stepOption: 'draft',
             },
           },
         ],

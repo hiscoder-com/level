@@ -1,4 +1,3 @@
-import { useRouter } from 'next/router'
 import ReactMarkdown from 'react-markdown'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
@@ -7,15 +6,12 @@ import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 import { Placeholder } from '../UI'
 
 function Bible({ config, url }) {
-  const { query } = useRouter()
-  const { step } = query
   const { loading, data, error } = useGetResource({ config, url })
-  console.log(data)
   return (
     <>
       {loading ? (
         <Placeholder />
-      ) : step === '4' ? (
+      ) : config?.resource?.stepOption === 'draft' ? (
         <VersesExtended data={data} />
       ) : (
         <Verses data={data} />

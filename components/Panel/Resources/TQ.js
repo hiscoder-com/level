@@ -9,21 +9,24 @@ import { Disclosure } from '@headlessui/react'
 
 function TQ({ config, url }) {
   const { loading, data, error } = useGetResource({ config, url })
-
-  return <>{loading ? <Placeholder /> : <ToolList data={data} />}</>
+  return (
+    <>
+      {loading ? (
+        <Placeholder />
+      ) : (
+        <ToolList data={data} viewAll={config?.resource?.stepOption} />
+      )}
+    </>
+  )
 }
 
 export default TQ
 
-function ToolList({ data }) {
-  const { query } = useRouter()
-  const { step } = query
-
-  let uniqueVerse = new Set()
-  const calculateClicks = (verse) => {
-    uniqueVerse.add(verse)
-
-    if (Object.keys(data).length === uniqueVerse.size) {
+function ToolList({ data, viewAll }) {
+  let uniqueVerses = new Set()
+  const reduceQuestions = (verse) => {
+    uniqueVerses.add(verse)
+    if (Object.keys(data).length === uniqueVerses.size) {
       console.log('все вопросы просмотрены!') //TODO тут надо взять шаг step  и поставить условие - если на таком-то шаге то сеттер чекбокса этого шага сделай значение в условии
     }
   }
@@ -41,7 +44,8 @@ function ToolList({ data }) {
                       <li key={item.id} className="py-2">
                         <ToolContent
                           item={item}
-                          calculateClicks={() => calculateClicks(el[0])}
+                          reduceQuestions={() => reduceQuestions(el[0])}
+                          viewAll={viewAll}
                         />
                       </li>
                     )
@@ -55,10 +59,13 @@ function ToolList({ data }) {
   )
 }
 
-function ToolContent({ item, calculateClicks }) {
+function ToolContent({ item, reduceQuestions, viewAll }) {
   return (
     <Disclosure>
-      <Disclosure.Button className="text-left w-fit" onClick={calculateClicks}>
+      <Disclosure.Button
+        className="text-left w-fit"
+        onClick={viewAll === 'view-all' && reduceQuestions}
+      >
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
       <Disclosure.Panel className="text-gray-800 w-fit py-4">
