@@ -52,7 +52,7 @@ export default function IntroPage() {
           </div>
         </div>
       ) : (
-        <Workspace config={stepsForOBS[step - 1].workspace} reference={reference} />
+        <Workspace config={stepsForBible[step - 1].workspace} reference={reference} />
       )}
       <Footer
         textButton={t('Next')}

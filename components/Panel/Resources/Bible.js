@@ -1,40 +1,35 @@
 import { useRouter } from 'next/router'
-
 import ReactMarkdown from 'react-markdown'
-
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import { useGetResource } from 'utils/hooks'
-import Placeholder from '../UI/Placeholder'
-
 import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
+import { Placeholder } from '../UI'
 
-import { shuffle } from 'utils/helpers'
-
-function Bible({ config }) {
+function Bible({ config, url }) {
   const { query } = useRouter()
   const { step } = query
-  const { loading, data, error } = useGetResource({ config, url: '/api/git/bible' })
-
+  const { loading, data, error } = useGetResource({ config, url })
+  console.log(data)
   return (
-    <div>
+    <>
       {loading ? (
         <Placeholder />
       ) : step === '4' ? (
-        <BibleViewExtended data={data} />
+        <VersesExtended data={data} />
       ) : (
-        <BibleView data={data} />
+        <Verses data={data} />
       )}
-    </div>
+    </>
   )
 }
 
 export default Bible
 
-function BibleView({ data }) {
+function Verses({ data }) {
   return (
     <>
-      {data?.map((el) => (
+      {data?.verseObjects?.map((el) => (
         <ul key={el.verse} className="flex">
           <li className={`py-2`}>
             <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
@@ -45,7 +40,7 @@ function BibleView({ data }) {
   )
 }
 
-function BibleViewExtended({ data }) {
+function VersesExtended({ data }) {
   const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
     checkedVersesBibleState
   )
@@ -54,7 +49,7 @@ function BibleViewExtended({ data }) {
 
   return (
     <>
-      {data?.map((el, index) => {
+      {data?.verseObjects?.map((el, index) => {
         const checkedCurrent = checkedVersesBible.includes(el.verse)
         return (
           <div key={el.verse} className={`my-3 flex items-start`}>
@@ -65,7 +60,7 @@ function BibleViewExtended({ data }) {
               disabled={
                 checkedCurrent ||
                 (index !== 0 &&
-                  (!translatedVersesKeys.includes(data[index - 1].verse) ||
+                  (!translatedVersesKeys.includes(data?.verseObjects[index - 1].verse) ||
                     checkedCurrent))
               }
               onChange={() => {
@@ -80,4 +75,16 @@ function BibleViewExtended({ data }) {
       })}
     </>
   )
+}
+
+const shuffle = (text) => {
+  let j, temp
+  const arr = text.split('')
+  for (let i = arr.length - 1; i > 0; i--) {
+    j = Math.floor(Math.random() * (i + 1))
+    temp = arr[j]
+    arr[j] = arr[i]
+    arr[i] = temp
+  }
+  return arr.join('')
 }

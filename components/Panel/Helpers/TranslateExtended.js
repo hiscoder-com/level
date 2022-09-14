@@ -31,6 +31,7 @@ function Translate({ config }) {
     }
     setVerseObject(null)
   }
+
   const onBlurTextArea = (e, verse) => {
     console.log('в стихе ' + verse + ' изменился текст: ' + e.target.value)
     console.log('сделать видимой кнопку SAVE')
