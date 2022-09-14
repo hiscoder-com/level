@@ -24,9 +24,9 @@ export default TQ
 
 function ToolList({ data, viewAll }) {
   let uniqueVerses = new Set()
-  const reduceQuestions = (verse) => {
-    uniqueVerses.add(verse)
-    if (Object.keys(data).length === uniqueVerses.size) {
+  const reduceQuestions = (title) => {
+    uniqueVerses.add(title)
+    if (Object.values(data).flat().length === uniqueVerses.size) {
       console.log('все вопросы просмотрены!') //TODO тут надо взять шаг step  и поставить условие - если на таком-то шаге то сеттер чекбокса этого шага сделай значение в условии
     }
   }
@@ -44,7 +44,7 @@ function ToolList({ data, viewAll }) {
                       <li key={item.id} className="py-2">
                         <ToolContent
                           item={item}
-                          reduceQuestions={() => reduceQuestions(el[0])}
+                          reduceQuestions={() => reduceQuestions(item.title)}
                           viewAll={viewAll}
                         />
                       </li>
@@ -68,7 +68,10 @@ function ToolContent({ item, reduceQuestions, viewAll }) {
       >
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
-      <Disclosure.Panel className="text-gray-800 w-fit py-4">
+      <Disclosure.Panel
+        onChange={() => console.log('test')}
+        className="text-gray-800 w-fit py-4"
+      >
         <ReactMarkdown>{item.text}</ReactMarkdown>
       </Disclosure.Panel>
     </Disclosure>

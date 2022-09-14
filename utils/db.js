@@ -1,7 +1,7 @@
 export const reference = {
   book: 'tit',
   chapter: '1',
-  verses: ['5', '6', 'front'],
+  verses: ['5', '6', '7', 'front'],
 }
 export const stepsForBible = [
   {
