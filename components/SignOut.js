@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from '@/utils/supabaseClient'
+import { supabase } from 'utils/supabaseClient'
 
 export default function SignOut() {
   const [loading, setLoading] = useState(false)

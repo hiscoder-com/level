@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import Time from '../public/time.svg'
+import Time from 'public/time.svg'
 
 function Timer({ time }) {
   const [timeLeft, setTimeLeft] = useState(time)

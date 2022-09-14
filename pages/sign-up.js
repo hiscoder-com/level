@@ -2,7 +2,7 @@ import Head from 'next/head'
 
 import { useTranslation } from 'next-i18next'
 
-import SignUp from '../components/SignUp'
+import SignUp from 'components/SignUp'
 
 export default function SignUpPage() {
   const { t } = useTranslation('users')

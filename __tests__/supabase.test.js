@@ -1,4 +1,4 @@
-import { supabase } from '@/utils/supabaseClient'
+import { supabase } from 'utils/supabaseClient'
 
 const user = {
   a: '5ccbe724-873e-48f8-9718-2e8b50b44540',

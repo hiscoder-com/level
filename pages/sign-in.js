@@ -2,7 +2,7 @@ import Head from 'next/head'
 
 import { useTranslation } from 'next-i18next'
 
-import { useCurrentUser } from '../lib/UserContext'
+import { useCurrentUser } from 'lib/UserContext'
 
 export default function SignInPage() {
   const { user } = useCurrentUser()

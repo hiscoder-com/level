@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import { useUsers } from '../../utils/hooks'
+import { useUsers } from 'utils/hooks'
 
 function UsersList({ access_token }) {
   const { t } = useTranslation(['users'])

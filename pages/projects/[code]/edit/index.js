@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 
-import ProjectEdit from '../../../../components/ProjectEdit'
+import ProjectEdit from 'components/ProjectEdit'
 
 function ProjectPageEdit() {
   const router = useRouter()

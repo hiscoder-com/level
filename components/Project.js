@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-import { useCurrentUser } from '../lib/UserContext'
-import { useProject, useProjectRole, useTranslators } from '@/utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
+import { useProject, useProjectRole, useTranslators } from 'utils/hooks'
 
 import { useTranslation } from 'next-i18next'
 
