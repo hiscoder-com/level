@@ -11,7 +11,9 @@ function AutoSizeTextArea({
   placeholder,
 }) {
   const textareaRef = useRef(null)
+
   useAutosize({ textareaRef, verseObject })
+
   return (
     <textarea
       disabled={disabled}

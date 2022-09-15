@@ -1,11 +1,9 @@
-import { useRouter } from 'next/router'
-
 import ReactMarkdown from 'react-markdown'
+
+import { Disclosure } from '@headlessui/react'
 
 import { useGetResource } from 'utils/hooks'
 import { Placeholder } from '../UI'
-
-import { Disclosure } from '@headlessui/react'
 
 function TQ({ config, url }) {
   const { loading, data, error } = useGetResource({ config, url })

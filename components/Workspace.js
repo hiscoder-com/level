@@ -24,6 +24,7 @@ function Workspace({ config, reference }) {
 export default Workspace
 
 function Panel({ tools, reference }) {
+  const { t } = useTranslation()
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
@@ -45,7 +46,9 @@ function Panel({ tools, reference }) {
         ))}
       </Tab.List>
       <div className="layout-step-col-card">
-        <div className="layout-step-col-card-title">Chapter {reference.chapter}</div>
+        <div className="layout-step-col-card-title">
+          {t('Chapter')} {reference.chapter}
+        </div>
         <div className="h5 p-4 h-screen overflow-x-hidden overflow-y-scroll">
           <Tab.Panels>
             {tools.map((tool) => {

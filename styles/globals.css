@@ -148,7 +148,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .layout-step-col-card{
-	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-[600px]
+	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full
 }
 .layout-step-col-card-body-audio{
 	@apply flex flex-col items-center gap-5 py-24 lg:py-56 h5

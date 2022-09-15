@@ -1,14 +1,6 @@
 import { useTranslation } from 'next-i18next'
-import {
-  Notes,
-  Dictionary,
-  OwnNotes,
-  Translate,
-  TranslateExtended,
-  Bible,
-  TNTWL,
-  TQ,
-} from './'
+
+import { Notes, Dictionary, OwnNotes, Editor, Bible, TNTWL, TQ } from './'
 
 function Tool({ config }) {
   const { t } = useTranslation('common')
@@ -63,10 +55,7 @@ function Tool({ config }) {
       url = '/api/git/obs'
       break
     case 'translate':
-      CurrentTool = Translate
-      break
-    case 'translate-extended':
-      CurrentTool = TranslateExtended
+      CurrentTool = Editor
       break
     case 'ownNotes':
       CurrentTool = OwnNotes
