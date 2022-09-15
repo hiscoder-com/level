@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import Projects from '../../components/Projects'
+import Projects from 'components/Projects'
 
 export default function LanguagesPage() {
   const router = useRouter()

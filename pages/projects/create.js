@@ -1,4 +1,4 @@
-import ProjectCreate from '../../components/ProjectCreate'
+import ProjectCreate from 'components/ProjectCreate'
 
 function ProjectCreatePage() {
   return <ProjectCreate />

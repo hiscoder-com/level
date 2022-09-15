@@ -5,17 +5,17 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from '../utils/supabaseClient'
-import { steps } from '../utils/steps'
-import { useCurrentUser } from '../lib/UserContext'
+import { supabase } from 'utils/supabaseClient'
+import { steps } from 'utils/steps'
+import { useCurrentUser } from 'lib/UserContext'
 
 import Modal from './Modal'
 import Timer from './Timer'
 
-import Burger from '../public/burger.svg'
-import Tools from '../public/tools.svg'
-import User from '../public/user.svg'
-import VCANA_logo from '../public/vcana-logo.svg'
+import Burger from 'public/burger.svg'
+import Tools from 'public/tools.svg'
+import User from 'public/user.svg'
+import VCANA_logo from 'public/vcana-logo.svg'
 
 // TODO тут надо все проверить
 

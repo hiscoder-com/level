@@ -2,8 +2,8 @@ import Link from 'next/link'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import Projects from '../../components/Projects'
-import { useCurrentUser } from '../../lib/UserContext'
+import Projects from 'components/Projects'
+import { useCurrentUser } from 'lib/UserContext'
 
 export default function ProjectsPage() {
   const { user } = useCurrentUser()

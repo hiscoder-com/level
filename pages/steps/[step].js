@@ -5,7 +5,9 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '/components/Footer'
-import Audio from 'components/Audio'
+import Workspace from '/components/Workspace'
+import Audio from '/components/Audio'
+import { steps, reference } from 'utils/bd'
 
 export default function IntroPage() {
   const { query } = useRouter()
@@ -48,48 +50,7 @@ export default function IntroPage() {
           </div>
         </div>
       ) : (
-        <div className="layout-step">
-          <div className="layout-step-col lg:w-1/2">
-            <div className="space-x-3 text-xs">
-              <button>
-                <a className="btn-cyan">{t('Chapter')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Comments')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Words')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Questions')}</a>
-              </button>
-            </div>
-            <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title">{t('Chapter1')}</div>
-              <div className="h5 p-4">{t('Text')}:</div>
-            </div>
-          </div>
-          <div className="layout-step-col lg:w-1/2">
-            <div className="space-x-3 text-xs">
-              <button>
-                <a className="btn-cyan">{t('Translation')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('MyNotes')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Notes')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Dictionary')}</a>
-              </button>
-            </div>
-            <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title"></div>
-              <div className="h5 p-4">{t('Text')}:</div>
-            </div>
-          </div>
-        </div>
+        <Workspace config={steps[step - 1].workspace} reference={reference} />
       )}
       <Footer
         textButton={t('Next')}

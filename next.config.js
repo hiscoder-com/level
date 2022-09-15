@@ -13,7 +13,6 @@ const nextConfig = {
     return config
   },
   i18n,
-  react: { useSuspense: false }, // TODO проверить, надо ли это
 }
 
 module.exports = nextConfig

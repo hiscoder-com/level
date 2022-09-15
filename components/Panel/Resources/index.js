@@ -1,0 +1,8 @@
+export { default as Bible } from '../Resources/Bible'
+export { default as TN } from '../Resources/TN'
+export { default as TQ } from '../Resources/TQ'
+export { default as OBS } from '../Resources/OBS'
+export { default as OBSTN } from '../Resources/OBSTN'
+export { default as OBSTQ } from '../Resources/OBSTQ'
+export { default as OBSTWL } from '../Resources/OBSTWL'
+export { default as TWL } from '../Resources/TWL'

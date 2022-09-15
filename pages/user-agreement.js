@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 
-import Footer from '../components/Footer'
+import Footer from 'components/Footer'
 
 export default function UserAgreement() {
   const router = useRouter()
