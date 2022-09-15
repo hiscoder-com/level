@@ -12,7 +12,7 @@ function Bible({ config, url }) {
     <>
       {loading ? (
         <Placeholder />
-      ) : config?.resource?.stepOption === 'draft' ? (
+      ) : config?.resource?.draft ? (
         <VersesExtended data={data} />
       ) : (
         <Verses data={data} />
@@ -52,7 +52,7 @@ function VersesExtended({ data }) {
           <div key={el.verse} className={`my-3 flex items-start`}>
             <input
               checked={checkedCurrent}
-              type="checkBox"
+              type="checkbox"
               className="mt-1"
               disabled={
                 checkedCurrent ||
@@ -65,14 +65,7 @@ function VersesExtended({ data }) {
               }}
             />
             <ReactMarkdown className={`ml-4 t-0 ${checkedCurrent ? 'blur-sm' : ''}`}>
-              {`${el.verse} ${
-                checkedCurrent
-                  ? el.text
-                      .split(' ')
-                      .map((word) => shuffle(word))
-                      .join(' ')
-                  : el.text
-              }`}
+              {`${el.verse} ${checkedCurrent ? shuffle(el.text) : el.text}`}
             </ReactMarkdown>
           </div>
         )
@@ -81,14 +74,12 @@ function VersesExtended({ data }) {
   )
 }
 
-const shuffle = (arr) => {
-  let j, temp
-  let newArr = [...arr]
-  for (let i = newArr.length - 1; i > 0; i--) {
+const shuffle = (text) => {
+  const arr = text.split('')
+  let j
+  for (let i = arr.length - 1; i > 0; i--) {
     j = Math.floor(Math.random() * (i + 1))
-    temp = newArr[j]
-    newArr[j] = newArr[i]
-    newArr[i] = temp
+    ;[arr[j], arr[i]] = [arr[i], arr[j]]
   }
-  return newArr
+  return arr.join('')
 }

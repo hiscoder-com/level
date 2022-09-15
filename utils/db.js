@@ -297,7 +297,7 @@ export const stepsForBible = [
                 'Biblica® Open New Ukrainian Translation 2022 (New Testament and Psalms)',
               subject: 'Aligned Bible',
               language: 'uk',
-              stepOption: 'draft',
+              draft: true,
             },
           },
           {
@@ -459,7 +459,7 @@ export const stepsForBible = [
               title: 'unfoldingWord® Translation Questions',
               subject: 'TSV Translation Questions',
               language: 'en',
-              stepOption: 'view-all',
+              viewAllQuestions: true,
             },
           },
         ],
@@ -474,6 +474,11 @@ export const stepsForBible = [
               subject: 'translate',
               verses: [
                 {
+                  id: 0,
+                  verse: '4',
+                  text: ' some text',
+                },
+                {
                   id: 1,
                   verse: '5',
                   text: ' Я оставил тебя на острове Крит для того, чтобы ты завершил незавершённые дела, а также поставил старейшин в собраниях верующих в каждом городе, как я тебе поручил.',
@@ -482,6 +487,11 @@ export const stepsForBible = [
                   id: 2,
                   verse: '6',
                   text: ' Итак, старейшиной должен стать такой человек, который не подаёт повода для осуждения. У него должна быть одна жена, его дети также должны доверять Богу, и люди не должны считать, что его дети неуправляемые или непослушные.',
+                },
+                {
+                  id: 3,
+                  verse: '7',
+                  text: 'some text',
                 },
 
                 { id: 6, verse: 'front', text: 'some text' },
@@ -600,6 +610,11 @@ export const stepsForBible = [
               subject: 'translate',
               verses: [
                 {
+                  id: 0,
+                  verse: '4',
+                  text: ' some text',
+                },
+                {
                   id: 1,
                   verse: '5',
                   text: ' Я оставил тебя на острове Крит для того, чтобы ты завершил незавершённые дела, а также поставил старейшин в собраниях верующих в каждом городе, как я тебе поручил.',
@@ -608,6 +623,11 @@ export const stepsForBible = [
                   id: 2,
                   verse: '6',
                   text: ' Итак, старейшиной должен стать такой человек, который не подаёт повода для осуждения. У него должна быть одна жена, его дети также должны доверять Богу, и люди не должны считать, что его дети неуправляемые или непослушные.',
+                },
+                {
+                  id: 3,
+                  verse: '7',
+                  text: 'some text',
                 },
 
                 { id: 6, verse: 'front', text: 'some text' },
@@ -728,6 +748,30 @@ export const stepsForBible = [
             name: 'translate',
             config: {
               subject: 'translate',
+              verses: [
+                {
+                  id: 0,
+                  verse: '4',
+                  text: ' some text',
+                },
+                {
+                  id: 1,
+                  verse: '5',
+                  text: ' Я оставил тебя на острове Крит для того, чтобы ты завершил незавершённые дела, а также поставил старейшин в собраниях верующих в каждом городе, как я тебе поручил.',
+                },
+                {
+                  id: 2,
+                  verse: '6',
+                  text: ' Итак, старейшиной должен стать такой человек, который не подаёт повода для осуждения. У него должна быть одна жена, его дети также должны доверять Богу, и люди не должны считать, что его дети неуправляемые или непослушные.',
+                },
+                {
+                  id: 3,
+                  verse: '7',
+                  text: 'some text',
+                },
+
+                { id: 6, verse: 'front', text: 'some text' },
+              ],
             },
           },
           {

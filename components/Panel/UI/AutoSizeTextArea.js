@@ -7,20 +7,19 @@ function AutoSizeTextArea({
   setVerseObject,
   defaultValue,
   onBlur,
-  verseObject,
   placeholder,
 }) {
   const textareaRef = useRef(null)
-
-  useAutosize({ textareaRef, verseObject })
 
   return (
     <textarea
       disabled={disabled}
       ref={textareaRef}
       defaultValue={defaultValue}
-      onChange={(e) => {
-        setVerseObject({ key: verse, text: e.target.value })
+      onChange={(e) => setVerseObject({ key: verse, text: e.target.value })}
+      onInput={() => {
+        textareaRef.current.style.height = 0
+        textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px'
       }}
       onBlur={onBlur}
       type="text"
@@ -32,13 +31,3 @@ function AutoSizeTextArea({
 }
 
 export default AutoSizeTextArea
-
-function useAutosize({ textareaRef, verseObject }) {
-  useEffect(() => {
-    if (textareaRef && textareaRef.current) {
-      textareaRef.current.style.height = '0px'
-      const scrollHeight = textareaRef.current.scrollHeight
-      textareaRef.current.style.height = scrollHeight + 'px'
-    }
-  }, [verseObject])
-}

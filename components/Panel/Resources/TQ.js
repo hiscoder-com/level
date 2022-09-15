@@ -12,7 +12,7 @@ function TQ({ config, url }) {
       {loading ? (
         <Placeholder />
       ) : (
-        <ToolList data={data} viewAll={config?.resource?.stepOption} />
+        <ToolList data={data} viewAll={config?.resource?.viewAllQuestions} />
       )}
     </>
   )
@@ -25,7 +25,7 @@ function ToolList({ data, viewAll }) {
   const reduceQuestions = (title) => {
     uniqueVerses.add(title)
     if (Object.values(data).flat().length === uniqueVerses.size) {
-      console.log('все вопросы просмотрены!') //TODO тут надо взять шаг step  и поставить условие - если на таком-то шаге то сеттер чекбокса этого шага сделай значение в условии
+      console.log('все вопросы просмотрены!') //TODO это для проверки просмотра всех вопросов
     }
   }
   return (
@@ -60,10 +60,7 @@ function ToolList({ data, viewAll }) {
 function ToolContent({ item, reduceQuestions, viewAll }) {
   return (
     <Disclosure>
-      <Disclosure.Button
-        className="text-left w-fit"
-        onClick={viewAll === 'view-all' && reduceQuestions}
-      >
+      <Disclosure.Button className="text-left w-fit" onClick={viewAll && reduceQuestions}>
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
       <Disclosure.Panel

@@ -15,7 +15,7 @@ function Editor({ config }) {
   useEffect(() => {
     if (!versesRef?.current) return
     const _verses = Array.from(versesRef?.current?.children).map((el) => {
-      return { verse: el.id, text: Array.from(el.children)[1]?.value }
+      return { verse: el.dataset.id, text: Array.from(el.children)[1]?.value }
     })
 
     setVerseObjects(_verses)
@@ -27,7 +27,7 @@ function Editor({ config }) {
       ) : (
         <div ref={versesRef}>
           {config?.resource?.verses?.map((el, index) => (
-            <div key={el.id} id={el.verse} className="flex my-3">
+            <div key={index} data-id={el.verse} className="flex my-3">
               <div>{el.verse}</div>
               <AutoSizeTextArea
                 verseObject={verseObject}
@@ -35,7 +35,6 @@ function Editor({ config }) {
                 setVerseObject={setVerseObject}
                 verse={el.verse}
                 placeholder={'_'.repeat(50)}
-                onChange={(e) => console.log('first')}
               />
             </div>
           ))}
@@ -81,7 +80,7 @@ function EditorExtended({ config }) {
   useEffect(() => {
     if (!versesRef?.current) return
     const _verses = Array.from(versesRef?.current?.children).map((el) => {
-      return { verse: el.id, text: Array.from(el.children)[2]?.value }
+      return { verse: el.dataset.id, text: Array.from(el.children)[2]?.value }
     })
     setVerseObjects(_verses)
   }, [translatedVerses])
@@ -89,7 +88,7 @@ function EditorExtended({ config }) {
   return (
     <div ref={versesRef}>
       {config?.resource?.verses.map((el, index) => (
-        <div key={el.id} id={el.verse} className="flex my-3 items-start">
+        <div key={el.id} data-id={el.verse} className="flex my-3 items-start">
           <input
             type="checkBox"
             disabled={
