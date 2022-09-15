@@ -1,5 +1,5 @@
-import { useRef, useEffect, useState, useCallback } from 'react'
-import Recorders from './Recorder'
+import { useState } from 'react'
+import Recorder from './Recorder'
 import { useTranslation } from 'next-i18next'
 export default function Audio() {
   const [item, setItem] = useState(true)
@@ -33,11 +33,11 @@ function AudioRecorder({}) {
     <div className="flex justify-center flex-wrap mt-8  ">
       <div className="pb-4 mb-4 border-b-4">
         <p className="mb-4">Пересказ на исходном языке:</p>
-        <Recorders clear={clear} setClear={setClear} />
+        <Recorder clear={clear} setClear={setClear} />
       </div>
       <div className="pb-4 mb-4 border-b-4">
         <p className="mb-4">Пересказ на целевом языке:</p>
-        <Recorders clear={clear} setClear={setClear} />
+        <Recorder clear={clear} setClear={setClear} />
       </div>
       <button
         className="btn-cyan"

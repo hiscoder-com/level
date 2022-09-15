@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import RecorderButton from '../public/recorder.svg'
 import PauseButton from '../public/pause.svg'
+
 export default function Recorder({ clear, setClear }) {
   const audioRef = useRef(null)
   const [mediaRec, setMediaRec] = useState()
@@ -44,11 +45,11 @@ export default function Recorder({ clear, setClear }) {
       audioRef.current.src = blobUrl
     }
   }, [voice, clear, setClear])
-
+  console.log(mediaRec?.state)
   return (
     <div className="flex justify-center items-center">
       <audio className="mr-2" ref={audioRef} controls></audio>
-      <button className=" border-0 w-6 h-6" onClick={startStop}>
+      <button className="border-0 w-6 h-6" onClick={startStop}>
         {button}
       </button>
     </div>
