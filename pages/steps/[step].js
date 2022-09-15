@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '/components/Footer'
+import Audio from 'components/Audio'
 
 export default function IntroPage() {
   const { query } = useRouter()
@@ -42,10 +43,7 @@ export default function IntroPage() {
           <div className="layout-step-col lg:w-1/3 lg:mt-12">
             <div className="layout-step-col-card">
               <div className="layout-step-col-card-title">{t('Audio')}</div>
-              <div className="layout-step-col-card-body-audio">
-                <p>{t('AudioTitle')}</p>
-                <button className="btn-cyan">{t('AudioButton')}</button>
-              </div>
+              <Audio />
             </div>
           </div>
         </div>
