@@ -8,7 +8,7 @@ import {
   useUsers,
 } from 'utils/hooks'
 import ProjectRolesList from './ProjectRolesList'
-import { useCurrentUser } from '../lib/UserContext'
+import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectEdit({ code }) {
   const { user } = useCurrentUser()

@@ -7,9 +7,7 @@ function StartStepPage() {
       onClick={() => {
         router.push('/steps/1')
       }}
-    >
-      StartStepPage
-    </button>
+    ></button>
   )
 }
 

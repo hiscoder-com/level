@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 import useSWR from 'swr'
 
 const fetcher = async (url, token) => {
@@ -277,4 +278,22 @@ export function useRedirect({ user, startLink }) {
   }, [user])
 
   return { href }
+}
+/**
+ *hook receives information from git.door43
+ * @param {object} config 2 keys object: {resource:{owner, repo, commit, bookPath, language},reference: { book, chapter, step, verses }}
+ * @param {string} url url of api, for example: '/api/git/bible'
+ * @returns {object} {loading, data, error}
+ */
+export function useGetResource({ config, url }) {
+  const {
+    reference: { book, chapter, step, verses },
+    resource: { owner, repo, commit, bookPath, language },
+  } = config
+  const params = { owner, repo, commit, bookPath, language, book, chapter, step, verses }
+  const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
+  const { data, error } = useSWR([url, params], fetcher)
+  const loading = !data && !error
+
+  return { loading, data, error }
 }

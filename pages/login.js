@@ -7,12 +7,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { supabase } from 'utils/supabaseClient'
 
-import Report from '../public/report.svg'
-import EyeIcon from '../public/eye-icon.svg'
-import EyeOffIcon from '../public/eye-off-icon.svg'
+import Report from 'public/report.svg'
+import EyeIcon from 'public/eye-icon.svg'
+import EyeOffIcon from 'public/eye-off-icon.svg'
 
 export default function Login() {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('users', 'common')
 
   const router = useRouter()
 
@@ -83,13 +83,13 @@ export default function Login() {
             ref={loginRef}
             className={`input ${isLoginError && 'input-invalid'}`}
             type="text"
-            placeholder={`${t('Login')}:`}
+            placeholder={`${t('common:Login')}:`}
             onChange={(event) => {
               setLogin(event.target.value)
               setIsLoginError(false)
             }}
           />
-          <div className=" styleLogin relative">
+          <div className="styleLogin relative">
             <input
               ref={passwordRef}
               className={`input ${isPasswordError && 'input-invalid'}`}
@@ -138,7 +138,7 @@ export default function Login() {
               disabled={loading}
               onClick={handleLogin}
               className="btn-cyan w-1/3"
-              value={t('Next')}
+              value={t('common:Next')}
             />
           </div>
         </form>
@@ -151,7 +151,7 @@ Login.backgroundColor = 'bg-white'
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common'])),
+      ...(await serverSideTranslations(locale, ['users', 'common'])),
       // Will be passed to the page component as props
     },
   }

@@ -26,7 +26,7 @@ export default async function languageProjectTranslatorHandler(req, res) {
       }
       break
     default:
-      res.setHeader('Allow', ['GET', 'PUT'])
+      res.setHeader('Allow', ['DELETE'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

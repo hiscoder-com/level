@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 
 function ProjectRolesList({
   moderators,
@@ -19,6 +20,8 @@ function ProjectRolesList({
   const [showRadio, setShowRadio] = useState(false)
   const [moderator, setModerator] = useState(null)
   const [showSelect, setShowSelect] = useState(false)
+  const { t } = useTranslation(['projects'])
+
   const handleSet = async () => {
     if (!project?.id) {
       return
@@ -104,8 +107,8 @@ function ProjectRolesList({
 
   return (
     <div>
-      <div className="capitalize ">{`${type}`}:</div>
-      <div className="my-5 flex flex-col ">
+      <div className="capitalize">{`${type}`}:</div>
+      <div className="flex flex-col my-5">
         {coordinator && Object.keys(coordinator).length > 0 && coordinator.users.email}
         {translators &&
           type === 'translators' &&
@@ -138,7 +141,7 @@ function ProjectRolesList({
                           className="btn-filled w-28 my-1"
                           disabled={showSelect || moderators?.users?.id === el.users.id}
                         >
-                          Удалить
+                          {t('Delete')}
                         </button>
                       ) : (
                         <div className="form-check">
@@ -192,15 +195,15 @@ function ProjectRolesList({
                   }}
                   className="inline-block ml-2 btn-cyan w-32 my-1"
                 >
-                  {`Назначить ${
-                    type !== 'coordinators' ? 'переводчика' : 'координатора'
+                  {`${t('AppointAn')} ${
+                    type !== 'coordinators' ? `${t('Translator')}` : `${t('Coordinator')}`
                   }`}
                 </button>
                 <button
                   onClick={() => setShowSelect(false)}
                   className="inline-block mx-2 btn-cyan w-32 my-1"
                 >
-                  Отменить
+                  {t('Cancel')}
                 </button>
               </div>
             )}
@@ -211,12 +214,12 @@ function ProjectRolesList({
               disabled={showSelect || showRadio}
             >
               {type !== 'coordinators'
-                ? 'Добавить переводчика'
+                ? `${t('AddTranslator')}`
                 : `${
                     coordinator && Object.values(coordinator).length > 0
-                      ? 'Поменять'
-                      : 'Добавить'
-                  } координатора`}
+                      ? `${t('Change')}`
+                      : `${t('Add')}`
+                  } ${t('Сoordinator')}`}
             </button>
 
             {((permissions?.data &&
@@ -228,7 +231,7 @@ function ProjectRolesList({
                   className="btn-cyan w-28 my-1"
                   disabled={showSelect || showRadio}
                 >
-                  Выбрать модератора
+                  {t('ChooseAModerator')}
                 </button>
               )}
             {showRadio && (
@@ -237,14 +240,14 @@ function ProjectRolesList({
                   onClick={() => setShowRadio((prev) => !prev)}
                   className="btn-cyan w-32 my-1"
                 >
-                  Отменить
+                  {t('Cancel')}
                 </button>
                 <button
                   disabled={!moderator}
                   onClick={handleSetModerator}
                   className="btn-cyan w-32 my-1"
                 >
-                  Назначить модератора
+                  {t('AppointAModerator')}
                 </button>
               </>
             )}

@@ -1,13 +1,15 @@
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 import { useForm } from 'react-hook-form'
 
 import { useLanguages, useMethod } from 'utils/hooks'
-import { useCurrentUser } from '../lib/UserContext'
+import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectCreate() {
   const router = useRouter()
+  const { t } = useTranslation(['projects'])
 
   const { user } = useCurrentUser()
   const [languages] = useLanguages(user?.access_token)
@@ -101,7 +103,7 @@ function ProjectCreate() {
           )
         })}
 
-        <div>Язык</div>
+        <div>{t('Language')}</div>
         <select
           className="input max-w-sm"
           placeholder="Language"
@@ -116,7 +118,7 @@ function ProjectCreate() {
               )
             })}
         </select>
-        <div>Метод</div>
+        <div>{t('Method')}</div>
         <select placeholder="Method" {...register('methodId')} className="input max-w-sm">
           {methods &&
             methods.map((el) => {
