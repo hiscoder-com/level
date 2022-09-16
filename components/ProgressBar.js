@@ -5,8 +5,8 @@ export default function ProgressBar({ amountSteps, currentStep }) {
 
   useEffect(() => {
     let steps = []
-
-    for (const step = 0; step < amountSteps; step++) {
+    let step
+    for (step = 0; step < amountSteps; step++) {
       const circle = (
         <div key={step} className="flex items-center justify-center">
           <div
