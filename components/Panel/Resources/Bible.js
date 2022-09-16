@@ -1,3 +1,5 @@
+import { useMemo } from 'react'
+
 import ReactMarkdown from 'react-markdown'
 
 import { useRecoilState, useRecoilValue } from 'recoil'
@@ -64,14 +66,29 @@ function VersesExtended({ data }) {
                 setCheckedVersesBible((prev) => [...prev, el.verse])
               }}
             />
-            <ReactMarkdown className={`ml-4 t-0 ${checkedCurrent ? 'blur-sm' : ''}`}>
-              {`${el.verse} ${checkedCurrent ? shuffle(el.text) : el.text}`}
-            </ReactMarkdown>
+            <div className={`ml-2`}>{el.verse}</div>
+            {checkedCurrent ? (
+              <Blur data={el.text} />
+            ) : (
+              <ReactMarkdown className={`ml-2`}>{el.text}</ReactMarkdown>
+            )}
           </div>
         )
       })}
     </>
   )
+}
+
+function Blur({ data }) {
+  const text = useMemo(
+    () =>
+      data
+        .split(' ')
+        .map((el) => shuffle(el))
+        .join(' '),
+    [data]
+  )
+  return <ReactMarkdown className={`ml-2 blur-sm`}>{text}</ReactMarkdown>
 }
 
 const shuffle = (text) => {

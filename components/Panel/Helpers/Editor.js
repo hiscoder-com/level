@@ -111,7 +111,6 @@ function EditorExtended({ config }) {
             value={translatedVerses[index]?.text}
             setVerseObject={setVerseObject}
             verseObject={verseObject}
-            placeholder={'_'.repeat(50)}
           />
         </div>
       ))}
