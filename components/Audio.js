@@ -28,16 +28,29 @@ function AudioList({ setItem }) {
   )
 }
 function AudioRecorder({}) {
+  const [microphoneAccess, setMicrophoneAccess] = useState(false)
   const [clear, setClear] = useState(false)
   return (
     <div className="flex justify-center flex-wrap mt-8  ">
+      <p className={`text-center font-bold mb-4 ${microphoneAccess ? '' : 'hidden'}`}>
+        Приложению V-Cana нужен доступ к микрофону. Нажмите на значок заблокированной
+        камеры(микрофона) в адресной строке. Разрешите доступ и перезагрузите страницу.
+      </p>
       <div className="pb-4 mb-4 border-b-4">
         <p className="mb-4">Пересказ на исходном языке:</p>
-        <Recorder clear={clear} setClear={setClear} />
+        <Recorder
+          clear={clear}
+          setClear={setClear}
+          setMicrophoneAccess={setMicrophoneAccess}
+        />
       </div>
       <div className="pb-4 mb-4 border-b-4">
         <p className="mb-4">Пересказ на целевом языке:</p>
-        <Recorder clear={clear} setClear={setClear} />
+        <Recorder
+          clear={clear}
+          setClear={setClear}
+          setMicrophoneAccess={setMicrophoneAccess}
+        />
       </div>
       <button
         className="btn-cyan"

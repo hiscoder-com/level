@@ -2,7 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import RecorderButton from '../public/recorder.svg'
 import PauseButton from '../public/pause.svg'
 
-export default function Recorder({ clear, setClear }) {
+export default function Recorder({ clear, setClear, setMicrophoneAccess }) {
   const audioRef = useRef(null)
   const [mediaRec, setMediaRec] = useState()
   const [voice, setVoice] = useState([])
@@ -16,6 +16,7 @@ export default function Recorder({ clear, setClear }) {
       mediaRec.stop()
       setButton(<RecorderButton className="audio-btn" />)
     } else {
+      setMicrophoneAccess(true)
       alert('Доступ к микрофону отсутствует')
     }
   }
