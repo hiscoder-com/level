@@ -2,20 +2,33 @@ import { useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { useGetResource } from 'utils/hooks'
+import { Placeholder } from '../UI'
+
 import Close from 'public/close.svg'
 
-export default function ToolView({ data }) {
+function TNTWL({ config, url }) {
   const [item, setItem] = useState(null)
+  const { loading, data, error } = useGetResource({ config, url })
+
   return (
     <>
-      {item ? (
-        <ToolContent setItem={setItem} item={item} />
+      {loading ? (
+        <Placeholder />
       ) : (
-        <ToolList setItem={setItem} data={data} />
+        <>
+          {item ? (
+            <ToolContent setItem={setItem} item={item} />
+          ) : (
+            <ToolList setItem={setItem} data={data} />
+          )}
+        </>
       )}
     </>
   )
 }
+
+export default TNTWL
 
 function ToolList({ setItem, data }) {
   return (

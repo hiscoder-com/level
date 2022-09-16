@@ -1,24 +1,13 @@
 import { useTranslation } from 'next-i18next'
-import {
-  Notes,
-  Dictionary,
-  OwnNotes,
-  Translate,
-  OBS,
-  Bible,
-  TN,
-  TQ,
-  TWL,
-  OBSTQ,
-  OBSTN,
-  OBSTWL,
-} from './'
+
+import { Notes, Dictionary, OwnNotes, Editor, Bible, TNTWL, TQ } from './'
 
 function Tool({ config }) {
   const { t } = useTranslation('common')
 
   const { resource } = config
   let CurrentTool
+  let url
   if (!resource) {
     return (
       <div>
@@ -29,37 +18,44 @@ function Tool({ config }) {
 
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
-      CurrentTool = OBSTWL
+      CurrentTool = TNTWL
+      url = '/api/git/obs-twl'
       break
 
     case 'OBS Translation Questions':
     case 'TSV OBS Translation Questions':
-      CurrentTool = OBSTQ
+      CurrentTool = TQ
+      url = '/api/git/obs-tq'
       break
 
     case 'OBS Translation Notes':
     case 'TSV OBS Translation Notes':
-      CurrentTool = OBSTN
+      CurrentTool = TNTWL
+      url = '/api/git/obs-tn'
       break
 
     case 'TSV Translation Words Links':
-      CurrentTool = TWL
+      CurrentTool = TNTWL
+      url = '/api/git/twl'
       break
 
     case 'TSV Translation Notes':
-      CurrentTool = TN
+      CurrentTool = TNTWL
+      url = '/api/git/tn'
       break
 
     case 'TSV Translation Questions':
     case 'Translation Questions':
       CurrentTool = TQ
+      url = '/api/git/tq'
       break
 
     case 'Open Bible Stories':
-      CurrentTool = OBS
+      CurrentTool = Bible
+      url = '/api/git/obs'
       break
     case 'translate':
-      CurrentTool = Translate
+      CurrentTool = Editor
       break
     case 'ownNotes':
       CurrentTool = OwnNotes
@@ -76,12 +72,13 @@ function Tool({ config }) {
     case 'Hebrew Old Testament':
     case 'Greek New Testament':
       CurrentTool = Bible
+      url = '/api/git/bible'
       break
 
     default:
       return <div>{t('Wrong_resource')}</div>
   }
-  return <CurrentTool config={config} />
+  return <CurrentTool config={config} url={url} />
 }
 
 export default Tool

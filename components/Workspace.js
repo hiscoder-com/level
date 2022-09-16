@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import Tool from './Panel/Tool'
 
-const sizes = { '3': 'lg:w-3/6', '2': 'lg:w-2/6', '4': 'lg:w-4/6', '1': 'lg:w-1/6' }
+const sizes = { '1': 'lg:w-1/6', '2': 'lg:w-2/6', '3': 'lg:w-3/6', '4': 'lg:w-4/6' }
 
 function Workspace({ config, reference }) {
   const { t } = useTranslation()
@@ -24,6 +24,7 @@ function Workspace({ config, reference }) {
 export default Workspace
 
 function Panel({ tools, reference }) {
+  const { t } = useTranslation()
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
@@ -40,18 +41,15 @@ function Panel({ tools, reference }) {
               )
             }
           >
-            {tool?.config?.title
-              ? tool?.config?.title
-                  .split(' ')
-                  .reduce((prevVal, curWord) => prevVal + (curWord ? curWord[0] : ''), '')
-                  .toUpperCase()
-              : tool?.config?.subject}
+            {tool.name}
           </Tab>
         ))}
       </Tab.List>
       <div className="layout-step-col-card">
-        <div className="layout-step-col-card-title">Chapter {reference.chapter}</div>
-        <div className="h5 p-4 h-screen overflow-scroll">
+        <div className="layout-step-col-card-title">
+          {t('Chapter')} {reference.chapter}
+        </div>
+        <div className="h5 p-4 h-screen overflow-x-hidden overflow-y-scroll">
           <Tab.Panels>
             {tools.map((tool) => {
               return (

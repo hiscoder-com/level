@@ -80,7 +80,7 @@ export default async function obsHandler(req, res) {
     const _verseObjects =
       verses && verses.length > 0
         ? verseObjects.filter((el) => {
-            return verses.includes(el.key)
+            return verses.includes(el.verse)
           })
         : verseObjects
 
