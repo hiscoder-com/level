@@ -15,6 +15,12 @@
     DROP TABLE IF EXISTS PUBLIC.languages;
   -- EDN DROP TABLE
 
+  -- DROP TRIGGER
+    DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+    DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
+    DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
+  -- END DROP TRIGGER
+
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
@@ -23,6 +29,9 @@
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
     DROP FUNCTION IF EXISTS PUBLIC.block_user;
+    DROP FUNCTION IF EXISTS PUBLIC.can_translate;
+    DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
+    DROP FUNCTION IF EXISTS PUBLIC.create_verses;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
@@ -180,7 +189,27 @@
       FROM
         PUBLIC.users
       WHERE
-        PUBLIC.users.id = auth.uid() AND PUBLIC.users.is_admin;
+        users.id = auth.uid() AND users.is_admin;
+
+      RETURN access > 0;
+
+    END;
+  $$;
+
+  -- для rls функция которая проверяет, является ли юзер переводчиком стиха
+  -- может используя функцию записать в таблицу сразу айди юзера, а то часто придется такие проверки делать
+  CREATE FUNCTION PUBLIC.can_translate(translator_id bigint)
+    returns BOOLEAN LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      access INT;
+
+    BEGIN
+      SELECT
+        COUNT(*) INTO access
+      FROM
+        PUBLIC.project_translators
+      WHERE
+        user_id = auth.uid() AND id = can_translate.translator_id;
 
       RETURN access > 0;
 
@@ -261,6 +290,69 @@
         (NEW.id, NEW.text, OLD.current_step);
 
       RETURN NEW;
+
+    END;
+  $$;
+
+  -- создать стихи главы
+  CREATE FUNCTION PUBLIC.create_chapters(book_id bigint) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      book RECORD;
+      chapter RECORD;
+    BEGIN
+      -- 1. Получаем список json глав и стихов для книги
+      SELECT id, chapters, project_id FROM PUBLIC.books WHERE id = create_chapters.book_id into book;
+
+      IF authorize(auth.uid(), book.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN FALSE;
+      END IF;
+
+      FOR chapter IN SELECT * FROM json_each_text(book.chapters)
+      LOOP
+        INSERT INTO
+          PUBLIC.chapters (num, book_id, verses, project_id)
+        VALUES
+          (chapter.key::int2 , book.id, chapter.value::int4, book.project_id);
+      END LOOP;
+      -- 2. Наверное не вариант сразу создавать все стихи и все главы
+      -- 3. Создадим все главы книги. И сделаем какую-нить функцию которая потом создаст все стихи
+
+      RETURN true;
+
+    END;
+  $$;
+
+  CREATE FUNCTION PUBLIC.create_verses(chapter_id bigint) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      chapter RECORD;
+    BEGIN
+      -- 1. Получаем количество стихов
+      SELECT  chapters.id as id,
+              chapters.verses as verses,
+              chapters.project_id as project_id,
+              steps.id as step_id
+        FROM PUBLIC.chapters
+          JOIN PUBLIC.steps ON (steps.project_id = chapters.project_id)
+        WHERE chapters.id = create_verses.chapter_id
+        ORDER BY steps.order_by ASC
+        LIMIT 1
+        INTO chapter;
+
+      IF authorize(auth.uid(), chapter.project_id) NOT IN ('admin', 'coordinator')
+      THEN
+        RETURN FALSE;
+      END IF;
+
+      FOR i IN 1..chapter.verses LOOP
+        INSERT INTO
+          PUBLIC.verses (num, chapter_id, current_step, project_id)
+        VALUES
+          (i , chapter.id, chapter.step_id, chapter.project_id);
+      END LOOP;
+
+      RETURN true;
 
     END;
   $$;
@@ -574,9 +666,9 @@
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    DROP POLICY IF EXISTS "Добавлять можно только админу. При создании проекта он указывает сразу метод. Придумать так чтобы нельзя было добавлять новые шаги после всего" ON PUBLIC.steps;
+    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.steps;
 
-    CREATE policy "Добавлять можно только админу. При создании проекта он указывает сразу метод. Придумать так чтобы нельзя было добавлять новые шаги после всего" ON PUBLIC.steps FOR
+    CREATE policy "Добавлять можно только админу" ON PUBLIC.steps FOR
     INSERT
       WITH CHECK (admin_only());
   -- END RLS
@@ -596,13 +688,26 @@
     );
 
     COMMENT ON TABLE public.books
-        IS 'У каждой книги потом прописать ее вес. Рассчитать на основе англ или русских ресурсов (сколько там слов). Подумать о том, что будет если удалить проект. Так как в таблице книги мы хотим хранить текст. Отобразим 66 книг Библии или 1 ОБС. В будущем парсить манифест чтобы отображать книги которые уже готовы. Или в момент когда админ нажмет "Создать книгу" проверить есть ли они, если нет то выдать предупреждение.';
+        IS 'У каждой книги потом прописать ее вес. Рассчитать на основе англ или русских ресурсов (сколько там слов). Подумать о том, что будет если удалить проект. Так как в таблице книги мы хотим хранить текст. Отобразим 66 книг Библии или 1 ОБС. В будущем парсить манифест чтобы отображать книги которые уже готовы. Или в момент когда админ нажмет "Создать книгу" проверить есть ли они, если нет то выдать предупреждение. При создании проекта он указывает сразу метод. Придумать так чтобы нельзя было добавлять новые шаги после всего. Может сделать функцию, которая проверяет код книги, и добавляет. Тогда никто лишнего не отправит.';
 
     COMMENT ON COLUMN public.books.text
-        IS 'Здесь мы будем собирать книгу чтобы не делать много запросов. Возьмем все главы и объединим. Так же тут со временем пропишем вес книги на основе англ или русского ресурса';
+        IS 'Здесь мы будем собирать книгу чтобы не делать много запросов. Возьмем все главы и объединим. Так же тут со временем пропишем вес книги на основе англ или русского ресурса. Делать это надо через функцию какую-то, чтобы она собрала сама книгу.';
+    ALTER TABLE
+      PUBLIC.books enable ROW LEVEL security;
   -- END TABLE
 
   -- RLS
+    DROP POLICY IF EXISTS "Получают книги все кто на проекте" ON PUBLIC.books;
+
+    CREATE policy "Получают книги все кто на проекте" ON PUBLIC.books FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
+    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.books;
+
+    CREATE policy "Добавлять можно только админу" ON PUBLIC.books FOR
+    INSERT
+      WITH CHECK (admin_only());
   -- END RLS
 -- END BOOK
 
@@ -614,13 +719,24 @@
       book_id bigint REFERENCES PUBLIC.books ON
       DELETE
         CASCADE NOT NULL,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
       "text" text DEFAULT NULL,
       verses integer,
         UNIQUE (book_id, num)
     );
+    ALTER TABLE
+      PUBLIC.chapters enable ROW LEVEL security;
   -- END TABLE
 
   -- RLS
+    DROP POLICY IF EXISTS "Получают книги все кто на проекте" ON PUBLIC.chapters;
+
+    CREATE policy "Получают книги все кто на проекте" ON PUBLIC.chapters FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
   -- END RLS
 -- END CHAPTERS
 
@@ -636,9 +752,12 @@
       chapter_id bigint REFERENCES PUBLIC.chapters ON
       DELETE
         CASCADE NOT NULL,
-      project_translator_id bigint REFERENCES PUBLIC.project_translators ON
+      project_id bigint references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
+      project_translator_id bigint REFERENCES PUBLIC.project_translators ON
+      DELETE
+        CASCADE DEFAULT NULL,
         UNIQUE (chapter_id, num)
     );
 
@@ -647,9 +766,28 @@
 
     COMMENT ON COLUMN public.verses.current_step
         IS 'Скорее всего тут придется хранить айдишник шага. Так как несколько переводчиков то часть стихов может быть на одном а часть на другом шаге. Переводчик у нас на уровне проекта а не главы, чтобы можно было у переводчика хранить, на каком он шаге.';
+    ALTER TABLE
+      PUBLIC.verses enable ROW LEVEL security;
   -- END TABLE
 
   -- RLS
+    DROP POLICY IF EXISTS "Стих получить может переводчик, координатор проекта, модератор " ON PUBLIC.verses;
+
+    CREATE policy "Стих получить может переводчик, координатор проекта, модератор и админ" ON PUBLIC.verses FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
+    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.verses;
+
+    CREATE policy "Добавлять можно только админу" ON PUBLIC.verses FOR
+    INSERT
+      WITH CHECK (can_translate(project_translator_id));
+
+    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.verses;
+
+    CREATE policy "Добавлять можно только админу" ON PUBLIC.verses FOR
+    UPDATE
+      USING (can_translate(project_translator_id));
   -- END RLS
 -- VERSES
 
@@ -687,21 +825,18 @@ ALTER TABLE
 
 -- TRIGGERS
   -- trigger the function every time a user is created
-  DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
 
   CREATE TRIGGER on_auth_user_created AFTER
   INSERT
     ON auth.users FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_user();
 
   -- trigger the function every time a project is created
-  DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
 
   CREATE TRIGGER on_public_project_created AFTER
   INSERT
     ON PUBLIC.projects FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_project();
 
   -- trigger the function every time a project is created
-  DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
 
   CREATE TRIGGER on_public_verses_next_step AFTER
   UPDATE
@@ -1307,14 +1442,14 @@ ADD
       PUBLIC.chapters;
 
     INSERT INTO
-      PUBLIC.chapters (num, book_id, verses, "text")
+      PUBLIC.chapters (project_id, num, book_id, verses, "text")
     VALUES
-      (1, 1, 3, '1. Тут будет у нас сохраняться итоговый текст\n2. Не знаю пока в каком формате\n3. USFM нужен в итоге, но может тут MD или JSON'),
-      (2, 1, 4, '1. А тут\n2. У нас\n3. Итоговая вторая\n4. Глава'),
-      (3, 1, 2, null),
-      (1, 2, 4, '1. Тут итог\n2. другой\n3. Книги\n4. 4 стиха'),
-      (2, 2, 2, null),
-      (1, 3, 3, null);
+      (1, 1, 1, 3, '1. Тут будет у нас сохраняться итоговый текст\n2. Не знаю пока в каком формате\n3. USFM нужен в итоге, но может тут MD или JSON'),
+      (1, 2, 1, 4, '1. А тут\n2. У нас\n3. Итоговая вторая\n4. Глава'),
+      (1, 3, 1, 2, null),
+      (1, 1, 2, 4, '1. Тут итог\n2. другой\n3. Книги\n4. 4 стиха'),
+      (1, 2, 2, 2, null),
+      (2, 1, 3, 3, null);
   -- END CHAPTERS
 
   -- VERSES
@@ -1322,26 +1457,26 @@ ADD
       PUBLIC.verses;
 
     INSERT INTO
-      PUBLIC.verses (num, "text", chapter_id, project_translator_id, current_step)
+      PUBLIC.verses (project_id, num, "text", chapter_id, project_translator_id, current_step)
     VALUES
-      (1, 'Тут будет у нас сохраняться итоговый текст', 1, 3, 2),
-      (2, 'Не знаю пока в каком формате', 1, 1, 2),
-      (3, 'USFM нужен в итоге, но может тут MD или JSON', 1, 2, 2),
-      (1, 'А тут', 2, 3, 2),
-      (2, 'У нас', 2, 1, 2),
-      (3, 'Итоговая вторая', 2, 2, 2),
-      (4, 'Глава', 2, 4, 2),
-      (1, null, 3, 3, 1),
-      (2, null, 3, 1, 1),
-      (1, 'Тут итог', 4, 3, 2),
-      (2, 'другой', 4, 1, 2),
-      (3, 'Книги', 4, 2, 2),
-      (4, '4 стиха', 4, 4, 2),
-      (1, null, 5, 3, 1),
-      (2, null, 5, 1, 1),
-      (1, 'Здесь начался перевод', 6, 2, 4),
-      (2, 'Какой-то главы', 6, 8, 3),
-      (3, null, 6, 8, 3);
+      (1, 1, 'Тут будет у нас сохраняться итоговый текст', 1, 3, 2),
+      (1, 2, 'Не знаю пока в каком формате', 1, 1, 2),
+      (1, 3, 'USFM нужен в итоге, но может тут MD или JSON', 1, 2, 2),
+      (1, 1, 'А тут', 2, 3, 2),
+      (1, 2, 'У нас', 2, 1, 2),
+      (1, 3, 'Итоговая вторая', 2, 2, 2),
+      (1, 4, 'Глава', 2, 4, 2),
+      (1, 1, null, 3, 3, 1),
+      (1, 2, null, 3, 1, 1),
+      (1, 1, 'Тут итог', 4, 3, 2),
+      (1, 2, 'другой', 4, 1, 2),
+      (1, 3, 'Книги', 4, 2, 2),
+      (1, 4, '4 стиха', 4, 4, 2),
+      (1, 1, null, 5, 3, 1),
+      (1, 2, null, 5, 1, 1),
+      (2, 1, 'Здесь начался перевод', 6, 2, 4),
+      (2, 2, 'Какой-то главы', 6, 8, 3),
+      (2, 3, null, 6, 8, 3);
   -- END VERSES
 
   -- PROGRESS

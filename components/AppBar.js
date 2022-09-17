@@ -35,11 +35,9 @@ export default function AppBar({ setIsOpen }) {
   }, [router.pathname])
 
   useEffect(() => {
-    const hasAccess = async (user_id) => {
+    const hasAccess = async () => {
       try {
-        const { data, error } = await supabase.rpc('has_access', {
-          user_id,
-        })
+        const { data, error } = await supabase.rpc('has_access')
         if (error) throw error
         setAccess(data)
       } catch (error) {
@@ -47,7 +45,7 @@ export default function AppBar({ setIsOpen }) {
       }
     }
     if (user?.id) {
-      hasAccess(user.id)
+      hasAccess()
     }
   }, [user])
 
