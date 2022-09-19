@@ -16,7 +16,7 @@ export const mdToJson = (md) => {
     } else {
       text = _markdown[n * 2] + '\n' + _markdown[n * 2 + 1]
     }
-    verseObjects.push({ urlImage, text, key: (n + 1).toString() })
+    verseObjects.push({ urlImage, text, verse: (n + 1).toString() })
   }
   return { verseObjects, header, link }
 }

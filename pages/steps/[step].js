@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from '/components/Footer'
 import Workspace from '/components/Workspace'
 import Audio from '/components/Audio'
-import { steps, reference } from 'utils/bd'
+import { stepsForBible, reference } from 'utils/db'
 
 export default function IntroPage() {
   const { query } = useRouter()
@@ -50,7 +50,7 @@ export default function IntroPage() {
           </div>
         </div>
       ) : (
-        <Workspace config={steps[step - 1].workspace} reference={reference} />
+        <Workspace config={stepsForBible[step - 1].workspace} reference={reference} />
       )}
       <Footer
         textButton={t('Next')}
