@@ -893,6 +893,15 @@ ADD
         FALSE
       ),
       (
+        'b68180b0-49dc-4124-868f-b15b177b6d8e',
+        'Translator0',
+        'translator0@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
         '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2',
         'Coordinator2',
         'coordinator2@mail.com',
@@ -986,6 +995,15 @@ ADD
         'e50d5d0a-4fdb-4de3-b431-119e684d775e',
         'Moderator',
         'moderator@mail.com',
+        FALSE,
+        FALSE,
+        NULL,
+        FALSE
+      ),
+      (
+        'be6688c3-1864-4fff-a03f-c49ddd53e2d0',
+        'Moderator0',
+        'moderator0@mail.com',
         FALSE,
         FALSE,
         NULL,
