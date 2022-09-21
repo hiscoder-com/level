@@ -1,5 +1,6 @@
 import { supabase } from 'utils/supabaseClient'
 
+/** TODO надо переписать */
 export default async function languageProjectModeratorsHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -18,9 +19,8 @@ export default async function languageProjectModeratorsHandler(req, res) {
     case 'GET':
       try {
         const { data: value, error } = await supabase
-          .from('project_roles')
+          .from('project_moderators')
           .select('projects!inner(code),users!inner(*)')
-          .eq('role', 'moderator')
           .eq('projects.code', code)
           .limit(1)
           .maybeSingle()
@@ -35,8 +35,8 @@ export default async function languageProjectModeratorsHandler(req, res) {
     case 'POST':
       try {
         const { data: value, error } = await supabase
-          .from('project_roles')
-          .insert([{ project_id, user_id, role: 'moderator' }])
+          .from('project_moderators')
+          .insert([{ project_id, user_id }])
 
         if (error) throw error
         data = { ...value }

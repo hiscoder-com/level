@@ -1,5 +1,6 @@
 import { supabase } from 'utils/supabaseClient'
 
+/** TODO проверить */
 export default async function languageProjectTranslatorsHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -16,9 +17,10 @@ export default async function languageProjectTranslatorsHandler(req, res) {
     case 'GET':
       try {
         const { data, error } = await supabase
-          .from('project_roles')
-          .select('projects!inner(code),users!inner(*)')
-          .eq('role', 'translator')
+          .from('project_translators')
+          .select(
+            'is_moderator,projects!project_translators_project_id_fkey!inner(code),users!inner(*)'
+          )
           .eq('projects.code', code)
         if (error) throw error
         res.status(200).json(data)
@@ -32,8 +34,8 @@ export default async function languageProjectTranslatorsHandler(req, res) {
         const { project_id, user_id } = body
         // TODO валидацию
         const { data, error } = await supabase
-          .from('project_roles')
-          .insert([{ project_id, user_id, role: 'translator' }])
+          .from('project_translators')
+          .insert([{ project_id, user_id }])
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {

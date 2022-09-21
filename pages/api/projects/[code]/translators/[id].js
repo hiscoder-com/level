@@ -14,9 +14,9 @@ export default async function languageProjectTranslatorHandler(req, res) {
     case 'DELETE':
       try {
         const { data, error } = await supabase
-          .from('project_roles')
+          .from('project_translators')
           .delete()
-          .match({ project_id: body.projectId, role: 'translator', user_id: id })
+          .match({ project_id: body.projectId, user_id: id })
 
         if (error) throw error
         res.status(200).json(data)

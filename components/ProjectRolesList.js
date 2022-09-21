@@ -29,7 +29,7 @@ function ProjectRolesList({
 
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post(`/api/${project?.languages?.code}/projects/${code}/${type}/`, {
+      .post(`/api/projects/${code}/${type}/`, {
         user_id: userId,
         project_id: project?.id,
       })
@@ -49,7 +49,7 @@ function ProjectRolesList({
     if (type === 'coordinators') {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .put(`/api/${project?.languages?.code}/projects/${code}/${type}/${userId}`, {
+        .put(`/api/projects/${code}/${type}/${userId}`, {
           project_id: project?.id,
           prev_id: coordinator && coordinator.users?.id,
         })
@@ -62,7 +62,7 @@ function ProjectRolesList({
     }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/${project?.languages?.code}/projects/${code}/${type}/${id}`, {
+      .delete(`/api/projects/${code}/${type}/${id}`, {
         data: { projectId: project?.id },
       })
       .then((result) => {
@@ -78,7 +78,7 @@ function ProjectRolesList({
     if (moderators && Object.keys(moderators).length === 0) {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .post(`/api/${project?.languages?.code}/projects/${code}/moderators/`, {
+        .post(`/api/projects/${code}/moderators/`, {
           user_id: moderator,
           project_id: project?.id,
         })
@@ -90,13 +90,10 @@ function ProjectRolesList({
     } else {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .put(
-          `/api/${project?.languages?.code}/projects/${code}/moderators/${moderator}`,
-          {
-            project_id: project?.id,
-            prev_id: moderators.users?.id,
-          }
-        )
+        .put(`/api/projects/${code}/moderators/${moderator}`, {
+          project_id: project?.id,
+          prev_id: moderators.users?.id,
+        })
         .then((result) => {
           mutateModerator()
           setShowRadio(false)

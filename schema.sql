@@ -336,7 +336,7 @@
         FROM PUBLIC.chapters
           JOIN PUBLIC.steps ON (steps.project_id = chapters.project_id)
         WHERE chapters.id = create_verses.chapter_id
-        ORDER BY steps.order_by ASC
+        ORDER BY steps.order ASC
         LIMIT 1
         INTO chapter;
 
@@ -649,11 +649,11 @@
       DELETE
         CASCADE NOT NULL,
       config json NOT NULL,
-      order_by int2 NOT NULL,
-        UNIQUE (project_id, order_by)
+      "order" int2 NOT NULL,
+        UNIQUE (project_id, order)
     );
 
-    COMMENT ON COLUMN public.steps.order_by
+    COMMENT ON COLUMN public.steps.order
         IS 'это поле юзер не редактирует. Мы его указываем сами. Пока что будем получать с клиента.';
     ALTER TABLE
       PUBLIC.steps enable ROW LEVEL security;
@@ -1039,7 +1039,7 @@ ADD
     INSERT INTO
       PUBLIC.methods (title, resources, steps, "type")
     VALUES
-      ('Vcana Bible', '{"literal":true, "simplified":false, "tn":false}', '[
+      ('Vcana Bible', '{"literal":false, "simplified":true, "tn":false}', '[
       {
         "title": "Шаг один. Читаем вместе",
         "description": "Some text here...",
@@ -1319,7 +1319,7 @@ ADD
       PUBLIC.steps;
 
     INSERT INTO
-      PUBLIC.steps (title, "description", "time", count_of_users, intro, project_id, config, order_by )
+      PUBLIC.steps (title, "description", "time", count_of_users, intro, project_id, config, "order" )
     VALUES
       ('Шаг один. Читаем вместе Библию', 'Тут можно перевести текст...', 60, 4,
         '# Вводная\n\n### Как начать\n\nСсылка на видео, должна парситься\n\nhttps://youtu.be/sDcfb_f-f',

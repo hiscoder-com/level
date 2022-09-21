@@ -1,5 +1,6 @@
 import { supabase } from 'utils/supabaseClient'
 
+/** TODO не работает */
 export default async function languageProjectModeratorHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -16,9 +17,9 @@ export default async function languageProjectModeratorHandler(req, res) {
     case 'PUT':
       try {
         const { data: value, error } = await supabase
-          .from('project_roles')
+          .from('project_translators')
           .update({ user_id: id })
-          .match({ user_id: prev_id, role: 'moderator' })
+          .match({ user_id: prev_id, is_moderator: true })
 
         if (error) throw error
         data = value
@@ -32,9 +33,9 @@ export default async function languageProjectModeratorHandler(req, res) {
     case 'DELETE': //TODO проверить - работает ли и нужен ли
       try {
         const { data: value, error } = await supabase
-          .from('project_roles')
+          .from('project_translators')
           .delete()
-          .match({ project_id: body.projectId, role: 'moderator', user_id: id })
+          .match({ project_id: body.projectId, user_id: id, is_moderator: true })
 
         if (error) throw error
         data = value

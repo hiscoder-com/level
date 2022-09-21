@@ -15,7 +15,7 @@ export default async function languageProjectRolesHandler(req, res) {
     case 'GET':
       try {
         const { data: value, error } = await supabase
-          .from('project_roles')
+          .from('project_translators')
           .select('role,projects!inner(code),users!inner(*)')
           .eq('projects.code', code)
         if (error) throw error
