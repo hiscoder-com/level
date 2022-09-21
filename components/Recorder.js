@@ -1,20 +1,30 @@
 import { useRef, useEffect, useState, useCallback } from 'react'
 import RecorderButton from '../public/recorder.svg'
-import PauseButton from '../public/pause.svg'
+import StopButton from '../public/stop.svg'
 
-export default function Recorder({ clear, setClear, setMicrophoneAccess }) {
+export default function Recorder({
+  clear,
+  setClear,
+  setMicrophoneAccess,
+  recording,
+  setRecording,
+}) {
   const audioRef = useRef(null)
   const [mediaRec, setMediaRec] = useState()
   const [voice, setVoice] = useState([])
-  const [button, setButton] = useState(<RecorderButton className="audio-btn" />)
-
+  const [button, setButton] = useState(
+    <RecorderButton className="stroke-cyan-700 stroke-2" />
+  )
+  console.log(voice)
   const startStop = () => {
     if (mediaRec?.state === 'inactive') {
+      setVoice([])
       mediaRec.start()
-      setButton(<PauseButton className="audio-btn" />)
+      setRecording(true)
+      setButton(<StopButton className="stroke-cyan-700 stroke-2" />)
     } else if (mediaRec?.state === 'recording') {
       mediaRec.stop()
-      setButton(<RecorderButton className="audio-btn" />)
+      setButton(<RecorderButton className="stroke-cyan-700 stroke-2" />)
     } else {
       setMicrophoneAccess(true)
       alert('Доступ к микрофону отсутствует')
@@ -50,7 +60,11 @@ export default function Recorder({ clear, setClear, setMicrophoneAccess }) {
   return (
     <div className="flex justify-center items-center">
       <audio className="mr-2" ref={audioRef} controls></audio>
-      <button className="border-0 w-6 h-6" onClick={startStop}>
+      <button
+        disabled={`${recording ? 'disabled' : ''}`}
+        className="border-0 w-6 h-6"
+        onClick={startStop}
+      >
         {button}
       </button>
     </div>
