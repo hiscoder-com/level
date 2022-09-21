@@ -17,7 +17,7 @@ export default async function languageProjectHandler(req, res) {
       try {
         const { data: value, error } = await supabase
           .from('projects')
-          .select('id, title, code, type, methods(title), languages(orig_name,code)')
+          .select('id, title, code, type, method, languages(orig_name,code)')
           .eq('code', code)
         if (error) throw error
         data = value

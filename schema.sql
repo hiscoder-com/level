@@ -650,7 +650,7 @@
         CASCADE NOT NULL,
       config json NOT NULL,
       "order" int2 NOT NULL,
-        UNIQUE (project_id, order)
+        UNIQUE (project_id, "order")
     );
 
     COMMENT ON COLUMN public.steps.order
