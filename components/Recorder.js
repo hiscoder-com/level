@@ -9,7 +9,6 @@ export default function Recorder({ clear, setClear, setMicrophoneAccess }) {
   const [button, setButton] = useState(
     <RecorderButton className="stroke-cyan-700 stroke-2" />
   )
-  console.log(voice)
   const startStop = () => {
     if (mediaRec?.state === 'inactive') {
       setVoice([])
@@ -49,7 +48,6 @@ export default function Recorder({ clear, setClear, setMicrophoneAccess }) {
       audioRef.current.src = blobUrl
     }
   }, [voice, clear, setClear])
-  console.log(mediaRec?.state)
   return (
     <div className="flex justify-center items-center">
       <audio className="mr-2" ref={audioRef} controls></audio>
