@@ -2,13 +2,7 @@ import { useRef, useEffect, useState, useCallback } from 'react'
 import RecorderButton from '../public/recorder.svg'
 import StopButton from '../public/stop.svg'
 
-export default function Recorder({
-  clear,
-  setClear,
-  setMicrophoneAccess,
-  recording,
-  setRecording,
-}) {
+export default function Recorder({ clear, setClear, setMicrophoneAccess }) {
   const audioRef = useRef(null)
   const [mediaRec, setMediaRec] = useState()
   const [voice, setVoice] = useState([])
@@ -20,7 +14,6 @@ export default function Recorder({
     if (mediaRec?.state === 'inactive') {
       setVoice([])
       mediaRec.start()
-      setRecording(true)
       setButton(<StopButton className="stroke-cyan-700 stroke-2" />)
     } else if (mediaRec?.state === 'recording') {
       mediaRec.stop()
@@ -60,11 +53,7 @@ export default function Recorder({
   return (
     <div className="flex justify-center items-center">
       <audio className="mr-2" ref={audioRef} controls></audio>
-      <button
-        disabled={`${recording ? 'disabled' : ''}`}
-        className="border-0 w-6 h-6"
-        onClick={startStop}
-      >
+      <button className="border-0 w-6 h-6" onClick={startStop}>
         {button}
       </button>
     </div>

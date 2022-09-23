@@ -50,8 +50,6 @@ function AudioRecorder({}) {
       <div className="pb-4 mb-4 border-b-4">
         <p className="mb-4">Пересказ на целевом языке:</p>
         <Recorder
-          recording={recording}
-          setRecording={setRecording}
           clear={clear}
           setClear={setClear}
           setMicrophoneAccess={setMicrophoneAccess}
