@@ -80,7 +80,7 @@ function BookChaptersPage() {
       <h3>Book: {book?.code}</h3>
       {chapters?.map((chapter) => (
         <div key={chapter.id}>
-          {chapter.num}:{chapter.verses} {console.log('1', createdChapters)}
+          {chapter.num}:{chapter.verses}
           {!createdChapters.includes(chapter.id) ? (
             <div onClick={() => handleCreate(chapter.id)}>Create</div>
           ) : (
