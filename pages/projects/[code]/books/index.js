@@ -11,6 +11,8 @@ function ProjectBooksPage() {
   const { code } = router.query
   const [project, setProject] = useState()
   const [books, setBooks] = useState()
+  const [selectedBook, setSelectedBook] = useState(null)
+  const [listenChanges, setListenChanges] = useState('false')
 
   /**
    * 1. Получить список книг проекта
@@ -51,7 +53,8 @@ function ProjectBooksPage() {
       })
 
     if (Object.keys(countOfChaptersAndVerses).length !== 0) {
-      const els = await supabase.from('books').insert([
+      setListenChanges((prev) => !prev)
+      await supabase.from('books').insert([
         {
           code: book_code,
           project_id: project.id,
@@ -64,6 +67,7 @@ function ProjectBooksPage() {
     // TODO спарсить этот файл и получить количество глав и стихов в нем
     // const countOfChaptersAndVerses = { '1': 6, '2': 15, '3': 10 }
   }
+
   useEffect(() => {
     const getBooks = async () => {
       const { data: books, error } = await supabase
@@ -75,7 +79,7 @@ function ProjectBooksPage() {
     if (project?.id) {
       getBooks()
     }
-  }, [project?.id])
+  }, [project?.id, listenChanges])
 
   return (
     <>
@@ -83,20 +87,20 @@ function ProjectBooksPage() {
       {books?.map((el) => (
         <div key={el.code}>
           {el.code} | {JSON.stringify(el.chapters, null, 2)}
-          <br />
         </div>
       ))}
-      {project?.base_manifest?.books
-        ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
-        .map((el) => (
-          <div key={el.name}>
-            {el.name} | {el.link}
-            <br />
-            <div className="btn btn-cyan" onClick={() => handleCreate(el.name)}>
-              Create
-            </div>
-          </div>
-        ))}
+      <select placeholder="select book" onChange={(e) => setSelectedBook(e.target.value)}>
+        {project?.base_manifest?.books
+          ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
+          .map((el) => (
+            <option selected={0} value={el.name} key={el.name}>
+              {el.name} | {el.link.split('/').splice(-1)}
+            </option>
+          ))}
+      </select>
+      <div className="btn btn-cyan" onClick={() => handleCreate(selectedBook)}>
+        Create
+      </div>
     </>
   )
 }
