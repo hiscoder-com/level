@@ -10,7 +10,7 @@ function ChapterVersesPage() {
   const [project, setProject] = useState()
   const [book, setBook] = useState()
   const [chapter, setChapter] = useState()
-  const [verses, setVerses] = useState()
+  const [verses, setVerses] = useState([])
 
   useEffect(() => {
     const getProject = async () => {
@@ -23,20 +23,12 @@ function ChapterVersesPage() {
     }
     getProject()
   }, [code])
-  const handleCreate = async (book_code) => {
-    await supabase.from('books').insert([
-      {
-        code: book_code,
-        project_id: project.id,
-        chapters: { '1': 10, '2': 15, '3': 10 },
-      },
-    ])
-  }
+
   useEffect(() => {
     const getBook = async () => {
       const { data: book, error } = await supabase
         .from('books')
-        .select('code,chapters')
+        .select('id,code')
         .eq('project_id', project.id)
         .eq('code', bookid)
         .single()
@@ -48,25 +40,45 @@ function ChapterVersesPage() {
   }, [bookid, project?.id])
 
   useEffect(() => {
-    if (book?.chapters) {
-      let chaptersList = []
-      for (const chapter in book.chapters) {
-        if (Object.hasOwnProperty.call(book.chapters, chapter)) {
-          chaptersList.push(
-            <div>
-              {chapter}:{book.chapters[chapter]}
-            </div>
-          )
-        }
-      }
-      setChapters(chaptersList)
+    const getChapter = async () => {
+      const { data: chapter, error } = await supabase
+        .from('chapters')
+        .select('id,num,text')
+        .eq('project_id', project.id)
+        .eq('num', chapterid)
+        .eq('book_id', book.id)
+        .single()
+      setChapter(chapter)
     }
-  }, [book?.chapters])
+    if (project?.id && book?.id) {
+      getChapter()
+    }
+  }, [book?.id, chapterid, project?.id])
+
+  useEffect(() => {
+    const getVerses = async () => {
+      const { data: verses, error } = await supabase
+        .from('verses')
+        .select('id,num,text,current_step,project_translator_id')
+        .eq('project_id', project.id)
+        .eq('chapter_id', chapter.id)
+      setVerses(verses)
+    }
+    if (project?.id && chapter?.id) {
+      getVerses()
+    }
+  }, [chapter?.id, project?.id])
+
   return (
     <>
-      <h2>Project {project?.code}: Book</h2>
+      <h2>Project {project?.code}</h2>
       <h3>Book: {book?.code}</h3>
-      {chapters}
+      <h3>Chapter: {chapter?.num}</h3>
+      {verses.map((el) => (
+        <div key={el.id}>
+          {el.num} ,{el.current_step}
+        </div>
+      ))}
     </>
   )
 }
