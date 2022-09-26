@@ -42,18 +42,18 @@ function BookChaptersPage() {
 
   useEffect(() => {
     const getCreatedChapters = async () => {
-      const { data: book, error } = await supabase
+      const { data: chapters, error } = await supabase
         .from('chapters')
         .select('id,code,chapters')
         .eq('project_id', project.id)
-        .eq('book', book.id)
+        .eq('book_id', book.id)
         .single()
-      setBook(book)
+      setChapters(chapters)
     }
-    if (project?.id) {
+    if (project?.id && book?.id) {
       getCreatedChapters()
     }
-  }, [book.id, project?.id])
+  }, [book?.id, project?.id])
 
   useEffect(() => {
     const getChapters = async () => {
