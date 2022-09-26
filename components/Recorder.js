@@ -9,8 +9,6 @@ import RecorderCrossedButton from '../public/recorder-crossed.svg'
 import TrashButton from '../public/trash.svg'
 
 export default function Recorder() {
-  const { t } = useTranslation(['audio'])
-  const [clear, setClear] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const audioRef = useRef(null)
   const [mediaRec, setMediaRec] = useState()
@@ -49,18 +47,13 @@ export default function Recorder() {
   }, [])
 
   useEffect(() => {
-    if (clear) {
-      setClear(false)
-      setVoice([])
-    }
-  }, [clear])
-
-  useEffect(() => {
-    if (voice) {
+    if (voice.length > 0) {
       const blobUrl = window.URL.createObjectURL(
         new Blob(voice, { type: 'audio/webm;codecs=opus' })
       )
       audioRef.current.src = blobUrl
+    } else {
+      audioRef.current.src = null
     }
   }, [voice])
 
@@ -75,7 +68,7 @@ export default function Recorder() {
         disabled={voice.length > 0 ? '' : 'disabled'}
         className="border-0 w-6 h-6"
         onClick={() => {
-          setClear(true)
+          setVoice([])
         }}
       >
         <TrashButton
@@ -90,7 +83,7 @@ export default function Recorder() {
 }
 
 function Modal({ showModal, setShowModal }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['audio'])
   return (
     <Transition appear show={showModal} as={Fragment}>
       <Dialog

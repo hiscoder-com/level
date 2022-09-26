@@ -5,9 +5,7 @@ import { useTranslation } from 'next-i18next'
 export default function Audio() {
   const [item, setItem] = useState(true)
 
-  return (
-    <>{item ? <AudioList setItem={setItem} /> : <AudioRecorder setItem={setItem} />}</>
-  )
+  return <>{item ? <AudioList setItem={setItem} /> : <AudioRecorder />}</>
 }
 
 function AudioList({ setItem }) {
