@@ -28,11 +28,12 @@ function ProjectBooksPage() {
   const handleCreate = async (book_code) => {
     // TODO Проверить есть ли такой код книги в проекте
     // TODO спарсить этот файл и получить количество глав и стихов в нем
+    const countOfChaptersAndVerses = { '1': 10, '2': 15, '3': 10 }
     await supabase.from('books').insert([
       {
         code: book_code,
         project_id: project.id,
-        chapters: { '1': 10, '2': 15, '3': 10 },
+        chapters: countOfChaptersAndVerses,
       },
     ])
   }
