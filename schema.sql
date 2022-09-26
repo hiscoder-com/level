@@ -18,6 +18,7 @@
   -- DROP TRIGGER
     DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
     DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
+    DROP TRIGGER IF EXISTS on_public_book_created ON PUBLIC.books;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
   -- END DROP TRIGGER
 
@@ -33,6 +34,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
   -- END DROP FUNCTION
@@ -278,6 +280,17 @@
     END;
   $$;
 
+  -- после создания книги создаем главы
+  CREATE FUNCTION PUBLIC.handle_new_book() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      IF (PUBLIC.create_chapters(NEW.id)) THEN
+        RETURN NEW;
+      ELSE
+        RETURN NULL;
+      END IF;
+    END;
+  $$;
+
   -- после создания проекта создаем бриф
   CREATE FUNCTION PUBLIC.handle_next_step() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
@@ -294,7 +307,7 @@
     END;
   $$;
 
-  -- создать стихи главы
+  -- создать главы
   CREATE FUNCTION PUBLIC.create_chapters(book_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -835,6 +848,12 @@ ALTER TABLE
   CREATE TRIGGER on_public_project_created AFTER
   INSERT
     ON PUBLIC.projects FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_project();
+
+  -- trigger the function every time a book is created
+
+  CREATE TRIGGER on_public_book_created AFTER
+  INSERT
+    ON PUBLIC.books FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_book();
 
   -- trigger the function every time a project is created
 
