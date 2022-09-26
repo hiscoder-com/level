@@ -11,7 +11,7 @@ export default function Audio() {
 }
 
 function AudioList({ setItem }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['audio'])
   return (
     <>
       <div className="flex flex-col items-center gap-5 py-24 lg:py-56 h5">
@@ -30,7 +30,7 @@ function AudioList({ setItem }) {
 }
 
 function AudioRecorder() {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['audio'])
   return (
     <div className="flex justify-center flex-wrap mt-8">
       <div className="pb-4 mb-4 border-b-4">

@@ -9,7 +9,7 @@ import RecorderCrossedButton from '../public/recorder-crossed.svg'
 import TrashButton from '../public/trash.svg'
 
 export default function Recorder() {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['audio'])
   const [clear, setClear] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const audioRef = useRef(null)
@@ -47,6 +47,7 @@ export default function Recorder() {
         console.error(`Вы не дали доступ к микрофону: ${err}`)
       })
   }, [])
+
   useEffect(() => {
     if (clear) {
       setClear(false)
@@ -55,7 +56,7 @@ export default function Recorder() {
   }, [clear])
 
   useEffect(() => {
-    if (voice.length > 0) {
+    if (voice) {
       const blobUrl = window.URL.createObjectURL(
         new Blob(voice, { type: 'audio/webm;codecs=opus' })
       )
