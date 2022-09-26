@@ -13,10 +13,11 @@ export default function IntroPage() {
   const { query } = useRouter()
   const { step } = query
   const { t } = useTranslation(['common', 'steps'])
+  let title = `V-CANA Step ${step}`
   return (
     <div>
       <Head>
-        <title>V-CANA Step {step}</title>
+        <title>{title}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -62,6 +63,7 @@ export default function IntroPage() {
 }
 
 export async function getServerSideProps({ locale, params }) {
+  console.log(params)
   if (params.step > 7 || params.step <= 0) {
     return { notFound: true }
   }

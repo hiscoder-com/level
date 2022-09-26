@@ -14,14 +14,14 @@ function AudioList({ setItem }) {
     <>
       <div className="flex flex-col items-center gap-5 py-24 lg:py-56 h5">
         <p>{t('AudioTitle')}</p>
-        <button
+        <div
           onClick={() => {
             setItem(false)
           }}
           className="btn-cyan"
         >
           {t('AudioButton')}
-        </button>
+        </div>
       </div>
     </>
   )

@@ -52,8 +52,8 @@ export default function Recorder() {
         new Blob(voice, { type: 'audio/webm;codecs=opus' })
       )
       audioRef.current.src = blobUrl
-    } else {
-      audioRef.current.src = null
+    } else if (audioRef.current) {
+      audioRef.current.src = ''
     }
   }, [voice])
 
