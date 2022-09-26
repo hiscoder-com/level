@@ -1,4 +1,6 @@
 import { useRouter } from 'next/router'
+import usfm from 'usfm-js'
+import axios from 'axios'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { supabase } from 'utils/supabaseClient'
@@ -26,16 +28,41 @@ function ProjectBooksPage() {
     getProject()
   }, [code])
   const handleCreate = async (book_code) => {
+    const book = project?.base_manifest?.books.find((el) => el.name === book_code)
+    if (!book) {
+      return
+    }
+    const bookUrl = book?.link.split('/')
+    bookUrl.splice(2, 0, 'raw/commit')
+    bookUrl.splice(0, 0, 'https://git.door43.org')
+    const countOfChaptersAndVerses = {}
+    await axios
+      .get(bookUrl.join('/'))
+      .then((res) => {
+        const jsonData = usfm.toJSON(res.data)
+        Object.values(jsonData.chapters).forEach((el, index) => {
+          countOfChaptersAndVerses[index + 1] = Object.keys(el).filter(
+            (verse) => verse !== 'front'
+          ).length
+        })
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+
+    if (Object.keys(countOfChaptersAndVerses).length !== 0) {
+      const els = await supabase.from('books').insert([
+        {
+          code: book_code,
+          project_id: project.id,
+          chapters: countOfChaptersAndVerses,
+        },
+      ])
+    }
+
     // TODO Проверить есть ли такой код книги в проекте
     // TODO спарсить этот файл и получить количество глав и стихов в нем
-    const countOfChaptersAndVerses = { '1': 10, '2': 15, '3': 10 }
-    await supabase.from('books').insert([
-      {
-        code: book_code,
-        project_id: project.id,
-        chapters: countOfChaptersAndVerses,
-      },
-    ])
+    // const countOfChaptersAndVerses = { '1': 6, '2': 15, '3': 10 }
   }
   useEffect(() => {
     const getBooks = async () => {
@@ -59,15 +86,17 @@ function ProjectBooksPage() {
           <br />
         </div>
       ))}
-      {project?.base_manifest?.books?.map((el) => (
-        <div key={el.name}>
-          {el.name} | {el.link}
-          <br />
-          <div className="btn btn-cyan" onClick={() => handleCreate(el.name)}>
-            Create
+      {project?.base_manifest?.books
+        ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
+        .map((el) => (
+          <div key={el.name}>
+            {el.name} | {el.link}
+            <br />
+            <div className="btn btn-cyan" onClick={() => handleCreate(el.name)}>
+              Create
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
     </>
   )
 }
