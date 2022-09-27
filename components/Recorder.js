@@ -1,5 +1,5 @@
-import { Dialog, Transition } from '@headlessui/react'
 import { useRef, useEffect, useState, Fragment } from 'react'
+import { Dialog, Transition } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -65,7 +65,7 @@ export default function Recorder() {
       </button>
       <br />
       <button
-        disabled={voice.length > 0 ? '' : 'disabled'}
+        disabled={voice.length === 0}
         className="border-0 w-6 h-6"
         onClick={() => {
           setVoice([])
@@ -121,7 +121,7 @@ function Modal({ showModal, setShowModal }) {
                   {t('MicrophoneAccess')}
                 </Dialog.Title>
                 <div className="mt-2">
-                  <p className="text-sm text-gray-500">{t('TurnMicrofon')}</p>
+                  <p className="text-sm text-gray-500">{t('TurnMicrophone')}</p>
                 </div>
 
                 <div className="mt-4">
@@ -131,7 +131,7 @@ function Modal({ showModal, setShowModal }) {
                       setShowModal(false)
                     }}
                   >
-                    {t('Accept')}
+                    OK
                   </button>
                 </div>
               </Dialog.Panel>
