@@ -1,10 +1,10 @@
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import usfm from 'usfm-js'
 import axios from 'axios'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { supabase } from 'utils/supabaseClient'
-import { useEffect, useState } from 'react'
 
 function ProjectBooksPage() {
   const router = useRouter()
@@ -12,7 +12,6 @@ function ProjectBooksPage() {
   const [project, setProject] = useState()
   const [books, setBooks] = useState()
   const [selectedBook, setSelectedBook] = useState(null)
-  const [listenChanges, setListenChanges] = useState('false')
 
   /**
    * 1. Получить список книг проекта
@@ -53,7 +52,6 @@ function ProjectBooksPage() {
       })
 
     if (Object.keys(countOfChaptersAndVerses).length !== 0) {
-      setListenChanges((prev) => !prev)
       await supabase.from('books').insert([
         {
           code: book_code,
@@ -79,7 +77,7 @@ function ProjectBooksPage() {
     if (project?.id) {
       getBooks()
     }
-  }, [project?.id, listenChanges])
+  }, [project?.id])
 
   return (
     <>
@@ -89,11 +87,11 @@ function ProjectBooksPage() {
           {el.code} | {JSON.stringify(el.chapters, null, 2)}
         </div>
       ))}
-      <select placeholder="select book" onChange={(e) => setSelectedBook(e.target.value)}>
+      <select onChange={(e) => setSelectedBook(e.target.value)}>
         {project?.base_manifest?.books
           ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
           .map((el) => (
-            <option selected={0} value={el.name} key={el.name}>
+            <option value={el.name} key={el.name}>
               {el.name} | {el.link.split('/').splice(-1)}
             </option>
           ))}
