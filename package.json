@@ -20,7 +20,7 @@
     "@heroicons/react": "^1.0.6",
     "@supabase/supabase-js": "^1.35.6",
     "axios": "^0.27.2",
-    "js-yaml-parser": "^1.0.0",
+    "js-yaml": "^4.1.0",
     "next": "^12.2.5",
     "next-i18next": "^11.2.2",
     "next-swagger-doc": "^0.3.4",

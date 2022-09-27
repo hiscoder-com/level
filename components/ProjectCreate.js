@@ -7,6 +7,7 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import { useMemo } from 'react'
 
 function ProjectCreate() {
   const router = useRouter()
@@ -14,6 +15,7 @@ function ProjectCreate() {
   const [customSteps, setCustomSteps] = useState('')
   const [customResources, setCustomResources] = useState('')
   const [method, setMethod] = useState()
+  const [resourcesUrl, setResourcesUrl] = useState()
 
   const { user } = useCurrentUser()
   const [languages] = useLanguages(user?.access_token)
@@ -29,7 +31,7 @@ function ProjectCreate() {
   useEffect(() => {
     setMethod(methods?.[methodId])
     setCustomSteps(JSON.stringify(methods?.[methodId]?.steps, null, 2))
-    setCustomResources(JSON.stringify(methods?.[methodId]?.resources, null, 2))
+    setCustomResources(methods?.[methodId]?.resources)
   }, [methodId, methods])
 
   const onSubmit = async (data) => {
@@ -39,22 +41,13 @@ function ProjectCreate() {
     }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      // TODO тут точно написано правильно? Мне кажется надо '/api/'+languageId+'/projects'
-      // Не ругается скорее всего потому что это значение не используется, так как тут передается в теле айди языка
-      // надо подумать как сделать правильно. Создаем мы не внутри языка, по этому вроде надо запрос на api/projects делать, но когда у нас будет список и юзер будет открывать проект, какой будет юрл. Будем ли мы показывать там язык проекта, или просто vcana.com/project/rlob
       .post('/api/projects', {
         title,
         language_id: languageId,
         code,
         method_id: method.id,
         steps: method.steps,
-        resources: {
-          literal:
-            'https://git.door43.org/ru_gl/ru_rlob/commit/fcfef9689dd6897892dbcced76ba8beb0eacaa62',
-          simplified:
-            'https://git.door43.org/ru_gl/ru_rsob/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c',
-          tn: 'https://git.door43.org/ru_gl/ru_tn/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38',
-        },
+        resources: resourcesUrl,
       })
       .then((result) => {
         const {
@@ -105,22 +98,41 @@ function ProjectCreate() {
     },
   ]
 
+  const setResources = useMemo(() => {
+    const listOfResources = []
+    for (const resource in customResources) {
+      if (Object.hasOwnProperty.call(customResources, resource)) {
+        const isPrimary = customResources[resource]
+        listOfResources.push(
+          <div className={isPrimary ? 'bg-slate-400' : ''} key={resource}>
+            {resource}:{' '}
+            <input
+              value={resourcesUrl?.[resource] ?? ''}
+              onChange={(e) =>
+                setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))
+              }
+            />
+          </div>
+        )
+      }
+    }
+    return listOfResources
+  }, [customResources, resourcesUrl])
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {inputs.map((el) => {
-          return (
-            <div key={el.title}>
-              <div>{el.title}</div>
-              <input
-                className={`${el.classname} max-w-sm`}
-                placeholder={el.placeholder}
-                {...el.register}
-              />
-              {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
-            </div>
-          )
-        })}
+        {inputs.map((el) => (
+          <div key={el.title}>
+            <div>{el.title}</div>
+            <input
+              className={`${el.classname} max-w-sm`}
+              placeholder={el.placeholder}
+              {...el.register}
+            />
+            {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
+          </div>
+        ))}
         <div>{t('Language')}</div>
         <select
           className="input max-w-sm"
@@ -192,9 +204,16 @@ function ProjectCreate() {
         <textarea
           cols="50"
           rows="6"
-          onChange={(e) => setCustomResources(e.target.value)}
-          value={customResources}
+          disabled={true}
+          value={JSON.stringify(customResources, null, 2)}
         />
+        <br />
+        <pre>
+          {`literal: 'https://git.door43.org/ru_gl/ru_rlob/src/commit/fcfef9689dd6897892dbcced76ba8beb0eacaa62',
+simplified: 'https://git.door43.org/ru_gl/ru_rsob/src/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c',
+tn: 'https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38',`}
+        </pre>
+        {setResources}
         <br />
         <p>
           После того как нажимают на кнопку сохранить, мы делаем следующее: <br />
@@ -220,7 +239,7 @@ function ProjectCreate() {
   "books": [ // массив из списка книг
     {
       "name": "gen", // айди книги
-      "link": "unfoldingword/en_ult/a3c1876/01_GEN.usfm" // ссылка на нее
+      "link": "unfoldingword/en_ult/raw/commit/a3c1876/01_GEN.usfm" // ссылка на нее
     },
   ]
 }`}
@@ -229,7 +248,7 @@ function ProjectCreate() {
           3. Все шаги мы переносим в таблицу степс, и связываем с созданным проектом.
           <br />
           Сейчас этого кода нет, нужно подумать на сколько это критично. Мне кажется что
-          для первой версии мы можем создать проект в ручную, и отложить рабработку на
+          для первой версии мы можем создать проект в ручную, и отложить разработку на
           время после запуска
         </p>
         <input className="btn-cyan btn-filled" type="submit" />
