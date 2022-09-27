@@ -13,10 +13,6 @@ function ProjectBooksPage() {
   const [books, setBooks] = useState()
   const [selectedBook, setSelectedBook] = useState(null)
 
-  /**
-   * 1. Получить список книг проекта
-   * 2. Сделать выпадающий список из книг, которые можно создать
-   */
   useEffect(() => {
     const getProject = async () => {
       const { data: project, error } = await supabase
@@ -41,11 +37,13 @@ function ProjectBooksPage() {
       .get(bookUrl.join('/'))
       .then((res) => {
         const jsonData = usfm.toJSON(res.data)
-        Object.values(jsonData.chapters).forEach((el, index) => {
-          countOfChaptersAndVerses[index + 1] = Object.keys(el).filter(
-            (verse) => verse !== 'front'
-          ).length
-        })
+        if (Object.entries(jsonData?.chapters).length > 0) {
+          Object.entries(jsonData?.chapters).forEach((el) => {
+            countOfChaptersAndVerses[el[0]] = Object.keys(el[1]).filter(
+              (verse) => verse !== 'front'
+            ).length
+          })
+        }
       })
       .catch((error) => {
         console.log(error)
@@ -60,10 +58,6 @@ function ProjectBooksPage() {
         },
       ])
     }
-
-    // TODO Проверить есть ли такой код книги в проекте
-    // TODO спарсить этот файл и получить количество глав и стихов в нем
-    // const countOfChaptersAndVerses = { '1': 6, '2': 15, '3': 10 }
   }
 
   useEffect(() => {
