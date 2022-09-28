@@ -13,7 +13,6 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
     method,
     query: { code },
   } = req
-
   switch (method) {
     case 'GET':
       try {
@@ -21,8 +20,6 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
           .from('project_coordinators')
           .select('projects!inner(code),users!inner(*)')
           .eq('projects.code', code)
-          .limit(1)
-          .maybeSingle()
 
         if (error) throw error
         data = value

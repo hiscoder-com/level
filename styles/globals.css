@@ -63,6 +63,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply btn btn-cyan-base
 }
 
+.btn-red{
+	@apply btn-cyan bg-red-500 !important
+}
+
 .btn-white{
 	@apply btn bg-white text-cyan-600 border-cyan-600 
 	hover:bg-cyan-50

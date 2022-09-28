@@ -10,7 +10,6 @@ export default async function languageProjectTranslatorHandler(req, res) {
     query: { id },
     method,
   } = req
-  // console.log({ id, body })
   switch (method) {
     case 'DELETE':
       try {

@@ -32,7 +32,7 @@ export default async function languageProjectModeratorHandler(req, res) {
         const { data, error } = await supabase
           .from('project_coordinators')
           .delete()
-          .match({ project_id: body.projectId, role: 'coordinator', user_id: id })
+          .match({ project_id: project_id, user_id: id })
 
         if (error) throw error
         res.status(200).json(data)
