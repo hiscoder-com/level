@@ -138,7 +138,10 @@ export function useTranslators({ token, code }) {
     data: translators,
     mutate,
     error,
-  } = useSWR(token && code ? [`/api/projects/${code}/translators`, token] : null, fetcher)
+  } = useSWR(
+    token && code ? [`/api/projects/${code}/assign-roles/translators`, token] : null,
+    fetcher
+  )
   const loading = !translators && !error
   return [translators, { mutate, loading, error }]
 }
