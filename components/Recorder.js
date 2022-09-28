@@ -83,7 +83,7 @@ export default function Recorder() {
 }
 
 function Modal({ showModal, setShowModal }) {
-  const { t } = useTranslation(['audio'])
+  const { t } = useTranslation(['audio', 'common'])
   return (
     <Transition appear show={showModal} as={Fragment}>
       <Dialog
@@ -131,7 +131,7 @@ function Modal({ showModal, setShowModal }) {
                       setShowModal(false)
                     }}
                   >
-                    OK
+                    {t('common:Ok')}
                   </button>
                 </div>
               </Dialog.Panel>
