@@ -7,8 +7,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { supabase } from 'utils/supabaseClient'
 
 function ProjectBooksPage() {
-  const router = useRouter()
-  const { code } = router.query
+  const {
+    query: { code },
+  } = useRouter()
   const [project, setProject] = useState()
   const [books, setBooks] = useState()
   const [selectedBook, setSelectedBook] = useState(null)
