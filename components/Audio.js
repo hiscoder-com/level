@@ -5,29 +5,39 @@ import { useTranslation } from 'next-i18next'
 import Recorder from './Recorder'
 
 export default function Audio() {
-  const [isOpen, setIsOpen] = useState(true)
+  const [isRetellPartner, setIsRetellPartner] = useState(true)
 
-  return <>{isOpen ? <AudioList setIsOpen={setIsOpen} /> : <AudioRecorder />}</>
+  return (
+    <>
+      {isRetellPartner ? (
+        <RetellPartner setIsRetellPartner={setIsRetellPartner} />
+      ) : (
+        <RetelYourself />
+      )}
+    </>
+  )
 }
 
-function AudioList({ setIsOpen }) {
+function RetellPartner({ setIsRetellPartner }) {
   const { t } = useTranslation(['audio'])
   return (
     <div className="flex flex-col items-center gap-5 py-24 lg:py-56">
-      <p>{t('AudioTitle')}</p>
-      <div
+      <button className="btn-cyan">{t('RetellPartner')}</button>
+      <p>{t('Title')}</p>
+
+      <button
         onClick={() => {
-          setIsOpen(false)
+          setIsRetellPartner(false)
         }}
         className="btn-cyan"
       >
-        {t('AudioButton')}
-      </div>
+        {t('RetelYourself')}
+      </button>
     </div>
   )
 }
 
-function AudioRecorder() {
+function RetelYourself() {
   const { t } = useTranslation(['audio'])
   return (
     <div className="flex justify-center flex-wrap mt-8">
