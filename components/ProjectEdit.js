@@ -1,3 +1,13 @@
+import { Fragment, useMemo, useState } from 'react'
+
+import { useRouter } from 'next/router'
+
+import axios from 'axios'
+
+import { Switch } from '@headlessui/react'
+
+import Modal from './Modal'
+import { supabase } from 'utils/supabaseClient'
 import {
   useCoordinators,
   useModerators,
@@ -8,18 +18,18 @@ import {
   useUsers,
 } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { Fragment, useMemo, useState } from 'react'
-import axios from 'axios'
 import User from 'public/user.svg'
 
-function ProjectEdit({ code }) {
+function ProjectEdit() {
+  const {
+    query: { code },
+  } = useRouter()
   const { user } = useCurrentUser()
   const [users] = useUsers(user?.access_token)
   const [openAssignTranslator, setOpenAssignTranslator] = useState(false)
-  const [selectedTranslator, setSelectedTranslator] = useState(false)
+  const [selectedTranslator, setSelectedTranslator] = useState(null)
 
   const [selectedUser, setSelectedUser] = useState(null)
-  const [enabled, setEnabled] = useState(null)
   const role = useProjectRole({
     token: user?.access_token,
     code,
@@ -46,20 +56,35 @@ function ProjectEdit({ code }) {
       return
     }
 
-    axios.defaults.headers.common['token'] = user?.access_token
-    axios
-      .put(
-        `/api/projects/${code}/translators/assign-moderator/${selectedTranslator.id}`,
-        {
-          prev_id: moderator.id,
-        }
-      )
-      .then((result) => {
-        const { data } = result
-        mutate()
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
-      })
-      .catch((error) => console.log(error))
+    let { data, error } = await supabase.rpc('assign_moderator', {
+      project_id: project.id,
+      user_id: selectedTranslator.id,
+    })
+
+    if (error) console.error(error)
+    else {
+      setSelectedTranslator(false)
+
+      mutateModerator()
+      console.log(data)
+    }
+  }
+  const removeModerator = async () => {
+    if (!project?.id) {
+      return
+    }
+
+    let { data, error } = await supabase.rpc('remove_moderator', {
+      project_id: project.id,
+      user_id: selectedTranslator.id,
+    })
+
+    if (error) console.error(error)
+    else {
+      setSelectedTranslator(false)
+      mutateModerator()
+      console.log(data)
+    }
   }
   const assignTranslator = async () => {
     if (!project?.id) {
@@ -75,15 +100,15 @@ function ProjectEdit({ code }) {
       .then((result) => {
         const { data } = result
         mutate()
-        //TODO обработать статус и дата если статус - 201, тогда сделать редирект route.push(headers.location)
       })
       .catch((error) => console.log(error))
   }
-  const moderator = useMemo(() => {
+  const moderatorsId = useMemo(() => {
     if (moderators) {
-      return moderators.users
+      return moderators.map((el) => el.users.id)
     }
   }, [moderators])
+
   return (
     <div>
       <div className="text-3xl mb-10">{project?.title}</div>
@@ -98,16 +123,18 @@ function ProjectEdit({ code }) {
               <div>Переводчик {index + 1}</div>
               <div>{el.users.login}</div>
               <Switch
-                checked={el.users.id === moderator?.id}
+                checked={moderatorsId?.includes(el.users.id)}
                 onChange={() => setSelectedTranslator(el.users)}
                 className={`${
-                  el.users.id === moderator?.id ? 'bg-blue-600' : 'bg-gray-200'
+                  moderatorsId?.includes(el.users.id) ? 'bg-blue-600' : 'bg-gray-200'
                 } relative inline-flex h-6 w-11 items-center rounded-full`}
               >
                 <span className="sr-only">Enable notifications</span>
                 <span
                   className={`${
-                    el.users.id === moderator?.id ? 'translate-x-6' : 'translate-x-1'
+                    moderatorsId?.includes(el.users.id)
+                      ? 'translate-x-6'
+                      : 'translate-x-1'
                   } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                 />
               </Switch>
@@ -128,7 +155,7 @@ function ProjectEdit({ code }) {
         </svg>
         <Modal
           open={openAssignTranslator}
-          onClose={() => {
+          closeModal={() => {
             setOpenAssignTranslator(false)
             setSelectedUser(null)
           }}
@@ -156,106 +183,32 @@ function ProjectEdit({ code }) {
           </button>
         </Modal>
         <Modal
-          open={Object.keys(selectedTranslator).length > 0}
-          onClose={() => {
+          open={selectedTranslator ? Object.keys(selectedTranslator).length > 0 : false}
+          closeModal={() => {
             setSelectedTranslator(false)
           }}
         >
-          <div>You are assigning new moderator</div>
+          <div className="mb-2">
+            {moderatorsId?.includes(selectedTranslator?.id)
+              ? 'You are removing moderator'
+              : 'You are assigning new moderator'}
+          </div>
 
           <button
-            onClick={() => assignModerator()}
+            onClick={() =>
+              moderatorsId?.includes(selectedTranslator.id)
+                ? removeModerator()
+                : assignModerator()
+            }
             disabled={!selectedTranslator}
             className="btn-cyan mx-2"
           >
-            Assign
+            {moderatorsId?.includes(selectedTranslator?.id) ? 'Remove' : 'Assing'}
           </button>
         </Modal>
-        {/* <ProjectRolesList
-          moderators={moderators}
-          coordinator={coordinator}
-          user={user}
-          code={code}
-          mutate={mutateCoordinator}
-          project={project}
-          users={users}
-          type={'coordinators'}
-          role={role}
-          translators={translators}
-          permissions={permissions}
-        />
-        <ProjectRolesList
-          moderators={moderators}
-          coordinator={coordinator}
-          translators={translators}
-          user={user}
-          code={code}
-          mutate={mutateTranslator}
-          mutateModerator={mutateModerator}
-          project={project}
-          users={users}
-          type={'translators'}
-          role={role}
-          permissions={permissions}
-        /> */}
       </div>
     </div>
   )
 }
 
 export default ProjectEdit
-
-import React from 'react'
-import { Dialog, Switch, Transition } from '@headlessui/react'
-import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
-
-function Modal({ open, onClose, children }) {
-  const router = useRouter()
-
-  const { step } = router.query
-  const { t } = useTranslation(['steps', 'common'])
-  return (
-    <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={onClose}>
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center p-4 min-h-full text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="modal-step-goal">
-                <Dialog.Title as="h3" className="h3 font-medium leading-6">
-                  {t('AddTranslator')}:
-                </Dialog.Title>
-                {children}
-                <div className="mt-4">
-                  <button className="btn-cyan w-24" onClick={onClose}>
-                    {t('common:Close')}
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
-        </div>
-      </Dialog>
-    </Transition>
-  )
-}

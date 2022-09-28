@@ -25,10 +25,9 @@ export default async function languageProjectModeratorsHandler(req, res) {
           )
           .eq('projects.code', code)
           .eq('is_moderator', true)
-          .limit(1)
-          .maybeSingle()
+
         if (error) throw error
-        data = { ...value }
+        data = [...value]
       } catch (error) {
         res.status(404).json({ error })
         return
