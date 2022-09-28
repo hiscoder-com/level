@@ -150,9 +150,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .layout-step-col-card{
 	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full
 }
-.layout-step-col-card-body-audio{
-	@apply flex flex-col items-center gap-5 py-24 lg:py-56 h5
-}
 
 .layout-step-col-card-title{
 	@apply h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg
@@ -185,5 +182,3 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 .text-alignment{
 	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg 
 }
-
-

@@ -6,16 +6,18 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from '/components/Footer'
 import Workspace from '/components/Workspace'
+import Audio from '/components/Audio'
 import { stepsForBible, reference } from 'utils/db'
 
 export default function IntroPage() {
   const { query } = useRouter()
   const { step } = query
-  const { t } = useTranslation(['common', 'steps'])
+  const { t } = useTranslation(['common', 'steps', 'audio'])
+  const title = `V-CANA Step ${step}`
   return (
     <div>
       <Head>
-        <title>V-CANA Step {step}</title>
+        <title>{title}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -43,11 +45,8 @@ export default function IntroPage() {
           </div>
           <div className="layout-step-col lg:w-1/3 lg:mt-12">
             <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title">{t('Audio')}</div>
-              <div className="layout-step-col-card-body-audio">
-                <p>{t('AudioTitle')}</p>
-                <button className="btn-cyan">{t('AudioButton')}</button>
-              </div>
+              <div className="layout-step-col-card-title">{t('audio:Audio')}</div>
+              <Audio />
             </div>
           </div>
         </div>
@@ -70,7 +69,7 @@ export async function getServerSideProps({ locale, params }) {
 
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'steps'])),
+      ...(await serverSideTranslations(locale, ['common', 'steps', 'audio'])),
     },
   }
 }
