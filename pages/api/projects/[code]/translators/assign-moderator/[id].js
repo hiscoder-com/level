@@ -13,14 +13,17 @@ export default async function languageProjectModeratorHandler(req, res) {
     query: { id },
     method,
   } = req
+  console.log({ prev_id, id })
   switch (method) {
     case 'PUT':
       try {
         const { data: value, error } = await supabase
           .from('project_translators')
-          .update({ user_id: id })
-          .match({ user_id: prev_id, is_moderator: true })
-
+          // .update({ is_moderator: false })
+          // .match({ user_id: prev_id })
+          .update({ is_moderator: true })
+          .match({ user_id: id })
+        console.log(value)
         if (error) throw error
         data = value
       } catch (error) {

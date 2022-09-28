@@ -19,9 +19,12 @@ export default async function languageProjectModeratorsHandler(req, res) {
     case 'GET':
       try {
         const { data: value, error } = await supabase
-          .from('project_moderators')
-          .select('projects!inner(code),users!inner(*)')
+          .from('project_translators')
+          .select(
+            'is_moderator,projects!project_translators_project_id_fkey!inner(code),users!inner(*)'
+          )
           .eq('projects.code', code)
+          .eq('is_moderator', true)
           .limit(1)
           .maybeSingle()
         if (error) throw error
