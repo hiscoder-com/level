@@ -30,12 +30,9 @@ function ProjectBooksPage() {
     if (!book) {
       return
     }
-    const bookUrl = book?.link.split('/')
-    bookUrl.splice(2, 0, 'raw/commit')
-    bookUrl.splice(0, 0, 'https://git.door43.org')
     const countOfChaptersAndVerses = {}
     await axios
-      .get(bookUrl.join('/'))
+      .get(book.link)
       .then((res) => {
         const jsonData = usfm.toJSON(res.data)
         if (Object.entries(jsonData?.chapters).length > 0) {
