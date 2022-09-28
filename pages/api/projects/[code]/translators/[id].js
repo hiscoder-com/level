@@ -6,17 +6,18 @@ export default async function languageProjectTranslatorHandler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
   const {
-    body,
+    body: { project_id },
     query: { id },
     method,
   } = req
+  // console.log({ id, body })
   switch (method) {
     case 'DELETE':
       try {
         const { data, error } = await supabase
           .from('project_translators')
           .delete()
-          .match({ project_id: body.projectId, user_id: id })
+          .match({ project_id, user_id: id })
 
         if (error) throw error
         res.status(200).json(data)
