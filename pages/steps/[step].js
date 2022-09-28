@@ -12,7 +12,7 @@ import { stepsForBible, reference } from 'utils/db'
 export default function IntroPage() {
   const { query } = useRouter()
   const { step } = query
-  const { t } = useTranslation(['common', 'steps'])
+  const { t } = useTranslation(['common', 'steps', 'audio'])
   const title = `V-CANA Step ${step}`
   return (
     <div>
@@ -45,7 +45,7 @@ export default function IntroPage() {
           </div>
           <div className="layout-step-col lg:w-1/3 lg:mt-12">
             <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title">{t('Audio')}</div>
+              <div className="layout-step-col-card-title">{t('audio:Audio')}</div>
               <Audio />
             </div>
           </div>

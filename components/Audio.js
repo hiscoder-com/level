@@ -12,7 +12,7 @@ export default function Audio() {
       {isRetellPartner ? (
         <RetellPartner setIsRetellPartner={setIsRetellPartner} />
       ) : (
-        <RetelYourself />
+        <RetellYourself />
       )}
     </>
   )
@@ -31,13 +31,13 @@ function RetellPartner({ setIsRetellPartner }) {
         }}
         className="btn-cyan"
       >
-        {t('RetelYourself')}
+        {t('RetellYourself')}
       </button>
     </div>
   )
 }
 
-function RetelYourself() {
+function RetellYourself() {
   const { t } = useTranslation(['audio'])
   return (
     <div className="flex justify-center flex-wrap mt-8">

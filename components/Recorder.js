@@ -42,7 +42,7 @@ export default function Recorder() {
       })
       .catch((err) => {
         setButton(<RecorderCrossedButton className="stroke-red-700 stroke-1" />)
-        console.error(`Вы не дали доступ к микрофону: ${err}`)
+        console.error(`You have not given access to the microphone: ${err}`)
       })
   }, [])
 
