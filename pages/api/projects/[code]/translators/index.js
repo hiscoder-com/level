@@ -12,7 +12,6 @@ export default async function languageProjectTranslatorsHandler(req, res) {
     method,
     query: { code },
   } = req
-
   switch (method) {
     case 'GET':
       try {
