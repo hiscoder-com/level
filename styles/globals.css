@@ -54,6 +54,12 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	active:bg-cyan-800 active:border-cyan-800
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
 }
+.btn-red-base{
+	@apply text-white bg-red-500 border-cyan-600
+	hover:bg-cyan-700 hover:border-cyan-700
+	active:bg-cyan-800 active:border-cyan-800
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
+}
 
 .btn-start{
 	@apply btn-cyan-base rounded-full duration-300 uppercase text-2xl font-medium cursor-pointer
@@ -64,7 +70,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-red{
-	@apply btn-cyan bg-red-500 !important
+	@apply btn btn-red-base
 }
 
 .btn-white{

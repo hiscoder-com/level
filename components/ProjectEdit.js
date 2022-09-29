@@ -12,13 +12,7 @@ import Modal from './Modal'
 import TranslatorImage from './TranslatorImage'
 
 import { supabase } from 'utils/supabaseClient'
-import {
-  useCoordinators,
-  useModerators,
-  useProject,
-  useTranslators,
-  useUsers,
-} from 'utils/hooks'
+import { useCoordinators, useProject, useTranslators, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectEdit() {
@@ -45,15 +39,8 @@ function ProjectEdit() {
     token: user?.access_token,
     code,
   })
-  const [moderators, { mutate: mutateModerator }] = useModerators({
-    token: user?.access_token,
-    code,
-  })
-  const changeModerator = async (type) => {
-    if (!project?.id) {
-      return
-    }
 
+  const changeModerator = async (type) => {
     const { error } = await supabase.rpc(type, {
       project_id: project.id,
       user_id: selectedModerator.id,
@@ -61,7 +48,7 @@ function ProjectEdit() {
     if (error) console.error(error)
     else {
       setSelectedModerator(false)
-      mutateModerator()
+      mutateTranslator()
     }
   }
   const roleActions = {
@@ -70,9 +57,6 @@ function ProjectEdit() {
   }
 
   const remove = async (id, role) => {
-    if (!project?.id) {
-      return
-    }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/projects/${code}/${role}/${id}`, {
@@ -102,11 +86,10 @@ function ProjectEdit() {
   }
 
   const moderatorIds = useMemo(() => {
-    if (moderators) {
-      return moderators.map((el) => el.users.id)
+    if (translators) {
+      return translators.filter((el) => el.is_moderator).map((el) => el.users.id)
     }
-  }, [moderators])
-
+  }, [translators])
   return (
     <div>
       <div className="divide-y-2 divide-gray-400">
@@ -139,14 +122,13 @@ function ProjectEdit() {
           </div>
           <TranslatorsList
             translators={translators}
-            moderatorIds={moderatorIds}
             setSelectedModerator={setSelectedModerator}
             setSelectedTranslator={setSelectedTranslator}
           />
           <div>
             <Modal
-              open={openModalAssignTranslator}
-              closeModal={() => {
+              isOpen={openModalAssignTranslator}
+              closeHandle={() => {
                 setOpenModalAssignTranslator(false)
                 setSelectedUser(null)
               }}
@@ -173,10 +155,21 @@ function ProjectEdit() {
               >
                 {t('Assign')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setOpenModalAssignTranslator(false)
+                    setSelectedUser(null)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </Modal>
             <Modal
-              open={openModalAssignCoordinator}
-              closeModal={() => {
+              isOpen={openModalAssignCoordinator}
+              closeHandle={() => {
                 setOpenModalAssignCoordinator(false)
                 setSelectedUser(null)
               }}
@@ -205,10 +198,23 @@ function ProjectEdit() {
               >
                 {t('Assign')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setOpenModalAssignCoordinator(false)
+                    setSelectedUser(null)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </Modal>
             <Modal
-              open={selectedModerator ? Object.keys(selectedModerator).length > 0 : false}
-              closeModal={() => {
+              isOpen={
+                selectedModerator ? Object.keys(selectedModerator).length > 0 : false
+              }
+              closeHandle={() => {
                 setSelectedModerator(false)
               }}
             >
@@ -233,17 +239,26 @@ function ProjectEdit() {
                   ? t('Remove')
                   : t('Assign')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setSelectedModerator(false)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </Modal>
             <Modal
-              open={
+              isOpen={
                 selectedTranslator ? Object.keys(selectedTranslator).length > 0 : false
               }
-              closeModal={() => {
+              closeHandle={() => {
                 setSelectedTranslator(false)
               }}
             >
               <div className="mb-2">{t('project-edit:RemovingTranslator')}</div>
-
               <button
                 onClick={() => remove(selectedTranslator.id, 'translators')}
                 disabled={!selectedTranslator}
@@ -251,12 +266,22 @@ function ProjectEdit() {
               >
                 {t('Remove')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setSelectedTranslator(false)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </Modal>
             <Modal
-              open={
+              isOpen={
                 selectedCoordinator ? Object.keys(selectedCoordinator).length > 0 : false
               }
-              closeModal={() => {
+              closeHandle={() => {
                 setSelectedCoordinator(false)
               }}
             >
@@ -269,6 +294,16 @@ function ProjectEdit() {
               >
                 {t('Remove')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setSelectedCoordinator(false)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </Modal>
           </div>
         </div>
@@ -279,12 +314,7 @@ function ProjectEdit() {
 
 export default ProjectEdit
 
-function TranslatorsList({
-  translators,
-  moderatorIds,
-  setSelectedModerator,
-  setSelectedTranslator,
-}) {
+function TranslatorsList({ translators, setSelectedModerator, setSelectedTranslator }) {
   const { t } = useTranslation(['common'])
   return (
     <div className="overflow-x-auto relative px-4">
@@ -323,18 +353,16 @@ function TranslatorsList({
                 <td className="py-4 px-6 hidden sm:block">{el.users.email}</td>
                 <td className="py-4 px-6">
                   <Switch
-                    checked={moderatorIds?.includes(el.users.id)}
+                    checked={el.is_moderator}
                     onChange={() => setSelectedModerator(el.users)}
                     className={`${
-                      moderatorIds?.includes(el.users.id) ? 'bg-blue-600' : 'bg-gray-200'
+                      el.is_moderator ? 'bg-blue-600' : 'bg-gray-200'
                     } relative inline-flex h-6 w-11 items-center rounded-full`}
                   >
                     <span className="sr-only">Enable notifications</span>
                     <span
                       className={`${
-                        moderatorIds?.includes(el.users.id)
-                          ? 'translate-x-6'
-                          : 'translate-x-1'
+                        el.is_moderator ? 'translate-x-6' : 'translate-x-1'
                       } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                     />
                   </Switch>

@@ -137,7 +137,6 @@
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       usr RECORD;
-      new_val BOOLEAN;
     BEGIN
       IF authorize(auth.uid(), assign_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
         RETURN FALSE;
@@ -146,10 +145,9 @@
       IF usr.id IS NULL THEN
         RETURN FALSE;
       END IF;
-      new_val := TRUE;
-      UPDATE PUBLIC.project_translators SET is_moderator = new_val WHERE project_translators.id = usr.id;
+      UPDATE PUBLIC.project_translators SET is_moderator = TRUE WHERE project_translators.id = usr.id;
 
-      RETURN new_val;
+      RETURN TRUE;
 
     END;
   $$;
@@ -158,7 +156,6 @@
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       usr RECORD;
-      new_val BOOLEAN;
     BEGIN
       IF authorize(auth.uid(), remove_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
         RETURN FALSE;
@@ -167,10 +164,9 @@
       IF usr.id IS NULL THEN
         RETURN FALSE;
       END IF;
-      new_val := FALSE;
-      UPDATE PUBLIC.project_translators SET is_moderator = new_val WHERE project_translators.id = usr.id;
+      UPDATE PUBLIC.project_translators SET is_moderator = FALSE WHERE project_translators.id = usr.id;
 
-      RETURN new_val;
+      RETURN TRUE;
 
     END;
   $$;

@@ -124,7 +124,7 @@ export function useModerators({ token, code }) {
     mutate,
     error,
   } = useSWR(
-    token ? [`/api/projects/${code}/translators/moderators`, token] : null,
+    token && code ? [`/api/projects/${code}/translators/moderators`, token] : null,
     fetcher
   )
   const loading = !moderators && !error

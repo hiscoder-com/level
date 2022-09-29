@@ -4,11 +4,11 @@ import { useTranslation } from 'next-i18next'
 
 const { Transition, Dialog } = require('@headlessui/react')
 
-function Modal({ title, children, open, closeModal }) {
+function Modal({ title, children, isOpen, closeHandle }) {
   const { t } = useTranslation(['common'])
   return (
-    <Transition appear show={open} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeModal}>
+    <Transition appear show={isOpen} as={Fragment}>
+      <Dialog as="div" className="relative z-10" onClose={closeHandle}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -37,11 +37,6 @@ function Modal({ title, children, open, closeModal }) {
                   {title}
                 </Dialog.Title>
                 {children}
-                <div className="mt-4">
-                  <button className="btn-cyan w-24" onClick={closeModal}>
-                    {t('common:Close')}
-                  </button>
-                </div>
               </Dialog.Panel>
             </Transition.Child>
           </div>
