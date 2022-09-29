@@ -2,11 +2,15 @@ import { useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+
 import axios from 'axios'
 
 import { Switch } from '@headlessui/react'
 
 import Modal from './Modal'
+import TranslatorImage from './TranslatorImage'
+
 import { supabase } from 'utils/supabaseClient'
 import {
   useCoordinators,
@@ -16,9 +20,6 @@ import {
   useUsers,
 } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-
-import { useTranslation } from 'next-i18next'
-import TranslatorImage from './TranslatorImage'
 
 function ProjectEdit() {
   const { t } = useTranslation(['common', 'project-edit'])
