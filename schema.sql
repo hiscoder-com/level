@@ -1080,19 +1080,31 @@ ADD
     INSERT INTO
       PUBLIC.methods (title, resources, steps, "type")
     VALUES
-      ('Vcana Bible', '{"literal":false, "simplified":true, "tn":false}', '[
+      ('Vcana Bible', '{"literal":false, "simplified":true, "tnotes":false, "twords":false, "tquestions":false}', '[
       {
-        "title": "Шаг один. Читаем вместе",
+        "title": "Шаг 1: Самостоятельное изучение",
         "description": "Some text here...",
         "time": 60,
-        "count_of_users": 4,
-        "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "count_of_users": 1,
+        "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
         "config": [
           {
             "size": 4,
             "tools": [
               {
                 "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "twords",
                 "config": {}
               }
             ]
@@ -1101,11 +1113,15 @@ ADD
             "size": 2,
             "tools": [
               {
-                "name": "notepad",
-                "config": {"team": true}
+                "name": "ownNotes",
+                "config": {}
               },
               {
-                "name": "notepad",
+                "name": "teamNotes",
+                "config": {}
+              },
+              {
+                "name": "dictionary",
                 "config": {}
               }
             ]
@@ -1113,11 +1129,97 @@ ADD
         ]
       },
       {
-        "title": "Шаг два. Набросок",
+        "title": "Шаг 2: Командное изучение текста",
         "description": "Some text here2...",
-        "time": 30,
+        "time": 60,
+        "count_of_users": 4,
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
+        "config": [
+          {
+            "size": 4,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "twords",
+                "config": {}
+              }
+            ]
+          },
+          {
+            "size": 2,
+            "tools": [
+              {
+                "name": "ownNotes",
+                "config": {}
+              },
+              {
+                "name": "teamNotes",
+                "config": {}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Шаг 3: Подготовка к переводу",
+        "description": "Some text here3...",
+        "time": 60,
         "count_of_users": 2,
-        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
+        "config": [
+          {
+            "size": 4,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "twords",
+                "config": {}
+              }
+            ]
+          },
+          {
+            "size": 2,
+            "tools": [
+              {
+                "name": "audio",
+                "config": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Шаг 4: Набросок \"Вслепую\"",
+        "description": "Some text here4...",
+        "time": 60,
+        "count_of_users": 1,
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
         "config": [
           {
             "size": 3,
@@ -1131,7 +1233,11 @@ ADD
                 "config": {}
               },
               {
-                "name": "tn",
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "twords",
                 "config": {}
               }
             ]
@@ -1140,47 +1246,66 @@ ADD
             "size": 3,
             "tools": [
               {
-                "name": "editor",
-                "config": {"type":"blind"}
-              },
-              {
-                "name": "dictionary",
-                "config": {}
+                "name": "translate",
+                "config": {
+                  "stepOption": "draft"
+                }
               }
             ]
           }
         ]
-      }]', 'bible'::project_type),
-      ('Vcana OBS', '{"obs":true, "tw":false, "tq":false}', '[
+      },
       {
-        "title": "Шаг один. Читаем вместе OBS",
-        "description": "Some text here...",
-        "time": 45,
-        "count_of_users": 4,
-        "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "title": "Шаг 5: Самостоятельная проверка",
+        "description": "Some text here5...",
+        "time": 60,
+        "count_of_users": 1,
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
         "config": [
           {
-            "size": 4,
+            "size": 3,
             "tools": [
               {
-                "name": "obs",
+                "name": "literal",
                 "config": {}
               },
               {
-                "name": "tw",
+                "name": "simplified",
                 "config": {}
               },
               {
-                "name": "tq",
+                "name": "tnotes",
                 "config": {}
+              },
+              {
+                "name": "twords",
+                "config": {}
+              },
+              {
+                "name": "tquestions",
+                "config": {
+                  "viewAllQuestions": true
+                }
               }
             ]
           },
           {
-            "size": 2,
+            "size": 3,
             "tools": [
               {
-                "name": "notepad",
+                "name": "translate",
+                "config": {}
+              },
+              {
+                "name": "ownNotes",
+                "config": {}
+              },
+              {
+                "name": "teamNotes",
+                "config": {}
+              },
+              {
+                "name": "dictionary",
                 "config": {}
               }
             ]
@@ -1188,17 +1313,33 @@ ADD
         ]
       },
       {
-        "title": "Шаг два. Набросок OBS",
-        "description": "Some text here2...",
-        "time": 30,
+        "title": "Шаг 6: Взаимная проверка",
+        "description": "Some text here6...",
+        "time": 60,
         "count_of_users": 2,
-        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
         "config": [
           {
             "size": 3,
             "tools": [
               {
-                "name": "obs",
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "twords",
+                "config": {}
+              },
+              {
+                "name": "tquestions",
                 "config": {}
               }
             ]
@@ -1207,8 +1348,16 @@ ADD
             "size": 3,
             "tools": [
               {
-                "name": "editor",
-                "config": {"type":"blind"}
+                "name": "translate",
+                "config": {}
+              },
+              {
+                "name": "ownNotes",
+                "config": {}
+              },
+              {
+                "name": "teamNotes",
+                "config": {}
               },
               {
                 "name": "dictionary",
@@ -1217,7 +1366,117 @@ ADD
             ]
           }
         ]
-      }]', 'obs'::project_type);
+      },
+      {
+        "title": "Шаг 7: Командная проверка",
+        "description": "Some text here7...",
+        "time": 60,
+        "count_of_users": 4,
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
+        "config": [
+          {
+            "size": 3,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "twords",
+                "config": {}
+              },
+              {
+                "name": "tquestions",
+                "config": {}
+              }
+            ]
+          },
+          {
+            "size": 3,
+            "tools": [
+              {
+                "name": "translate",
+                "config": {}
+              },
+              {
+                "name": "ownNotes",
+                "config": {}
+              },
+              {
+                "name": "teamNotes",
+                "config": {}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Шаг 8: ",
+        "description": "Some text here2...",
+        "time": 30,
+        "count_of_users": 2,
+        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/pRptZjtfUIE",
+        "config": [
+          {
+            "size": 3,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "twords",
+                "config": {}
+              },
+              {
+                "name": "tquestions",
+                "config": {}
+              }
+            ]
+          },
+          {
+            "size": 3,
+            "tools": [
+              {
+                "name": "translate",
+                "config": {}
+              },
+              {
+                "name": "ownNotes",
+                "config": {}
+              },
+              {
+                "name": "teamNotes",
+                "config": {}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
+          }
+        ]
+      }]', 'bible'::project_type);
   -- END METHODS
 
   -- ROLE PERMISSIONS
@@ -1241,321 +1500,153 @@ ADD
   -- PROJECTS
     DELETE FROM
       PUBLIC.projects;
+    INSERT INTO public.projects (id, title, code, language_id, type, resources, method, base_manifest) VALUES
+    (1, 'ROST Bible', 'rost', 2, 'bible',
+    '{"simplified":{"owner":"ru_gl","repo":"ru_rsob","commit":"38c10e570082cc615e45628ae7ea3f38d9b67b8c","manifest":{"dublin_core":{"type":"bundle","conformsto":"rc0.2","comment":"RSOB","format":"text/usfm3","identifier":"rsob","title":"Russian Simplified Open Bible","subject":"Aligned Bible","description":"Russian RSOB aligned to unfoldingWord® Greek New Testament","language":{"identifier":"ru","title":"Русский","direction":"ltr"},"source":[{"identifier":"rsob","language":"ru","version":"1.0.0"}],"rights":"CC BY-SA 4.0","creator":"Door43 World Missions Community","contributor":["Door43 World Missions Community"],"relation":["ru/tw","el-x-koine/ugnt"],"publisher":"Door43 World Missions Community","issued":"2020-08-12","modified":"2020-08-12","version":"1"},"checking":{"checking_entity":["Door43 World Missions Community"],"checking_level":"3"},"projects":[{"title":"Бытие","versification":"ufw","identifier":"gen","sort":1,"path":"./01-GEN.usfm","categories":["bible-ot"]},{"title":"Исход","versification":"ufw","identifier":"exo","sort":2,"path":"./02-EXO.usfm","categories":["bible-ot"]},{"title":"Leviticus","versification":"ufw","identifier":"lev","sort":3,"path":"./03-LEV.usfm","categories":["bible-ot"]},{"title":"Numbers","versification":"ufw","identifier":"num","sort":4,"path":"./04-NUM.usfm","categories":["bible-ot"]},{"title":"Deuteronomy","versification":"ufw","identifier":"deu","sort":5,"path":"./05-DEU.usfm","categories":["bible-ot"]},{"title":"Joshua","versification":"ufw","identifier":"jos","sort":6,"path":"./06-JOS.usfm","categories":["bible-ot"]},{"title":"Judges","versification":"ufw","identifier":"jdg","sort":7,"path":"./07-JDG.usfm","categories":["bible-ot"]},{"title":"Руфь","versification":"ufw","identifier":"rut","sort":8,"path":"./08-RUT.usfm","categories":["bible-ot"]},{"title":"1 Samuel","versification":"ufw","identifier":"1sa","sort":9,"path":"./09-1SA.usfm","categories":["bible-ot"]},{"title":"2 Samuel","versification":"ufw","identifier":"2sa","sort":10,"path":"./10-2SA.usfm","categories":["bible-ot"]},{"title":"1 Kings","versification":"ufw","identifier":"1ki","sort":11,"path":"./11-1KI.usfm","categories":["bible-ot"]},{"title":"2 Kings","versification":"ufw","identifier":"2ki","sort":12,"path":"./12-2KI.usfm","categories":["bible-ot"]},{"title":"1 Chronicles","versification":"ufw","identifier":"1ch","sort":13,"path":"./13-1CH.usfm","categories":["bible-ot"]},{"title":"2 Chronicles","versification":"ufw","identifier":"2ch","sort":14,"path":"./14-2CH.usfm","categories":["bible-ot"]},{"title":"Ezra","versification":"ufw","identifier":"ezr","sort":15,"path":"./15-EZR.usfm","categories":["bible-ot"]},{"title":"Nehemiah","versification":"ufw","identifier":"neh","sort":16,"path":"./16-NEH.usfm","categories":["bible-ot"]},{"title":"Есфирь","versification":"ufw","identifier":"est","sort":17,"path":"./17-EST.usfm","categories":["bible-ot"]},{"title":"Job","versification":"ufw","identifier":"job","sort":18,"path":"./18-JOB.usfm","categories":["bible-ot"]},{"title":"Psalms","versification":"ufw","identifier":"psa","sort":19,"path":"./19-PSA.usfm","categories":["bible-ot"]},{"title":"Proverbs","versification":"ufw","identifier":"pro","sort":20,"path":"./20-PRO.usfm","categories":["bible-ot"]},{"title":"Ecclesiastes","versification":"ufw","identifier":"ecc","sort":21,"path":"./21-ECC.usfm","categories":["bible-ot"]},{"title":"Song of Solomon","versification":"ufw","identifier":"sng","sort":22,"path":"./22-SNG.usfm","categories":["bible-ot"]},{"title":"Isaiah","versification":"ufw","identifier":"isa","sort":23,"path":"./23-ISA.usfm","categories":["bible-ot"]},{"title":"Jeremiah","versification":"ufw","identifier":"jer","sort":24,"path":"./24-JER.usfm","categories":["bible-ot"]},{"title":"Lamentations","versification":"ufw","identifier":"lam","sort":25,"path":"./25-LAM.usfm","categories":["bible-ot"]},{"title":"Ezekiel","versification":"ufw","identifier":"ezk","sort":26,"path":"./26-EZK.usfm","categories":["bible-ot"]},{"title":"Daniel","versification":"ufw","identifier":"dan","sort":27,"path":"./27-DAN.usfm","categories":["bible-ot"]},{"title":"Hosea","versification":"ufw","identifier":"hos","sort":28,"path":"./28-HOS.usfm","categories":["bible-ot"]},{"title":"Joel","versification":"ufw","identifier":"jol","sort":29,"path":"./29-JOL.usfm","categories":["bible-ot"]},{"title":"Amos","versification":"ufw","identifier":"amo","sort":30,"path":"./30-AMO.usfm","categories":["bible-ot"]},{"title":"Obadiah","versification":"ufw","identifier":"oba","sort":31,"path":"./31-OBA.usfm","categories":["bible-ot"]},{"title":"Ионы","versification":"ufw","identifier":"jon","sort":32,"path":"./32-JON.usfm","categories":["bible-ot"]},{"title":"Micah","versification":"ufw","identifier":"mic","sort":33,"path":"./33-MIC.usfm","categories":["bible-ot"]},{"title":"Nahum","versification":"ufw","identifier":"nam","sort":34,"path":"./34-NAM.usfm","categories":["bible-ot"]},{"title":"Habakkuk","versification":"ufw","identifier":"hab","sort":35,"path":"./35-HAB.usfm","categories":["bible-ot"]},{"title":"Zephaniah","versification":"ufw","identifier":"zep","sort":36,"path":"./36-ZEP.usfm","categories":["bible-ot"]},{"title":"Haggai","versification":"ufw","identifier":"hag","sort":37,"path":"./37-HAG.usfm","categories":["bible-ot"]},{"title":"Zechariah","versification":"ufw","identifier":"zec","sort":38,"path":"./38-ZEC.usfm","categories":["bible-ot"]},{"title":"Malachi","versification":"ufw","identifier":"mal","sort":39,"path":"./39-MAL.usfm","categories":["bible-ot"]},{"title":"Matthew","versification":"ufw","identifier":"mat","sort":40,"path":"./41-MAT.usfm","categories":["bible-nt"]},{"title":"Mark","versification":"ufw","identifier":"mrk","sort":41,"path":"./42-MRK.usfm","categories":["bible-nt"]},{"title":"Луки","versification":"ufw","identifier":"luk","sort":42,"path":"./43-LUK.usfm","categories":["bible-nt"]},{"title":"John","versification":"ufw","identifier":"jhn","sort":43,"path":"./44-JHN.usfm","categories":["bible-nt"]},{"title":"Деяния","versification":"ufw","identifier":"act","sort":44,"path":"./45-ACT.usfm","categories":["bible-nt"]},{"title":"Romans","versification":"ufw","identifier":"rom","sort":45,"path":"./46-ROM.usfm","categories":["bible-nt"]},{"title":"1 Corinthians","versification":"ufw","identifier":"1co","sort":46,"path":"./47-1CO.usfm","categories":["bible-nt"]},{"title":"2 Corinthians","versification":"ufw","identifier":"2co","sort":47,"path":"./48-2CO.usfm","categories":["bible-nt"]},{"title":"Galatians","versification":"ufw","identifier":"gal","sort":48,"path":"./49-GAL.usfm","categories":["bible-nt"]},{"title":"Ефесянам","versification":"ufw","identifier":"eph","sort":49,"path":"./50-EPH.usfm","categories":["bible-nt"]},{"title":"Philippians","versification":"ufw","identifier":"php","sort":50,"path":"./51-PHP.usfm","categories":["bible-nt"]},{"title":"Colossians","versification":"ufw","identifier":"col","sort":51,"path":"./52-COL.usfm","categories":["bible-nt"]},{"title":"1 Thessalonians","versification":"ufw","identifier":"1th","sort":52,"path":"./53-1TH.usfm","categories":["bible-nt"]},{"title":"2 Thessalonians","versification":"ufw","identifier":"2th","sort":53,"path":"./54-2TH.usfm","categories":["bible-nt"]},{"title":"1 Тимофею","versification":"ufw","identifier":"1ti","sort":54,"path":"./55-1TI.usfm","categories":["bible-nt"]},{"title":"2 Тимофею","versification":"ufw","identifier":"2ti","sort":55,"path":"./56-2TI.usfm","categories":["bible-nt"]},{"title":"Титу","versification":"ufw","identifier":"tit","sort":56,"path":"./57-TIT.usfm","categories":["bible-nt"]},{"title":"Philemon","versification":"ufw","identifier":"phm","sort":57,"path":"./58-PHM.usfm","categories":["bible-nt"]},{"title":"Hebrews","versification":"ufw","identifier":"heb","sort":58,"path":"./59-HEB.usfm","categories":["bible-nt"]},{"title":"James","versification":"ufw","identifier":"jas","sort":59,"path":"./60-JAS.usfm","categories":["bible-nt"]},{"title":"1 Peter","versification":"ufw","identifier":"1pe","sort":60,"path":"./61-1PE.usfm","categories":["bible-nt"]},{"title":"2 Peter","versification":"ufw","identifier":"2pe","sort":61,"path":"./62-2PE.usfm","categories":["bible-nt"]},{"title":"1 John","versification":"ufw","identifier":"1jn","sort":62,"path":"./63-1JN.usfm","categories":["bible-nt"]},{"title":"2 John","versification":"ufw","identifier":"2jn","sort":63,"path":"./64-2JN.usfm","categories":["bible-nt"]},{"title":"3 Иоанна","versification":"ufw","identifier":"3jn","sort":64,"path":"./65-3JN.usfm","categories":["bible-nt"]},{"title":"Jude","versification":"ufw","identifier":"jud","sort":65,"path":"./66-JUD.usfm","categories":["bible-nt"]},{"title":"Revelation","versification":"ufw","identifier":"rev","sort":66,"path":"./67-REV.usfm","categories":["bible-nt"]}]}},
+    "literal":{"owner":"ru_gl","repo":"ru_rlob","commit":"b64975c9d8a4dc0392865e228d03e91cd9f6ac3e","manifest":{"dublin_core":{"type":"bundle","conformsto":"rc0.2","comment":"RLOB","format":"text/usfm3","identifier":"rlob","title":"Russian Literal Open Bible","subject":"Aligned Bible","description":"Russian RLOB aligned to unfoldingWord® Greek New Testament","language":{"identifier":"ru","title":"Русский","direction":"ltr"},"source":[{"identifier":"rlob","language":"ru","version":"1.0.0"}],"rights":"CC BY-SA 4.0","creator":"Door43 World Missions Community","contributor":["Door43 World Missions Community"],"relation":["ru/tw","el-x-koine/ugnt"],"publisher":"Door43 World Missions Community","issued":"2020-08-12","modified":"2020-08-12","version":"1"},"checking":{"checking_entity":["Door43 World Missions Community"],"checking_level":"3"},"projects":[{"title":"Genesis","versification":"ufw","identifier":"gen","sort":1,"path":"./01-GEN.usfm","categories":["bible-ot"]},{"title":"Exodus","versification":"ufw","identifier":"exo","sort":2,"path":"./02-EXO.usfm","categories":["bible-ot"]},{"title":"Leviticus","versification":"ufw","identifier":"lev","sort":3,"path":"./03-LEV.usfm","categories":["bible-ot"]},{"title":"Numbers","versification":"ufw","identifier":"num","sort":4,"path":"./04-NUM.usfm","categories":["bible-ot"]},{"title":"Deuteronomy","versification":"ufw","identifier":"deu","sort":5,"path":"./05-DEU.usfm","categories":["bible-ot"]},{"title":"Joshua","versification":"ufw","identifier":"jos","sort":6,"path":"./06-JOS.usfm","categories":["bible-ot"]},{"title":"Judges","versification":"ufw","identifier":"jdg","sort":7,"path":"./07-JDG.usfm","categories":["bible-ot"]},{"title":"Руфь","versification":"ufw","identifier":"rut","sort":8,"path":"./08-RUT.usfm","categories":["bible-ot"]},{"title":"1 Samuel","versification":"ufw","identifier":"1sa","sort":9,"path":"./09-1SA.usfm","categories":["bible-ot"]},{"title":"2 Samuel","versification":"ufw","identifier":"2sa","sort":10,"path":"./10-2SA.usfm","categories":["bible-ot"]},{"title":"1 Kings","versification":"ufw","identifier":"1ki","sort":11,"path":"./11-1KI.usfm","categories":["bible-ot"]},{"title":"2 Kings","versification":"ufw","identifier":"2ki","sort":12,"path":"./12-2KI.usfm","categories":["bible-ot"]},{"title":"1 Chronicles","versification":"ufw","identifier":"1ch","sort":13,"path":"./13-1CH.usfm","categories":["bible-ot"]},{"title":"2 Chronicles","versification":"ufw","identifier":"2ch","sort":14,"path":"./14-2CH.usfm","categories":["bible-ot"]},{"title":"Ezra","versification":"ufw","identifier":"ezr","sort":15,"path":"./15-EZR.usfm","categories":["bible-ot"]},{"title":"Nehemiah","versification":"ufw","identifier":"neh","sort":16,"path":"./16-NEH.usfm","categories":["bible-ot"]},{"title":"Есфирь","versification":"ufw","identifier":"est","sort":17,"path":"./17-EST.usfm","categories":["bible-ot"]},{"title":"Job","versification":"ufw","identifier":"job","sort":18,"path":"./18-JOB.usfm","categories":["bible-ot"]},{"title":"Psalms","versification":"ufw","identifier":"psa","sort":19,"path":"./19-PSA.usfm","categories":["bible-ot"]},{"title":"Proverbs","versification":"ufw","identifier":"pro","sort":20,"path":"./20-PRO.usfm","categories":["bible-ot"]},{"title":"Ecclesiastes","versification":"ufw","identifier":"ecc","sort":21,"path":"./21-ECC.usfm","categories":["bible-ot"]},{"title":"Song of Solomon","versification":"ufw","identifier":"sng","sort":22,"path":"./22-SNG.usfm","categories":["bible-ot"]},{"title":"Isaiah","versification":"ufw","identifier":"isa","sort":23,"path":"./23-ISA.usfm","categories":["bible-ot"]},{"title":"Jeremiah","versification":"ufw","identifier":"jer","sort":24,"path":"./24-JER.usfm","categories":["bible-ot"]},{"title":"Lamentations","versification":"ufw","identifier":"lam","sort":25,"path":"./25-LAM.usfm","categories":["bible-ot"]},{"title":"Ezekiel","versification":"ufw","identifier":"ezk","sort":26,"path":"./26-EZK.usfm","categories":["bible-ot"]},{"title":"Daniel","versification":"ufw","identifier":"dan","sort":27,"path":"./27-DAN.usfm","categories":["bible-ot"]},{"title":"Hosea","versification":"ufw","identifier":"hos","sort":28,"path":"./28-HOS.usfm","categories":["bible-ot"]},{"title":"Joel","versification":"ufw","identifier":"jol","sort":29,"path":"./29-JOL.usfm","categories":["bible-ot"]},{"title":"Amos","versification":"ufw","identifier":"amo","sort":30,"path":"./30-AMO.usfm","categories":["bible-ot"]},{"title":"Авдия","versification":"ufw","identifier":"oba","sort":31,"path":"./31-OBA.usfm","categories":["bible-ot"]},{"title":"Ионы","versification":"ufw","identifier":"jon","sort":32,"path":"./32-JON.usfm","categories":["bible-ot"]},{"title":"Micah","versification":"ufw","identifier":"mic","sort":33,"path":"./33-MIC.usfm","categories":["bible-ot"]},{"title":"Nahum","versification":"ufw","identifier":"nam","sort":34,"path":"./34-NAM.usfm","categories":["bible-ot"]},{"title":"Habakkuk","versification":"ufw","identifier":"hab","sort":35,"path":"./35-HAB.usfm","categories":["bible-ot"]},{"title":"Zephaniah","versification":"ufw","identifier":"zep","sort":36,"path":"./36-ZEP.usfm","categories":["bible-ot"]},{"title":"Haggai","versification":"ufw","identifier":"hag","sort":37,"path":"./37-HAG.usfm","categories":["bible-ot"]},{"title":"Zechariah","versification":"ufw","identifier":"zec","sort":38,"path":"./38-ZEC.usfm","categories":["bible-ot"]},{"title":"Malachi","versification":"ufw","identifier":"mal","sort":39,"path":"./39-MAL.usfm","categories":["bible-ot"]},{"title":"Matthew","versification":"ufw","identifier":"mat","sort":40,"path":"./41-MAT.usfm","categories":["bible-nt"]},{"title":"Mark","versification":"ufw","identifier":"mrk","sort":41,"path":"./42-MRK.usfm","categories":["bible-nt"]},{"title":"Luke","versification":"ufw","identifier":"luk","sort":42,"path":"./43-LUK.usfm","categories":["bible-nt"]},{"title":"John","versification":"ufw","identifier":"jhn","sort":43,"path":"./44-JHN.usfm","categories":["bible-nt"]},{"title":"Acts","versification":"ufw","identifier":"act","sort":44,"path":"./45-ACT.usfm","categories":["bible-nt"]},{"title":"Romans","versification":"ufw","identifier":"rom","sort":45,"path":"./46-ROM.usfm","categories":["bible-nt"]},{"title":"1 Corinthians","versification":"ufw","identifier":"1co","sort":46,"path":"./47-1CO.usfm","categories":["bible-nt"]},{"title":"2 Corinthians","versification":"ufw","identifier":"2co","sort":47,"path":"./48-2CO.usfm","categories":["bible-nt"]},{"title":"Galatians","versification":"ufw","identifier":"gal","sort":48,"path":"./49-GAL.usfm","categories":["bible-nt"]},{"title":"Ephesians","versification":"ufw","identifier":"eph","sort":49,"path":"./50-EPH.usfm","categories":["bible-nt"]},{"title":"Philippians","versification":"ufw","identifier":"php","sort":50,"path":"./51-PHP.usfm","categories":["bible-nt"]},{"title":"Colossians","versification":"ufw","identifier":"col","sort":51,"path":"./52-COL.usfm","categories":["bible-nt"]},{"title":"1 Thessalonians","versification":"ufw","identifier":"1th","sort":52,"path":"./53-1TH.usfm","categories":["bible-nt"]},{"title":"2 Thessalonians","versification":"ufw","identifier":"2th","sort":53,"path":"./54-2TH.usfm","categories":["bible-nt"]},{"title":"1 Тимофею","versification":"ufw","identifier":"1ti","sort":54,"path":"./55-1TI.usfm","categories":["bible-nt"]},{"title":"2 Тимофею","versification":"ufw","identifier":"2ti","sort":55,"path":"./56-2TI.usfm","categories":["bible-nt"]},{"title":"Титу","versification":"ufw","identifier":"tit","sort":56,"path":"./57-TIT.usfm","categories":["bible-nt"]},{"title":"Philemon","versification":"ufw","identifier":"phm","sort":57,"path":"./58-PHM.usfm","categories":["bible-nt"]},{"title":"Hebrews","versification":"ufw","identifier":"heb","sort":58,"path":"./59-HEB.usfm","categories":["bible-nt"]},{"title":"James","versification":"ufw","identifier":"jas","sort":59,"path":"./60-JAS.usfm","categories":["bible-nt"]},{"title":"1 Peter","versification":"ufw","identifier":"1pe","sort":60,"path":"./61-1PE.usfm","categories":["bible-nt"]},{"title":"2 Peter","versification":"ufw","identifier":"2pe","sort":61,"path":"./62-2PE.usfm","categories":["bible-nt"]},{"title":"1 Иоанна","versification":"ufw","identifier":"1jn","sort":62,"path":"./63-1JN.usfm","categories":["bible-nt"]},{"title":"2 Иоанна","versification":"ufw","identifier":"2jn","sort":63,"path":"./64-2JN.usfm","categories":["bible-nt"]},{"title":"3 Иоанна","versification":"ufw","identifier":"3jn","sort":64,"path":"./65-3JN.usfm","categories":["bible-nt"]},{"title":"Jude","versification":"ufw","identifier":"jud","sort":65,"path":"./66-JUD.usfm","categories":["bible-nt"]},{"title":"Revelation","versification":"ufw","identifier":"rev","sort":66,"path":"./67-REV.usfm","categories":["bible-nt"]}]}},
+    "tnotes":{"owner":"ru_gl","repo":"ru_tn","commit":"61f25360fb057675c1c6e5b4da6f5ee077817aa5","manifest":{"dublin_core":{"conformsto":"rc0.2","contributor":["Ivan Pavlii, PhD in World Literature, Baku Slavic University","Maria Karyakina, PhD, University of Pretoria, MTh in New Testament, University of South Africa","Aleksey Voskresenskiy, MTh in New Testament, University of Cardiff, Wales","Yuri Tamurkin, BTh,  St.Petersburg Christian University","Anna Savitskaya","Samuel Kim","Door43 World Missions Community"],"creator":"Door43, Russian Open Bible","description":"Open-licensed exegetical notes that provide historical, cultural, and linguistic information for translators. It provides translators and checkers with pertinent, just-in-time information to help them make the best possible translation decisions.","format":"text/tsv","identifier":"tn","issued":"2021-05-09","language":{"identifier":"ru","title":"Русский","direction":"ltr"},"modified":"2021-05-09","publisher":"Door43, Russian Open Bible","relation":["ru/ult","ru/ust","el-x-koine/ugnt?v=0.19","hbo/uhb?v=2.1.17","ru/ta","ru/tw","ru/tq","ru/rlb","ru/rlob","ru/rob","ru/rsob","ru/rsb","ru/ulb"],"rights":"CC BY-SA 4.0","source":[{"identifier":"tn","language":"ru","version":"50.8"}],"subject":"TSV Translation Notes","title":"Russian Translation Notes","type":"help","version":"50.9"},"checking":{"checking_entity":["Door43, Russian Open Bible"],"checking_level":"3"},"projects":[{"title":"Genesis","versification":"ufw","identifier":"gen","sort":1,"path":"./en_tn_01-GEN.tsv","categories":["bible-ot"]},{"title":"Exodus","versification":"ufw","identifier":"exo","sort":2,"path":"./en_tn_02-EXO.tsv","categories":["bible-ot"]},{"title":"Leviticus","versification":"ufw","identifier":"lev","sort":3,"path":"./en_tn_03-LEV.tsv","categories":["bible-ot"]},{"title":"Numbers","versification":"ufw","identifier":"num","sort":4,"path":"./en_tn_04-NUM.tsv","categories":["bible-ot"]},{"title":"Deuteronomy","versification":"ufw","identifier":"deu","sort":5,"path":"./en_tn_05-DEU.tsv","categories":["bible-ot"]},{"title":"Joshua","versification":"ufw","identifier":"jos","sort":6,"path":"./en_tn_06-JOS.tsv","categories":["bible-ot"]},{"title":"Judges","versification":"ufw","identifier":"jdg","sort":7,"path":"./en_tn_07-JDG.tsv","categories":["bible-ot"]},{"title":"Руфь","versification":"ufw","identifier":"rut","sort":8,"path":"./en_tn_08-RUT.tsv","categories":["bible-ot"]},{"title":"1 Samuel","versification":"ufw","identifier":"1sa","sort":9,"path":"./en_tn_09-1SA.tsv","categories":["bible-ot"]},{"title":"2 Samuel","versification":"ufw","identifier":"2sa","sort":10,"path":"./en_tn_10-2SA.tsv","categories":["bible-ot"]},{"title":"1 Kings","versification":"ufw","identifier":"1ki","sort":11,"path":"./en_tn_11-1KI.tsv","categories":["bible-ot"]},{"title":"2 Kings","versification":"ufw","identifier":"2ki","sort":12,"path":"./en_tn_12-2KI.tsv","categories":["bible-ot"]},{"title":"1 Chronicles","versification":"ufw","identifier":"1ch","sort":13,"path":"./en_tn_13-1CH.tsv","categories":["bible-ot"]},{"title":"2 Chronicles","versification":"ufw","identifier":"2ch","sort":14,"path":"./en_tn_14-2CH.tsv","categories":["bible-ot"]},{"title":"Ezra","versification":"ufw","identifier":"ezr","sort":15,"path":"./en_tn_15-EZR.tsv","categories":["bible-ot"]},{"title":"Nehemiah","versification":"ufw","identifier":"neh","sort":16,"path":"./en_tn_16-NEH.tsv","categories":["bible-ot"]},{"title":"Есфирь","versification":"ufw","identifier":"est","sort":17,"path":"./en_tn_17-EST.tsv","categories":["bible-ot"]},{"title":"Job","versification":"ufw","identifier":"job","sort":18,"path":"./en_tn_18-JOB.tsv","categories":["bible-ot"]},{"title":"Psalms","versification":"ufw","identifier":"psa","sort":19,"path":"./en_tn_19-PSA.tsv","categories":["bible-ot"]},{"title":"Proverbs","versification":"ufw","identifier":"pro","sort":20,"path":"./en_tn_20-PRO.tsv","categories":["bible-ot"]},{"title":"Ecclesiastes","versification":"ufw","identifier":"ecc","sort":21,"path":"./en_tn_21-ECC.tsv","categories":["bible-ot"]},{"title":"Song of Solomon","versification":"ufw","identifier":"sng","sort":22,"path":"./en_tn_22-SNG.tsv","categories":["bible-ot"]},{"title":"Isaiah","versification":"ufw","identifier":"isa","sort":23,"path":"./en_tn_23-ISA.tsv","categories":["bible-ot"]},{"title":"Jeremiah","versification":"ufw","identifier":"jer","sort":24,"path":"./en_tn_24-JER.tsv","categories":["bible-ot"]},{"title":"Lamentations","versification":"ufw","identifier":"lam","sort":25,"path":"./en_tn_25-LAM.tsv","categories":["bible-ot"]},{"title":"Ezekiel","versification":"ufw","identifier":"ezk","sort":26,"path":"./en_tn_26-EZK.tsv","categories":["bible-ot"]},{"title":"Daniel","versification":"ufw","identifier":"dan","sort":27,"path":"./en_tn_27-DAN.tsv","categories":["bible-ot"]},{"title":"Hosea","versification":"ufw","identifier":"hos","sort":28,"path":"./en_tn_28-HOS.tsv","categories":["bible-ot"]},{"title":"Joel","versification":"ufw","identifier":"jol","sort":29,"path":"./en_tn_29-JOL.tsv","categories":["bible-ot"]},{"title":"Amos","versification":"ufw","identifier":"amo","sort":30,"path":"./en_tn_30-AMO.tsv","categories":["bible-ot"]},{"title":"Obadiah","versification":"ufw","identifier":"oba","sort":31,"path":"./en_tn_31-OBA.tsv","categories":["bible-ot"]},{"title":"Ионы","versification":"ufw","identifier":"jon","sort":32,"path":"./en_tn_32-JON.tsv","categories":["bible-ot"]},{"title":"Micah","versification":"ufw","identifier":"mic","sort":33,"path":"./en_tn_33-MIC.tsv","categories":["bible-ot"]},{"title":"Nahum","versification":"ufw","identifier":"nam","sort":34,"path":"./en_tn_34-NAM.tsv","categories":["bible-ot"]},{"title":"Habakkuk","versification":"ufw","identifier":"hab","sort":35,"path":"./en_tn_35-HAB.tsv","categories":["bible-ot"]},{"title":"Zephaniah","versification":"ufw","identifier":"zep","sort":36,"path":"./en_tn_36-ZEP.tsv","categories":["bible-ot"]},{"title":"Haggai","versification":"ufw","identifier":"hag","sort":37,"path":"./en_tn_37-HAG.tsv","categories":["bible-ot"]},{"title":"Zechariah","versification":"ufw","identifier":"zec","sort":38,"path":"./en_tn_38-ZEC.tsv","categories":["bible-ot"]},{"title":"Malachi","versification":"ufw","identifier":"mal","sort":39,"path":"./en_tn_39-MAL.tsv","categories":["bible-ot"]},{"title":"Matthew","versification":"ufw","identifier":"mat","sort":40,"path":"./en_tn_41-MAT.tsv","categories":["bible-nt"]},{"title":"Mark","versification":"ufw","identifier":"mrk","sort":41,"path":"./en_tn_42-MRK.tsv","categories":["bible-nt"]},{"title":"Luke","versification":"ufw","identifier":"luk","sort":42,"path":"./en_tn_43-LUK.tsv","categories":["bible-nt"]},{"title":"John","versification":"ufw","identifier":"jhn","sort":43,"path":"./en_tn_44-JHN.tsv","categories":["bible-nt"]},{"title":"Acts","versification":"ufw","identifier":"act","sort":44,"path":"./en_tn_45-ACT.tsv","categories":["bible-nt"]},{"title":"Romans","versification":"ufw","identifier":"rom","sort":45,"path":"./en_tn_46-ROM.tsv","categories":["bible-nt"]},{"title":"1 Corinthians","versification":"ufw","identifier":"1co","sort":46,"path":"./en_tn_47-1CO.tsv","categories":["bible-nt"]},{"title":"2 Corinthians","versification":"ufw","identifier":"2co","sort":47,"path":"./en_tn_48-2CO.tsv","categories":["bible-nt"]},{"title":"Galatians","versification":"ufw","identifier":"gal","sort":48,"path":"./en_tn_49-GAL.tsv","categories":["bible-nt"]},{"title":"Ephesians","versification":"ufw","identifier":"eph","sort":49,"path":"./en_tn_50-EPH.tsv","categories":["bible-nt"]},{"title":"Philippians","versification":"ufw","identifier":"php","sort":50,"path":"./en_tn_51-PHP.tsv","categories":["bible-nt"]},{"title":"Colossians","versification":"ufw","identifier":"col","sort":51,"path":"./en_tn_52-COL.tsv","categories":["bible-nt"]},{"title":"1 Thessalonians","versification":"ufw","identifier":"1th","sort":52,"path":"./en_tn_53-1TH.tsv","categories":["bible-nt"]},{"title":"2 Thessalonians","versification":"ufw","identifier":"2th","sort":53,"path":"./en_tn_54-2TH.tsv","categories":["bible-nt"]},{"title":"1 Тимофею","versification":"ufw","identifier":"1ti","sort":54,"path":"./en_tn_55-1TI.tsv","categories":["bible-nt"]},{"title":"2 Тимофею","versification":"ufw","identifier":"2ti","sort":55,"path":"./en_tn_56-2TI.tsv","categories":["bible-nt"]},{"title":"Титу","versification":"ufw","identifier":"tit","sort":56,"path":"./en_tn_57-TIT.tsv","categories":["bible-nt"]},{"title":"Philemon","versification":"ufw","identifier":"phm","sort":57,"path":"./en_tn_58-PHM.tsv","categories":["bible-nt"]},{"title":"Hebrews","versification":"ufw","identifier":"heb","sort":58,"path":"./en_tn_59-HEB.tsv","categories":["bible-nt"]},{"title":"James","versification":"ufw","identifier":"jas","sort":59,"path":"./en_tn_60-JAS.tsv","categories":["bible-nt"]},{"title":"1 Peter","versification":"ufw","identifier":"1pe","sort":60,"path":"./en_tn_61-1PE.tsv","categories":["bible-nt"]},{"title":"2 Peter","versification":"ufw","identifier":"2pe","sort":61,"path":"./en_tn_62-2PE.tsv","categories":["bible-nt"]},{"title":"1 Иоанна","versification":"ufw","identifier":"1jn","sort":62,"path":"./en_tn_63-1JN.tsv","categories":["bible-nt"]},{"title":"2 Иоанна","versification":"ufw","identifier":"2jn","sort":63,"path":"./en_tn_64-2JN.tsv","categories":["bible-nt"]},{"title":"3 Иоанна","versification":"ufw","identifier":"3jn","sort":64,"path":"./en_tn_65-3JN.tsv","categories":["bible-nt"]},{"title":"Jude","versification":"ufw","identifier":"jud","sort":65,"path":"./en_tn_66-JUD.tsv","categories":["bible-nt"]},{"title":"Revelation","versification":"ufw","identifier":"rev","sort":66,"path":"./en_tn_67-REV.tsv","categories":["bible-nt"]}]}},
+    "twords":{"owner":"ru_gl","repo":"ru_tw","commit":"ea337e3dc7d8e9100af1224d1698b58abb53849d","manifest":{"dublin_core":{"conformsto":"rc0.2","contributor":["Ivan Pavlii, PhD in World Literature, Baku Slavic University","Maria Karyakina, PhD, University of Pretoria, MTh in New Testament, University of South Africa","Aleksey Voskresenskiy, MTh in New Testament, University of Cardiff, Wales","Yuri Tamurkin, BTh,  St.Petersburg Christian University","Anna Savitskaya","Samuel Kim","Katya Tsvetaeva","elman","saidjenya","ludig","sergey.sheidt","arman.arenbayev","Door43 World Missions Community"],"creator":"Door43, Russian Open Bible","description":"A basic Bible lexicon that provides translators with clear, concise definitions and translation suggestions for every important word in the Bible. It provides translators and checkers with essential lexical information to help them make the best possible translation decisions.","format":"text/markdown","identifier":"tw","issued":"2020-10-12","language":{"identifier":"ru","title":"Russian","direction":"ltr"},"modified":"2020-12-07","publisher":"Door43, Russian Open Bible","relation":["en/ult","en/ust","en/obs","en/tw","en/tn","el-x-koine/ugnt?v=0.15","hbo/uhb?v=2.1.15","ru/tw","ru/tn","ru/tq","ru/obs","ru/ulb","ru/rsb","ru/rob","ru/rlob","ru/rsob"],"rights":"CC BY-SA 4.0","source":[{"identifier":"tw","language":"ru","version":"3"}],"subject":"Translation Words","title":"Russian Translation Words","type":"dict","version":"12"},"checking":{"checking_entity":["Door43, Russian Open Bible"],"checking_level":"3"},"projects":[{"categories":null,"identifier":"bible","path":"./bible","sort":0,"title":"Russian Translation Words","versification":null}]}},
+    "tquestions":{"owner":"Door43-Catalog","repo":"ru_tq","commit":"22b0b98063b8ce17a970d123f807c86371001a34","manifest":{"dublin_core":{"conformsto":"rc0.2","contributor":["Ivan Pavlii, PhD in World Literature, Baku Slavic University","Maria Karyakina, PhD, University of Pretoria, MTh in New Testament, University of South Africa","Aleksey Voskresenskiy, MTh in New Testament, University of Cardiff, Wales","Yuri Tamurkin, BTh,  St.Petersburg Christian University","Anna Savitskaya","Samuel Kim","Larry Sallee (Th.M Dallas Theological Seminary, D.Min. Columbia Biblical Seminary)","Perry Oakes (BA Biblical Studies, Taylor University; MA Theology, Fuller Seminary; MA Linguistics, University of Texas at Arlington; PhD Old Testament, Southwestern Baptist Theological Seminary)","Joel D. Ruark (M.A.Th. Gordon-Conwell Theological Seminary; Th.M. Stellenbosch University; Ph.D. Candidate in Old Testament Studies, Stellenbosch University)","Jesse Griffin (BA Biblical Studies, Liberty University; MA Biblical Languages, Gordon-Conwell Theological Seminary)","Susan Quigley, MA in Linguistics","Jerrell Hein","Cheryl Stauter","Deb Richey","Don Ritchey","Gena Schottmuller","Irene Little","Marsha Rogne","Pat Naber","Randy Stauter","Russ Isham","Vickey DeKraker","Door43 World Missions Community"],"creator":"Door43, Russian Open Bible","description":"Comprehension and theological questions for each chapter of the Bible. It enables translators and translation checkers to confirm that the intended meaning of their translations is clearly communicated to the speakers of that language.","format":"text/markdown","identifier":"tq","issued":"2021-01-27","language":{"identifier":"ru","title":"Русский (Russian)","direction":"ltr"},"modified":"2021-01-27","publisher":"Door43, Russian Open Bible","relation":["ru/rlob","ru/rob","ru/rsb","ru/rsob","ru/ulb","ru/obs","ru/ta","ru/tn","ru/tw"],"rights":"CC BY-SA 4.0","source":[{"identifier":"tq","language":"en","version":"19"}],"subject":"Translation Questions","title":"Russian Translation Questions","type":"help","version":"19.1"},"checking":{"checking_entity":["Door43, Russian Open Bible"],"checking_level":"3"},"projects":[{"title":"Бытие","identifier":"gen","sort":1,"path":"./gen","categories":["bible-ot"],"versification":null},{"title":"Исход","identifier":"exo","sort":2,"path":"./exo","categories":["bible-ot"],"versification":null},{"title":"Левит","identifier":"lev","sort":3,"path":"./lev","categories":["bible-ot"],"versification":null},{"title":"Числа","identifier":"num","sort":4,"path":"./num","categories":["bible-ot"],"versification":null},{"title":"Второзаконие","identifier":"deu","sort":5,"path":"./deu","categories":["bible-ot"],"versification":null},{"title":"Иисуса Навина","identifier":"jos","sort":6,"path":"./jos","categories":["bible-ot"],"versification":null},{"title":"Судей","identifier":"jdg","sort":7,"path":"./jdg","categories":["bible-ot"],"versification":null},{"title":"Руфь","identifier":"rut","sort":8,"path":"./rut","categories":["bible-ot"],"versification":null},{"title":"1 Царств","identifier":"1sa","sort":9,"path":"./1sa","categories":["bible-ot"],"versification":null},{"title":"2 Царств","identifier":"2sa","sort":10,"path":"./2sa","categories":["bible-ot"],"versification":null},{"title":"3 Царств","identifier":"1ki","sort":11,"path":"./1ki","categories":["bible-ot"],"versification":null},{"title":"4 Царств","identifier":"2ki","sort":12,"path":"./2ki","categories":["bible-ot"],"versification":null},{"title":"1 Паралипоменон","identifier":"1ch","sort":13,"path":"./1ch","categories":["bible-ot"],"versification":null},{"title":"2 Паралипоменон","identifier":"2ch","sort":14,"path":"./2ch","categories":["bible-ot"],"versification":null},{"title":"Ездры","identifier":"ezr","sort":15,"path":"./ezr","categories":["bible-ot"],"versification":null},{"title":"Неемии","identifier":"neh","sort":16,"path":"./neh","categories":["bible-ot"],"versification":null},{"title":"Есфири","identifier":"est","sort":17,"path":"./est","categories":["bible-ot"],"versification":null},{"title":"Иова","identifier":"job","sort":18,"path":"./job","categories":["bible-ot"],"versification":null},{"title":"Псалтирь","identifier":"psa","sort":19,"path":"./psa","categories":["bible-ot"],"versification":null},{"title":"Притчи","identifier":"pro","sort":20,"path":"./pro","categories":["bible-ot"],"versification":null},{"title":"Екклезиаста","identifier":"ecc","sort":21,"path":"./ecc","categories":["bible-ot"],"versification":null},{"title":"Песнь","identifier":"sng","sort":22,"path":"./sng","categories":["bible-ot"],"versification":null},{"title":"Исаии","identifier":"isa","sort":23,"path":"./isa","categories":["bible-ot"],"versification":null},{"title":"Иеремии","identifier":"jer","sort":24,"path":"./jer","categories":["bible-ot"],"versification":null},{"title":"Плач","identifier":"lam","sort":25,"path":"./lam","categories":["bible-ot"],"versification":null},{"title":"Иезекииля","identifier":"ezk","sort":26,"path":"./ezk","categories":["bible-ot"],"versification":null},{"title":"Даниила","identifier":"dan","sort":27,"path":"./dan","categories":["bible-ot"],"versification":null},{"title":"Осии","identifier":"hos","sort":28,"path":"./hos","categories":["bible-ot"],"versification":null},{"title":"Иоиля","identifier":"jol","sort":29,"path":"./jol","categories":["bible-ot"],"versification":null},{"title":"Амоса","identifier":"amo","sort":30,"path":"./amo","categories":["bible-ot"],"versification":null},{"title":"Авдия","identifier":"oba","sort":31,"path":"./oba","categories":["bible-ot"],"versification":null},{"title":"Ионы","identifier":"jon","sort":32,"path":"./jon","categories":["bible-ot"],"versification":null},{"title":"Михея","identifier":"mic","sort":33,"path":"./mic","categories":["bible-ot"],"versification":null},{"title":"Наума","identifier":"nam","sort":34,"path":"./nam","categories":["bible-ot"],"versification":null},{"title":"Аввакума","identifier":"hab","sort":35,"path":"./hab","categories":["bible-ot"],"versification":null},{"title":"Софонии","identifier":"zep","sort":36,"path":"./zep","categories":["bible-ot"],"versification":null},{"title":"Аггея","identifier":"hag","sort":37,"path":"./hag","categories":["bible-ot"],"versification":null},{"title":"Захарии","identifier":"zec","sort":38,"path":"./zec","categories":["bible-ot"],"versification":null},{"title":"Малахии","identifier":"mal","sort":39,"path":"./mal","categories":["bible-ot"],"versification":null},{"title":"Матфея","identifier":"mat","sort":40,"path":"./mat","categories":["bible-nt"],"versification":null},{"title":"Марка","identifier":"mrk","sort":41,"path":"./mrk","categories":["bible-nt"],"versification":null},{"title":"Луки","identifier":"luk","sort":42,"path":"./luk","categories":["bible-nt"],"versification":null},{"title":"Иоанна","identifier":"jhn","sort":43,"path":"./jhn","categories":["bible-nt"],"versification":null},{"title":"Деяния","identifier":"act","sort":44,"path":"./act","categories":["bible-nt"],"versification":null},{"title":"Римлянам","identifier":"rom","sort":45,"path":"./rom","categories":["bible-nt"],"versification":null},{"title":"1 Коринфянам","identifier":"1co","sort":46,"path":"./1co","categories":["bible-nt"],"versification":null},{"title":"2 Коринфянам","identifier":"2co","sort":47,"path":"./2co","categories":["bible-nt"],"versification":null},{"title":"Галатам","identifier":"gal","sort":48,"path":"./gal","categories":["bible-nt"],"versification":null},{"title":"Ефесянам","identifier":"eph","sort":49,"path":"./eph","categories":["bible-nt"],"versification":null},{"title":"Филиппийцам","identifier":"php","sort":50,"path":"./php","categories":["bible-nt"],"versification":null},{"title":"Колоссянам","identifier":"col","sort":51,"path":"./col","categories":["bible-nt"],"versification":null},{"title":"1 Фессалоникийцам","identifier":"1th","sort":52,"path":"./1th","categories":["bible-nt"],"versification":null},{"title":"2 Фессалоникийцам","identifier":"2th","sort":53,"path":"./2th","categories":["bible-nt"],"versification":null},{"title":"1 Тимофею","identifier":"1ti","sort":54,"path":"./1ti","categories":["bible-nt"],"versification":null},{"title":"2 Тимофею","identifier":"2ti","sort":55,"path":"./2ti","categories":["bible-nt"],"versification":null},{"title":"Титу","identifier":"tit","sort":56,"path":"./tit","categories":["bible-nt"],"versification":null},{"title":"Филимону","identifier":"phm","sort":57,"path":"./phm","categories":["bible-nt"],"versification":null},{"title":"Евреям","identifier":"heb","sort":58,"path":"./heb","categories":["bible-nt"],"versification":null},{"title":"Иакова","identifier":"jas","sort":59,"path":"./jas","categories":["bible-nt"],"versification":null},{"title":"1 Петра","identifier":"1pe","sort":60,"path":"./1pe","categories":["bible-nt"],"versification":null},{"title":"2 Петра","identifier":"2pe","sort":61,"path":"./2pe","categories":["bible-nt"],"versification":null},{"title":"1 Иоанна","identifier":"1jn","sort":62,"path":"./1jn","categories":["bible-nt"],"versification":null},{"title":"2 Иоанна","identifier":"2jn","sort":63,"path":"./2jn","categories":["bible-nt"],"versification":null},{"title":"3 Иоанна","identifier":"3jn","sort":64,"path":"./3jn","categories":["bible-nt"],"versification":null},{"title":"Иуды","identifier":"jud","sort":65,"path":"./jud","categories":["bible-nt"],"versification":null},{"title":"Откровение","identifier":"rev","sort":66,"path":"./rev","categories":["bible-nt"],"versification":null}]}}}',
+    'Vcana Bible',
+    '{"resource":"simplified","books":[{"name":"gen","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/01-GEN.usfm"},{"name":"exo","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/02-EXO.usfm"},{"name":"lev","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/03-LEV.usfm"},{"name":"num","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/04-NUM.usfm"},{"name":"deu","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/05-DEU.usfm"},{"name":"jos","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/06-JOS.usfm"},{"name":"jdg","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/07-JDG.usfm"},{"name":"rut","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/08-RUT.usfm"},{"name":"1sa","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/09-1SA.usfm"},{"name":"2sa","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/10-2SA.usfm"},{"name":"1ki","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/11-1KI.usfm"},{"name":"2ki","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/12-2KI.usfm"},{"name":"1ch","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/13-1CH.usfm"},{"name":"2ch","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/14-2CH.usfm"},{"name":"ezr","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/15-EZR.usfm"},{"name":"neh","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/16-NEH.usfm"},{"name":"est","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/17-EST.usfm"},{"name":"job","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/18-JOB.usfm"},{"name":"psa","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/19-PSA.usfm"},{"name":"pro","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/20-PRO.usfm"},{"name":"ecc","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/21-ECC.usfm"},{"name":"sng","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/22-SNG.usfm"},{"name":"isa","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/23-ISA.usfm"},{"name":"jer","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/24-JER.usfm"},{"name":"lam","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/25-LAM.usfm"},{"name":"ezk","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/26-EZK.usfm"},{"name":"dan","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/27-DAN.usfm"},{"name":"hos","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/28-HOS.usfm"},{"name":"jol","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/29-JOL.usfm"},{"name":"amo","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/30-AMO.usfm"},{"name":"oba","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/31-OBA.usfm"},{"name":"jon","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/32-JON.usfm"},{"name":"mic","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/33-MIC.usfm"},{"name":"nam","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/34-NAM.usfm"},{"name":"hab","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/35-HAB.usfm"},{"name":"zep","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/36-ZEP.usfm"},{"name":"hag","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/37-HAG.usfm"},{"name":"zec","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/38-ZEC.usfm"},{"name":"mal","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/39-MAL.usfm"},{"name":"mat","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/41-MAT.usfm"},{"name":"mrk","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/42-MRK.usfm"},{"name":"luk","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/43-LUK.usfm"},{"name":"jhn","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/44-JHN.usfm"},{"name":"act","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/45-ACT.usfm"},{"name":"rom","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/46-ROM.usfm"},{"name":"1co","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/47-1CO.usfm"},{"name":"2co","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/48-2CO.usfm"},{"name":"gal","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/49-GAL.usfm"},{"name":"eph","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/50-EPH.usfm"},{"name":"php","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/51-PHP.usfm"},{"name":"col","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/52-COL.usfm"},{"name":"1th","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/53-1TH.usfm"},{"name":"2th","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/54-2TH.usfm"},{"name":"1ti","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/55-1TI.usfm"},{"name":"2ti","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/56-2TI.usfm"},{"name":"tit","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/57-TIT.usfm"},{"name":"phm","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/58-PHM.usfm"},{"name":"heb","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/59-HEB.usfm"},{"name":"jas","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/60-JAS.usfm"},{"name":"1pe","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/61-1PE.usfm"},{"name":"2pe","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/62-2PE.usfm"},{"name":"1jn","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/63-1JN.usfm"},{"name":"2jn","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/64-2JN.usfm"},{"name":"3jn","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/65-3JN.usfm"},{"name":"jud","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/66-JUD.usfm"},{"name":"rev","link":"https://git.door43.org/ru_gl/ru_rsob/raw/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c/67-REV.usfm"}]}');
 
-    INSERT INTO
-      PUBLIC.projects (title, code, language_id, method, "type", resources, base_manifest)
-    VALUES
-      (
-        'Russian Literal Open Bible',
-        'ru_rlob',
-        2,
-        'Vcana Bible',
-        'bible'::project_type,
-        '{
-          "literal": {
-            "owner": "unfoldingword",
-            "repo": "en_ult",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "simplified": {
-            "owner": "unfoldingword",
-            "repo": "en_ust",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "tn": {
-            "owner": "unfoldingword",
-            "repo": "en_tn",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          }
-        }',
-        '{
-          "resource": "literal",
-          "books": [
-            {
-              "name": "gen",
-              "link": "unfoldingword/en_ult/a3c1876/01_GEN.usfm"
-            },
-            {
-              "name": "1ti",
-              "link": "unfoldingword/en_ult/a3c1876/55_1TI.usfm"
-            },
-            {
-              "name": "tit",
-              "link": "unfoldingword/en_ult/a3c1876/57_TIT.usfm"
-            }
-          ]
-        }'
-      ),
-      (
-        'Kazakh Open Bible Story',
-        'kk_obs',
-        3,
-        'Vcana OBS',
-        'obs'::project_type,
-        '{
-          "obs": {
-            "owner": "ru_gl",
-            "repo": "ru_obs",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "tw": {
-            "owner": "ru_gl",
-            "repo": "ru_obs-twl",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "tq": {
-            "owner": "ru_gl",
-            "repo": "ru_obs-tq",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          }
-        }',
-        '{
-          "resource": "obs",
-          "books": [
-            {
-              "name": "obs",
-              "link": "ru_gl/ru_obs/a3c1876/content"
-            }
-          ]
-        }'
-      );
   -- PROJECTS
 
   -- PROJECT TRANSLATORS
     DELETE FROM
       PUBLIC.project_translators;
 
-    INSERT INTO
-      PUBLIC.project_translators (project_id, user_id, is_moderator)
-    VALUES
-      (1, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
-      (1, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
-      (1, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
-      (1, '2e108465-9c20-46cd-9e43-933730229762', TRUE),
-      (2, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
-      (2, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
-      (2, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
-      (2, '8331e952-5771-49a6-a679-c44736f5581b', TRUE);
+    -- INSERT INTO
+    --   PUBLIC.project_translators (project_id, user_id, is_moderator)
+    -- VALUES
+    --   (1, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
+    --   (1, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
+    --   (1, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
+    --   (1, '2e108465-9c20-46cd-9e43-933730229762', TRUE);
   -- END PROJECT TRANSLATORS
 
   -- PROJECT COORDINATORS
     DELETE FROM
       PUBLIC.project_coordinators;
 
-    INSERT INTO
-      PUBLIC.project_coordinators (project_id, user_id)
-    VALUES
-      (1, '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2'),
-      (2, '54358d8e-0144-47fc-a290-a6882023a3d6');
+    -- INSERT INTO
+    --   PUBLIC.project_coordinators (project_id, user_id)
+    -- VALUES
+    --   (1, '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2');
   -- END PROJECT COORDINATORS
 
   -- STEPS
     DELETE FROM
       PUBLIC.steps;
 
-    INSERT INTO
-      PUBLIC.steps (title, "description", "time", count_of_users, intro, project_id, config, "order" )
-    VALUES
-      ('Шаг один. Читаем вместе Библию', 'Тут можно перевести текст...', 60, 4,
-        '# Вводная\n\n### Как начать\n\nСсылка на видео, должна парситься\n\nhttps://youtu.be/sDcfb_f-f',
-        1,
-        '[
-          {
-            "size": 4,
-            "tools": [
-              {
-                "name": "literal",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 2,
-            "tools": [
-              {
-                "name": "notepad",
-                "config": {"team": true}
-              },
-              {
-                "name": "notepad",
-                "config": {}
-              }
-            ]
-          }
-        ]', 1),
-      ('Шаг два. Набросок', 'Some text here2...', 30, 2,
-        '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-        1,
-        '[
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "literal",
-                "config": {}
-              },
-              {
-                "name": "simplified",
-                "config": {}
-              },
-              {
-                "name": "tn",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "editor",
-                "config": {"type":"blind"}
-              },
-              {
-                "name": "dictionary",
-                "config": {}
-              }
-            ]
-          }
-        ]',2),
-      ('Шаг один. Читаем вместе OBS', 'Some text here...', 45, 4,
-        '# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-        2,
-        '[
-          {
-            "size": 4,
-            "tools": [
-              {
-                "name": "obs",
-                "config": {}
-              },
-              {
-                "name": "tw",
-                "config": {}
-              },
-              {
-                "name": "tq",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 2,
-            "tools": [
-              {
-                "name": "notepad",
-                "config": {}
-              }
-            ]
-          }
-        ]', 1),
-      ('Шаг два. Набросок OBS', 'Some text here2...', 30, 2,
-        '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-        2,
-        '[
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "obs",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "editor",
-                "config": {"type":"blind"}
-              },
-              {
-                "name": "dictionary",
-                "config": {}
-              }
-            ]
-          }
-        ]',2);
+    INSERT INTO public.steps (id, title, description, intro, count_of_users, "time", project_id, config, "order") VALUES
+    (1, 'Шаг 1: Самостоятельное изучение', 'Some text here...', '# Intro
+
+    ### How To Start
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 1, 60, 1, '[{"size":4,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}}]},{"size":2,"tools":[{"name":"ownNotes","config":{}},{"name":"teamNotes","config":{}},{"name":"dictionary","config":{}}]}]', 1),
+    (3, 'Шаг 3: Подготовка к переводу', 'Some text here3...', '# Intro
+
+    ### Как сделать набросок
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 2, 60, 1, '[{"size":4,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}}]},{"size":2,"tools":[{"name":"audio","config":{}}]}]', 3),
+    (2, 'Шаг 2: Командное изучение текста', 'Some text here2...', '# Intro
+
+    ### Как сделать набросок
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 4, 60, 1, '[{"size":4,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}}]},{"size":2,"tools":[{"name":"ownNotes","config":{}},{"name":"teamNotes","config":{}},{"name":"dictionary","config":{}}]}]', 2),
+    (5, 'Шаг 4: Набросок "Вслепую"', 'Some text here4...', '# Intro
+
+    ### Как сделать набросок
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 1, 60, 1, '[{"size":3,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}}]},{"size":3,"tools":[{"name":"translate","config":{"stepOption":"draft"}}]}]', 4),
+    (4, 'Шаг 5: Самостоятельная проверка', 'Some text here5...', '# Intro
+
+    ### Как сделать набросок
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 1, 60, 1, '[{"size":3,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}},{"name":"tquestions","config":{"viewAllQuestions":true}}]},{"size":3,"tools":[{"name":"translate","config":{}},{"name":"ownNotes","config":{}},{"name":"teamNotes","config":{}},{"name":"dictionary","config":{}}]}]', 5),
+    (7, 'Шаг 6: Взаимная проверка', 'Some text here6...', '# Intro
+
+    ### Как сделать набросок
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 2, 60, 1, '[{"size":3,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}},{"name":"tquestions","config":{}}]},{"size":3,"tools":[{"name":"translate","config":{}},{"name":"ownNotes","config":{}},{"name":"teamNotes","config":{}},{"name":"dictionary","config":{}}]}]', 6),
+    (6, 'Шаг 7: Командная проверка', 'Some text here7...', '# Intro
+
+    ### Как сделать набросок
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 4, 60, 1, '[{"size":3,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}},{"name":"tquestions","config":{}}]},{"size":3,"tools":[{"name":"translate","config":{}},{"name":"ownNotes","config":{}},{"name":"teamNotes","config":{}},{"name":"dictionary","config":{}}]}]', 7),
+    (8, 'Шаг 8: ', 'Some text here2...', '# Intro
+
+    ### Как сделать набросок
+
+    Some text here
+
+    https://youtu.be/pRptZjtfUIE', 2, 30, 1, '[{"size":3,"tools":[{"name":"literal","config":{}},{"name":"simplified","config":{}},{"name":"tnotes","config":{}},{"name":"twords","config":{}},{"name":"tquestions","config":{}}]},{"size":3,"tools":[{"name":"translate","config":{}},{"name":"ownNotes","config":{}},{"name":"teamNotes","config":{}},{"name":"dictionary","config":{}}]}]', 8);
+
+
   -- END STEPS
 
   -- BOOKS
     DELETE FROM
       PUBLIC.books;
 
-    INSERT INTO
-      PUBLIC.books (code, project_id, chapters)
-    VALUES
-      ('tit', 1, '{ "1": 3, "2": 4, "3": 2 }'),
-      ('1ti', 1, '{ "1": 4, "2": 2, "3": 16, "4": 16, "5": 25, "6": 21 }'),
-      ('obs', 2, '{ "1": 3, "2": 17, "3": 23, "4": 19, "5": 14, "6": 16, "7": 21, "8": 16, "9": 11, "10": 15 }');
+    INSERT INTO public.books (id, code, project_id, text, chapters) VALUES (1, 'tit', 1, NULL, '{"1":16,"2":15,"3":15}');
+
   -- END BOOKS
 
   -- CHAPTERS
     DELETE FROM
       PUBLIC.chapters;
 
-    INSERT INTO
-      PUBLIC.chapters (project_id, num, book_id, verses, "text")
-    VALUES
-      (1, 1, 1, 3, '1. Тут будет у нас сохраняться итоговый текст\n2. Не знаю пока в каком формате\n3. USFM нужен в итоге, но может тут MD или JSON'),
-      (1, 2, 1, 4, '1. А тут\n2. У нас\n3. Итоговая вторая\n4. Глава'),
-      (1, 3, 1, 2, null),
-      (1, 1, 2, 4, '1. Тут итог\n2. другой\n3. Книги\n4. 4 стиха'),
-      (1, 2, 2, 2, null),
-      (2, 1, 3, 3, null);
+    INSERT INTO public.chapters (id, num, book_id, project_id, text, verses) VALUES
+      (1, 1, 1, 1, NULL, 16),
+      (2, 2, 1, 1, NULL, 15),
+      (3, 3, 1, 1, NULL, 15);
+
   -- END CHAPTERS
 
   -- VERSES
     DELETE FROM
       PUBLIC.verses;
 
-    INSERT INTO
-      PUBLIC.verses (project_id, num, "text", chapter_id, project_translator_id, current_step)
-    VALUES
-      (1, 1, 'Тут будет у нас сохраняться итоговый текст', 1, 3, 2),
-      (1, 2, 'Не знаю пока в каком формате', 1, 1, 2),
-      (1, 3, 'USFM нужен в итоге, но может тут MD или JSON', 1, 2, 2),
-      (1, 1, 'А тут', 2, 3, 2),
-      (1, 2, 'У нас', 2, 1, 2),
-      (1, 3, 'Итоговая вторая', 2, 2, 2),
-      (1, 4, 'Глава', 2, 4, 2),
-      (1, 1, null, 3, 3, 1),
-      (1, 2, null, 3, 1, 1),
-      (1, 1, 'Тут итог', 4, 3, 2),
-      (1, 2, 'другой', 4, 1, 2),
-      (1, 3, 'Книги', 4, 2, 2),
-      (1, 4, '4 стиха', 4, 4, 2),
-      (1, 1, null, 5, 3, 1),
-      (1, 2, null, 5, 1, 1),
-      (2, 1, 'Здесь начался перевод', 6, 2, 4),
-      (2, 2, 'Какой-то главы', 6, 8, 3),
-      (2, 3, null, 6, 8, 3);
+    INSERT INTO public.verses (id, num, text, current_step, chapter_id, project_id, project_translator_id) VALUES
+    (1, 1, NULL, 1, 1, 1, NULL),
+    (2, 2, NULL, 1, 1, 1, NULL),
+    (3, 3, NULL, 1, 1, 1, NULL),
+    (4, 4, NULL, 1, 1, 1, NULL),
+    (5, 5, NULL, 1, 1, 1, NULL),
+    (6, 6, NULL, 1, 1, 1, NULL),
+    (7, 7, NULL, 1, 1, 1, NULL),
+    (8, 8, NULL, 1, 1, 1, NULL),
+    (9, 9, NULL, 1, 1, 1, NULL),
+    (10, 10, NULL, 1, 1, 1, NULL),
+    (11, 11, NULL, 1, 1, 1, NULL),
+    (12, 12, NULL, 1, 1, 1, NULL),
+    (13, 13, NULL, 1, 1, 1, NULL),
+    (14, 14, NULL, 1, 1, 1, NULL),
+    (15, 15, NULL, 1, 1, 1, NULL),
+    (16, 16, NULL, 1, 1, 1, NULL);
+
+
   -- END VERSES
 
   -- PROGRESS
     DELETE FROM
       PUBLIC.progress;
 
-    INSERT INTO
-      PUBLIC.progress (verse_id, step_id, "text")
-    VALUES
-      (1, 1, 'Тут будет у нас сохраняться итоговый текст'),
-      (2, 1, 'Не знаю пока в каком формате'),
-      (3, 1, 'USFM нужен в итоге, но может тут MD или JSON'),
-      (4, 1, 'А тут'),
-      (5, 1, 'У нас'),
-      (6, 1, 'Итоговая вторая'),
-      (7, 1, 'Глава'),
-      (10, 1, 'Тут итог'),
-      (11, 1, 'другой'),
-      (12, 1, 'Книги'),
-      (13, 1, '4 стиха'),
-      (16, 3, 'Здесь начался перевод');
   -- END PROGRESS
 -- END DUMMY DATA
