@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
@@ -7,7 +7,6 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { useMemo } from 'react'
 
 function ProjectCreate() {
   const router = useRouter()
@@ -24,16 +23,29 @@ function ProjectCreate() {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm({ mode: 'onChange' })
 
   const methodId = useWatch({ control, name: 'methodId' })
   useEffect(() => {
-    setMethod(methods?.[methodId])
-    setCustomSteps(JSON.stringify(methods?.[methodId]?.steps, null, 2))
-    setCustomResources(methods?.[methodId]?.resources)
+    if (methods) {
+      const selectedMethod = methods?.find((el) => el.id === methodId)
+      setMethod(selectedMethod)
+      setCustomSteps(JSON.stringify(selectedMethod?.steps, null, 2))
+      setCustomResources(selectedMethod?.resources)
+    }
   }, [methodId, methods])
-
+  useEffect(() => {
+    if (methods) {
+      setValue('methodId', methods?.[0]?.id)
+    }
+  }, [methods, setValue])
+  useEffect(() => {
+    if (languages) {
+      setValue('languageId', languages?.[0]?.id)
+    }
+  }, [languages, setValue])
   const onSubmit = async (data) => {
     const { title, code, languageId } = data
     if (!title || !code || !languageId) {
@@ -153,12 +165,12 @@ function ProjectCreate() {
           placeholder={t('Method')}
           {...register('methodId')}
           className="input max-w-sm"
+          defaultValue={methods?.[0]?.id}
         >
-          <option value={''}>Select</option>
           {methods &&
-            methods.map((el, index) => {
+            methods.map((el) => {
               return (
-                <option key={index} value={index}>
+                <option key={el.id} value={el.id}>
                   {el.title} ({el.type})
                 </option>
               )
