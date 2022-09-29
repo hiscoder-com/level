@@ -21,8 +21,7 @@ import { useTranslation } from 'next-i18next'
 import TranslatorImage from './TranslatorImage'
 
 function ProjectEdit() {
-  const { t } = useTranslation('common')
-
+  const { t } = useTranslation(['common', 'project-edit'])
   const {
     query: { code },
   } = useRouter()
@@ -54,85 +53,53 @@ function ProjectEdit() {
       return
     }
 
-    let { data, error } = await supabase.rpc(type, {
+    const { error } = await supabase.rpc(type, {
       project_id: project.id,
       user_id: selectedModerator.id,
     })
-
     if (error) console.error(error)
     else {
       setSelectedModerator(false)
       mutateModerator()
-      console.log(data)
     }
   }
+  const roleActions = {
+    translators: { mutate: mutateTranslator, reset: setSelectedTranslator },
+    coordinators: { mutate: mutateCoordinator, reset: setSelectedCoordinator },
+  }
 
-  const removeTranslator = async (id) => {
+  const remove = async (id, role) => {
     if (!project?.id) {
       return
     }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/projects/${code}/translators/${id}`, {
+      .delete(`/api/projects/${code}/${role}/${id}`, {
         data: { project_id: project.id },
       })
-      .then((result) => {
-        const { data } = result
-        setSelectedTranslator(false)
-        mutateTranslator()
+      .then(() => {
+        roleActions[role].reset(false)
+        roleActions[role].mutate()
       })
       .catch((error) => console.log(error))
   }
-  const removeCoordinator = async (id) => {
-    if (!project?.id) {
-      return
-    }
-    axios.defaults.headers.common['token'] = user?.access_token
-    axios
-      .delete(`/api/projects/${code}/coordinators/${id}`, {
-        data: { project_id: project.id },
-      })
-      .then((result) => {
-        const { data } = result
-        setSelectedTranslator(false)
-        mutateCoordinator()
-      })
-      .catch((error) => console.log(error))
-  }
-  const assignTranslator = async () => {
-    if (!project?.id) {
-      return
-    }
 
+  const assign = async (role) => {
+    if (!project?.id) {
+      return
+    }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post(`/api/projects/${code}/translators/`, {
+      .post(`/api/projects/${code}/${role}/`, {
         user_id: selectedUser,
         project_id: project?.id,
       })
-      .then((result) => {
-        const { data } = result
-        mutateTranslator()
+      .then(() => {
+        roleActions[role].mutate()
       })
       .catch((error) => console.log(error))
   }
-  const assignCoordinator = async () => {
-    if (!project?.id) {
-      return
-    }
 
-    axios.defaults.headers.common['token'] = user?.access_token
-    axios
-      .post(`/api/projects/${code}/coordinators/`, {
-        user_id: selectedUser,
-        project_id: project?.id,
-      })
-      .then((result) => {
-        const { data } = result
-        mutateCoordinator()
-      })
-      .catch((error) => console.log(error))
-  }
   const moderatorIds = useMemo(() => {
     if (moderators) {
       return moderators.map((el) => el.users.id)
@@ -141,16 +108,17 @@ function ProjectEdit() {
 
   return (
     <div>
-      <div className="divide-y-2  divide-gray-400">
+      <div className="divide-y-2 divide-gray-400">
         <div className="pb-5">
-          <div className="text-2xl pb-5">{project?.title}</div>
+          <div className="pb-5 inline-block ml-2">{t('NameProject')}</div>
+          <div className="pb-5 inline-block ml-2">{project?.title}</div>
           <div className="w-1/2 flex justify-between">
-            <div className="ml-2">Координаторы</div>
+            <div className="ml-2">{t('Coordinators')}</div>
             <button
               onClick={() => setOpenModalAssignCoordinator(true)}
-              className="btn-cyan mb-2"
+              className="btn-cyan m-2"
             >
-              Добавить координатора
+              {t('project-edit:AddCoordinator')}
             </button>
           </div>
           <CoordinatorsList
@@ -158,14 +126,14 @@ function ProjectEdit() {
             setSelectedCoordinator={setSelectedCoordinator}
           />
         </div>
-        <div className="pt-5">
+        <div className="pt-5 pb-5">
           <div className="flex justify-between">
-            <div className="ml-2">Translators</div>
+            <div className="ml-2">{t('Translators')}</div>
             <button
               onClick={() => setOpenModalAssignTranslator(true)}
-              className="btn-cyan mb-2"
+              className="btn-cyan m-2"
             >
-              Добавить переводчика
+              {t('project-edit:AddTranslator')}
             </button>
           </div>
           <TranslatorsList
@@ -198,7 +166,7 @@ function ProjectEdit() {
                   })}
               </select>
               <button
-                onClick={() => assignTranslator()}
+                onClick={() => assign('translators')}
                 disabled={!selectedUser}
                 className="btn-cyan mx-2"
               >
@@ -230,7 +198,7 @@ function ProjectEdit() {
                   })}
               </select>
               <button
-                onClick={() => assignCoordinator()}
+                onClick={() => assign('coordinators')}
                 disabled={!selectedUser}
                 className="btn-cyan mx-2"
               >
@@ -245,8 +213,8 @@ function ProjectEdit() {
             >
               <div className="mb-2">
                 {moderatorIds?.includes(selectedModerator?.id)
-                  ? t('RemovingModerator')
-                  : t('AssigningModerator')}
+                  ? t('project-edit:RemovingModerator')
+                  : t('project-edit:AssigningModerator')}
               </div>
 
               <button
@@ -273,10 +241,10 @@ function ProjectEdit() {
                 setSelectedTranslator(false)
               }}
             >
-              <div className="mb-2">{t('RemovingTranslator')}</div>
+              <div className="mb-2">{t('project-edit:RemovingTranslator')}</div>
 
               <button
-                onClick={() => removeTranslator(selectedTranslator.id)}
+                onClick={() => remove(selectedTranslator.id, 'translators')}
                 disabled={!selectedTranslator}
                 className="btn-cyan mx-2"
               >
@@ -291,10 +259,10 @@ function ProjectEdit() {
                 setSelectedCoordinator(false)
               }}
             >
-              <div className="mb-2">{t('RemovingTranslator')}</div>
+              <div className="mb-2">{t('project-edit:RemovingCoordinator')}</div>
 
               <button
-                onClick={() => removeCoordinator(selectedCoordinator.id)}
+                onClick={() => remove(selectedCoordinator.id, 'coordinators')}
                 disabled={!selectedCoordinator}
                 className="btn-cyan mx-2"
               >
@@ -316,20 +284,21 @@ function TranslatorsList({
   setSelectedModerator,
   setSelectedTranslator,
 }) {
+  const { t } = useTranslation(['common'])
   return (
-    <div className="overflow-x-auto relative">
+    <div className="overflow-x-auto relative px-4">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
-              Login
+              {t('Login')}
+            </th>
+            <th scope="col" className="py-3 px-6 hidden sm:block">
+              {t('Email')}
             </th>
             <th scope="col" className="py-3 px-6">
-              Email
-            </th>
-            <th scope="col" className="py-3 px-6">
-              Moderator
+              {t('Moderator')}
             </th>
             <th scope="col" className="py-3 px-6"></th>
           </tr>
@@ -350,7 +319,7 @@ function TranslatorsList({
                   </div>
                 </th>
                 <td className="py-4 px-6">{el.users.login}</td>
-                <td className="py-4 px-6">{el.users.email}</td>
+                <td className="py-4 px-6 hidden sm:block">{el.users.email}</td>
                 <td className="py-4 px-6">
                   <Switch
                     checked={moderatorIds?.includes(el.users.id)}
@@ -374,7 +343,7 @@ function TranslatorsList({
                     onClick={() => setSelectedTranslator(el.users)}
                     className="btn-red"
                   >
-                    Remove
+                    {t('Remove')}
                   </button>
                 </td>
               </tr>
@@ -387,17 +356,18 @@ function TranslatorsList({
 }
 
 function CoordinatorsList({ coordinators, setSelectedCoordinator }) {
+  const { t } = useTranslation(['common'])
   return (
-    <div className="overflow-x-auto relative">
+    <div className="overflow-x-auto relative px-4">
       <table className="w-1/2 text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
-              Login
+              {t('Login')}
             </th>
-            <th scope="col" className="py-3 px-6">
-              Email
+            <th scope="col" className="py-3 px-6 hidden sm:block">
+              {t('Email')}
             </th>
 
             <th scope="col" className="py-3 px-6"></th>
@@ -419,14 +389,14 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator }) {
                   </div>
                 </th>
                 <td className="py-4 px-6">{el.users.login}</td>
-                <td className="py-4 px-6">{el.users.email}</td>
+                <td className="py-4 px-6 hidden sm:block">{el.users.email}</td>
 
                 <td className="py-4 px-6">
                   <button
                     onClick={() => setSelectedCoordinator(el.users)}
                     className="btn-red"
                   >
-                    Remove
+                    {t('Remove')}
                   </button>
                 </td>
               </tr>
