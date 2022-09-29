@@ -154,6 +154,7 @@ function ProjectCreate() {
           {...register('methodId')}
           className="input max-w-sm"
         >
+          <option value={''}>Select</option>
           {methods &&
             methods.map((el, index) => {
               return (
