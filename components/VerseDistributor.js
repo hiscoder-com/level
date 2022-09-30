@@ -31,43 +31,47 @@ function VerseDistributor() {
   })
 
   const [verses, setVerses] = useState(falseverses)
+  const coloring = (index) => {
+    const newArr = [...verses]
+    newArr[index] = {
+      num: index + 1,
+      name: currentTranslator?.users?.login,
+      color: currentTranslator?.color,
+    }
+    setVerses(newArr)
+  }
 
   return (
     <div className="flex">
       <div
-        onMouseDown={() => setStartSelection(true)}
+        onMouseDown={() => {
+          setStartSelection(true)
+        }}
         onMouseUp={() => setStartSelection(false)}
-        className="noselect   grid-cols-6 grid "
+        className="noselect grid-cols-6 grid "
       >
         {verses.map((el, index) => {
           return (
             <div
+              onMouseDown={() => {
+                if (currentTranslator !== null) {
+                  coloring(index)
+                }
+              }}
               onMouseOver={() => {
-                if (startSelection) {
-                  const newArr = [...verses]
-                  newArr[index] = {
-                    num: index + 1,
-                    name: currentTranslator?.users?.login,
-                    color: currentTranslator?.color,
-                  }
-                  setVerses(newArr)
+                if (startSelection && currentTranslator !== null) {
+                  coloring(index)
                 }
               }}
               onClick={() => {
                 if (currentTranslator === null) {
                   return
                 }
-                const newArr = [...verses]
-                newArr[index] = {
-                  num: index + 1,
-                  name: currentTranslator?.users?.login,
-                  color: currentTranslator?.color,
-                }
-                setVerses(newArr)
+                coloring(index)
               }}
               className={`${
                 el?.color ?? ' bg-slate-300'
-              }  w-36 border-slate-200 border-2 cursor-pointer`}
+              }  w-36 border-slate-200 border-2 cursor-pointer hover:border-1 hover:border-cyan-300`}
               key={index}
             >
               {el.num + el.name}
@@ -75,14 +79,16 @@ function VerseDistributor() {
           )
         })}
       </div>
-      <div>
+      <div className="">
         {colorTranslators?.map((el, index) => (
           <div key={index} className="flex">
             <div
               onClick={() => setCurrentTranslator(el)}
               className={`${
-                currentTranslator === el.users.login ? 'bg-gray-100' : el.color
-              } cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
+                currentTranslator?.users?.login === el.users.login
+                  ? 'border-4 border-cyan-300 p-1'
+                  : 'p-2'
+              } cursor-pointer ml-10  my-2 w-fit rounded-md ${el.color}`}
             >
               {el.users.login}
             </div>
@@ -100,7 +106,11 @@ function VerseDistributor() {
               return { ...prev, users: { login: '' }, color: ' bg-slate-300' }
             })
           }
-          className={`bg-slate-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
+          className={`${
+            currentTranslator?.users?.login === ''
+              ? 'border-4 border-cyan-300 p-1'
+              : 'p-2'
+          } bg-slate-300 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
         >
           Clearing
         </button>
