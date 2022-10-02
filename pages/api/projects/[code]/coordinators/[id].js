@@ -7,32 +7,27 @@ export default async function languageProjectModeratorHandler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
   const {
-    body: { project_id, prev_id },
-    query: { id },
+    query: { code, id },
     method,
   } = req
 
   switch (method) {
-    case 'PUT':
-      try {
-        // TODO валидацию
-        const { data, error } = await supabase
-          .from('project_coordinators')
-          .update({ user_id: id })
-          .match({ user_id: prev_id, role: 'coordinator', project_id: project_id })
-        if (error) throw error
-        res.status(200).json(data)
-      } catch (error) {
-        res.status(404).json({ error })
+    case 'DELETE':
+      const { data: project, error } = await supabase
+        .from('projects')
+        .select('id, code')
+        .eq('code', code)
+        .limit(1)
+        .maybeSingle()
+      if (error) throw error
+      if (!project?.id) {
         return
       }
-      break
-    case 'DELETE': //TODO проверить - работает ли и нужен ли
       try {
         const { data, error } = await supabase
           .from('project_coordinators')
           .delete()
-          .match({ project_id: project_id, user_id: id })
+          .match({ project_id: project.id, user_id: id })
 
         if (error) throw error
         res.status(200).json(data)

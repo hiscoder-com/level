@@ -29,12 +29,21 @@ export default async function languageProjectTranslatorsHandler(req, res) {
       }
       break
     case 'POST':
+      const { user_id } = body
       try {
-        const { project_id, user_id } = body
-        // TODO валидацию
+        const { data: project, error: post_error } = await supabase
+          .from('projects')
+          .select('id, code')
+          .eq('code', code)
+          .limit(1)
+          .maybeSingle()
+        if (post_error) throw post_error
+        if (!project?.id) {
+          return
+        }
         const { data, error } = await supabase
           .from('project_translators')
-          .insert([{ project_id, user_id }])
+          .insert([{ project_id: project.id, user_id }])
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {

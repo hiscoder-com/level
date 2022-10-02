@@ -56,12 +56,10 @@ function ProjectEdit() {
     coordinators: { mutate: mutateCoordinator, reset: setSelectedCoordinator },
   }
 
-  const remove = async (id, role) => {
+  const remove = async (userId, role) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/projects/${code}/${role}/${id}`, {
-        data: { project_id: project.id },
-      })
+      .delete(`/api/projects/${code}/${role}/${userId}`)
       .then(() => {
         roleActions[role].reset(false)
         roleActions[role].mutate()
@@ -70,14 +68,10 @@ function ProjectEdit() {
   }
 
   const assign = async (role) => {
-    if (!project?.id) {
-      return
-    }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post(`/api/projects/${code}/${role}/`, {
         user_id: selectedUser,
-        project_id: project?.id,
       })
       .then(() => {
         roleActions[role].mutate()

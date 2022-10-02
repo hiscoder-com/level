@@ -1,6 +1,5 @@
 import { supabase } from 'utils/supabaseClient'
 
-/** Не работает TODO */
 export default async function languageProjectCoordinatorsHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -30,11 +29,21 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
       res.status(200).json(data)
       break
     case 'POST':
+      const { user_id } = body
       try {
-        const { project_id, user_id } = body
+        const { data: project, error: post_error } = await supabase
+          .from('projects')
+          .select('id, code')
+          .eq('code', code)
+          .limit(1)
+          .maybeSingle()
+        if (post_error) throw post_error
+        if (!project?.id) {
+          return
+        }
         const { data: value, error } = await supabase
           .from('project_coordinators')
-          .insert([{ project_id, user_id }])
+          .insert([{ project_id: project.id, user_id }])
         if (error) throw error
         data = value
       } catch (error) {
