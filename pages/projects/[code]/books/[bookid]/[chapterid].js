@@ -74,11 +74,6 @@ function ChapterVersesPage() {
       <h2>Project {project?.code}</h2>
       <h3>Book: {book?.code}</h3>
       <h3>Chapter: {chapter?.num}</h3>
-      {verses.map((el) => (
-        <div key={el.id}>
-          {el.num} ,{el.current_step}
-        </div>
-      ))}
       <VerseDistributor verses={verses} />
     </>
   )
