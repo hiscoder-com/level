@@ -45,10 +45,11 @@ function VerseDistributor({ verses }) {
   }
   console.log(versesDistibutor)
   const verseDistributing = async () => {
-    const { data, error } = await supabase.from('verses').upsert([
-      { id: 1, project_translator_id: '123' },
-      { id: 2, project_translator_id: '345' },
-    ])
+    const { data, error } = await supabase
+      .from('verses')
+      .update({ project_translator_id: '5' })
+      .in('num', ['15', 16])
+
     console.log(error, data)
   }
 
