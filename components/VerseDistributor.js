@@ -1,14 +1,20 @@
-import { useCurrentUser } from 'lib/UserContext'
-import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useTranslators } from 'utils/hooks'
+import { useRouter } from 'next/router'
+
+import { useCurrentUser } from 'lib/UserContext'
+import { useProject, useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
 const defaultColor = [
-  'bg-blue-400',
   'bg-yellow-400',
-  'bg-red-400',
   'bg-green-400',
+  'bg-blue-400',
+  'bg-pink-400',
   'bg-violet-400',
+  'bg-orange-400',
+  'bg-cyan-400',
+  'bg-red-400',
+  'bg-fuchsia-400',
+  'bg-teal-400',
 ]
 
 function VerseDistributor({ verses }) {
@@ -21,13 +27,16 @@ function VerseDistributor({ verses }) {
     token: user?.access_token,
     code,
   })
+  const [project] = useProject({
+    token: user?.access_token,
+    code,
+  })
   const [currentTranslator, setCurrentTranslator] = useState(null)
   const [startSelection, setStartSelection] = useState(false)
 
   const colorTranslators = translators?.map((el, index) => {
     return { ...el, color: defaultColor[index] }
   })
-  console.log(colorTranslators)
   const [versesDistibutor, setVersesDistibutor] = useState([])
   useEffect(() => {
     setVersesDistibutor(verses)
@@ -38,19 +47,19 @@ function VerseDistributor({ verses }) {
     newArr[index] = {
       ...newArr[index],
       translator_name: currentTranslator?.users?.login,
-      project_translator_id: currentTranslator?.users?.id,
+      project_translator_id: currentTranslator?.id,
       color: currentTranslator?.color,
     }
     setVersesDistibutor(newArr)
   }
-  console.log(versesDistibutor)
   const verseDistributing = async () => {
-    const { data, error } = await supabase
-      .from('verses')
-      .update({ project_translator_id: '5' })
-      .in('num', ['15', 16])
+    let { data, error } = await supabase.rpc('distribute_verses', {
+      distributor: versesDistibutor,
+      project_id: project?.id,
+    })
 
-    console.log(error, data)
+    if (error) console.error(error)
+    else console.log(data)
   }
 
   return (
@@ -60,37 +69,39 @@ function VerseDistributor({ verses }) {
           setStartSelection(true)
         }}
         onMouseUp={() => setStartSelection(false)}
-        className="noselect grid-cols-6 grid"
+        className="noselect lg:grid-cols-6 grid-cols-4 grid"
       >
-        {versesDistibutor.map((el, index) => {
-          return (
-            <div
-              onMouseDown={() => {
-                if (currentTranslator !== null) {
+        {versesDistibutor
+          .sort((a, b) => a.num - b.num)
+          .map((el, index) => {
+            return (
+              <div
+                onMouseDown={() => {
+                  if (currentTranslator !== null) {
+                    coloring(index)
+                  }
+                }}
+                onMouseOver={() => {
+                  if (startSelection && currentTranslator !== null) {
+                    coloring(index)
+                  }
+                }}
+                onClick={() => {
+                  if (currentTranslator === null) {
+                    return
+                  }
                   coloring(index)
-                }
-              }}
-              onMouseOver={() => {
-                if (startSelection && currentTranslator !== null) {
-                  coloring(index)
-                }
-              }}
-              onClick={() => {
-                if (currentTranslator === null) {
-                  return
-                }
-                coloring(index)
-              }}
-              className={`${
-                el?.color ?? ' bg-slate-300'
-              }   w-32 border-slate-200 border-2 cursor-pointer hover:border-1 hover:border-cyan-300 truncate`}
-              key={index}
-            >
-              {el.num}
-              {el.translator_name}
-            </div>
-          )
-        })}
+                }}
+                className={`${
+                  el?.color ?? 'bg-slate-300'
+                } w-32 border-slate-200 border-2 cursor-pointer hover:border-1 hover:border-cyan-300 truncate flex justify-between p-1`}
+                key={index}
+              >
+                <div>{el.num}</div>
+                <div>{el.translator_name}</div>
+              </div>
+            )
+          })}
       </div>
       <div className="grid grid-cols-2 md:block">
         {colorTranslators?.map((el, index) => (
@@ -101,15 +112,9 @@ function VerseDistributor({ verses }) {
                 currentTranslator?.users?.login === el.users.login
                   ? 'border-4 border-cyan-300 p-1'
                   : 'p-2'
-              } cursor-pointer ml-10  my-2 w-fit rounded-md ${el.color}`}
+              } cursor-pointer ml-10 my-2 w-fit rounded-md ${el.color}`}
             >
               {el.users.login}
-            </div>
-            <div className="w-40 break-words">
-              {versesDistibutor
-                .filter((verse) => verse?.translator?.name === el.users.login)
-                ?.map((item) => item.num)
-                .join(',')}
             </div>
           </div>
         ))}

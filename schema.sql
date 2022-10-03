@@ -37,6 +37,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
+    DROP FUNCTION IF EXISTS PUBLIC.distribute_verses;
+
   -- END DROP FUNCTION
 
   -- DROP TYPE
@@ -149,6 +151,26 @@
       UPDATE PUBLIC.project_translators SET is_moderator = new_val WHERE project_translators.id = usr.id;
 
       RETURN new_val;
+
+    END;
+  $$;
+
+  -- Распределение стихов среди переводчиков
+  CREATE or replace FUNCTION PUBLIC.distribute_verses(distributor VARCHAR,project_id BIGINT) RETURNS BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+     verse_row record;
+    BEGIN
+      IF authorize(auth.uid(), distribute_verses.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN FALSE;
+      END IF;
+    
+      FOR verse_row IN SELECT * FROM jsonb_to_recordset(distributor::jsonb) AS x(project_translator_id INT,num INT) 
+      LOOP 
+        UPDATE PUBLIC.verses SET project_translator_id = verse_row.project_translator_id WHERE verse_row.num = num;
+      END LOOP;
+
+      RETURN TRUE;
 
     END;
   $$;
