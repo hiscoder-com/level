@@ -7,32 +7,46 @@ export default async function languageProjectModeratorHandler(req, res) {
   }
   supabase.auth.setAuth(req.headers.token)
   const {
-    body: { project_id, prev_id },
-    query: { id },
+    query: { code, id },
     method,
   } = req
+  let project_id = null
 
   switch (method) {
-    case 'PUT':
+    case 'DELETE':
       try {
-        // TODO валидацию
-        const { data, error } = await supabase
-          .from('project_coordinators')
-          .update({ user_id: id })
-          .match({ user_id: prev_id, role: 'coordinator', project_id: project_id })
+        const { data: project, error } = await supabase
+          .from('projects')
+          .select('id, code')
+          .eq('code', code)
+          .limit(1)
+          .maybeSingle()
         if (error) throw error
-        res.status(200).json(data)
+        if (project?.id) {
+          project_id = project?.id
+        }
       } catch (error) {
         res.status(404).json({ error })
+      }
+      if (!project_id) {
+        res.status(404).json({ error: 'Missing id of project' })
         return
       }
-      break
-    case 'DELETE': //TODO проверить - работает ли и нужен ли
+      const { data: project, error } = await supabase
+        .from('projects')
+        .select('id, code')
+        .eq('code', code)
+        .limit(1)
+        .maybeSingle()
+      if (error) throw error
+      if (!project?.id) {
+        return
+      }
       try {
         const { data, error } = await supabase
           .from('project_coordinators')
           .delete()
-          .match({ project_id: body.projectId, role: 'coordinator', user_id: id })
+          .match({ project_id, user_id: id })
 
         if (error) throw error
         res.status(200).json(data)

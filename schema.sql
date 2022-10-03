@@ -25,7 +25,8 @@
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
-    DROP FUNCTION IF EXISTS PUBLIC.set_moderator;
+    DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
+    DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
@@ -134,23 +135,40 @@
   $$;
 
   -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
-  CREATE FUNCTION PUBLIC.set_moderator(user_id uuid, project_id bigint) returns BOOLEAN
+  CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       usr RECORD;
-      new_val BOOLEAN;
     BEGIN
-      IF authorize(auth.uid(), set_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
+      IF authorize(auth.uid(), assign_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
         RETURN FALSE;
       END IF;
-      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = set_moderator.project_id AND project_translators.user_id = set_moderator.user_id;
+      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = assign_moderator.project_id AND project_translators.user_id = assign_moderator.user_id;
       IF usr.id IS NULL THEN
         RETURN FALSE;
       END IF;
-      new_val := NOT usr.is_moderator;
-      UPDATE PUBLIC.project_translators SET is_moderator = new_val WHERE project_translators.id = usr.id;
+      UPDATE PUBLIC.project_translators SET is_moderator = TRUE WHERE project_translators.id = usr.id;
 
-      RETURN new_val;
+      RETURN TRUE;
+
+    END;
+  $$;
+
+  CREATE FUNCTION PUBLIC.remove_moderator(user_id uuid, project_id bigint) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      usr RECORD;
+    BEGIN
+      IF authorize(auth.uid(), remove_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN FALSE;
+      END IF;
+      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = remove_moderator.project_id AND project_translators.user_id = remove_moderator.user_id;
+      IF usr.id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+      UPDATE PUBLIC.project_translators SET is_moderator = FALSE WHERE project_translators.id = usr.id;
+
+      RETURN TRUE;
 
     END;
   $$;

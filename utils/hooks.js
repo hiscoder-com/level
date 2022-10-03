@@ -123,7 +123,10 @@ export function useModerators({ token, code }) {
     data: moderators,
     mutate,
     error,
-  } = useSWR(token ? [`/api/projects/${code}/moderators`, token] : null, fetcher)
+  } = useSWR(
+    token && code ? [`/api/projects/${code}/translators/moderators`, token] : null,
+    fetcher
+  )
   const loading = !moderators && !error
   return [moderators, { mutate, loading, error }]
 }
