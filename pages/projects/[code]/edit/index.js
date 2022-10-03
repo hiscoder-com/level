@@ -1,12 +1,17 @@
-import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import ProjectEdit from 'components/ProjectEdit'
 
 function ProjectPageEdit() {
-  const router = useRouter()
-  const { code } = router.query
-
-  return <ProjectEdit code={code} />
+  return <ProjectEdit />
 }
 
 export default ProjectPageEdit
+
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['common', 'project-edit'])),
+    },
+  }
+}
