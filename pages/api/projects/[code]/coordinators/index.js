@@ -7,6 +7,8 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   let data = {}
+  let project_id = null
+
   const {
     body,
     method,
@@ -31,6 +33,24 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
     case 'POST':
       const { user_id } = body
       try {
+        const { data: project, error } = await supabase
+          .from('projects')
+          .select('id, code')
+          .eq('code', code)
+          .limit(1)
+          .maybeSingle()
+        if (error) throw error
+        if (project?.id) {
+          project_id = project?.id
+        }
+      } catch (error) {
+        res.status(404).json({ error })
+      }
+      if (!project_id) {
+        res.status(404).json({ error: 'Missing id of project' })
+        return
+      }
+      try {
         const { data: project, error: post_error } = await supabase
           .from('projects')
           .select('id, code')
@@ -43,7 +63,7 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
         }
         const { data: value, error } = await supabase
           .from('project_coordinators')
-          .insert([{ project_id: project.id, user_id }])
+          .insert([{ project_id, user_id }])
         if (error) throw error
         data = value
       } catch (error) {
