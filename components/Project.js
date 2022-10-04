@@ -15,12 +15,6 @@ function Project({ code }) {
     code: code,
   })
 
-  // const projectRole = useProjectRole({
-  //   token: user?.access_token,
-  //   code,
-  //   userId: user?.id,
-  //   isAdmin: user?.is_admin,
-  // })
   return (
     <div>
       <h3 className="text-3xl">
