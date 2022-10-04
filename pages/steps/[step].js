@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from '/components/Footer'
 import Workspace from '/components/Workspace'
 import Audio from '/components/Audio'
+
 import { stepsForBible, reference } from 'utils/db'
 
 export default function IntroPage() {

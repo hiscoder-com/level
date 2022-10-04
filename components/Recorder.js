@@ -3,10 +3,10 @@ import { Dialog, Transition } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
 
-import RecorderButton from '../public/recorder.svg'
-import StopButton from '../public/stop.svg'
-import RecorderCrossedButton from '../public/recorder-crossed.svg'
-import TrashButton from '../public/trash.svg'
+import RecorderButton from 'public/recorder.svg'
+import StopButton from 'public/stop.svg'
+import RecorderCrossedButton from 'public/recorder-crossed.svg'
+import TrashButton from 'public/trash.svg'
 
 export default function Recorder() {
   const [showModal, setShowModal] = useState(false)

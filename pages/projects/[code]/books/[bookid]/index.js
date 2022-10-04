@@ -1,8 +1,9 @@
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { supabase } from 'utils/supabaseClient'
-import { useEffect, useState } from 'react'
 
 function BookChaptersPage() {
   const router = useRouter()

@@ -4,6 +4,7 @@ import usfm from 'usfm-js'
 import axios from 'axios'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { supabase } from 'utils/supabaseClient'
 
 function ProjectBooksPage() {

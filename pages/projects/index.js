@@ -1,9 +1,9 @@
 import Link from 'next/link'
 
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useTranslation } from 'next-i18next'
 
 export default function ProjectsPage() {
   const { t } = useTranslation(['projects'])

@@ -1,8 +1,10 @@
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import Footer from 'components/Footer'
+
 import { supabase } from 'utils/supabaseClient'
 
 export default function UserAgreement() {
