@@ -32,29 +32,29 @@ function VerseDistributor({ verses }) {
     code,
   })
   const [currentTranslator, setCurrentTranslator] = useState(null)
-  const [startSelection, setStartSelection] = useState(false)
+  const [isHighlight, setIsHighlight] = useState(false)
 
   const colorTranslators = translators?.map((el, index) => {
     return { ...el, color: defaultColor[index] }
   })
-  const [versesDistibutor, setVersesDistibutor] = useState([])
+  const [versesDivider, setVersesDivider] = useState([])
   useEffect(() => {
-    setVersesDistibutor(verses)
+    setVersesDivider(verses)
   }, [verses])
 
   const coloring = (index) => {
-    const newArr = [...versesDistibutor]
+    const newArr = [...versesDivider]
     newArr[index] = {
       ...newArr[index],
       translator_name: currentTranslator?.users?.login,
       project_translator_id: currentTranslator?.id,
       color: currentTranslator?.color,
     }
-    setVersesDistibutor(newArr)
+    setVersesDivider(newArr)
   }
-  const verseDistributing = async () => {
-    let { data, error } = await supabase.rpc('distribute_verses', {
-      distributor: versesDistibutor,
+  const verseDividing = async () => {
+    let { data, error } = await supabase.rpc('divide_verses', {
+      divider: versesDivider,
       project_id: project?.id,
     })
 
@@ -66,12 +66,12 @@ function VerseDistributor({ verses }) {
     <div className="md:flex mx-4">
       <div
         onMouseDown={() => {
-          setStartSelection(true)
+          setIsHighlight(true)
         }}
-        onMouseUp={() => setStartSelection(false)}
-        className="noselect lg:grid-cols-6 grid-cols-4 grid"
+        onMouseUp={() => setIsHighlight(false)}
+        className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
-        {versesDistibutor
+        {versesDivider
           .sort((a, b) => a.num - b.num)
           .map((el, index) => {
             return (
@@ -82,7 +82,7 @@ function VerseDistributor({ verses }) {
                   }
                 }}
                 onMouseOver={() => {
-                  if (startSelection && currentTranslator !== null) {
+                  if (isHighlight && currentTranslator !== null) {
                     coloring(index)
                   }
                 }}
@@ -133,13 +133,13 @@ function VerseDistributor({ verses }) {
           Clearing
         </button>
         <button
-          onClick={() => setVersesDistibutor(verses)}
+          onClick={() => setVersesDivider(verses)}
           className={`bg-slate-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
         >
           Reset
         </button>
         <button
-          onClick={() => verseDistributing()}
+          onClick={() => verseDividing()}
           className={`bg-green-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
         >
           Save

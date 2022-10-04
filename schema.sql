@@ -38,7 +38,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
-    DROP FUNCTION IF EXISTS PUBLIC.distribute_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
 
   -- END DROP FUNCTION
 
@@ -174,18 +174,18 @@
   $$;
 
   -- Распределение стихов среди переводчиков
-  CREATE or replace FUNCTION PUBLIC.distribute_verses(distributor VARCHAR,project_id BIGINT) RETURNS BOOLEAN
+  CREATE or replace FUNCTION PUBLIC.divide_verses(divider VARCHAR,project_id BIGINT) RETURNS BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
      verse_row record;
     BEGIN
-      IF authorize(auth.uid(), distribute_verses.project_id) NOT IN ('admin', 'coordinator') THEN
+      IF authorize(auth.uid(), divide_verses.project_id) NOT IN ('admin', 'coordinator') THEN
         RETURN FALSE;
       END IF;
     
-      FOR verse_row IN SELECT * FROM jsonb_to_recordset(distributor::jsonb) AS x(project_translator_id INT,num INT) 
+      FOR verse_row IN SELECT * FROM jsonb_to_recordset(divider::jsonb) AS x(project_translator_id INT,id INT) 
       LOOP 
-        UPDATE PUBLIC.verses SET project_translator_id = verse_row.project_translator_id WHERE verse_row.num = num;
+        UPDATE PUBLIC.verses SET project_translator_id = verse_row.project_translator_id WHERE verse_row.id = id;
       END LOOP;
 
       RETURN TRUE;
