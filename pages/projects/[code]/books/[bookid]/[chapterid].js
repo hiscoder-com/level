@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { supabase } from 'utils/supabaseClient'
 import { useEffect, useState } from 'react'
+import VerseDistributor from 'components/VerseDistributor'
 
 function ChapterVersesPage() {
   const router = useRouter()
@@ -68,17 +69,12 @@ function ChapterVersesPage() {
       getVerses()
     }
   }, [chapter?.id, project?.id])
-
   return (
     <>
       <h2>Project {project?.code}</h2>
       <h3>Book: {book?.code}</h3>
       <h3>Chapter: {chapter?.num}</h3>
-      {verses.map((el) => (
-        <div key={el.id}>
-          {el.num} ,{el.current_step}
-        </div>
-      ))}
+      <VerseDistributor verses={verses} />
     </>
   )
 }

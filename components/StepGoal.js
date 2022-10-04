@@ -26,12 +26,17 @@ function StepGoal() {
         {t('common:Goal')}
       </button>
       <Modal
-        open={showModalStepGoal}
-        closeModal={closeModal}
+        isOpen={showModalStepGoal}
+        closeHandle={closeModal}
         title={t('common:Goal') + ':'}
       >
         <div className="mt-2">
           <p className="text-sm text-gray-500">{t(steps[step].stepGoal)}</p>
+        </div>
+        <div className="mt-4">
+          <button className="btn-cyan w-24" onClick={closeModal}>
+            {t('common:Close')}
+          </button>
         </div>
       </Modal>
     </>

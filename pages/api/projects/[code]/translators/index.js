@@ -17,7 +17,7 @@ export default async function languageProjectTranslatorsHandler(req, res) {
         const { data, error } = await supabase
           .from('project_translators')
           .select(
-            'is_moderator,projects!project_translators_project_id_fkey!inner(code),users!inner(*)'
+            'id,is_moderator,projects!project_translators_project_id_fkey!inner(code),users!inner(*)'
           )
           .eq('projects.code', code)
         if (error) throw error
