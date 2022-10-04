@@ -1,8 +1,9 @@
+import { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import { useForm } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -10,32 +11,55 @@ import { useCurrentUser } from 'lib/UserContext'
 function ProjectCreate() {
   const router = useRouter()
   const { t } = useTranslation(['projects'])
+  const [customSteps, setCustomSteps] = useState('')
+  const [customResources, setCustomResources] = useState('')
+  const [method, setMethod] = useState()
+  const [resourcesUrl, setResourcesUrl] = useState()
 
   const { user } = useCurrentUser()
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
-  const projectTypes = ['obs', 'bible']
   const {
     register,
     handleSubmit,
+    control,
+    setValue,
     formState: { errors },
   } = useForm({ mode: 'onChange' })
+
+  const methodId = useWatch({ control, name: 'methodId' })
+  useEffect(() => {
+    if (methods) {
+      const selectedMethod = methods?.find((el) => el.id === methodId)
+      setMethod(selectedMethod)
+      setCustomSteps(JSON.stringify(selectedMethod?.steps, null, 2))
+      setCustomResources(selectedMethod?.resources)
+    }
+  }, [methodId, methods])
+  useEffect(() => {
+    if (methods) {
+      setValue('methodId', methods?.[0]?.id)
+    }
+  }, [methods, setValue])
+  useEffect(() => {
+    if (languages) {
+      setValue('languageId', languages?.[0]?.id)
+    }
+  }, [languages, setValue])
   const onSubmit = async (data) => {
-    const { title, code, languageId, methodId, type } = data
-    if (!title || !code || !languageId || !methodId || !type) {
+    const { title, code, languageId } = data
+    if (!title || !code || !languageId) {
       return
     }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      // TODO тут точно написано правильно? Мне кажется надо '/api/'+languageId+'/projects'
-      // Не ругается скорее всего потому что это значение не используется, так как тут передается в теле айди языка
-      // надо подумать как сделать правильно. Поздаем мы не внутри языка, по этому вроде надо запрос на api/projects делать, но когда у нас будет список и юзер будет открывать проект, какой будет юрл. Будем ли мы показывать там язык проекта, или просто vcana.com/project/rlob
-      .post('/api/[lang]/projects', {
+      .post('/api/projects', {
         title,
         language_id: languageId,
         code,
-        method_id: methodId,
-        type,
+        method_id: method.id,
+        steps: method.steps,
+        resources: resourcesUrl,
       })
       .then((result) => {
         const {
@@ -86,27 +110,45 @@ function ProjectCreate() {
     },
   ]
 
+  const setResources = useMemo(() => {
+    const listOfResources = []
+    for (const resource in customResources) {
+      if (Object.hasOwnProperty.call(customResources, resource)) {
+        const isPrimary = customResources[resource]
+        listOfResources.push(
+          <div className={isPrimary ? 'bg-slate-400' : ''} key={resource}>
+            {resource}:{' '}
+            <input
+              value={resourcesUrl?.[resource] ?? ''}
+              onChange={(e) =>
+                setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))
+              }
+            />
+          </div>
+        )
+      }
+    }
+    return listOfResources
+  }, [customResources, resourcesUrl])
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {inputs.map((el) => {
-          return (
-            <div key={el.title}>
-              <div>{el.title}</div>
-              <input
-                className={`${el.classname} max-w-sm`}
-                placeholder={el.placeholder}
-                {...el.register}
-              />
-              {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
-            </div>
-          )
-        })}
-
+        {inputs.map((el) => (
+          <div key={el.title}>
+            <div>{el.title}</div>
+            <input
+              className={`${el.classname} max-w-sm`}
+              placeholder={el.placeholder}
+              {...el.register}
+            />
+            {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
+          </div>
+        ))}
         <div>{t('Language')}</div>
         <select
           className="input max-w-sm"
-          placeholder="Language"
+          placeholder={t('Language')}
           {...register('languageId')}
         >
           {languages &&
@@ -119,27 +161,109 @@ function ProjectCreate() {
             })}
         </select>
         <div>{t('Method')}</div>
-        <select placeholder="Method" {...register('methodId')} className="input max-w-sm">
+        <select
+          placeholder={t('Method')}
+          {...register('methodId')}
+          className="input max-w-sm"
+          defaultValue={methods?.[0]?.id}
+        >
           {methods &&
             methods.map((el) => {
               return (
                 <option key={el.id} value={el.id}>
-                  {el.title}
+                  {el.title} ({el.type})
                 </option>
               )
             })}
         </select>
-        <select {...register('type')} className="input max-w-sm">
-          {projectTypes &&
-            projectTypes.map((el) => {
-              return (
-                <option key={el} value={el}>
-                  {el}
-                </option>
-              )
-            })}
-        </select>
-
+        <br />
+        <p>
+          Тут самое сложное, так как это будет настройка шагов метода. Нужно как-то
+          аккуратно его разрешить исправлять, не давать чего-то лишнего исправить. Это
+          массив из шагов. Может для одного шага сделать компонент. У шага есть такие
+          параметры.
+        </p>
+        <pre>
+          {`"title": Название шага, даем юзеру возможность перевода этого поля
+"description": Описание шага, возможность редактировать
+"time": время, сколько минут длится шаг
+"count_of_users": сколько юзеров выполняют этот шаг
+"intro": введение в шаг в формате MD
+"config": [ массив объектов, в котором прописано какие карточки и ресурсы отображать тут
+ Пока что редактировать не будем давать
+  Пример объекта
+    "size": размер блока, ширина экрана - 6 единиц
+    "tools": [ массив объектов тулсов. Есть наши стандартные, и есть пользовательские
+        "name": название тулсы, редактор, заметки, глава и т.д.
+        "config": а тут конфиг этого компонента`}
+        </pre>
+        <textarea
+          cols="50"
+          rows="30"
+          onChange={(e) => setCustomSteps(e.target.value)}
+          value={customSteps}
+        />
+        <br />
+        <p>
+          Нужно превратить в форму. Сейчас сюда приходит объект. Ключ - это идентификатор
+          ресурса в шагах метода. Тут нет каких-то правил, можно называть как хочешь.
+          Главное чтоб он встречался в шагах. Значение - булево. Тут только один тру,
+          остальные фолс. Тру означает основной ресурс с которого будет вестись перевод. У
+          нас это смысловой перевод. Это нужно тут в форме как-то показать, чтоб юзер знал
+          что с него идет перевод. Форма такая, указан айди ресурса, точечка или жирным
+          выделен основной, а рядом пустое поле куда юзер вводит ссылку на гит. Ссылка
+          должна быть определенного формата, там должен быть коммит обязательно.
+        </p>
+        <textarea
+          cols="50"
+          rows="6"
+          disabled={true}
+          value={JSON.stringify(customResources, null, 2)}
+        />
+        <br />
+        <pre>
+          {`literal: 'https://git.door43.org/ru_gl/ru_rlob/src/commit/fcfef9689dd6897892dbcced76ba8beb0eacaa62',
+simplified: 'https://git.door43.org/ru_gl/ru_rsob/src/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c',
+tn: 'https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38',`}
+        </pre>
+        {setResources}
+        <br />
+        <p>
+          После того как нажимают на кнопку сохранить, мы делаем следующее: <br />
+          1. Получаем манифесты всех ресурсов чтобы записать в таблицу проектов, в колонку
+          Ресурсы. <br />
+          Создаем вот такой объект
+        </p>
+        <pre>
+          {`"тут идентификатор который в шагах у нас": {
+"owner": "unfoldingword",
+"repo": "en_ult",
+"commit": "acf32a196",
+"manifest": "{}" // а здесь будет манифест в нужном формате
+},`}
+        </pre>
+        <p>
+          2. Особенно мы обработаем основной ресурс, с которого будет идти перевод.
+          Возьмем его манифест и сделаем такую структуру{' '}
+        </p>
+        <pre>
+          {`{
+  "resource": "тут идентификатор этого основного ресурса",
+  "books": [ // массив из списка книг
+    {
+      "name": "gen", // айди книги
+      "link": "unfoldingword/en_ult/raw/commit/a3c1876/01_GEN.usfm" // ссылка на нее
+    },
+  ]
+}`}
+        </pre>
+        <p>
+          3. Все шаги мы переносим в таблицу степс, и связываем с созданным проектом.
+          <br />
+          Сейчас этого кода нет, нужно подумать на сколько это критично. Мне кажется что
+          для первой версии мы можем создать проект в ручную, и отложить разработку на
+          время после запуска
+        </p>
         <input className="btn-cyan btn-filled" type="submit" />
       </form>
     </div>

@@ -1,37 +1,40 @@
 import { supabase } from 'utils/supabaseClient'
 
-export default async function languageProjectModeratorHandler(req, res) {
+export default async function languageProjectTranslatorHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
   supabase.auth.setAuth(req.headers.token)
   const {
-    body: { project_id, prev_id },
-    query: { id },
+    query: { code, id },
     method,
   } = req
-
+  let project_id = null
   switch (method) {
-    case 'PUT':
+    case 'DELETE':
       try {
-        // TODO валидацию
-        const { data, error } = await supabase
-          .from('project_roles')
-          .update({ user_id: id })
-          .match({ user_id: prev_id, role: 'coordinator', project_id: project_id })
+        const { data: project, error } = await supabase
+          .from('projects')
+          .select('id, code')
+          .eq('code', code)
+          .limit(1)
+          .maybeSingle()
         if (error) throw error
-        res.status(200).json(data)
+        if (project?.id) {
+          project_id = project?.id
+        }
       } catch (error) {
         res.status(404).json({ error })
+      }
+      if (!project_id) {
+        res.status(404).json({ error: 'Missing id of project' })
         return
       }
-      break
-    case 'DELETE': //TODO проверить - работает ли и нужен ли
       try {
         const { data, error } = await supabase
-          .from('project_roles')
+          .from('project_translators')
           .delete()
-          .match({ project_id: body.projectId, role: 'coordinator', user_id: id })
+          .match({ project_id: project_id, user_id: id })
 
         if (error) throw error
         res.status(200).json(data)
@@ -41,7 +44,7 @@ export default async function languageProjectModeratorHandler(req, res) {
       }
       break
     default:
-      res.setHeader('Allow', ['GET', 'PUT'])
+      res.setHeader('Allow', ['DELETE'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

@@ -4,7 +4,9 @@ function TranslatorImage({ item, size }) {
   return (
     <div
       title={`${item.users ? `${item.users?.login} ${item.users?.email}` : ''}`}
-      className="relative border-2 rounded-full cursor-default select-none"
+      className={`relative border-2 ${
+        item.is_moderator ? 'border-blue-800 ' : ''
+      } rounded-full cursor-default select-none`}
     >
       {item.avatar ? (
         <div

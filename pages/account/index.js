@@ -1,9 +1,9 @@
 import Head from 'next/head'
 
-import Account from 'components/Account'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import Account from 'components/Account'
 
 function AccountHomePage() {
   const { t } = useTranslation(['users'])

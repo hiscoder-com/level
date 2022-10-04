@@ -1,16 +1,16 @@
 import Link from 'next/link'
 
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import Projects from 'components/Projects'
 import { useCurrentUser } from 'lib/UserContext'
 
 export default function ProjectsPage() {
+  const { t } = useTranslation(['projects'])
   const { user } = useCurrentUser()
 
   return (
     <>
-      <Projects />
       {user?.is_admin && (
         <Link href={'/projects/create'}>
           <a className="btn-cyan">{t('AddNew')}</a>
@@ -23,7 +23,7 @@ export default function ProjectsPage() {
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects'])),
+      ...(await serverSideTranslations(locale, ['projects', 'common'])),
       // Will be passed to the page component as props
     },
   }

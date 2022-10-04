@@ -5,13 +5,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
 import UsersList from 'components/Users/List'
+
 import { useCurrentUser } from 'lib/UserContext'
 
 export default function UsersPage() {
   const { t } = useTranslation(['users'])
 
   const { user } = useCurrentUser()
-
   return (
     <>
       <Head>

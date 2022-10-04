@@ -9,13 +9,13 @@ import { supabase } from 'utils/supabaseClient'
 import { steps } from 'utils/steps'
 import { useCurrentUser } from 'lib/UserContext'
 
-import Modal from './Modal'
 import Timer from './Timer'
 
 import Burger from 'public/burger.svg'
 import Tools from 'public/tools.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
+import StepGoal from './StepGoal'
 
 // TODO тут надо все проверить
 
@@ -35,11 +35,9 @@ export default function AppBar({ setIsOpen }) {
   }, [router.pathname])
 
   useEffect(() => {
-    const hasAccess = async (user_id) => {
+    const hasAccess = async () => {
       try {
-        const { data, error } = await supabase.rpc('has_access', {
-          user_id,
-        })
+        const { data, error } = await supabase.rpc('has_access')
         if (error) throw error
         setAccess(data)
       } catch (error) {
@@ -47,7 +45,7 @@ export default function AppBar({ setIsOpen }) {
       }
     }
     if (user?.id) {
-      hasAccess(user.id)
+      hasAccess()
     }
   }, [user])
 
@@ -85,7 +83,7 @@ export default function AppBar({ setIsOpen }) {
               <div className="hidden md:flex">
                 <Timer time={steps[step].time} />
               </div>
-              <Modal />
+              <StepGoal />
               <Tools />
             </div>
           </>

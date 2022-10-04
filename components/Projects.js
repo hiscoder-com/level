@@ -11,17 +11,10 @@ export default function Projects({ languageCode }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation(['projects'])
 
-  const [adminProjects] = useProjects({
+  const [projects] = useProjects({
     token: user?.access_token,
     language_code: languageCode,
   })
-
-  const [userProjects] = useUserProjects({
-    token: user?.access_token,
-    id: user?.id,
-  })
-
-  const projects = user?.is_admin ? adminProjects : userProjects
 
   return (
     <>

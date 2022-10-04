@@ -76,7 +76,7 @@ export default async function twlHandler(req, res) {
   )}`
   try {
     const _data = await axios.get(url)
-    const jsonData = await tsvToJson(_data.data)
+    const jsonData = tsvToJson(_data.data)
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
@@ -87,19 +87,18 @@ export default async function twlHandler(req, res) {
             const [chapterQuestion] = el.Reference.split(':')
             return chapterQuestion === chapter
           })
-    const promises = data.map((el) => {
+    const promises = data.map(async (el) => {
       const url =
         'https://git.door43.org/ru_gl/ru_tw/raw/branch/master/' +
         el.TWLink.split('/').slice(-3).join('/') +
         '.md'
-      return axios.get(url).then((res) => {
-        const splitter = res.data.search('\n')
-        return {
-          reference: el.Reference,
-          title: res.data.slice(0, splitter),
-          text: res.data.slice(splitter),
-        }
-      })
+      const res = await axios.get(url)
+      const splitter = res.data.search('\n')
+      return {
+        reference: el.Reference,
+        title: res.data.slice(0, splitter),
+        text: res.data.slice(splitter),
+      }
     })
     const words = await Promise.all(promises)
 
