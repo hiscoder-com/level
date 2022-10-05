@@ -23,12 +23,6 @@ export default function LanguagesPage() {
         <div className="my-10">
           <Projects languageCode={lang} />
         </div>
-        <div>
-          <div className="text-3xl leading-9 font-medium mb-5">
-            {t('common:MyProgress')}:
-          </div>
-          <div>{t('common:Progress')}...</div>
-        </div>
       </div>
     </div>
   )

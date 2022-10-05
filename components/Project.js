@@ -28,8 +28,7 @@ function Project({ code }) {
         {t('Language')}{' '}
         {project?.languages && (
           <>
-            <b>{project?.languages?.orig_name + ' '}</b>
-            <b>{project?.languages?.code}</b>
+            <b>{project?.languages?.orig_name + ' ' + project?.languages?.code}</b>
           </>
         )}
       </div>

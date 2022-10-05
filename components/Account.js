@@ -3,10 +3,11 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import Languages from './Languages'
 import Projects from './Projects'
 import SignOut from './SignOut'
+
 import { useCurrentUser } from 'lib/UserContext'
+import Link from 'next/link'
 
 function Account() {
   const { user, loading } = useCurrentUser()
@@ -19,9 +20,9 @@ function Account() {
       router.push('/')
     }
   }, [router, user, loading])
+
   return (
-    <div className="container">
-      <h1>{t('Account')}</h1>
+    <>
       {user?.id && (
         <div className="divide-y divide-gray-400">
           <div>
@@ -36,11 +37,10 @@ function Account() {
             </p>
             <SignOut />
           </div>
-
-          {user?.is_admin ? <Languages /> : <Projects id={user.id} />}
+          <Projects />
         </div>
       )}
-    </div>
+    </>
   )
 }
 

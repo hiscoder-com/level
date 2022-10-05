@@ -15,6 +15,7 @@ function AccountHomePage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <h1>{t('Account')}</h1>
       <Account />
     </div>
   )

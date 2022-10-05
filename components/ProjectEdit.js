@@ -85,221 +85,213 @@ function ProjectEdit() {
     }
   }, [translators])
   return (
-    <div>
-      <div className="divide-y-2 divide-gray-400">
-        <div className="pb-5">
-          <div className="pb-5 inline-block ml-2">{t('NameProject')}</div>
-          <div className="pb-5 inline-block ml-2">{project?.title}</div>
-          <div className="w-1/2 flex justify-between">
-            <div className="ml-2">{t('Coordinators')}</div>
-            <button
-              onClick={() => setOpenModalAssignCoordinator(true)}
-              className="btn-cyan m-2"
-            >
-              {t('project-edit:AddCoordinator')}
-            </button>
-          </div>
-          <CoordinatorsList
-            coordinators={coordinators}
-            setSelectedCoordinator={setSelectedCoordinator}
-          />
+    <div className="divide-y-2 divide-gray-400">
+      <div className="pb-5">
+        <div className="pb-5 inline-block ml-2">{t('NameProject')}</div>
+        <div className="pb-5 inline-block ml-2">{project?.title}</div>
+        <div className="w-1/2 flex justify-between">
+          <div className="ml-2">{t('Coordinators')}</div>
+          <button
+            onClick={() => setOpenModalAssignCoordinator(true)}
+            className="btn-cyan m-2"
+          >
+            {t('project-edit:AddCoordinator')}
+          </button>
         </div>
-        <div className="pt-5 pb-5">
-          <div className="flex justify-between">
-            <div className="ml-2">{t('Translators')}</div>
+        <CoordinatorsList
+          coordinators={coordinators}
+          setSelectedCoordinator={setSelectedCoordinator}
+        />
+      </div>
+      <div className="pt-5 pb-5">
+        <div className="flex justify-between">
+          <div className="ml-2">{t('Translators')}</div>
+          <button
+            onClick={() => setOpenModalAssignTranslator(true)}
+            className="btn-cyan m-2"
+          >
+            {t('project-edit:AddTranslator')}
+          </button>
+        </div>
+        <TranslatorsList
+          translators={translators}
+          setSelectedModerator={setSelectedModerator}
+          setSelectedTranslator={setSelectedTranslator}
+        />
+        <div>
+          <Modal
+            isOpen={openModalAssignTranslator}
+            closeHandle={() => {
+              setOpenModalAssignTranslator(false)
+              setSelectedUser(null)
+            }}
+          >
+            <select
+              className="input m-2"
+              defaultValue={users?.[0].id}
+              onChange={(e) => setSelectedUser(e.target.value)}
+            >
+              {users
+                ?.filter((el) => !translators?.map((el) => el.users.id).includes(el.id))
+                .map((el) => {
+                  return (
+                    <option value={el.id} key={el.id}>
+                      {el.login}
+                    </option>
+                  )
+                })}
+            </select>
             <button
-              onClick={() => setOpenModalAssignTranslator(true)}
-              className="btn-cyan m-2"
+              onClick={() => assign('translators')}
+              disabled={!selectedUser}
+              className="btn-cyan mx-2"
             >
-              {t('project-edit:AddTranslator')}
+              {t('Assign')}
             </button>
-          </div>
-          <TranslatorsList
-            translators={translators}
-            setSelectedModerator={setSelectedModerator}
-            setSelectedTranslator={setSelectedTranslator}
-          />
-          <div>
-            <Modal
-              isOpen={openModalAssignTranslator}
-              closeHandle={() => {
-                setOpenModalAssignTranslator(false)
-                setSelectedUser(null)
-              }}
-            >
-              <select
-                className="input m-2"
-                defaultValue={users?.[0].id}
-                onChange={(e) => setSelectedUser(e.target.value)}
-              >
-                {users
-                  ?.filter((el) => !translators?.map((el) => el.users.id).includes(el.id))
-                  .map((el) => {
-                    return (
-                      <option value={el.id} key={el.id}>
-                        {el.login}
-                      </option>
-                    )
-                  })}
-              </select>
+            <div className="mt-4">
               <button
-                onClick={() => assign('translators')}
-                disabled={!selectedUser}
-                className="btn-cyan mx-2"
+                className="btn-cyan w-24"
+                onClick={() => {
+                  setOpenModalAssignTranslator(false)
+                  setSelectedUser(null)
+                }}
               >
-                {t('Assign')}
+                {t('common:Close')}
               </button>
-              <div className="mt-4">
-                <button
-                  className="btn-cyan w-24"
-                  onClick={() => {
-                    setOpenModalAssignTranslator(false)
-                    setSelectedUser(null)
-                  }}
-                >
-                  {t('common:Close')}
-                </button>
-              </div>
-            </Modal>
-            <Modal
-              isOpen={openModalAssignCoordinator}
-              closeHandle={() => {
-                setOpenModalAssignCoordinator(false)
-                setSelectedUser(null)
-              }}
+            </div>
+          </Modal>
+          <Modal
+            isOpen={openModalAssignCoordinator}
+            closeHandle={() => {
+              setOpenModalAssignCoordinator(false)
+              setSelectedUser(null)
+            }}
+          >
+            <select
+              className="input m-2"
+              defaultValue={users?.[0].id}
+              onChange={(e) => setSelectedUser(e.target.value)}
             >
-              <select
-                className="input m-2"
-                defaultValue={users?.[0].id}
-                onChange={(e) => setSelectedUser(e.target.value)}
-              >
-                {users
-                  ?.filter(
-                    (el) => !coordinators?.map((el) => el.users.id).includes(el.id)
+              {users
+                ?.filter((el) => !coordinators?.map((el) => el.users.id).includes(el.id))
+                .map((el) => {
+                  return (
+                    <option value={el.id} key={el.id}>
+                      {el.login}
+                    </option>
                   )
-                  .map((el) => {
-                    return (
-                      <option value={el.id} key={el.id}>
-                        {el.login}
-                      </option>
-                    )
-                  })}
-              </select>
-              <button
-                onClick={() => assign('coordinators')}
-                disabled={!selectedUser}
-                className="btn-cyan mx-2"
-              >
-                {t('Assign')}
-              </button>
-              <div className="mt-4">
-                <button
-                  className="btn-cyan w-24"
-                  onClick={() => {
-                    setOpenModalAssignCoordinator(false)
-                    setSelectedUser(null)
-                  }}
-                >
-                  {t('common:Close')}
-                </button>
-              </div>
-            </Modal>
-            <Modal
-              isOpen={
-                selectedModerator ? Object.keys(selectedModerator).length > 0 : false
-              }
-              closeHandle={() => {
-                setSelectedModerator(false)
-              }}
+                })}
+            </select>
+            <button
+              onClick={() => assign('coordinators')}
+              disabled={!selectedUser}
+              className="btn-cyan mx-2"
             >
-              <div className="mb-2">
-                {moderatorIds?.includes(selectedModerator?.id)
-                  ? t('project-edit:RemovingModerator')
-                  : t('project-edit:AssigningModerator')}
-              </div>
+              {t('Assign')}
+            </button>
+            <div className="mt-4">
+              <button
+                className="btn-cyan w-24"
+                onClick={() => {
+                  setOpenModalAssignCoordinator(false)
+                  setSelectedUser(null)
+                }}
+              >
+                {t('common:Close')}
+              </button>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={selectedModerator ? Object.keys(selectedModerator).length > 0 : false}
+            closeHandle={() => {
+              setSelectedModerator(false)
+            }}
+          >
+            <div className="mb-2">
+              {moderatorIds?.includes(selectedModerator?.id)
+                ? t('project-edit:RemovingModerator')
+                : t('project-edit:AssigningModerator')}
+            </div>
 
-              <button
-                onClick={() =>
-                  changeModerator(
-                    moderatorIds?.includes(selectedModerator.id)
-                      ? 'remove_moderator'
-                      : 'assign_moderator'
-                  )
-                }
-                disabled={!selectedModerator}
-                className="btn-cyan mx-2"
-              >
-                {moderatorIds?.includes(selectedModerator?.id)
-                  ? t('Remove')
-                  : t('Assign')}
-              </button>
-              <div className="mt-4">
-                <button
-                  className="btn-cyan w-24"
-                  onClick={() => {
-                    setSelectedModerator(false)
-                  }}
-                >
-                  {t('common:Close')}
-                </button>
-              </div>
-            </Modal>
-            <Modal
-              isOpen={
-                selectedTranslator ? Object.keys(selectedTranslator).length > 0 : false
+            <button
+              onClick={() =>
+                changeModerator(
+                  moderatorIds?.includes(selectedModerator.id)
+                    ? 'remove_moderator'
+                    : 'assign_moderator'
+                )
               }
-              closeHandle={() => {
-                setSelectedTranslator(false)
-              }}
+              disabled={!selectedModerator}
+              className="btn-cyan mx-2"
             >
-              <div className="mb-2">{t('project-edit:RemovingTranslator')}</div>
+              {moderatorIds?.includes(selectedModerator?.id) ? t('Remove') : t('Assign')}
+            </button>
+            <div className="mt-4">
               <button
-                onClick={() => remove(selectedTranslator.id, 'translators')}
-                disabled={!selectedTranslator}
-                className="btn-cyan mx-2"
+                className="btn-cyan w-24"
+                onClick={() => {
+                  setSelectedModerator(false)
+                }}
               >
-                {t('Remove')}
+                {t('common:Close')}
               </button>
-              <div className="mt-4">
-                <button
-                  className="btn-cyan w-24"
-                  onClick={() => {
-                    setSelectedTranslator(false)
-                  }}
-                >
-                  {t('common:Close')}
-                </button>
-              </div>
-            </Modal>
-            <Modal
-              isOpen={
-                selectedCoordinator ? Object.keys(selectedCoordinator).length > 0 : false
-              }
-              closeHandle={() => {
-                setSelectedCoordinator(false)
-              }}
+            </div>
+          </Modal>
+          <Modal
+            isOpen={
+              selectedTranslator ? Object.keys(selectedTranslator).length > 0 : false
+            }
+            closeHandle={() => {
+              setSelectedTranslator(false)
+            }}
+          >
+            <div className="mb-2">{t('project-edit:RemovingTranslator')}</div>
+            <button
+              onClick={() => remove(selectedTranslator.id, 'translators')}
+              disabled={!selectedTranslator}
+              className="btn-cyan mx-2"
             >
-              <div className="mb-2">{t('project-edit:RemovingCoordinator')}</div>
+              {t('Remove')}
+            </button>
+            <div className="mt-4">
+              <button
+                className="btn-cyan w-24"
+                onClick={() => {
+                  setSelectedTranslator(false)
+                }}
+              >
+                {t('common:Close')}
+              </button>
+            </div>
+          </Modal>
+          <Modal
+            isOpen={
+              selectedCoordinator ? Object.keys(selectedCoordinator).length > 0 : false
+            }
+            closeHandle={() => {
+              setSelectedCoordinator(false)
+            }}
+          >
+            <div className="mb-2">{t('project-edit:RemovingCoordinator')}</div>
 
+            <button
+              onClick={() => remove(selectedCoordinator.id, 'coordinators')}
+              disabled={!selectedCoordinator}
+              className="btn-cyan mx-2"
+            >
+              {t('Remove')}
+            </button>
+            <div className="mt-4">
               <button
-                onClick={() => remove(selectedCoordinator.id, 'coordinators')}
-                disabled={!selectedCoordinator}
-                className="btn-cyan mx-2"
+                className="btn-cyan w-24"
+                onClick={() => {
+                  setSelectedCoordinator(false)
+                }}
               >
-                {t('Remove')}
+                {t('common:Close')}
               </button>
-              <div className="mt-4">
-                <button
-                  className="btn-cyan w-24"
-                  onClick={() => {
-                    setSelectedCoordinator(false)
-                  }}
-                >
-                  {t('common:Close')}
-                </button>
-              </div>
-            </Modal>
-          </div>
+            </div>
+          </Modal>
         </div>
       </div>
     </div>

@@ -56,17 +56,14 @@ export function useUser(token, id) {
   return [user, { mutate, loading, error }]
 }
 /**
- *hook returns information about projects in a specific language
- * @param {string} language_code code of language
+ *hook returns information about projects
  * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useProjects({ token, language_code }) {
-  const { data, mutate, error } = useSWR(
-    token && language_code ? [`/api/languages/${language_code}/projects`, token] : null,
-    fetcher
-  )
+export function useProjects({ token }) {
+  const { data, mutate, error } = useSWR(token ? [`/api/projects`, token] : null, fetcher)
   const loading = !data && !error
+  // форматировать data, нужно пройтись по всем проектам и раскидать, чтобы каждый проект лежал внутри языка
   return [data, { mutate, loading, error }]
 }
 

@@ -4,9 +4,9 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import Footer from '/components/Footer'
-import Workspace from '/components/Workspace'
-import Audio from '/components/Audio'
+import Footer from 'components/Footer'
+import Workspace from 'components/Workspace'
+import Audio from 'components/Audio'
 
 import { stepsForBible, reference } from 'utils/db'
 
