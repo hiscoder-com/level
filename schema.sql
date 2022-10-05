@@ -193,6 +193,22 @@
     END;
   $$;
 
+  -- Устанавливает начало перевода главы
+  CREATE or replace FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    
+    BEGIN
+      IF authorize(auth.uid(), start_chapter.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN FALSE;
+      END IF;
+          
+        UPDATE PUBLIC.chapters SET started_at = NOW() WHERE start_chapter.chapter_id = chapters.id AND  start_chapter.project_id = chapters.project_id;
+      
+      RETURN TRUE;
+
+    END;
+  $$;
+
   -- так как на прямую юзер не может исправлять поля в таблице юзеров то он вызывает этот функцию для отметки confession
   CREATE FUNCTION PUBLIC.check_confession() returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
@@ -777,6 +793,7 @@
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
       verses integer,
+      started_at TIMESTAMP DEFAULT NULL,
         UNIQUE (book_id, num)
     );
     ALTER TABLE
