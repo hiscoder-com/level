@@ -197,19 +197,12 @@
  -- Устанавливает дату начала перевода главы
   CREATE FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
-    DECLARE
-      chapter RECORD;
+    
     BEGIN
       IF authorize(auth.uid(), start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
-      END IF;
-      
-      SELECT started_at INTO chapter FROM PUBLIC.chapters WHERE chapters.project_id = start_chapter.project_id AND chapters.id = start_chapter.chapter_id;
-
-      IF chapter.started_at IS NOT NULL THEN
-        RETURN FALSE;
-      END IF;     
-
-      UPDATE PUBLIC.chapters SET started_at = NOW() WHERE start_chapter.chapter_id = chapters.id AND start_chapter.project_id = chapters.project_id;
+      END IF;      
+     
+      UPDATE PUBLIC.chapters SET started_at = NOW() WHERE start_chapter.chapter_id = chapters.id AND start_chapter.project_id = chapters.project_id AND started_at IS NULL;
       
       RETURN true;
 
