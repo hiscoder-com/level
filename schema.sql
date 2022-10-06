@@ -39,6 +39,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
 
   -- END DROP FUNCTION
 
@@ -174,7 +175,7 @@
   $$;
 
   -- Распределение стихов среди переводчиков
-  CREATE or replace FUNCTION PUBLIC.divide_verses(divider VARCHAR,project_id BIGINT) RETURNS BOOLEAN
+  CREATE FUNCTION PUBLIC.divide_verses(divider VARCHAR,project_id BIGINT) RETURNS BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
      verse_row record;
@@ -189,6 +190,21 @@
       END LOOP;
 
       RETURN TRUE;
+
+    END;
+  $$;
+
+ -- Устанавливает дату начала перевода главы
+  CREATE FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+    
+    BEGIN
+      IF authorize(auth.uid(), start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;      
+     
+      UPDATE PUBLIC.chapters SET started_at = NOW() WHERE start_chapter.chapter_id = chapters.id AND start_chapter.project_id = chapters.project_id AND started_at IS NULL;
+      
+      RETURN true;
 
     END;
   $$;
@@ -777,6 +793,8 @@
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
       verses integer,
+      started_at TIMESTAMP DEFAULT NULL,
+      finished_at TIMESTAMP DEFAULT NULL,
         UNIQUE (book_id, num)
     );
     ALTER TABLE
