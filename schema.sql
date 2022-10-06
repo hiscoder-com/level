@@ -801,6 +801,7 @@
       "text" text DEFAULT NULL,
       verses integer,
       started_at TIMESTAMP DEFAULT NULL,
+      finished_at TIMESTAMP DEFAULT NULL,
         UNIQUE (book_id, num)
     );
     ALTER TABLE
