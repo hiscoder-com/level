@@ -17,7 +17,7 @@ const defaultColor = [
   'bg-teal-400',
 ]
 
-function VerseDistributor({ verses }) {
+function VerseDivider({ verses }) {
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -149,4 +149,4 @@ function VerseDistributor({ verses }) {
   )
 }
 
-export default VerseDistributor
+export default VerseDivider

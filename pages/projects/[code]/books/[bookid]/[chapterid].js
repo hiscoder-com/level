@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import VerseDistributor from 'components/VerseDistributor'
+import VerseDivider from 'components/VerseDivider'
 import { supabase } from 'utils/supabaseClient'
 
 function ChapterVersesPage() {
@@ -75,7 +75,7 @@ function ChapterVersesPage() {
       <h2>Project {project?.code}</h2>
       <h3>Book: {book?.code}</h3>
       <h3>Chapter: {chapter?.num}</h3>
-      <VerseDistributor verses={verses} />
+      <VerseDivider verses={verses} />
     </>
   )
 }
