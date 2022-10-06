@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -24,6 +24,7 @@ function ProjectEdit() {
   const [users] = useUsers(user?.access_token)
   const [openModalAssignTranslator, setOpenModalAssignTranslator] = useState(false)
   const [openModalAssignCoordinator, setOpenModalAssignCoordinator] = useState(false)
+  const [level, setLevel] = useState('user')
 
   const [selectedModerator, setSelectedModerator] = useState(null)
   const [selectedTranslator, setSelectedTranslator] = useState(null)
@@ -35,10 +36,24 @@ function ProjectEdit() {
     token: user?.access_token,
     code,
   })
+
   const [coordinators, { mutate: mutateCoordinator }] = useCoordinators({
     token: user?.access_token,
     code,
   })
+
+  useEffect(() => {
+    const getLevel = async () => {
+      const level = await supabase.rpc('authorize', {
+        user_id: user.id,
+        project_id: project.id,
+      })
+      setLevel(level.data)
+    }
+    if ((user?.id, project?.id)) {
+      getLevel()
+    }
+  }, [user?.id, project?.id])
 
   const changeModerator = async (type) => {
     const { error } = await supabase.rpc(type, {
@@ -51,6 +66,7 @@ function ProjectEdit() {
       mutateTranslator()
     }
   }
+
   const roleActions = {
     translators: { mutate: mutateTranslator, reset: setSelectedTranslator },
     coordinators: { mutate: mutateCoordinator, reset: setSelectedCoordinator },
@@ -84,6 +100,7 @@ function ProjectEdit() {
       return translators.filter((el) => el.is_moderator).map((el) => el.users.id)
     }
   }, [translators])
+
   return (
     <div className="divide-y-2 divide-gray-400">
       <div className="pb-5">
@@ -91,16 +108,19 @@ function ProjectEdit() {
         <div className="pb-5 inline-block ml-2">{project?.title}</div>
         <div className="w-1/2 flex justify-between">
           <div className="ml-2">{t('Coordinators')}</div>
-          <button
-            onClick={() => setOpenModalAssignCoordinator(true)}
-            className="btn-cyan m-2"
-          >
-            {t('project-edit:AddCoordinator')}
-          </button>
+          {'admin' === level && (
+            <button
+              onClick={() => setOpenModalAssignCoordinator(true)}
+              className="btn-cyan m-2"
+            >
+              {t('project-edit:AddCoordinator')}
+            </button>
+          )}
         </div>
         <CoordinatorsList
           coordinators={coordinators}
           setSelectedCoordinator={setSelectedCoordinator}
+          canDelete={'admin' === level}
         />
       </div>
       <div className="pt-5 pb-5">
@@ -370,7 +390,7 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
   )
 }
 
-function CoordinatorsList({ coordinators, setSelectedCoordinator }) {
+function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = false }) {
   const { t } = useTranslation(['common'])
   return (
     <div className="overflow-x-auto relative px-4">
@@ -407,12 +427,14 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator }) {
                 <td className="py-4 px-6 hidden sm:block">{el.users.email}</td>
 
                 <td className="py-4 px-6">
-                  <button
-                    onClick={() => setSelectedCoordinator(el.users)}
-                    className="btn-red"
-                  >
-                    {t('Remove')}
-                  </button>
+                  {canDelete && (
+                    <button
+                      onClick={() => setSelectedCoordinator(el.users)}
+                      className="btn-red"
+                    >
+                      {t('Remove')}
+                    </button>
+                  )}
                 </td>
               </tr>
             )
