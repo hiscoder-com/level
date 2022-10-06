@@ -4,9 +4,10 @@ import { useRouter } from 'next/router'
 import { useCurrentUser } from 'lib/UserContext'
 import { useProject, useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+
 const defaultColor = [
   'bg-yellow-400',
-  'bg-green-400',
+  'bg-red-400',
   'bg-blue-400',
   'bg-pink-400',
   'bg-violet-400',
@@ -37,24 +38,24 @@ function VerseDivider({ verses }) {
   const colorTranslators = translators?.map((el, index) => {
     return { ...el, color: defaultColor[index] }
   })
-  const [versesDivider, setVersesDivider] = useState([])
+  const [versesDivided, setVersesDivided] = useState([])
   useEffect(() => {
-    setVersesDivider(verses)
+    setVersesDivided(verses)
   }, [verses])
 
   const coloring = (index) => {
-    const newArr = [...versesDivider]
+    const newArr = [...versesDivided]
     newArr[index] = {
       ...newArr[index],
       translator_name: currentTranslator?.users?.login,
       project_translator_id: currentTranslator?.id,
       color: currentTranslator?.color,
     }
-    setVersesDivider(newArr)
+    setVersesDivided(newArr)
   }
   const verseDividing = async () => {
     let { data, error } = await supabase.rpc('divide_verses', {
-      divider: versesDivider,
+      divider: versesDivided,
       project_id: project?.id,
     })
 
@@ -71,7 +72,7 @@ function VerseDivider({ verses }) {
         onMouseUp={() => setIsHighlight(false)}
         className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
-        {versesDivider
+        {versesDivided
           .sort((a, b) => a.num - b.num)
           .map((el, index) => {
             return (
@@ -112,7 +113,7 @@ function VerseDivider({ verses }) {
                 currentTranslator?.users?.login === el.users.login
                   ? 'border-4 border-cyan-300 p-1'
                   : 'p-2'
-              } cursor-pointer ml-10 my-2 w-fit rounded-md ${el.color}`}
+              } cursor-pointer ml-10 my-2 w-fit rounded-md ${el.color} btn`}
             >
               {el.users.login}
             </div>
@@ -128,19 +129,19 @@ function VerseDivider({ verses }) {
             currentTranslator?.users?.login === ''
               ? 'border-4 border-cyan-300 p-1'
               : 'p-2'
-          } bg-slate-300 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
+          } bg-slate-300 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
           Clearing
         </button>
         <button
-          onClick={() => setVersesDivider(verses)}
-          className={`bg-slate-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
+          onClick={() => setVersesDivided(verses)}
+          className={`bg-slate-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
           Reset
         </button>
         <button
           onClick={() => verseDividing()}
-          className={`bg-green-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md`}
+          className={`bg-green-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
           Save
         </button>
