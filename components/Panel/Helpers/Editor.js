@@ -20,6 +20,18 @@ function Editor({ config }) {
 
     setVerseObjects(_verses)
   }, [verseObject])
+  const cleaneText = () => {
+    if (verseObjects) {
+      const allText = Object.values(verseObjects)
+      console.log(allText)
+      allText.forEach((value) => {
+        value.text = value.text.replace(/\s+(\W)/g, '$1')
+        value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
+        setVerseObjects(allText)
+        console.log(verseObjects)
+      })
+    }
+  }
   return (
     <>
       {config?.resource?.stepOption === 'draft' ? (
@@ -36,6 +48,9 @@ function Editor({ config }) {
                 verse={el.verse}
                 placeholder={'_'.repeat(50)}
               />
+              <button onClick={cleaneText} className="btn-cyan">
+                cleaneText
+              </button>
             </div>
           ))}
         </div>
@@ -54,25 +69,7 @@ function EditorExtended({ config }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
 
   const translatedVersesKeys = translatedVerses.map((el) => el.key)
-  const [testing, setTesting] = useState()
 
-  const test = () => {
-    if (verseObjects) {
-      const allText = verseObjects
-      // const ClianText = allText.map((el, key) => el.text)
-      allText.forEach(myFunc)
-
-      function myFunc(item, index) {
-        // eslint-disable-next-line prettier/prettier
-        item.text = item.text.replace(/\s+(\W)/g, '$1')
-        item.text = item.text.replace(/^ +| +$|( ) +/g, '$1')
-        setTesting(item)
-      }
-      console.log(testing)
-      // setTesting(dd)
-    }
-  }
-  console.log(testing)
   const sendToDb = (verse, index) => {
     setTranslatedVerses((prev) => [...prev, verseObject])
     console.log(`save to supabase verse ${verse}`, verseObject)
@@ -88,6 +85,18 @@ function EditorExtended({ config }) {
       )
     }
     setVerseObject(null)
+  }
+  const cleaneText = () => {
+    if (verseObjects) {
+      const allText = Object.values(verseObjects)
+      console.log(allText)
+      allText.forEach((value) => {
+        value.text = value.text.replace(/\s+(\W)/g, '$1')
+        value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
+        setVerseObjects(allText)
+        console.log(verseObjects)
+      })
+    }
   }
 
   const onBlurTextArea = (e, verse) => {
@@ -130,8 +139,8 @@ function EditorExtended({ config }) {
             setVerseObject={setVerseObject}
             verseObject={verseObject}
           />
-          <button onClick={test} className="btn-cyan">
-            sdfasdasds
+          <button onClick={cleaneText} className="btn-cyan">
+            cleaneText
           </button>
         </div>
       ))}
