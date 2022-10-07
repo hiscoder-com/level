@@ -54,7 +54,25 @@ function EditorExtended({ config }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
 
   const translatedVersesKeys = translatedVerses.map((el) => el.key)
+  const [testing, setTesting] = useState()
 
+  const test = () => {
+    if (verseObjects) {
+      const allText = verseObjects
+      // const ClianText = allText.map((el, key) => el.text)
+      allText.forEach(myFunc)
+
+      function myFunc(item, index) {
+        // eslint-disable-next-line prettier/prettier
+        item.text = item.text.replace(/\s+(\W)/g, '$1')
+        item.text = item.text.replace(/^ +| +$|( ) +/g, '$1')
+        setTesting(item)
+      }
+      console.log(testing)
+      // setTesting(dd)
+    }
+  }
+  console.log(testing)
   const sendToDb = (verse, index) => {
     setTranslatedVerses((prev) => [...prev, verseObject])
     console.log(`save to supabase verse ${verse}`, verseObject)
@@ -112,6 +130,9 @@ function EditorExtended({ config }) {
             setVerseObject={setVerseObject}
             verseObject={verseObject}
           />
+          <button onClick={test} className="btn-cyan">
+            sdfasdasds
+          </button>
         </div>
       ))}
     </div>
