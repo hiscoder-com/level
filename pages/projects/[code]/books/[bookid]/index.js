@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { supabase } from 'utils/supabaseClient'
+import Link from 'next/link'
 
 function BookChaptersPage() {
   const router = useRouter()
@@ -85,7 +86,13 @@ function BookChaptersPage() {
           {!createdChapters.includes(chapter.id) ? (
             <div onClick={() => handleCreate(chapter.id)}>Create</div>
           ) : (
-            <div>Created...</div>
+            <Link
+              href={
+                '/projects/' + project.code + '/books/' + book.code + '/' + chapter.num
+              }
+            >
+              <a className="block text-blue-600">Created...</a>
+            </Link>
           )}
         </div>
       ))}

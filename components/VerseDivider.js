@@ -34,14 +34,33 @@ function VerseDivider({ verses }) {
   })
   const [currentTranslator, setCurrentTranslator] = useState(null)
   const [isHighlight, setIsHighlight] = useState(false)
+  const [colorTranslators, setColorTranslators] = useState([])
 
-  const colorTranslators = translators?.map((el, index) => {
-    return { ...el, color: defaultColor[index] }
-  })
+  useEffect(() => {
+    const colorTranslators = translators?.map((el, index) => ({
+      ...el,
+      color: defaultColor[index],
+    }))
+    setColorTranslators(colorTranslators)
+  }, [translators])
+
   const [versesDivided, setVersesDivided] = useState([])
   useEffect(() => {
-    setVersesDivided(verses)
-  }, [verses])
+    if (colorTranslators?.length > 0) {
+      const extVerses = verses.map((el) => {
+        const translator = colorTranslators.find(
+          (element) => element.id === el.project_translator_id
+        )
+        console.log({ translator })
+        return {
+          ...el,
+          color: translator ? translator.color : 'bg-slate-300',
+          translator_name: translator ? translator.users.login : '',
+        }
+      })
+      setVersesDivided(extVerses)
+    }
+  }, [verses, colorTranslators])
 
   const coloring = (index) => {
     const newArr = [...versesDivided]
@@ -73,7 +92,7 @@ function VerseDivider({ verses }) {
         className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
         {versesDivided
-          .sort((a, b) => a.num - b.num)
+          .sort((a, b) => a.num > b.num)
           .map((el, index) => {
             return (
               <div

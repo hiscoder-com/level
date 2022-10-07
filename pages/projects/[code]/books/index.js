@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/router'
+import { Router, useRouter } from 'next/router'
 import usfm from 'usfm-js'
 import axios from 'axios'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { supabase } from 'utils/supabaseClient'
+import Link from 'next/link'
 
 function ProjectBooksPage() {
   const {
@@ -76,9 +77,11 @@ function ProjectBooksPage() {
     <>
       <h2>Project {project?.code}: Books</h2>
       {books?.map((el) => (
-        <div key={el.code}>
-          {el.code} | {JSON.stringify(el.chapters, null, 2)}
-        </div>
+        <Link key={el.code} href={'/projects/' + project.code + '/books/' + el.code}>
+          <a>
+            {el.code} | {JSON.stringify(el.chapters, null, 2)}
+          </a>
+        </Link>
       ))}
       <select onChange={(e) => setSelectedBook(e.target.value)}>
         {project?.base_manifest?.books

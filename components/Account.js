@@ -7,7 +7,6 @@ import Projects from './Projects'
 import SignOut from './SignOut'
 
 import { useCurrentUser } from 'lib/UserContext'
-import Link from 'next/link'
 
 function Account() {
   const { user, loading } = useCurrentUser()
