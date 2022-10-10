@@ -8,9 +8,30 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 function Editor({ config }) {
   const [verseObject, setVerseObject] = useState(null)
-
+  const [cleanText, setCleanText] = useState()
+  const [cleanUp, setCleanUp] = useState(false)
   const [verseObjects, setVerseObjects] = useState()
   const versesRef = useRef(null)
+
+  useEffect(() => {
+    if (cleanUp) {
+      const _cleanText = Object.values(config.resource.verses)
+      _cleanText.forEach((value) => {
+        value.text = value.text.replace(/ +/g, ' ').trim()
+        value.text = value.text.replace(/ +(\.)/g, '$1')
+        value.text = value.text.replace(/ +(\,)/g, '$1')
+        value.text = value.text.replace(/ +(\;)/g, '$1')
+        value.text = value.text.replace(/ +(\:)/g, '$1')
+        value.text = value.text.replace(/ +(\!)/g, '$1')
+        value.text = value.text.replace(/ +(\?)/g, '$1')
+        value.text = value.text.replace(/ +(\))/g, '$1')
+
+        // value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
+        setCleanText(_cleanText)
+        console.log(_cleanText)
+      })
+    }
+  }, [config, cleanUp])
 
   useEffect(() => {
     if (!versesRef?.current) return
@@ -20,18 +41,7 @@ function Editor({ config }) {
 
     setVerseObjects(_verses)
   }, [verseObject])
-  const cleaneText = () => {
-    if (verseObjects) {
-      const allText = Object.values(verseObjects)
-      console.log(allText)
-      allText.forEach((value) => {
-        value.text = value.text.replace(/\s+(\W)/g, '$1')
-        value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
-        setVerseObjects(allText)
-        console.log(verseObjects)
-      })
-    }
-  }
+
   return (
     <>
       {config?.resource?.stepOption === 'draft' ? (
@@ -48,7 +58,12 @@ function Editor({ config }) {
                 verse={el.verse}
                 placeholder={'_'.repeat(50)}
               />
-              <button onClick={cleaneText} className="btn-cyan">
+              <button
+                onClick={() => {
+                  setCleanUp(true)
+                }}
+                className="btn-cyan"
+              >
                 cleaneText
               </button>
             </div>
