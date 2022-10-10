@@ -100,4 +100,7 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
         TRUE
       );
 
-SELECT current_step, chapter_id FROM verses WHERE project_id=1 AND project_translator_id=(SELECT id FROM project_translators WHERE project_id=1 AND user_id=auth.uid()) GROUP BY chapter_id, current_step;
+SELECT verses, current_step, chapters.id, chapters.num, chapters.book_id, started_at, finished_at, books.code
+FROM verses LEFT JOIN chapters ON (verses.chapter_id = chapters.id) LEFT JOIN books ON (chapters.book_id = books.id)
+WHERE verses.project_id=2
+  AND project_translator_id=(SELECT id FROM project_translators WHERE project_id=2 AND user_id='73c91d38-0eb8-4d6b-8b4f-8de41d6a9399') GROUP BY books.id, chapters.id, verses.current_step;

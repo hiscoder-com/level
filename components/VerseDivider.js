@@ -153,7 +153,16 @@ function VerseDivider({ verses }) {
           Clearing
         </button>
         <button
-          onClick={() => setVersesDivided(verses)}
+          onClick={() =>
+            setVersesDivided(
+              verses.map((el) => ({
+                ...el,
+                color: 'bg-slate-300',
+                translator_name: '',
+                project_translator_id: null,
+              }))
+            )
+          }
           className={`bg-slate-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
           Reset

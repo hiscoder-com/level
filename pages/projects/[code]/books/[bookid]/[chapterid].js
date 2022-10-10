@@ -45,7 +45,7 @@ function ChapterVersesPage() {
     const getChapter = async () => {
       const { data: chapter, error } = await supabase
         .from('chapters')
-        .select('id,num,text')
+        .select('id,num,text,started_at,finished_at')
         .eq('project_id', project.id)
         .eq('num', chapterid)
         .eq('book_id', book.id)
@@ -70,12 +70,25 @@ function ChapterVersesPage() {
       getVerses()
     }
   }, [chapter?.id, project?.id])
+
+  const startProject = () => {
+    supabase
+      .rpc('start_chapter', { chapter_id: chapter?.id, project_id: project?.id })
+      .then((res) => console.log(res))
+  }
   return (
     <>
       <h2>Project {project?.code}</h2>
       <h3>Book: {book?.code}</h3>
       <h3>Chapter: {chapter?.num}</h3>
       <VerseDivider verses={verses} />
+      {chapter?.started_at ? (
+        <div>Начат {chapter?.started_at}</div>
+      ) : (
+        <div className="btn" onClick={() => startProject()}>
+          Start chapter
+        </div>
+      )}
     </>
   )
 }
