@@ -44,7 +44,7 @@
 
 .btn{
 @apply text-center border-2 rounded-md inline-block px-3 py-1 cursor-pointer
-disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white 
+disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white
  disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400
 }
 
@@ -74,13 +74,13 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-white{
-	@apply btn bg-white text-cyan-600 border-cyan-600 
+	@apply btn bg-white text-cyan-600 border-cyan-600
 	hover:bg-cyan-50
 	active:bg-cyan-200
 }
 
 .confession-text{
-	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] h4 bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none 
+	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] h4 bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none
 }
 
 .condition-title{
@@ -190,5 +190,18 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 }
 
 .text-alignment{
-	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg 
+	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg
+}
+
+.markdown-body img{
+  display: inline;
+  vertical-align: inherit;
+}
+
+.markdown-body ol{
+  list-style: decimal;
+}
+
+.markdown-body ul{
+  list-style: inherit;
 }

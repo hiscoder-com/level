@@ -15,9 +15,10 @@ export default function IntroPage() {
   useEffect(() => {
     supabase
       .from('steps')
-      .select('intro,order,projects!inner(code)')
-      .match({ 'projects.code': project, order: step })
-      .then((res) => console.log(res))
+      .select('intro,sorting,projects!inner(code)')
+      .match({ 'projects.code': project, sorting: step })
+      .single()
+      .then((res) => console.log(res.data))
   }, [project, step])
   return (
     <div className="layout-appbar">
