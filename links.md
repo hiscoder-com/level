@@ -1,57 +1,6 @@
 https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
 Пример аутентификации серверной и через клиента
 
-
-Создание нового метода перевода
-  const { data, error } = await supabase.from('methods').insert({
-    title: 'Linguical',
-    type: 'obs',
-    resources: { obs: true, obs_tn: false, obs_tq: false },
-    steps: [
-      {
-        title: 'Step 1',
-        description: 'Desc of 1',
-        intro: '## Test',
-        config: [
-          {
-            size: 4,
-            tools: [
-              { name: 'obs', props: {} },
-              { name: 'obs_tq', props: {} },
-            ],
-          },
-          {
-            size: 2,
-            tools: [{ name: 'notepad', props: {} }],
-          },
-        ],
-      },
-
-      {
-        title: 'Step 2',
-        description: 'Desc of step 2',
-        intro: '## Test\n#### header\n\nSome Text Here',
-        config: [
-          {
-            size: 3,
-            tools: [
-              { name: 'obs', props: {} },
-              { name: 'obs_tn', props: {} },
-            ],
-          },
-          {
-            size: 3,
-            tools: [
-              { name: 'editor', props: {} },
-              { name: 'notepad', props: { team: 'OBS' } },
-            ],
-          },
-        ],
-      },
-    ],
-  })
-
-
     INSERT INTO
       PUBLIC.users (
         id,
@@ -94,6 +43,55 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
         '8390f82c-ea82-4f5f-bf43-f60ad0e3ba18',
         'AdminF',
         'admin@fox.com',
+        TRUE,
+        TRUE,
+        NULL,
+        TRUE
+      );
+
+
+    INSERT INTO
+      PUBLIC.users (
+        id,
+        login,
+        email,
+        agreement,
+        confession,
+        blocked,
+        is_admin
+      )
+    VALUES
+      (
+        '7f045e7c-432e-4a9e-b4f7-e74d0fd724b9',
+        'TranslatorL',
+        'translator@local.com',
+        TRUE,
+        TRUE,
+        NULL,
+        FALSE
+      ),
+      (
+        '428ce1cc-4c7e-4d27-9531-a0643802383f',
+        'ModeratorL',
+        'moderator@local.com',
+        TRUE,
+        TRUE,
+        NULL,
+        FALSE
+      ),
+      (
+        '22a7ab09-0f5d-4682-bf65-6d59b0ff6c43',
+        'CoordinatorL',
+        'coordinator@local.com',
+        TRUE,
+        TRUE,
+        NULL,
+        FALSE
+      ),
+      (
+        '0b7f65d3-889f-4fb4-b0ea-904d1e6ea08a',
+        'AdminL',
+        'admin@local.com',
         TRUE,
         TRUE,
         NULL,

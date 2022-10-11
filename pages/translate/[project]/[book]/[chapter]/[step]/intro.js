@@ -5,12 +5,20 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
 import IntroStep from 'components/IntroStep'
+import { useEffect } from 'react'
+import { supabase } from 'utils/supabaseClient'
 
 export default function IntroPage() {
   const { query } = useRouter()
-  const { step } = query
+  const { project, book, chapter, step } = query
   const { t } = useTranslation(['intro-steps'])
-
+  useEffect(() => {
+    supabase
+      .from('steps')
+      .select('intro,order,projects!inner(code)')
+      .match({ 'projects.code': project, order: step })
+      .then((res) => console.log(res))
+  }, [project, step])
   return (
     <div className="layout-appbar">
       <Head>

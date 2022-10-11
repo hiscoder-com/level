@@ -14,6 +14,7 @@ function ProjectCard({ project }) {
   const { user } = useCurrentUser()
 
   const [level, setLevel] = useState('user')
+  const [currentStep, setCurrentStep] = useState(null)
 
   useEffect(() => {
     const getLevel = async () => {
@@ -27,9 +28,16 @@ function ProjectCard({ project }) {
       getLevel()
     }
   }, [user?.id, project?.id])
+  useEffect(() => {
+    if (level && ['translator', 'moderator'].includes(level)) {
+      supabase
+        .rpc('get_current_step', { project_id: project.id })
+        .then((res) => setCurrentStep(res.data))
+    }
+  }, [level, project?.id])
 
   return (
-    <div className="block p-6 h-full bg-white rounded-xl sm:h-52">
+    <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>
         <a className="block text-2xl mb-4 text-blue-450 underline decoration-2 underline-offset-4">
           {project.title}
@@ -46,10 +54,14 @@ function ProjectCard({ project }) {
       <div className="flex gap-3">
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
-        {['translator', 'moderator'].includes(level) && (
-          <div className="btn">Continue translate</div>
-        )}
       </div>
+      {currentStep && currentStep.started_at && (
+        <Link
+          href={`/translate/${currentStep.project}/${currentStep.book}/${currentStep.chapter}/${currentStep.step}/intro`}
+        >
+          <a className="btn">Continue translate - {currentStep.title}</a>
+        </Link>
+      )}
     </div>
   )
 }

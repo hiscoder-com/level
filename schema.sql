@@ -25,21 +25,22 @@
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_step;
     DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
+    DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
-    DROP FUNCTION IF EXISTS PUBLIC.block_user;
     DROP FUNCTION IF EXISTS PUBLIC.can_translate;
+    DROP FUNCTION IF EXISTS PUBLIC.block_user;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
-    DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
-    DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
 
   -- END DROP FUNCTION
 
@@ -135,6 +136,31 @@
     END;
   $$;
 
+  --
+ CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      current_step RECORD;
+    BEGIN
+      IF authorize(auth.uid(), get_current_step.project_id) IN ('user') THEN
+        RETURN FALSE;
+      END IF;
+
+      SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, started_at, finished_at INTO current_step
+      FROM verses
+        LEFT JOIN chapters ON (verses.chapter_id = chapters.id)
+        LEFT JOIN books ON (chapters.book_id = books.id)
+        LEFT JOIN steps ON (verses.current_step = steps.id)
+        LEFT JOIN projects ON (projects.id = verses.project_id)
+      WHERE verses.project_id = get_current_step.project_id
+        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_step.project_id AND user_id = auth.uid())
+      GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
+
+      RETURN current_step;
+
+    END;
+  $$;
+
   -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
   CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
@@ -197,13 +223,13 @@
  -- Устанавливает дату начала перевода главы
   CREATE FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
-    
+
     BEGIN
       IF authorize(auth.uid(), start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
-      END IF;      
-     
+      END IF;
+
       UPDATE PUBLIC.chapters SET started_at = NOW() WHERE start_chapter.chapter_id = chapters.id AND start_chapter.project_id = chapters.project_id AND started_at IS NULL;
-      
+
       RETURN true;
 
     END;
@@ -405,7 +431,7 @@
         FROM PUBLIC.chapters
           JOIN PUBLIC.steps ON (steps.project_id = chapters.project_id)
         WHERE chapters.id = create_verses.chapter_id
-        ORDER BY steps.order ASC
+        ORDER BY steps.sorting ASC
         LIMIT 1
         INTO chapter;
 
@@ -718,11 +744,11 @@
       DELETE
         CASCADE NOT NULL,
       config json NOT NULL,
-      "order" int2 NOT NULL,
-        UNIQUE (project_id, "order")
+      "sorting" int2 NOT NULL,
+        UNIQUE (project_id, "sorting")
     );
 
-    COMMENT ON COLUMN public.steps.order
+    COMMENT ON COLUMN public.steps.sorting
         IS 'это поле юзер не редактирует. Мы его указываем сами. Пока что будем получать с клиента.';
     ALTER TABLE
       PUBLIC.steps enable ROW LEVEL security;
@@ -1575,7 +1601,7 @@ ADD
     DELETE FROM
       PUBLIC.steps;
 
-    INSERT INTO public.steps (title, description, intro, count_of_users, "time", project_id, config, "order") VALUES
+    INSERT INTO public.steps (title, description, intro, count_of_users, "time", project_id, config, "sorting") VALUES
     ('Шаг 1: Самостоятельное изучение', 'Some text here...', '# Intro
 
     ### How To Start
