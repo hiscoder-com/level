@@ -4,9 +4,12 @@ function AutoSizeTextArea({
   disabled,
   verse,
   value,
-  setVerseObject,
+  setVerseObjects,
   defaultValue,
   onBlur,
+  index,
+  extended,
+  setVerseObject,
 }) {
   const [textAreaValue, setTextAreaValue] = useState(null)
 
@@ -25,7 +28,18 @@ function AutoSizeTextArea({
       disabled={disabled}
       ref={textareaRef}
       defaultValue={defaultValue}
-      onChange={(e) => setVerseObject({ key: verse, text: e.target.value })}
+      onChange={(e) => {
+        if (!extended) {
+          setVerseObjects((prev) => {
+            const newArray = [...prev]
+            newArray[index] = { verse, text: e.target.value }
+
+            return newArray
+          })
+        } else {
+          setVerseObject({ key: verse, text: e.target.value })
+        }
+      }}
       onInput={(el) => {
         setTextAreaValue(el.target.value)
         autoResize()

@@ -6,68 +6,51 @@ import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
+const handleClean = (verseObjects, setVerseObjects) => {
+  const _cleanText = Object.values(verseObjects)
+  _cleanText.forEach((value) => {
+    value.text = value.text.replace(/ +/g, ' ').trim()
+    value.text = value.text.replace(/ +(\.)/g, '$1')
+    value.text = value.text.replace(/ +(\,)/g, '$1')
+    value.text = value.text.replace(/ +(\;)/g, '$1')
+    value.text = value.text.replace(/ +(\:)/g, '$1')
+    value.text = value.text.replace(/ +(\!)/g, '$1')
+    value.text = value.text.replace(/ +(\?)/g, '$1')
+    value.text = value.text.replace(/ +(\))/g, '$1')
+
+    // value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
+    setVerseObjects(_cleanText)
+  })
+}
+
 function Editor({ config }) {
-  const [verseObject, setVerseObject] = useState(null)
-  const [cleanText, setCleanText] = useState()
-  const [cleanUp, setCleanUp] = useState(false)
-  const [verseObjects, setVerseObjects] = useState()
-  const versesRef = useRef(null)
-
-  useEffect(() => {
-    if (cleanUp) {
-      const _cleanText = Object.values(config.resource.verses)
-      _cleanText.forEach((value) => {
-        value.text = value.text.replace(/ +/g, ' ').trim()
-        value.text = value.text.replace(/ +(\.)/g, '$1')
-        value.text = value.text.replace(/ +(\,)/g, '$1')
-        value.text = value.text.replace(/ +(\;)/g, '$1')
-        value.text = value.text.replace(/ +(\:)/g, '$1')
-        value.text = value.text.replace(/ +(\!)/g, '$1')
-        value.text = value.text.replace(/ +(\?)/g, '$1')
-        value.text = value.text.replace(/ +(\))/g, '$1')
-
-        // value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
-        setCleanText(_cleanText)
-        console.log(_cleanText)
-      })
-    }
-  }, [config, cleanUp])
-
-  useEffect(() => {
-    if (!versesRef?.current) return
-    const _verses = Array.from(versesRef?.current?.children).map((el) => {
-      return { verse: el.dataset.id, text: Array.from(el.children)[1]?.value }
-    })
-
-    setVerseObjects(_verses)
-  }, [verseObject])
+  const [verseObjects, setVerseObjects] = useState(config?.resource?.verses)
 
   return (
     <>
       {config?.resource?.stepOption === 'draft' ? (
         <EditorExtended config={config} />
       ) : (
-        <div ref={versesRef}>
-          {config?.resource?.verses?.map((el, index) => (
+        <div>
+          {verseObjects.map((el, index) => (
             <div key={index} data-id={el.verse} className="flex my-3">
               <div>{el.verse}</div>
               <AutoSizeTextArea
-                verseObject={verseObject}
+                index={index}
                 defaultValue={el.text}
-                setVerseObject={setVerseObject}
+                setVerseObjects={setVerseObjects}
+                value={el.text}
                 verse={el.verse}
                 placeholder={'_'.repeat(50)}
               />
-              <button
-                onClick={() => {
-                  setCleanUp(true)
-                }}
-                className="btn-cyan"
-              >
-                cleaneText
-              </button>
             </div>
           ))}
+          <button
+            onClick={() => handleClean(verseObjects, setVerseObjects)}
+            className="btn-cyan"
+          >
+            cleaneText
+          </button>
         </div>
       )}
     </>
@@ -101,18 +84,6 @@ function EditorExtended({ config }) {
     }
     setVerseObject(null)
   }
-  const cleaneText = () => {
-    if (verseObjects) {
-      const allText = Object.values(verseObjects)
-      console.log(allText)
-      allText.forEach((value) => {
-        value.text = value.text.replace(/\s+(\W)/g, '$1')
-        value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
-        setVerseObjects(allText)
-        console.log(verseObjects)
-      })
-    }
-  }
 
   const onBlurTextArea = (e, verse) => {
     console.log('в стихе ' + verse + ' изменился текст: ' + e.target.value)
@@ -144,6 +115,7 @@ function EditorExtended({ config }) {
           />
           <div className="ml-4">{el.verse}</div>
           <AutoSizeTextArea
+            extended
             disabled={
               !checkedVersesBible.includes(el.verse) ||
               translatedVersesKeys.includes(el.verse)
@@ -154,9 +126,6 @@ function EditorExtended({ config }) {
             setVerseObject={setVerseObject}
             verseObject={verseObject}
           />
-          <button onClick={cleaneText} className="btn-cyan">
-            cleaneText
-          </button>
         </div>
       ))}
     </div>
