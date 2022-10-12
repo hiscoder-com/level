@@ -74,7 +74,7 @@ function ChapterVersesPage() {
   const startProject = () => {
     supabase
       .rpc('start_chapter', { chapter_id: chapter?.id, project_id: project?.id })
-      .then((res) => console.log(res))
+      .then((res) => console.log('Start Chapter', res))
   }
   return (
     <>

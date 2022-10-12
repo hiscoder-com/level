@@ -3,18 +3,14 @@ import { useTranslation } from 'next-i18next'
 import Footer from 'components/Footer'
 import MarkdownExtended from './MarkdownExtended'
 
-function IntroStep({ step }) {
-  const { t } = useTranslation(['intro-steps', 'common'])
+function IntroStep({ markdown, nextLink }) {
+  const { t } = useTranslation(['common'])
   return (
     <div className="mb-4">
       <div className="text-alignment text-justify mb-4 py-6">
-        <MarkdownExtended>{test}</MarkdownExtended>
+        <MarkdownExtended>{markdown}</MarkdownExtended>
       </div>
-      <Footer
-        textButton={t('common:Next')}
-        textCheckbox={t('common:Ok')}
-        href={`/steps/${step}`}
-      />
+      <Footer textButton={t('Next')} textCheckbox={t('Ok')} href={nextLink} />
     </div>
   )
 }

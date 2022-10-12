@@ -51,7 +51,7 @@ function VerseDivider({ verses }) {
         const translator = colorTranslators.find(
           (element) => element.id === el.project_translator_id
         )
-        console.log({ translator })
+
         return {
           ...el,
           color: translator ? translator.color : 'bg-slate-300',
@@ -79,7 +79,7 @@ function VerseDivider({ verses }) {
     })
 
     if (error) console.error(error)
-    else console.log(data)
+    else console.log('Success', data)
   }
 
   return (
