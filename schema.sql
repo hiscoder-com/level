@@ -744,8 +744,8 @@
       DELETE
         CASCADE NOT NULL,
       config json NOT NULL,
-      "sorting" int2 NOT NULL,
-        UNIQUE (project_id, "sorting")
+      sorting int2 NOT NULL,
+        UNIQUE (project_id, sorting)
     );
 
     COMMENT ON COLUMN public.steps.sorting
@@ -1559,7 +1559,7 @@ ADD
     DELETE FROM
       PUBLIC.steps;
 
-    INSERT INTO public.steps (title, description, intro, count_of_users, "time", project_id, config, "sorting") VALUES
+    INSERT INTO public.steps (title, description, intro, count_of_users, "time", project_id, config, sorting) VALUES
     ('Шаг 1: Самостоятельное изучение', 'Some text here...', '# Intro
 
     ### How To Start

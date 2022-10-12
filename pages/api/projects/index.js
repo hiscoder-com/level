@@ -24,6 +24,7 @@ export default async function languageProjectsHandler(req, res) {
           .eq('id', method_id)
           .single()
         if (methodError) throw methodError
+
         /**
          * Сверить что все методы из ресурса пришли с формы. Так же получаем, какой ресурс основной
          * После этого получаем и парсим манифесты и записываем в базу.
@@ -85,12 +86,13 @@ export default async function languageProjectsHandler(req, res) {
             },
           },
         ])
+
         if (error) throw error
 
         current_method.steps.forEach(async (el, index) => {
           await supabase
             .from('steps')
-            .insert([{ ...el, order: index + 1, project_id: data[0].id }])
+            .insert([{ ...el, sorting: index + 1, project_id: data[0].id }])
         })
         res.setHeader('Location', `/projects/${data[0].code}`)
         res.status(201).json({})

@@ -67,7 +67,7 @@ function ProjectCreate() {
           headers: { location },
         } = result
         if (status === 201) {
-          router.push(location)
+          //router.push(location)
         }
       })
       .catch((error) => console.log(error))
