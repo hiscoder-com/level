@@ -6,14 +6,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
-import Audio from 'components/Audio'
 
 import { stepsForBible, reference } from 'utils/db'
 
-export default function IntroPage() {
+export default function ProgressPage() {
   const { query } = useRouter()
-  const { step } = query
-  const { t } = useTranslation(['common', 'steps', 'audio'])
+  const { project, book, chapter, step } = query
+  const { t } = useTranslation(['common'])
   const title = `V-CANA Step ${step}`
   return (
     <div>
@@ -22,48 +21,21 @@ export default function IntroPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {step === '3' ? (
-        <div className="layout-step">
-          <div className="layout-step-col lg:w-2/3">
-            <div className="space-x-3 text-xs">
-              <button>
-                <a className="btn-cyan">{t('Chapter')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Comments')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Words')}</a>
-              </button>
-              <button>
-                <a className="btn-white">{t('Questions')}</a>
-              </button>
-            </div>
-            <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title">{t('Chapter1')}</div>
-              <div className="h5 p-4">{t('Text')}:</div>
-            </div>
-          </div>
-          <div className="layout-step-col lg:w-1/3 lg:mt-12">
-            <div className="layout-step-col-card">
-              <div className="layout-step-col-card-title">{t('audio:Audio')}</div>
-              <Audio />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <Workspace config={stepsForBible[step - 1].workspace} reference={reference} />
-      )}
+      <Workspace config={stepsForBible[step - 1].workspace} reference={reference} />
       <Footer
         textButton={t('Next')}
         textCheckbox={t('Done')}
-        href={`/intro-steps/${String(parseInt(step) + 1)}`}
+        href={`/translate/${project}/${book}/${chapter}/${String(
+          parseInt(step) + 1
+        )}/intro`}
       />
     </div>
   )
 }
 
 export async function getServerSideProps({ locale, params }) {
+  // TODO тут надо с базы взять, сколько максимум шагов может быть в методе
+  // TODO передавать в компонент последний шаг, чтобы знать когда финиш
   if (params.step > 7 || params.step <= 0) {
     return { notFound: true }
   }

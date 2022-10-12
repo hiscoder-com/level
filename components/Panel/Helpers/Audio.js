@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import Recorder from './Recorder'
+import Recorder from '../../Recorder'
 
 export default function Audio() {
   const [isRetellPartner, setIsRetellPartner] = useState(true)

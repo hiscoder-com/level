@@ -1,3 +1,4 @@
+export { default as Audio } from './Audio'
 export { default as Editor } from './Editor'
 export { default as Dictionary } from './Dictionary'
 export { default as Notes } from './Notes'

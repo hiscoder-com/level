@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import { Notes, Dictionary, OwnNotes, Editor, Bible, TNTWL, TQ } from './'
+import { Notes, Dictionary, OwnNotes, Audio, Editor, Bible, TNTWL, TQ } from './'
 
 function Tool({ config }) {
   const { t } = useTranslation('common')
@@ -62,6 +62,9 @@ function Tool({ config }) {
       break
     case 'notes':
       CurrentTool = Notes
+      break
+    case 'audio':
+      CurrentTool = Audio
       break
     case 'dictionary':
       CurrentTool = Dictionary
