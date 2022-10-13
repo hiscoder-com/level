@@ -11,6 +11,7 @@ function Tool({ config }) {
   } = config
   let CurrentTool
   let url
+  let bookPath
   if (!resource) {
     return (
       <div>
@@ -22,39 +23,74 @@ function Tool({ config }) {
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
       CurrentTool = TNTWL
+
+      bookPath = config.resource.manifest.projects[0]?.path
+
+      config.resource.bookPath = bookPath
       url = '/api/git/obs-twl'
       break
 
     case 'OBS Translation Questions':
     case 'TSV OBS Translation Questions':
       CurrentTool = TQ
+
+      bookPath = config.resource.manifest.projects[0]?.path
+
+      config.resource.bookPath = bookPath
       url = '/api/git/obs-tq'
       break
 
     case 'OBS Translation Notes':
     case 'TSV OBS Translation Notes':
       CurrentTool = TNTWL
+
+      bookPath = config.resource.manifest.projects[0]?.path
+
+      config.resource.bookPath = bookPath
       url = '/api/git/obs-tn'
       break
 
     case 'TSV Translation Words Links':
       CurrentTool = TNTWL
+
+      bookPath = config.resource.manifest.projects[0]?.path
+
+      config.resource.bookPath = bookPath
       url = '/api/git/twl'
       break
 
     case 'TSV Translation Notes':
       CurrentTool = TNTWL
+
+      bookPath = config.resource.manifest.projects.find(
+        (el) => el.identifier === config.reference.book
+      )?.path
+
+      config.resource.bookPath = bookPath
+
       url = '/api/git/tn'
       break
 
     case 'TSV Translation Questions':
     case 'Translation Questions':
       CurrentTool = TQ
+
+      bookPath = config.resource.manifest.projects.find(
+        (el) => el.identifier === config.reference.book
+      )?.path
+
+      config.resource.bookPath = bookPath
+
       url = '/api/git/tq'
       break
 
     case 'Open Bible Stories':
       CurrentTool = Bible
+
+      bookPath = config.resource.manifest.projects[0]?.path
+
+      config.resource.bookPath = bookPath
+
       url = '/api/git/obs'
       break
 
@@ -64,7 +100,7 @@ function Tool({ config }) {
     case 'Greek New Testament':
       CurrentTool = Bible
 
-      const bookPath = config.resource.manifest.projects.find(
+      bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
       )?.path
 

@@ -68,16 +68,16 @@ import { tsvToJson } from 'utils/tsvHelper'
  */
 
 export default async function tqHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
 
   let verses = req.query['verses[]'] || req.query.verses
-  const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
+  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
 
   try {
     const _data = await axios.get(url)
-    const jsonData = await tsvToJson(_data.data)
+    const jsonData = tsvToJson(_data.data)
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
