@@ -137,7 +137,7 @@
   $$;
 
   --
- CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
+  CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       current_step RECORD;
@@ -220,7 +220,7 @@
     END;
   $$;
 
- -- Устанавливает дату начала перевода главы
+  -- Устанавливает дату начала перевода главы
   CREATE FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 
@@ -300,6 +300,72 @@
     END;
   $$;
 
+  -- Функция для перехода на следующий шаг (проверим что юзер имеет право редактировать эти стихи, узнаем айди следующего шага, поменяем у всех стихов айди шага)
+  CREATE FUNCTION PUBLIC.go_to_next_step(project TEXT, chapter int2, book PUBLIC.book_code) returns INTEGER
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      proj_trans RECORD;
+      cur_step int2;
+      chapter_id bigint;
+      next_step bigint;
+    BEGIN
+
+      SELECT
+        project_translators.id, projects.id as project_id INTO proj_trans
+      FROM
+        PUBLIC.project_translators LEFT JOIN PUBLIC.projects ON (projects.id = project_translators.project_id)
+      WHERE
+        project_translators.user_id = auth.uid() AND projects.code = go_to_next_step.project;
+
+      -- Есть ли такой переводчик на проекте
+      IF proj_trans.id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+
+      -- получаем айди главы
+      SELECT chapters.id into chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = go_to_next_step.chapter AND chapters.project_id = proj_trans.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = go_to_next_step.book AND books.project_id = proj_trans.project_id);
+
+      -- валидация главы
+      IF chapter_id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+
+      SELECT
+        sorting INTO cur_step
+      FROM
+        PUBLIC.verses LEFT JOIN PUBLIC.steps ON (steps.id = verses.current_step)
+      WHERE verses.chapter_id = chapter_id
+        AND project_translator_id = proj_trans.id
+      LIMIT 1;
+
+      -- Есть ли закрепленные за ним стихи, и узнать на каком сейчас шаге
+      IF cur_step IS NULL THEN
+        RETURN FALSE;
+      END IF;
+
+      SELECT id into next_step
+      FROM PUBLIC.steps
+      WHERE steps.project_id = proj_trans.project_id
+        AND steps.sorting > cur_step + 1
+      ORDER BY steps.sorting
+      LIMIT 1;
+
+      -- получить с базы, какой следующий шаг, если его нет то ничего не делать
+      IF next_step IS NULL THEN
+        RETURN FALSE;
+      END IF;
+
+      -- Если есть, то обновить в базе
+      UPDATE PUBLIC.verses SET current_step = next_step WHERE verses.chapter_id = chapter_id
+        AND verses.project_translator_id = proj_trans.id;
+
+      RETURN TRUE;
+
+    END;
+  $$;
+
   -- блокировка юзера, может вызвать только админ, заблокировать другого админа нельзя
   CREATE FUNCTION PUBLIC.block_user(user_id uuid) returns TEXT
     LANGUAGE plpgsql security definer AS $$
@@ -373,7 +439,7 @@
     END;
   $$;
 
-  -- после создания проекта создаем бриф
+  -- после перехода на новый шаг - сохраняем предыдущий в прогресс
   CREATE FUNCTION PUBLIC.handle_next_step() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       IF NEW.current_step = OLD.current_step THEN
@@ -868,23 +934,16 @@
   -- END TABLE
 
   -- RLS
-    DROP POLICY IF EXISTS "Стих получить может переводчик, координатор проекта, модератор " ON PUBLIC.verses;
+    DROP POLICY IF EXISTS "Стих получить может переводчик, координатор проекта, модератор и админ" ON PUBLIC.verses;
 
     CREATE policy "Стих получить может переводчик, координатор проекта, модератор и админ" ON PUBLIC.verses FOR
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.verses;
+    -- Создаются у нас стихи автоматом, так что никто не может добавлять
 
-    CREATE policy "Добавлять можно только админу" ON PUBLIC.verses FOR
-    INSERT
-      WITH CHECK (can_translate(project_translator_id));
+    -- Редактировать на прямую тоже запретим. Нам можно редактировать только два поля, текущий шаг и текст стиха
 
-    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.verses;
-
-    CREATE policy "Добавлять можно только админу" ON PUBLIC.verses FOR
-    UPDATE
-      USING (can_translate(project_translator_id));
   -- END RLS
 -- VERSES
 

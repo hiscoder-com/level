@@ -12,7 +12,7 @@ import Workspace from 'components/Workspace'
 import { supabase } from 'utils/supabaseClient'
 
 export default function ProgressPage() {
-  const { query } = useRouter()
+  const { query, push } = useRouter()
   const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
@@ -35,6 +35,11 @@ export default function ProgressPage() {
         setStepConfig(stepConfig)
       })
   }, [project, step])
+
+  const handleNextStep = async () => {
+    await supabase.rpc('go_to_next_step', { project, book, chapter })
+    push(`/translate/${project}/${book}/${chapter}/${String(parseInt(step) + 1)}/intro`)
+  }
   return (
     <div>
       <Head>
@@ -53,9 +58,7 @@ export default function ProgressPage() {
       <Footer
         textButton={t('Next')}
         textCheckbox={t('Done')}
-        href={`/translate/${project}/${book}/${chapter}/${String(
-          parseInt(step) + 1
-        )}/intro`}
+        handleClick={handleNextStep}
       />
     </div>
   )
