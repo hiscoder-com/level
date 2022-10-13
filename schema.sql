@@ -13,6 +13,8 @@
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
+    DROP TABLE IF EXISTS PUBLIC.personal_notes;
+
   -- EDN DROP TABLE
 
   -- DROP TRIGGER
@@ -813,6 +815,58 @@
   -- RLS
   -- END RLS
 -- END PROGRESS
+
+-- PERSONAL NOTES
+  -- TABLE
+    CREATE TABLE PUBLIC.personal_notes (
+      id text primary key DEFAULT NULL,
+      user_id uuid DEFAULT NULL,
+      title text DEFAULT NULL,
+      data json DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT now(),
+      is_folder BOOLEAN DEFAULT FALSE,
+      parent text DEFAULT NULL
+    );
+    ALTER TABLE
+      PUBLIC.personal_notes enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    
+    DROP POLICY IF EXISTS "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes FOR
+    INSERT
+      TO authenticated WITH CHECK (TRUE); 
+   
+    DROP POLICY IF EXISTS "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes FOR
+    DELETE
+      TO authenticated USING (TRUE); 
+
+    DROP POLICY IF EXISTS "Залогиненый юзер может изменить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может изменить личную заметку" ON PUBLIC.personal_notes FOR
+    UPDATE
+      TO authenticated USING (TRUE); 
+
+
+    DROP POLICY IF EXISTS "Показывать личные заметки данного пользователя" ON PUBLIC.personal_notes;
+
+    CREATE policy "Показывать личные заметки данного пользователя" ON PUBLIC.personal_notes FOR
+    SELECT
+     USING (auth.uid() = user_id);
+
+  -- END RLS
+-- PERSONAL NOTES
+
+
+ --DROP POLICY IF EXISTS "Добавлять на проект может админ или кординатор проекта" ON PUBLIC.project_translators;
+
+ --   CREATE policy "Добавлять на проект может админ или кординатор проекта" ON PUBLIC.project_translators FOR
+ --   INSERT
+   --   WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
 
 -- Send "previous data" on change
 

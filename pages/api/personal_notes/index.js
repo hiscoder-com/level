@@ -1,6 +1,5 @@
 import { supabase } from 'utils/supabaseClient'
 
-/** TODO проверить */
 export default async function notesHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -10,6 +9,16 @@ export default async function notesHandler(req, res) {
   const { body, method } = req
 
   switch (method) {
+    case 'GET':
+      try {
+        const { data, error } = await supabase.from('personal_notes').select('*')
+        if (error) throw error
+        res.status(200).json(data)
+      } catch (error) {
+        res.status(404).json({ error })
+        return
+      }
+      break
     case 'POST':
       try {
         const { id, user_id } = body // тело запроса
@@ -37,7 +46,7 @@ export default async function notesHandler(req, res) {
       }
       break
     default:
-      res.setHeader('Allow', ['POST'])
+      res.setHeader('Allow', ['GET', 'POST'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

@@ -13,8 +13,10 @@ export default async function notesDeleteHandler(req, res) {
   switch (method) {
     case 'GET':
       try {
-        const { data, error } = await supabase.from('team_notes').select('*')
-        // .eq('project_id', id)
+        const { data, error } = await supabase
+          .from('team_notes')
+          .select('*')
+          .eq('project_id', id)
 
         if (error) throw error
         res.status(200).json(data)

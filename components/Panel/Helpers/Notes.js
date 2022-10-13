@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import axios from 'axios'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useNotes } from 'utils/hooks'
+import { usePersonalNotes } from 'utils/hooks'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -30,22 +30,19 @@ function Notes() {
     outline: 'none',
   }
 
-  const [noteDBId, setNoteDBId] = useState('test_noteDBId')
   const [addedNoteId, setAddedNoteId] = useState('test_addedNoteId')
   const [note, setNote] = useState(null)
   const { user } = useCurrentUser()
-  const [notes, { loading, error, mutate }] = useNotes({
+  const [notes, { loading, error, mutate }] = usePersonalNotes({
     token: user?.access_token,
-    id: user.id,
   })
 
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === addedNoteId)
     setNote(currentNote) //TODO - это устанавливает не текущий едитор, а загруженный с базы
   }, [addedNoteId])
-  console.log('hello', note);
 
-// Clear
+  // Clear
   useEffect(() => {
     if (notes?.length === 0) {
       setNote({
@@ -80,6 +77,9 @@ function Notes() {
       .catch((err) => console.log(err))
   }
   useEffect(() => {
+    if (!note) {
+      return
+    }
     const timer = setTimeout(() => {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
@@ -92,7 +92,7 @@ function Notes() {
       }
     }, 1000)
 
-    // return () => {}
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [note])
 
   return (
@@ -107,13 +107,7 @@ function Notes() {
       </div>
 
       <div style={{ width: '50%' }}>
-        <Redactor
-          initId={addedNoteId}
-          setNoteDBId={setNoteDBId}
-          note={note}
-          setNote={setNote}
-          inputStyle={inputStyle}
-        />
+        <Redactor note={note} setNote={setNote} inputStyle={inputStyle} />
       </div>
     </div>
   )

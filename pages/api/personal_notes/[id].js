@@ -11,26 +11,12 @@ export default async function notesDeleteHandler(req, res) {
     method,
   } = req
   switch (method) {
-    case 'GET':
-      try {
-        const { data, error } = await supabase
-          .from('personal_notes')
-          .select('*')
-          .eq('user_id', id) // TODO это личные заметки. Сделать условие, что выводить только заметки залогиненного юзера
-        if (error) throw error
-        res.status(200).json(data)
-      } catch (error) {
-        res.status(404).json({ error })
-        return
-      }
-      break
     case 'DELETE':
       try {
         const { data, error } = await supabase
           .from('personal_notes')
           .delete()
           .match({ id })
-
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {
@@ -52,7 +38,7 @@ export default async function notesDeleteHandler(req, res) {
       }
       break
     default:
-      res.setHeader('Allow', ['GET', 'DELETE', 'PUT'])
+      res.setHeader('Allow', ['DELETE', 'PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

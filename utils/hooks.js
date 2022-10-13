@@ -280,12 +280,12 @@ export function useGetResource({ config, url }) {
   return { loading, data, error }
 }
 
-export function useNotes({ token, id }) {
+export function usePersonalNotes({ token }) {
   const {
     data: notes,
     mutate,
     error,
-  } = useSWR(token ? [`/api/personal_notes/${id}`, token] : null, fetcher)
+  } = useSWR(token ? [`/api/personal_notes`, token] : null, fetcher)
   const loading = !notes && !error
   return [notes, { mutate, loading, error }]
 }
