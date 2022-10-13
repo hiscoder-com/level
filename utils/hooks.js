@@ -159,16 +159,17 @@ export function useRedirect({ user, startLink }) {
 }
 /**
  *hook receives information from git.door43
- * @param {object} config 2 keys object: {resource:{owner, repo, commit, bookPath, language},reference: { book, chapter, step, verses }}
+ * @param {object} config 2 keys object: {resource:{owner, repo, commit},reference: { book, chapter, step, verses }}
  * @param {string} url url of api, for example: '/api/git/bible'
  * @returns {object} {loading, data, error}
  */
 export function useGetResource({ config, url }) {
   const {
     reference: { book, chapter, step, verses },
-    resource: { owner, repo, commit, bookPath, language },
+    resource: { owner, repo, commit, bookPath },
   } = config
-  const params = { owner, repo, commit, bookPath, language, book, chapter, step, verses }
+  const params = { owner, repo, commit, bookPath, book, chapter, step, verses }
+
   const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
   const { data, error } = useSWR([url, params], fetcher)
   const loading = !data && !error

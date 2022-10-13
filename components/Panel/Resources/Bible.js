@@ -9,7 +9,10 @@ import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 import { Placeholder } from '../UI'
 
 function Bible({ config, url }) {
-  const { loading, data, error } = useGetResource({ config, url })
+  const { loading, data, error } = useGetResource({
+    config,
+    url,
+  })
   return (
     <>
       {loading ? (

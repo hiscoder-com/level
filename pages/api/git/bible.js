@@ -67,10 +67,10 @@ import { parseChapter } from 'utils/usfmHelper'
  */
 
 export default async function bibleHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
 
   let verses = req.query['verses[]'] || req.query.verses
-  const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
+  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
   try {
@@ -78,7 +78,7 @@ export default async function bibleHandler(req, res) {
 
     const jsonData = await usfm.toJSON(_data.data)
 
-    const data = await parseChapter(jsonData.chapters[chapter], verses)
+    const data = parseChapter(jsonData.chapters[chapter], verses)
 
     res.status(200).json({ verseObjects: data })
     return

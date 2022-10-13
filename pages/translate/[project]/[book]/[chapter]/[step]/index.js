@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
@@ -7,21 +9,47 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
 
-import { stepsForBible, reference } from 'utils/db'
+import { supabase } from 'utils/supabaseClient'
 
 export default function ProgressPage() {
   const { query } = useRouter()
   const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
-  const title = `V-CANA Step ${step}`
+  const [stepConfig, setStepConfig] = useState(null)
+
+  useEffect(() => {
+    supabase
+      .from('steps')
+      .select('*,projects!inner(*)')
+      .eq('projects.code', project)
+      .eq('sorting', step)
+      .single()
+      .then((res) => {
+        let stepConfig = {
+          title: res.data.title,
+          config: [...res.data.config],
+          resources: { ...res.data.projects.resources },
+          base_manifest: res.data.projects.base_manifest.resource,
+        }
+
+        setStepConfig(stepConfig)
+      })
+  }, [project, step])
   return (
     <div>
       <Head>
-        <title>{title}</title>
+        <title>{stepConfig?.title}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Workspace config={stepsForBible[step - 1].workspace} reference={reference} />
+      {stepConfig ? (
+        <Workspace
+          reference={{ step, book, chapter, verses: [] }}
+          stepConfig={stepConfig}
+        />
+      ) : (
+        'Loading'
+      )}
       <Footer
         textButton={t('Next')}
         textCheckbox={t('Done')}

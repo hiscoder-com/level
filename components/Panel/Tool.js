@@ -4,8 +4,11 @@ import { Notes, Dictionary, OwnNotes, Audio, Editor, Bible, TNTWL, TQ } from './
 
 function Tool({ config }) {
   const { t } = useTranslation('common')
-
-  const { resource } = config
+  const {
+    resource: {
+      manifest: { dublin_core: resource },
+    },
+  } = config
   let CurrentTool
   let url
   if (!resource) {
@@ -54,28 +57,40 @@ function Tool({ config }) {
       CurrentTool = Bible
       url = '/api/git/obs'
       break
-    case 'translate':
-      CurrentTool = Editor
-      break
-    case 'ownNotes':
-      CurrentTool = OwnNotes
-      break
-    case 'notes':
-      CurrentTool = Notes
-      break
-    case 'audio':
-      CurrentTool = Audio
-      break
-    case 'dictionary':
-      CurrentTool = Dictionary
-      break
 
     case 'Bible':
     case 'Aligned Bible':
     case 'Hebrew Old Testament':
     case 'Greek New Testament':
       CurrentTool = Bible
+
+      const bookPath = config.resource.manifest.projects.find(
+        (el) => el.identifier === config.reference.book
+      )?.path
+
+      config.resource.bookPath = bookPath
+
       url = '/api/git/bible'
+      break
+
+    case 'translate':
+      CurrentTool = Editor
+      break
+
+    case 'ownNotes':
+      CurrentTool = OwnNotes
+      break
+
+    case 'teamNotes':
+      CurrentTool = Notes
+      break
+
+    case 'audio':
+      CurrentTool = Audio
+      break
+
+    case 'dictionary':
+      CurrentTool = Dictionary
       break
 
     default:

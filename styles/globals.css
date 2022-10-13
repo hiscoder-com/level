@@ -157,14 +157,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0
 }
 
-.layout-step-col-card{
-	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full
-}
-
-.layout-step-col-card-title{
-	@apply h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg
-}
-
 .modal-step-goal{
 	@apply transform overflow-hidden p-6 w-full max-w-md text-center align-middle bg-white rounded-2xl shadow-xl transition-all
 }
