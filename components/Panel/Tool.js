@@ -1,10 +1,9 @@
 import { useTranslation } from 'next-i18next'
 
-import { Notes, Dictionary, OwnNotes, Editor, Bible, TNTWL, TQ } from './'
+import { Notes, Dictionary, TeamNotes, Editor, Bible, TNTWL, TQ } from './'
 
 function Tool({ config }) {
   const { t } = useTranslation('common')
-
   const { resource } = config
   let CurrentTool
   let url
@@ -58,10 +57,11 @@ function Tool({ config }) {
       CurrentTool = Editor
       break
     case 'ownNotes':
-      CurrentTool = OwnNotes
+      CurrentTool = TeamNotes
       break
     case 'notes':
       CurrentTool = Notes
+console.log('test case');
       break
     case 'dictionary':
       CurrentTool = Dictionary
@@ -78,6 +78,7 @@ function Tool({ config }) {
     default:
       return <div>{t('Wrong_resource')}</div>
   }
+console.log('test Tool');
   return <CurrentTool config={config} url={url} />
 }
 

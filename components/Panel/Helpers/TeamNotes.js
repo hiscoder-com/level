@@ -5,7 +5,8 @@ import dynamic from 'next/dynamic'
 import axios from 'axios'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useNotes } from 'utils/hooks'
+import { useTeamNotes, useProject } from 'utils/hooks'
+import { useRouter } from 'next/router'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -21,7 +22,7 @@ const ListOfNotes = dynamic(
   }
 )
 
-function Notes() {
+function TeamNotes() {
   const inputStyle = {
     width: '650px',
     height: '38px',
@@ -34,18 +35,22 @@ function Notes() {
   const [addedNoteId, setAddedNoteId] = useState('test_addedNoteId')
   const [note, setNote] = useState(null)
   const { user } = useCurrentUser()
-  const [notes, { loading, error, mutate }] = useNotes({
+  const router = useRouter()
+  const { code } = router.query
+  const [project] = useProject({ token: user?.access_token, code: 'ru_rlob' })
+  console.log('project', project)
+  const [notes, { loading, error, mutate }] = useTeamNotes({
     token: user?.access_token,
-    id: user.id,
+    id: project?.id,
   })
 
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === addedNoteId)
     setNote(currentNote) //TODO - это устанавливает не текущий едитор, а загруженный с базы
   }, [addedNoteId])
-  console.log('hello', note);
+  console.log('hello', note)
 
-// Clear
+  // Clear
   useEffect(() => {
     if (notes?.length === 0) {
       setNote({
@@ -67,7 +72,7 @@ function Notes() {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post('/api/personal_notes', { id, user_id: user.id })
+      .post('/api/team_notes', { id, project_id: project?.id })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
@@ -75,7 +80,7 @@ function Notes() {
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/personal_notes/${id}`, { id, user_id: user.id })
+      .delete(`/api/team_notes/${id}`, { id, project_id: project?.id })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
@@ -83,7 +88,7 @@ function Notes() {
     const timer = setTimeout(() => {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .put(`/api/personal_notes/${addedNoteId}`, note)
+        .put(`/api/team_notes/${addedNoteId}`, note)
         .then(() => mutate())
         .catch((err) => console.log(err))
 
@@ -119,4 +124,4 @@ function Notes() {
   )
 }
 
-export default Notes
+export default TeamNotes
