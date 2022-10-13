@@ -18,7 +18,6 @@ const handleClean = (verseObjects, setVerseObjects) => {
     value.text = value.text.replace(/ +(\?)/g, '$1')
     value.text = value.text.replace(/ +(\))/g, '$1')
 
-    // value.text = value.text.replace(/^ +| +$|( ) +/g, '$1')
     setVerseObjects(_cleanText)
   })
 }
@@ -45,12 +44,6 @@ function Editor({ config }) {
               />
             </div>
           ))}
-          <button
-            onClick={() => handleClean(verseObjects, setVerseObjects)}
-            className="btn-cyan"
-          >
-            cleaneText
-          </button>
         </div>
       )}
     </>
