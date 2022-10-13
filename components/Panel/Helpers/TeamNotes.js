@@ -31,17 +31,15 @@ function TeamNotes() {
     outline: 'none',
   }
 
-  const [noteDBId, setNoteDBId] = useState('test_noteDBId')
   const [addedNoteId, setAddedNoteId] = useState('test_addedNoteId')
   const [note, setNote] = useState(null)
   const { user } = useCurrentUser()
   const router = useRouter()
   const { code } = router.query
   const [project] = useProject({ token: user?.access_token, code: 'ru_rlob' })
-  console.log('project', project)
   const [notes, { loading, error, mutate }] = useTeamNotes({
     token: user?.access_token,
-    id: project?.id,
+    project_id: project?.id,
   })
 
   useEffect(() => {
@@ -112,13 +110,7 @@ function TeamNotes() {
       </div>
 
       <div style={{ width: '50%' }}>
-        <Redactor
-          initId={addedNoteId}
-          setNoteDBId={setNoteDBId}
-          note={note}
-          setNote={setNote}
-          inputStyle={inputStyle}
-        />
+        <Redactor note={note} setNote={setNote} inputStyle={inputStyle} />
       </div>
     </div>
   )

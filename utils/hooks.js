@@ -290,12 +290,12 @@ export function usePersonalNotes({ token }) {
   return [notes, { mutate, loading, error }]
 }
 
-export function useTeamNotes({ token, id }) {
+export function useTeamNotes({ token, project_id }) {
   const {
     data: notes,
     mutate,
     error,
-  } = useSWR(token ? [`/api/team_notes/${id}`, token] : null, fetcher)
+  } = useSWR(token ? [`/api/team_notes/${project_id}`, token] : null, fetcher)
   const loading = !notes && !error
   return [notes, { mutate, loading, error }]
 }

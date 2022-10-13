@@ -14,6 +14,8 @@
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
     DROP TABLE IF EXISTS PUBLIC.personal_notes;
+    DROP TABLE IF EXISTS PUBLIC.team_notes;
+
 
   -- EDN DROP TABLE
 
@@ -861,12 +863,54 @@
   -- END RLS
 -- PERSONAL NOTES
 
+-- TEAM NOTES
+  -- TABLE
+    CREATE TABLE PUBLIC.team_notes (
+      id text primary key DEFAULT NULL,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      title text DEFAULT NULL,
+      data json DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT now(),
+      is_folder BOOLEAN DEFAULT FALSE,
+      parent text DEFAULT NULL
+    );
+    ALTER TABLE
+      PUBLIC.team_notes enable ROW LEVEL security;
+  -- END TABLE
 
- --DROP POLICY IF EXISTS "Добавлять на проект может админ или кординатор проекта" ON PUBLIC.project_translators;
+  -- RLS
+    
+    DROP POLICY IF EXISTS "Администратор или координатор может добавить командную заметку" ON PUBLIC.team_notes;
 
- --   CREATE policy "Добавлять на проект может админ или кординатор проекта" ON PUBLIC.project_translators FOR
- --   INSERT
-   --   WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+    CREATE policy "Администратор или координатор может добавить командную заметку" ON PUBLIC.team_notes FOR
+    INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator')); 
+   
+    DROP POLICY IF EXISTS "Администратор или координатор может удалить командную заметку" ON PUBLIC.team_notes;
+
+    CREATE policy "Администратор или координатор может удалить командную заметку" ON PUBLIC.team_notes FOR
+    DELETE
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user'); 
+
+    DROP POLICY IF EXISTS "Администратор или координатор может изменить командную заметку" ON PUBLIC.team_notes;
+
+    CREATE policy "Администратор или координатор может изменить командную заметку" ON PUBLIC.team_notes FOR
+    UPDATE
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user'); 
+
+
+    DROP POLICY IF EXISTS "Показывать командные заметки залогиненному юзеру" ON PUBLIC.team_notes;
+
+    CREATE policy "Показывать командные заметки залогиненному юзеру" ON PUBLIC.team_notes FOR
+    SELECT
+     TO authenticated USING (TRUE);
+
+  -- END RLS
+-- TEAM NOTES
+
+
 
 -- Send "previous data" on change
 
