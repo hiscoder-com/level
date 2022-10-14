@@ -56,7 +56,7 @@ function ProjectCard({ project }) {
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
       </div>
-      {currentStep && currentStep.started_at && (
+      {currentStep && currentStep.step && (
         <Link
           href={`/translate/${currentStep.project}/${currentStep.book}/${currentStep.chapter}/${currentStep.step}/intro`}
         >

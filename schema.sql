@@ -153,6 +153,8 @@
         LEFT JOIN steps ON (verses.current_step = steps.id)
         LEFT JOIN projects ON (projects.id = verses.project_id)
       WHERE verses.project_id = get_current_step.project_id
+        AND chapters.started_at IS NOT NULL
+        AND chapters.finished_at IS NULL
         AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_step.project_id AND user_id = auth.uid())
       GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
 

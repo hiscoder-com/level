@@ -13,7 +13,7 @@ import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default function ProgressPage({ last_step }) {
-  const { query, push, replace } = useRouter()
+  const { query, replace } = useRouter()
   const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
@@ -27,7 +27,7 @@ export default function ProgressPage({ last_step }) {
       .single()
       .then((res) => {
         if (!res.data) {
-          return push('/')
+          return replace('/')
         }
         supabase
           .rpc('get_current_step', { project_id: res.data.projects.id })
@@ -62,9 +62,9 @@ export default function ProgressPage({ last_step }) {
       chapter,
     })
     if (parseInt(last_step) === parseInt(next_step)) {
-      push(`/account`)
+      replace(`/account`)
     } else {
-      push(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
+      replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
     }
   }
   return (
