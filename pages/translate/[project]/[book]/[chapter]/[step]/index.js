@@ -13,8 +13,7 @@ import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default function ProgressPage({ last_step }) {
-  console.log({ last_step })
-  const { query, push } = useRouter()
+  const { query, push, replace } = useRouter()
   const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
@@ -30,16 +29,31 @@ export default function ProgressPage({ last_step }) {
         if (!res.data) {
           return push('/')
         }
-        let stepConfig = {
-          title: res.data?.title,
-          config: [...res.data?.config],
-          resources: { ...res.data?.projects?.resources },
-          base_manifest: res.data?.projects?.base_manifest?.resource,
-        }
+        supabase
+          .rpc('get_current_step', { project_id: res.data.projects.id })
+          .then((response) => {
+            if (!response.data.step) {
+              return replace(`/account`)
+            }
 
-        setStepConfig(stepConfig)
+            if (parseInt(response.data.step) !== parseInt(step)) {
+              return replace(
+                `/translate/${project}/${book}/${chapter}/${response.data.step}/intro`
+              )
+            }
+
+            let stepConfig = {
+              title: res.data?.title,
+              config: [...res.data?.config],
+              resources: { ...res.data?.projects?.resources },
+              base_manifest: res.data?.projects?.base_manifest?.resource,
+            }
+
+            setStepConfig(stepConfig)
+          })
       })
-  }, [project, push, step])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [book, chapter, project, step])
 
   const handleNextStep = async () => {
     const { data: next_step } = await supabase.rpc('go_to_next_step', {

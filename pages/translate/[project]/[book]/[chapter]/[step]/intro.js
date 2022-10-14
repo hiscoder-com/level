@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import Head from 'next/head'
-import { useRouter } from 'next/router'
+import { Router, useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
@@ -11,18 +11,34 @@ import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default function IntroPage() {
-  const { query } = useRouter()
+  const { query, replace } = useRouter()
   const { project, book, chapter, step } = query
+
   const [introMd, setIntroMd] = useState('')
   const { t } = useTranslation(['intro-steps'])
   useEffect(() => {
     supabase
       .from('steps')
-      .select('intro,sorting,projects!inner(code)')
+      .select('intro,sorting,projects!inner(code,id)')
       .match({ 'projects.code': project, sorting: step })
       .single()
-      .then((res) => setIntroMd(res.data.intro))
-  }, [project, step])
+      .then((res) => {
+        setIntroMd(res.data.intro)
+        supabase
+          .rpc('get_current_step', { project_id: res.data.projects.id })
+          .then((response) => {
+            if (!response.data.step) {
+              return replace(`/account`)
+            }
+            if (parseInt(response.data.step) !== parseInt(step)) {
+              return replace(
+                `/translate/${project}/${book}/${chapter}/${response.data.step}/intro`
+              )
+            }
+          })
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [book, chapter, project, step])
   const title = t('V-CANAIntro') + ' ' + step
   return (
     <div className="layout-appbar">

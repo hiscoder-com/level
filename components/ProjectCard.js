@@ -28,6 +28,7 @@ function ProjectCard({ project }) {
       getLevel()
     }
   }, [user?.id, project?.id])
+
   useEffect(() => {
     if (level && ['translator', 'moderator'].includes(level)) {
       supabase
