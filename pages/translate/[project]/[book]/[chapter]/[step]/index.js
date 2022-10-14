@@ -10,8 +10,10 @@ import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
 
 import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
 
-export default function ProgressPage() {
+export default function ProgressPage({ last_step }) {
+  console.log({ last_step })
   const { query, push } = useRouter()
   const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
@@ -25,20 +27,31 @@ export default function ProgressPage() {
       .eq('sorting', step)
       .single()
       .then((res) => {
+        if (!res.data) {
+          return push('/')
+        }
         let stepConfig = {
-          title: res.data.title,
-          config: [...res.data.config],
-          resources: { ...res.data.projects.resources },
-          base_manifest: res.data.projects.base_manifest.resource,
+          title: res.data?.title,
+          config: [...res.data?.config],
+          resources: { ...res.data?.projects?.resources },
+          base_manifest: res.data?.projects?.base_manifest?.resource,
         }
 
         setStepConfig(stepConfig)
       })
-  }, [project, step])
+  }, [project, push, step])
 
   const handleNextStep = async () => {
-    await supabase.rpc('go_to_next_step', { project, book, chapter })
-    push(`/translate/${project}/${book}/${chapter}/${String(parseInt(step) + 1)}/intro`)
+    const { data: next_step } = await supabase.rpc('go_to_next_step', {
+      project,
+      book,
+      chapter,
+    })
+    if (parseInt(last_step) === parseInt(next_step)) {
+      push(`/account`)
+    } else {
+      push(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
+    }
   }
   return (
     <div>
@@ -65,15 +78,24 @@ export default function ProgressPage() {
 }
 
 export async function getServerSideProps({ locale, params }) {
-  // TODO тут надо с базы взять, сколько максимум шагов может быть в методе
-  // TODO передавать в компонент последний шаг, чтобы знать когда финиш
-  if (params.step > 7 || params.step <= 0) {
+  const steps = await supabaseService
+    .from('steps')
+    .select('sorting,projects!inner(code)')
+    .eq('projects.code', params.project)
+    .order('sorting', { ascending: false })
+    .limit(1)
+    .single()
+  if (!steps.data.sorting) {
+    return { notFound: true }
+  }
+  if (params.step > steps.data.sorting || params.step <= 0) {
     return { notFound: true }
   }
 
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'steps', 'audio'])),
+      last_step: steps.data.sorting,
     },
   }
 }

@@ -306,7 +306,7 @@
     DECLARE
       proj_trans RECORD;
       cur_step int2;
-      chapter_id bigint;
+      cur_chapter_id bigint;
       next_step bigint;
     BEGIN
 
@@ -319,49 +319,49 @@
 
       -- Есть ли такой переводчик на проекте
       IF proj_trans.id IS NULL THEN
-        RETURN FALSE;
+        RETURN 0;
       END IF;
 
       -- получаем айди главы
-      SELECT chapters.id into chapter_id
+      SELECT chapters.id into cur_chapter_id
       FROM PUBLIC.chapters
       WHERE chapters.num = go_to_next_step.chapter AND chapters.project_id = proj_trans.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = go_to_next_step.book AND books.project_id = proj_trans.project_id);
 
       -- валидация главы
-      IF chapter_id IS NULL THEN
-        RETURN FALSE;
+      IF cur_chapter_id IS NULL THEN
+        RETURN 0;
       END IF;
 
       SELECT
         sorting INTO cur_step
       FROM
         PUBLIC.verses LEFT JOIN PUBLIC.steps ON (steps.id = verses.current_step)
-      WHERE verses.chapter_id = chapter_id
+      WHERE verses.chapter_id = cur_chapter_id
         AND project_translator_id = proj_trans.id
       LIMIT 1;
 
       -- Есть ли закрепленные за ним стихи, и узнать на каком сейчас шаге
       IF cur_step IS NULL THEN
-        RETURN FALSE;
+        RETURN 0;
       END IF;
 
       SELECT id into next_step
       FROM PUBLIC.steps
       WHERE steps.project_id = proj_trans.project_id
-        AND steps.sorting > cur_step + 1
+        AND steps.sorting > cur_step
       ORDER BY steps.sorting
       LIMIT 1;
 
       -- получить с базы, какой следующий шаг, если его нет то ничего не делать
       IF next_step IS NULL THEN
-        RETURN FALSE;
+        RETURN cur_step;
       END IF;
 
       -- Если есть, то обновить в базе
-      UPDATE PUBLIC.verses SET current_step = next_step WHERE verses.chapter_id = chapter_id
+      UPDATE PUBLIC.verses SET current_step = next_step WHERE verses.chapter_id = cur_chapter_id
         AND verses.project_translator_id = proj_trans.id;
 
-      RETURN TRUE;
+      RETURN next_step;
 
     END;
   $$;

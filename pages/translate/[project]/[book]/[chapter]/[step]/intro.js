@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import IntroStep from 'components/IntroStep'
 import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
 
 export default function IntroPage() {
   const { query } = useRouter()
@@ -39,8 +40,17 @@ export default function IntroPage() {
 }
 
 export async function getServerSideProps({ locale, params }) {
-  // TODO тут надо с базы взять, сколько максимум шагов может быть в методе
-  if (params.step > 7 || params.step <= 0) {
+  const steps = await supabaseService
+    .from('steps')
+    .select('sorting,projects!inner(code)')
+    .eq('projects.code', params.project)
+    .order('sorting', { ascending: false })
+    .limit(1)
+    .single()
+  if (!steps.data.sorting) {
+    return { notFound: true }
+  }
+  if (params.step > steps.data.sorting || params.step <= 0) {
     return { notFound: true }
   }
   return {
