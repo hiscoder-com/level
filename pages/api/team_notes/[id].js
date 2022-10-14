@@ -7,7 +7,7 @@ export default async function notesDeleteHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
   const {
     query: { id },
-    body: { data: data_note, title, isFolder, parent },
+    body: { data: data_note, title, isFolder, parent_id },
     method,
   } = req
   switch (method) {
@@ -40,7 +40,7 @@ export default async function notesDeleteHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('team_notes')
-          .update([{ data: data_note, title, isFolder, parent }])
+          .update([{ data: data_note, title, isFolder, parent_id }])
           .match({ id })
         if (error) throw error
         res.status(200).json(data)

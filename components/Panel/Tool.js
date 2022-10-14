@@ -56,12 +56,11 @@ function Tool({ config }) {
     case 'translate':
       CurrentTool = Editor
       break
-    case 'ownNotes':
+    case 'teamNotes':
       CurrentTool = TeamNotes
       break
     case 'notes':
       CurrentTool = Notes
-console.log('test case');
       break
     case 'dictionary':
       CurrentTool = Dictionary
@@ -78,7 +77,6 @@ console.log('test case');
     default:
       return <div>{t('Wrong_resource')}</div>
   }
-console.log('test Tool');
   return <CurrentTool config={config} url={url} />
 }
 

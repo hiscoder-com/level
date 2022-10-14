@@ -98,16 +98,19 @@ function Notes() {
   return (
     <div style={{ display: 'flex' }}>
       <div style={{ width: '50%' }}>
-        <ListOfNotes
-          notes={notes}
-          passIdToDel={removeNote}
-          addNote={addNote}
-          setAddedNoteId={setAddedNoteId}
-        />
-      </div>
-
-      <div style={{ width: '50%' }}>
-        <Redactor note={note} setNote={setNote} inputStyle={inputStyle} />
+        {!note ? (
+          <ListOfNotes
+            notes={notes}
+            passIdToDel={removeNote}
+            addNote={addNote}
+            setAddedNoteId={setAddedNoteId}
+          />
+        ) : (
+          <>
+            <button onClick={() => setNote(null)}>close</button>
+            <Redactor note={note} setNote={setNote} inputStyle={inputStyle} />
+          </>
+        )}
       </div>
     </div>
   )
