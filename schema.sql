@@ -41,6 +41,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.get_verses;
 
   -- END DROP FUNCTION
 
@@ -159,6 +160,38 @@
       GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
 
       RETURN current_step;
+
+    END;
+  $$;
+
+  -- получить все стихи переводчика
+  CREATE FUNCTION PUBLIC.get_verses(project_id BIGINT, chapter int2, book PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text)
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      verses_list RECORD;
+      cur_chapter_id BIGINT;
+    BEGIN
+      IF authorize(auth.uid(), get_verses.project_id) IN ('user') THEN
+        RETURN;
+      END IF;
+
+
+      SELECT chapters.id into cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = get_verses.chapter AND chapters.project_id = get_verses.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_verses.book AND books.project_id = get_verses.project_id);
+
+      IF cur_chapter_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      return query SELECT verses.id as verse_id, verses.num, verses.text as verse
+      FROM public.verses
+      WHERE verses.project_translator_id = (SELECT id
+      FROM PUBLIC.project_translators
+      WHERE project_translators.user_id = auth.uid()
+        AND project_translators.project_id = get_verses.project_id)
+        AND verses.project_id = get_verses.project_id
+        AND verses.chapter_id = cur_chapter_id;
 
     END;
   $$;

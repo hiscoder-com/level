@@ -17,6 +17,16 @@ export default function ProgressPage({ last_step }) {
   const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
+  const [projectId, setProjectId] = useState(null)
+  const [versesRange, setVersesRange] = useState([])
+
+  useEffect(() => {
+    if (projectId) {
+      supabase.rpc('get_verses', { project_id: projectId, chapter, book }).then((res) => {
+        setVersesRange(res.data)
+      })
+    }
+  }, [book, chapter, projectId])
 
   useEffect(() => {
     supabase
@@ -41,6 +51,8 @@ export default function ProgressPage({ last_step }) {
                 `/translate/${project}/${book}/${chapter}/${response.data.step}/intro`
               )
             }
+
+            setProjectId(res.data?.projects?.id)
 
             let stepConfig = {
               title: res.data?.title,
@@ -74,9 +86,9 @@ export default function ProgressPage({ last_step }) {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {stepConfig ? (
+      {versesRange.length && stepConfig ? (
         <Workspace
-          reference={{ step, book, chapter, verses: [] }}
+          reference={{ step, book, chapter, verses: versesRange }}
           stepConfig={stepConfig}
         />
       ) : (
