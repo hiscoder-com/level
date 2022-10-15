@@ -6,6 +6,8 @@ import axios from 'axios'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { usePersonalNotes } from 'utils/hooks'
+import Close from 'public/close.svg'
+import Waste from 'public/waste.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -22,15 +24,7 @@ const ListOfNotes = dynamic(
 )
 
 function Notes() {
-  const inputStyle = {
-    width: '650px',
-    height: '38px',
-    fontSize: 'large',
-    border: 'none',
-    outline: 'none',
-  }
-
-  const [addedNoteId, setAddedNoteId] = useState('test_addedNoteId')
+  const [noteId, setNoteId] = useState('test_noteId')
   const [note, setNote] = useState(null)
   const { user } = useCurrentUser()
   const [notes, { loading, error, mutate }] = usePersonalNotes({
@@ -38,11 +32,10 @@ function Notes() {
   })
 
   useEffect(() => {
-    const currentNote = notes?.find((el) => el.id === addedNoteId)
-    setNote(currentNote) //TODO - это устанавливает не текущий едитор, а загруженный с базы
-  }, [addedNoteId])
-
-  // Clear
+    const currentNote = notes?.find((el) => el.id === noteId)
+    setNote(currentNote)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noteId])
   useEffect(() => {
     if (notes?.length === 0) {
       setNote({
@@ -55,6 +48,7 @@ function Notes() {
               data: {},
             },
           ],
+          version: '2.8.1',
         },
       })
     }
@@ -83,7 +77,7 @@ function Notes() {
     const timer = setTimeout(() => {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .put(`/api/personal_notes/${addedNoteId}`, note)
+        .put(`/api/personal_notes/${noteId}`, note)
         .then(() => mutate())
         .catch((err) => console.log(err))
 
@@ -96,22 +90,51 @@ function Notes() {
   }, [note])
 
   return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ width: '50%' }}>
-        {!note ? (
+    <div className="relative">
+      {!note ? (
+        <div>
+          <div className="flex justify-end">
+            <button className="   btn-cyan mb-4 right-0" onClick={addNote}>
+              Add
+            </button>
+          </div>
           <ListOfNotes
             notes={notes}
-            passIdToDel={removeNote}
-            addNote={addNote}
-            setAddedNoteId={setAddedNoteId}
+            removeNote={removeNote}
+            setNoteId={setNoteId}
+            classes={{
+              item: 'bg-cyan-50 my-6 rounded-lg shadow-md',
+              title: 'font-bold p-2',
+              text: 'px-2 h-10 overflow-hidden',
+              delBtn: 'px-4 py-2',
+            }}
+            isShowText
+            delBtnIcon={<Waste className={'w-4 h-4'} />}
           />
-        ) : (
-          <>
-            <button onClick={() => setNote(null)}>close</button>
-            <Redactor note={note} setNote={setNote} inputStyle={inputStyle} />
-          </>
-        )}
-      </div>
+        </div>
+      ) : (
+        <>
+          <div
+            className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
+            onClick={() => {
+              setNote(null)
+              setNoteId(null)
+            }}
+          >
+            <Close />
+          </div>
+          <Redactor
+            classes={{
+              wrapper: '',
+              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md',
+              redactor:
+                'bg-cyan-50 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+            }}
+            note={note}
+            setNote={setNote}
+          />
+        </>
+      )}
     </div>
   )
 }

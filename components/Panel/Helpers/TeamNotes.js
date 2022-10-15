@@ -7,6 +7,8 @@ import axios from 'axios'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTeamNotes, useProject } from 'utils/hooks'
 import { useRouter } from 'next/router'
+import Close from 'public/close.svg'
+import Waste from 'public/waste.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -23,15 +25,7 @@ const ListOfNotes = dynamic(
 )
 
 function TeamNotes() {
-  const inputStyle = {
-    width: '650px',
-    height: '38px',
-    fontSize: 'large',
-    border: 'none',
-    outline: 'none',
-  }
-
-  const [addedNoteId, setAddedNoteId] = useState('test_addedNoteId')
+  const [noteId, setNoteId] = useState(null)
   const [note, setNote] = useState(null)
   const { user } = useCurrentUser()
   const router = useRouter()
@@ -43,28 +37,10 @@ function TeamNotes() {
   })
 
   useEffect(() => {
-    const currentNote = notes?.find((el) => el.id === addedNoteId)
-    setNote(currentNote) //TODO - это устанавливает не текущий едитор, а загруженный с базы
-  }, [addedNoteId])
-  console.log('hello', note)
-
-  // Clear
-  useEffect(() => {
-    if (notes?.length === 0) {
-      setNote({
-        title: '',
-        id: ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9),
-        data: {
-          blocks: [
-            {
-              type: 'paragraph',
-              data: {},
-            },
-          ],
-        },
-      })
-    }
-  }, [notes])
+    const currentNote = notes?.find((el) => el.id === noteId)
+    setNote(currentNote)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [noteId])
 
   const addNote = () => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
@@ -86,7 +62,7 @@ function TeamNotes() {
     const timer = setTimeout(() => {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .put(`/api/team_notes/${addedNoteId}`, note)
+        .put(`/api/team_notes/${noteId}`, note)
         .then(() => mutate())
         .catch((err) => console.log(err))
 
@@ -99,19 +75,51 @@ function TeamNotes() {
   }, [note])
 
   return (
-    <div style={{ display: 'flex' }}>
-      <div style={{ width: '50%' }}>
-        <ListOfNotes
-          notes={notes}
-          passIdToDel={removeNote}
-          addNote={addNote}
-          setAddedNoteId={setAddedNoteId}
-        />
-      </div>
-
-      <div style={{ width: '50%' }}>
-        <Redactor note={note} setNote={setNote} inputStyle={inputStyle} />
-      </div>
+    <div className="relative">
+      {!note ? (
+        <div>
+          <div className="flex justify-end">
+            <button className="   btn-cyan mb-4 right-0" onClick={addNote}>
+              Add
+            </button>
+          </div>
+          <ListOfNotes
+            notes={notes}
+            removeNote={removeNote}
+            setNoteId={setNoteId}
+            classes={{
+              item: 'bg-cyan-50 my-6 rounded-lg shadow-md',
+              title: 'font-bold p-2',
+              text: 'px-2 h-10 overflow-hidden',
+              delBtn: 'px-4 py-2',
+            }}
+            isShowText
+            delBtnIcon={<Waste className={'w-4 h-4'} />}
+          />
+        </div>
+      ) : (
+        <>
+          <div
+            className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
+            onClick={() => {
+              setNote(null)
+              setNoteId(null)
+            }}
+          >
+            <Close />
+          </div>
+          <Redactor
+            classes={{
+              wrapper: '',
+              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md',
+              redactor:
+                'bg-cyan-50 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+            }}
+            note={note}
+            setNote={setNote}
+          />
+        </>
+      )}
     </div>
   )
 }

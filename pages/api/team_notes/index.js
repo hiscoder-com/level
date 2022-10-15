@@ -12,7 +12,6 @@ export default async function notesHandler(req, res) {
     case 'POST':
       try {
         const { id, project_id } = body
-        // TODO валидацию
         const { data, error } = await supabase.from('team_notes').insert([
           {
             id,
@@ -25,6 +24,7 @@ export default async function notesHandler(req, res) {
                   data: {},
                 },
               ],
+              version: '2.8.1',
             },
           },
         ])
