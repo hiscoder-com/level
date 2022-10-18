@@ -82,10 +82,6 @@ function ProjectCreate() {
       register: {
         ...register('title', {
           required: true,
-          pattern: {
-            value: /^(?! )[A-za-z\s]+$/i,
-            message: 'You need type just latins symbols',
-          },
         }),
       },
       errorMessage: errors?.title ? errors?.title.message : '',
@@ -98,11 +94,10 @@ function ProjectCreate() {
       register: {
         ...register('code', {
           required: true,
-          minLength: { value: 3, message: 'Need more than 3 characters' },
-          maxLength: { value: 4, message: 'Need less than 3 characters' },
           pattern: {
-            value: /^(?! )[a-z]+$/i,
-            message: 'only small letters of the Latin alphabet are needed',
+            value: /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i,
+            message:
+              'Use the language code and the project code separated by an underscore',
           },
         }),
       },
@@ -134,6 +129,10 @@ function ProjectCreate() {
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
+        <p>
+          Повесить слушателя чтобы проверять, есть такой код проекта или нет. Либо на ввод
+          с задержкой, либо на отправку.
+        </p>
         {inputs.map((el) => (
           <div key={el.title}>
             <div>{el.title}</div>
@@ -222,9 +221,19 @@ function ProjectCreate() {
         />
         <br />
         <pre>
-          {`literal: 'https://git.door43.org/ru_gl/ru_rlob/src/commit/fcfef9689dd6897892dbcced76ba8beb0eacaa62',
-simplified: 'https://git.door43.org/ru_gl/ru_rsob/src/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c',
-tn: 'https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38',`}
+          {`literal
+https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
+simplified
+https://git.door43.org/ru_gl/ru_rsob/src/commit/03519d2d1f66a07ba42d7a62afb75393cf83fa1c
+tn
+https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38
+tq
+https://git.door43.org/ru_gl/ru_tq/src/commit/787f3f48f4ada9f0a29451b5ef318125a5fd6c7a
+tw
+https://git.door43.org/ru_gl/ru_tw/src/commit/ea337e3dc7d8e9100af1224d1698b58abb53849d
+twl
+https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c864a2ca1
+`}
         </pre>
         {setResources}
         <br />

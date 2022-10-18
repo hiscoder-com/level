@@ -13,7 +13,7 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
       )
     VALUES
       (
-        '73c91d38-0eb8-4d6b-8b4f-8de41d6a9399',
+        'a15e7e6f-5fc8-49b4-8d58-f6b5e99ee1d3',
         'TranslatorF',
         'translator@fox.com',
         TRUE,
@@ -22,7 +22,7 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
         FALSE
       ),
       (
-        'fc40caa3-fde8-4851-b6d4-84aa2c6cb628',
+        'd68be542-7de7-4a95-8406-4f347bc2889a',
         'ModeratorF',
         'moderator@fox.com',
         TRUE,
@@ -31,7 +31,7 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
         FALSE
       ),
       (
-        '29669e20-b05e-46f4-894a-d5a1de2bf626',
+        'b8960e4c-75b9-4853-953b-2ba94e45de1f',
         'CoordinatorF',
         'coordinator@fox.com',
         TRUE,
@@ -40,7 +40,7 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
         FALSE
       ),
       (
-        '8390f82c-ea82-4f5f-bf43-f60ad0e3ba18',
+        'f96d1bfe-dda0-4f81-8a26-834e562bbcfd',
         'AdminF',
         'admin@fox.com',
         TRUE,
@@ -48,6 +48,19 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
         NULL,
         TRUE
       );
+INSERT INTO public.project_coordinators (project_id, user_id) VALUES (1, 'b8960e4c-75b9-4853-953b-2ba94e45de1f');
+INSERT INTO public.project_translators (project_id, is_moderator, user_id) VALUES
+(1, false, 'a15e7e6f-5fc8-49b4-8d58-f6b5e99ee1d3'),
+(1, true, 'd68be542-7de7-4a95-8406-4f347bc2889a');
+
+
+
+
+
+
+
+
+
 
 
     INSERT INTO
@@ -101,4 +114,6 @@ https://github.com/supabase/supabase/tree/master/examples/auth/nextjs-auth
 SELECT verses, current_step, chapters.id, chapters.num, chapters.book_id, started_at, finished_at, books.code
 FROM verses LEFT JOIN chapters ON (verses.chapter_id = chapters.id) LEFT JOIN books ON (chapters.book_id = books.id)
 WHERE verses.project_id=2
-  AND project_translator_id=(SELECT id FROM project_translators WHERE project_id=2 AND user_id='73c91d38-0eb8-4d6b-8b4f-8de41d6a9399') GROUP BY books.id, chapters.id, verses.current_step;
+  AND project_translator_id=(SELECT id FROM project_translators WHERE project_id=2 AND user_id='a15e7e6f-5fc8-49b4-8d58-f6b5e99ee1d3') GROUP BY books.id, chapters.id, verses.current_step;
+
+pg_dump postgresql://postgres:postgres@localhost:64322/postgres --a --inserts -n public > backup.sql
