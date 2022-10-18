@@ -20,20 +20,21 @@ function Editor({ config }) {
 
     setVerseObjects(_verses)
   }, [verseObject])
+  console.log({ config })
   return (
     <>
       {config?.resource?.stepOption === 'draft' ? (
         <EditorExtended config={config} />
       ) : (
         <div ref={versesRef}>
-          {config?.resource?.verses?.map((el, index) => (
-            <div key={index} data-id={el.verse} className="flex my-3">
-              <div>{el.verse}</div>
+          {config?.reference?.verses?.map((el) => (
+            <div key={el.verse_id} data-id={el.verse_id} className="flex my-3">
+              <div>{el.num}</div>
               <AutoSizeTextArea
                 verseObject={verseObject}
-                defaultValue={el.text}
+                defaultValue={el.verse}
                 setVerseObject={setVerseObject}
-                verse={el.verse}
+                verse={el.num}
                 placeholder={'_'.repeat(50)}
               />
             </div>

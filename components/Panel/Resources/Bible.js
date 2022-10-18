@@ -9,7 +9,6 @@ import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 import { Placeholder } from '../UI'
 
 function Bible({ config, url }) {
-  console.log({ verses: config.reference.verses })
   const { loading, data, error } = useGetResource({
     config,
     url,

@@ -57,6 +57,7 @@ export default function ProgressPage({ last_step }) {
             let stepConfig = {
               title: res.data?.title,
               config: [...res.data?.config],
+              whole_chapter: res.data?.whole_chapter,
               resources: { ...res.data?.projects?.resources },
               base_manifest: res.data?.projects?.base_manifest?.resource,
             }

@@ -19,15 +19,17 @@ function Tool({ config }) {
       </div>
     )
   }
+  config.verses = config.wholeChapter
+    ? []
+    : config.reference.verses.map((v) => (v?.num ? v.num : v))
+
   // TODO возможно прям тут добавить проверку, надо ли передавать стихи или нет. Или же прокинуть это в каждый компонент. Может ли быть такое что к примеру ты делаешь перевод 5 стихов, показывать текст с Библии с 5 стихов, а вот заметки ко всем стихам?
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
       CurrentTool = TNTWL
 
-      bookPath = config.resource.manifest.projects[0]?.path
+      config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      config.resource.bookPath = bookPath
       url = '/api/git/obs-twl'
       break
 
@@ -35,10 +37,8 @@ function Tool({ config }) {
     case 'TSV OBS Translation Questions':
       CurrentTool = TQ
 
-      bookPath = config.resource.manifest.projects[0]?.path
+      config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      config.resource.bookPath = bookPath
       url = '/api/git/obs-tq'
       break
 
@@ -46,32 +46,25 @@ function Tool({ config }) {
     case 'TSV OBS Translation Notes':
       CurrentTool = TNTWL
 
-      bookPath = config.resource.manifest.projects[0]?.path
+      config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      config.resource.bookPath = bookPath
       url = '/api/git/obs-tn'
       break
 
     case 'TSV Translation Words Links':
       CurrentTool = TNTWL
 
-      bookPath = config.resource.manifest.projects[0]?.path
+      config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      config.resource.bookPath = bookPath
       url = '/api/git/twl'
       break
 
     case 'TSV Translation Notes':
       CurrentTool = TNTWL
 
-      bookPath = config.resource.manifest.projects.find(
+      config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
       )?.path
-
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      config.resource.bookPath = bookPath
 
       url = '/api/git/tn'
       break
@@ -80,12 +73,9 @@ function Tool({ config }) {
     case 'Translation Questions':
       CurrentTool = TQ
 
-      bookPath = config.resource.manifest.projects.find(
+      config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
       )?.path
-
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      config.resource.bookPath = bookPath
 
       url = '/api/git/tq'
       break
@@ -93,10 +83,7 @@ function Tool({ config }) {
     case 'Open Bible Stories':
       CurrentTool = Bible
 
-      bookPath = config.resource.manifest.projects[0]?.path
-
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      config.resource.bookPath = bookPath
+      config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
       url = '/api/git/obs'
       break
@@ -106,12 +93,10 @@ function Tool({ config }) {
     case 'Hebrew Old Testament':
     case 'Greek New Testament':
       CurrentTool = Bible
-      config.reference.verses = config.reference.verses.map((v) => (v?.num ? v.num : v))
-      bookPath = config.resource.manifest.projects.find(
+
+      config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
       )?.path
-
-      config.resource.bookPath = bookPath
 
       url = '/api/git/bible'
       break

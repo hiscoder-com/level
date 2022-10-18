@@ -23,6 +23,7 @@ function Workspace({ stepConfig, reference }) {
               tools={el.tools}
               resources={stepConfig.resources}
               reference={reference}
+              wholeChapter={stepConfig.whole_chapter}
             />
           </div>
         )
@@ -33,7 +34,7 @@ function Workspace({ stepConfig, reference }) {
 
 export default Workspace
 
-function Panel({ tools, resources, reference }) {
+function Panel({ tools, resources, reference, wholeChapter }) {
   const { t } = useTranslation()
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -67,6 +68,7 @@ function Panel({ tools, resources, reference }) {
                   <Tool
                     config={{
                       reference,
+                      wholeChapter,
                       resource: resources[tool.name]
                         ? resources[tool.name]
                         : { manifest: { dublin_core: { subject: tool.name } } },
