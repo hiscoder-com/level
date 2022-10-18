@@ -25,7 +25,7 @@ const ListOfNotes = dynamic(
 
 function Notes() {
   const [noteId, setNoteId] = useState('test_noteId')
-  const [note, setNote] = useState(null)
+  const [activeNote, setActiveNote] = useState(null)
   const { user } = useCurrentUser()
   const [notes, { loading, error, mutate }] = usePersonalNotes({
     token: user?.access_token,
@@ -33,12 +33,12 @@ function Notes() {
 
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
-    setNote(currentNote)
+    setActiveNote(currentNote)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [noteId])
   useEffect(() => {
     if (notes?.length === 0) {
-      setNote({
+      setActiveNote({
         title: '',
         id: ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9),
         data: {
@@ -71,13 +71,13 @@ function Notes() {
       .catch((err) => console.log(err))
   }
   useEffect(() => {
-    if (!note) {
+    if (!activeNote) {
       return
     }
     const timer = setTimeout(() => {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .put(`/api/personal_notes/${noteId}`, note)
+        .put(`/api/personal_notes/${noteId}`, activeNote)
         .then(() => mutate())
         .catch((err) => console.log(err))
 
@@ -87,11 +87,11 @@ function Notes() {
     }, 1000)
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [note])
+  }, [activeNote])
 
   return (
     <div className="relative">
-      {!note ? (
+      {!activeNote ? (
         <div>
           <div className="flex justify-end">
             <button className="   btn-cyan mb-4 right-0" onClick={addNote}>
@@ -117,7 +117,7 @@ function Notes() {
           <div
             className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
             onClick={() => {
-              setNote(null)
+              setActiveNote(null)
               setNoteId(null)
             }}
           >
@@ -130,8 +130,8 @@ function Notes() {
               redactor:
                 'bg-cyan-50 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
             }}
-            note={note}
-            setNote={setNote}
+            activeNote={activeNote}
+            setActiveNote={setActiveNote}
           />
         </>
       )}
