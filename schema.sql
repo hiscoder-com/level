@@ -827,6 +827,7 @@
         CASCADE NOT NULL,
       title text DEFAULT NULL,
       data json DEFAULT NULL,
+      changed_at TIMESTAMP DEFAULT now(),
       created_at TIMESTAMP DEFAULT now(),
       is_folder BOOLEAN DEFAULT FALSE,
       parent_id text DEFAULT NULL
@@ -939,6 +940,13 @@ ALTER TABLE
   CREATE TRIGGER on_public_verses_next_step AFTER
   UPDATE
     ON PUBLIC.verses FOR each ROW EXECUTE FUNCTION PUBLIC.handle_next_step();
+
+  -- trigger the function every time a note is update
+
+  CREATE TRIGGER TR_UPD_changed_at AFTER
+  UPDATE
+    ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.latest_note_update();
+
 -- END TRIGGERS
 
 /**

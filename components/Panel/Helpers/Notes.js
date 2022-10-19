@@ -29,6 +29,7 @@ function Notes() {
   const { user } = useCurrentUser()
   const [notes, { loading, error, mutate }] = usePersonalNotes({
     token: user?.access_token,
+    sort: 'changed_at',
   })
 
   useEffect(() => {
@@ -36,6 +37,7 @@ function Notes() {
     setActiveNote(currentNote)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [noteId])
+
   useEffect(() => {
     if (notes?.length === 0) {
       setActiveNote({
@@ -48,7 +50,7 @@ function Notes() {
               data: {},
             },
           ],
-          version: '2.8.1',
+          version: '2.25.0',
         },
       })
     }
@@ -70,6 +72,7 @@ function Notes() {
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
+
   useEffect(() => {
     if (!activeNote) {
       return

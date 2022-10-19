@@ -11,7 +11,10 @@ export default async function notesHandler(req, res) {
   switch (method) {
     case 'GET':
       try {
-        const { data, error } = await supabase.from('personal_notes').select('*')
+        const { data, error } = await supabase
+          .from('personal_notes')
+          .select('*')
+          .order('changed_at', { ascending: false })
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {
