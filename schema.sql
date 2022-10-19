@@ -23,6 +23,8 @@
     DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
     DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
+    DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
+
   -- END DROP TRIGGER
 
   -- DROP FUNCTION
@@ -39,6 +41,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;    
   -- END DROP FUNCTION
 
   -- DROP TYPE
@@ -282,7 +285,7 @@
     END;
   $$;
 
-  -- после создания проекта создаем бриф
+  -- после создания проекта создаем бриф?? repeat
   CREATE FUNCTION PUBLIC.handle_next_step() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       IF NEW.current_step = OLD.current_step THEN
@@ -297,6 +300,16 @@
 
     END;
   $$;
+
+ -- update changed_at to current time/data when personal_notes is updating
+  CREATE FUNCTION PUBLIC.handle_update_personal_notes() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      NEW.changed_at:=NOW();
+
+      RETURN NEW;
+
+    END;
+  $$;  
 
   -- создать стихи главы
   CREATE FUNCTION PUBLIC.create_chapters(book_id bigint) returns BOOLEAN
@@ -827,8 +840,8 @@
         CASCADE NOT NULL,
       title text DEFAULT NULL,
       data json DEFAULT NULL,
-      changed_at TIMESTAMP DEFAULT now(),
       created_at TIMESTAMP DEFAULT now(),
+      changed_at TIMESTAMP DEFAULT now(),
       is_folder BOOLEAN DEFAULT FALSE,
       parent_id text DEFAULT NULL
     );
@@ -943,10 +956,9 @@ ALTER TABLE
 
   -- trigger the function every time a note is update
 
-  CREATE TRIGGER TR_UPD_changed_at AFTER
+  CREATE TRIGGER on_public_personal_notes_update BEFORE
   UPDATE
-    ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.latest_note_update();
-
+    ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_personal_notes();
 -- END TRIGGERS
 
 /**

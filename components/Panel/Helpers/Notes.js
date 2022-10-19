@@ -38,24 +38,6 @@ function Notes() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [noteId])
 
-  useEffect(() => {
-    if (notes?.length === 0) {
-      setActiveNote({
-        title: '',
-        id: ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9),
-        data: {
-          blocks: [
-            {
-              type: 'paragraph',
-              data: {},
-            },
-          ],
-          version: '2.25.0',
-        },
-      })
-    }
-  }, [notes])
-
   const addNote = () => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     axios.defaults.headers.common['token'] = user?.access_token
