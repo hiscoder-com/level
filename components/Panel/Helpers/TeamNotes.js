@@ -73,7 +73,6 @@ function TeamNotes() {
     token: user?.access_token,
     project_id: project?.id,
   })
-
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
     setActiveNote(currentNote)
@@ -81,10 +80,48 @@ function TeamNotes() {
   }, [noteId])
 
   const addNote = () => {
-    const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    const note = {
+      id: ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9),
+      title: 'new note',
+      project_id: project.id,
+      data: {
+        blocks: [
+          {
+            type: 'paragraph',
+            data: {},
+          },
+        ],
+        version: '2.8.1',
+      },
+      isFolder: false,
+      parent_id: !activeNote
+        ? null
+        : activeNote.is_folder
+        ? activeNote.id
+        : activeNote.parent_id,
+    }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post('/api/team_notes', { id, project_id: project?.id })
+      .post('/api/team_notes', note)
+      .then(() => mutate())
+      .catch((err) => console.log(err))
+  }
+  const addFolder = () => {
+    const folder = {
+      id: ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9),
+      title: 'new folder',
+      project_id: project.id,
+      data: null,
+      isFolder: true,
+      parent_id: !activeNote
+        ? null
+        : activeNote.is_folder
+        ? activeNote.id
+        : activeNote.parent_id,
+    }
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .post('/api/team_notes', folder)
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
@@ -97,31 +134,53 @@ function TeamNotes() {
       .catch((err) => console.log(err))
   }
   useEffect(() => {
-    const timer = setTimeout(() => {
-      axios.defaults.headers.common['token'] = user?.access_token
-      axios
-        .put(`/api/team_notes/${noteId}`, activeNote)
-        .then(() => mutate())
-        .catch((err) => console.log(err))
+    if (!activeNote?.is_folder) {
+      const timer = setTimeout(() => {
+        axios.defaults.headers.common['token'] = user?.access_token
+        axios
+          .put(`/api/team_notes/${activeNote?.id}`, activeNote)
+          .then(() => mutate())
+          .catch((err) => console.log(err))
 
-      return () => {
-        clearTimeout(timer)
-      }
-    }, 1000)
-
-    // return () => {}
+        return () => {
+          clearTimeout(timer)
+        }
+      }, 1000)
+    }
   }, [activeNote])
+  const styleTree = {
+    tree: {
+      base: { backgroundColor: '#fff' },
+    },
+  }
 
   return (
     <div className="relative">
-      {!activeNote ? (
+      {!activeNote || activeNote.is_folder ? (
         <div>
           <div className="flex justify-end">
-            <button className="   btn-cyan mb-4 right-0" onClick={addNote}>
-              Add
+            <button className="btn-cyan mb-4 mr-4" onClick={addNote}>
+              Add note
+            </button>
+            <button className="btn-cyan mb-4 " onClick={addFolder}>
+              Add folder
             </button>
           </div>
-          <ListOfNotesTree notes={notes} icons={icons} setActiveNote={setActiveNote} />
+          <ListOfNotesTree
+            notes={notes}
+            setActiveNote={setActiveNote}
+            activeNote={activeNote}
+            icons={icons}
+            style={styleTree}
+            classes={{
+              bgActiveNote: 'bg-gray-200',
+              wrapper: 'flex cursor-pointer',
+              title: 'ml-3',
+              delBtn: 'ml-10',
+            }}
+            removeNote={removeNote}
+            delBtnIcon={<Waste />}
+          />
         </div>
       ) : (
         <>

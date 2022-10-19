@@ -11,23 +11,18 @@ export default async function notesHandler(req, res) {
   switch (method) {
     case 'POST':
       try {
-        const { id, project_id } = body
+        const { data: data_note, title, isFolder, parent_id, project_id, id } = body
         const { data, error } = await supabase.from('team_notes').insert([
           {
             id,
             project_id,
-            title: 'new note',
-            data: {
-              blocks: [
-                {
-                  type: 'paragraph',
-                  data: {},
-                },
-              ],
-              version: '2.8.1',
-            },
+            title,
+            is_folder: isFolder,
+            parent_id,
+            data: data_note,
           },
         ])
+
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {

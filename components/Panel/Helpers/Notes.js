@@ -94,7 +94,7 @@ function Notes() {
       {!activeNote ? (
         <div>
           <div className="flex justify-end">
-            <button className="   btn-cyan mb-4 right-0" onClick={addNote}>
+            <button className="btn-cyan mb-4 right-0" onClick={addNote}>
               Add
             </button>
           </div>
