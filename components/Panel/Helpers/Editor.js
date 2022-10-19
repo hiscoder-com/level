@@ -1,120 +1,54 @@
-import { useEffect, useRef, useState } from 'react'
-
-import { useRecoilValue, useRecoilState } from 'recoil'
-
-import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
+import { useEffect, useState } from 'react'
+import { supabase } from 'utils/supabaseClient'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 function Editor({ config }) {
-  const [verseObject, setVerseObject] = useState(null)
-
-  const [verseObjects, setVerseObjects] = useState()
-  const versesRef = useRef(null)
+  const [verseObjects, setVerseObjects] = useState([])
 
   useEffect(() => {
-    if (!versesRef?.current) return
-    const _verses = Array.from(versesRef?.current?.children).map((el) => {
-      return { verse: el.dataset.id, text: Array.from(el.children)[1]?.value }
-    })
+    setVerseObjects(config.reference.verses)
+  }, [config.reference.verses])
 
-    setVerseObjects(_verses)
-  }, [verseObject])
-  console.log({ config })
+  const handleClean = () => {
+    setVerseObjects((prev) => {
+      prev.forEach((el) => {
+        if (el.verse) {
+          el.verse = el.verse
+            .replace(/  +/g, ' ')
+            .replace(/ +([\.\,\)\!\?\;\:])/g, '$1')
+            .trim()
+        }
+      })
+      return [...prev]
+    })
+  }
+
+  const updateVerse = (id, text) => {
+    setVerseObjects((prev) => {
+      prev[id].verse = text
+      return [...prev]
+    })
+  }
+
+  const handleSave = async () => {
+    console.log(verseObjects)
+    // await supabase.from('verses').update()
+  }
+
   return (
-    <>
-      {config?.resource?.stepOption === 'draft' ? (
-        <EditorExtended config={config} />
-      ) : (
-        <div ref={versesRef}>
-          {config?.reference?.verses?.map((el) => (
-            <div key={el.verse_id} data-id={el.verse_id} className="flex my-3">
-              <div>{el.num}</div>
-              <AutoSizeTextArea
-                verseObject={verseObject}
-                defaultValue={el.verse}
-                setVerseObject={setVerseObject}
-                verse={el.num}
-                placeholder={'_'.repeat(50)}
-              />
-            </div>
-          ))}
+    <div>
+      {verseObjects.map((el, index) => (
+        <div key={el.verse_id} className="flex my-3">
+          <div>{el.num}</div>
+          <AutoSizeTextArea verseObject={el} index={index} updateVerse={updateVerse} />
         </div>
-      )}
-    </>
+      ))}
+      <button onClick={handleSave} className={'btn-cyan'}>
+        Save to DB
+      </button>
+    </div>
   )
 }
 
 export default Editor
-
-function EditorExtended({ config }) {
-  const [verseObject, setVerseObject] = useState(null)
-  const [verseObjects, setVerseObjects] = useState()
-  const [translatedVerses, setTranslatedVerses] = useRecoilState(translatedVersesState)
-  const versesRef = useRef(null)
-  const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
-
-  const translatedVersesKeys = translatedVerses.map((el) => el.key)
-
-  const sendToDb = (verse, index) => {
-    setTranslatedVerses((prev) => [...prev, verseObject])
-    console.log(`save to supabase verse ${verse}`, verseObject)
-    if (index === config?.resource?.verses.length - 1) {
-      console.log(
-        'Можно переходить на другой шаг и сделать активным чекбокса "Выполнено"'
-      )
-      console.log(
-        'весь отрезок стихов можно взять здесь',
-        verseObjects,
-        ' или здесь',
-        translatedVerses
-      )
-    }
-    setVerseObject(null)
-  }
-
-  const onBlurTextArea = (e, verse) => {
-    console.log('в стихе ' + verse + ' изменился текст: ' + e.target.value)
-    console.log('сделать видимой кнопку SAVE')
-  }
-
-  useEffect(() => {
-    if (!versesRef?.current) return
-    const _verses = Array.from(versesRef?.current?.children).map((el) => {
-      return { verse: el.dataset.id, text: Array.from(el.children)[2]?.value }
-    })
-    setVerseObjects(_verses)
-  }, [translatedVerses])
-
-  return (
-    <div ref={versesRef}>
-      {config?.resource?.verses.map((el, index) => (
-        <div key={el.id} data-id={el.verse} className="flex my-3 items-start">
-          <input
-            type="checkBox"
-            disabled={
-              !checkedVersesBible.includes(el.verse) ||
-              translatedVersesKeys.includes(el.verse) ||
-              !verseObject
-            }
-            className="mt-1"
-            onChange={() => sendToDb(el.verse, index)}
-            checked={translatedVersesKeys.includes(el.verse)}
-          />
-          <div className="ml-4">{el.verse}</div>
-          <AutoSizeTextArea
-            disabled={
-              !checkedVersesBible.includes(el.verse) ||
-              translatedVersesKeys.includes(el.verse)
-            }
-            onBlur={(e) => onBlurTextArea(e, el.verse)}
-            verse={el.verse}
-            value={translatedVerses[index]?.text}
-            setVerseObject={setVerseObject}
-            verseObject={verseObject}
-          />
-        </div>
-      ))}
-    </div>
-  )
-}
