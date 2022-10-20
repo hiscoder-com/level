@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 function AutoSizeTextArea({
   disabled = false,
   updateVerse,
@@ -5,6 +7,13 @@ function AutoSizeTextArea({
   verseObject,
   defaultValue = '_'.repeat(50),
 }) {
+  const [startValue, setStartValue] = useState()
+
+  useEffect(() => {
+    setStartValue(verseObject.verse)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <div
       key={index}
@@ -18,7 +27,7 @@ function AutoSizeTextArea({
         verseObject.verse || disabled ? '' : 'bg-gray-300'
       }`}
     >
-      {verseObject.verse}
+      {startValue}
     </div>
   )
 }
