@@ -1,6 +1,16 @@
 import { useTranslation } from 'next-i18next'
 
-import { Notes, Dictionary, OwnNotes, Audio, Editor, Bible, TNTWL, TQ } from './'
+import {
+  Notes,
+  Dictionary,
+  OwnNotes,
+  Audio,
+  Editor,
+  Bible,
+  TNTWL,
+  TQ,
+  BlindEditor,
+} from './'
 
 function Tool({ config }) {
   const { t } = useTranslation('common')
@@ -11,7 +21,6 @@ function Tool({ config }) {
   } = config
   let CurrentTool
   let url
-  let bookPath
   if (!resource) {
     return (
       <div>
@@ -23,7 +32,6 @@ function Tool({ config }) {
     ? []
     : config.reference.verses.map((v) => (v?.num ? v.num : v))
 
-  // TODO возможно прям тут добавить проверку, надо ли передавать стихи или нет. Или же прокинуть это в каждый компонент. Может ли быть такое что к примеру ты делаешь перевод 5 стихов, показывать текст с Библии с 5 стихов, а вот заметки ко всем стихам?
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
       CurrentTool = TNTWL
@@ -54,7 +62,9 @@ function Tool({ config }) {
     case 'TSV Translation Words Links':
       CurrentTool = TNTWL
 
-      config.resource.bookPath = config.resource.manifest.projects[0]?.path
+      config.resource.bookPath = config.resource.manifest.projects.find(
+        (el) => el.identifier === config.reference.book
+      )?.path
 
       url = '/api/git/twl'
       break
@@ -103,6 +113,10 @@ function Tool({ config }) {
 
     case 'translate':
       CurrentTool = Editor
+      break
+
+    case 'draftTranslate':
+      CurrentTool = BlindEditor
       break
 
     case 'ownNotes':

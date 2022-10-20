@@ -1,89 +1,72 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-import { useRecoilValue, useRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
+import { supabase } from 'utils/supabaseClient'
 
 import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 
 import BlindDraftTextarea from '../UI/BlindDraftTextarea'
 
-const handleClean = (setVerseObjects) => {
-  setVerseObjects((prev) => {
-    for (const verse in prev) {
-      if (Object.hasOwnProperty.call(prev, verse)) {
-        prev[verse].text = prev[verse].text
-          .replace(/ +/g, ' ')
-          .trim()
-          .replace(/ +([\.\,\)\!\?\;\:])/g, '$1')
-      }
-    }
-    return prev
-  })
-}
-
 function BlindEditor({ config }) {
-  console.log({ config })
-
   const [verseObjects, setVerseObjects] = useState([])
+
   const [translatedVerses, setTranslatedVerses] = useRecoilState(translatedVersesState)
-  const versesRef = useRef(null)
-  const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
 
-  const translatedVersesKeys = translatedVerses.map((el) => el.key)
-
-  const sendToDb = (verse, index) => {
-    setTranslatedVerses((prev) => [...prev, verseObject])
-    console.log(`save to supabase verse ${verse}`, verseObject)
-    if (index === config?.resource?.verses.length - 1) {
-      console.log('Можно переходить на другой шаг и сделать активным чекбокс "Выполнено"')
-      console.log(
-        'весь отрезок стихов можно взять здесь',
-        verseObjects,
-        ' или здесь',
-        translatedVerses
-      )
-    }
-    setVerseObject(null)
-  }
-
-  const onBlurTextArea = (e, verse) => {
-    console.log('в стихе ' + verse + ' изменился текст: ' + e.target.value)
-    console.log('сделать видимой кнопку SAVE')
-  }
+  const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
+    checkedVersesBibleState
+  )
 
   useEffect(() => {
-    if (!versesRef?.current) return
-    const _verses = Array.from(versesRef?.current?.children).map((el) => {
-      return { verse: el.dataset.id, text: Array.from(el.children)[2]?.value }
+    setVerseObjects(config.reference.verses)
+    let updatedArray = []
+    config.reference.verses.forEach((el) => {
+      if (el.verse !== null) {
+        updatedArray.push(el.num.toString())
+      }
     })
-    setVerseObjects(_verses)
-  }, [translatedVerses])
+    setTranslatedVerses(updatedArray)
+    setCheckedVersesBible(updatedArray)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  const updateVerse = (id, text) => {
+    setVerseObjects((prev) => {
+      prev[id].verse = text
+      return [...prev]
+    })
+  }
+
+  const sendToDb = async (index) => {
+    setTranslatedVerses((prev) => [...prev, verseObjects[index].num.toString()])
+    const res = await supabase.rpc('save_verse', {
+      new_verse: verseObjects[index].verse,
+      verse_id: verseObjects[index].verse_id,
+    })
+  }
 
   return (
-    <div ref={versesRef}>
-      {config?.resource?.verses.map((el, index) => (
-        <div key={el.id} data-id={el.verse} className="flex my-3 items-start">
+    <div>
+      {verseObjects.map((el, index) => (
+        <div key={el.verse_id} data-id={el.num} className="flex my-3">
           <input
-            type="checkBox"
+            type="checkbox"
             disabled={
-              !checkedVersesBible.includes(el.verse) ||
-              translatedVersesKeys.includes(el.verse) ||
-              !verseObject
+              !checkedVersesBible.includes(el.num.toString()) ||
+              translatedVerses.includes(el.num.toString())
             }
             className="mt-1"
-            onChange={() => sendToDb(el.verse, index)}
-            checked={translatedVersesKeys.includes(el.verse)}
+            onChange={() => sendToDb(index)}
+            checked={translatedVerses.includes(el.num.toString())}
           />
-          <div className="ml-4">{el.verse}</div>
+          <div className="ml-4">{el.num}</div>
           <BlindDraftTextarea
             disabled={
-              !checkedVersesBible.includes(el.verse) ||
-              translatedVersesKeys.includes(el.verse)
+              !checkedVersesBible.includes(el.num.toString()) ||
+              translatedVerses.includes(el.num.toString())
             }
-            onBlur={(e) => onBlurTextArea(e, el.verse)}
-            verse={el.verse}
-            value={translatedVerses[index]?.text}
-            setVerseObject={setVerseObject}
-            verseObject={verseObject}
+            updateVerse={updateVerse}
+            index={index}
+            verseObject={el}
           />
         </div>
       ))}
