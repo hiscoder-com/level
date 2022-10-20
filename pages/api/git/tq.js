@@ -78,16 +78,37 @@ export default async function tqHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
-    const data =
-      verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter && verses.includes(verseQuestion)
-          })
-        : jsonData.filter((el) => {
-            const [chapterQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter
-          })
+    const rangeVerses = []
+    const currentChapter = jsonData.filter((el) => {
+      const [chapterQuestion, verseQuestion] = el.Reference.split(':')
+      if (chapterQuestion !== chapter) {
+        return
+      }
+
+      const range = verseQuestion.split('-')
+
+      if (range.length > 1) {
+        for (let i = parseInt(range[0]); i < parseInt(range[1]) + 1; i++) {
+          if (
+            !verses ||
+            (verses &&
+              (verses.length === 0 || (verses.length > 0 && verses.includes(String(i)))))
+          ) {
+            rangeVerses.push({ ...el, Reference: chapterQuestion + ':' + i })
+          }
+        }
+        return
+      }
+
+      if (verses && verses.length > 0 && !verses.includes(verseQuestion)) {
+        return
+      }
+
+      return true
+    })
+
+    const data = [...currentChapter, ...rangeVerses]
+
     const groupData = {}
     data?.forEach((el) => {
       const verse = el.Reference.split(':').slice(-1)[0]
