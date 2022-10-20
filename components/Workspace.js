@@ -64,7 +64,10 @@ function Panel({ tools, resources, reference, wholeChapter }) {
                 <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
                   {t('Chapter')} {reference.chapter}
                 </div>
-                <div className="h5 p-4 h-screen overflow-x-hidden overflow-y-scroll">
+                <div
+                  style={{ height: 'calc(100vh - 280px)' }}
+                  className="h5 p-4 overflow-x-hidden overflow-y-scroll"
+                >
                   <Tool
                     config={{
                       reference,
