@@ -4,23 +4,27 @@ import ReactMarkdown from 'react-markdown'
 
 import { useRecoilState, useRecoilValue } from 'recoil'
 
-import { useGetResource } from 'utils/hooks'
-import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 import { Placeholder } from '../UI'
 
+import { useGetResource } from 'utils/hooks'
+
+import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
+
+// draft: true/false
 function Bible({ config, url }) {
   const { loading, data, error } = useGetResource({
     config,
     url,
   })
+
   return (
     <>
       {loading ? (
         <Placeholder />
-      ) : config?.resource?.draft ? (
-        <VersesExtended data={data} />
+      ) : config?.config?.draft ? (
+        <VersesExtended verseObjects={data.verseObjects} />
       ) : (
-        <Verses data={data} />
+        <Verses verseObjects={data.verseObjects} />
       )}
     </>
   )
@@ -28,10 +32,10 @@ function Bible({ config, url }) {
 
 export default Bible
 
-function Verses({ data }) {
+function Verses({ verseObjects }) {
   return (
     <>
-      {data?.verseObjects?.map((el) => (
+      {verseObjects?.map((el) => (
         <ul key={el.verse} className="flex">
           <li className={`py-2`}>
             <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
@@ -42,16 +46,15 @@ function Verses({ data }) {
   )
 }
 
-function VersesExtended({ data }) {
+function VersesExtended({ verseObjects }) {
   const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
     checkedVersesBibleState
   )
   const translatedVerses = useRecoilValue(translatedVersesState)
-  const translatedVersesKeys = translatedVerses.map((el) => el.key)
 
   return (
     <>
-      {data?.verseObjects?.map((el, index) => {
+      {verseObjects?.map((el, index) => {
         const checkedCurrent = checkedVersesBible.includes(el.verse)
         return (
           <div key={el.verse} className={`my-3 flex items-start`}>
@@ -62,7 +65,7 @@ function VersesExtended({ data }) {
               disabled={
                 checkedCurrent ||
                 (index !== 0 &&
-                  (!translatedVersesKeys.includes(data?.verseObjects[index - 1].verse) ||
+                  (!translatedVerses.includes(verseObjects?.[index - 1]?.verse) ||
                     checkedCurrent))
               }
               onChange={() => {
@@ -71,7 +74,7 @@ function VersesExtended({ data }) {
             />
             <div className={`ml-2`}>{el.verse}</div>
             {checkedCurrent ? (
-              <Blur data={el.text} />
+              <Blur verse={el.text} />
             ) : (
               <ReactMarkdown className={`ml-2`}>{el.text}</ReactMarkdown>
             )}
@@ -82,14 +85,14 @@ function VersesExtended({ data }) {
   )
 }
 
-function Blur({ data }) {
+function Blur({ verse }) {
   const text = useMemo(
     () =>
-      data
+      verse
         .split(' ')
         .map((el) => shuffle(el))
         .join(' '),
-    [data]
+    [verse]
   )
   return <ReactMarkdown className={`ml-2 blur-sm`}>{text}</ReactMarkdown>
 }

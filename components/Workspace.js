@@ -69,6 +69,7 @@ function Panel({ tools, resources, reference, wholeChapter }) {
                     config={{
                       reference,
                       wholeChapter,
+                      config: tool.config,
                       resource: resources[tool.name]
                         ? resources[tool.name]
                         : { manifest: { dublin_core: { subject: tool.name } } },
