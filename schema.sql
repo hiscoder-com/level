@@ -76,8 +76,7 @@
 -- END CREATE CUSTOM TYPE
 
 -- CREATE FUNCTION
-  -- пока что функция возвращает твою роль на проекте
-  -- может оставить эту функцию и написать еще одну для проверки permission на основе этой
+  -- функция возвращает твою максимальную роль на проекте
   CREATE FUNCTION PUBLIC.authorize(
       user_id uuid,
       project_id bigint
@@ -139,7 +138,7 @@
     END;
   $$;
 
-  --
+  -- возвращает, на каком шаге сейчас  юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
   CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -311,7 +310,7 @@
     END;
   $$;
 
-  -- для rls функция которая разрешает что-то делать только админу
+  -- для rls, функция которая разрешает что-то делать только админу
   CREATE FUNCTION PUBLIC.admin_only()
     returns BOOLEAN LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -330,7 +329,7 @@
     END;
   $$;
 
-  -- для rls функция которая проверяет, является ли юзер переводчиком стиха
+  -- для rls, функция которая проверяет, является ли юзер переводчиком стиха
   -- может используя функцию записать в таблицу сразу айди юзера, а то часто придется такие проверки делать
   CREATE FUNCTION PUBLIC.can_translate(translator_id bigint)
     returns BOOLEAN LANGUAGE plpgsql security definer AS $$
@@ -534,6 +533,7 @@
     END;
   $$;
 
+  -- создать стихи
   CREATE FUNCTION PUBLIC.create_verses(chapter_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
