@@ -27,13 +27,22 @@ function Editor({ config }) {
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
       prev[id].verse = text
+      // или мы можем сохранять каждый стих отдельно, когда теряется фокус
+      const saveInDB = async () => {
+        await supabase.rpc('save_verses', { verses: { [prev[id].verse_id]: text } })
+      }
+      saveInDB()
       return [...prev]
     })
   }
 
+  // пакетное сохранение по кнопке например
   const handleSave = async () => {
-    console.log(verseObjects)
-    // await supabase.from('verses').update()
+    const updateData = {}
+    verseObjects.forEach((el) => {
+      updateData[el.verse_id] = el.verse
+    })
+    await supabase.rpc('save_verses', { verses: updateData })
   }
 
   return (

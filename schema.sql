@@ -533,6 +533,30 @@
     END;
   $$;
 
+  -- пакетно сохранить стихи
+  CREATE FUNCTION PUBLIC.save_verses(verses json) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+    new_verses RECORD;
+    BEGIN
+      -- узнать айди переводчика на проекте
+      -- узнать айди главы, которую переводим, убедиться что перевод еще в процессе
+      -- в цикле обновить текст стихов, с учетом айди переводчика и главы
+
+      FOR new_verses IN SELECT * FROM json_each_text(save_verses.verses)
+      LOOP
+        UPDATE
+          PUBLIC.verses
+        SET "text" = new_verses.value::text
+        WHERE
+          verses.id = new_verses.key::bigint;
+      END LOOP;
+
+      RETURN true;
+
+    END;
+  $$;
+
   -- создать стихи
   CREATE FUNCTION PUBLIC.create_verses(chapter_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
