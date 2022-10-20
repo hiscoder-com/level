@@ -88,11 +88,10 @@ export default async function tqHandler(req, res) {
       const range = verseQuestion.split('-')
 
       if (range.length > 1) {
-        for (let i = parseInt(range[0]); i < parseInt(range[1]) + 1; i++) {
+        for (let i = parseInt(range[0]); i <= parseInt(range[1]); i++) {
           if (
             !verses ||
-            (verses &&
-              (verses.length === 0 || (verses.length > 0 && verses.includes(String(i)))))
+            (verses && (verses.length === 0 || verses.includes(String(i))))
           ) {
             rangeVerses.push({ ...el, Reference: chapterQuestion + ':' + i })
           }
