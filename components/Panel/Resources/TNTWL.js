@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { useTranslation } from 'next-i18next'
+
 import MarkdownExtended from 'components/MarkdownExtended'
 import { Placeholder } from '../UI'
 
@@ -32,8 +34,21 @@ function TNTWL({ config, url }) {
 export default TNTWL
 
 function ToolList({ setItem, data }) {
+  const { t } = useTranslation('common')
+
   return (
     <div className="divide-y divide-gray-800 divide-dashed">
+      <div className="justify-center flex">
+        {data?.intro?.map((el) => (
+          <div
+            onClick={() => setItem({ text: el.text, title: t(el.title) })}
+            className="mx-2  btn-white my-2"
+            key={el.id}
+          >
+            {t(el.title)}
+          </div>
+        ))}
+      </div>
       {data &&
         Object.entries(data).map((el, index) => {
           return (

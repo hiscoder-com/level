@@ -69,8 +69,7 @@ import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 
 export default async function tnHandler(req, res) {
   const { repo, owner, commit, bookPath, chapter } = req.query
-  let verses = req.query['verses[]'] || req.query.verses
-
+  const verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
@@ -84,15 +83,21 @@ export default async function tnHandler(req, res) {
     const repeatedDivided = []
 
     jsonData?.forEach((el) => {
-      if (el.Chapter !== chapter) {
+      if (el.Chapter !== chapter && el.Chapter !== 'front') {
         return
       }
       const newNote = {
         id: el.ID,
         text: el.OccurrenceNote,
-        title: el.GLQuote ? el.GLQuote : 'title',
+        title: el.Verse === 'intro' ? 'intro' : el.GLQuote ? el.GLQuote : 'title',
       }
-      if (verses && verses.length > 0 && verses.includes(el.Verse)) {
+      if (el.Chapter === 'front') {
+        newNote['title'] = 'front'
+      }
+      if (
+        (verses && verses.length > 0 && verses.includes(el.Verse)) ||
+        el.Verse === 'intro'
+      ) {
         filterNotes(newNote, el.Verse, el.GLQuote, dividedChapter, repeatedDivided)
         return
       }
