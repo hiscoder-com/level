@@ -4,6 +4,7 @@ import { Disclosure } from '@headlessui/react'
 
 import { Placeholder } from '../UI'
 import { useGetResource } from 'utils/hooks'
+import MarkdownExtended from 'components/MarkdownExtended'
 
 function TQ({ config, url }) {
   const { loading, data, error } = useGetResource({ config, url })
@@ -67,7 +68,7 @@ function ToolContent({ item, reduceQuestions, viewAll }) {
         onChange={() => console.log('test')}
         className="text-gray-800 w-fit py-4"
       >
-        <ReactMarkdown>{item.text}</ReactMarkdown>
+        <MarkdownExtended>{item.text}</MarkdownExtended>
       </Disclosure.Panel>
     </Disclosure>
   )
