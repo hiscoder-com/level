@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import BlindDraftTextarea from '../UI/BlindDraftTextarea'
+import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
 import { useRecoilState } from 'recoil'
@@ -58,7 +58,7 @@ function BlindEditor({ config }) {
             checked={translatedVerses.includes(el.num.toString())}
           />
           <div className="ml-4">{el.num}</div>
-          <BlindDraftTextarea
+          <AutoSizeTextArea
             disabled={
               !checkedVersesBible.includes(el.num.toString()) ||
               translatedVerses.includes(el.num.toString())

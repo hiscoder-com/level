@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+
 import { useCurrentUser } from 'lib/UserContext'
 import { useProject, useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
@@ -20,6 +22,7 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
+  const { t } = useTranslation('verses')
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -152,7 +155,7 @@ function VerseDivider({ verses }) {
               : 'p-2'
           } bg-slate-300 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
-          Clearing
+          {t('Clearing')}
         </button>
         <button
           onClick={() =>
@@ -167,13 +170,13 @@ function VerseDivider({ verses }) {
           }
           className={`bg-slate-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
-          Reset
+          {t('Reset')}
         </button>
         <button
-          onClick={() => verseDividing()}
+          onClick={verseDividing}
           className={`bg-green-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
-          Save
+          {t('Save')}
         </button>
       </div>
     </div>

@@ -49,10 +49,10 @@ function ProjectCard({ project }) {
         <p className="text-gray-500">{t('Language')}:</p>
         <p>{project.languages.orig_name}</p>
       </div>
-      <div className="flex gap-2.5 mb-1.5">
+      {/* <div className="flex gap-2.5 mb-1.5">
         <p className="text-gray-500">{t('common:Progress')}:</p>
         <p>10%</p>
-      </div>
+      </div> */}
       <div className="flex gap-3">
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
@@ -61,7 +61,7 @@ function ProjectCard({ project }) {
         <Link
           href={`/translate/${currentStep.project}/${currentStep.book}/${currentStep.chapter}/${currentStep.step}/intro`}
         >
-          <a className="btn">Continue translate - {currentStep.title}</a>
+          <a className="btn">{currentStep.title}</a>
         </Link>
       )}
     </div>

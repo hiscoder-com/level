@@ -88,9 +88,9 @@ function ProjectCreate() {
   const inputs = [
     {
       id: 1,
-      title: 'Имя проекта',
+      title: t('Title'),
       classname: errors?.title ? 'input-invalid' : 'input',
-      placeholder: 'Title',
+      placeholder: '',
       register: {
         ...register('title', {
           required: true,
@@ -100,16 +100,15 @@ function ProjectCreate() {
     },
     {
       id: 2,
-      title: 'Код проекта',
+      title: t('Code'),
       classname: errors?.code ? 'input-invalid' : 'input',
-      placeholder: 'Code',
+      placeholder: '',
       register: {
         ...register('code', {
           required: true,
           pattern: {
             value: /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i,
-            message:
-              'Use the language code and the project code separated by an underscore',
+            message: t('CodeMessage'),
           },
         }),
       },
@@ -285,7 +284,7 @@ https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c8
           для первой версии мы можем создать проект в ручную, и отложить разработку на
           время после запуска
         </p>
-        <input className="btn-cyan btn-filled" type="submit" />
+        <input className="btn-cyan btn-filled" type="submit" title={t('SaveProject')} />
       </form>
     </div>
   )

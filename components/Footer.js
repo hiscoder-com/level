@@ -20,7 +20,7 @@ export default function Footer({ textCheckbox, textButton, href, handleClick }) 
   }, [step])
 
   useEffect(() => {
-    setIsStepPage(router.pathname === '/steps/[step]')
+    setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
 

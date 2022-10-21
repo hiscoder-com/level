@@ -100,7 +100,7 @@ export default ChapterVersesPage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects', 'common'])),
+      ...(await serverSideTranslations(locale, ['projects', 'common', 'verses'])),
       // Will be passed to the page component as props
     },
   }
