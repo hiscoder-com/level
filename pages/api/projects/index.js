@@ -13,7 +13,7 @@ export default async function languageProjectsHandler(req, res) {
     body: { language_id, method_id, code, title, resources, steps },
     method,
   } = req
-
+  // TODO не работает если создавать ОБС
   switch (method) {
     case 'POST':
       try {

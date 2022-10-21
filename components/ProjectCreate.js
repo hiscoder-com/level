@@ -10,6 +10,7 @@ import { useForm, useWatch } from 'react-hook-form'
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
+// TODO не работает если создавать ОБС
 function ProjectCreate() {
   const router = useRouter()
   const { t } = useTranslation(['projects'])
@@ -30,24 +31,33 @@ function ProjectCreate() {
   } = useForm({ mode: 'onChange' })
 
   const methodId = useWatch({ control, name: 'methodId' })
+
   useEffect(() => {
-    if (methods) {
-      const selectedMethod = methods?.find((el) => el.id === methodId)
-      setMethod(selectedMethod)
-      setCustomSteps(JSON.stringify(selectedMethod?.steps, null, 2))
-      setCustomResources(selectedMethod?.resources)
+    if (methods && methodId) {
+      const selectedMethod = methods.find(
+        (el) => el.id.toString() === methodId.toString()
+      )
+      if (selectedMethod) {
+        setMethod(selectedMethod)
+        setCustomSteps(JSON.stringify(selectedMethod.steps, null, 2))
+        setCustomResources(selectedMethod.resources)
+        console.log(methodId, methods, selectedMethod.resources)
+      }
     }
   }, [methodId, methods])
+
   useEffect(() => {
     if (methods) {
       setValue('methodId', methods?.[0]?.id)
     }
   }, [methods, setValue])
+
   useEffect(() => {
     if (languages) {
       setValue('languageId', languages?.[0]?.id)
     }
   }, [languages, setValue])
+
   const onSubmit = async (data) => {
     const { title, code, languageId } = data
     if (!title || !code || !languageId) {
