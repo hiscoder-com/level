@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import usfm from 'usfm-js'
@@ -14,6 +15,7 @@ function ProjectBooksPage() {
   const {
     query: { code },
   } = useRouter()
+  const { t } = useTranslation(['common'])
   const [project, setProject] = useState()
   const [books, setBooks] = useState()
   const [selectedBook, setSelectedBook] = useState('')
@@ -85,10 +87,14 @@ function ProjectBooksPage() {
 
   return (
     <>
-      <h2>Project {project?.code}: Books</h2>
+      <h2>
+        {t('Project')}: {project?.title} ({project?.code})
+        <br />
+        {t('Books')}
+      </h2>
       {books?.map((el) => (
         <Link key={el.code} href={'/projects/' + project.code + '/books/' + el.code}>
-          <a>
+          <a className="block text-blue-700 underline">
             {el.code} | {JSON.stringify(el.chapters, null, 2)}
           </a>
         </Link>
@@ -103,7 +109,7 @@ function ProjectBooksPage() {
           ))}
       </select>
       <div className="btn btn-cyan" onClick={() => handleCreate(selectedBook)}>
-        Create
+        {t('Create')}
       </div>
     </>
   )

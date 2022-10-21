@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { supabase } from 'utils/supabaseClient'
 
 function BookChaptersPage() {
   const router = useRouter()
+  const { t } = useTranslation(['common', 'chapters'])
   const { code, bookid } = router.query
   const [project, setProject] = useState()
   const [book, setBook] = useState()
@@ -79,20 +81,24 @@ function BookChaptersPage() {
 
   return (
     <>
-      <h2>Project {project?.code}: Book</h2>
-      <h3>Book: {book?.code}</h3>
+      <h2>
+        {t('Project')}: {project?.title} ({project?.code})
+      </h2>
+      <h3>
+        {t('Book')}: {book?.code}
+      </h3>
       {chapters?.map((chapter) => (
         <div key={chapter.id}>
           {chapter.num}:{chapter.verses}
           {!createdChapters.includes(chapter.id) ? (
-            <div onClick={() => handleCreate(chapter.id)}>Create</div>
+            <div onClick={() => handleCreate(chapter.id)}>{t('Create')}</div>
           ) : (
             <Link
               href={
                 '/projects/' + project.code + '/books/' + book.code + '/' + chapter.num
               }
             >
-              <a className="block text-blue-600">Created...</a>
+              <a className="block text-blue-600">{t('chapters:Created')}...</a>
             </Link>
           )}
         </div>
@@ -106,7 +112,7 @@ export default BookChaptersPage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects', 'common'])),
+      ...(await serverSideTranslations(locale, ['projects', 'common', 'chapters'])),
       // Will be passed to the page component as props
     },
   }

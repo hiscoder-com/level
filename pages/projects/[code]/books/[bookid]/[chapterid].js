@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import VerseDivider from 'components/VerseDivider'
@@ -10,6 +11,7 @@ import { supabase } from 'utils/supabaseClient'
 
 function ChapterVersesPage() {
   const router = useRouter()
+  const { t } = useTranslation(['common', 'chapters'])
   const { code, bookid, chapterid } = router.query
   const [project, setProject] = useState()
   const [book, setBook] = useState()
@@ -80,15 +82,23 @@ function ChapterVersesPage() {
   }
   return (
     <>
-      <h2>Project {project?.code}</h2>
-      <h3>Book: {book?.code}</h3>
-      <h3>Chapter: {chapter?.num}</h3>
+      <h2>
+        {t('Project')}: {project?.title} ({project?.code})
+      </h2>
+      <h3>
+        {t('Book')}: {book?.code}
+      </h3>
+      <h3>
+        {t('Chapter')}: {chapter?.num}
+      </h3>
       <VerseDivider verses={verses} />
       {chapter?.started_at ? (
-        <div>Начат {chapter?.started_at}</div>
+        <div>
+          {t('chapters:StartedAt')} {chapter?.started_at}
+        </div>
       ) : (
         <div className="btn" onClick={() => startProject()}>
-          Start chapter
+          {t('chapters:StartChapter')}
         </div>
       )}
     </>
@@ -100,7 +110,12 @@ export default ChapterVersesPage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects', 'common', 'verses'])),
+      ...(await serverSideTranslations(locale, [
+        'projects',
+        'common',
+        'verses',
+        'chapters',
+      ])),
       // Will be passed to the page component as props
     },
   }
