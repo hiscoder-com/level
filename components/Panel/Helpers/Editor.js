@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { supabase } from 'utils/supabaseClient'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
+
+import { supabase } from 'utils/supabaseClient'
 
 function Editor({ config }) {
   const [verseObjects, setVerseObjects] = useState([])

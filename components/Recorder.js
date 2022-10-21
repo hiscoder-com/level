@@ -1,7 +1,8 @@
 import { useRef, useEffect, useState, Fragment } from 'react'
-import { Dialog, Transition } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
+
+import { Dialog, Transition } from '@headlessui/react'
 
 import RecorderButton from 'public/recorder.svg'
 import StopButton from 'public/stop.svg'

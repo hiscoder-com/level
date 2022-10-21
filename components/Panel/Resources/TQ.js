@@ -2,8 +2,8 @@ import ReactMarkdown from 'react-markdown'
 
 import { Disclosure } from '@headlessui/react'
 
-import { useGetResource } from 'utils/hooks'
 import { Placeholder } from '../UI'
+import { useGetResource } from 'utils/hooks'
 
 function TQ({ config, url }) {
   const { loading, data, error } = useGetResource({ config, url })

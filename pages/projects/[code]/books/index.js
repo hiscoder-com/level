@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import { Router, useRouter } from 'next/router'
-import usfm from 'usfm-js'
-import axios from 'axios'
+
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import usfm from 'usfm-js'
+import axios from 'axios'
+
 import { supabase } from 'utils/supabaseClient'
-import Link from 'next/link'
 
 function ProjectBooksPage() {
   const {

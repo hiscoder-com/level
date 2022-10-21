@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { useGetResource } from 'utils/hooks'
 import { Placeholder } from '../UI'
+import { useGetResource } from 'utils/hooks'
 
 import Close from 'public/close.svg'
 

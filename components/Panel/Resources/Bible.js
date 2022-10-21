@@ -2,13 +2,11 @@ import { useMemo } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { useRecoilState, useRecoilValue } from 'recoil'
-
 import { Placeholder } from '../UI'
 
-import { useGetResource } from 'utils/hooks'
-
 import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
+import { useRecoilState, useRecoilValue } from 'recoil'
+import { useGetResource } from 'utils/hooks'
 
 // draft: true/false
 function Bible({ config, url }) {

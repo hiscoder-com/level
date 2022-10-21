@@ -1,7 +1,7 @@
+import TranslatorImage from 'components/TranslatorImage'
+
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslators } from 'utils/hooks'
-
-import TranslatorImage from './TranslatorImage'
 
 function Translators({ projectCode, size }) {
   const { user } = useCurrentUser()

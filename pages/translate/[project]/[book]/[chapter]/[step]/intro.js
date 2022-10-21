@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import Head from 'next/head'
-import { Router, useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
 import IntroStep from 'components/IntroStep'
+
 import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 

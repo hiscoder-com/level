@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 
-import { useRecoilState } from 'recoil'
-import { supabase } from 'utils/supabaseClient'
-
-import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
-
 import BlindDraftTextarea from '../UI/BlindDraftTextarea'
+
+import { supabase } from 'utils/supabaseClient'
+import { useRecoilState } from 'recoil'
+import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 
 function BlindEditor({ config }) {
   const [verseObjects, setVerseObjects] = useState([])

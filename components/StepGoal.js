@@ -4,9 +4,11 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { steps } from 'utils/steps'
-import Modal from './Modal'
+import Modal from 'components/Modal'
 
+import { steps } from 'utils/steps'
+
+// TODO вот это скорее всего нам не нужно уже
 function StepGoal() {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const router = useRouter()
