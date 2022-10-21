@@ -4,7 +4,8 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import Translators from './Translators'
+import Translators from 'components/Translators'
+
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 

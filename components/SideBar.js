@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import SideBarLink from './SideBarLink'
+import SideBarLink from 'components/SideBarLink'
 
 import Close from 'public/close.svg'
 

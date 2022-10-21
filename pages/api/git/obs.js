@@ -75,7 +75,7 @@ export default async function obsHandler(req, res) {
   )}/${String(chapter).padStart(2, '0')}.md`
   try {
     const _data = await axios.get(url)
-    const jsonData = await mdToJson(_data.data)
+    const jsonData = mdToJson(_data.data)
     const { verseObjects, header, link } = jsonData
     const _verseObjects =
       verses && verses.length > 0

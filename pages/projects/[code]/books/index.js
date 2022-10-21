@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import { Router, useRouter } from 'next/router'
-import usfm from 'usfm-js'
-import axios from 'axios'
+
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import usfm from 'usfm-js'
+import axios from 'axios'
+
 import { supabase } from 'utils/supabaseClient'
-import Link from 'next/link'
 
 function ProjectBooksPage() {
   const {
@@ -14,7 +16,7 @@ function ProjectBooksPage() {
   } = useRouter()
   const [project, setProject] = useState()
   const [books, setBooks] = useState()
-  const [selectedBook, setSelectedBook] = useState(null)
+  const [selectedBook, setSelectedBook] = useState('')
 
   useEffect(() => {
     const getProject = async () => {
@@ -27,6 +29,7 @@ function ProjectBooksPage() {
     }
     getProject()
   }, [code])
+
   const handleCreate = async (book_code) => {
     const book = project?.base_manifest?.books.find((el) => el.name === book_code)
     if (!book) {
@@ -67,10 +70,17 @@ function ProjectBooksPage() {
         .select('code,chapters')
         .eq('project_id', project.id)
       setBooks(books)
+      const defaultVal = project?.base_manifest?.books?.filter(
+        (el) => !books?.map((el) => el.code)?.includes(el.name)
+      )?.[0]?.name
+      if (defaultVal) {
+        setSelectedBook(defaultVal)
+      }
     }
     if (project?.id) {
       getBooks()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id])
 
   return (
@@ -83,7 +93,7 @@ function ProjectBooksPage() {
           </a>
         </Link>
       ))}
-      <select onChange={(e) => setSelectedBook(e.target.value)}>
+      <select onChange={(e) => setSelectedBook(e.target.value)} value={selectedBook}>
         {project?.base_manifest?.books
           ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
           .map((el) => (

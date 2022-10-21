@@ -2,8 +2,10 @@ import { useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { useGetResource } from 'utils/hooks'
+import MarkdownExtended from 'components/MarkdownExtended'
 import { Placeholder } from '../UI'
+
+import { useGetResource } from 'utils/hooks'
 
 import Close from 'public/close.svg'
 
@@ -73,7 +75,7 @@ function ToolContent({ setItem, item }) {
       <div className=" font-bold text-xl mb-2">
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </div>
-      <ReactMarkdown>{item.text}</ReactMarkdown>
+      <MarkdownExtended>{item.text}</MarkdownExtended>
     </div>
   )
 }

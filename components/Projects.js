@@ -1,12 +1,11 @@
-import Head from 'next/head'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
+import ProjectCard from 'components/ProjectCard'
+
 import { useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-
-import ProjectCard from './ProjectCard'
-import Link from 'next/link'
 
 export default function Projects() {
   const { user } = useCurrentUser()

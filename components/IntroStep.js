@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import Footer from 'components/Footer'
-import MarkdownExtended from './MarkdownExtended'
+import MarkdownExtended from 'components/MarkdownExtended'
 
 function IntroStep({ markdown, nextLink }) {
   const { t } = useTranslation(['common'])

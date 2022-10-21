@@ -1,6 +1,7 @@
-import { supabase } from 'utils/supabaseClient'
 import jsyaml from 'js-yaml'
 import axios from 'axios'
+
+import { supabase } from 'utils/supabaseClient'
 
 export default async function languageProjectsHandler(req, res) {
   if (!req.headers.token) {
@@ -12,7 +13,7 @@ export default async function languageProjectsHandler(req, res) {
     body: { language_id, method_id, code, title, resources, steps },
     method,
   } = req
-
+  // TODO не работает если создавать ОБС
   switch (method) {
     case 'POST':
       try {

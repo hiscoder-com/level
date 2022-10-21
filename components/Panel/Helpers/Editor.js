@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { supabase } from 'utils/supabaseClient'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
+
+import { supabase } from 'utils/supabaseClient'
 
 function Editor({ config }) {
   const [verseObjects, setVerseObjects] = useState([])
@@ -10,6 +11,7 @@ function Editor({ config }) {
     setVerseObjects(config.reference.verses)
   }, [config.reference.verses])
 
+  // Пока что не работает
   const handleClean = () => {
     setVerseObjects((prev) => {
       prev.forEach((el) => {
@@ -27,7 +29,7 @@ function Editor({ config }) {
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
       prev[id].verse = text
-      // или мы можем сохранять каждый стих отдельно, когда теряется фокус
+      // мы можем сохранять каждый стих отдельно, когда теряется фокус
       const saveInDB = async () => {
         await supabase.rpc('save_verses', { verses: { [prev[id].verse_id]: text } })
       }
@@ -36,7 +38,7 @@ function Editor({ config }) {
     })
   }
 
-  // пакетное сохранение по кнопке например
+  // пакетное сохранение по кнопке например, сейчас не работает
   const handleSave = async () => {
     const updateData = {}
     verseObjects.forEach((el) => {
@@ -53,9 +55,6 @@ function Editor({ config }) {
           <AutoSizeTextArea verseObject={el} index={index} updateVerse={updateVerse} />
         </div>
       ))}
-      <button onClick={handleSave} className={'btn-cyan'}>
-        Save to DB
-      </button>
     </div>
   )
 }

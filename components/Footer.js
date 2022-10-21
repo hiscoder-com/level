@@ -5,9 +5,8 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import Translators from './Translators'
-
-import ProgressBar from './ProgressBar'
+import Translators from 'components/Translators'
+import ProgressBar from 'components/ProgressBar'
 
 export default function Footer({ textCheckbox, textButton, href, handleClick }) {
   const [isStepPage, setIsStepPage] = useState(false)

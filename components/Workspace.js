@@ -1,8 +1,8 @@
-import { Tab } from '@headlessui/react'
-
 import { useTranslation } from 'next-i18next'
 
-import Tool from './Panel/Tool'
+import { Tab } from '@headlessui/react'
+
+import Tool from 'components/Panel/Tool'
 
 const sizes = {
   '1': 'lg:w-1/6',

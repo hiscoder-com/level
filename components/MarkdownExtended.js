@@ -1,11 +1,15 @@
 import ReactMarkdown from 'react-markdown'
+
 import rehypeRaw from 'rehype-raw'
 import remarkGfm from 'remark-gfm'
 
 import 'github-markdown-css/github-markdown-light.css'
 
 function MarkdownExtended({ children }) {
-  const content = typeof children === 'string' ? children : ''
+  const content = (typeof children === 'string' ? children : '').replace(
+    /< *br *\/?>/gi,
+    '\n'
+  )
 
   const convertYoutube = (props) => {
     function getVideoID(userInput) {

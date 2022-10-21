@@ -5,11 +5,10 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
-
 import { Switch } from '@headlessui/react'
 
-import Modal from './Modal'
-import TranslatorImage from './TranslatorImage'
+import Modal from 'components/Modal'
+import TranslatorImage from 'components/TranslatorImage'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators, useUsers } from 'utils/hooks'

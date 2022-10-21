@@ -1,10 +1,11 @@
 import { useEffect } from 'react'
+
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import Projects from './Projects'
-import SignOut from './SignOut'
+import Projects from 'components/Projects'
+import SignOut from 'components/SignOut'
 
 import { useCurrentUser } from 'lib/UserContext'
 

@@ -2,7 +2,8 @@ import { useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import Recorder from '../../Recorder'
+import Recorder from 'components/Recorder'
+
 import BackButton from 'public/back-button.svg'
 
 export default function Audio() {

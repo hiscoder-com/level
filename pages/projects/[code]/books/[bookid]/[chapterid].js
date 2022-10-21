@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import VerseDivider from 'components/VerseDivider'
+
 import { supabase } from 'utils/supabaseClient'
 
 function ChapterVersesPage() {
