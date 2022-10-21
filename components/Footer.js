@@ -4,13 +4,17 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
+import { useRecoilValue } from 'recoil'
 
 import Translators from 'components/Translators'
 import ProgressBar from 'components/ProgressBar'
 
+import { stepConfigState } from './Panel/state/atoms'
+
 export default function Footer({ textCheckbox, textButton, href, handleClick }) {
   const [isStepPage, setIsStepPage] = useState(false)
   const router = useRouter()
+  const stepConfig = useRecoilValue(stepConfigState)
   const [checked, setChecked] = useState(false)
 
   const { step } = router?.query
@@ -56,11 +60,14 @@ export default function Footer({ textCheckbox, textButton, href, handleClick }) 
       {isStepPage && (
         <>
           <div className="pb-3 md:pb-0">
-            <ProgressBar amountSteps={7} currentStep={step} />
+            <ProgressBar
+              amountSteps={stepConfig.last_step}
+              currentStep={stepConfig.current_step}
+            />
           </div>
           <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
             <div>{t('Fulfilled')}:</div>
-            <Translators projectCode="rlob" size="34px" />
+            <Translators projectCode={stepConfig.project_code} size="34px" />
           </div>
         </>
       )}

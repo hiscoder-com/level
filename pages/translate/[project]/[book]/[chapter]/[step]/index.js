@@ -70,6 +70,9 @@ export default function ProgressPage({ last_step }) {
               time: res.data?.time,
               title: res.data?.title,
               description: res.data?.description,
+              last_step,
+              current_step: step,
+              project_code: project,
             })
             setStepConfig(stepConfig)
           })

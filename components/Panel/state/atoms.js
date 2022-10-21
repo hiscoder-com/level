@@ -12,5 +12,13 @@ export const checkedVersesBibleState = atom({
 
 export const stepConfigState = atom({
   key: 'stepConfigState',
-  default: { count_of_users: '', time: 0, description: '', title: '' },
+  default: {
+    count_of_users: '',
+    time: 0,
+    description: '',
+    title: '',
+    last_step: 8,
+    current_step: 1,
+    project_code: '',
+  },
 })
