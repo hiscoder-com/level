@@ -162,7 +162,10 @@ function ProjectEdit() {
                 })}
             </select>
             <button
-              onClick={() => assign('translators')}
+              onClick={() => {
+                assign('translators')
+                setSelectedUser(null)
+              }}
               disabled={!selectedUser}
               className="btn-cyan mx-2"
             >
@@ -203,7 +206,10 @@ function ProjectEdit() {
                 })}
             </select>
             <button
-              onClick={() => assign('coordinators')}
+              onClick={() => {
+                assign('coordinators')
+                setSelectedUser(null)
+              }}
               disabled={!selectedUser}
               className="btn-cyan mx-2"
             >

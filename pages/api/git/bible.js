@@ -75,10 +75,11 @@ export default async function bibleHandler(req, res) {
   )}`
   try {
     const _data = await axios.get(url)
-
     const jsonData = await usfm.toJSON(_data.data)
 
-    const data = parseChapter(jsonData.chapters[chapter], verses)
+    const data = parseChapter(jsonData.chapters[chapter], verses).filter(
+      (el) => el.verse !== 'front'
+    )
 
     res.status(200).json({ verseObjects: data })
     return

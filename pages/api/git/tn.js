@@ -66,6 +66,18 @@ import { tsvToJson } from 'utils/tsvHelper'
  *        '404':
  *          description: Bad request
  */
+const filterNotes = (note, newNote, notes, repeatedNotes) => {
+  if (repeatedNotes.includes(note.GLQuote)) {
+    newNote['repeat'] = true
+  } else {
+    repeatedNotes.push(note.GLQuote)
+  }
+  if (!notes[note.Verse]) {
+    notes[note.Verse] = [newNote]
+  } else {
+    notes[note.Verse].push(newNote)
+  }
+}
 
 export default async function tnHandler(req, res) {
   const { repo, owner, commit, bookPath, book, chapter, step } = req.query
@@ -78,29 +90,29 @@ export default async function tnHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
-    const groupData = {}
-    const data =
-      verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
-          })
-        : jsonData.filter((el) => {
-            return el.Chapter === chapter
-          })
+    const wholeChapter = {}
+    const dividedChapter = {}
+    const repeatedWhole = []
+    const repeatedDivided = []
 
-    data?.forEach((el) => {
-      const tn = {
+    jsonData?.forEach((el) => {
+      if (el.Chapter !== chapter) {
+        return
+      }
+      const newNote = {
         id: el.ID,
         text: el.OccurrenceNote,
         title: el.GLQuote ? el.GLQuote : 'title',
       }
-      if (!groupData[el.Verse]) {
-        groupData[el.Verse] = [tn]
-      } else {
-        groupData[el.Verse].push(tn)
+      if (verses && verses.length > 0 && verses.includes(el.Verse)) {
+        filterNotes(el, newNote, dividedChapter, repeatedDivided)
+        return
       }
+      filterNotes(el, newNote, wholeChapter, repeatedWhole)
     })
-    res.status(200).json(groupData)
+    const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
+
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })

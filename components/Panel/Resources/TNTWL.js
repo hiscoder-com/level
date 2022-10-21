@@ -10,7 +10,6 @@ import Close from 'public/close.svg'
 function TNTWL({ config, url }) {
   const [item, setItem] = useState(null)
   const { loading, data, error } = useGetResource({ config, url })
-
   return (
     <>
       {loading ? (
@@ -44,7 +43,9 @@ function ToolList({ setItem, data }) {
                     return (
                       <li
                         key={item.id}
-                        className="py-2 cursor-pointer"
+                        className={`py-2 cursor-pointer ${
+                          item.repeat ? 'text-gray-400' : ''
+                        }`}
                         onClick={() => setItem({ text: item.text, title: item.title })}
                       >
                         <ReactMarkdown>{item.title}</ReactMarkdown>
