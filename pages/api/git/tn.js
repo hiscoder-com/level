@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { tsvToJson } from 'utils/tsvHelper'
+import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger
@@ -66,21 +66,9 @@ import { tsvToJson } from 'utils/tsvHelper'
  *        '404':
  *          description: Bad request
  */
-const filterNotes = (note, newNote, notes, repeatedNotes) => {
-  if (repeatedNotes.includes(note.GLQuote)) {
-    newNote['repeat'] = true
-  } else {
-    repeatedNotes.push(note.GLQuote)
-  }
-  if (!notes[note.Verse]) {
-    notes[note.Verse] = [newNote]
-  } else {
-    notes[note.Verse].push(newNote)
-  }
-}
 
 export default async function tnHandler(req, res) {
-  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, chapter } = req.query
   let verses = req.query['verses[]'] || req.query.verses
 
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
@@ -105,10 +93,10 @@ export default async function tnHandler(req, res) {
         title: el.GLQuote ? el.GLQuote : 'title',
       }
       if (verses && verses.length > 0 && verses.includes(el.Verse)) {
-        filterNotes(el, newNote, dividedChapter, repeatedDivided)
+        filterNotes(newNote, el.Verse, el.GLQuote, dividedChapter, repeatedDivided)
         return
       }
-      filterNotes(el, newNote, wholeChapter, repeatedWhole)
+      filterNotes(newNote, el.Verse, el.GLQuote, wholeChapter, repeatedWhole)
     })
     const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
 
