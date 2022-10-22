@@ -25,7 +25,7 @@ export default function Audio() {
 function MainAudio({ setAudioState }) {
   const { t } = useTranslation(['audio'])
   return (
-    <div className="flex flex-col items-center gap-5 py-24 lg:py-56">
+    <div className="flex flex-col items-center gap-5 min-h-full justify-center">
       <button
         onClick={() => {
           setAudioState('Retell Partner')
@@ -51,23 +51,21 @@ function MainAudio({ setAudioState }) {
 function RetellPartner({ setAudioState }) {
   const { t } = useTranslation(['audio'])
   return (
-    <>
+    <div className="flex flex-col items-center gap-5 min-h-full justify-center relative">
       <button
         onClick={() => {
           setAudioState('Main Audio')
         }}
-        className="border-0 w-4 h-4"
+        className="border-0 w-4 h-4 absolute top-0 left-0"
       >
         <BackButton className="stroke-cyan-700" />
-      </button>
-      <div className="flex flex-col items-center gap-5 py-24 lg:py-56">
-        <p>{t('StartRetelling')}</p>
-        <div className="flex">
-          <button className="btn-cyan mr-2">{t('InOriginalLanguage')}</button>
-          <button className="btn-cyan">{t('InTargetLanguage')}</button>
-        </div>
+      </button>{' '}
+      <p>{t('StartRetelling')}</p>
+      <div className="flex">
+        <button className="btn-cyan mr-2">{t('InOriginalLanguage')}</button>
+        <button className="btn-cyan">{t('InTargetLanguage')}</button>
       </div>
-    </>
+    </div>
   )
 }
 
