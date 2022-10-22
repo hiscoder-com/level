@@ -36,11 +36,9 @@ function ToolList({ setItem, data }) {
   const [verses, setVerses] = useState([])
   useEffect(() => {
     if (data) {
-      if (data.intro) {
-        setIntro(data?.intro)
-        delete data?.intro
-      }
-      setVerses(Object.entries(data))
+      const { intro, ...verses } = data
+      intro && setIntro(intro)
+      verses && setVerses(Object.entries(verses))
     }
   }, [data])
   return (

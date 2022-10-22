@@ -18,8 +18,6 @@ import Tools from 'public/tools.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
-// TODO тут надо все проверить, utils/steps не нужен
-
 export default function AppBar({ setIsOpen }) {
   const { user } = useCurrentUser()
   const stepConfig = useRecoilValue(stepConfigState)
@@ -29,7 +27,6 @@ export default function AppBar({ setIsOpen }) {
   const { t } = useTranslation('steps')
 
   const router = useRouter()
-  const { step } = router.query
 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
@@ -85,8 +82,7 @@ export default function AppBar({ setIsOpen }) {
               <div className="hidden md:flex">
                 <Timer time={stepConfig.time} />
               </div>
-              <StepGoal />
-              <Tools />
+              <StepGoal description={stepConfig?.description} />
             </div>
           </>
         )}
