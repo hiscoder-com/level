@@ -19,8 +19,11 @@ function Tool({ config }) {
       manifest: { dublin_core: resource },
     },
   } = config
+  console.log(config)
   let CurrentTool
   let url
+  let title = config?.resource?.manifest?.dublin_core?.title
+
   if (!resource) {
     return (
       <div>
@@ -28,6 +31,7 @@ function Tool({ config }) {
       </div>
     )
   }
+
   config.verses = config.wholeChapter
     ? []
     : config.reference.verses.map((v) => (v?.num ? v.num : v))
@@ -109,39 +113,53 @@ function Tool({ config }) {
       )?.path
 
       url = '/api/git/bible'
+      title = `${t('Chapter')} ${config?.reference?.chapter}`
       break
 
     case 'translate':
       CurrentTool = Editor
+      title = t('Editor')
       break
 
     case 'draftTranslate':
       CurrentTool = BlindEditor
+      title = t('BlindEditor')
       break
 
     case 'ownNotes':
       CurrentTool = OwnNotes
+      title = t('OwnNotes')
       break
 
     case 'teamNotes':
       CurrentTool = Notes
+      title = t('TeamNotes')
       break
 
     case 'audio':
       CurrentTool = Audio
+      title = t('Audio')
       break
 
     case 'dictionary':
       CurrentTool = Dictionary
+      title = t('Dictionary')
       break
 
     default:
       return <div>{t('Wrong_resource')}</div>
   }
   return (
-    <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
-      <CurrentTool config={config} url={url} />
-    </div>
+    <>
+      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
+        {title}
+      </div>
+      <div style={{ height: 'calc(100vh - 250px)' }} className="h5">
+        <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
+          <CurrentTool config={config} url={url} />
+        </div>
+      </div>
+    </>
   )
 }
 

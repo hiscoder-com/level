@@ -61,21 +61,16 @@ function Panel({ tools, resources, reference, wholeChapter }) {
           return (
             <Tab.Panel key={index}>
               <div className="flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full">
-                <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
-                  {t('Chapter')} {reference.chapter}
-                </div>
-                <div style={{ height: 'calc(100vh - 250px)' }} className="h5">
-                  <Tool
-                    config={{
-                      reference,
-                      wholeChapter,
-                      config: tool.config,
-                      resource: resources[tool.name]
-                        ? resources[tool.name]
-                        : { manifest: { dublin_core: { subject: tool.name } } },
-                    }}
-                  />
-                </div>
+                <Tool
+                  config={{
+                    reference,
+                    wholeChapter,
+                    config: tool.config,
+                    resource: resources[tool.name]
+                      ? resources[tool.name]
+                      : { manifest: { dublin_core: { subject: tool.name } } },
+                  }}
+                />
               </div>
             </Tab.Panel>
           )
