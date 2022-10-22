@@ -4,12 +4,17 @@ import { useTranslation } from 'next-i18next'
 
 import { Dialog, Transition } from '@headlessui/react'
 
+import { useRecoilState } from 'recoil'
+
+import { inactiveState } from './Panel/state/atoms'
+
 import RecorderButton from 'public/recorder.svg'
 import StopButton from 'public/stop.svg'
 import RecorderCrossedButton from 'public/recorder-crossed.svg'
 import TrashButton from 'public/trash.svg'
 
 export default function Recorder() {
+  const [, setInactive] = useRecoilState(inactiveState)
   const [showModal, setShowModal] = useState(false)
   const audioRef = useRef(null)
   const [mediaRec, setMediaRec] = useState()
@@ -23,9 +28,11 @@ export default function Recorder() {
       setVoice([])
       mediaRec.start()
       setButton(<StopButton className="stroke-cyan-700 stroke-2" />)
+      setInactive(true)
     } else if (mediaRec?.state === 'recording') {
       mediaRec.stop()
       setButton(<RecorderButton className="stroke-cyan-700 stroke-2" />)
+      setInactive(false)
     } else {
       setShowModal(true)
     }

@@ -2,7 +2,11 @@ import { useTranslation } from 'next-i18next'
 
 import { Tab } from '@headlessui/react'
 
+import { useRecoilValue } from 'recoil'
+
 import Tool from 'components/Panel/Tool'
+
+import { inactiveState } from './Panel/state/atoms'
 
 const sizes = {
   '1': 'lg:w-1/6',
@@ -14,11 +18,17 @@ const sizes = {
 }
 
 function Workspace({ stepConfig, reference }) {
+  const inactive = useRecoilValue(inactiveState)
   return (
     <div className="layout-step">
       {stepConfig.config.map((el, index) => {
         return (
-          <div key={index} className={`layout-step-col ${sizes[el.size]}`}>
+          <div
+            key={index}
+            className={`layout-step-col ${index === 0 && inactive ? 'inactive' : ''} ${
+              sizes[el.size]
+            }`}
+          >
             <Panel
               tools={el.tools}
               resources={stepConfig.resources}

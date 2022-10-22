@@ -10,6 +10,11 @@ export const checkedVersesBibleState = atom({
   default: [],
 })
 
+export const inactiveState = atom({
+  key: 'inactiveState',
+  default: false,
+})
+
 export const stepConfigState = atom({
   key: 'stepConfigState',
   default: {

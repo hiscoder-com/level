@@ -2,7 +2,11 @@ import { useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
+import { useRecoilState } from 'recoil'
+
 import Recorder from 'components/Recorder'
+
+import { inactiveState } from '../state/atoms'
 
 import BackButton from 'public/back-button.svg'
 
@@ -50,6 +54,7 @@ function MainAudio({ setAudioState }) {
 
 function RetellPartner({ setAudioState }) {
   const { t } = useTranslation(['audio'])
+  const [inactive, setInactive] = useRecoilState(inactiveState)
   return (
     <div className="flex flex-col items-center gap-5 min-h-full justify-center relative">
       <button
@@ -59,18 +64,46 @@ function RetellPartner({ setAudioState }) {
         className="border-0 w-4 h-4 absolute top-0 left-0"
       >
         <BackButton className="stroke-cyan-700" />
-      </button>{' '}
-      <p>{t('StartRetelling')}</p>
-      <div className="flex">
-        <button className="btn-cyan mr-2">{t('InOriginalLanguage')}</button>
-        <button className="btn-cyan">{t('InTargetLanguage')}</button>
-      </div>
+      </button>
+      {inactive ? (
+        <button
+          className="btn-cyan mr-2"
+          onClick={() => {
+            setInactive(false)
+          }}
+        >
+          {t('Finished')}
+        </button>
+      ) : (
+        <>
+          <p>{t('StartRetelling')}</p>
+          <div className="flex">
+            <button
+              className="btn-cyan mr-2"
+              onClick={() => {
+                setInactive(true)
+              }}
+            >
+              {t('InOriginalLanguage')}
+            </button>
+            <button
+              className="btn-cyan"
+              onClick={() => {
+                setInactive(true)
+              }}
+            >
+              {t('InTargetLanguage')}
+            </button>
+          </div>
+        </>
+      )}
     </div>
   )
 }
 
 function RetellYourself({ setAudioState }) {
   const { t } = useTranslation(['audio'])
+  const [inactive, setInactive] = useRecoilState(inactiveState)
   return (
     <>
       <button

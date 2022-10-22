@@ -357,7 +357,7 @@
       proj_trans RECORD;
       cur_step int2;
       cur_chapter_id bigint;
-      next_step bigint;
+      next_step RECORD;
     BEGIN
 
       SELECT
@@ -395,7 +395,7 @@
         RETURN 0;
       END IF;
 
-      SELECT id into next_step
+      SELECT id, sorting into next_step
       FROM PUBLIC.steps
       WHERE steps.project_id = proj_trans.project_id
         AND steps.sorting > cur_step
@@ -403,15 +403,15 @@
       LIMIT 1;
 
       -- получить с базы, какой следующий шаг, если его нет то ничего не делать
-      IF next_step IS NULL THEN
+      IF next_step.id IS NULL THEN
         RETURN cur_step;
       END IF;
 
       -- Если есть, то обновить в базе
-      UPDATE PUBLIC.verses SET current_step = next_step WHERE verses.chapter_id = cur_chapter_id
+      UPDATE PUBLIC.verses SET current_step = next_step.id WHERE verses.chapter_id = cur_chapter_id
         AND verses.project_translator_id = proj_trans.id;
 
-      RETURN next_step;
+      RETURN next_step.sorting;
 
     END;
   $$;
@@ -1034,7 +1034,7 @@
       DELETE
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
-        UNIQUE (verse_id, step_id)
+      created_at TIMESTAMP DEFAULT NOW()
     );
     ALTER TABLE
       PUBLIC.progress enable ROW LEVEL security;

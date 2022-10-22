@@ -197,3 +197,10 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 .markdown-body ul{
   list-style: inherit;
 }
+
+.inactive {
+  filter: blur(6px) grayscale(1);
+  user-select: none;
+  pointer-events: none;
+  opacity: .5;
+}
