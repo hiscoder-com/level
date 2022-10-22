@@ -105,7 +105,7 @@ export default function ProgressPage({ last_step }) {
           stepConfig={stepConfig}
         />
       ) : (
-        'Loading'
+        t('Loading')
       )}
       <Footer
         textButton={t('Next')}
