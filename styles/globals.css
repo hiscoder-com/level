@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .appbar{
-	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-24 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
+	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
 }
 
 .step{

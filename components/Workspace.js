@@ -64,7 +64,7 @@ function Panel({ tools, resources, reference, wholeChapter }) {
                 <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
                   {t('Chapter')} {reference.chapter}
                 </div>
-                <div style={{ height: 'calc(100vh - 280px)' }} className="h5">
+                <div style={{ height: 'calc(100vh - 250px)' }} className="h5">
                   <Tool
                     config={{
                       reference,
