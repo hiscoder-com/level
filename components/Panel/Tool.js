@@ -138,7 +138,11 @@ function Tool({ config }) {
     default:
       return <div>{t('Wrong_resource')}</div>
   }
-  return <CurrentTool config={config} url={url} />
+  return (
+    <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
+      <CurrentTool config={config} url={url} />
+    </div>
+  )
 }
 
 export default Tool

@@ -19,13 +19,10 @@ function TNTWL({ config, url }) {
       {loading ? (
         <Placeholder />
       ) : (
-        <>
-          {item ? (
-            <ToolContent setItem={setItem} item={item} />
-          ) : (
-            <ToolList setItem={setItem} data={data} />
-          )}
-        </>
+        <div className="relative h-full">
+          <ToolContent setItem={setItem} item={item} />
+          <ToolList setItem={setItem} data={data} />
+        </div>
       )}
     </>
   )
@@ -47,7 +44,7 @@ function ToolList({ setItem, data }) {
     }
   }, [data])
   return (
-    <div className="divide-y divide-gray-800 divide-dashed">
+    <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
       <div className="justify-center flex">
         {intro.map((el) => (
           <div
@@ -90,7 +87,11 @@ function ToolList({ setItem, data }) {
 
 function ToolContent({ setItem, item }) {
   return (
-    <div className="relative p-8">
+    <div
+      className={`absolute top-0 bottom-0 bg-white overflow-auto left-0 right-0 p-8 ${
+        item ? '' : 'hidden'
+      }`}
+    >
       <div
         className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
         onClick={() => setItem(null)}
@@ -98,9 +99,9 @@ function ToolContent({ setItem, item }) {
         <Close />
       </div>
       <div className=" font-bold text-xl mb-2">
-        <ReactMarkdown>{item.title}</ReactMarkdown>
+        <ReactMarkdown>{item?.title}</ReactMarkdown>
       </div>
-      <MarkdownExtended>{item.text}</MarkdownExtended>
+      <MarkdownExtended>{item?.text}</MarkdownExtended>
     </div>
   )
 }
