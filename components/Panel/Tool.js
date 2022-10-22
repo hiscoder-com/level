@@ -19,7 +19,7 @@ function Tool({ config }) {
       manifest: { dublin_core: resource },
     },
   } = config
-  console.log(config)
+
   let CurrentTool
   let url
   let title = config?.resource?.manifest?.dublin_core?.title
