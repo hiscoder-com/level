@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { tsvToJson } from 'utils/tsvHelper'
+import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger
@@ -68,9 +68,8 @@ import { tsvToJson } from 'utils/tsvHelper'
  */
 
 export default async function tnHandler(req, res) {
-  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
-  let verses = req.query['verses[]'] || req.query.verses
-
+  const { repo, owner, commit, bookPath, chapter } = req.query
+  const verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
@@ -78,29 +77,35 @@ export default async function tnHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
-    const groupData = {}
-    const data =
-      verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
-          })
-        : jsonData.filter((el) => {
-            return el.Chapter === chapter
-          })
+    const wholeChapter = {}
+    const dividedChapter = {}
+    const repeatedWhole = []
+    const repeatedDivided = []
 
-    data?.forEach((el) => {
-      const tn = {
+    jsonData?.forEach((el) => {
+      if (el.Chapter !== chapter && el.Chapter !== 'front') {
+        return
+      }
+      const newNote = {
         id: el.ID,
         text: el.OccurrenceNote,
-        title: el.GLQuote ? el.GLQuote : 'title',
+        title: el.Verse === 'intro' ? 'intro' : el.GLQuote ? el.GLQuote : 'title',
       }
-      if (!groupData[el.Verse]) {
-        groupData[el.Verse] = [tn]
-      } else {
-        groupData[el.Verse].push(tn)
+      if (el.Chapter === 'front') {
+        newNote['title'] = 'front'
       }
+      if (
+        (verses && verses.length > 0 && verses.includes(el.Verse)) ||
+        el.Verse === 'intro'
+      ) {
+        filterNotes(newNote, el.Verse, el.GLQuote, dividedChapter, repeatedDivided)
+        return
+      }
+      filterNotes(newNote, el.Verse, el.GLQuote, wholeChapter, repeatedWhole)
     })
-    res.status(200).json(groupData)
+    const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
+
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })

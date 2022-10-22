@@ -20,9 +20,9 @@ function Bible({ config, url }) {
       {loading ? (
         <Placeholder />
       ) : config?.config?.draft ? (
-        <VersesExtended verseObjects={data.verseObjects} />
+        <VersesExtended verseObjects={data?.verseObjects} />
       ) : (
-        <Verses verseObjects={data.verseObjects} />
+        <Verses verseObjects={data?.verseObjects} />
       )}
     </>
   )
