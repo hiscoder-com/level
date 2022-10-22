@@ -86,7 +86,7 @@ export default function ProgressPage({ last_step }) {
       book,
       chapter,
     })
-    if (parseInt(last_step) === parseInt(next_step)) {
+    if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {
       replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)

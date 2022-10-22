@@ -26,9 +26,8 @@ function AutoSizeTextArea({
       className={`block w-full mx-3 focus:outline-none focus:inline-none focus:bg-white  ${
         verseObject.verse || disabled ? '' : 'bg-gray-300'
       }`}
-    >
-      {startValue}
-    </div>
+      // eslint-disable-next-line prettier/prettier
+    >{startValue}</div>
   )
 }
 
