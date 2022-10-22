@@ -20,12 +20,7 @@ export function tsvToJson(tsv) {
   return result
 }
 
-export function filterNotes(newNote, verse, uniqueField, notes, repeatedNotes) {
-  if (repeatedNotes.includes(uniqueField)) {
-    newNote['repeat'] = true
-  } else {
-    repeatedNotes.push(uniqueField)
-  }
+export function filterNotes(newNote, verse, notes) {
   if (!notes[verse]) {
     notes[verse] = [newNote]
   } else {

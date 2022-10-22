@@ -67,19 +67,18 @@ import { filterNotes, tsvToJson } from 'utils/tsvHelper'
  *          description: Bad request
  */
 
-export default async function bibleHandler(req, res) {
+export default async function obsTnHandler(req, res) {
   const { repo, owner, commit, bookPath, chapter } = req.query
   let verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
+
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
     const wholeChapter = {}
     const dividedChapter = {}
-    const repeatedWhole = []
-    const repeatedDivided = []
 
     jsonData?.forEach((el) => {
       const [chapterNote, verseNote] = el.Reference.split(':')
@@ -93,10 +92,10 @@ export default async function bibleHandler(req, res) {
         title: el.Quote,
       }
       if (verses && verses.length > 0 && verses.includes(verseNote)) {
-        filterNotes(newNote, verseNote, el.Quote, dividedChapter, repeatedDivided)
+        filterNotes(newNote, verseNote, dividedChapter)
         return
       }
-      filterNotes(newNote, verseNote, el.Quote, wholeChapter, repeatedWhole)
+      filterNotes(newNote, verseNote, wholeChapter)
     })
     const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
 

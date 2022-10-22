@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
@@ -35,11 +35,21 @@ export default TNTWL
 
 function ToolList({ setItem, data }) {
   const { t } = useTranslation('common')
-
+  const [intro, setIntro] = useState([])
+  const [verses, setVerses] = useState([])
+  useEffect(() => {
+    if (data) {
+      if (data.intro) {
+        setIntro(data?.intro)
+        delete data?.intro
+      }
+      setVerses(Object.entries(data))
+    }
+  }, [data])
   return (
     <div className="divide-y divide-gray-800 divide-dashed">
       <div className="justify-center flex">
-        {data?.intro?.map((el) => (
+        {intro.map((el) => (
           <div
             onClick={() => setItem({ text: el.text, title: t(el.title) })}
             className="mx-2  btn-white my-2"
@@ -50,7 +60,7 @@ function ToolList({ setItem, data }) {
         ))}
       </div>
       {data &&
-        Object.entries(data).map((el, index) => {
+        verses.map((el, index) => {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{el[0]}</div>

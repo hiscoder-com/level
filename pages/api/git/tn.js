@@ -69,7 +69,7 @@ import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 
 export default async function tnHandler(req, res) {
   const { repo, owner, commit, bookPath, chapter } = req.query
-  const verses = req.query['verses[]'] || req.query.verses
+  let verses = req.query['verses[]'] || req.query.verses
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
@@ -79,13 +79,15 @@ export default async function tnHandler(req, res) {
     const jsonData = tsvToJson(_data.data)
     const wholeChapter = {}
     const dividedChapter = {}
-    const repeatedWhole = []
-    const repeatedDivided = []
 
     jsonData?.forEach((el) => {
+      // пропускаем, если это не наша глава и не введение
       if (el.Chapter !== chapter && el.Chapter !== 'front') {
         return
       }
+      // создаем экземпляр заметки
+      // Если это введение к главе - заголовок intro
+      // Если введение к книге - заголовок front
       const newNote = {
         id: el.ID,
         text: el.OccurrenceNote,
@@ -94,17 +96,19 @@ export default async function tnHandler(req, res) {
       if (el.Chapter === 'front') {
         newNote['title'] = 'front'
       }
+      // если надо получить определенные стихи то используем dividedChapter, иначе wholeChapter
+      // в каждый объект надо добавить так же введения
       if (
-        (verses && verses.length > 0 && verses.includes(el.Verse)) ||
-        el.Verse === 'intro'
+        verses &&
+        verses.length > 0 &&
+        (verses.includes(el.Verse) || el.Verse === 'intro')
       ) {
-        filterNotes(newNote, el.Verse, el.GLQuote, dividedChapter, repeatedDivided)
-        return
+        filterNotes(newNote, el.Verse, dividedChapter)
+      } else {
+        filterNotes(newNote, el.Verse, wholeChapter)
       }
-      filterNotes(newNote, el.Verse, el.GLQuote, wholeChapter, repeatedWhole)
     })
     const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
-
     res.status(200).json(data)
     return
   } catch (error) {
