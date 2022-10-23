@@ -68,10 +68,10 @@ import { tsvToJson } from 'utils/tsvHelper'
  */
 
 export default async function twlHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
 
   let verses = req.query['verses[]'] || req.query.verses
-  const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
+  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
   try {
@@ -88,10 +88,10 @@ export default async function twlHandler(req, res) {
             return chapterQuestion === chapter
           })
     const promises = data.map(async (el) => {
-      const url =
-        'https://git.door43.org/ru_gl/ru_tw/raw/branch/master/' +
-        el.TWLink.split('/').slice(-3).join('/') +
-        '.md'
+      const url = `https://git.door43.org/${owner}/${repo.slice(
+        0,
+        -1
+      )}/raw/branch/master/${el.TWLink.split('/').slice(-3).join('/')}.md`
       const res = await axios.get(url)
       const splitter = res.data.search('\n')
       return {

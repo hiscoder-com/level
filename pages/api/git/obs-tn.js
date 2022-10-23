@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { tsvToJson } from 'utils/tsvHelper'
+import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger
@@ -67,37 +67,39 @@ import { tsvToJson } from 'utils/tsvHelper'
  *          description: Bad request
  */
 
-export default async function bibleHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+export default async function obsTnHandler(req, res) {
+  const { repo, owner, commit, bookPath, chapter } = req.query
   let verses = req.query['verses[]'] || req.query.verses
-  const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
+  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
+
   try {
     const _data = await axios.get(url)
-    const jsonData = await tsvToJson(_data.data)
-    const data =
-      verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter && verses.includes(verseQuestion)
-          })
-        : jsonData.filter((el) => {
-            const [chapterQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter
-          })
-    const groupData = {}
-    data?.forEach((el) => {
-      const verse = el.Reference.split(':').slice(-1)[0]
-      const tn = { id: el.ID, text: el.Note, title: el.Quote }
-      if (!groupData[verse]) {
-        groupData[verse] = [tn]
-      } else {
-        groupData[verse].push(tn)
-      }
-    })
+    const jsonData = tsvToJson(_data.data)
+    const wholeChapter = {}
+    const dividedChapter = {}
 
-    res.status(200).json(groupData)
+    jsonData?.forEach((el) => {
+      const [chapterNote, verseNote] = el.Reference.split(':')
+
+      if (chapterNote !== chapter) {
+        return
+      }
+      const newNote = {
+        id: el.ID,
+        text: el.Note,
+        title: el.Quote,
+      }
+      if (verses && verses.length > 0 && verses.includes(verseNote)) {
+        filterNotes(newNote, verseNote, dividedChapter)
+        return
+      }
+      filterNotes(newNote, verseNote, wholeChapter)
+    })
+    const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
+
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import axios from 'axios'
 import useSWR from 'swr'
 
@@ -56,17 +57,14 @@ export function useUser(token, id) {
   return [user, { mutate, loading, error }]
 }
 /**
- *hook returns information about projects in a specific language
- * @param {string} language_code code of language
+ *hook returns information about projects
  * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useProjects({ token, language_code }) {
-  const { data, mutate, error } = useSWR(
-    token && language_code ? [`/api/languages/${language_code}/projects`, token] : null,
-    fetcher
-  )
+export function useProjects({ token }) {
+  const { data, mutate, error } = useSWR(token ? [`/api/projects`, token] : null, fetcher)
   const loading = !data && !error
+  // форматировать data, нужно пройтись по всем проектам и раскидать, чтобы каждый проект лежал внутри языка
   return [data, { mutate, loading, error }]
 }
 
@@ -162,16 +160,18 @@ export function useRedirect({ user, startLink }) {
 }
 /**
  *hook receives information from git.door43
- * @param {object} config 2 keys object: {resource:{owner, repo, commit, bookPath, language},reference: { book, chapter, step, verses }}
+ * @param {object} config 2 keys object: {resource:{owner, repo, commit},reference: { book, chapter, step, verses }}
  * @param {string} url url of api, for example: '/api/git/bible'
  * @returns {object} {loading, data, error}
  */
 export function useGetResource({ config, url }) {
   const {
-    reference: { book, chapter, step, verses },
-    resource: { owner, repo, commit, bookPath, language },
+    verses,
+    reference: { book, chapter, step },
+    resource: { owner, repo, commit, bookPath },
   } = config
-  const params = { owner, repo, commit, bookPath, language, book, chapter, step, verses }
+  const params = { owner, repo, commit, bookPath, book, chapter, step, verses }
+
   const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
   const { data, error } = useSWR([url, params], fetcher)
   const loading = !data && !error

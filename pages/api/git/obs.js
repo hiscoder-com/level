@@ -68,14 +68,14 @@ import { mdToJson } from 'utils/mdHelper'
  */
 
 export default async function obsHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, chapter, step } = req.query
   let verses = req.query['verses[]'] || req.query.verses
-  const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
+  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}/${String(chapter).padStart(2, '0')}.md`
   try {
     const _data = await axios.get(url)
-    const jsonData = await mdToJson(_data.data)
+    const jsonData = mdToJson(_data.data)
     const { verseObjects, header, link } = jsonData
     const _verseObjects =
       verses && verses.length > 0

@@ -1,11 +1,8 @@
 import { Fragment } from 'react'
 
-import { useTranslation } from 'next-i18next'
-
-const { Transition, Dialog } = require('@headlessui/react')
+import { Transition, Dialog } from '@headlessui/react'
 
 function Modal({ title, children, isOpen, closeHandle }) {
-  const { t } = useTranslation(['common'])
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={closeHandle}>

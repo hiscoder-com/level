@@ -1,5 +1,8 @@
 import { useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
+
+import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useProject, useTranslators } from 'utils/hooks'
@@ -19,6 +22,7 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
+  const { t } = useTranslation('verses')
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -34,14 +38,33 @@ function VerseDivider({ verses }) {
   })
   const [currentTranslator, setCurrentTranslator] = useState(null)
   const [isHighlight, setIsHighlight] = useState(false)
+  const [colorTranslators, setColorTranslators] = useState([])
 
-  const colorTranslators = translators?.map((el, index) => {
-    return { ...el, color: defaultColor[index] }
-  })
+  useEffect(() => {
+    const colorTranslators = translators?.map((el, index) => ({
+      ...el,
+      color: defaultColor[index],
+    }))
+    setColorTranslators(colorTranslators)
+  }, [translators])
+
   const [versesDivided, setVersesDivided] = useState([])
   useEffect(() => {
-    setVersesDivided(verses)
-  }, [verses])
+    if (colorTranslators?.length > 0) {
+      const extVerses = verses.map((el) => {
+        const translator = colorTranslators.find(
+          (element) => element.id === el.project_translator_id
+        )
+
+        return {
+          ...el,
+          color: translator ? translator.color : 'bg-slate-300',
+          translator_name: translator ? translator.users.login : '',
+        }
+      })
+      setVersesDivided(extVerses)
+    }
+  }, [verses, colorTranslators])
 
   const coloring = (index) => {
     const newArr = [...versesDivided]
@@ -60,7 +83,7 @@ function VerseDivider({ verses }) {
     })
 
     if (error) console.error(error)
-    else console.log(data)
+    else console.log('Success', data)
   }
 
   return (
@@ -70,10 +93,11 @@ function VerseDivider({ verses }) {
           setIsHighlight(true)
         }}
         onMouseUp={() => setIsHighlight(false)}
+        onMouseLeave={() => setIsHighlight(false)}
         className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
         {versesDivided
-          .sort((a, b) => a.num - b.num)
+          .sort((a, b) => a.num > b.num)
           .map((el, index) => {
             return (
               <div
@@ -131,19 +155,28 @@ function VerseDivider({ verses }) {
               : 'p-2'
           } bg-slate-300 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
-          Clearing
+          {t('Clearing')}
         </button>
         <button
-          onClick={() => setVersesDivided(verses)}
+          onClick={() =>
+            setVersesDivided(
+              verses.map((el) => ({
+                ...el,
+                color: 'bg-slate-300',
+                translator_name: '',
+                project_translator_id: null,
+              }))
+            )
+          }
           className={`bg-slate-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
-          Reset
+          {t('Reset')}
         </button>
         <button
-          onClick={() => verseDividing()}
+          onClick={verseDividing}
           className={`bg-green-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
-          Save
+          {t('Save')}
         </button>
       </div>
     </div>

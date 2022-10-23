@@ -1,17 +1,12 @@
 import { useState } from 'react'
 
-import { useRouter } from 'next/router'
-
 import { useTranslation } from 'next-i18next'
 
-import { steps } from 'utils/steps'
-import Modal from './Modal'
+import Modal from 'components/Modal'
 
-function StepGoal() {
+function StepGoal({ description }) {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
-  const router = useRouter()
-  const { step } = router.query
-  const { t } = useTranslation(['steps', 'common'])
+  const { t } = useTranslation(['common'])
 
   const closeModal = () => {
     setShowModalStepGoal(false)
@@ -23,19 +18,15 @@ function StepGoal() {
         className="btn-cyan w-28"
         onClick={(e) => (setShowModalStepGoal(!showModalStepGoal), e.stopPropagation())}
       >
-        {t('common:Goal')}
+        {t('Goal')}
       </button>
-      <Modal
-        isOpen={showModalStepGoal}
-        closeHandle={closeModal}
-        title={t('common:Goal') + ':'}
-      >
+      <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal') + ':'}>
         <div className="mt-2">
-          <p className="text-sm text-gray-500">{t(steps[step].stepGoal)}</p>
+          <p className="text-sm text-gray-500 whitespace-pre-line">{description}</p>
         </div>
         <div className="mt-4">
           <button className="btn-cyan w-24" onClick={closeModal}>
-            {t('common:Close')}
+            {t('Close')}
           </button>
         </div>
       </Modal>

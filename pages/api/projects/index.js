@@ -1,6 +1,7 @@
-import { supabase } from 'utils/supabaseClient'
 import jsyaml from 'js-yaml'
 import axios from 'axios'
+
+import { supabase } from 'utils/supabaseClient'
 
 export default async function languageProjectsHandler(req, res) {
   if (!req.headers.token) {
@@ -12,7 +13,7 @@ export default async function languageProjectsHandler(req, res) {
     body: { language_id, method_id, code, title, resources, steps },
     method,
   } = req
-
+  // TODO не работает если создавать ОБС
   switch (method) {
     case 'POST':
       try {
@@ -24,6 +25,7 @@ export default async function languageProjectsHandler(req, res) {
           .eq('id', method_id)
           .single()
         if (methodError) throw methodError
+
         /**
          * Сверить что все методы из ресурса пришли с формы. Так же получаем, какой ресурс основной
          * После этого получаем и парсим манифесты и записываем в базу.
@@ -85,12 +87,13 @@ export default async function languageProjectsHandler(req, res) {
             },
           },
         ])
+
         if (error) throw error
 
         current_method.steps.forEach(async (el, index) => {
           await supabase
             .from('steps')
-            .insert([{ ...el, order: index + 1, project_id: data[0].id }])
+            .insert([{ ...el, sorting: index + 1, project_id: data[0].id }])
         })
         res.setHeader('Location', `/projects/${data[0].code}`)
         res.status(201).json({})
@@ -98,8 +101,18 @@ export default async function languageProjectsHandler(req, res) {
         return res.status(404).json({ error })
       }
       break
+    case 'GET':
+      try {
+        const { data, error } = await supabase
+          .from('projects')
+          .select('id,title,code,type,method,languages!inner(*)')
+        if (error) throw error
+        return res.status(200).json(data)
+      } catch (error) {
+        return res.status(404).json({ error })
+      }
     default:
-      res.setHeader('Allow', ['POST'])
+      res.setHeader('Allow', ['POST', 'GET'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

@@ -22,11 +22,11 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <UserContextProvider supabaseClient={supabase}>
-      <Layout backgroundColor={Component.backgroundColor ?? 'bg-blue-150'}>
-        <RecoilRoot>
+      <RecoilRoot>
+        <Layout backgroundColor={Component.backgroundColor ?? 'bg-blue-150'}>
           <Component {...pageProps} />
-        </RecoilRoot>
-      </Layout>
+        </Layout>
+      </RecoilRoot>
     </UserContextProvider>
   )
 }

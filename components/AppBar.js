@@ -4,33 +4,32 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
+import { useRecoilValue } from 'recoil'
+
+import Timer from 'components/Timer'
+import StepGoal from 'components/StepGoal'
 
 import { supabase } from 'utils/supabaseClient'
-import { steps } from 'utils/steps'
 import { useCurrentUser } from 'lib/UserContext'
-
-import Timer from './Timer'
+import { stepConfigState } from './Panel/state/atoms'
 
 import Burger from 'public/burger.svg'
 import Tools from 'public/tools.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
-import StepGoal from './StepGoal'
-
-// TODO тут надо все проверить
 
 export default function AppBar({ setIsOpen }) {
   const { user } = useCurrentUser()
+  const stepConfig = useRecoilValue(stepConfigState)
   const [access, setAccess] = useState(false)
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const { t } = useTranslation('steps')
 
   const router = useRouter()
-  const { step } = router.query
 
   useEffect(() => {
-    setIsStepPage(router.pathname === '/steps/[step]')
+    setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
 
@@ -63,7 +62,7 @@ export default function AppBar({ setIsOpen }) {
           </Link>
           {isStepPage && (
             <div className="flex gap-7 md:hidden">
-              <Timer time={steps[step].time} />
+              <Timer time={stepConfig.time} />
               <Burger onClick={() => setShowFullAppbar(!showFullAppbar)} />
             </div>
           )}
@@ -71,20 +70,19 @@ export default function AppBar({ setIsOpen }) {
         {isStepPage && (
           <>
             <div className={`condition-title ${showFullAppbar ? '' : 'hidden '}`}>
-              {t(steps[step].title)}
+              {stepConfig.title}
             </div>
             <div
               className={`condition-optional-info ${showFullAppbar ? 'flex' : 'hidden '}`}
             >
               <div className="flex row items-center gap-1 cursor-default">
                 <User />
-                {steps[step].users}
+                {stepConfig.count_of_users}
               </div>
               <div className="hidden md:flex">
-                <Timer time={steps[step].time} />
+                <Timer time={stepConfig.time} />
               </div>
-              <StepGoal />
-              <Tools />
+              <StepGoal description={stepConfig?.description} />
             </div>
           </>
         )}

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { tsvToJson } from 'utils/tsvHelper'
+import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger
@@ -68,38 +68,48 @@ import { tsvToJson } from 'utils/tsvHelper'
  */
 
 export default async function tnHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, chapter } = req.query
   let verses = req.query['verses[]'] || req.query.verses
-  const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
+  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
 
   try {
     const _data = await axios.get(url)
-    const jsonData = await tsvToJson(_data.data)
-    const groupData = {}
-    const data =
-      verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            return el.Chapter === chapter && verses.includes(el.Verse)
-          })
-        : jsonData.filter((el) => {
-            return el.Chapter === chapter
-          })
+    const jsonData = tsvToJson(_data.data)
+    const wholeChapter = {}
+    const dividedChapter = {}
 
-    data?.forEach((el) => {
-      const tn = {
+    jsonData?.forEach((el) => {
+      // пропускаем, если это не наша глава и не введение
+      if (el.Chapter !== chapter && el.Chapter !== 'front') {
+        return
+      }
+      // создаем экземпляр заметки
+      // Если это введение к главе - заголовок intro
+      // Если введение к книге - заголовок front
+      const newNote = {
         id: el.ID,
         text: el.OccurrenceNote,
-        title: el.GLQuote ? el.GLQuote : 'title',
+        title: el.Verse === 'intro' ? 'intro' : el.GLQuote ? el.GLQuote : 'title',
       }
-      if (!groupData[el.Verse]) {
-        groupData[el.Verse] = [tn]
+      if (el.Chapter === 'front') {
+        newNote['title'] = 'front'
+      }
+      // если надо получить определенные стихи то используем dividedChapter, иначе wholeChapter
+      // в каждый объект надо добавить так же введения
+      if (
+        verses &&
+        verses.length > 0 &&
+        (verses.includes(el.Verse) || el.Verse === 'intro')
+      ) {
+        filterNotes(newNote, el.Verse, dividedChapter)
       } else {
-        groupData[el.Verse].push(tn)
+        filterNotes(newNote, el.Verse, wholeChapter)
       }
     })
-    res.status(200).json(groupData)
+    const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })

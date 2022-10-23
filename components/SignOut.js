@@ -25,7 +25,7 @@ export default function SignOut() {
   }
 
   return (
-    <div className="flex justify-center flex-col  text-xl my-5">
+    <div className="flex justify-center flex-col text-xl my-5">
       <div>
         <button
           disabled={loading}
