@@ -22,6 +22,7 @@
   -- DROP TRIGGER
     DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
     DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
+    DROP TRIGGER IF EXISTS on_public_book_created ON PUBLIC.books;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
 
@@ -30,18 +31,27 @@
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
-    DROP FUNCTION IF EXISTS PUBLIC.set_moderator;
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_step;
+    DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
+    DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
+    DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
-    DROP FUNCTION IF EXISTS PUBLIC.block_user;
     DROP FUNCTION IF EXISTS PUBLIC.can_translate;
-    DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
-    DROP FUNCTION IF EXISTS PUBLIC.create_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.block_user;
+    DROP FUNCTION IF EXISTS PUBLIC.save_verse;
+    DROP FUNCTION IF EXISTS PUBLIC.save_verses;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;    
+    DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
+    DROP FUNCTION IF EXISTS PUBLIC.create_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.get_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
   -- END DROP FUNCTION
 
   -- DROP TYPE
@@ -73,8 +83,7 @@
 -- END CREATE CUSTOM TYPE
 
 -- CREATE FUNCTION
-  -- пока что функция возвращает твою роль на проекте
-  -- может оставить эту функцию и написать еще одну для проверки permission на основе этой
+  -- функция возвращает твою максимальную роль на проекте
   CREATE FUNCTION PUBLIC.authorize(
       user_id uuid,
       project_id bigint
@@ -136,24 +145,148 @@
     END;
   $$;
 
+  -- возвращает, на каком шаге сейчас  юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
+  CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      current_step RECORD;
+    BEGIN
+      IF authorize(auth.uid(), get_current_step.project_id) IN ('user') THEN
+        RETURN FALSE;
+      END IF;
+
+      SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, started_at, finished_at INTO current_step
+      FROM verses
+        LEFT JOIN chapters ON (verses.chapter_id = chapters.id)
+        LEFT JOIN books ON (chapters.book_id = books.id)
+        LEFT JOIN steps ON (verses.current_step = steps.id)
+        LEFT JOIN projects ON (projects.id = verses.project_id)
+      WHERE verses.project_id = get_current_step.project_id
+        AND chapters.started_at IS NOT NULL
+        AND chapters.finished_at IS NULL
+        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_step.project_id AND user_id = auth.uid())
+      GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
+
+      RETURN current_step;
+
+    END;
+  $$;
+
+  -- получить все стихи переводчика
+  CREATE FUNCTION PUBLIC.get_verses(project_id BIGINT, chapter int2, book PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text)
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      verses_list RECORD;
+      cur_chapter_id BIGINT;
+    BEGIN
+      IF authorize(auth.uid(), get_verses.project_id) IN ('user') THEN
+        RETURN;
+      END IF;
+
+      SELECT chapters.id into cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = get_verses.chapter AND chapters.project_id = get_verses.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_verses.book AND books.project_id = get_verses.project_id);
+
+      IF cur_chapter_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      return query SELECT verses.id as verse_id, verses.num, verses.text as verse
+      FROM public.verses
+      WHERE verses.project_translator_id = (SELECT id
+      FROM PUBLIC.project_translators
+      WHERE project_translators.user_id = auth.uid()
+        AND project_translators.project_id = get_verses.project_id)
+        AND verses.project_id = get_verses.project_id
+        AND verses.chapter_id = cur_chapter_id
+      ORDER BY verses.num;
+
+    END;
+  $$;
+
   -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
-  CREATE FUNCTION PUBLIC.set_moderator(user_id uuid, project_id bigint) returns BOOLEAN
+  CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       usr RECORD;
-      new_val BOOLEAN;
     BEGIN
-      IF authorize(auth.uid(), set_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
+      IF authorize(auth.uid(), assign_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
         RETURN FALSE;
       END IF;
-      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = set_moderator.project_id AND project_translators.user_id = set_moderator.user_id;
+      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = assign_moderator.project_id AND project_translators.user_id = assign_moderator.user_id;
       IF usr.id IS NULL THEN
         RETURN FALSE;
       END IF;
-      new_val := NOT usr.is_moderator;
-      UPDATE PUBLIC.project_translators SET is_moderator = new_val WHERE project_translators.id = usr.id;
+      UPDATE PUBLIC.project_translators SET is_moderator = TRUE WHERE project_translators.id = usr.id;
 
-      RETURN new_val;
+      RETURN TRUE;
+
+    END;
+  $$;
+
+  CREATE FUNCTION PUBLIC.remove_moderator(user_id uuid, project_id bigint) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      usr RECORD;
+    BEGIN
+      IF authorize(auth.uid(), remove_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN FALSE;
+      END IF;
+      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = remove_moderator.project_id AND project_translators.user_id = remove_moderator.user_id;
+      IF usr.id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+      UPDATE PUBLIC.project_translators SET is_moderator = FALSE WHERE project_translators.id = usr.id;
+
+      RETURN TRUE;
+
+    END;
+  $$;
+
+  -- Распределение стихов среди переводчиков
+  CREATE FUNCTION PUBLIC.divide_verses(divider VARCHAR, project_id BIGINT) RETURNS BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+     verse_row record;
+    BEGIN
+      IF authorize(auth.uid(), divide_verses.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN FALSE;
+      END IF;
+
+      FOR verse_row IN SELECT * FROM jsonb_to_recordset(divider::jsonb) AS x(project_translator_id INT,id INT)
+      LOOP
+        UPDATE PUBLIC.verses SET project_translator_id = verse_row.project_translator_id WHERE verse_row.id = id;
+      END LOOP;
+
+      RETURN TRUE;
+
+    END;
+  $$;
+
+  -- Устанавливает дату начала перевода главы
+  CREATE FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+
+    BEGIN
+      IF authorize(auth.uid(), start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;
+
+      UPDATE PUBLIC.chapters SET started_at = NOW() WHERE start_chapter.chapter_id = chapters.id AND start_chapter.project_id = chapters.project_id AND started_at IS NULL;
+
+      RETURN true;
+
+    END;
+  $$;
+
+  -- Сохранить стих
+  CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+
+    BEGIN
+      -- проверить что глава начата, что стих назначен переводчику
+      UPDATE PUBLIC.verses SET "text" = save_verse.new_verse WHERE verses.id = save_verse.verse_id;
+
+      RETURN true;
 
     END;
   $$;
@@ -184,7 +317,7 @@
     END;
   $$;
 
-  -- для rls функция которая разрешает что-то делать только админу
+  -- для rls, функция которая разрешает что-то делать только админу
   CREATE FUNCTION PUBLIC.admin_only()
     returns BOOLEAN LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -203,7 +336,7 @@
     END;
   $$;
 
-  -- для rls функция которая проверяет, является ли юзер переводчиком стиха
+  -- для rls, функция которая проверяет, является ли юзер переводчиком стиха
   -- может используя функцию записать в таблицу сразу айди юзера, а то часто придется такие проверки делать
   CREATE FUNCTION PUBLIC.can_translate(translator_id bigint)
     returns BOOLEAN LANGUAGE plpgsql security definer AS $$
@@ -219,6 +352,72 @@
         user_id = auth.uid() AND id = can_translate.translator_id;
 
       RETURN access > 0;
+
+    END;
+  $$;
+
+  -- Функция для перехода на следующий шаг (проверим что юзер имеет право редактировать эти стихи, узнаем айди следующего шага, поменяем у всех стихов айди шага)
+  CREATE FUNCTION PUBLIC.go_to_next_step(project TEXT, chapter int2, book PUBLIC.book_code) returns INTEGER
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      proj_trans RECORD;
+      cur_step int2;
+      cur_chapter_id bigint;
+      next_step RECORD;
+    BEGIN
+
+      SELECT
+        project_translators.id, projects.id as project_id INTO proj_trans
+      FROM
+        PUBLIC.project_translators LEFT JOIN PUBLIC.projects ON (projects.id = project_translators.project_id)
+      WHERE
+        project_translators.user_id = auth.uid() AND projects.code = go_to_next_step.project;
+
+      -- Есть ли такой переводчик на проекте
+      IF proj_trans.id IS NULL THEN
+        RETURN 0;
+      END IF;
+
+      -- получаем айди главы
+      SELECT chapters.id into cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = go_to_next_step.chapter AND chapters.project_id = proj_trans.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = go_to_next_step.book AND books.project_id = proj_trans.project_id);
+
+      -- валидация главы
+      IF cur_chapter_id IS NULL THEN
+        RETURN 0;
+      END IF;
+
+      SELECT
+        sorting INTO cur_step
+      FROM
+        PUBLIC.verses LEFT JOIN PUBLIC.steps ON (steps.id = verses.current_step)
+      WHERE verses.chapter_id = cur_chapter_id
+        AND project_translator_id = proj_trans.id
+      LIMIT 1;
+
+      -- Есть ли закрепленные за ним стихи, и узнать на каком сейчас шаге
+      IF cur_step IS NULL THEN
+        RETURN 0;
+      END IF;
+
+      SELECT id, sorting into next_step
+      FROM PUBLIC.steps
+      WHERE steps.project_id = proj_trans.project_id
+        AND steps.sorting > cur_step
+      ORDER BY steps.sorting
+      LIMIT 1;
+
+      -- получить с базы, какой следующий шаг, если его нет то ничего не делать
+      IF next_step.id IS NULL THEN
+        RETURN cur_step;
+      END IF;
+
+      -- Если есть, то обновить в базе
+      UPDATE PUBLIC.verses SET current_step = next_step.id WHERE verses.chapter_id = cur_chapter_id
+        AND verses.project_translator_id = proj_trans.id;
+
+      RETURN next_step.sorting;
 
     END;
   $$;
@@ -285,7 +484,18 @@
     END;
   $$;
 
-  -- после создания проекта создаем бриф?? repeat
+  -- после создания книги создаем главы
+  CREATE FUNCTION PUBLIC.handle_new_book() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      IF (PUBLIC.create_chapters(NEW.id)) THEN
+        RETURN NEW;
+      ELSE
+        RETURN NULL;
+      END IF;
+    END;
+  $$;
+
+  -- после перехода на новый шаг - сохраняем предыдущий в прогресс
   CREATE FUNCTION PUBLIC.handle_next_step() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       IF NEW.current_step = OLD.current_step THEN
@@ -311,7 +521,7 @@
     END;
   $$;  
 
-  -- создать стихи главы
+  -- создать главы
   CREATE FUNCTION PUBLIC.create_chapters(book_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -340,6 +550,31 @@
     END;
   $$;
 
+  -- пакетно сохранить стихи
+  CREATE FUNCTION PUBLIC.save_verses(verses json) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+    new_verses RECORD;
+    BEGIN
+      -- узнать айди переводчика на проекте
+      -- узнать айди главы, которую переводим, убедиться что перевод еще в процессе
+      -- в цикле обновить текст стихов, с учетом айди переводчика и главы
+
+      FOR new_verses IN SELECT * FROM json_each_text(save_verses.verses)
+      LOOP
+        UPDATE
+          PUBLIC.verses
+        SET "text" = new_verses.value::text
+        WHERE
+          verses.id = new_verses.key::bigint;
+      END LOOP;
+
+      RETURN true;
+
+    END;
+  $$;
+
+  -- создать стихи
   CREATE FUNCTION PUBLIC.create_verses(chapter_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -353,7 +588,7 @@
         FROM PUBLIC.chapters
           JOIN PUBLIC.steps ON (steps.project_id = chapters.project_id)
         WHERE chapters.id = create_verses.chapter_id
-        ORDER BY steps.order ASC
+        ORDER BY steps.sorting ASC
         LIMIT 1
         INTO chapter;
 
@@ -407,7 +642,7 @@
 -- ROLE PERMISSIONS
   -- TABLE
     CREATE TABLE PUBLIC.role_permissions (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       role project_role NOT NULL,
       permission app_permission NOT NULL,
       UNIQUE (role, permission)
@@ -425,7 +660,7 @@
 -- LANGUAGES
   --TABLE
     CREATE TABLE PUBLIC.languages (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       eng text NOT NULL,
       code text NOT NULL UNIQUE,
       orig_name text NOT NULL,
@@ -467,7 +702,7 @@
 -- METHODS
   -- TABLE
     CREATE TABLE PUBLIC.methods (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       title text NOT NULL,
       steps json,
       resources json,
@@ -494,7 +729,7 @@
 -- PROJECTS
   -- TABLE
     CREATE TABLE PUBLIC.projects (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       title text NOT NULL,
       code text NOT NULL,
       language_id bigint references PUBLIC.languages ON
@@ -547,7 +782,7 @@
 -- PROJECT TRANSLATORS
   -- TABLE
     CREATE TABLE PUBLIC.project_translators (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       project_id bigint references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
@@ -586,7 +821,7 @@
 -- PROJECT COORDINATORS
   -- TABLE
     CREATE TABLE PUBLIC.project_coordinators (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       project_id bigint references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
@@ -623,7 +858,7 @@
 -- BRIEFS
   -- TABLE
     CREATE TABLE PUBLIC.briefs (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       project_id bigint references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL UNIQUE,
@@ -656,21 +891,22 @@
 -- STEPS
   -- TABLE
     CREATE TABLE PUBLIC.steps (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       title text NOT NULL,
       "description" text DEFAULT NULL,
       intro text DEFAULT NULL,
       count_of_users int2 NOT NULL,
+      whole_chapter BOOLEAN DEFAULT true,
       "time" int2 NOT NULL,
       project_id bigint REFERENCES PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
       config json NOT NULL,
-      "order" int2 NOT NULL,
-        UNIQUE (project_id, "order")
+      sorting int2 NOT NULL,
+        UNIQUE (project_id, sorting)
     );
 
-    COMMENT ON COLUMN public.steps.order
+    COMMENT ON COLUMN public.steps.sorting
         IS 'это поле юзер не редактирует. Мы его указываем сами. Пока что будем получать с клиента.';
     ALTER TABLE
       PUBLIC.steps enable ROW LEVEL security;
@@ -694,7 +930,7 @@
 -- BOOKS
   -- TABLE
     CREATE TABLE PUBLIC.books (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       code book_code NOT NULL,
       project_id bigint references PUBLIC.projects ON
       DELETE
@@ -731,7 +967,7 @@
 -- CHAPTERS
   -- TABLE
     CREATE TABLE PUBLIC.chapters (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       num int2 NOT NULL,
       book_id bigint REFERENCES PUBLIC.books ON
       DELETE
@@ -741,6 +977,8 @@
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
       verses integer,
+      started_at TIMESTAMP DEFAULT NULL,
+      finished_at TIMESTAMP DEFAULT NULL,
         UNIQUE (book_id, num)
     );
     ALTER TABLE
@@ -760,7 +998,7 @@
 -- VERSES
   -- TABLE
     CREATE TABLE PUBLIC.verses (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint GENERATED ALWAYS AS IDENTITY primary key,
       num int2 NOT NULL,
       "text" text DEFAULT NULL,
       current_step bigint REFERENCES PUBLIC.steps ON
@@ -788,30 +1026,23 @@
   -- END TABLE
 
   -- RLS
-    DROP POLICY IF EXISTS "Стих получить может переводчик, координатор проекта, модератор " ON PUBLIC.verses;
+    DROP POLICY IF EXISTS "Стих получить может переводчик, координатор проекта, модератор и админ" ON PUBLIC.verses;
 
     CREATE policy "Стих получить может переводчик, координатор проекта, модератор и админ" ON PUBLIC.verses FOR
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.verses;
+    -- Создаются у нас стихи автоматом, так что никто не может добавлять
 
-    CREATE policy "Добавлять можно только админу" ON PUBLIC.verses FOR
-    INSERT
-      WITH CHECK (can_translate(project_translator_id));
+    -- Редактировать на прямую тоже запретим. Нам можно редактировать только два поля, текущий шаг и текст стиха
 
-    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.verses;
-
-    CREATE policy "Добавлять можно только админу" ON PUBLIC.verses FOR
-    UPDATE
-      USING (can_translate(project_translator_id));
   -- END RLS
 -- VERSES
 
 -- PROGRESS
   -- TABLE
     CREATE TABLE PUBLIC.progress (
-      id bigint generated BY DEFAULT AS identity primary key,
+      id bigint generated ALWAYS AS identity primary key,
       verse_id bigint REFERENCES PUBLIC.verses ON
       DELETE
         CASCADE NOT NULL,
@@ -819,7 +1050,7 @@
       DELETE
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
-        UNIQUE (verse_id, step_id)
+      created_at TIMESTAMP DEFAULT NOW()
     );
     ALTER TABLE
       PUBLIC.progress enable ROW LEVEL security;
@@ -948,6 +1179,12 @@ ALTER TABLE
   INSERT
     ON PUBLIC.projects FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_project();
 
+  -- trigger the function every time a book is created
+
+  CREATE TRIGGER on_public_book_created AFTER
+  INSERT
+    ON PUBLIC.books FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_book();
+
   -- trigger the function every time a project is created
 
   CREATE TRIGGER on_public_verses_next_step AFTER
@@ -1011,15 +1248,6 @@ ADD
         FALSE
       ),
       (
-        'b68180b0-49dc-4124-868f-b15b177b6d8e',
-        'Translator0',
-        'translator0@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
         '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2',
         'Coordinator2',
         'coordinator2@mail.com',
@@ -1041,15 +1269,6 @@ ADD
         '54358d8e-0144-47fc-a290-a6882023a3d6',
         'Coordinator3',
         'coordinator3@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '9116f676-716d-470c-b3d0-2d07325d5b10',
-        'Coordinator0',
-        'coordinator0@mail.com',
         FALSE,
         FALSE,
         NULL,
@@ -1083,15 +1302,6 @@ ADD
         TRUE
       ),
       (
-        '689b2ba5-717e-4237-ba3f-d5fa6a55600b',
-        'Admin0',
-        'admin0@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        TRUE
-      ),
-      (
         'bba5a95e-33b7-431d-8c43-aedc517a1aa6',
         'Translator2',
         'translator2@mail.com',
@@ -1113,15 +1323,6 @@ ADD
         'e50d5d0a-4fdb-4de3-b431-119e684d775e',
         'Moderator',
         'moderator@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        'be6688c3-1864-4fff-a03f-c49ddd53e2d0',
-        'Moderator0',
-        'moderator0@mail.com',
         FALSE,
         FALSE,
         NULL,
@@ -1157,144 +1358,716 @@ ADD
     INSERT INTO
       PUBLIC.methods (title, resources, steps, "type")
     VALUES
-      ('Vcana Bible', '{"literal":false, "simplified":true, "tn":false}', '[
-      {
-        "title": "Шаг один. Читаем вместе",
-        "description": "Some text here...",
-        "time": 60,
-        "count_of_users": 4,
-        "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-        "config": [
-          {
-            "size": 4,
-            "tools": [
-              {
-                "name": "literal",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 2,
-            "tools": [
-              {
-                "name": "notepad",
-                "config": {"team": true}
-              },
-              {
-                "name": "notepad",
-                "config": {}
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "title": "Шаг два. Набросок",
-        "description": "Some text here2...",
-        "time": 30,
-        "count_of_users": 2,
-        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-        "config": [
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "literal",
-                "config": {}
-              },
-              {
-                "name": "simplified",
-                "config": {}
-              },
-              {
-                "name": "tn",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "editor",
-                "config": {"type":"blind"}
-              },
-              {
-                "name": "dictionary",
-                "config": {}
-              }
-            ]
-          }
-        ]
-      }]', 'bible'::project_type),
-      ('Vcana OBS', '{"obs":true, "tw":false, "tq":false}', '[
-      {
-        "title": "Шаг один. Читаем вместе OBS",
-        "description": "Some text here...",
-        "time": 45,
-        "count_of_users": 4,
-        "intro": "# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-        "config": [
-          {
-            "size": 4,
-            "tools": [
-              {
-                "name": "obs",
-                "config": {}
-              },
-              {
-                "name": "tw",
-                "config": {}
-              },
-              {
-                "name": "tq",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 2,
-            "tools": [
-              {
-                "name": "notepad",
-                "config": {}
-              }
-            ]
-          }
-        ]
-      },
-      {
-        "title": "Шаг два. Набросок OBS",
-        "description": "Some text here2...",
-        "time": 30,
-        "count_of_users": 2,
-        "intro": "# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f",
-        "config": [
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "obs",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "editor",
-                "config": {"type":"blind"}
-              },
-              {
-                "name": "dictionary",
-                "config": {}
-              }
-            ]
-          }
-        ]
-      }]', 'obs'::project_type);
+      ('Vcana Bible', '{"simplified":true, "literal":false, "tnotes":false, "twords":false, "tquestions":false}', '[
+        {
+          "title": "1 ШАГ - ОБЗОР КНИГИ",
+          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
+          "time": 60,
+          "whole_chapter": true,
+          "count_of_users": 1,
+          "intro": "https://youtu.be/IAxFRRy5qw8\n\nЭто индивидуальная работа и выполняется до встречи с другими участниками команды КРАШ-ТЕСТА.\n\n\n\nЦЕЛЬ этого шага для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nЦЕЛЬ этого шага для ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.\n\n\n\n\n\nОБЩИЙ ОБЗОР К КНИГЕ\n\nПрочитайте общий обзор к книге. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в общем обзоре к книге.\n\nЭто задание выполняется только при работе над первой главой. При работе над другими главами книги возвращаться к общему обзору книги не нужно. \n\n\n\nОБЗОР К ГЛАВЕ\n\nПрочитайте обзор к главе. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в обзоре к главе.\n\n\n\nЧТЕНИЕ ДОСЛОВНОЙ БИБЛИИ РОБ-Д (RLOB)\n\nПрочитайте ГЛАВУ ДОСЛОВНОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nЧТЕНИЕ СМЫСЛОВОЙ БИБЛИИ РОБ-С (RSOB)\n\nПрочитайте ГЛАВУ СМЫСЛОВОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА»\n\nПрочитайте СЛОВА к главе. Необходимо прочитать статьи к каждому слову. Отметьте для обсуждения командой статьи к словам, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ»\n\nПрочитайте ЗАМЕТКИ к главе. Необходимо прочитать ЗАМЕТКИ к каждому отрывку. Отметьте для обсуждения командой ЗАМЕТКИ, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.","config": [
+            {
+              "size": 4,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {}
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 2,
+              "tools": [
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "2 ШАГ - КОМАНДНОЕ ИЗУЧЕНИЕ ТЕКСТА",
+          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: обсудить с командой материалы букпэкеджа.\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: обсудить командой общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к началу перевода.",
+          "time": 120,
+          "whole_chapter": true,
+          "count_of_users": 4,
+          "intro": "https://youtu.be/d6kvUVRttUw\n\nЭто командная работа и мы рекомендуем потратить на нее не более 120 минут.\n\n\n\nЦЕЛЬ этого шага для КОРРЕКТОРА МАТЕРИАЛОВ: обсудить с командой материалы букпэкеджа. Для этого поделитесь заметками, которые вы сделали при индивидуальной работе. Обсудите все предложенные правки по инструментам букпэкеджа. Запишите командное резюме по ним для передачи команде, работающей над букпэкеджом.\n\nЦЕЛЬ этого шага для ТЕСТОВОГО ПЕРЕВОДЧИКА: обсудить командой общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к началу перевода.\n\n\n\n\n\nОБЩИЙ ОБЗОР К КНИГЕ - Обсудите ОБЩИЙ ОБЗОР К КНИГЕ. Что полезного для перевода вы нашли в этих статьях? Используйте свои заметки с самостоятельного изучения этого инструмента. Также обсудите найденные ошибки или неточности в общем обзоре к книге. Уделите этому этапу 10 минут.\n\nЭто задание выполняется только при работе над первой главой. При работе над другими главами книги возвращаться к общему обзору книги не нужно.\n\n\n\nОБЗОР К ГЛАВЕ - Обсудите ОБЗОР К ГЛАВЕ. Что полезного для перевода вы нашли в этих статьях? Используйте свои заметки с самостоятельного изучения. Также обсудите найденные ошибки или неточности в общем обзоре к главе. Уделите этому этапу 10 минут.\n\n\n\nЧТЕНИЕ РОБ-Д (RLOB) - Прочитайте вслух ГЛАВУ ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д (RLOB). Обсудите предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Используйте свои заметки с самостоятельного изучения этого перевода. Уделите этому этапу 20 мин.\n\n\n\nЧТЕНИЕ РОБ-С (RSOB) - Прочитайте вслух ГЛАВУ СМЫСЛОВОГО ПЕРЕВОДА БИБЛИИ РОБ-С (RSOB). Обсудите предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Используйте свои заметки с самостоятельного изучения этого перевода. Уделите этому этапу 10 мин.\n\n\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА» - Обсудите инструмент СЛОВА. Что полезного для перевода вы нашли в этих статьях? Используйте свои заметки с самостоятельного изучения. Также обсудите найденные ошибки или неточности в статьях этого инструмента. Уделите этому этапу 60 минут.\n\n\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ» - Обсудите инструмент ЗАМЕТКИ. Что полезного для перевода вы нашли в ЗАМЕТКАХ. Используйте свои записи по этому инструменту с самостоятельного изучения. Также обсудите найденные ошибки или неточности в этом инструменте. Уделите этому этапу 10 минут.\n\n","config": [
+            {
+              "size": 4,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {}
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 2,
+              "tools": [
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "3 ШАГ - ПОДГОТОВКА К ПЕРЕВОДУ",
+          "description": "подготовиться к переводу текста естественным языком.",
+          "time": 30,
+          "whole_chapter": false,
+          "count_of_users": 2,
+          "intro": "https://youtu.be/ujMGcdkGGhI\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: подготовиться к переводу текста естественным языком.\n\nВ этом шаге вам необходимо выполнить два задания.\n\n\n\nПЕРЕСКАЗ НА РУССКОМ - Прочитайте ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB). Если необходимо - изучите отрывок вместе со всеми инструментами, чтобы как можно лучше передать этот текст более естественным русским языком. Перескажите смысл отрывка своему напарнику, используя максимально понятные и естественные слова русского языка. Не старайтесь пересказывать в точности исходный текст ДОСЛОВНОГО ПЕРЕВОДА. Перескажите текст в максимальной для себя простоте.\n\nПосле этого послушайте вашего напарника, пересказывающего свой отрывок. \n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.\n\n\n\nПЕРЕСКАЗ НА ЦЕЛЕВОМ - Еще раз просмотрите ваш отрывок. Теперь в СМЫСЛОВОМ ПЕРЕВОДЕ БИБЛИИ РОБ-С (RSOB) и подумайте, как пересказать этот текст на языке, на который делается перевод, помня о Резюме к переводу о стиле языка. \n\nПерескажите ваш отрывок напарнику на целевом языке, используя максимально понятные и естественные слова этого языка. Передайте всё, что вы запомнили, не подглядывая в текст. \n\nЗатем послушайте вашего напарника, пересказывающего свой отрывок таким же образом.\n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.\n\n","config": [
+            {
+              "size": 4,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {}
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 2,
+              "tools": [
+                {
+                  "name": "audio",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "4 ШАГ - НАБРОСОК «ВСЛЕПУЮ»",
+          "description": "сделать первый набросок в первую очередь естественным языком.",
+          "time": 20,
+          "whole_chapter": false,
+          "count_of_users": 1,
+          "intro": "https://youtu.be/3RJQxjnxJ-I\n\nЭто индивидуальная работа и мы рекомендуем потратить на нее не более 20 минут.\n\n\n\nЦЕЛЬ этого шага: сделать первый набросок в первую очередь естественным языком.\n\n\n\nРОБ-Д + НАБРОСОК «ВСЛЕПУЮ» - Еще раз прочитайте ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB) и если вам необходимо, просмотрите все инструменты к этому отрывку. Как только вы будете готовы сделать «набросок», перейдите на панель «слепого» наброска и напишите ваш перевод на своем языке, используя максимально понятные и естественные слова вашего языка. Пишите по памяти. Не подглядывайте! Главная цель этого шага - естественность языка. Не бойтесь ошибаться! Ошибки на этом этапе допустимы. Точность перевода будет проверена на следующих шагах работы над текстом. \n\n","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {
+                    "draft":true
+                  }
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "draftTranslate",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "5 ШАГ - САМОПРОВЕРКА",
+          "description": "поработать над ошибками в тексте и убедиться, что первый набросок перевода получился достаточно точным и естественным.",
+          "time": 30,
+          "whole_chapter": false,
+          "count_of_users": 1,
+          "intro": "https://youtu.be/WgvaOH9Lnpc\n\nЭто индивидуальная работа и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: поработать над ошибками в тексте и убедиться, что первый набросок перевода получился достаточно точным и естественным.\n\n\n\nПроверьте ваш перевод на ТОЧНОСТЬ, сравнив с текстом - ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д (RLOB). При необходимости используйте все инструменты к переводу. Оцените по вопросам: ничего не добавлено, ничего не пропущено, смысл не изменён? Если есть ошибки, исправьте.\n\n\n\nПрочитайте ВОПРОСЫ и ответьте на них, глядя в свой текст. Сравните с ответами. Если есть ошибки в вашем тексте, исправьте.\n\n\n\nПосле этого прочитайте себе ваш перевод вслух и оцените - звучит ли ваш текст ПОНЯТНО И ЕСТЕСТВЕННО? Если нет, то исправьте.\n\n\n\nПерейдите к следующему вашему отрывку и повторите шаги Подготовка-Набросок-Проверка со всеми вашими отрывками до конца главы.\n\n","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {}
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                },
+                {
+                  "name": "tquestions",
+                  "config": {
+                    "viewAllQuestions": true
+                  }
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "translate",
+                  "config": {}
+                },
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "6 ШАГ - ВЗАИМНАЯ ПРОВЕРКА",
+          "description": "улучшить набросок перевода, пригласив другого человека, чтобы проверить перевод на точность и естественность.",
+          "time": 40,
+          "whole_chapter": false,
+          "count_of_users": 2,
+          "intro": "https://youtu.be/xtgTo3oWxKs\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 40 минут.\n\n\n\nЦЕЛЬ этого шага: улучшить набросок перевода, пригласив другого человека, чтобы проверить перевод на точность и естественность.\n\n\n\nПРОВЕРКА НА ТОЧНОСТЬ - Прочитайте вслух свой текст напарнику, который параллельно следит за текстом ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д(RLOB) и обращает внимание только на ТОЧНОСТЬ перевода. \n\nОбсудите текст насколько он точен. \n\nИзменения в текст вносит переводчик, работавший над ним. Если не удалось договориться о каких-либо изменениях, оставьте этот вопрос для обсуждения всей командой.\n\nПоменяйтесь ролями и поработайте над отрывком партнёра.\n\n\n\nПРОВЕРКА НА ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ - Еще раз прочитайте вслух свой текст напарнику, который теперь не смотрит ни в какой текст, а просто слушает ваше чтение вслух, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка.\n\nОбсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте.\n\nПоменяйтесь ролями и поработайте над отрывком партнёра.\n\n\n\n\n\n_Примечание к шагу:_ \n\n- Не влюбляйтесь в свой текст. Будьте гибкими к тому, чтобы слышать другое мнение и улучшать свой набросок перевода.  Это групповая работа и текст должен соответствовать пониманию большинства в вашей команде. Если даже будут допущены ошибки в этом случае, то на проверках последующих уровней они будут исправлены.\n\n- Если в работе с напарником вам не удалось договориться по каким-то вопросам, касающихся текста, оставьте этот вопрос на обсуждение со всей командой. Ваша цель - не победить напарника, а с его помощью улучшить перевод.\n\n","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {}
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                },
+                {
+                  "name": "tquestions",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "translate",
+                  "config": {}
+                },
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "7 ШАГ - ПРОВЕРКА КЛЮЧЕВЫХ СЛОВ",
+          "description": "всей командой улучшить перевод, выслушав больше мнений относительно самых важных слов и фраз в переводе, а также решить разногласия, оставшиеся после взаимопроверки.",
+          "time": 30,
+          "whole_chapter": true,
+          "count_of_users": 4,
+          "intro": "https://youtu.be/w5766JEVCyU\n\nЭто командная работа и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: всей командой улучшить перевод, выслушав больше мнений относительно самых важных слов и фраз в переводе, а также решить разногласия, оставшиеся после взаимопроверки.\n\n\n\nПРОВЕРКА ТЕКСТА ПО КЛЮЧЕВЫМ СЛОВАМ - Прочитайте текст всех переводчиков по очереди всей командой. Проверьте перевод на наличие ключевых слов из инструмента СЛОВА. Все ключевые слова на месте? Все ключевые слова переведены корректно?\n\nКоманда принимает решения, как переводить эти слова или фразы – переводчик вносит эти изменения в свой отрывок. В некоторых случаях, вносить изменения вносить изменения, которые принимает команда, может один человек, выбранный из переводчиков. \n\n","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {}
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "translate",
+                  "config": {}
+                },
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "8 ШАГ - КОМАНДНЫЙ ОБЗОР ПЕРЕВОДА",
+          "description": "улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.",
+          "time": 60,
+          "whole_chapter": true,
+          "count_of_users": 4,
+          "intro": "https://youtu.be/EiVuJd9ijF0\n\nЭто командная работа и мы рекомендуем потратить на нее не более 60 минут.\n\nЦЕЛЬ этого шага: улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.\n\n\n\nПРОВЕРКА НА ТОЧНОСТЬ - Прочитайте вслух свой текст команде. Команда в это время смотрит в текст ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д (RLOB) и обращает внимание только на ТОЧНОСТЬ перевода. \n\nОбсудите текст насколько он точен. Если есть ошибки в вашем тексте, исправьте. Всей командой проверьте на точность работу каждого члена команды, каждую законченную главу.\n\n\n\nПрочитайте ВОПРОСЫ и ответьте на них, глядя в ваш текст. Сравните с ответами. Если есть ошибки в вашем тексте, исправьте.\n\n\n\nПРОВЕРКА НА ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ - Еще раз прочитайте вслух свой текст команде, которая теперь не смотрит ни в какой текст, а просто слушает, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка. Обсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте. Проработайте каждую главу/ каждый отрывок, пока команда не будет довольна результатом.\n\n\n\nПримечание к шагу: \n\n- Не оставляйте текст с несколькими вариантами перевода предложения или слова. После восьмого шага не должны оставаться нерешенные вопросы. Текст должен быть готовым к чтению. \n\n",
+          "config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "simplified",
+                  "config": {}
+                },
+                {
+                  "name": "literal",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                },
+                {
+                  "name": "tquestions",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "translate",
+                  "config": {}
+                },
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]', 'bible'::project_type),
+      ('Vcana OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
+        {
+          "title": "Шаг 1: Самостоятельное изучение",
+          "description": "понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
+          "time": 60,
+          "whole_chapter": true,
+          "count_of_users": 1,
+          "intro": "# Первый шаг - самостоятельное изучение\n\nhttps://www.youtube.com/watch?v=gxawAAQ9xbQ\n\nЭто индивидуальная работа и выполняется без участия других членов команды. Каждый читает материалы самостоятельно, не обсуждая прочитанное, но записывая свои комментарии. Если ваш проект по переводу ведется онлайн, то этот шаг можно выполнить до встречи с другими участниками команды переводчиков.\n\nЦЕЛЬ этого шага: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.\n\nЗАДАНИЯ ДЛЯ ПЕРВОГО ШАГА:\n\nВ этом шаге вам необходимо выполнить несколько заданий:\n\nИСТОРИЯ - Прочитайте историю (главу, над которой предстоит работа). Запишите для обсуждения командой предложения и слова, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков.\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА» - Прочитайте СЛОВА к главе. Необходимо прочитать статьи к каждому слову. Отметьте для обсуждения командой статьи к словам, которые могут быть полезными для перевода Открытых Библейских Историй.\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ» - Прочитайте ЗАМЕТКИ к главе. Необходимо прочитать ЗАМЕТКИ к каждому отрывку. Отметьте для обсуждения командой ЗАМЕТКИ, которые могут быть полезными для перевода Открытых Библейских Историй.","config": [
+            {
+              "size": 4,
+              "tools": [
+                {
+                  "name": "obs",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 2,
+              "tools": [
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Шаг 2: Командное изучение текста",
+          "description": "хорошо понять смысл текста и слов всей командой, а также принять командное решение по переводу некоторых слов перед тем, как начать основную работу.",
+          "time": 60,
+          "whole_chapter": true,
+          "count_of_users": 4,
+          "intro": "# Второй шаг - командное изучение текста\n\nhttps://www.youtube.com/watch?v=HK6SXnU5zEw\n\nЭто командная работа и мы рекомендуем потратить на нее не более 60 минут.\n\nЦЕЛЬ этого шага: хорошо понять смысл текста и слов всей командой, а также принять командное решение по переводу некоторых слов перед тем, как начать основную работу.\n\nЗАДАНИЯ ДЛЯ ВТОРОГО ШАГА:\n\nВ этом шаге вам необходимо выполнить несколько заданий.\n\nИСТОРИЯ - Прочитайте вслух историю(главу, над которой предстоит работа). Обсудите предложения и слова, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Уделите этому этапу 20 минут.\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА» - Обсудите инструмент СЛОВА. Что полезного для перевода вы нашли в этих статьях? Используйте свои комментарии с самостоятельного изучения. Уделите этому этапу 20 минут.\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ» - Обсудите инструмент ЗАМЕТКИ. Что полезного для перевода вы нашли в ЗАМЕТКАХ. Используйте свои комментарии по этому инструменту с самостоятельного изучения. Уделите этому этапу 20 минут.","config": [
+            {
+              "size": 4,
+              "tools": [
+                {
+                  "name": "obs",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 2,
+              "tools": [
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Шаг 3: Подготовка к переводу",
+          "description": "подготовиться к переводу текста естественным языком.",
+          "time": 20,
+          "whole_chapter": false,
+          "count_of_users": 2,
+          "intro": "# ТРЕТИЙ шаг - ПОДГОТОВКА К ПЕРЕВОДУ\n\nhttps://www.youtube.com/watch?v=jlhwA9SIWXQ\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 20 минут.\n\nЦЕЛЬ этого шага: подготовиться к переводу текста естественным языком.\n\nВ этом шаге вам необходимо выполнить два задания.\n\nПервое задание - ПЕРЕСКАЗ НА РУССКОМ - Прочитайте ваш отрывок из главы в ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЯХ. Если необходимо - изучите отрывок вместе со всеми инструментами, чтобы как можно лучше понять этот текст. Перескажите смысл отрывка своему напарнику, используя максимально понятные и естественные слова русского языка. Не старайтесь пересказывать в точности исходный текст. Перескажите текст в максимальной для себя простоте. После этого послушайте вашего напарника, пересказывающего свой отрывок.\n\nУделите этому этапу 10 минут. Не обсуждайте ваши пересказы. В этом шаге только проговаривание текста и слушание.\n\nВторое задание - ПЕРЕСКАЗ НА ЦЕЛЕВОМ - Еще раз просмотрите ваш отрывок или главу в ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЯХ, и подумайте, как пересказать этот текст на языке, на который делается перевод, помня о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу) и о стиле языка.\n\nПерескажите ваш отрывок напарнику на целевом языке, используя максимально понятные и естественные слова этого языка. Передайте всё, что вы запомнили, не подглядывая в текст. Затем послушайте вашего напарника, пересказывающего свой отрывок таким же образом. Уделите этому этапу 10 минут. Не обсуждайте ваши пересказы. В этом шаге только проговаривание текста и слушание.","config": [
+            {
+              "size": 4,
+              "tools": [
+                {
+                  "name": "obs",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 2,
+              "tools": [
+                {
+                  "name": "audio",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Шаг 4: Набросок \"Вслепую\"",
+          "description": "сделать первый набросок естественным языком.",
+          "time": 20,
+          "whole_chapter": false,
+          "count_of_users": 1,
+          "intro": "# ЧЕТВЕРТЫЙ ШАГ - НАБРОСОК «ВСЛЕПУЮ»\n\nhttps://www.youtube.com/watch?v=HVXOiKUsXSI\n\nЭто индивидуальная работа и мы рекомендуем потратить на нее не более 20 минут.\n\nЦЕЛЬ этого шага: сделать первый набросок естественным языком.\n\nЕще раз прочитайте ваш отрывок  или главу в ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЯХ. Если вам необходимо, просмотрите все инструменты к этому отрывку. Как только вы будете готовы сделать «набросок», перейдите на панель «слепого» наброска в программе Translation Studio или в другой программе, в которой вы работаете и напишите ваш перевод на своем языке, используя максимально понятные и естественные слова вашего языка. Пишите по памяти. Не подглядывайте!\n\nГлавная цель этого шага - естественность языка. Не бойтесь ошибаться! Ошибки на этом этапе допустимы. Точность перевода будет проверена на следующих шагах работы над текстом.","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "obs",
+                  "config": {
+                    "draft":true
+                  }
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "draftTranslate",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Шаг 5: Самостоятельная проверка",
+          "description": "поработать над ошибками в тексте и убедиться, что первый набросок перевода получился достаточно точным и естественным.",
+          "time": 30,
+          "whole_chapter": false,
+          "count_of_users": 1,
+          "intro": "# ПЯТЫЙ ШАГ - САМОСТОЯТЕЛЬНАЯ ПРОВЕРКА\n\nhttps://www.youtube.com/watch?v=p3p8c_K-O3c\n\nЭто индивидуальная работа и мы рекомендуем потратить на нее не более 30 минут.\n\nЦЕЛЬ этого шага: поработать над ошибками в тексте и убедиться, что первый набросок перевода получился достаточно точным и естественным.\n\nВ этом шаге вам необходимо выполнить три задания.\n\nЗадание первое. Проверьте ваш перевод на ТОЧНОСТЬ, сравнив с текстом ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЙ на русском языке. При необходимости используйте все инструменты к переводу. Оцените по вопросам: ничего не добавлено, ничего не пропущено, смысл не изменён? Если есть ошибки, исправьте. Уделите этому заданию 10 минут.\n\nЗадание второе. Прочитайте ВОПРОСЫ и ответьте на них, глядя в свой текст. Сравните с ответами. Если есть ошибки в вашем тексте, исправьте. Уделите этому заданию 10 минут.\n\nЗадание третье. Прочитайте себе ваш перевод вслух и оцените - звучит ли ваш текст ПОНЯТНО И ЕСТЕСТВЕННО? Если нет, то исправьте. Уделите этому заданию 10 минут.","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "obs",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                },
+                {
+                  "name": "tquestions",
+                  "config": {
+                    "viewAllQuestions": true
+                  }
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "translate",
+                  "config": {}
+                },
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Шаг 6: Взаимная проверка",
+          "description": "улучшить набросок перевода, пригласив другогого человека, чтобы проверить перевод на точность и естественность.",
+          "time": 40,
+          "whole_chapter": false,
+          "count_of_users": 2,
+          "intro": "# ШЕСТОЙ ШАГ - ВЗАИМНАЯ ПРОВЕРКА\n\nhttps://www.youtube.com/watch?v=cAgypQsWgQk\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 40 минут.\n\nЦЕЛЬ этого шага: улучшить набросок перевода, пригласив другогого человека, чтобы проверить перевод на точность и естественность.\n\nВ этом шаге вам необходимо выполнить два задания.\n\nЗадание первое - Прочитайте вслух свой текст напарнику, который параллельно следит за текстом ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЙ на русском языке и обращает внимание только на ТОЧНОСТЬ вашего перевода. Обсудите текст насколько он точен. Изменения в текст вносит переводчик, работавший над ним. Если не удалось договориться о каких-либо изменениях, оставьте этот вопрос для обсуждения всей командой. Поменяйтесь ролями и поработайте над отрывком партнёра. Уделите этому заданию 20 минут.\n\nЗадание второе - Еще раз прочитайте вслух свой текст напарнику, который теперь не смотрит ни в какой текст, а просто слушает ваше чтение вслух, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка. Обсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте. Поменяйтесь ролями и поработайте над отрывком партнёра. Уделите этому заданию 20 минут.\n\nПримечание к шагу:\n\n- Не влюбляйтесь в свой текст. Будьте гибкими к тому, чтобы слышать другое мнение и улучшать свой набросок перевода.  Это групповая работа и текст должен соответствовать пониманию большинства в вашей команде. Если даже будут допущены ошибки в этом случае, то на проверках последующих уровней они будут исправлены.\n- Если в работе с напарником вам не удалось договориться по каким-то вопросам, касающихся текста, оставьте этот вопрос на обсуждение со всей командой. Ваша цель - не победить напарника, а с его помощью улучшить перевод.","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "obs",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                },
+                {
+                  "name": "tquestions",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "translate",
+                  "config": {}
+                },
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "title": "Шаг 7: Командная проверка",
+          "description": "улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.",
+          "time": 60,
+          "whole_chapter": true,
+          "count_of_users": 4,
+          "intro": "# СЕДЬМОЙ шаг - КОМАНДНЫЙ ОБЗОР ПЕРЕВОДА\n\nhttps://www.youtube.com/watch?v=P2MbEKDw8U4\n\nЭто командная работа и мы рекомендуем потратить на нее не более 60 минут.\n\nЦЕЛЬ этого шага: улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.\n\nВ этом шаге вам необходимо выполнить три задания.\n\nЗадание первое - Прочитайте вслух свой текст команде. Команда в это время смотрит в текст ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЙ на русском языке и обращает внимание только на ТОЧНОСТЬ вашего перевода.Обсудите текст насколько он точен. Если есть ошибки в вашем тексте, исправьте. Всей командой проверьте на точность работу каждого члена команды. Уделите этому заданию 20 минут.\n\nЗадание второе - Проверьте вместе с командой ваш перевод на наличие ключевых слов из инструмента СЛОВА. Все ключевые слова на месте? Все ключевые слова переведены корректно? Уделите этому заданию 20 минут.\n\nЗадание третье - Еще раз прочитайте вслух свой текст команде, которая теперь не смотрит ни в какой текст, а просто слушает, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка. Обсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте. Проработайте каждую главу/каждый отрывок, пока команда не будет довольна результатом. Уделите этому заданию 20 минут.\n\nПримечание к шагу:\n\n- Не оставляйте текст с несколькими вариантами перевода предложения или слова. После седьмого шага не должны оставаться нерешенные вопросы. Текст должен быть готовым к чтению.","config": [
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "obs",
+                  "config": {}
+                },
+                {
+                  "name": "tnotes",
+                  "config": {}
+                },
+                {
+                  "name": "twords",
+                  "config": {}
+                },
+                {
+                  "name": "tquestions",
+                  "config": {}
+                }
+              ]
+            },
+            {
+              "size": 3,
+              "tools": [
+                {
+                  "name": "translate",
+                  "config": {}
+                },
+                {
+                  "name": "personalNotes",
+                  "config": {}
+                },
+                {
+                  "name": "teamNotes",
+                  "config": {}
+                },
+                {
+                  "name": "dictionary",
+                  "config": {}
+                }
+              ]
+            }
+          ]
+        }
+      ]', 'obs'::project_type);
   -- END METHODS
 
   -- ROLE PERMISSIONS
@@ -1319,320 +2092,47 @@ ADD
     DELETE FROM
       PUBLIC.projects;
 
-    INSERT INTO
-      PUBLIC.projects (title, code, language_id, method, "type", resources, base_manifest)
-    VALUES
-      (
-        'Russian Literal Open Bible',
-        'ru_rlob',
-        2,
-        'Vcana Bible',
-        'bible'::project_type,
-        '{
-          "literal": {
-            "owner": "unfoldingword",
-            "repo": "en_ult",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "simplified": {
-            "owner": "unfoldingword",
-            "repo": "en_ust",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "tn": {
-            "owner": "unfoldingword",
-            "repo": "en_tn",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          }
-        }',
-        '{
-          "resource": "literal",
-          "books": [
-            {
-              "name": "gen",
-              "link": "unfoldingword/en_ult/a3c1876/01_GEN.usfm"
-            },
-            {
-              "name": "1ti",
-              "link": "unfoldingword/en_ult/a3c1876/55_1TI.usfm"
-            },
-            {
-              "name": "tit",
-              "link": "unfoldingword/en_ult/a3c1876/57_TIT.usfm"
-            }
-          ]
-        }'
-      ),
-      (
-        'Kazakh Open Bible Story',
-        'kk_obs',
-        3,
-        'Vcana OBS',
-        'obs'::project_type,
-        '{
-          "obs": {
-            "owner": "ru_gl",
-            "repo": "ru_obs",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "tw": {
-            "owner": "ru_gl",
-            "repo": "ru_obs-twl",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          },
-          "tq": {
-            "owner": "ru_gl",
-            "repo": "ru_obs-tq",
-            "commit": "acf32a196",
-            "manifest": "{}"
-          }
-        }',
-        '{
-          "resource": "obs",
-          "books": [
-            {
-              "name": "obs",
-              "link": "ru_gl/ru_obs/a3c1876/content"
-            }
-          ]
-        }'
-      );
   -- PROJECTS
 
   -- PROJECT TRANSLATORS
     DELETE FROM
       PUBLIC.project_translators;
 
-    INSERT INTO
-      PUBLIC.project_translators (project_id, user_id, is_moderator)
-    VALUES
-      (1, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
-      (1, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
-      (1, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
-      (1, '2e108465-9c20-46cd-9e43-933730229762', TRUE),
-      (2, '21ae6e79-3f1d-4b87-bcb1-90256f63c167', FALSE),
-      (2, 'bba5a95e-33b7-431d-8c43-aedc517a1aa6', FALSE),
-      (2, 'f193af4d-ca5e-4847-90ef-38f969792dd5', FALSE),
-      (2, '8331e952-5771-49a6-a679-c44736f5581b', TRUE);
   -- END PROJECT TRANSLATORS
 
   -- PROJECT COORDINATORS
     DELETE FROM
       PUBLIC.project_coordinators;
 
-    INSERT INTO
-      PUBLIC.project_coordinators (project_id, user_id)
-    VALUES
-      (1, '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2'),
-      (2, '54358d8e-0144-47fc-a290-a6882023a3d6');
   -- END PROJECT COORDINATORS
 
   -- STEPS
     DELETE FROM
       PUBLIC.steps;
 
-    INSERT INTO
-      PUBLIC.steps (title, "description", "time", count_of_users, intro, project_id, config, "order" )
-    VALUES
-      ('Шаг один. Читаем вместе Библию', 'Тут можно перевести текст...', 60, 4,
-        '# Вводная\n\n### Как начать\n\nСсылка на видео, должна парситься\n\nhttps://youtu.be/sDcfb_f-f',
-        1,
-        '[
-          {
-            "size": 4,
-            "tools": [
-              {
-                "name": "literal",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 2,
-            "tools": [
-              {
-                "name": "notepad",
-                "config": {"team": true}
-              },
-              {
-                "name": "notepad",
-                "config": {}
-              }
-            ]
-          }
-        ]', 1),
-      ('Шаг два. Набросок', 'Some text here2...', 30, 2,
-        '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-        1,
-        '[
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "literal",
-                "config": {}
-              },
-              {
-                "name": "simplified",
-                "config": {}
-              },
-              {
-                "name": "tn",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "editor",
-                "config": {"type":"blind"}
-              },
-              {
-                "name": "dictionary",
-                "config": {}
-              }
-            ]
-          }
-        ]',2),
-      ('Шаг один. Читаем вместе OBS', 'Some text here...', 45, 4,
-        '# Intro\n\n### How To Start\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-        2,
-        '[
-          {
-            "size": 4,
-            "tools": [
-              {
-                "name": "obs",
-                "config": {}
-              },
-              {
-                "name": "tw",
-                "config": {}
-              },
-              {
-                "name": "tq",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 2,
-            "tools": [
-              {
-                "name": "notepad",
-                "config": {}
-              }
-            ]
-          }
-        ]', 1),
-      ('Шаг два. Набросок OBS', 'Some text here2...', 30, 2,
-        '# Intro\n\n### Как сделать набросок\n\nSome text here\n\nhttps://youtu.be/sDcfb_f-f',
-        2,
-        '[
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "obs",
-                "config": {}
-              }
-            ]
-          },
-          {
-            "size": 3,
-            "tools": [
-              {
-                "name": "editor",
-                "config": {"type":"blind"}
-              },
-              {
-                "name": "dictionary",
-                "config": {}
-              }
-            ]
-          }
-        ]',2);
   -- END STEPS
 
   -- BOOKS
     DELETE FROM
       PUBLIC.books;
 
-    INSERT INTO
-      PUBLIC.books (code, project_id, chapters)
-    VALUES
-      ('tit', 1, '{ "1": 3, "2": 4, "3": 2 }'),
-      ('1ti', 1, '{ "1": 4, "2": 2, "3": 16, "4": 16, "5": 25, "6": 21 }'),
-      ('obs', 2, '{ "1": 3, "2": 17, "3": 23, "4": 19, "5": 14, "6": 16, "7": 21, "8": 16, "9": 11, "10": 15 }');
   -- END BOOKS
 
   -- CHAPTERS
     DELETE FROM
       PUBLIC.chapters;
 
-    INSERT INTO
-      PUBLIC.chapters (project_id, num, book_id, verses, "text")
-    VALUES
-      (1, 1, 1, 3, '1. Тут будет у нас сохраняться итоговый текст\n2. Не знаю пока в каком формате\n3. USFM нужен в итоге, но может тут MD или JSON'),
-      (1, 2, 1, 4, '1. А тут\n2. У нас\n3. Итоговая вторая\n4. Глава'),
-      (1, 3, 1, 2, null),
-      (1, 1, 2, 4, '1. Тут итог\n2. другой\n3. Книги\n4. 4 стиха'),
-      (1, 2, 2, 2, null),
-      (2, 1, 3, 3, null);
   -- END CHAPTERS
 
   -- VERSES
     DELETE FROM
       PUBLIC.verses;
 
-    INSERT INTO
-      PUBLIC.verses (project_id, num, "text", chapter_id, project_translator_id, current_step)
-    VALUES
-      (1, 1, 'Тут будет у нас сохраняться итоговый текст', 1, 3, 2),
-      (1, 2, 'Не знаю пока в каком формате', 1, 1, 2),
-      (1, 3, 'USFM нужен в итоге, но может тут MD или JSON', 1, 2, 2),
-      (1, 1, 'А тут', 2, 3, 2),
-      (1, 2, 'У нас', 2, 1, 2),
-      (1, 3, 'Итоговая вторая', 2, 2, 2),
-      (1, 4, 'Глава', 2, 4, 2),
-      (1, 1, null, 3, 3, 1),
-      (1, 2, null, 3, 1, 1),
-      (1, 1, 'Тут итог', 4, 3, 2),
-      (1, 2, 'другой', 4, 1, 2),
-      (1, 3, 'Книги', 4, 2, 2),
-      (1, 4, '4 стиха', 4, 4, 2),
-      (1, 1, null, 5, 3, 1),
-      (1, 2, null, 5, 1, 1),
-      (2, 1, 'Здесь начался перевод', 6, 2, 4),
-      (2, 2, 'Какой-то главы', 6, 8, 3),
-      (2, 3, null, 6, 8, 3);
   -- END VERSES
 
   -- PROGRESS
     DELETE FROM
       PUBLIC.progress;
 
-    INSERT INTO
-      PUBLIC.progress (verse_id, step_id, "text")
-    VALUES
-      (1, 1, 'Тут будет у нас сохраняться итоговый текст'),
-      (2, 1, 'Не знаю пока в каком формате'),
-      (3, 1, 'USFM нужен в итоге, но может тут MD или JSON'),
-      (4, 1, 'А тут'),
-      (5, 1, 'У нас'),
-      (6, 1, 'Итоговая вторая'),
-      (7, 1, 'Глава'),
-      (10, 1, 'Тут итог'),
-      (11, 1, 'другой'),
-      (12, 1, 'Книги'),
-      (13, 1, '4 стиха'),
-      (16, 3, 'Здесь начался перевод');
   -- END PROGRESS
 -- END DUMMY DATA

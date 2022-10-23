@@ -24,7 +24,7 @@ export default async function notesHandler(req, res) {
       break
     case 'POST':
       try {
-        const { id, user_id } = body // тело запроса
+        const { id, user_id } = body
         // TODO валидацию
         const { data, error } = await supabase.from('personal_notes').insert([
           {

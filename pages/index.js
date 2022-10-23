@@ -2,9 +2,8 @@ import Link from 'next/link'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useRedirect } from 'utils/hooks'

@@ -1,19 +1,23 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
+
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+
 import { useTranslation } from 'next-i18next'
 import { useForm, useWatch } from 'react-hook-form'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
+// TODO не работает если создавать ОБС
 function ProjectCreate() {
   const router = useRouter()
   const { t } = useTranslation(['projects'])
   const [customSteps, setCustomSteps] = useState('')
   const [customResources, setCustomResources] = useState('')
   const [method, setMethod] = useState()
+  const [resourcesUrl, setResourcesUrl] = useState()
 
   const { user } = useCurrentUser()
   const [languages] = useLanguages(user?.access_token)
@@ -22,15 +26,37 @@ function ProjectCreate() {
     register,
     handleSubmit,
     control,
+    setValue,
     formState: { errors },
   } = useForm({ mode: 'onChange' })
 
   const methodId = useWatch({ control, name: 'methodId' })
+
   useEffect(() => {
-    setMethod(methods?.[methodId])
-    setCustomSteps(JSON.stringify(methods?.[methodId]?.steps, null, 2))
-    setCustomResources(JSON.stringify(methods?.[methodId]?.resources, null, 2))
+    if (methods && methodId) {
+      const selectedMethod = methods.find(
+        (el) => el.id.toString() === methodId.toString()
+      )
+      if (selectedMethod) {
+        setMethod(selectedMethod)
+        setCustomSteps(JSON.stringify(selectedMethod.steps, null, 2))
+        setCustomResources(selectedMethod.resources)
+        console.log(methodId, methods, selectedMethod.resources)
+      }
+    }
   }, [methodId, methods])
+
+  useEffect(() => {
+    if (methods) {
+      setValue('methodId', methods?.[0]?.id)
+    }
+  }, [methods, setValue])
+
+  useEffect(() => {
+    if (languages) {
+      setValue('languageId', languages?.[0]?.id)
+    }
+  }, [languages, setValue])
 
   const onSubmit = async (data) => {
     const { title, code, languageId } = data
@@ -39,22 +65,13 @@ function ProjectCreate() {
     }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      // TODO тут точно написано правильно? Мне кажется надо '/api/'+languageId+'/projects'
-      // Не ругается скорее всего потому что это значение не используется, так как тут передается в теле айди языка
-      // надо подумать как сделать правильно. Создаем мы не внутри языка, по этому вроде надо запрос на api/projects делать, но когда у нас будет список и юзер будет открывать проект, какой будет юрл. Будем ли мы показывать там язык проекта, или просто vcana.com/project/rlob
       .post('/api/projects', {
         title,
         language_id: languageId,
         code,
         method_id: method.id,
         steps: method.steps,
-        resources: {
-          literal:
-            'https://git.door43.org/ru_gl/ru_rlob/commit/fcfef9689dd6897892dbcced76ba8beb0eacaa62',
-          simplified:
-            'https://git.door43.org/ru_gl/ru_rsob/commit/38c10e570082cc615e45628ae7ea3f38d9b67b8c',
-          tn: 'https://git.door43.org/ru_gl/ru_tn/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38',
-        },
+        resources: resourcesUrl,
       })
       .then((result) => {
         const {
@@ -71,33 +88,27 @@ function ProjectCreate() {
   const inputs = [
     {
       id: 1,
-      title: 'Имя проекта',
+      title: t('Title'),
       classname: errors?.title ? 'input-invalid' : 'input',
-      placeholder: 'Title',
+      placeholder: '',
       register: {
         ...register('title', {
           required: true,
-          pattern: {
-            value: /^(?! )[A-za-z\s]+$/i,
-            message: 'You need type just latins symbols',
-          },
         }),
       },
       errorMessage: errors?.title ? errors?.title.message : '',
     },
     {
       id: 2,
-      title: 'Код проекта',
+      title: t('Code'),
       classname: errors?.code ? 'input-invalid' : 'input',
-      placeholder: 'Code',
+      placeholder: '',
       register: {
         ...register('code', {
           required: true,
-          minLength: { value: 3, message: 'Need more than 3 characters' },
-          maxLength: { value: 4, message: 'Need less than 3 characters' },
           pattern: {
-            value: /^(?! )[a-z]+$/i,
-            message: 'only small letters of the Latin alphabet are needed',
+            value: /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i,
+            message: t('CodeMessage'),
           },
         }),
       },
@@ -105,22 +116,45 @@ function ProjectCreate() {
     },
   ]
 
+  const setResources = useMemo(() => {
+    const listOfResources = []
+    for (const resource in customResources) {
+      if (Object.hasOwnProperty.call(customResources, resource)) {
+        const isPrimary = customResources[resource]
+        listOfResources.push(
+          <div className={isPrimary ? 'bg-slate-400' : ''} key={resource}>
+            {resource}:{' '}
+            <input
+              value={resourcesUrl?.[resource] ?? ''}
+              onChange={(e) =>
+                setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))
+              }
+            />
+          </div>
+        )
+      }
+    }
+    return listOfResources
+  }, [customResources, resourcesUrl])
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
-        {inputs.map((el) => {
-          return (
-            <div key={el.title}>
-              <div>{el.title}</div>
-              <input
-                className={`${el.classname} max-w-sm`}
-                placeholder={el.placeholder}
-                {...el.register}
-              />
-              {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
-            </div>
-          )
-        })}
+        <p>
+          Повесить слушателя чтобы проверять, есть такой код проекта или нет. Либо на ввод
+          с задержкой, либо на отправку.
+        </p>
+        {inputs.map((el) => (
+          <div key={el.title}>
+            <div>{el.title}</div>
+            <input
+              className={`${el.classname} max-w-sm`}
+              placeholder={el.placeholder}
+              {...el.register}
+            />
+            {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
+          </div>
+        ))}
         <div>{t('Language')}</div>
         <select
           className="input max-w-sm"
@@ -141,11 +175,12 @@ function ProjectCreate() {
           placeholder={t('Method')}
           {...register('methodId')}
           className="input max-w-sm"
+          defaultValue={methods?.[0]?.id}
         >
           {methods &&
-            methods.map((el, index) => {
+            methods.map((el) => {
               return (
-                <option key={index} value={index}>
+                <option key={el.id} value={el.id}>
                   {el.title} ({el.type})
                 </option>
               )
@@ -192,9 +227,26 @@ function ProjectCreate() {
         <textarea
           cols="50"
           rows="6"
-          onChange={(e) => setCustomResources(e.target.value)}
-          value={customResources}
+          disabled={true}
+          value={JSON.stringify(customResources, null, 2)}
         />
+        <br />
+        <pre>
+          {`literal
+https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
+simplified
+https://git.door43.org/ru_gl/ru_rsob/src/commit/03519d2d1f66a07ba42d7a62afb75393cf83fa1c
+tn
+https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38
+tq
+https://git.door43.org/ru_gl/ru_tq/src/commit/787f3f48f4ada9f0a29451b5ef318125a5fd6c7a
+tw
+https://git.door43.org/ru_gl/ru_tw/src/commit/ea337e3dc7d8e9100af1224d1698b58abb53849d
+twl
+https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c864a2ca1
+`}
+        </pre>
+        {setResources}
         <br />
         <p>
           После того как нажимают на кнопку сохранить, мы делаем следующее: <br />
@@ -220,7 +272,7 @@ function ProjectCreate() {
   "books": [ // массив из списка книг
     {
       "name": "gen", // айди книги
-      "link": "unfoldingword/en_ult/a3c1876/01_GEN.usfm" // ссылка на нее
+      "link": "unfoldingword/en_ult/raw/commit/a3c1876/01_GEN.usfm" // ссылка на нее
     },
   ]
 }`}
@@ -229,10 +281,10 @@ function ProjectCreate() {
           3. Все шаги мы переносим в таблицу степс, и связываем с созданным проектом.
           <br />
           Сейчас этого кода нет, нужно подумать на сколько это критично. Мне кажется что
-          для первой версии мы можем создать проект в ручную, и отложить рабработку на
+          для первой версии мы можем создать проект в ручную, и отложить разработку на
           время после запуска
         </p>
-        <input className="btn-cyan btn-filled" type="submit" />
+        <input className="btn-cyan btn-filled" type="submit" title={t('SaveProject')} />
       </form>
     </div>
   )

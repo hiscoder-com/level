@@ -23,7 +23,7 @@ const ListOfNotes = dynamic(
   }
 )
 
-function Notes() {
+function PersonalNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
   const [activeNote, setActiveNote] = useState(null)
   const { user } = useCurrentUser()
@@ -123,4 +123,4 @@ function Notes() {
   )
 }
 
-export default Notes
+export default PersonalNotes

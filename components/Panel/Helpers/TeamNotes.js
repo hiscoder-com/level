@@ -30,7 +30,7 @@ function TeamNotes() {
   const { user } = useCurrentUser()
   const router = useRouter()
   const { code } = router.query
-  const [project] = useProject({ token: user?.access_token, code: 'ru_rlob' })
+  const [project] = useProject({ token: user?.access_token, code })
   const [notes, { loading, error, mutate }] = useTeamNotes({
     token: user?.access_token,
     project_id: project?.id,

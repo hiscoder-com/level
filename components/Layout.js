@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import AppBar from './AppBar'
-import SideBar from './SideBar'
+import AppBar from 'components/AppBar'
+import SideBar from 'components/SideBar'
 
 function Layout({ backgroundColor, children }) {
   const [isOpen, setIsOpen] = useState(false)

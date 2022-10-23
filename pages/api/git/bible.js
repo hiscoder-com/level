@@ -1,5 +1,6 @@
 import axios from 'axios'
 import usfm from 'usfm-js'
+
 import { parseChapter } from 'utils/usfmHelper'
 /**
  *  @swagger
@@ -67,18 +68,19 @@ import { parseChapter } from 'utils/usfmHelper'
  */
 
 export default async function bibleHandler(req, res) {
-  const { repo, owner, commit, bookPath, language, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
 
   let verses = req.query['verses[]'] || req.query.verses
-  const url = `https://git.door43.org/${owner}/${language}_${repo}/raw/commit/${commit}${bookPath.slice(
+  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
   try {
     const _data = await axios.get(url)
-
     const jsonData = await usfm.toJSON(_data.data)
 
-    const data = await parseChapter(jsonData.chapters[chapter], verses)
+    const data = parseChapter(jsonData.chapters[chapter], verses).filter(
+      (el) => el.verse !== 'front'
+    )
 
     res.status(200).json({ verseObjects: data })
     return

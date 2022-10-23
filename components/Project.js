@@ -1,26 +1,39 @@
-import { useCurrentUser } from 'lib/UserContext'
-import { useProject, useTranslators } from 'utils/hooks'
+import { useEffect, useState } from 'react'
+
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
+import { useCurrentUser } from 'lib/UserContext'
+import { useProject, useTranslators } from 'utils/hooks'
+import { supabase } from 'utils/supabaseClient'
+
 function Project({ code }) {
   const { t } = useTranslation(['projects'])
+  const [level, setLevel] = useState('user')
 
   const { user } = useCurrentUser()
 
   const [project] = useProject({ token: user?.access_token, code })
+
+  useEffect(() => {
+    const getLevel = async () => {
+      const level = await supabase.rpc('authorize', {
+        user_id: user.id,
+        project_id: project.id,
+      })
+      setLevel(level.data)
+    }
+    if ((user?.id, project?.id)) {
+      getLevel()
+    }
+  }, [user?.id, project?.id])
 
   const [translators] = useTranslators({
     token: user?.access_token,
     code: code,
   })
 
-  // const projectRole = useProjectRole({
-  //   token: user?.access_token,
-  //   code,
-  //   userId: user?.id,
-  //   isAdmin: user?.is_admin,
-  // })
   return (
     <div>
       <h3 className="text-3xl">
@@ -34,8 +47,7 @@ function Project({ code }) {
         {t('Language')}{' '}
         {project?.languages && (
           <>
-            <b>{project?.languages?.orig_name + ' '}</b>
-            <b>{project?.languages?.code}</b>
+            <b>{project?.languages?.orig_name + ' ' + project?.languages?.code}</b>
           </>
         )}
       </div>
@@ -54,12 +66,11 @@ function Project({ code }) {
             })}
           </>
         )}
-        {/* {user?.is_admin ||
-          (['admin', 'coordinator'].includes(projectRole) && (
-            <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
-              <a className="btn btn-filled btn-cyan">{t('ProjectEditing')}</a>
-            </Link>
-          ))} */}
+        {['admin', 'coordinator'].includes(level) && (
+          <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
+            <a className="btn btn-filled btn-cyan">{t('ProjectEditing')}</a>
+          </Link>
+        )}
       </div>
     </div>
   )

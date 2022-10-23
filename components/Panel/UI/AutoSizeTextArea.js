@@ -1,43 +1,33 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function AutoSizeTextArea({
-  disabled,
-  verse,
-  value,
-  setVerseObject,
-  defaultValue,
-  onBlur,
+  disabled = false,
+  updateVerse,
+  index,
+  verseObject,
+  defaultValue = '_'.repeat(50),
 }) {
-  const [textAreaValue, setTextAreaValue] = useState(null)
-
-  const textareaRef = useRef(null)
-
-  const autoResize = () => {
-    textareaRef.current.style.height = 0
-    textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px'
-  }
+  const [startValue, setStartValue] = useState()
 
   useEffect(() => {
-    autoResize()
+    setStartValue(verseObject.verse)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
   return (
-    <textarea
-      disabled={disabled}
-      ref={textareaRef}
+    <div
+      key={index}
+      contentEditable={!disabled}
       defaultValue={defaultValue}
-      onChange={(e) => setVerseObject({ key: verse, text: e.target.value })}
-      onInput={(el) => {
-        setTextAreaValue(el.target.value)
-        autoResize()
+      suppressContentEditableWarning={true}
+      onBlur={(el) => {
+        updateVerse(index, el.target.innerText)
       }}
-      onBlur={onBlur}
-      type="text"
-      placeholder={'_'.repeat(80)}
-      value={value}
-      className={`resize-none block w-full mx-3 focus:outline-none focus:inline-none focus:bg-white  ${
-        textAreaValue || disabled ? '' : 'bg-gray-300'
+      className={`block w-full mx-3 focus:outline-none focus:inline-none focus:bg-white  ${
+        verseObject.verse || disabled ? '' : 'bg-gray-300'
       }`}
-    />
+      // eslint-disable-next-line prettier/prettier
+    >{startValue}</div>
   )
 }
 

@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 .appbar{
-	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-24 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
+	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
 }
 
 .step{
@@ -44,7 +44,7 @@
 
 .btn{
 @apply text-center border-2 rounded-md inline-block px-3 py-1 cursor-pointer
-disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white 
+disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white
  disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400
 }
 
@@ -52,6 +52,12 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply text-white bg-cyan-600 border-cyan-600
 	hover:bg-cyan-700 hover:border-cyan-700
 	active:bg-cyan-800 active:border-cyan-800
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
+}
+.btn-red-base{
+	@apply text-white bg-red-500 border-red-600
+	hover:bg-red-700 hover:border-red-700
+	active:bg-red-800 active:border-red-800
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
 }
 
@@ -63,14 +69,18 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply btn btn-cyan-base
 }
 
+.btn-red{
+	@apply btn btn-red-base
+}
+
 .btn-white{
-	@apply btn bg-white text-cyan-600 border-cyan-600 
+	@apply btn bg-white text-cyan-600 border-cyan-600
 	hover:bg-cyan-50
 	active:bg-cyan-200
 }
 
 .confession-text{
-	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] h4 bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none 
+	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] h4 bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none
 }
 
 .condition-title{
@@ -147,17 +157,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0
 }
 
-.layout-step-col-card{
-	@apply flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full
-}
-.layout-step-col-card-body-audio{
-	@apply flex flex-col items-center gap-5 py-24 lg:py-56 h5
-}
-
-.layout-step-col-card-title{
-	@apply h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg
-}
-
 .modal-step-goal{
 	@apply transform overflow-hidden p-6 w-full max-w-md text-center align-middle bg-white rounded-2xl shadow-xl transition-all
 }
@@ -183,7 +182,25 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 }
 
 .text-alignment{
-	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg 
+	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg
 }
 
+.markdown-body img{
+  display: inline;
+  vertical-align: inherit;
+}
 
+.markdown-body ol{
+  list-style: decimal;
+}
+
+.markdown-body ul{
+  list-style: inherit;
+}
+
+.inactive {
+  filter: blur(6px) grayscale(1);
+  user-select: none;
+  pointer-events: none;
+  opacity: .5;
+}
