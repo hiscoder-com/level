@@ -232,8 +232,8 @@
       IF NOT PUBLIC.admin_only() THEN
         RETURN FALSE;
       END IF;
-      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
 
+      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
       IF blocked_user.is_admin = TRUE THEN
         RETURN FALSE;
       END IF;
