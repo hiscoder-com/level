@@ -7,7 +7,7 @@ export default async function notesDeleteHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
   const {
     query: { id },
-    body: { data: data_note, title, isFolder, parent_id },
+    body: { data: data_note, title, parent_id },
     method,
   } = req
   switch (method) {
@@ -28,7 +28,8 @@ export default async function notesDeleteHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('personal_notes')
-          .update([{ data: data_note, title, isFolder, parent_id }])
+          // TODO заметку же папкой не сделать, по этому isFolder не надо передавать
+          .update([{ data: data_note, title, parent_id }])
           .match({ id })
         if (error) throw error
         res.status(200).json(data)
