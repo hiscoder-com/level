@@ -54,6 +54,11 @@ function BlindEditor({ config }) {
               translatedVerses.includes(el.num.toString())
             }
             className="mt-1"
+            style={{
+              filter: translatedVerses.includes(el.num.toString())
+                ? ''
+                : 'saturate(9) hue-rotate(273deg)',
+            }}
             onChange={() => sendToDb(index)}
             checked={translatedVerses.includes(el.num.toString())}
           />
