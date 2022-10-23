@@ -1,13 +1,16 @@
 import { useState } from 'react'
 
-import { supabase } from '@/utils/supabaseClient'
-import { useCurrentUser } from '../lib/UserContext'
+import { useTranslation } from 'next-i18next'
+
+import { supabase } from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 
 export default function SignUp() {
   const [loading, setLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { user } = useCurrentUser()
+  const { t } = useTranslation(['users'])
 
   const handleLogin = async () => {
     try {
@@ -38,10 +41,10 @@ export default function SignUp() {
 
   return (
     <div className="flex justify-center flex-col text-center text-3xl my-5">
-      <h1 className="my-5">Sign up</h1>
+      <h1 className="my-5">{t('SignUp')}</h1>
 
       <div>
-        <label>Email</label>
+        <label>{t('Email')}</label>
         <input
           className="border border-green-600 p-2"
           type="email"
@@ -51,7 +54,7 @@ export default function SignUp() {
         />
       </div>
       <div>
-        <label>Password</label>
+        <label>{t('Password')}</label>
         <input
           className="border border-green-600 p-2"
           type="password"
@@ -66,7 +69,7 @@ export default function SignUp() {
           onClick={handleLogin}
           className="text-3xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2 disabled:text-gray-400"
         >
-          Register
+          {t('Register')}
         </button>
         <div>
           <button
@@ -74,10 +77,10 @@ export default function SignUp() {
             onClick={handleLogout}
             className="text-3xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2 disabled:text-gray-400"
           >
-            Sign out
+            {t('SignOut')}
           </button>
         </div>
-        Your Login : {user ? user.email : 'no authenticate'}
+        {t('YourLogin')} : {user ? user.email : `${t('NoAuthenticate')}`}
       </div>
     </div>
   )

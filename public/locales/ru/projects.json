@@ -1,0 +1,23 @@
+{
+  "Add": "Добавить",
+  "AddNew": "Добавить новый",
+  "AddTranslator": "Добавить переводчика",
+  "AppointAModerator": "Назначить модератора",
+  "AppointAn": "Назначить",
+  "Cancel": "Отменить",
+  "ChooseAModerator": "Выбрать модератора",
+  "Code": "Код проекта",
+  "CodeMessage": "Используйте код языка и код проекта, разделенные нижним подчеркиванием",
+  "Coordinator": "координатора",
+  "Delete": "Удалить",
+  "Language": "Язык",
+  "Method": "Метод",
+  "MyProjects": "Мои Проекты",
+  "ProjectEditing": "Редактирование проекта",
+  "Projects": "Проекты",
+  "SaveProject": "Сохранить проект",
+  "Title": "Название проекта",
+  "Translator": "переводчика",
+  "Translators": "Переводчики",
+  "V-CANAProjects": "Проекты V-CANA"
+}

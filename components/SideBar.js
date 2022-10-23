@@ -2,9 +2,9 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import SideBarLink from './SideBarLink'
+import SideBarLink from 'components/SideBarLink'
 
-import Close from '../public/close.svg'
+import Close from 'public/close.svg'
 
 function SideBar({ isOpen, setIsOpen }) {
   const { t } = useTranslation('common')
@@ -16,7 +16,7 @@ function SideBar({ isOpen, setIsOpen }) {
           <div className="flex items-center justify-between px-4 py-3 text-[#3C3C41]">
             <Close
               onClick={() => setIsOpen((prev) => !prev)}
-              className="h-6 cursor-pointer stroke-1 hover:stroke-[#0E7490]"
+              className="h-6 cursor-pointer stroke-1"
             />
           </div>
         </div>

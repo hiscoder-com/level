@@ -2,11 +2,14 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { supabase } from '@/utils/supabaseClient'
+import { useTranslation } from 'next-i18next'
+
+import { supabase } from 'utils/supabaseClient'
 
 export default function SignOut() {
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const { t } = useTranslation(['users'])
 
   const handleLogout = async () => {
     try {
@@ -22,14 +25,14 @@ export default function SignOut() {
   }
 
   return (
-    <div className="flex justify-center flex-col  text-xl my-5">
+    <div className="flex justify-center flex-col text-xl my-5">
       <div>
         <button
           disabled={loading}
           onClick={handleLogout}
           className="text-xl py-3 px-4 rounded-xl bg-green-300 border-green-500 border max-w-xs text-center my-2 disabled:text-gray-400"
         >
-          Sign out
+          {t('SignOut')}
         </button>
       </div>
     </div>

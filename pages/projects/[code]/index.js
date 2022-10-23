@@ -1,6 +1,8 @@
 import { useRouter } from 'next/router'
 
-import Project from '../../../components/Project'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import Project from 'components/Project'
 
 function ProjectPage() {
   const router = useRouter()
@@ -10,3 +12,12 @@ function ProjectPage() {
 }
 
 export default ProjectPage
+
+export async function getServerSideProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale, ['projects', 'common'])),
+      // Will be passed to the page component as props
+    },
+  }
+}

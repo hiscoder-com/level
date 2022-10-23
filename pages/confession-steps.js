@@ -5,14 +5,13 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useCurrentUser } from '../lib/UserContext'
+import { supabase } from 'utils/supabaseClient'
 
-import LeftArrow from '../public/left-arrow.svg'
-import RightArrow from '../public/right-arrow.svg'
+import LeftArrow from 'public/left-arrow.svg'
+import RightArrow from 'public/right-arrow.svg'
 
 export default function ConfessionSteps() {
   const { t } = useTranslation(['confession-steps', 'common'])
-  const { user } = useCurrentUser()
   const router = useRouter()
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
@@ -76,6 +75,15 @@ export default function ConfessionSteps() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page])
 
+  const handleClick = async () => {
+    const { error } = await supabase.rpc('check_confession')
+    if (error) {
+      console.error(error)
+    } else {
+      router.push(`/account`)
+    }
+  }
+
   return (
     <div className="layout-appbar">
       <h1 className="h1 text-center">{t('common:ConfessionFaith')}:</h1>
@@ -106,13 +114,7 @@ export default function ConfessionSteps() {
           />
           <label htmlFor="cb">{t('common:Agree')}</label>
         </div>
-        <button
-          onClick={() => {
-            router.push(`/account`)
-          }}
-          className="btn-cyan w-28"
-          disabled={!checked}
-        >
+        <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
           {t('common:Next')}
         </button>
       </div>

@@ -1,5 +1,6 @@
-import { supabase } from '@/utils/supabaseClient'
+import { supabase } from 'utils/supabaseClient'
 
+/** TODO тоже переделать */
 export default async function userProjectHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -15,8 +16,8 @@ export default async function userProjectHandler(req, res) {
     case 'GET':
       try {
         const { data, error } = await supabase
-          .from('project_roles')
-          .select('role,users!inner(id),projects!inner(code)')
+          .from('project_translators')
+          .select('is_moderator,users!inner(id),projects!inner(code)')
           .eq('users.id', id)
           .eq('projects.code', code)
         if (error) throw error

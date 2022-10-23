@@ -2,25 +2,37 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import { useUsers } from '../../utils/hooks'
+import { useUsers } from 'utils/hooks'
 
 function UsersList({ access_token }) {
   const { t } = useTranslation(['users'])
-  const [users] = useUsers(access_token)
+  const [users, { error, loading }] = useUsers('access_token')
   return (
     <table className="table-auto bg-white">
       <thead>
         <tr className="text-left bg-gray-100">
-          <th className="border-b p-2 border-slate-200">{t('login')}</th>
-          <th className="border-b p-2 border-slate-200">{t('email')}</th>
+          <th className="border-b p-2 border-slate-200">{t('Login')}</th>
+          <th className="border-b p-2 border-slate-200">{t('Email')}</th>
           <th className="border-b p-2 border-slate-200">{t('IsAdmin')}</th>
-          <th className="border-b p-2 border-slate-200">{t('agreement')}</th>
-          <th className="border-b p-2 border-slate-200">{t('confession')}</th>
-          <th className="border-b p-2 border-slate-200">{t('blocked')}</th>
+          <th className="border-b p-2 border-slate-200">{t('Agreement')}</th>
+          <th className="border-b p-2 border-slate-200">{t('Confession')}</th>
+          <th className="border-b p-2 border-slate-200">{t('Blocked')}</th>
         </tr>
       </thead>
       <tbody>
-        {users ? (
+        {loading ? (
+          <tr>
+            <td colSpan={6} className="p-3 text-center">
+              {t('Loading')}
+            </td>
+          </tr>
+        ) : error ? (
+          <tr>
+            <td colSpan={6} className="p-3 text-center">
+              {error.message}
+            </td>
+          </tr>
+        ) : users ? (
           users.map((user) => {
             return (
               <tr key={user.login}>

@@ -2,11 +2,12 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
-import { useCurrentUser } from '../../lib/UserContext'
-import { useUser } from '../../utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
+import { useUser } from 'utils/hooks'
 
 export default function UserPage() {
   const { t } = useTranslation(['users', 'common'])
@@ -30,7 +31,9 @@ export default function UserPage() {
   return (
     <>
       <Head>
-        <title>V-CANA - {t('profile')}</title>
+        <title>
+          {t('V-CANA')} - {t('profile')}
+        </title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -40,22 +43,22 @@ export default function UserPage() {
         <div className="container">
           <h1>{t('UserPage')}</h1>
           <div>
-            {t('login')}: {user?.login}
+            {t('Login')}: {user?.login}
           </div>
           <div>
-            {t('email')}: {user?.email}
+            {t('Email')}: {user?.email}
           </div>
           <div>
-            {t('agreement')}: {user?.agreement ? t('common:Yes') : t('common:No')}
+            {t('Agreement')}: {user?.agreement ? t('common:Yes') : t('common:No')}
           </div>
           <div>
-            {t('confession')}: {user?.confession ? t('common:Yes') : t('common:No')}
+            {t('Confession')}: {user?.confession ? t('common:Yes') : t('common:No')}
           </div>
           <div>
             {t('IsAdmin')}: {user?.is_admin ? t('common:Yes') : t('common:No')}
           </div>
           <div>
-            {t('blocked')}: {user?.blocked ? t('common:Yes') : t('common:No')}
+            {t('Blocked')}: {user?.blocked ? t('common:Yes') : t('common:No')}
           </div>
           <div>
             <div onClick={() => handleBlock(!user?.blocked)}>

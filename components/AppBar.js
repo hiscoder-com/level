@@ -1,32 +1,42 @@
 import { useState, useEffect } from 'react'
 
+import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import { Disclosure } from '@headlessui/react'
+import { useTranslation } from 'next-i18next'
+import { useRecoilValue } from 'recoil'
 
-import Timer from './Timer'
-import { supabase } from '@/utils/supabaseClient'
-import { useCurrentUser } from '../lib/UserContext'
+import Timer from 'components/Timer'
+import StepGoal from 'components/StepGoal'
 
-import Burger from '../public/burger.svg'
-import User from '../public/user.svg'
-import Tools from '../public/tools.svg'
-import VCANA_logo from '../public/vcana-logo.svg'
+import { supabase } from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
+import { stepConfigState } from './Panel/state/atoms'
 
-// TODO тут надо все проверить
+import Burger from 'public/burger.svg'
+import Tools from 'public/tools.svg'
+import User from 'public/user.svg'
+import VCANA_logo from 'public/vcana-logo.svg'
 
-export default function AppBar({ isOpen, setIsOpen, isIntroduction }) {
+export default function AppBar({ setIsOpen }) {
   const { user } = useCurrentUser()
+  const stepConfig = useRecoilValue(stepConfigState)
   const [access, setAccess] = useState(false)
+  const [showFullAppbar, setShowFullAppbar] = useState(false)
+  const [isStepPage, setIsStepPage] = useState(false)
+  const { t } = useTranslation('steps')
 
-  const [step, setStep] = useState(1)
+  const router = useRouter()
 
   useEffect(() => {
-    const hasAccess = async (user_id) => {
+    setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router.pathname])
+
+  useEffect(() => {
+    const hasAccess = async () => {
       try {
-        const { data, error } = await supabase.rpc('has_access', {
-          user_id,
-        })
+        const { data, error } = await supabase.rpc('has_access')
         if (error) throw error
         setAccess(data)
       } catch (error) {
@@ -34,124 +44,49 @@ export default function AppBar({ isOpen, setIsOpen, isIntroduction }) {
       }
     }
     if (user?.id) {
-      hasAccess(user.id)
+      hasAccess()
     }
   }, [user])
 
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step])
-
-  const prevStep = () => {
-    if (step > 1) {
-      setStep((prev) => {
-        return prev > 0 ? prev - 1 : prev
-      })
-    }
-  }
-
-  const nextStep = () => {
-    setStep((prev) => {
-      return prev < 7 ? prev + 1 : prev
-    })
-  }
-
-  const handleKeyDown = (e) => {
-    switch (e.keyCode) {
-      case 37:
-        prevStep()
-        break
-      case 39:
-        nextStep()
-        break
-    }
-  }
-
-  const steps = {
-    1: {
-      title: 'Шаг 1: Самостоятельное изучение',
-      users: 1,
-      time: 3600,
-      tools: {},
-    },
-    2: {
-      title: 'Шаг 2: Командное изучение текста',
-      users: 1,
-      time: 3000,
-      tools: {},
-    },
-    3: {
-      title: 'Шаг 3: Подготовка к переводу',
-      users: 1,
-      time: 3600,
-      tools: {},
-    },
-    4: {
-      title: 'Шаг 4: Набросок “Вслепую”',
-      users: 1,
-      time: 3600,
-      tools: {},
-    },
-    5: {
-      title: 'Шаг 5: Самостоятельная проверка',
-      users: 1,
-      time: 3600,
-      tools: {},
-    },
-    6: {
-      title: 'Шаг 6: Взаимная проверка',
-      users: 2,
-      time: 3600,
-      tools: {},
-    },
-    7: {
-      title: 'Шаг 7: Командная проверка',
-      users: 2,
-      time: 3600,
-      tools: {},
-    },
-  }
-
-  const conditionTitle = `h2 text-center ${isIntroduction ? '' : 'hidden'}`
-  const conditionOptionalInfo = `flex row items-center gap-4 ${
-    isIntroduction ? '' : 'hidden'
-  }`
-
   return (
-    <Disclosure as="nav" className="bg-white">
-      <>
-        <div className="appbar">
-          <div className="flex items-center gap-7 cursor-pointer">
-            {access && (
-              <Burger
-                onClick={() => setIsOpen((prev) => !prev)}
-                className="h-6 stroke-1 hover:stroke-[#0E7490]"
-              />
-            )}
-            <Link href="/">
-              <a>
-                <VCANA_logo className="h-5" />
-              </a>
-            </Link>
-          </div>
-          {/* Title */}
-          <div className={conditionTitle}>{steps[step].title}</div>
-          {/* Optional info */}
-          <div className={conditionOptionalInfo}>
-            <div className="flex row items-center gap-1 cursor-default">
-              <User />
-              {steps[step].users}
+    <div className="bg-white">
+      <div className="appbar">
+        <div className="flex items-center gap-7 cursor-pointer">
+          {access && (
+            <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6 stroke-1" />
+          )}
+          <Link href="/">
+            <a>
+              <VCANA_logo className="h-5" />
+            </a>
+          </Link>
+          {isStepPage && (
+            <div className="flex gap-7 md:hidden">
+              <Timer time={stepConfig.time} />
+              <Burger onClick={() => setShowFullAppbar(!showFullAppbar)} />
             </div>
-            <Timer time={steps[step].time} />
-            <button className="btn-cyan w-28">Цель шага</button>
-            <Tools />
-          </div>
+          )}
         </div>
-      </>
-    </Disclosure>
+        {isStepPage && (
+          <>
+            <div className={`condition-title ${showFullAppbar ? '' : 'hidden '}`}>
+              {stepConfig.title}
+            </div>
+            <div
+              className={`condition-optional-info ${showFullAppbar ? 'flex' : 'hidden '}`}
+            >
+              <div className="flex row items-center gap-1 cursor-default">
+                <User />
+                {stepConfig.count_of_users}
+              </div>
+              <div className="hidden md:flex">
+                <Timer time={stepConfig.time} />
+              </div>
+              <StepGoal description={stepConfig?.description} />
+            </div>
+          </>
+        )}
+      </div>
+    </div>
   )
 }
