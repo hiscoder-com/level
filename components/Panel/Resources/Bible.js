@@ -59,7 +59,10 @@ function VersesExtended({ verseObjects }) {
             <input
               checked={checkedCurrent}
               type="checkbox"
-              className="mt-1"
+              className={`mt-1`}
+              style={{
+                filter: checkedCurrent ? '' : 'saturate(9) hue-rotate(273deg)',
+              }}
               disabled={
                 checkedCurrent ||
                 (index !== 0 &&
@@ -92,7 +95,7 @@ function Blur({ verse }) {
         .join(' '),
     [verse]
   )
-  return <ReactMarkdown className={`ml-2 blur-sm`}>{text}</ReactMarkdown>
+  return <ReactMarkdown className={`ml-2 blur-sm select-none`}>{text}</ReactMarkdown>
 }
 
 const shuffle = (text) => {
