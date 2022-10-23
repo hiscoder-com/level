@@ -1241,7 +1241,7 @@ ADD
     INSERT INTO
       PUBLIC.methods (title, resources, steps, "type")
     VALUES
-      ('Vcana Bible', '{"simplified":true, "literal":false, "tnotes":false, "twords":false, "tquestions":false}', '[
+      ('Vcana Bible', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
           "title": "1 ШАГ - ОБЗОР КНИГИ",
           "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
