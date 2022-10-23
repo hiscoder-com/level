@@ -77,9 +77,9 @@ export const stepsForBible = [
         tools: [
           {
             id: 5,
-            name: 'ownNotes', // notepad c пометкой личный
+            name: 'teamNotes', // notepad c пометкой личный
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -172,9 +172,9 @@ export const stepsForBible = [
         tools: [
           {
             id: 5,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -500,9 +500,9 @@ export const stepsForBible = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -636,9 +636,9 @@ export const stepsForBible = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -776,9 +776,9 @@ export const stepsForBible = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -892,9 +892,9 @@ export const stepsForBible = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -977,7 +977,7 @@ export const stepsForOBS = [
         tools: [
           {
             id: 5,
-            name: 'ownNotes', // notepad c пометкой личный
+            name: 'teamNotes', // notepad c пометкой личный
             config: {
               owner: 'unfoldingWord',
               repo: 'obs-twl',
@@ -1074,9 +1074,9 @@ export const stepsForOBS = [
         tools: [
           {
             id: 5,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -1354,9 +1354,9 @@ export const stepsForOBS = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -1471,9 +1471,9 @@ export const stepsForOBS = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -1588,9 +1588,9 @@ export const stepsForOBS = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {
@@ -1693,9 +1693,9 @@ export const stepsForOBS = [
           },
           {
             id: 7,
-            name: 'ownNotes',
+            name: 'teamNotes',
             config: {
-              subject: 'ownNotes',
+              subject: 'teamNotes',
             },
           },
           {

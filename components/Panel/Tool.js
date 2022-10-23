@@ -1,9 +1,9 @@
 import { useTranslation } from 'next-i18next'
 
 import {
-  Notes,
+  PersonalNotes,
+  TeamNotes,
   Dictionary,
-  OwnNotes,
   Audio,
   Editor,
   Bible,
@@ -126,14 +126,14 @@ function Tool({ config }) {
       title = t('BlindEditor')
       break
 
-    case 'ownNotes':
-      CurrentTool = OwnNotes
-      title = t('OwnNotes')
+    case 'teamNotes':
+      CurrentTool = TeamNotes
+      title = t('TeamNotes')
       break
 
-    case 'teamNotes':
-      CurrentTool = Notes
-      title = t('TeamNotes')
+    case 'personalNotes':
+      CurrentTool = PersonalNotes
+      title = t('PersonalNotes')
       break
 
     case 'audio':

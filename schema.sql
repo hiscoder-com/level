@@ -8,11 +8,15 @@
     DROP TABLE IF EXISTS PUBLIC.steps;
     DROP TABLE IF EXISTS PUBLIC.project_translators;
     DROP TABLE IF EXISTS PUBLIC.project_coordinators;
+    DROP TABLE IF EXISTS PUBLIC.personal_notes;
+    DROP TABLE IF EXISTS PUBLIC.team_notes;
     DROP TABLE IF EXISTS PUBLIC.projects;
     DROP TABLE IF EXISTS PUBLIC.methods;
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
-    DROP TABLE IF EXISTS PUBLIC.languages;
+    DROP TABLE IF EXISTS PUBLIC.languages;    
+
+
   -- EDN DROP TABLE
 
   -- DROP TRIGGER
@@ -20,6 +24,9 @@
     DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
     DROP TRIGGER IF EXISTS on_public_book_created ON PUBLIC.books;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
+    DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
+    DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
+
   -- END DROP TRIGGER
 
   -- DROP FUNCTION
@@ -41,11 +48,12 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes; 
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_team_notes;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
     DROP FUNCTION IF EXISTS PUBLIC.get_verses;
     DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
-
   -- END DROP FUNCTION
 
   -- DROP TYPE
@@ -425,8 +433,8 @@
       IF NOT PUBLIC.admin_only() THEN
         RETURN FALSE;
       END IF;
-      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
 
+      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
       IF blocked_user.is_admin = TRUE THEN
         RETURN FALSE;
       END IF;
@@ -499,6 +507,26 @@
         PUBLIC.progress (verse_id, "text", step_id)
       VALUES
         (NEW.id, NEW.text, OLD.current_step);
+
+      RETURN NEW;
+
+    END;
+  $$;
+
+ -- update changed_at to current time/date when personal_notes is updating
+  CREATE FUNCTION PUBLIC.handle_update_personal_notes() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      NEW.changed_at:=NOW();
+
+      RETURN NEW;
+
+    END;
+  $$;  
+
+-- update changed_at to current time/date when team_notes is updating
+  CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      NEW.changed_at:=NOW();
 
       RETURN NEW;
 
@@ -1046,6 +1074,102 @@
   -- END RLS
 -- END PROGRESS
 
+-- PERSONAL NOTES
+  -- TABLE
+    CREATE TABLE PUBLIC.personal_notes (
+      id text NOT NULL primary key,
+      user_id uuid references PUBLIC.users ON
+      DELETE
+        CASCADE NOT NULL,
+      title text DEFAULT NULL,
+      data json DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT now(),
+      changed_at TIMESTAMP DEFAULT now(),
+      is_folder BOOLEAN DEFAULT FALSE,
+      parent_id text DEFAULT NULL
+    );
+    ALTER TABLE
+      PUBLIC.personal_notes enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    
+    DROP POLICY IF EXISTS "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes FOR
+    INSERT
+      TO authenticated WITH CHECK (TRUE); 
+   
+    DROP POLICY IF EXISTS "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes FOR
+    DELETE
+      USING (auth.uid() = user_id);
+
+    DROP POLICY IF EXISTS "Залогиненый юзер может изменить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может изменить личную заметку" ON PUBLIC.personal_notes FOR
+    UPDATE
+      USING (auth.uid() = user_id);
+
+
+    DROP POLICY IF EXISTS "Показывать личные заметки данного пользователя" ON PUBLIC.personal_notes;
+
+    CREATE policy "Показывать личные заметки данного пользователя" ON PUBLIC.personal_notes FOR
+    SELECT
+     USING (auth.uid() = user_id);
+
+  -- END RLS
+-- PERSONAL NOTES
+
+-- TEAM NOTES
+  -- TABLE
+    CREATE TABLE PUBLIC.team_notes (
+      id text NOT NULL primary key,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      title text DEFAULT NULL,
+      data json DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT now(),
+      changed_at TIMESTAMP DEFAULT now(),
+      is_folder BOOLEAN DEFAULT FALSE,
+      parent_id text DEFAULT NULL
+    );
+    ALTER TABLE
+      PUBLIC.team_notes enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    --Администратор или координатор может добавить командную заметку
+    DROP POLICY IF EXISTS "team_notes insert" ON PUBLIC.team_notes;
+    CREATE policy "team_notes insert" ON PUBLIC.team_notes FOR
+    INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator')); 
+
+    --Администратор или координатор может удалить командную заметку
+    DROP POLICY IF EXISTS "team_notes delete" ON PUBLIC.team_notes;
+    CREATE policy "team_notes delete" ON PUBLIC.team_notes FOR
+    DELETE
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));  
+
+    --Администратор или координатор может изменить командную заметку
+    DROP POLICY IF EXISTS "team_notes update" ON PUBLIC.team_notes;
+    CREATE policy "team_notes update" ON PUBLIC.team_notes FOR
+    UPDATE
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
+
+    --Все на проекте могут читать командные заметки
+    DROP POLICY IF EXISTS "team_notes select" ON PUBLIC.team_notes;
+    CREATE policy "team_notes select" ON PUBLIC.team_notes FOR
+    SELECT
+     USING (authorize(auth.uid(), project_id) != 'user'); 
+
+  -- END RLS
+-- TEAM NOTES
+
+
+
 -- Send "previous data" on change
 
 ALTER TABLE
@@ -1079,6 +1203,16 @@ ALTER TABLE
   CREATE TRIGGER on_public_verses_next_step AFTER
   UPDATE
     ON PUBLIC.verses FOR each ROW EXECUTE FUNCTION PUBLIC.handle_next_step();
+
+  -- trigger the function every time a note is update
+
+  CREATE TRIGGER on_public_personal_notes_update BEFORE
+  UPDATE
+    ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_personal_notes();
+
+  CREATE TRIGGER on_public_team_notes_update BEFORE
+  UPDATE
+    ON PUBLIC.team_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_team_notes();
 -- END TRIGGERS
 
 /**
@@ -1274,7 +1408,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1321,7 +1455,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1458,7 +1592,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1513,7 +1647,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1564,7 +1698,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1620,7 +1754,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1665,7 +1799,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1708,7 +1842,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1833,7 +1967,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1884,7 +2018,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1935,7 +2069,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {

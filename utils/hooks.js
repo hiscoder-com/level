@@ -178,3 +178,26 @@ export function useGetResource({ config, url }) {
 
   return { loading, data, error }
 }
+
+export function usePersonalNotes({ token }) {
+  const {
+    data: notes,
+    mutate,
+    error,
+  } = useSWR(token ? [`/api/personal_notes`, token] : null, fetcher)
+  const loading = !notes && !error
+  return [notes, { mutate, loading, error }]
+}
+
+export function useTeamNotes({ token, project_id }) {
+  const {
+    data: notes,
+    mutate,
+    error,
+  } = useSWR(
+    token && project_id ? [`/api/team_notes/${project_id}`, token] : null,
+    fetcher
+  )
+  const loading = !notes && !error
+  return [notes, { mutate, loading, error }]
+}
