@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic'
 
 import axios from 'axios'
 
+import { useTranslation } from 'next-i18next'
+
 import { useCurrentUser } from 'lib/UserContext'
 import { usePersonalNotes } from 'utils/hooks'
 import Close from 'public/close.svg'
@@ -26,6 +28,7 @@ const ListOfNotes = dynamic(
 function PersonalNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
   const [activeNote, setActiveNote] = useState(null)
+  const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
   const [notes, { loading, error, mutate }] = usePersonalNotes({
     token: user?.access_token,
@@ -79,7 +82,7 @@ function PersonalNotes() {
         <div>
           <div className="flex justify-end">
             <button className="btn-cyan mb-4 right-0" onClick={addNote}>
-              Add
+              {t('Create')}
             </button>
           </div>
           <ListOfNotes

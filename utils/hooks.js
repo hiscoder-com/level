@@ -194,7 +194,10 @@ export function useTeamNotes({ token, project_id }) {
     data: notes,
     mutate,
     error,
-  } = useSWR(token ? [`/api/team_notes/${project_id}`, token] : null, fetcher)
+  } = useSWR(
+    token && project_id ? [`/api/team_notes/${project_id}`, token] : null,
+    fetcher
+  )
   const loading = !notes && !error
   return [notes, { mutate, loading, error }]
 }

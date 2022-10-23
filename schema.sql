@@ -25,7 +25,7 @@
     DROP TRIGGER IF EXISTS on_public_book_created ON PUBLIC.books;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
-    DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.personal_notes;
+    DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
 
   -- END DROP TRIGGER
 
@@ -513,7 +513,7 @@
     END;
   $$;
 
- -- update changed_at to current time/data when personal_notes is updating
+ -- update changed_at to current time/date when personal_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_personal_notes() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       NEW.changed_at:=NOW();
@@ -523,7 +523,7 @@
     END;
   $$;  
 
--- update changed_at to current time/data when team_notes is updating
+-- update changed_at to current time/date when team_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       NEW.changed_at:=NOW();
