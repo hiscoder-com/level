@@ -1,6 +1,5 @@
 import { supabase } from 'utils/supabaseClient'
 
-/** TODO проверить */
 export default async function notesHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -11,15 +10,21 @@ export default async function notesHandler(req, res) {
   switch (method) {
     case 'POST':
       try {
-        const { data: data_note, title, isFolder, parent_id, project_id, id } = body
+        const { id, project_id } = body
         const { data, error } = await supabase.from('team_notes').insert([
           {
             id,
             project_id,
-            title,
-            is_folder: isFolder,
-            parent_id,
-            data: data_note,
+            title: 'new note',
+            data: {
+              blocks: [
+                {
+                  type: 'paragraph',
+                  data: {},
+                },
+              ],
+              version: '2.8.1',
+            },
           },
         ])
 

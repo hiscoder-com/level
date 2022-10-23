@@ -17,6 +17,7 @@ export default async function notesDeleteHandler(req, res) {
           .from('team_notes')
           .select('*')
           .eq('project_id', id)
+          .order('changed_at', { ascending: false })
 
         if (error) throw error
         res.status(200).json(data)

@@ -29,12 +29,13 @@ function TeamNotes() {
   const [activeNote, setActiveNote] = useState(null)
   const { user } = useCurrentUser()
   const router = useRouter()
-  const { code } = router.query
+  const {
+    query: { project: code },
+  } = router
   const [project] = useProject({ token: user?.access_token, code })
   const [notes, { loading, error, mutate }] = useTeamNotes({
     token: user?.access_token,
     project_id: project?.id,
-    // sort: 'changed_at',
   })
 
   useEffect(() => {
@@ -47,7 +48,7 @@ function TeamNotes() {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post('/api/team_notes', { id, project_id: project?.id })
+      .post(`/api/team_notes`, { id, project_id: project?.id })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }

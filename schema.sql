@@ -25,6 +25,7 @@
     DROP TRIGGER IF EXISTS on_public_book_created ON PUBLIC.books;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
+    DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.personal_notes;
 
   -- END DROP TRIGGER
 
@@ -47,7 +48,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;    
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes; 
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_team_notes;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
     DROP FUNCTION IF EXISTS PUBLIC.get_verses;
@@ -520,6 +522,16 @@
 
     END;
   $$;  
+
+-- update changed_at to current time/data when team_notes is updating
+  CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      NEW.changed_at:=NOW();
+
+      RETURN NEW;
+
+    END;
+  $$;
 
   -- создать главы
   CREATE FUNCTION PUBLIC.create_chapters(book_id bigint) returns BOOLEAN
@@ -1120,6 +1132,7 @@
       title text DEFAULT NULL,
       data json DEFAULT NULL,
       created_at TIMESTAMP DEFAULT now(),
+      changed_at TIMESTAMP DEFAULT now(),
       is_folder BOOLEAN DEFAULT FALSE,
       parent_id text DEFAULT NULL
     );
@@ -1196,6 +1209,10 @@ ALTER TABLE
   CREATE TRIGGER on_public_personal_notes_update BEFORE
   UPDATE
     ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_personal_notes();
+
+  CREATE TRIGGER on_public_team_notes_update BEFORE
+  UPDATE
+    ON PUBLIC.team_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_team_notes();
 -- END TRIGGERS
 
 /**
