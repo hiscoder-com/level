@@ -70,7 +70,6 @@ function Notes() {
         clearTimeout(timer)
       }
     }, 1000)
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNote])
 

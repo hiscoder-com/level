@@ -9,44 +9,6 @@ import { useTeamNotes, useProject } from 'utils/hooks'
 import { useRouter } from 'next/router'
 import Close from 'public/close.svg'
 import Waste from 'public/waste.svg'
-const icons = {
-  openedFolder: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="24px"
-      viewBox="0 0 24 24"
-      width="24px"
-      fill="#000000"
-    >
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
-    </svg>
-  ),
-  closedFolder: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="24px"
-      viewBox="0 0 24 24"
-      width="24px"
-      fill="#000000"
-    >
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z" />
-    </svg>
-  ),
-  note: (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      height="24px"
-      viewBox="0 0 24 24"
-      width="24px"
-      fill="#000000"
-    >
-      <path d="M0 0h24v24H0z" fill="none" />
-      <path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z" />
-    </svg>
-  ),
-}
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -55,15 +17,15 @@ const Redactor = dynamic(
   }
 )
 
-const ListOfNotesTree = dynamic(
-  () => import('@texttree/notepad-rcl').then((mod) => mod.ListOfNotesTree),
+const ListOfNotes = dynamic(
+  () => import('@texttree/notepad-rcl').then((mod) => mod.ListOfNotes),
   {
     ssr: false,
   }
 )
 
 function TeamNotes() {
-  const [noteId, setNoteId] = useState(null)
+  const [noteId, setNoteId] = useState('test_noteId')
   const [activeNote, setActiveNote] = useState(null)
   const { user } = useCurrentUser()
   const router = useRouter()
@@ -72,7 +34,9 @@ function TeamNotes() {
   const [notes, { loading, error, mutate }] = useTeamNotes({
     token: user?.access_token,
     project_id: project?.id,
+    // sort: 'changed_at',
   })
+
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
     setActiveNote(currentNote)
@@ -80,48 +44,10 @@ function TeamNotes() {
   }, [noteId])
 
   const addNote = () => {
-    const note = {
-      id: ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9),
-      title: 'new note',
-      project_id: project.id,
-      data: {
-        blocks: [
-          {
-            type: 'paragraph',
-            data: {},
-          },
-        ],
-        version: '2.8.1',
-      },
-      isFolder: false,
-      parent_id: !activeNote
-        ? null
-        : activeNote.is_folder
-        ? activeNote.id
-        : activeNote.parent_id,
-    }
+    const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post('/api/team_notes', note)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
-  }
-  const addFolder = () => {
-    const folder = {
-      id: ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9),
-      title: 'new folder',
-      project_id: project.id,
-      data: null,
-      isFolder: true,
-      parent_id: !activeNote
-        ? null
-        : activeNote.is_folder
-        ? activeNote.id
-        : activeNote.parent_id,
-    }
-    axios.defaults.headers.common['token'] = user?.access_token
-    axios
-      .post('/api/team_notes', folder)
+      .post('/api/team_notes', { id, project_id: project?.id })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
@@ -134,52 +60,44 @@ function TeamNotes() {
       .catch((err) => console.log(err))
   }
   useEffect(() => {
-    if (!activeNote?.is_folder) {
-      const timer = setTimeout(() => {
-        axios.defaults.headers.common['token'] = user?.access_token
-        axios
-          .put(`/api/team_notes/${activeNote?.id}`, activeNote)
-          .then(() => mutate())
-          .catch((err) => console.log(err))
-
-        return () => {
-          clearTimeout(timer)
-        }
-      }, 1000)
+    if (!activeNote) {
+      return
     }
+    const timer = setTimeout(() => {
+      axios.defaults.headers.common['token'] = user?.access_token
+      axios
+        .put(`/api/team_notes/${activeNote?.id}`, activeNote)
+        .then(() => mutate())
+        .catch((err) => console.log(err))
+
+      return () => {
+        clearTimeout(timer)
+      }
+    }, 1000)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNote])
-  const styleTree = {
-    tree: {
-      base: { backgroundColor: '#fff' },
-    },
-  }
 
   return (
     <div className="relative">
-      {!activeNote || activeNote.is_folder ? (
+      {!activeNote ? (
         <div>
           <div className="flex justify-end">
-            <button className="btn-cyan mb-4 mr-4" onClick={addNote}>
-              Add note
-            </button>
-            <button className="btn-cyan mb-4 " onClick={addFolder}>
-              Add folder
+            <button className="btn-cyan mb-4 right-0" onClick={addNote}>
+              Add
             </button>
           </div>
-          <ListOfNotesTree
+          <ListOfNotes
             notes={notes}
-            setActiveNote={setActiveNote}
-            activeNote={activeNote}
-            icons={icons}
-            style={styleTree}
-            classes={{
-              bgActiveNote: 'bg-gray-200',
-              wrapper: 'flex cursor-pointer',
-              title: 'ml-3',
-              delBtn: 'ml-10',
-            }}
             removeNote={removeNote}
-            delBtnIcon={<Waste />}
+            setNoteId={setNoteId}
+            classes={{
+              item: 'bg-cyan-50 my-6 rounded-lg shadow-md',
+              title: 'font-bold p-2',
+              text: 'px-2 h-10 overflow-hidden',
+              delBtn: 'px-4 py-2',
+            }}
+            isShowText
+            delBtnIcon={<Waste className={'w-4 h-4'} />}
           />
         </div>
       ) : (
