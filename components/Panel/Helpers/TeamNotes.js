@@ -73,11 +73,10 @@ function TeamNotes() {
         .put(`/api/team_notes/${activeNote?.id}`, activeNote)
         .then(() => mutate())
         .catch((err) => console.log(err))
-
-      return () => {
-        clearTimeout(timer)
-      }
-    }, 1000)
+    }, 2000)
+    return () => {
+      clearTimeout(timer)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNote])
 
