@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useRouter } from 'next/router'
+
 import dynamic from 'next/dynamic'
 
 import axios from 'axios'
@@ -8,7 +10,8 @@ import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useTeamNotes, useProject } from 'utils/hooks'
-import { useRouter } from 'next/router'
+import { supabase } from 'utils/supabaseClient'
+
 import Close from 'public/close.svg'
 import Waste from 'public/waste.svg'
 
@@ -28,6 +31,7 @@ const ListOfNotes = dynamic(
 
 function TeamNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
+  const [level, setLevel] = useState()
   const [activeNote, setActiveNote] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
@@ -40,6 +44,18 @@ function TeamNotes() {
     token: user?.access_token,
     project_id: project?.id,
   })
+  useEffect(() => {
+    const getLevel = async () => {
+      const level = await supabase.rpc('authorize', {
+        user_id: user.id,
+        project_id: project.id,
+      })
+      setLevel(level.data)
+    }
+    if ((user?.id, project?.id)) {
+      getLevel()
+    }
+  }, [user?.id, project?.id])
 
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
@@ -119,10 +135,11 @@ function TeamNotes() {
               wrapper: '',
               title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md',
               redactor:
-                'bg-cyan-50 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+                'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
+            readOnly={level === 'translator'}
           />
         </>
       )}

@@ -34,7 +34,7 @@ function PersonalNotes() {
     token: user?.access_token,
     sort: 'changed_at',
   })
-
+  console.log(user)
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
     setActiveNote(currentNote)
@@ -111,10 +111,9 @@ function PersonalNotes() {
           </div>
           <Redactor
             classes={{
-              wrapper: '',
               title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md',
               redactor:
-                'bg-cyan-50 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+                'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
