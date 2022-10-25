@@ -181,6 +181,7 @@
       verses_list RECORD;
       cur_chapter_id BIGINT;
     BEGIN
+      -- должен быть на проекте
       IF authorize(auth.uid(), get_verses.project_id) IN ('user') THEN
         RETURN;
       END IF;
@@ -189,10 +190,12 @@
       FROM PUBLIC.chapters
       WHERE chapters.num = get_verses.chapter AND chapters.project_id = get_verses.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_verses.book AND books.project_id = get_verses.project_id);
 
+      -- узнать id главы
       IF cur_chapter_id IS NULL THEN
         RETURN;
       END IF;
 
+      -- вернуть айди стиха, номер и текст для определенного переводчика и из определенной главы
       return query SELECT verses.id as verse_id, verses.num, verses.text as verse
       FROM public.verses
       WHERE verses.project_translator_id = (SELECT id
