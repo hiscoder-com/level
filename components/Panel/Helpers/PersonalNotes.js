@@ -34,7 +34,6 @@ function PersonalNotes() {
     token: user?.access_token,
     sort: 'changed_at',
   })
-  console.log(user)
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
     setActiveNote(currentNote)
@@ -89,12 +88,12 @@ function PersonalNotes() {
             removeNote={removeNote}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-6 rounded-lg shadow-md',
-              title: 'font-bold p-2',
+              item: 'bg-cyan-50 my-6 rounded-lg shadow-md relative',
+              title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'px-4 py-2',
+              delBtn: 'p-3 absolute right-0 top-0',
             }}
-            isShowText
+            isShowDelBtn
             delBtnIcon={<Waste className={'w-4 h-4'} />}
           />
         </div>
@@ -111,12 +110,13 @@ function PersonalNotes() {
           </div>
           <Redactor
             classes={{
-              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md',
+              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md mr-12',
               redactor:
                 'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
+            placeholder={t('Text_new_note')}
           />
         </>
       )}

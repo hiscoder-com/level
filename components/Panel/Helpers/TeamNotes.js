@@ -31,7 +31,7 @@ const ListOfNotes = dynamic(
 
 function TeamNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
-  const [level, setLevel] = useState()
+  const [editLevel, setEditLevel] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
@@ -50,7 +50,7 @@ function TeamNotes() {
         user_id: user.id,
         project_id: project.id,
       })
-      setLevel(level.data)
+      setEditLevel(['admin', 'coordinator', 'moderator'].includes(level.data))
     }
     if ((user?.id, project?.id)) {
       getLevel()
@@ -80,7 +80,7 @@ function TeamNotes() {
       .catch((err) => console.log(err))
   }
   useEffect(() => {
-    if (!activeNote) {
+    if (!activeNote || !editLevel) {
       return
     }
     const timer = setTimeout(() => {
@@ -100,22 +100,24 @@ function TeamNotes() {
     <div className="relative">
       {!activeNote ? (
         <div>
-          <div className="flex justify-end">
-            <button className="btn-cyan mb-4 right-0" onClick={addNote}>
-              {t('Create')}
-            </button>
-          </div>
+          {editLevel && (
+            <div className="flex justify-end">
+              <button className="btn-cyan mb-4 right-0" onClick={addNote}>
+                {t('Create')}
+              </button>
+            </div>
+          )}
           <ListOfNotes
             notes={notes}
             removeNote={removeNote}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-6 rounded-lg shadow-md',
-              title: 'font-bold p-2',
+              item: 'bg-cyan-50 my-6 rounded-lg shadow-md relative',
+              title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'px-4 py-2',
+              delBtn: 'p-3 absolute right-0 top-0',
             }}
-            isShowText
+            isShowDelBtn={editLevel}
             delBtnIcon={<Waste className={'w-4 h-4'} />}
           />
         </div>
@@ -133,13 +135,14 @@ function TeamNotes() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md',
+              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md mr-12',
               redactor:
                 'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            readOnly={level === 'translator'}
+            readOnly={!editLevel}
+            placeholder=""
           />
         </>
       )}
