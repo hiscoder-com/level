@@ -17,7 +17,6 @@ export async function getServerSideProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['projects', 'common'])),
-      // Will be passed to the page component as props
     },
   }
 }
