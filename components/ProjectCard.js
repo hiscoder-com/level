@@ -10,7 +10,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 
 function ProjectCard({ project }) {
-  const { t } = useTranslation(['projects', 'common'])
+  const { t } = useTranslation(['projects', 'common', 'books'])
 
   const { user } = useCurrentUser()
 
@@ -65,7 +65,7 @@ function ProjectCard({ project }) {
             href={`/translate/${el.project}/${el.book}/${el.chapter}/${el.step}/intro`}
           >
             <a className="btn">
-              {el.book} {el.chapter} | {el.title}
+              {t(`books:${el.book}`)} {el.chapter} | {el.title}
             </a>
           </Link>
         ))}

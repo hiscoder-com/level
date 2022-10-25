@@ -93,7 +93,7 @@ function ChapterVersesPage() {
         {t('Project')}: {project?.title} ({project?.code})
       </h2>
       <h3>
-        {t('Book')}: {book?.code}
+        {t('Book')}: {t(`books:${book?.code}`)}
       </h3>
       <h3>
         {t('Chapter')}: {chapter?.num}
@@ -133,6 +133,7 @@ export async function getServerSideProps({ locale }) {
         'common',
         'verses',
         'chapters',
+        'books',
       ])),
     },
   }
