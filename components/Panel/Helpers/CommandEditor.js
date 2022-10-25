@@ -9,6 +9,10 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
+// TODO попробовать его расширить и поставить проверки
+// Если приходит параметр разрешить изменять свои стихи - то тогда в disabled изменить условие, делать неактивными чужие стихи
+// опять же повторю что это первая версия, очень дырявая получается, надо рефакторить, ставить проверки и т.д.
+
 function CommandEditor({ config }) {
   const { user } = useCurrentUser()
   const [level, setLevel] = useState('user')
