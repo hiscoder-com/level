@@ -14,7 +14,7 @@
     DROP TABLE IF EXISTS PUBLIC.methods;
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
-    DROP TABLE IF EXISTS PUBLIC.languages;    
+    DROP TABLE IF EXISTS PUBLIC.languages;
 
 
   -- EDN DROP TABLE
@@ -48,7 +48,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes; 
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_team_notes;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
@@ -521,7 +521,7 @@
       RETURN NEW;
 
     END;
-  $$;  
+  $$;
 
 -- update changed_at to current time/date when team_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
@@ -1093,13 +1093,13 @@
   -- END TABLE
 
   -- RLS
-    
+
     DROP POLICY IF EXISTS "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes;
 
     CREATE policy "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes FOR
     INSERT
-      TO authenticated WITH CHECK (TRUE); 
-   
+      TO authenticated WITH CHECK (TRUE);
+
     DROP POLICY IF EXISTS "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes;
 
     CREATE policy "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes FOR
@@ -1145,13 +1145,13 @@
     DROP POLICY IF EXISTS "team_notes insert" ON PUBLIC.team_notes;
     CREATE policy "team_notes insert" ON PUBLIC.team_notes FOR
     INSERT
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator')); 
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
     --Администратор или координатор может удалить командную заметку
     DROP POLICY IF EXISTS "team_notes delete" ON PUBLIC.team_notes;
     CREATE policy "team_notes delete" ON PUBLIC.team_notes FOR
     DELETE
-      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));  
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
     --Администратор или координатор может изменить командную заметку
     DROP POLICY IF EXISTS "team_notes update" ON PUBLIC.team_notes;
@@ -1163,7 +1163,7 @@
     DROP POLICY IF EXISTS "team_notes select" ON PUBLIC.team_notes;
     CREATE policy "team_notes select" ON PUBLIC.team_notes FOR
     SELECT
-     USING (authorize(auth.uid(), project_id) != 'user'); 
+     USING (authorize(auth.uid(), project_id) != 'user');
 
   -- END RLS
 -- TEAM NOTES
@@ -1750,7 +1750,7 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
+                  "name": "commandTranslate",
                   "config": {}
                 },
                 {
@@ -2065,7 +2065,7 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
+                  "name": "commandTranslate",
                   "config": {}
                 },
                 {
