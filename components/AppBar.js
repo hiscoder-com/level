@@ -15,6 +15,7 @@ import { stepConfigState } from './Panel/state/atoms'
 import Burger from 'public/burger.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
+import Tools from 'public/tools.svg'
 
 export default function AppBar({ setIsOpen }) {
   const { user } = useCurrentUser()
@@ -79,7 +80,23 @@ export default function AppBar({ setIsOpen }) {
               <div className="hidden md:flex">
                 <Timer time={stepConfig.time} />
               </div>
-              <StepGoal description={stepConfig?.description} />
+              <div className="relative px-3 py-2 whitespace-nowrap rounded-md group">
+                <a className="cursor-pointer">
+                  <Tools />
+                </a>
+                <div className="absolute flex-col mt-2 p-3 shadow-md z-50 bg-white rounded-md hidden group-hover:flex">
+                  <Link href="/">
+                    <a className="px-3 py-2 whitespace-nowrap rounded-md hover:text-text-600 active:text-text-500">
+                      <StepGoal description={stepConfig?.description} />
+                    </a>
+                  </Link>
+                  <Link href="/">
+                    <a className="px-3 py-2 whitespace-nowrap rounded-md hover:text-text-600 active:text-text-500">
+                      О ПЕРЕВОДЕ
+                    </a>
+                  </Link>
+                </div>
+              </div>
             </div>
           </>
         )}

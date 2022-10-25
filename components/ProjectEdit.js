@@ -137,6 +137,7 @@ function ProjectEdit() {
           setSelectedModerator={setSelectedModerator}
           setSelectedTranslator={setSelectedTranslator}
         />
+        <div></div>
         <div>
           <Modal
             isOpen={openModalAssignTranslator}

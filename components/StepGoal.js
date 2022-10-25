@@ -18,7 +18,8 @@ function StepGoal({ description }) {
         className="btn-cyan w-28"
         onClick={(e) => (setShowModalStepGoal(!showModalStepGoal), e.stopPropagation())}
       >
-        {t('Goal')}
+        О ШАГЕ
+        {/* {t('Goal')} */}
       </button>
       <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal') + ':'}>
         <div className="mt-2">
