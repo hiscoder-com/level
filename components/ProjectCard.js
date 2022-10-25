@@ -33,8 +33,8 @@ function ProjectCard({ project }) {
   useEffect(() => {
     if (level && ['translator', 'moderator'].includes(level)) {
       supabase
-        .rpc('get_current_step', { project_id: project.id })
-        .then((res) => setCurrentStep(res.data))
+        .rpc('get_current_steps', { project_id: project.id })
+        .then((res) => setCurrentStep(res.data[0]))
     }
   }, [level, project?.id])
 

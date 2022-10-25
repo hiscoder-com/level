@@ -26,14 +26,14 @@ export default function IntroPage() {
       .then((res) => {
         setIntroMd(res.data.intro)
         supabase
-          .rpc('get_current_step', { project_id: res.data.projects.id })
+          .rpc('get_current_steps', { project_id: res.data.projects.id })
           .then((response) => {
-            if (!response.data.step) {
+            if (!response.data[0].step) {
               return replace(`/account`)
             }
-            if (parseInt(response.data.step) !== parseInt(step)) {
+            if (parseInt(response.data[0].step) !== parseInt(step)) {
               return replace(
-                `/translate/${project}/${book}/${chapter}/${response.data.step}/intro`
+                `/translate/${project}/${book}/${chapter}/${response.data[0].step}/intro`
               )
             }
           })
