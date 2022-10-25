@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import { useTranslation } from 'next-i18next'
 import { useRecoilValue } from 'recoil'
 
 import Timer from 'components/Timer'
@@ -14,7 +13,6 @@ import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
 import Burger from 'public/burger.svg'
-import Tools from 'public/tools.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
@@ -24,7 +22,6 @@ export default function AppBar({ setIsOpen }) {
   const [access, setAccess] = useState(false)
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
-  const { t } = useTranslation('steps')
 
   const router = useRouter()
 
