@@ -1,6 +1,6 @@
-import ProjectCreate from 'components/ProjectCreate'
-
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import ProjectCreate from 'components/ProjectCreate'
 
 function ProjectCreatePage() {
   return <ProjectCreate />
