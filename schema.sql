@@ -38,6 +38,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
     DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
@@ -283,12 +284,27 @@
     END;
   $$;
 
+  -- Устанавливает дату начала перевода главы
+  CREATE FUNCTION PUBLIC.finished_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+
+    BEGIN
+      IF authorize(auth.uid(), finished_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;
+
+      UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE finished_chapter.chapter_id = chapters.id AND finished_chapter.project_id = chapters.project_id AND started_at IS NOT NULL AND finished_at IS NULL;
+
+      RETURN true;
+
+    END;
+  $$;
+
   -- Сохранить стих
   CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 
     BEGIN
-      -- проверить что глава начата, что стих назначен переводчику
+      -- TODO проверить что глава начата и не закончена, что стих назначен переводчику
       UPDATE PUBLIC.verses SET "text" = save_verse.new_verse WHERE verses.id = save_verse.verse_id;
 
       RETURN true;
