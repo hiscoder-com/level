@@ -31,7 +31,7 @@ const ListOfNotes = dynamic(
 
 function TeamNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
-  const [editLevel, setEditLevel] = useState(false)
+  const [editable, setEditable] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
@@ -50,7 +50,7 @@ function TeamNotes() {
         user_id: user.id,
         project_id: project.id,
       })
-      setEditLevel(['admin', 'coordinator', 'moderator'].includes(level.data))
+      setEditable(['admin', 'coordinator', 'moderator'].includes(level.data))
     }
     if ((user?.id, project?.id)) {
       getLevel()
@@ -80,7 +80,7 @@ function TeamNotes() {
       .catch((err) => console.log(err))
   }
   useEffect(() => {
-    if (!activeNote || !editLevel) {
+    if (!activeNote || !editable) {
       return
     }
     const timer = setTimeout(() => {
@@ -94,13 +94,13 @@ function TeamNotes() {
       clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNote])
+  }, [activeNote, editable])
 
   return (
     <div className="relative">
       {!activeNote ? (
         <div>
-          {editLevel && (
+          {editable && (
             <div className="flex justify-end">
               <button className="btn-cyan mb-4 right-0" onClick={addNote}>
                 {t('Create')}
@@ -117,7 +117,7 @@ function TeamNotes() {
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-3 absolute right-0 top-0',
             }}
-            isShowDelBtn={editLevel}
+            isShowDelBtn={editable}
             delBtnIcon={<Waste className={'w-4 h-4'} />}
           />
         </div>
@@ -141,8 +141,8 @@ function TeamNotes() {
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            readOnly={!editLevel}
-            placeholder=""
+            readOnly={!editable}
+            placeholder={editable ? t('Text_new_note') : ''}
           />
         </>
       )}
