@@ -20,7 +20,6 @@ function CommandEditor({ config }) {
     query: { project, chapter },
   } = useRouter()
   const [verseObjects, setVerseObjects] = useState([])
-
   useEffect(() => {
     const getLevel = async (user_id, project_id) => {
       const level = await supabase.rpc('authorize', {
@@ -38,14 +37,23 @@ function CommandEditor({ config }) {
         .match({ 'projects.code': project, 'chapters.num': chapter })
         .order('num', 'ascending')
         .then((res) => {
-          setVerseObjects(res.data)
+          const verses = config?.reference?.verses?.map((v) => v.verse_id)
+          const result = res.data.map((el) => ({
+            ...el,
+            editable: verses.includes(el.verse_id),
+          }))
+          setVerseObjects(result)
           getLevel(user.id, res.data[0].project_id)
         })
     }
-  }, [chapter, project, user.id])
+  }, [chapter, config?.reference?.verses, project, user.id])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
+      console.log(!config?.config?.moderatorOnly, !prev.editable)
+      if (!config?.config?.moderatorOnly && !prev.editable) {
+        return prev
+      }
       prev[id].verse = text
       axios.defaults.headers.common['token'] = user?.access_token
       axios
@@ -62,9 +70,25 @@ function CommandEditor({ config }) {
     <div>
       {verseObjects.map((el, index) => (
         <div key={el.verse_id} className="flex my-3">
-          <div>{el.num}</div>
+          <div
+            className={
+              (
+                config?.config?.moderatorOnly
+                  ? ['user', 'translator'].includes(level)
+                  : !el.editable
+              )
+                ? ''
+                : 'font-bold'
+            }
+          >
+            {el.num}
+          </div>
           <AutoSizeTextArea
-            disabled={['user', 'translator'].includes(level)}
+            disabled={
+              config?.config?.moderatorOnly
+                ? ['user', 'translator'].includes(level)
+                : !el.editable
+            }
             verseObject={el}
             index={index}
             updateVerse={updateVerse}
