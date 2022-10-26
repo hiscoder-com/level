@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 
+import { useRouter } from 'next/router'
+
 import dynamic from 'next/dynamic'
 
 import axios from 'axios'
@@ -8,7 +10,8 @@ import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useTeamNotes, useProject } from 'utils/hooks'
-import { useRouter } from 'next/router'
+import { supabase } from 'utils/supabaseClient'
+
 import Close from 'public/close.svg'
 import Waste from 'public/waste.svg'
 
@@ -28,6 +31,7 @@ const ListOfNotes = dynamic(
 
 function TeamNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
+  const [editable, setEditable] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
@@ -40,6 +44,18 @@ function TeamNotes() {
     token: user?.access_token,
     project_id: project?.id,
   })
+  useEffect(() => {
+    const getLevel = async () => {
+      const level = await supabase.rpc('authorize', {
+        user_id: user.id,
+        project_id: project.id,
+      })
+      setEditable(['admin', 'coordinator', 'moderator'].includes(level.data))
+    }
+    if ((user?.id, project?.id)) {
+      getLevel()
+    }
+  }, [user?.id, project?.id])
 
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
@@ -64,7 +80,7 @@ function TeamNotes() {
       .catch((err) => console.log(err))
   }
   useEffect(() => {
-    if (!activeNote) {
+    if (!activeNote || !editable) {
       return
     }
     const timer = setTimeout(() => {
@@ -78,28 +94,30 @@ function TeamNotes() {
       clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNote])
+  }, [activeNote, editable])
 
   return (
     <div className="relative">
       {!activeNote ? (
         <div>
-          <div className="flex justify-end">
-            <button className="btn-cyan mb-4 right-0" onClick={addNote}>
-              {t('Create')}
-            </button>
-          </div>
+          {editable && (
+            <div className="flex justify-end">
+              <button className="btn-cyan mb-4 right-0" onClick={addNote}>
+                {t('Create')}
+              </button>
+            </div>
+          )}
           <ListOfNotes
             notes={notes}
             removeNote={removeNote}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-6 rounded-lg shadow-md',
-              title: 'font-bold p-2',
+              item: 'bg-cyan-50 my-6 rounded-lg shadow-md relative',
+              title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'px-4 py-2',
+              delBtn: 'p-3 absolute right-0 top-0',
             }}
-            isShowText
+            isShowDelBtn={editable}
             delBtnIcon={<Waste className={'w-4 h-4'} />}
           />
         </div>
@@ -117,12 +135,14 @@ function TeamNotes() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md',
+              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md mr-12',
               redactor:
-                'bg-cyan-50 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+                'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
+            readOnly={!editable}
+            placeholder={editable ? t('Text_new_note') : ''}
           />
         </>
       )}
