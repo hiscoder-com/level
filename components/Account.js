@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Projects from 'components/Projects'
-import SignOut from 'components/SignOut'
+// import SignOut from 'components/SignOut'
 
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -24,21 +24,17 @@ function Account() {
   return (
     <>
       {user?.id && (
-        <div className="divide-y divide-gray-400">
-          <div>
-            <p>
-              {t('Id')}: {user.id}
-            </p>
-            <p>
-              {t('Login')}: {user.login}
-            </p>
-            <p>
-              {t('users:Email')}: {user.email}
-            </p>
-            <SignOut />
-          </div>
+        <>
+          <p className="mt-3">
+            {t('Login')}: <b>{user.login}</b>
+          </p>
+          <p>
+            {t('users:Email')}: <b>{user.email}</b>
+          </p>
+          {/* <SignOut /> */}
+
           <Projects />
-        </div>
+        </>
       )}
     </>
   )

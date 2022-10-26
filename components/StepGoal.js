@@ -20,9 +20,11 @@ function StepGoal({ description }) {
       >
         {t('Goal')}
       </button>
-      <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal') + ':'}>
-        <div className="mt-2">
-          <p className="text-sm text-gray-500 whitespace-pre-line">{description}</p>
+      <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal')}>
+        <div className="mt-2 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
+          <p className="text-sm text-gray-500 whitespace-pre-line">
+            {description.replaceAll('\n\n', '\n')}
+          </p>
         </div>
         <div className="mt-4">
           <button className="btn-cyan w-24" onClick={closeModal}>

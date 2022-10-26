@@ -15,6 +15,7 @@ function ProjectBooksPage() {
   const { user } = useCurrentUser()
   const {
     query: { code },
+    push,
   } = useRouter()
   const { t } = useTranslation(['common'])
   const [project, setProject] = useState()
@@ -33,8 +34,8 @@ function ProjectBooksPage() {
     getProject()
   }, [code])
 
-  const handleCreate = async (book_code) => {
-    const book = project?.base_manifest?.books.find((el) => el.name === book_code)
+  const handleCreate = async () => {
+    const book = project?.base_manifest?.books.find((el) => el.name === selectedBook)
     if (!book) {
       return
     }
@@ -42,9 +43,12 @@ function ProjectBooksPage() {
     const res = await axios.post('/api/create_chapters', {
       project_id: project.id,
       link: book.link,
-      book_code,
+      book_code: selectedBook,
     })
-    console.log({ res })
+
+    if (res.status === 201) {
+      push('/projects/' + code + '/books/' + selectedBook)
+    }
   }
 
   useEffect(() => {
@@ -69,16 +73,15 @@ function ProjectBooksPage() {
 
   return (
     <>
-      <h2>
-        {t('Project')}: {project?.title} ({project?.code})
-        <br />
-        {t('Books')}
-      </h2>
+      <h3 className="h3">
+        <Link href={'/projects/' + code}>
+          <a className="underline text-blue-700">« {project?.title}</a>
+        </Link>
+      </h3>
+      <p className="mt-4 mb-3 h4">{t('Books')}</p>
       {books?.map((el) => (
         <Link key={el.code} href={'/projects/' + project.code + '/books/' + el.code}>
-          <a className="block text-blue-700 underline">
-            {t(`books:${el.code}`)} | {JSON.stringify(el.chapters, null, 2)}
-          </a>
+          <a className="block text-blue-700 underline">{t(`books:${el.code}`)}</a>
         </Link>
       ))}
       <select onChange={(e) => setSelectedBook(e.target.value)} value={selectedBook}>
@@ -90,7 +93,7 @@ function ProjectBooksPage() {
             </option>
           ))}
       </select>
-      <div className="btn btn-cyan" onClick={() => handleCreate(selectedBook)}>
+      <div className="btn btn-cyan" onClick={handleCreate}>
         {t('Create')}
       </div>
     </>
