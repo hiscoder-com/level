@@ -1769,7 +1769,7 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
+                  "name": "commandTranslate",
                   "config": {}
                 },
                 {
@@ -2084,7 +2084,7 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
+                  "name": "commandTranslate",
                   "config": {}
                 },
                 {
