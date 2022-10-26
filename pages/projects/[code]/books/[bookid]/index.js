@@ -85,7 +85,7 @@ function BookChaptersPage() {
         {t('Project')}: {project?.title} ({project?.code})
       </h2>
       <h3>
-        {t('Book')}: {book?.code}
+        {t('Book')}: {t(`books:${book?.code}`)}
       </h3>
       {chapters?.map((chapter) => (
         <div key={chapter.id}>
@@ -112,8 +112,12 @@ export default BookChaptersPage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects', 'common', 'chapters'])),
-      // Will be passed to the page component as props
+      ...(await serverSideTranslations(locale, [
+        'projects',
+        'common',
+        'chapters',
+        'books',
+      ])),
     },
   }
 }

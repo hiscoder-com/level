@@ -1,5 +1,7 @@
 {
-  "StartedAt": "Начата",
+  "Created": "Создано",
+  "FinishedAt": "Закончена",
+  "FinishedChapter": "Закончить главу",
   "StartChapter": "Начать главу",
-  "Created": "Создано"
+  "StartedAt": "Начата"
 }

@@ -26,14 +26,20 @@ export default function IntroPage() {
       .then((res) => {
         setIntroMd(res.data.intro)
         supabase
-          .rpc('get_current_step', { project_id: res.data.projects.id })
+          .rpc('get_current_steps', { project_id: res.data.projects.id })
           .then((response) => {
-            if (!response.data.step) {
+            // пришел массив из книг, глав и шагов. Надо пройти, проверить есть ли наша глава.
+            // если нет - ошибка или редирект
+            // если есть - сверить шаг. Если совпадает - все ок, если нет - перейти на нужный шаг
+            const current_step = response.data.filter(
+              (el) => el.book === book && el.chapter.toString() === chapter.toString()
+            )?.[0]?.step
+            if (!current_step) {
               return replace(`/account`)
             }
-            if (parseInt(response.data.step) !== parseInt(step)) {
+            if (parseInt(current_step) !== parseInt(step)) {
               return replace(
-                `/translate/${project}/${book}/${chapter}/${response.data.step}/intro`
+                `/translate/${project}/${book}/${chapter}/${current_step}/intro`
               )
             }
           })

@@ -8,11 +8,15 @@
     DROP TABLE IF EXISTS PUBLIC.steps;
     DROP TABLE IF EXISTS PUBLIC.project_translators;
     DROP TABLE IF EXISTS PUBLIC.project_coordinators;
+    DROP TABLE IF EXISTS PUBLIC.personal_notes;
+    DROP TABLE IF EXISTS PUBLIC.team_notes;
     DROP TABLE IF EXISTS PUBLIC.projects;
     DROP TABLE IF EXISTS PUBLIC.methods;
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
+
+
   -- EDN DROP TABLE
 
   -- DROP TRIGGER
@@ -20,16 +24,21 @@
     DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
     DROP TRIGGER IF EXISTS on_public_book_created ON PUBLIC.books;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
+    DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
+    DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
+
   -- END DROP TRIGGER
 
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
-    DROP FUNCTION IF EXISTS PUBLIC.get_current_step;
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_step; -- REMOVE AFTER UPDATE
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_steps;
     DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
     DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
@@ -41,11 +50,12 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_team_notes;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
     DROP FUNCTION IF EXISTS PUBLIC.get_verses;
     DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
-
   -- END DROP FUNCTION
 
   -- DROP TYPE
@@ -139,29 +149,28 @@
     END;
   $$;
 
-  -- возвращает, на каком шаге сейчас  юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
-  CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
+  -- возвращает, на каком шаге сейчас юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
+  CREATE FUNCTION PUBLIC.get_current_steps(project_id bigint) returns TABLE(title text, project text, book PUBLIC.book_code, chapter int2, step int2, started_at TIMESTAMP)
     LANGUAGE plpgsql security definer AS $$
-    DECLARE
-      current_step RECORD;
+
     BEGIN
-      IF authorize(auth.uid(), get_current_step.project_id) IN ('user') THEN
-        RETURN FALSE;
+      -- должен быть на проекте
+      IF authorize(auth.uid(), get_current_steps.project_id) IN ('user') THEN
+        RETURN;
       END IF;
 
-      SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, started_at, finished_at INTO current_step
+      --
+      RETURN query SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, chapters.started_at
       FROM verses
         LEFT JOIN chapters ON (verses.chapter_id = chapters.id)
         LEFT JOIN books ON (chapters.book_id = books.id)
         LEFT JOIN steps ON (verses.current_step = steps.id)
         LEFT JOIN projects ON (projects.id = verses.project_id)
-      WHERE verses.project_id = get_current_step.project_id
+      WHERE verses.project_id = get_current_steps.project_id
         AND chapters.started_at IS NOT NULL
         AND chapters.finished_at IS NULL
-        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_step.project_id AND user_id = auth.uid())
+        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_steps.project_id AND user_id = auth.uid())
       GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
-
-      RETURN current_step;
 
     END;
   $$;
@@ -173,6 +182,7 @@
       verses_list RECORD;
       cur_chapter_id BIGINT;
     BEGIN
+      -- должен быть на проекте
       IF authorize(auth.uid(), get_verses.project_id) IN ('user') THEN
         RETURN;
       END IF;
@@ -181,10 +191,12 @@
       FROM PUBLIC.chapters
       WHERE chapters.num = get_verses.chapter AND chapters.project_id = get_verses.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_verses.book AND books.project_id = get_verses.project_id);
 
+      -- узнать id главы
       IF cur_chapter_id IS NULL THEN
         RETURN;
       END IF;
 
+      -- вернуть айди стиха, номер и текст для определенного переводчика и из определенной главы
       return query SELECT verses.id as verse_id, verses.num, verses.text as verse
       FROM public.verses
       WHERE verses.project_translator_id = (SELECT id
@@ -272,12 +284,27 @@
     END;
   $$;
 
+  -- Устанавливает дату начала перевода главы
+  CREATE FUNCTION PUBLIC.finished_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+
+    BEGIN
+      IF authorize(auth.uid(), finished_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;
+
+      UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE finished_chapter.chapter_id = chapters.id AND finished_chapter.project_id = chapters.project_id AND started_at IS NOT NULL AND finished_at IS NULL;
+
+      RETURN true;
+
+    END;
+  $$;
+
   -- Сохранить стих
   CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 
     BEGIN
-      -- проверить что глава начата, что стих назначен переводчику
+      -- TODO проверить что глава начата и не закончена, что стих назначен переводчику
       UPDATE PUBLIC.verses SET "text" = save_verse.new_verse WHERE verses.id = save_verse.verse_id;
 
       RETURN true;
@@ -425,8 +452,8 @@
       IF NOT PUBLIC.admin_only() THEN
         RETURN FALSE;
       END IF;
-      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
 
+      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
       IF blocked_user.is_admin = TRUE THEN
         RETURN FALSE;
       END IF;
@@ -499,6 +526,26 @@
         PUBLIC.progress (verse_id, "text", step_id)
       VALUES
         (NEW.id, NEW.text, OLD.current_step);
+
+      RETURN NEW;
+
+    END;
+  $$;
+
+ -- update changed_at to current time/date when personal_notes is updating
+  CREATE FUNCTION PUBLIC.handle_update_personal_notes() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      NEW.changed_at:=NOW();
+
+      RETURN NEW;
+
+    END;
+  $$;
+
+-- update changed_at to current time/date when team_notes is updating
+  CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$ BEGIN
+      NEW.changed_at:=NOW();
 
       RETURN NEW;
 
@@ -1046,6 +1093,102 @@
   -- END RLS
 -- END PROGRESS
 
+-- PERSONAL NOTES
+  -- TABLE
+    CREATE TABLE PUBLIC.personal_notes (
+      id text NOT NULL primary key,
+      user_id uuid references PUBLIC.users ON
+      DELETE
+        CASCADE NOT NULL,
+      title text DEFAULT NULL,
+      data json DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT now(),
+      changed_at TIMESTAMP DEFAULT now(),
+      is_folder BOOLEAN DEFAULT FALSE,
+      parent_id text DEFAULT NULL
+    );
+    ALTER TABLE
+      PUBLIC.personal_notes enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+
+    DROP POLICY IF EXISTS "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes FOR
+    INSERT
+      TO authenticated WITH CHECK (TRUE);
+
+    DROP POLICY IF EXISTS "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes FOR
+    DELETE
+      USING (auth.uid() = user_id);
+
+    DROP POLICY IF EXISTS "Залогиненый юзер может изменить личную заметку" ON PUBLIC.personal_notes;
+
+    CREATE policy "Залогиненый юзер может изменить личную заметку" ON PUBLIC.personal_notes FOR
+    UPDATE
+      USING (auth.uid() = user_id);
+
+
+    DROP POLICY IF EXISTS "Показывать личные заметки данного пользователя" ON PUBLIC.personal_notes;
+
+    CREATE policy "Показывать личные заметки данного пользователя" ON PUBLIC.personal_notes FOR
+    SELECT
+     USING (auth.uid() = user_id);
+
+  -- END RLS
+-- PERSONAL NOTES
+
+-- TEAM NOTES
+  -- TABLE
+    CREATE TABLE PUBLIC.team_notes (
+      id text NOT NULL primary key,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      title text DEFAULT NULL,
+      data json DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT now(),
+      changed_at TIMESTAMP DEFAULT now(),
+      is_folder BOOLEAN DEFAULT FALSE,
+      parent_id text DEFAULT NULL
+    );
+    ALTER TABLE
+      PUBLIC.team_notes enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    --Администратор или координатор может добавить командную заметку
+    DROP POLICY IF EXISTS "team_notes insert" ON PUBLIC.team_notes;
+    CREATE policy "team_notes insert" ON PUBLIC.team_notes FOR
+    INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
+
+    --Администратор или координатор может удалить командную заметку
+    DROP POLICY IF EXISTS "team_notes delete" ON PUBLIC.team_notes;
+    CREATE policy "team_notes delete" ON PUBLIC.team_notes FOR
+    DELETE
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
+
+    --Администратор или координатор может изменить командную заметку
+    DROP POLICY IF EXISTS "team_notes update" ON PUBLIC.team_notes;
+    CREATE policy "team_notes update" ON PUBLIC.team_notes FOR
+    UPDATE
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
+
+    --Все на проекте могут читать командные заметки
+    DROP POLICY IF EXISTS "team_notes select" ON PUBLIC.team_notes;
+    CREATE policy "team_notes select" ON PUBLIC.team_notes FOR
+    SELECT
+     USING (authorize(auth.uid(), project_id) != 'user');
+
+  -- END RLS
+-- TEAM NOTES
+
+
+
 -- Send "previous data" on change
 
 ALTER TABLE
@@ -1079,6 +1222,16 @@ ALTER TABLE
   CREATE TRIGGER on_public_verses_next_step AFTER
   UPDATE
     ON PUBLIC.verses FOR each ROW EXECUTE FUNCTION PUBLIC.handle_next_step();
+
+  -- trigger the function every time a note is update
+
+  CREATE TRIGGER on_public_personal_notes_update BEFORE
+  UPDATE
+    ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_personal_notes();
+
+  CREATE TRIGGER on_public_team_notes_update BEFORE
+  UPDATE
+    ON PUBLIC.team_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_team_notes();
 -- END TRIGGERS
 
 /**
@@ -1241,10 +1394,10 @@ ADD
     INSERT INTO
       PUBLIC.methods (title, resources, steps, "type")
     VALUES
-      ('Vcana Bible', '{"simplified":true, "literal":false, "tnotes":false, "twords":false, "tquestions":false}', '[
+      ('Vcana Bible', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
           "title": "1 ШАГ - ОБЗОР КНИГИ",
-          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
+          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
           "time": 60,
           "whole_chapter": true,
           "count_of_users": 1,
@@ -1253,11 +1406,11 @@ ADD
               "size": 4,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "literal",
                   "config": {}
                 },
                 {
-                  "name": "literal",
+                  "name": "simplified",
                   "config": {}
                 },
                 {
@@ -1274,7 +1427,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1291,7 +1444,7 @@ ADD
         },
         {
           "title": "2 ШАГ - КОМАНДНОЕ ИЗУЧЕНИЕ ТЕКСТА",
-          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: обсудить с командой материалы букпэкеджа.\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: обсудить командой общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к началу перевода.",
+          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: обсудить с командой материалы букпэкеджа.\n\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: обсудить командой общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к началу перевода.",
           "time": 120,
           "whole_chapter": true,
           "count_of_users": 4,
@@ -1300,11 +1453,11 @@ ADD
               "size": 4,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "literal",
                   "config": {}
                 },
                 {
-                  "name": "literal",
+                  "name": "simplified",
                   "config": {}
                 },
                 {
@@ -1321,7 +1474,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1347,11 +1500,11 @@ ADD
               "size": 4,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "literal",
                   "config": {}
                 },
                 {
-                  "name": "literal",
+                  "name": "simplified",
                   "config": {}
                 },
                 {
@@ -1386,13 +1539,13 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "literal",
                   "config": {
                     "draft":true
                   }
                 },
                 {
-                  "name": "literal",
+                  "name": "simplified",
                   "config": {}
                 },
                 {
@@ -1427,11 +1580,11 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "literal",
                   "config": {}
                 },
                 {
-                  "name": "literal",
+                  "name": "simplified",
                   "config": {}
                 },
                 {
@@ -1458,7 +1611,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1484,11 +1637,11 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "literal",
                   "config": {}
                 },
                 {
-                  "name": "literal",
+                  "name": "simplified",
                   "config": {}
                 },
                 {
@@ -1513,7 +1666,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1534,12 +1687,12 @@ ADD
           "time": 30,
           "whole_chapter": true,
           "count_of_users": 4,
-          "intro": "https://youtu.be/w5766JEVCyU\n\nЭто командная работа и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: всей командой улучшить перевод, выслушав больше мнений относительно самых важных слов и фраз в переводе, а также решить разногласия, оставшиеся после взаимопроверки.\n\n\n\nПРОВЕРКА ТЕКСТА ПО КЛЮЧЕВЫМ СЛОВАМ - Прочитайте текст всех переводчиков по очереди всей командой. Проверьте перевод на наличие ключевых слов из инструмента СЛОВА. Все ключевые слова на месте? Все ключевые слова переведены корректно?\n\nКоманда принимает решения, как переводить эти слова или фразы – переводчик вносит эти изменения в свой отрывок. В некоторых случаях, вносить изменения вносить изменения, которые принимает команда, может один человек, выбранный из переводчиков. \n\n","config": [
+          "intro": "https://youtu.be/w5766JEVCyU\n\nЭто командная работа и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: всей командой улучшить перевод, выслушав больше мнений относительно самых важных слов и фраз в переводе, а также решить разногласия, оставшиеся после взаимопроверки.\n\n\n\nПРОВЕРКА ТЕКСТА ПО КЛЮЧЕВЫМ СЛОВАМ - Прочитайте текст всех переводчиков по очереди всей командой. Проверьте перевод на наличие ключевых слов из инструмента СЛОВА. Все ключевые слова на месте? Все ключевые слова переведены корректно?\n\nКоманда принимает решения, как переводить эти слова или фразы – переводчик вносит эти изменения в свой отрывок. В некоторых случаях, вносить изменения, которые принимает команда, может один человек, выбранный из переводчиков. \n\n","config": [
             {
               "size": 3,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "twords",
                   "config": {}
                 },
                 {
@@ -1547,11 +1700,11 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "tnotes",
+                  "name": "simplified",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 }
               ]
@@ -1564,7 +1717,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1591,11 +1744,15 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "simplified",
+                  "name": "literal",
                   "config": {}
                 },
                 {
-                  "name": "literal",
+                  "name": "tquestions",
+                  "config": {}
+                },
+                {
+                  "name": "simplified",
                   "config": {}
                 },
                 {
@@ -1605,10 +1762,6 @@ ADD
                 {
                   "name": "twords",
                   "config": {}
-                },
-                {
-                  "name": "tquestions",
-                  "config": {}
                 }
               ]
             },
@@ -1616,11 +1769,11 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
+                  "name": "commandTranslate",
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1652,11 +1805,11 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "tnotes",
+                  "name": "twords",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 }
               ]
@@ -1665,7 +1818,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1695,11 +1848,11 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "tnotes",
+                  "name": "twords",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 }
               ]
@@ -1708,7 +1861,7 @@ ADD
               "size": 2,
               "tools": [
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1738,11 +1891,11 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "tnotes",
+                  "name": "twords",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 }
               ]
@@ -1775,11 +1928,11 @@ ADD
                   }
                 },
                 {
-                  "name": "tnotes",
+                  "name": "twords",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 }
               ]
@@ -1810,11 +1963,11 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "tnotes",
+                  "name": "twords",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 },
                 {
@@ -1833,7 +1986,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1854,7 +2007,7 @@ ADD
           "time": 40,
           "whole_chapter": false,
           "count_of_users": 2,
-          "intro": "# ШЕСТОЙ ШАГ - ВЗАИМНАЯ ПРОВЕРКА\n\nhttps://www.youtube.com/watch?v=cAgypQsWgQk\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 40 минут.\n\nЦЕЛЬ этого шага: улучшить набросок перевода, пригласив другогого человека, чтобы проверить перевод на точность и естественность.\n\nВ этом шаге вам необходимо выполнить два задания.\n\nЗадание первое - Прочитайте вслух свой текст напарнику, который параллельно следит за текстом ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЙ на русском языке и обращает внимание только на ТОЧНОСТЬ вашего перевода. Обсудите текст насколько он точен. Изменения в текст вносит переводчик, работавший над ним. Если не удалось договориться о каких-либо изменениях, оставьте этот вопрос для обсуждения всей командой. Поменяйтесь ролями и поработайте над отрывком партнёра. Уделите этому заданию 20 минут.\n\nЗадание второе - Еще раз прочитайте вслух свой текст напарнику, который теперь не смотрит ни в какой текст, а просто слушает ваше чтение вслух, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка. Обсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте. Поменяйтесь ролями и поработайте над отрывком партнёра. Уделите этому заданию 20 минут.\n\nПримечание к шагу:\n\n- Не влюбляйтесь в свой текст. Будьте гибкими к тому, чтобы слышать другое мнение и улучшать свой набросок перевода.  Это групповая работа и текст должен соответствовать пониманию большинства в вашей команде. Если даже будут допущены ошибки в этом случае, то на проверках последующих уровней они будут исправлены.\n- Если в работе с напарником вам не удалось договориться по каким-то вопросам, касающихся текста, оставьте этот вопрос на обсуждение со всей командой. Ваша цель - не победить напарника, а с его помощью улучшить перевод.","config": [
+          "intro": "# ШЕСТОЙ ШАГ - ВЗАИМНАЯ ПРОВЕРКА\n\nhttps://www.youtube.com/watch?v=cAgypQsWgQk\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 40 минут.\n\nЦЕЛЬ этого шага: улучшить набросок перевода, пригласив другогого человека, чтобы проверить перевод на точность и естественность.\n\nВ этом шаге вам необходимо выполнить два задания.\n\nЗадание первое - Прочитайте вслух свой текст напарнику, который параллельно следит за текстом ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЙ на русском языке и обращает внимание только на ТОЧНОСТЬ вашего перевода. Обсудите текст насколько он точен. Изменения в текст вносит переводчик, работавший над ним. Если не удалось договориться о каких-либо изменениях, оставьте этот вопрос для обсуждения всей командой. Поменяйтесь ролями и поработайте над отрывком партнёра. Уделите этому заданию 20 минут.\n\nЗадание второе - Еще раз прочитайте вслух свой текст напарнику, который теперь не смотрит ни в какой текст, а просто слушает ваше чтение вслух, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка. Обсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте. Поменяйтесь ролями и поработайте над отрывком партнёра. Уделите этому заданию 20 минут.\n\nПримечание к шагу:\n\n- Не влюбляйтесь в свой текст. Будьте гибкими к тому, чтобы слышать другое мнение и улучшать свой набросок перевода. Это групповая работа и текст должен соответствовать пониманию большинства в вашей команде. Если даже будут допущены ошибки в этом случае, то на проверках последующих уровней они будут исправлены.\n- Если в работе с напарником вам не удалось договориться по каким-то вопросам, касающихся текста, оставьте этот вопрос на обсуждение со всей командой. Ваша цель - не победить напарника, а с его помощью улучшить перевод.","config": [
             {
               "size": 3,
               "tools": [
@@ -1863,11 +2016,11 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "tnotes",
+                  "name": "twords",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 },
                 {
@@ -1884,7 +2037,7 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
@@ -1914,11 +2067,11 @@ ADD
                   "config": {}
                 },
                 {
-                  "name": "tnotes",
+                  "name": "twords",
                   "config": {}
                 },
                 {
-                  "name": "twords",
+                  "name": "tnotes",
                   "config": {}
                 },
                 {
@@ -1931,11 +2084,11 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
+                  "name": "commandTranslate",
                   "config": {}
                 },
                 {
-                  "name": "ownNotes",
+                  "name": "personalNotes",
                   "config": {}
                 },
                 {
