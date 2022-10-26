@@ -26,8 +26,7 @@ export default AccountHomePage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['users', 'common'])),
-      // Will be passed to the page component as props
+      ...(await serverSideTranslations(locale, ['users', 'common', 'books'])),
     },
   }
 }

@@ -95,7 +95,7 @@ function ProjectBooksPage() {
       {books?.map((el) => (
         <Link key={el.code} href={'/projects/' + project.code + '/books/' + el.code}>
           <a className="block text-blue-700 underline">
-            {el.code} | {JSON.stringify(el.chapters, null, 2)}
+            {t(`books:${el.code}`)} | {JSON.stringify(el.chapters, null, 2)}
           </a>
         </Link>
       ))}
@@ -104,7 +104,7 @@ function ProjectBooksPage() {
           ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
           .map((el) => (
             <option value={el.name} key={el.name}>
-              {el.name} | {el.link.split('/').splice(-1)}
+              {t(`books:${el.name}`)}
             </option>
           ))}
       </select>
@@ -120,8 +120,7 @@ export default ProjectBooksPage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects', 'common'])),
-      // Will be passed to the page component as props
+      ...(await serverSideTranslations(locale, ['projects', 'common', 'books'])),
     },
   }
 }

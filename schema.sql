@@ -14,7 +14,7 @@
     DROP TABLE IF EXISTS PUBLIC.methods;
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
-    DROP TABLE IF EXISTS PUBLIC.languages;    
+    DROP TABLE IF EXISTS PUBLIC.languages;
 
 
   -- EDN DROP TABLE
@@ -32,11 +32,13 @@
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
-    DROP FUNCTION IF EXISTS PUBLIC.get_current_step;
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_step; -- REMOVE AFTER UPDATE
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_steps;
     DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
     DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
@@ -48,7 +50,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes; 
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_team_notes;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
@@ -147,29 +149,28 @@
     END;
   $$;
 
-  -- возвращает, на каком шаге сейчас  юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
-  CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
+  -- возвращает, на каком шаге сейчас юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
+  CREATE FUNCTION PUBLIC.get_current_steps(project_id bigint) returns TABLE(title text, project text, book PUBLIC.book_code, chapter int2, step int2, started_at TIMESTAMP)
     LANGUAGE plpgsql security definer AS $$
-    DECLARE
-      current_step RECORD;
+
     BEGIN
-      IF authorize(auth.uid(), get_current_step.project_id) IN ('user') THEN
-        RETURN FALSE;
+      -- должен быть на проекте
+      IF authorize(auth.uid(), get_current_steps.project_id) IN ('user') THEN
+        RETURN;
       END IF;
 
-      SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, started_at, finished_at INTO current_step
+      --
+      RETURN query SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, chapters.started_at
       FROM verses
         LEFT JOIN chapters ON (verses.chapter_id = chapters.id)
         LEFT JOIN books ON (chapters.book_id = books.id)
         LEFT JOIN steps ON (verses.current_step = steps.id)
         LEFT JOIN projects ON (projects.id = verses.project_id)
-      WHERE verses.project_id = get_current_step.project_id
+      WHERE verses.project_id = get_current_steps.project_id
         AND chapters.started_at IS NOT NULL
         AND chapters.finished_at IS NULL
-        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_step.project_id AND user_id = auth.uid())
+        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_steps.project_id AND user_id = auth.uid())
       GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
-
-      RETURN current_step;
 
     END;
   $$;
@@ -181,6 +182,7 @@
       verses_list RECORD;
       cur_chapter_id BIGINT;
     BEGIN
+      -- должен быть на проекте
       IF authorize(auth.uid(), get_verses.project_id) IN ('user') THEN
         RETURN;
       END IF;
@@ -189,10 +191,12 @@
       FROM PUBLIC.chapters
       WHERE chapters.num = get_verses.chapter AND chapters.project_id = get_verses.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_verses.book AND books.project_id = get_verses.project_id);
 
+      -- узнать id главы
       IF cur_chapter_id IS NULL THEN
         RETURN;
       END IF;
 
+      -- вернуть айди стиха, номер и текст для определенного переводчика и из определенной главы
       return query SELECT verses.id as verse_id, verses.num, verses.text as verse
       FROM public.verses
       WHERE verses.project_translator_id = (SELECT id
@@ -280,12 +284,27 @@
     END;
   $$;
 
+  -- Устанавливает дату начала перевода главы
+  CREATE FUNCTION PUBLIC.finished_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+
+    BEGIN
+      IF authorize(auth.uid(), finished_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;
+
+      UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE finished_chapter.chapter_id = chapters.id AND finished_chapter.project_id = chapters.project_id AND started_at IS NOT NULL AND finished_at IS NULL;
+
+      RETURN true;
+
+    END;
+  $$;
+
   -- Сохранить стих
   CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 
     BEGIN
-      -- проверить что глава начата, что стих назначен переводчику
+      -- TODO проверить что глава начата и не закончена, что стих назначен переводчику
       UPDATE PUBLIC.verses SET "text" = save_verse.new_verse WHERE verses.id = save_verse.verse_id;
 
       RETURN true;
@@ -521,7 +540,7 @@
       RETURN NEW;
 
     END;
-  $$;  
+  $$;
 
 -- update changed_at to current time/date when team_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
@@ -1093,13 +1112,13 @@
   -- END TABLE
 
   -- RLS
-    
+
     DROP POLICY IF EXISTS "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes;
 
     CREATE policy "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes FOR
     INSERT
-      TO authenticated WITH CHECK (TRUE); 
-   
+      TO authenticated WITH CHECK (TRUE);
+
     DROP POLICY IF EXISTS "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes;
 
     CREATE policy "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes FOR
@@ -1145,13 +1164,13 @@
     DROP POLICY IF EXISTS "team_notes insert" ON PUBLIC.team_notes;
     CREATE policy "team_notes insert" ON PUBLIC.team_notes FOR
     INSERT
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator')); 
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
     --Администратор или координатор может удалить командную заметку
     DROP POLICY IF EXISTS "team_notes delete" ON PUBLIC.team_notes;
     CREATE policy "team_notes delete" ON PUBLIC.team_notes FOR
     DELETE
-      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));  
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
     --Администратор или координатор может изменить командную заметку
     DROP POLICY IF EXISTS "team_notes update" ON PUBLIC.team_notes;
@@ -1163,7 +1182,7 @@
     DROP POLICY IF EXISTS "team_notes select" ON PUBLIC.team_notes;
     CREATE policy "team_notes select" ON PUBLIC.team_notes FOR
     SELECT
-     USING (authorize(auth.uid(), project_id) != 'user'); 
+     USING (authorize(auth.uid(), project_id) != 'user');
 
   -- END RLS
 -- TEAM NOTES

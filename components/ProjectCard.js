@@ -10,12 +10,12 @@ import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 
 function ProjectCard({ project }) {
-  const { t } = useTranslation(['projects', 'common'])
+  const { t } = useTranslation(['projects', 'common', 'books'])
 
   const { user } = useCurrentUser()
 
   const [level, setLevel] = useState('user')
-  const [currentStep, setCurrentStep] = useState(null)
+  const [currentSteps, setCurrentSteps] = useState(null)
 
   useEffect(() => {
     const getLevel = async () => {
@@ -33,8 +33,8 @@ function ProjectCard({ project }) {
   useEffect(() => {
     if (level && ['translator', 'moderator'].includes(level)) {
       supabase
-        .rpc('get_current_step', { project_id: project.id })
-        .then((res) => setCurrentStep(res.data))
+        .rpc('get_current_steps', { project_id: project.id })
+        .then((res) => setCurrentSteps(res.data))
     }
   }, [level, project?.id])
 
@@ -57,13 +57,18 @@ function ProjectCard({ project }) {
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
       </div>
-      {currentStep && currentStep.step && (
-        <Link
-          href={`/translate/${currentStep.project}/${currentStep.book}/${currentStep.chapter}/${currentStep.step}/intro`}
-        >
-          <a className="btn">{currentStep.title}</a>
-        </Link>
-      )}
+      {currentSteps &&
+        currentSteps.length &&
+        currentSteps.map((el, index) => (
+          <Link
+            key={index}
+            href={`/translate/${el.project}/${el.book}/${el.chapter}/${el.step}/intro`}
+          >
+            <a className="btn">
+              {t(`books:${el.book}`)} {el.chapter} | {el.title}
+            </a>
+          </Link>
+        ))}
     </div>
   )
 }

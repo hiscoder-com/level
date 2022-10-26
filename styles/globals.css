@@ -95,7 +95,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply absolute right-2 bottom-2 cursor-pointer
 }
 
-/* нужно ли? */
 .f-screen-appbar{
 	min-height: calc(100vh - 11.5rem);
 }
