@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
 
 import Modal from 'components/Modal'
 import { useBriefs, useProject } from 'utils/hooks'
-import axios from 'axios'
 
 function TGoal({user}) {
   const [showModalTGoal, setShowModalTGoal] = useState(false)
@@ -23,11 +22,6 @@ function TGoal({user}) {
   const closeModal = () => {
     setShowModalTGoal(false)
   }
-
-useEffect(() => {
-  console.log(briefs)
-}, [briefs])
-
 
   return (
     <>

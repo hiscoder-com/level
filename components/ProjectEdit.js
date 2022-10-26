@@ -13,6 +13,7 @@ import TranslatorImage from 'components/TranslatorImage'
 import { supabase } from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import EditBrief from './EditBrief'
 
 function ProjectEdit() {
   const { t } = useTranslation(['common', 'project-edit'])
@@ -105,6 +106,10 @@ function ProjectEdit() {
       <div className="pb-5">
         <div className="pb-5 inline-block ml-2">{t('NameProject')}</div>
         <div className="pb-5 inline-block ml-2">{project?.title}</div>
+        <div className="pb-5 ml-2">
+          <EditBrief/>
+        </div>
+
         <div className="w-1/2 flex justify-between">
           <div className="ml-2">{t('Coordinators')}</div>
           {'admin' === level && (
@@ -137,7 +142,6 @@ function ProjectEdit() {
           setSelectedModerator={setSelectedModerator}
           setSelectedTranslator={setSelectedTranslator}
         />
-        <div></div>
         <div>
           <Modal
             isOpen={openModalAssignTranslator}
