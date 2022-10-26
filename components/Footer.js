@@ -32,7 +32,7 @@ export default function Footer({ textCheckbox, textButton, href, handleClick }) 
     <div className="layout-footer">
       <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
-          <div className="space-x-1.5 items-center h4">
+          <div className="space-x-1.5 items-center h5">
             <input
               className="cursor-pointer"
               id="cb"
