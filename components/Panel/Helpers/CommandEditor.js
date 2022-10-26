@@ -38,7 +38,6 @@ function CommandEditor({ config }) {
         .match({ 'projects.code': project, 'chapters.num': chapter })
         .order('num', 'ascending')
         .then((res) => {
-          console.log(res)
           setVerseObjects(res.data)
           getLevel(user.id, res.data[0].project_id)
         })
@@ -50,7 +49,7 @@ function CommandEditor({ config }) {
       prev[id].verse = text
       axios.defaults.headers.common['token'] = user?.access_token
       axios
-        .post(`/api/save_verse`, { id: prev[id].verse_id, text })
+        .put(`/api/save_verse`, { id: prev[id].verse_id, text })
         .then((res) => {
           console.log('save_verse', res)
         })

@@ -11,7 +11,7 @@ export default async function handler(req, res) {
   const { method } = req
 
   switch (method) {
-    case 'POST':
+    case 'PUT':
       // TODO валидацию
       // is it admin
       const { id, text } = req.body
@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       }
       break
     default:
-      res.setHeader('Allow', ['POST'])
+      res.setHeader('Allow', ['PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
