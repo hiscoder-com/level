@@ -6,12 +6,13 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import usfm from 'usfm-js'
 import axios from 'axios'
 
 import { supabase } from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectBooksPage() {
+  const { user } = useCurrentUser()
   const {
     query: { code },
   } = useRouter()
@@ -37,32 +38,13 @@ function ProjectBooksPage() {
     if (!book) {
       return
     }
-    const countOfChaptersAndVerses = {}
-    await axios
-      .get(book.link)
-      .then((res) => {
-        const jsonData = usfm.toJSON(res.data)
-        if (Object.entries(jsonData?.chapters).length > 0) {
-          Object.entries(jsonData?.chapters).forEach((el) => {
-            countOfChaptersAndVerses[el[0]] = Object.keys(el[1]).filter(
-              (verse) => verse !== 'front'
-            ).length
-          })
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-
-    if (Object.keys(countOfChaptersAndVerses).length !== 0) {
-      await supabase.from('books').insert([
-        {
-          code: book_code,
-          project_id: project.id,
-          chapters: countOfChaptersAndVerses,
-        },
-      ])
-    }
+    axios.defaults.headers.common['token'] = user?.access_token
+    const res = await axios.post('/api/create_chapters', {
+      project_id: project.id,
+      link: book.link,
+      book_code,
+    })
+    console.log({ res })
   }
 
   useEffect(() => {
