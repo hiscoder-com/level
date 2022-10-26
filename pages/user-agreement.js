@@ -21,9 +21,12 @@ export default function UserAgreement() {
 
   return (
     <div className="layout-appbar">
-      <div className="text-alignment text-justify">
+      <div
+        className="text-alignment text-justify overflow-auto text-gray-800"
+        style={{ height: 'calc(100vh - 11rem)' }}
+      >
         <h1 className="h1 pt-4">{t('Agreement')}:</h1>
-        <div className="h6 mt-7">
+        <div className="mt-7">
           <b className="font-bold">{t('License')}</b>
           <p
             dangerouslySetInnerHTML={{
