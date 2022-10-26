@@ -64,7 +64,7 @@ function ProjectCard({ project }) {
             key={index}
             href={`/translate/${el.project}/${el.book}/${el.chapter}/${el.step}/intro`}
           >
-            <a className="btn">
+            <a className="btn btn-white mt-2">
               {t(`books:${el.book}`)} {el.chapter} | {el.title}
             </a>
           </Link>
