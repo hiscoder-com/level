@@ -13,6 +13,9 @@ import { useCurrentUser } from 'lib/UserContext'
 // Если приходит параметр разрешить изменять свои стихи - то тогда в disabled изменить условие, делать неактивными чужие стихи
 // опять же повторю что это первая версия, очень дырявая получается, надо рефакторить, ставить проверки и т.д.
 
+// moderatorOnly
+//              - TRUE видно все стихи, только модератор может вносить исправления
+//              - FALSE видно все стихи, исправлять можно только свои
 function CommandEditor({ config }) {
   const { user } = useCurrentUser()
   const [level, setLevel] = useState('user')
@@ -20,6 +23,7 @@ function CommandEditor({ config }) {
     query: { project, chapter },
   } = useRouter()
   const [verseObjects, setVerseObjects] = useState([])
+
   useEffect(() => {
     const getLevel = async (user_id, project_id) => {
       const level = await supabase.rpc('authorize', {
@@ -50,8 +54,11 @@ function CommandEditor({ config }) {
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
-      console.log(!config?.config?.moderatorOnly, !prev.editable)
-      if (!config?.config?.moderatorOnly && !prev.editable) {
+      if (
+        !(config?.config?.moderatorOnly
+          ? !['user', 'translator'].includes(level)
+          : prev[id].editable)
+      ) {
         return prev
       }
       prev[id].verse = text
