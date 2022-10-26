@@ -17,17 +17,17 @@ export default function Projects() {
   // здесь у нас придет массив проектов, разложенный по языкам
   return (
     <>
-      <div className="text-3xl mb-5">
+      <div className="h2 mt-4 mb-5">
         {user?.is_admin ? t('Projects') : t('MyProjects')}
       </div>
-      <div className="grid grid-cols-1 gap-7 my-5 sm:grid-cols-1 md:grid-cols-2 md:my-10 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-7 my-3 sm:grid-cols-1 md:grid-cols-2 md:my-5 xl:grid-cols-3">
         {projects &&
           projects.map((project) => {
             return <ProjectCard key={project.id} project={project} />
           })}
       </div>
       {user?.is_admin && (
-        <div>
+        <div className="mt-3">
           <Link href={'/projects/create'}>
             <a className="btn-cyan">{t('AddNew')}</a>
           </Link>
