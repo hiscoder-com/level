@@ -201,3 +201,16 @@ export function useTeamNotes({ token, project_id }) {
   const loading = !notes && !error
   return [notes, { mutate, loading, error }]
 }
+
+export function useBriefs({ token, project_id }) {
+  const {
+    data: briefs,
+    mutate,
+    error,
+  } = useSWR(
+    token && project_id ? [`/api/briefs/${project_id}`, token] : null,
+    fetcher
+  )
+  const loading = !briefs && !error
+  return [briefs, { mutate, loading, error }]
+}

@@ -87,7 +87,7 @@ export default function AppBar({ setIsOpen }) {
                 </a>
                 <div className="absolute right-0 mt-4 p-3 shadow-md gap-3 border-2 border-cyan-600 z-50 bg-white rounded-md hidden group-hover:flex">
                   <StepGoal description={stepConfig?.description} />
-                  <TranslationGoal description={stepConfig?.description} />
+                  <TranslationGoal user={user} />
                 </div>
               </div>
             </div>
