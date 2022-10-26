@@ -4,23 +4,27 @@ import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
 
-function StepGoal({ description }) {
-  const [showModalStepGoal, setShowModalStepGoal] = useState(false)
+function TGoal({ description }) {
+  const [showModalTGoal, setShowModalTGoal] = useState(false)
   const { t } = useTranslation(['common'])
 
   const closeModal = () => {
-    setShowModalStepGoal(false)
+    setShowModalTGoal(false)
   }
 
   return (
     <>
       <button
         className="btn-cyan w-36"
-        onClick={(e) => (setShowModalStepGoal(!showModalStepGoal), e.stopPropagation())}
+        onClick={(e) => (setShowModalTGoal(!showModalTGoal), e.stopPropagation())}
       >
-        {t('AboutStep')}
+        {t('AboutTranslation')}
       </button>
-      <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('StepGoal') + ':'}>
+      <Modal
+        isOpen={showModalTGoal}
+        closeHandle={closeModal}
+        title={t('TranslationGoal') + ':'}
+      >
         <div className="mt-2">
           <p className="text-sm text-gray-500 whitespace-pre-line">{description}</p>
         </div>
@@ -34,4 +38,4 @@ function StepGoal({ description }) {
   )
 }
 
-export default StepGoal
+export default TGoal

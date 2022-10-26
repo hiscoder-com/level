@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil'
 
 import Timer from 'components/Timer'
 import StepGoal from 'components/StepGoal'
+import TranslationGoal from 'components/TranslationGoal'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
@@ -80,21 +81,13 @@ export default function AppBar({ setIsOpen }) {
               <div className="hidden md:flex">
                 <Timer time={stepConfig.time} />
               </div>
-              <div className="relative px-3 py-2 whitespace-nowrap rounded-md group">
+              <div className="relative px-3 py-4 whitespace-nowrap rounded-md group">
                 <a className="cursor-pointer">
                   <Tools />
                 </a>
-                <div className="absolute flex-col mt-2 p-3 shadow-md z-50 bg-white rounded-md hidden group-hover:flex">
-                  <Link href="/">
-                    <a className="px-3 py-2 whitespace-nowrap rounded-md hover:text-text-600 active:text-text-500">
-                      <StepGoal description={stepConfig?.description} />
-                    </a>
-                  </Link>
-                  <Link href="/">
-                    <a className="px-3 py-2 whitespace-nowrap rounded-md hover:text-text-600 active:text-text-500">
-                      О ПЕРЕВОДЕ
-                    </a>
-                  </Link>
+                <div className="absolute right-0 mt-4 p-3 shadow-md gap-3 border-2 border-cyan-600 z-50 bg-white rounded-md hidden group-hover:flex">
+                  <StepGoal description={stepConfig?.description} />
+                  <TranslationGoal description={stepConfig?.description} />
                 </div>
               </div>
             </div>
