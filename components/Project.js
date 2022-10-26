@@ -62,7 +62,7 @@ function Project({ code }) {
           </>
         )}
         {['admin', 'coordinator'].includes(level) && (
-          <>
+          <div className="mt-4">
             <Link href={`/projects/${project?.code}/edit`}>
               <a className="btn btn-filled btn-cyan">{t('ProjectEditing')}</a>
             </Link>
@@ -70,7 +70,7 @@ function Project({ code }) {
             <Link href={`/projects/${project?.code}/books`}>
               <a className="btn btn-filled btn-cyan mt-3">{t('ProjectBooks')}</a>
             </Link>
-          </>
+          </div>
         )}
       </div>
     </div>

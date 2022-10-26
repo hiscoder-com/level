@@ -124,7 +124,7 @@ function ProjectEdit() {
       <div className="pb-5">
         <div className="h3">
           <Link href={'/projects/' + code}>
-            <a className="underline text-blue-700">{project?.title}</a>
+            <a className="underline text-blue-700">« {project?.title}</a>
           </Link>
         </div>
         <div className="w-1/2 flex justify-between mt-5">

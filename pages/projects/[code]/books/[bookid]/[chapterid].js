@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import VerseDivider from 'components/VerseDivider'
 
 import { supabase } from 'utils/supabaseClient'
+import Link from 'next/link'
 
 function ChapterVersesPage() {
   const router = useRouter()
@@ -89,13 +90,17 @@ function ChapterVersesPage() {
 
   return (
     <>
-      <h2>
-        {t('Project')}: {project?.title} ({project?.code})
-      </h2>
-      <h3>
-        {t('Book')}: {t(`books:${book?.code}`)}
+      <h3 className="h3 mb-4">
+        <Link href={'/projects/' + code}>
+          <a className="underline text-blue-700">« {project?.title}</a>
+        </Link>
       </h3>
-      <h3>
+      <h4 className="h4 mb-3">
+        <Link href={'/projects/' + code + '/books/' + bookid}>
+          <a className="underline text-blue-700">« {t(`books:${book?.code}`)}</a>
+        </Link>
+      </h4>
+      <h3 className="h4 mb-3">
         {t('Chapter')}: {chapter?.num}
       </h3>
       <VerseDivider verses={verses} />

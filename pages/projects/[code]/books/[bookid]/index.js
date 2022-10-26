@@ -9,9 +9,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { supabase } from 'utils/supabaseClient'
 
 function BookChaptersPage() {
-  const router = useRouter()
+  const { query, push } = useRouter()
   const { t } = useTranslation(['common', 'chapters'])
-  const { code, bookid } = router.query
+  const { code, bookid } = query
   const [project, setProject] = useState()
   const [book, setBook] = useState()
   const [chapters, setChapters] = useState([])
@@ -28,8 +28,11 @@ function BookChaptersPage() {
     }
     getProject()
   }, [code])
-  const handleCreate = async (chapter_id) => {
-    await supabase.rpc('create_verses', { chapter_id })
+  const handleCreate = async (chapter_id, num) => {
+    const res = await supabase.rpc('create_verses', { chapter_id })
+    if (res.data) {
+      push('/projects/' + code + '/books/' + bookid + '/' + num)
+    }
   }
   useEffect(() => {
     const getBook = async () => {
@@ -81,24 +84,31 @@ function BookChaptersPage() {
 
   return (
     <>
-      <h2>
-        {t('Project')}: {project?.title} ({project?.code})
-      </h2>
-      <h3>
-        {t('Book')}: {t(`books:${book?.code}`)}
+      <h3 className="h3 mb-4">
+        <Link href={'/projects/' + code}>
+          <a className="underline text-blue-700">« {project?.title}</a>
+        </Link>
       </h3>
+      <h4 className="h4 mb-3">
+        {t('Book')}: {t(`books:${book?.code}`)}
+      </h4>
       {chapters?.map((chapter) => (
         <div key={chapter.id}>
-          {chapter.num}:{chapter.verses}
+          {t('Chapter')} {chapter.num} ({t('Verses')}: {chapter.verses})
           {!createdChapters.includes(chapter.id) ? (
-            <div onClick={() => handleCreate(chapter.id)}>{t('Create')}</div>
+            <div
+              className="btn btn-white ml-8 mb-3"
+              onClick={() => handleCreate(chapter.id, chapter.num)}
+            >
+              {t('Create')}
+            </div>
           ) : (
             <Link
               href={
                 '/projects/' + project.code + '/books/' + book.code + '/' + chapter.num
               }
             >
-              <a className="block text-blue-600">{t('chapters:Created')}...</a>
+              <a className="btn btn-cyan ml-8 mb-3">{t('chapters:Created')}</a>
             </Link>
           )}
         </div>
