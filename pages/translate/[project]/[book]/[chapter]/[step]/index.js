@@ -46,16 +46,17 @@ export default function ProgressPage({ last_step }) {
         supabase
           .rpc('get_current_steps', { project_id: res.data.projects.id })
           .then((response) => {
-            if (!response.data[0].step) {
+            const current_step = response.data.filter(
+              (el) => el.book === book && el.chapter.toString() === chapter.toString()
+            )?.[0]?.step
+            if (!current_step) {
               return replace(`/account`)
             }
-
-            if (parseInt(response.data[0].step) !== parseInt(step)) {
+            if (parseInt(current_step) !== parseInt(step)) {
               return replace(
-                `/translate/${project}/${book}/${chapter}/${response.data[0].step}/intro`
+                `/translate/${project}/${book}/${chapter}/${current_step}/intro`
               )
             }
-
             setProjectId(res.data?.projects?.id)
 
             let stepConfig = {
