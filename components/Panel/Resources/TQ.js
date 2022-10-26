@@ -67,9 +67,9 @@ function ToolContent({ item, reduceQuestions, viewAll }) {
       </Disclosure.Button>
       <Disclosure.Panel
         onChange={() => console.log('test')}
-        className="text-gray-800 w-fit py-4"
+        className="text-cyan-700 w-fit py-4"
       >
-        <MarkdownExtended>{item.text}</MarkdownExtended>
+        <p>{item.text}</p>
       </Disclosure.Panel>
     </Disclosure>
   )
