@@ -210,6 +210,48 @@
     END;
   $$;
 
+  -- получить все стихи переводчика
+  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num int2, book_code PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text)
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      verses_list RECORD;
+      cur_chapter_id BIGINT;
+      cur_project_id BIGINT;
+    BEGIN
+
+      SELECT projects.id into cur_project_id
+      FROM PUBLIC.projects
+      WHERE projects.code = get_whole_chapter.project_code;
+
+      -- узнать id проекта
+      IF cur_project_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- должен быть на проекте
+      IF authorize(auth.uid(), cur_project_id) IN ('user') THEN
+        RETURN;
+      END IF;
+
+      SELECT chapters.id into cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = get_whole_chapter.chapter_num AND chapters.project_id = cur_project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_whole_chapter.book_code AND books.project_id = cur_project_id);
+
+      -- узнать id главы
+      IF cur_chapter_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- вернуть айди стиха, номер и текст из определенной главы
+      return query SELECT verses.id as verse_id, verses.num, verses.text as verse
+      FROM public.verses
+      WHERE verses.project_id = cur_project_id
+        AND verses.chapter_id = cur_chapter_id
+      ORDER BY verses.num;
+
+    END;
+  $$;
+
   -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
   CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
@@ -1238,8 +1280,7 @@ ALTER TABLE
  * REALTIME SUBSCRIPTIONS
  * Only allow realtime listening on public tables.
  */
-BEGIN
-;
+BEGIN;
 
 -- remove the realtime publication
 DROP publication IF EXISTS supabase_realtime;
@@ -1252,7 +1293,7 @@ COMMIT;
 -- add tables to the publication
 ALTER publication supabase_realtime
 ADD
-  TABLE PUBLIC.languages;
+  TABLE PUBLIC.verses;
 
 ALTER publication supabase_realtime
 ADD
@@ -1262,118 +1303,6 @@ ADD
   -- USERS
     DELETE FROM
       PUBLIC.users;
-
-    INSERT INTO
-      PUBLIC.users (
-        id,
-        login,
-        email,
-        agreement,
-        confession,
-        blocked,
-        is_admin
-      )
-    VALUES
-      (
-        '21ae6e79-3f1d-4b87-bcb1-90256f63c167',
-        'Translator',
-        'translator@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2',
-        'Coordinator2',
-        'coordinator2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '2e108465-9c20-46cd-9e43-933730229762',
-        'Moderator3',
-        'moderator3@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '54358d8e-0144-47fc-a290-a6882023a3d6',
-        'Coordinator3',
-        'coordinator3@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '83282f7a-c4b7-4387-97c9-4c356e56af5c',
-        'Coordinator',
-        'coordinator@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '8331e952-5771-49a6-a679-c44736f5581b',
-        'Moderator2',
-        'moderator2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        'ae891f6d-0f04-4b01-aa15-1ed46d0ef91d',
-        'Admin2',
-        'admin2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        TRUE
-      ),
-      (
-        'bba5a95e-33b7-431d-8c43-aedc517a1aa6',
-        'Translator2',
-        'translator2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        'cba74237-0801-4e3b-93f6-012aeab6eb91',
-        'Admin',
-        'admin@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        TRUE
-      ),
-      (
-        'e50d5d0a-4fdb-4de3-b431-119e684d775e',
-        'Moderator',
-        'moderator@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        'f193af4d-ca5e-4847-90ef-38f969792dd5',
-        'Translator3',
-        'translator3@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      );
-  -- END USERS
 
   -- LANGUAGES
     DELETE FROM
@@ -1394,7 +1323,7 @@ ADD
     INSERT INTO
       PUBLIC.methods (title, resources, steps, "type")
     VALUES
-      ('Vcana Bible', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
+      ('CANA Bible', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
           "title": "1 ШАГ - ОБЗОР КНИГИ",
           "description": "Это индивидуальная работа и выполняется до встречи с другими участниками команды КРАШ-ТЕСТА.\n\n\n\nЦЕЛЬ этого шага для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nЦЕЛЬ этого шага для ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.\n\n\n\n\n\nОБЩИЙ ОБЗОР К КНИГЕ\n\nПрочитайте общий обзор к книге. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в общем обзоре к книге.\n\nЭто задание выполняется только при работе над первой главой. При работе над другими главами книги возвращаться к общему обзору книги не нужно. \n\n\n\nОБЗОР К ГЛАВЕ\n\nПрочитайте обзор к главе. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в обзоре к главе.\n\n\n\nЧТЕНИЕ ДОСЛОВНОЙ БИБЛИИ РОБ-Д (RLOB)\n\nПрочитайте ГЛАВУ ДОСЛОВНОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nЧТЕНИЕ СМЫСЛОВОЙ БИБЛИИ РОБ-С (RSOB)\n\nПрочитайте ГЛАВУ СМЫСЛОВОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА»\n\nПрочитайте СЛОВА к главе. Необходимо прочитать статьи к каждому слову. Отметьте для обсуждения командой статьи к словам, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ»\n\nПрочитайте ЗАМЕТКИ к главе. Необходимо прочитать ЗАМЕТКИ к каждому отрывку. Отметьте для обсуждения командой ЗАМЕТКИ, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.",
@@ -1713,8 +1642,10 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
-                  "config": {}
+                  "name": "commandTranslate",
+                  "config": {
+                    "moderatorOnly": false
+                  }
                 },
                 {
                   "name": "personalNotes",
@@ -1770,7 +1701,9 @@ ADD
               "tools": [
                 {
                   "name": "commandTranslate",
-                  "config": {}
+                  "config": {
+                    "moderatorOnly": true
+                  }
                 },
                 {
                   "name": "personalNotes",
@@ -1789,7 +1722,7 @@ ADD
           ]
         }
       ]', 'bible'::project_type),
-      ('Vcana OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
+      ('CANA OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
           "title": "Шаг 1: Самостоятельное изучение",
           "description": "понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
