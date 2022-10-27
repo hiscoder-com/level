@@ -87,12 +87,15 @@ function BlindEditor({ config }) {
           (index === 0 && !enabledIcons.length) ||
           enabledIcons.includes(currentNumVerse)
         )
-        console.log(enabledIcons)
+
         return (
           <div key={el.verse_id} data-id={el.num} className="flex my-3">
             <button disabled={disabledButton}>
               <Pencil
                 onClick={() => {
+                  if (index !== 0 && !verseObjects[index - 1].verse) {
+                    return
+                  }
                   setEnabledIcons((prev) => {
                     return [
                       ...prev,
