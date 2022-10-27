@@ -19,13 +19,14 @@ export default async function languageProjectHandler(req, res) {
           .from('projects')
           .select('id, title, code, type, method, languages(orig_name,code)')
           .eq('code', code)
+          .maybeSingle()
         if (error) throw error
         data = value
       } catch (error) {
         res.status(404).json({ error })
         return
       }
-      res.status(200).json({ ...data[0] })
+      res.status(200).json({ ...data })
       break
     default:
       res.setHeader('Allow', ['GET'])
