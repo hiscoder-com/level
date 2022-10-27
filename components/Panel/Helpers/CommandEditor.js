@@ -8,18 +8,23 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
+import { useProject } from 'utils/hooks'
 
 // moderatorOnly
 //              - TRUE видно все стихи, только модератор может вносить исправления
 //              - FALSE видно все стихи, исправлять можно только свои
 function CommandEditor({ config }) {
   const { user } = useCurrentUser()
+
+  const {
+    query: { project, book, chapter },
+  } = useRouter()
+
   const [level, setLevel] = useState('user')
   const [chapterId, setChapterId] = useState(false)
-  const {
-    query: { project, chapter },
-  } = useRouter()
   const [verseObjects, setVerseObjects] = useState([])
+
+  const [currentProject] = useProject({ token: user?.access_token, code: project })
 
   useEffect(() => {
     const getLevel = async (user_id, project_id) => {
@@ -29,28 +34,42 @@ function CommandEditor({ config }) {
       })
       setLevel(level.data)
     }
-    if (user.id) {
-      supabase
-        .from('verses')
-        .select(
-          'verse_id:id,verse:text,num,project_id,chapters!inner(num,id),projects!inner(code)'
-        )
-        .match({ 'projects.code': project, 'chapters.num': chapter })
-        .order('num', 'ascending')
-        .then((res) => {
-          const verses = config?.reference?.verses?.map((v) => v.verse_id)
-          const result = res.data.map((el) => ({
-            verse_id: el.verse_id,
-            verse: el.verse,
-            num: el.num,
-            editable: verses.includes(el.verse_id),
-          }))
-          setVerseObjects(result)
-          setChapterId(res.data[0].chapters.id)
-          getLevel(user.id, res.data[0].project_id)
-        })
+    if (currentProject?.id && user?.id) {
+      getLevel(user.id, currentProject.id)
     }
-  }, [chapter, config?.reference?.verses, project, user.id])
+  }, [currentProject?.id, user?.id])
+
+  useEffect(() => {
+    supabase
+      .from('chapters')
+      .select('id,projects!inner(code),books!inner(code)')
+      .match({ num: chapter, 'projects.code': project, 'books.code': book })
+      .maybeSingle()
+      .then((res) => {
+        if (res.data.id) {
+          setChapterId(res.data.id)
+        }
+      })
+  }, [book, chapter, project])
+
+  useEffect(() => {
+    supabase
+      .rpc('get_whole_chapter', {
+        project_code: project,
+        chapter_num: chapter,
+        book_code: book,
+      })
+      .then((res) => {
+        const verses = config?.reference?.verses?.map((v) => v.verse_id)
+        const result = res.data.map((el) => ({
+          verse_id: el.verse_id,
+          verse: el.verse,
+          num: el.num,
+          editable: verses.includes(el.verse_id),
+        }))
+        setVerseObjects(result)
+      })
+  }, [book, chapter, config?.reference?.verses, project])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {

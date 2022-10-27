@@ -210,6 +210,48 @@
     END;
   $$;
 
+  -- получить все стихи переводчика
+  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num int2, book_code PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text)
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      verses_list RECORD;
+      cur_chapter_id BIGINT;
+      cur_project_id BIGINT;
+    BEGIN
+
+      SELECT projects.id into cur_project_id
+      FROM PUBLIC.projects
+      WHERE projects.code = get_whole_chapter.project_code;
+
+      -- узнать id проекта
+      IF cur_project_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- должен быть на проекте
+      IF authorize(auth.uid(), cur_project_id) IN ('user') THEN
+        RETURN;
+      END IF;
+
+      SELECT chapters.id into cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = get_whole_chapter.chapter_num AND chapters.project_id = cur_project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_whole_chapter.book_code AND books.project_id = cur_project_id);
+
+      -- узнать id главы
+      IF cur_chapter_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- вернуть айди стиха, номер и текст из определенной главы
+      return query SELECT verses.id as verse_id, verses.num, verses.text as verse
+      FROM public.verses
+      WHERE verses.project_id = cur_project_id
+        AND verses.chapter_id = cur_chapter_id
+      ORDER BY verses.num;
+
+    END;
+  $$;
+
   -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
   CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
@@ -1602,7 +1644,7 @@ ADD
                 {
                   "name": "commandTranslate",
                   "config": {
-                    "moderatorOnly": true
+                    "moderatorOnly": false
                   }
                 },
                 {
