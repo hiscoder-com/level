@@ -4,8 +4,8 @@ import ReactMarkdown from 'react-markdown'
 
 import { Placeholder } from '../UI'
 
-import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { checkedVersesBibleState } from '../state/atoms'
+import { useRecoilValue } from 'recoil'
 import { useGetResource } from 'utils/hooks'
 
 // draft: true/false
@@ -45,10 +45,7 @@ function Verses({ verseObjects }) {
 }
 
 function VersesExtended({ verseObjects }) {
-  const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
-    checkedVersesBibleState
-  )
-  const translatedVerses = useRecoilValue(translatedVersesState)
+  const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
 
   return (
     <>
