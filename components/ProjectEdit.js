@@ -9,11 +9,11 @@ import { Switch } from '@headlessui/react'
 
 import Modal from 'components/Modal'
 import TranslatorImage from 'components/TranslatorImage'
+import EditBrief from './EditBrief'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import EditBrief from './EditBrief'
 
 function ProjectEdit() {
   const { t } = useTranslation(['common', 'project-edit'])
@@ -36,7 +36,6 @@ function ProjectEdit() {
     token: user?.access_token,
     code,
   })
-
   const [coordinators, { mutate: mutateCoordinator }] = useCoordinators({
     token: user?.access_token,
     code,
@@ -107,7 +106,7 @@ function ProjectEdit() {
         <div className="pb-5 inline-block ml-2">{t('NameProject')}</div>
         <div className="pb-5 inline-block ml-2">{project?.title}</div>
         <div className="pb-5 ml-2">
-          <EditBrief/>
+          <EditBrief user={user} id={project?.id} />
         </div>
 
         <div className="w-1/2 flex justify-between">

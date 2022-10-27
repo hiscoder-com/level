@@ -20,7 +20,6 @@ export default async function briefsGetHandler(req, res) {
           .maybeSingle()
 
         if (error) throw error
-        console.log(data)
         res.status(200).json(data)
       } catch (error) {
         res.status(404).json({ error })
@@ -31,7 +30,7 @@ export default async function briefsGetHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('briefs')
-          .update(text)
+          .update({ text })
           .match({ id })
         if (error) throw error
         res.status(200).json(data)

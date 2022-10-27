@@ -6,7 +6,7 @@ import { useRouter } from 'next/router'
 import Modal from 'components/Modal'
 import { useBriefs, useProject } from 'utils/hooks'
 
-function TGoal({user}) {
+function TGoal({ user }) {
   const [showModalTGoal, setShowModalTGoal] = useState(false)
   const { t } = useTranslation(['common'])
   const router = useRouter()
@@ -43,7 +43,6 @@ function TGoal({user}) {
           <button className="btn-cyan w-24" onClick={closeModal}>
             {t('Close')}
           </button>
-
         </div>
       </Modal>
     </>

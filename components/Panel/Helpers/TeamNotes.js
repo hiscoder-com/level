@@ -51,7 +51,7 @@ function TeamNotes() {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post(`/api/team_notes`, { id, project_id: project?.id })
+      .post('/api/team_notes', { id, project_id: project?.id })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
