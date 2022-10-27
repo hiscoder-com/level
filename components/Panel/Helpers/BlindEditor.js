@@ -53,6 +53,7 @@ function BlindEditor({ config }) {
         const currentNumVerse = el.num.toString()
         const nextNumVerse =
           index < verseObjects.length - 1 && verseObjects[index + 1].num.toString()
+        const prevNumVerse = index !== 0 && verseObjects[index - 1].num.toString()
         const disabled = !(index === 0 || checkedVersesBible.includes(el.num.toString()))
         return (
           <div key={el.verse_id} data-id={el.num} className="flex my-3">
@@ -74,9 +75,16 @@ function BlindEditor({ config }) {
             /> */}
             <Pencil
               onClick={() => {
+                setDisabledIcons((prev) =>
+                  [...prev, nextNumVerse].filter((el) => el !== prevNumVerse)
+                )
                 setCheckedVersesBible((prev) => [...prev, currentNumVerse])
               }}
-              className={`w-4 h-4 mt-1 ${disabled ? 'svg-gray' : 'svg-cyan'}`}
+              className={`w-4 h-4 mt-1 ${
+                index !== 0 && !disabledIcons.includes(currentNumVerse)
+                  ? 'svg-gray'
+                  : 'svg-cyan'
+              }`}
             />
             <div className="ml-4">{el.num}</div>
             <AutoSizeTextArea
