@@ -14,29 +14,13 @@ function ProjectCard({ project }) {
 
   const { user } = useCurrentUser()
 
-  const [level, setLevel] = useState('user')
   const [currentSteps, setCurrentSteps] = useState(null)
 
   useEffect(() => {
-    const getLevel = async () => {
-      const level = await supabase.rpc('authorize', {
-        user_id: user.id,
-        project_id: project.id,
-      })
-      setLevel(level.data)
-    }
-    if ((user?.id, project?.id)) {
-      getLevel()
-    }
-  }, [user?.id, project?.id])
-
-  useEffect(() => {
-    if (level && ['translator', 'moderator'].includes(level)) {
-      supabase
-        .rpc('get_current_steps', { project_id: project.id })
-        .then((res) => setCurrentSteps(res.data))
-    }
-  }, [level, project?.id])
+    supabase
+      .rpc('get_current_steps', { project_id: project.id })
+      .then((res) => setCurrentSteps(res.data))
+  }, [project?.id])
 
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
