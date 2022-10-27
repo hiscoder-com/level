@@ -1712,8 +1712,10 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
-                  "config": {}
+                  "name": "commandTranslate",
+                  "config": {
+                    "moderatorOnly": true
+                  }
                 },
                 {
                   "name": "personalNotes",
@@ -1769,7 +1771,9 @@ ADD
               "tools": [
                 {
                   "name": "commandTranslate",
-                  "config": {}
+                  "config": {
+                    "moderatorOnly": true
+                  }
                 },
                 {
                   "name": "personalNotes",
