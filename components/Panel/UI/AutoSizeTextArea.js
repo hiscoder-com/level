@@ -20,7 +20,6 @@ function AutoSizeTextArea({
       defaultValue={defaultValue}
       suppressContentEditableWarning={true}
       onBlur={(el) => {
-        console.log(el)
         updateVerse(index, el.target.innerText.trim())
       }}
       className={`block w-full mx-3 focus:outline-none focus:inline-none focus:bg-white  ${
