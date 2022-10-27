@@ -8,6 +8,9 @@ import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 
 import Pencil from 'public/pencil.svg'
 function BlindEditor({ config }) {
+  const [disabledIcons, setDisabledIcons] = useState([])
+  const [disabledInputs, setDisabledInputs] = useState([])
+
   const [verseObjects, setVerseObjects] = useState([])
 
   const [translatedVerses, setTranslatedVerses] = useRecoilState(translatedVersesState)
@@ -48,7 +51,9 @@ function BlindEditor({ config }) {
     <div>
       {verseObjects.map((el, index) => {
         const currentNumVerse = el.num.toString()
-        const disabled = index !== 0
+        const nextNumVerse =
+          index < verseObjects.length - 1 && verseObjects[index + 1].num.toString()
+        const disabled = !(index === 0 || checkedVersesBible.includes(el.num.toString()))
         return (
           <div key={el.verse_id} data-id={el.num} className="flex my-3">
             {/* <input
