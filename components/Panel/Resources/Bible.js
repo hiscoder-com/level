@@ -56,7 +56,7 @@ function VersesExtended({ verseObjects }) {
         const checkedCurrent = checkedVersesBible.includes(el.verse)
         return (
           <div key={el.verse} className={`my-3 flex items-start`}>
-            <input
+            {/* <input
               checked={checkedCurrent}
               type="checkbox"
               className={`mt-1`}
@@ -72,7 +72,7 @@ function VersesExtended({ verseObjects }) {
               onChange={() => {
                 setCheckedVersesBible((prev) => [...prev, el.verse])
               }}
-            />
+            /> */}
             <div className={`ml-2`}>{el.verse}</div>
             {checkedCurrent ? (
               <Blur verse={el.text} />
