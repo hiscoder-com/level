@@ -8,8 +8,8 @@ import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
 
 import Pencil from 'public/pencil.svg'
 function BlindEditor({ config }) {
-  const [disabledIcons, setDisabledIcons] = useState([])
-  const [disabledInputs, setDisabledInputs] = useState([])
+  const [enabledIcons, setEnabledIcons] = useState([])
+  const [enabledInputs, setEnabledInputs] = useState([])
 
   const [verseObjects, setVerseObjects] = useState([])
 
@@ -18,7 +18,7 @@ function BlindEditor({ config }) {
   const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
     checkedVersesBibleState
   )
-  console.log(checkedVersesBible)
+  console.log({ translatedVerses })
   useEffect(() => {
     setVerseObjects(config.reference.verses)
     let updatedArray = []
@@ -52,9 +52,12 @@ function BlindEditor({ config }) {
       {verseObjects.map((el, index) => {
         const currentNumVerse = el.num.toString()
         const nextNumVerse =
-          index < verseObjects.length - 1 && verseObjects[index + 1].num.toString()
-        const prevNumVerse = index !== 0 && verseObjects[index - 1].num.toString()
-        const disabled = !(index === 0 || checkedVersesBible.includes(el.num.toString()))
+          index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : []
+        const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : []
+        const disabledButton = !(
+          (index === 0 && !enabledIcons.length) ||
+          enabledIcons.includes(currentNumVerse)
+        )
         return (
           <div key={el.verse_id} data-id={el.num} className="flex my-3">
             {/* <input
@@ -73,25 +76,34 @@ function BlindEditor({ config }) {
               onChange={() => sendToDb(index)}
               checked={translatedVerses.includes(el.num.toString())}
             /> */}
-            <Pencil
-              onClick={() => {
-                setDisabledIcons((prev) =>
-                  [...prev, nextNumVerse].filter((el) => el !== prevNumVerse)
-                )
-                setCheckedVersesBible((prev) => [...prev, currentNumVerse])
-              }}
-              className={`w-4 h-4 mt-1 ${
-                index !== 0 && !disabledIcons.includes(currentNumVerse)
-                  ? 'svg-gray'
-                  : 'svg-cyan'
-              }`}
-            />
+            <button disabled={disabledButton}>
+              <Pencil
+                onClick={() => {
+                  setEnabledIcons((prev) =>
+                    [
+                      ...prev,
+                      ...(index === 0 ? [currentNumVerse, nextNumVerse] : nextNumVerse),
+                    ].filter((el) => el !== prevNumVerse)
+                  )
+                  setCheckedVersesBible((prev) => [...prev, currentNumVerse])
+
+                  setEnabledInputs((prev) =>
+                    [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
+                  )
+                  if (index === 0) {
+                    return
+                  }
+
+                  console.log(index - 1)
+                  // sendToDb(index - 1)
+                }}
+                className={`w-4 h-4 mt-1 ${!disabledButton ? 'svg-cyan' : 'svg-gray'}`}
+              />
+            </button>
+
             <div className="ml-4">{el.num}</div>
             <AutoSizeTextArea
-              disabled={
-                !checkedVersesBible.includes(el.num.toString()) ||
-                translatedVerses.includes(el.num.toString())
-              }
+              disabled={!enabledInputs.includes(el.num.toString())}
               updateVerse={updateVerse}
               index={index}
               verseObject={el}
