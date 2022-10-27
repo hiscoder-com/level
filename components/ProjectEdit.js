@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
@@ -13,7 +14,6 @@ import TranslatorImage from 'components/TranslatorImage'
 import { supabase } from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import Link from 'next/link'
 
 function ProjectEdit() {
   const { t } = useTranslation(['common', 'project-edit'])
@@ -192,7 +192,7 @@ function ProjectEdit() {
               disabled={!selectedUser}
               className="btn-cyan mx-2"
             >
-              {t('Assign')}
+              {t('Added')}
             </button>
             <div className="mt-4">
               <button
@@ -232,7 +232,7 @@ function ProjectEdit() {
               disabled={!selectedUser}
               className="btn-cyan mx-2"
             >
-              {t('Assign')}
+              {t('Added')}
             </button>
             <div className="mt-4">
               <button
