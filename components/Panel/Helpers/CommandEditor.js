@@ -9,16 +9,13 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-// TODO попробовать его расширить и поставить проверки
-// Если приходит параметр разрешить изменять свои стихи - то тогда в disabled изменить условие, делать неактивными чужие стихи
-// опять же повторю что это первая версия, очень дырявая получается, надо рефакторить, ставить проверки и т.д.
-
 // moderatorOnly
 //              - TRUE видно все стихи, только модератор может вносить исправления
 //              - FALSE видно все стихи, исправлять можно только свои
 function CommandEditor({ config }) {
   const { user } = useCurrentUser()
   const [level, setLevel] = useState('user')
+  const [chapterId, setChapterId] = useState(false)
   const {
     query: { project, chapter },
   } = useRouter()
@@ -36,21 +33,54 @@ function CommandEditor({ config }) {
       supabase
         .from('verses')
         .select(
-          'verse_id:id,verse:text,num,project_id,chapters!inner(num),projects!inner(code)'
+          'verse_id:id,verse:text,num,project_id,chapters!inner(num,id),projects!inner(code)'
         )
         .match({ 'projects.code': project, 'chapters.num': chapter })
         .order('num', 'ascending')
         .then((res) => {
           const verses = config?.reference?.verses?.map((v) => v.verse_id)
           const result = res.data.map((el) => ({
-            ...el,
+            verse_id: el.verse_id,
+            verse: el.verse,
+            num: el.num,
             editable: verses.includes(el.verse_id),
           }))
           setVerseObjects(result)
+          setChapterId(res.data[0].chapters.id)
           getLevel(user.id, res.data[0].project_id)
         })
     }
   }, [chapter, config?.reference?.verses, project, user.id])
+
+  const updateVerseObject = (id, text) => {
+    setVerseObjects((prev) => {
+      const newVerseObject = prev.map((el) => {
+        if (el.verse_id === id) {
+          el.verse = text
+        }
+        return el
+      })
+      return newVerseObject
+    })
+  }
+
+  useEffect(() => {
+    let mySubscription = null
+    if (chapterId) {
+      mySubscription = supabase
+        .from('verses:chapter_id=eq.' + chapterId)
+        .on('UPDATE', (payload) => {
+          const { id, text } = payload.new
+          updateVerseObject(id, text)
+        })
+        .subscribe()
+    }
+    return () => {
+      if (mySubscription) {
+        supabase.removeSubscription(mySubscription)
+      }
+    }
+  }, [chapterId])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {

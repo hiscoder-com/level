@@ -1238,8 +1238,7 @@ ALTER TABLE
  * REALTIME SUBSCRIPTIONS
  * Only allow realtime listening on public tables.
  */
-BEGIN
-;
+BEGIN;
 
 -- remove the realtime publication
 DROP publication IF EXISTS supabase_realtime;
@@ -1252,7 +1251,7 @@ COMMIT;
 -- add tables to the publication
 ALTER publication supabase_realtime
 ADD
-  TABLE PUBLIC.languages;
+  TABLE PUBLIC.verses;
 
 ALTER publication supabase_realtime
 ADD
