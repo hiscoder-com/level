@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react'
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
-import { useRecoilState } from 'recoil'
-import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
+import { useSetRecoilState } from 'recoil'
+import { checkedVersesBibleState } from '../state/atoms'
 
 import Pencil from 'public/pencil.svg'
 function BlindEditor({ config }) {
@@ -13,12 +13,7 @@ function BlindEditor({ config }) {
 
   const [verseObjects, setVerseObjects] = useState([])
 
-  const [translatedVerses, setTranslatedVerses] = useRecoilState(translatedVersesState)
-
-  const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
-    checkedVersesBibleState
-  )
-  console.log({ translatedVerses })
+  const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
   useEffect(() => {
     setVerseObjects(config.reference.verses)
     let updatedArray = []
@@ -27,8 +22,20 @@ function BlindEditor({ config }) {
         updatedArray.push(el.num.toString())
       }
     })
-    setTranslatedVerses(updatedArray)
     setCheckedVersesBible(updatedArray)
+
+    if (updatedArray.length) {
+      for (let index = 0; index < config.reference.verses.length; index++) {
+        if (
+          config.reference.verses[index].num.toString() ===
+            updatedArray[updatedArray.length - 1] &&
+          index < config.reference.verses.length
+        ) {
+          setEnabledIcons([config.reference.verses[index + 1].num.toString()])
+        }
+      }
+    }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -40,7 +47,6 @@ function BlindEditor({ config }) {
   }
 
   const sendToDb = async (index) => {
-    setTranslatedVerses((prev) => [...prev, verseObjects[index].num.toString()])
     const res = await supabase.rpc('save_verse', {
       new_verse: verseObjects[index].verse,
       verse_id: verseObjects[index].verse_id,
@@ -60,22 +66,6 @@ function BlindEditor({ config }) {
         )
         return (
           <div key={el.verse_id} data-id={el.num} className="flex my-3">
-            {/* <input
-              type="checkbox"
-              // disabled={
-              //   !checkedVersesBible.includes(el.num.toString()) ||
-              //   translatedVerses.includes(el.num.toString())
-              // }
-              disabled={index !== 0}
-              className="mt-1"
-              style={{
-                filter: translatedVerses.includes(el.num.toString())
-                  ? ''
-                  : 'saturate(9) hue-rotate(273deg)',
-              }}
-              onChange={() => sendToDb(index)}
-              checked={translatedVerses.includes(el.num.toString())}
-            /> */}
             <button disabled={disabledButton}>
               <Pencil
                 onClick={() => {
@@ -94,8 +84,7 @@ function BlindEditor({ config }) {
                     return
                   }
 
-                  console.log(index - 1)
-                  // sendToDb(index - 1)
+                  sendToDb(index - 1)
                 }}
                 className={`w-4 h-4 mt-1 ${!disabledButton ? 'svg-cyan' : 'svg-gray'}`}
               />
