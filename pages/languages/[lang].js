@@ -31,7 +31,7 @@ export default function LanguagesPage() {
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects', 'common'])),
+      ...(await serverSideTranslations(locale, ['projects', 'common', 'books'])),
     },
   }
 }

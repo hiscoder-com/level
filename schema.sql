@@ -14,7 +14,7 @@
     DROP TABLE IF EXISTS PUBLIC.methods;
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
-    DROP TABLE IF EXISTS PUBLIC.languages;    
+    DROP TABLE IF EXISTS PUBLIC.languages;
 
 
   -- EDN DROP TABLE
@@ -32,11 +32,13 @@
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
-    DROP FUNCTION IF EXISTS PUBLIC.get_current_step;
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_step; -- REMOVE AFTER UPDATE
+    DROP FUNCTION IF EXISTS PUBLIC.get_current_steps;
     DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
     DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
@@ -48,7 +50,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes; 
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_team_notes;
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
@@ -147,29 +149,28 @@
     END;
   $$;
 
-  -- возвращает, на каком шаге сейчас  юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
-  CREATE FUNCTION PUBLIC.get_current_step(project_id bigint) returns RECORD
+  -- возвращает, на каком шаге сейчас юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
+  CREATE FUNCTION PUBLIC.get_current_steps(project_id bigint) returns TABLE(title text, project text, book PUBLIC.book_code, chapter int2, step int2, started_at TIMESTAMP)
     LANGUAGE plpgsql security definer AS $$
-    DECLARE
-      current_step RECORD;
+
     BEGIN
-      IF authorize(auth.uid(), get_current_step.project_id) IN ('user') THEN
-        RETURN FALSE;
+      -- должен быть на проекте
+      IF authorize(auth.uid(), get_current_steps.project_id) IN ('user') THEN
+        RETURN;
       END IF;
 
-      SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, started_at, finished_at INTO current_step
+      --
+      RETURN query SELECT steps.title, projects.code as project, books.code as book, chapters.num as chapter, steps.sorting as step, chapters.started_at
       FROM verses
         LEFT JOIN chapters ON (verses.chapter_id = chapters.id)
         LEFT JOIN books ON (chapters.book_id = books.id)
         LEFT JOIN steps ON (verses.current_step = steps.id)
         LEFT JOIN projects ON (projects.id = verses.project_id)
-      WHERE verses.project_id = get_current_step.project_id
+      WHERE verses.project_id = get_current_steps.project_id
         AND chapters.started_at IS NOT NULL
         AND chapters.finished_at IS NULL
-        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_step.project_id AND user_id = auth.uid())
+        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_steps.project_id AND user_id = auth.uid())
       GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
-
-      RETURN current_step;
 
     END;
   $$;
@@ -181,6 +182,7 @@
       verses_list RECORD;
       cur_chapter_id BIGINT;
     BEGIN
+      -- должен быть на проекте
       IF authorize(auth.uid(), get_verses.project_id) IN ('user') THEN
         RETURN;
       END IF;
@@ -189,10 +191,12 @@
       FROM PUBLIC.chapters
       WHERE chapters.num = get_verses.chapter AND chapters.project_id = get_verses.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_verses.book AND books.project_id = get_verses.project_id);
 
+      -- узнать id главы
       IF cur_chapter_id IS NULL THEN
         RETURN;
       END IF;
 
+      -- вернуть айди стиха, номер и текст для определенного переводчика и из определенной главы
       return query SELECT verses.id as verse_id, verses.num, verses.text as verse
       FROM public.verses
       WHERE verses.project_translator_id = (SELECT id
@@ -200,6 +204,48 @@
       WHERE project_translators.user_id = auth.uid()
         AND project_translators.project_id = get_verses.project_id)
         AND verses.project_id = get_verses.project_id
+        AND verses.chapter_id = cur_chapter_id
+      ORDER BY verses.num;
+
+    END;
+  $$;
+
+  -- получить все стихи переводчика
+  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num int2, book_code PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text)
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      verses_list RECORD;
+      cur_chapter_id BIGINT;
+      cur_project_id BIGINT;
+    BEGIN
+
+      SELECT projects.id into cur_project_id
+      FROM PUBLIC.projects
+      WHERE projects.code = get_whole_chapter.project_code;
+
+      -- узнать id проекта
+      IF cur_project_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- должен быть на проекте
+      IF authorize(auth.uid(), cur_project_id) IN ('user') THEN
+        RETURN;
+      END IF;
+
+      SELECT chapters.id into cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = get_whole_chapter.chapter_num AND chapters.project_id = cur_project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_whole_chapter.book_code AND books.project_id = cur_project_id);
+
+      -- узнать id главы
+      IF cur_chapter_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- вернуть айди стиха, номер и текст из определенной главы
+      return query SELECT verses.id as verse_id, verses.num, verses.text as verse
+      FROM public.verses
+      WHERE verses.project_id = cur_project_id
         AND verses.chapter_id = cur_chapter_id
       ORDER BY verses.num;
 
@@ -280,12 +326,27 @@
     END;
   $$;
 
+  -- Устанавливает дату начала перевода главы
+  CREATE FUNCTION PUBLIC.finished_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+
+    BEGIN
+      IF authorize(auth.uid(), finished_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;
+
+      UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE finished_chapter.chapter_id = chapters.id AND finished_chapter.project_id = chapters.project_id AND started_at IS NOT NULL AND finished_at IS NULL;
+
+      RETURN true;
+
+    END;
+  $$;
+
   -- Сохранить стих
   CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 
     BEGIN
-      -- проверить что глава начата, что стих назначен переводчику
+      -- TODO проверить что глава начата и не закончена, что стих назначен переводчику
       UPDATE PUBLIC.verses SET "text" = save_verse.new_verse WHERE verses.id = save_verse.verse_id;
 
       RETURN true;
@@ -521,7 +582,7 @@
       RETURN NEW;
 
     END;
-  $$;  
+  $$;
 
 -- update changed_at to current time/date when team_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
@@ -1093,13 +1154,13 @@
   -- END TABLE
 
   -- RLS
-    
+
     DROP POLICY IF EXISTS "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes;
 
     CREATE policy "Залогиненый юзер может добавить личную заметку" ON PUBLIC.personal_notes FOR
     INSERT
-      TO authenticated WITH CHECK (TRUE); 
-   
+      TO authenticated WITH CHECK (TRUE);
+
     DROP POLICY IF EXISTS "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes;
 
     CREATE policy "Залогиненый юзер может удалить личную заметку" ON PUBLIC.personal_notes FOR
@@ -1145,13 +1206,13 @@
     DROP POLICY IF EXISTS "team_notes insert" ON PUBLIC.team_notes;
     CREATE policy "team_notes insert" ON PUBLIC.team_notes FOR
     INSERT
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator')); 
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
     --Администратор или координатор может удалить командную заметку
     DROP POLICY IF EXISTS "team_notes delete" ON PUBLIC.team_notes;
     CREATE policy "team_notes delete" ON PUBLIC.team_notes FOR
     DELETE
-      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));  
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
     --Администратор или координатор может изменить командную заметку
     DROP POLICY IF EXISTS "team_notes update" ON PUBLIC.team_notes;
@@ -1163,7 +1224,7 @@
     DROP POLICY IF EXISTS "team_notes select" ON PUBLIC.team_notes;
     CREATE policy "team_notes select" ON PUBLIC.team_notes FOR
     SELECT
-     USING (authorize(auth.uid(), project_id) != 'user'); 
+     USING (authorize(auth.uid(), project_id) != 'user');
 
   -- END RLS
 -- TEAM NOTES
@@ -1219,8 +1280,7 @@ ALTER TABLE
  * REALTIME SUBSCRIPTIONS
  * Only allow realtime listening on public tables.
  */
-BEGIN
-;
+BEGIN;
 
 -- remove the realtime publication
 DROP publication IF EXISTS supabase_realtime;
@@ -1233,7 +1293,7 @@ COMMIT;
 -- add tables to the publication
 ALTER publication supabase_realtime
 ADD
-  TABLE PUBLIC.languages;
+  TABLE PUBLIC.verses;
 
 ALTER publication supabase_realtime
 ADD
@@ -1243,118 +1303,6 @@ ADD
   -- USERS
     DELETE FROM
       PUBLIC.users;
-
-    INSERT INTO
-      PUBLIC.users (
-        id,
-        login,
-        email,
-        agreement,
-        confession,
-        blocked,
-        is_admin
-      )
-    VALUES
-      (
-        '21ae6e79-3f1d-4b87-bcb1-90256f63c167',
-        'Translator',
-        'translator@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '2b95a8e9-2ee1-41ef-84ec-2403dd87c9f2',
-        'Coordinator2',
-        'coordinator2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '2e108465-9c20-46cd-9e43-933730229762',
-        'Moderator3',
-        'moderator3@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '54358d8e-0144-47fc-a290-a6882023a3d6',
-        'Coordinator3',
-        'coordinator3@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '83282f7a-c4b7-4387-97c9-4c356e56af5c',
-        'Coordinator',
-        'coordinator@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        '8331e952-5771-49a6-a679-c44736f5581b',
-        'Moderator2',
-        'moderator2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        'ae891f6d-0f04-4b01-aa15-1ed46d0ef91d',
-        'Admin2',
-        'admin2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        TRUE
-      ),
-      (
-        'bba5a95e-33b7-431d-8c43-aedc517a1aa6',
-        'Translator2',
-        'translator2@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        'cba74237-0801-4e3b-93f6-012aeab6eb91',
-        'Admin',
-        'admin@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        TRUE
-      ),
-      (
-        'e50d5d0a-4fdb-4de3-b431-119e684d775e',
-        'Moderator',
-        'moderator@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      ),
-      (
-        'f193af4d-ca5e-4847-90ef-38f969792dd5',
-        'Translator3',
-        'translator3@mail.com',
-        FALSE,
-        FALSE,
-        NULL,
-        FALSE
-      );
-  -- END USERS
 
   -- LANGUAGES
     DELETE FROM
@@ -1375,10 +1323,10 @@ ADD
     INSERT INTO
       PUBLIC.methods (title, resources, steps, "type")
     VALUES
-      ('Vcana Bible', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
+      ('CANA Bible', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
           "title": "1 ШАГ - ОБЗОР КНИГИ",
-          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
+          "description": "Это индивидуальная работа и выполняется до встречи с другими участниками команды КРАШ-ТЕСТА.\n\n\n\nЦЕЛЬ этого шага для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nЦЕЛЬ этого шага для ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.\n\n\n\n\n\nОБЩИЙ ОБЗОР К КНИГЕ\n\nПрочитайте общий обзор к книге. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в общем обзоре к книге.\n\nЭто задание выполняется только при работе над первой главой. При работе над другими главами книги возвращаться к общему обзору книги не нужно. \n\n\n\nОБЗОР К ГЛАВЕ\n\nПрочитайте обзор к главе. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в обзоре к главе.\n\n\n\nЧТЕНИЕ ДОСЛОВНОЙ БИБЛИИ РОБ-Д (RLOB)\n\nПрочитайте ГЛАВУ ДОСЛОВНОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nЧТЕНИЕ СМЫСЛОВОЙ БИБЛИИ РОБ-С (RSOB)\n\nПрочитайте ГЛАВУ СМЫСЛОВОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА»\n\nПрочитайте СЛОВА к главе. Необходимо прочитать статьи к каждому слову. Отметьте для обсуждения командой статьи к словам, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ»\n\nПрочитайте ЗАМЕТКИ к главе. Необходимо прочитать ЗАМЕТКИ к каждому отрывку. Отметьте для обсуждения командой ЗАМЕТКИ, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.",
           "time": 60,
           "whole_chapter": true,
           "count_of_users": 1,
@@ -1425,7 +1373,7 @@ ADD
         },
         {
           "title": "2 ШАГ - КОМАНДНОЕ ИЗУЧЕНИЕ ТЕКСТА",
-          "description": "для КОРРЕКТОРА МАТЕРИАЛОВ: обсудить с командой материалы букпэкеджа.\n\nдля ТЕСТОВОГО ПЕРЕВОДЧИКА: обсудить командой общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к началу перевода.",
+          "description": "Это командная работа и мы рекомендуем потратить на нее не более 120 минут.\n\n\n\nЦЕЛЬ этого шага для КОРРЕКТОРА МАТЕРИАЛОВ: обсудить с командой материалы букпэкеджа. Для этого поделитесь заметками, которые вы сделали при индивидуальной работе. Обсудите все предложенные правки по инструментам букпэкеджа. Запишите командное резюме по ним для передачи команде, работающей над букпэкеджом.\n\nЦЕЛЬ этого шага для ТЕСТОВОГО ПЕРЕВОДЧИКА: обсудить командой общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к началу перевода.\n\n\n\n\n\nОБЩИЙ ОБЗОР К КНИГЕ - Обсудите ОБЩИЙ ОБЗОР К КНИГЕ. Что полезного для перевода вы нашли в этих статьях? Используйте свои заметки с самостоятельного изучения этого инструмента. Также обсудите найденные ошибки или неточности в общем обзоре к книге. Уделите этому этапу 10 минут.\n\nЭто задание выполняется только при работе над первой главой. При работе над другими главами книги возвращаться к общему обзору книги не нужно.\n\n\n\nОБЗОР К ГЛАВЕ - Обсудите ОБЗОР К ГЛАВЕ. Что полезного для перевода вы нашли в этих статьях? Используйте свои заметки с самостоятельного изучения. Также обсудите найденные ошибки или неточности в общем обзоре к главе. Уделите этому этапу 10 минут.\n\n\n\nЧТЕНИЕ РОБ-Д (RLOB) - Прочитайте вслух ГЛАВУ ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д (RLOB). Обсудите предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Используйте свои заметки с самостоятельного изучения этого перевода. Уделите этому этапу 20 мин.\n\n\n\nЧТЕНИЕ РОБ-С (RSOB) - Прочитайте вслух ГЛАВУ СМЫСЛОВОГО ПЕРЕВОДА БИБЛИИ РОБ-С (RSOB). Обсудите предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Используйте свои заметки с самостоятельного изучения этого перевода. Уделите этому этапу 10 мин.\n\n\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА» - Обсудите инструмент СЛОВА. Что полезного для перевода вы нашли в этих статьях? Используйте свои заметки с самостоятельного изучения. Также обсудите найденные ошибки или неточности в статьях этого инструмента. Уделите этому этапу 60 минут.\n\n\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ» - Обсудите инструмент ЗАМЕТКИ. Что полезного для перевода вы нашли в ЗАМЕТКАХ. Используйте свои записи по этому инструменту с самостоятельного изучения. Также обсудите найденные ошибки или неточности в этом инструменте. Уделите этому этапу 10 минут.",
           "time": 120,
           "whole_chapter": true,
           "count_of_users": 4,
@@ -1472,11 +1420,11 @@ ADD
         },
         {
           "title": "3 ШАГ - ПОДГОТОВКА К ПЕРЕВОДУ",
-          "description": "подготовиться к переводу текста естественным языком.",
+          "description": "Это работа в паре и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: подготовиться к переводу текста естественным языком.\n\nВ этом шаге вам необходимо выполнить два задания.\n\n\n\nПЕРЕСКАЗ НА РУССКОМ - Прочитайте ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB). Если необходимо - изучите отрывок вместе со всеми инструментами, чтобы как можно лучше передать этот текст более естественным русским языком. Перескажите смысл отрывка своему напарнику, используя максимально понятные и естественные слова русского языка. Не старайтесь пересказывать в точности исходный текст ДОСЛОВНОГО ПЕРЕВОДА. Перескажите текст в максимальной для себя простоте.\n\nПосле этого послушайте вашего напарника, пересказывающего свой отрывок. \n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.\n\n\n\nПЕРЕСКАЗ НА ЦЕЛЕВОМ - Еще раз просмотрите ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB) и подумайте, как пересказать этот текст на языке, на который делается перевод, помня о Резюме к переводу о стиле языка. \n\nПерескажите ваш отрывок напарнику на целевом языке, используя максимально понятные и естественные слова этого языка. Передайте всё, что вы запомнили, не подглядывая в текст. \n\nЗатем послушайте вашего напарника, пересказывающего свой отрывок таким же образом.\n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.",
           "time": 30,
           "whole_chapter": false,
           "count_of_users": 2,
-          "intro": "https://youtu.be/ujMGcdkGGhI\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: подготовиться к переводу текста естественным языком.\n\nВ этом шаге вам необходимо выполнить два задания.\n\n\n\nПЕРЕСКАЗ НА РУССКОМ - Прочитайте ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB). Если необходимо - изучите отрывок вместе со всеми инструментами, чтобы как можно лучше передать этот текст более естественным русским языком. Перескажите смысл отрывка своему напарнику, используя максимально понятные и естественные слова русского языка. Не старайтесь пересказывать в точности исходный текст ДОСЛОВНОГО ПЕРЕВОДА. Перескажите текст в максимальной для себя простоте.\n\nПосле этого послушайте вашего напарника, пересказывающего свой отрывок. \n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.\n\n\n\nПЕРЕСКАЗ НА ЦЕЛЕВОМ - Еще раз просмотрите ваш отрывок. Теперь в СМЫСЛОВОМ ПЕРЕВОДЕ БИБЛИИ РОБ-С (RSOB) и подумайте, как пересказать этот текст на языке, на который делается перевод, помня о Резюме к переводу о стиле языка. \n\nПерескажите ваш отрывок напарнику на целевом языке, используя максимально понятные и естественные слова этого языка. Передайте всё, что вы запомнили, не подглядывая в текст. \n\nЗатем послушайте вашего напарника, пересказывающего свой отрывок таким же образом.\n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.\n\n","config": [
+          "intro": "https://youtu.be/ujMGcdkGGhI\n\nЭто работа в паре и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: подготовиться к переводу текста естественным языком.\n\nВ этом шаге вам необходимо выполнить два задания.\n\n\n\nПЕРЕСКАЗ НА РУССКОМ - Прочитайте ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB). Если необходимо - изучите отрывок вместе со всеми инструментами, чтобы как можно лучше передать этот текст более естественным русским языком. Перескажите смысл отрывка своему напарнику, используя максимально понятные и естественные слова русского языка. Не старайтесь пересказывать в точности исходный текст ДОСЛОВНОГО ПЕРЕВОДА. Перескажите текст в максимальной для себя простоте.\n\nПосле этого послушайте вашего напарника, пересказывающего свой отрывок. \n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.\n\n\n\nПЕРЕСКАЗ НА ЦЕЛЕВОМ - Еще раз просмотрите ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB) и подумайте, как пересказать этот текст на языке, на который делается перевод, помня о Резюме к переводу о стиле языка. \n\nПерескажите ваш отрывок напарнику на целевом языке, используя максимально понятные и естественные слова этого языка. Передайте всё, что вы запомнили, не подглядывая в текст. \n\nЗатем послушайте вашего напарника, пересказывающего свой отрывок таким же образом.\n\nНе обсуждайте ваши пересказы - это только проговаривание и слушание.\n\n","config": [
             {
               "size": 4,
               "tools": [
@@ -1511,7 +1459,7 @@ ADD
         },
         {
           "title": "4 ШАГ - НАБРОСОК «ВСЛЕПУЮ»",
-          "description": "сделать первый набросок в первую очередь естественным языком.",
+          "description": "Это индивидуальная работа и мы рекомендуем потратить на нее не более 20 минут.\n\n\n\nЦЕЛЬ этого шага: сделать первый набросок в первую очередь естественным языком.\n\n\n\nРОБ-Д + НАБРОСОК «ВСЛЕПУЮ» - Еще раз прочитайте ваш отрывок в ДОСЛОВНОМ ПЕРЕВОДЕ БИБЛИИ РОБ-Д (RLOB) и если вам необходимо, просмотрите все инструменты к этому отрывку. Как только вы будете готовы сделать «набросок», перейдите на панель «слепого» наброска и напишите ваш перевод на своем языке, используя максимально понятные и естественные слова вашего языка. Пишите по памяти. Не подглядывайте! Главная цель этого шага - естественность языка. Не бойтесь ошибаться! Ошибки на этом этапе допустимы. Точность перевода будет проверена на следующих шагах работы над текстом.",
           "time": 20,
           "whole_chapter": false,
           "count_of_users": 1,
@@ -1552,7 +1500,7 @@ ADD
         },
         {
           "title": "5 ШАГ - САМОПРОВЕРКА",
-          "description": "поработать над ошибками в тексте и убедиться, что первый набросок перевода получился достаточно точным и естественным.",
+          "description": "Это индивидуальная работа и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: поработать над ошибками в тексте и убедиться, что первый набросок перевода получился достаточно точным и естественным.\n\n\n\nПроверьте ваш перевод на ТОЧНОСТЬ, сравнив с текстом - ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д (RLOB). При необходимости используйте все инструменты к переводу. Оцените по вопросам: ничего не добавлено, ничего не пропущено, смысл не изменён? Если есть ошибки, исправьте.\n\n\n\nПрочитайте ВОПРОСЫ и ответьте на них, глядя в свой текст. Сравните с ответами. Если есть ошибки в вашем тексте, исправьте.\n\n\n\nПосле этого прочитайте себе ваш перевод вслух и оцените - звучит ли ваш текст ПОНЯТНО И ЕСТЕСТВЕННО? Если нет, то исправьте.\n\n\n\nПерейдите к следующему вашему отрывку и повторите шаги Подготовка-Набросок-Проверка со всеми вашими отрывками до конца главы.",
           "time": 30,
           "whole_chapter": false,
           "count_of_users": 1,
@@ -1609,7 +1557,7 @@ ADD
         },
         {
           "title": "6 ШАГ - ВЗАИМНАЯ ПРОВЕРКА",
-          "description": "улучшить набросок перевода, пригласив другого человека, чтобы проверить перевод на точность и естественность.",
+          "description": "Это работа в паре и мы рекомендуем потратить на нее не более 40 минут.\n\n\n\nЦЕЛЬ этого шага: улучшить набросок перевода, пригласив другого человека, чтобы проверить перевод на точность и естественность.\n\n\n\nПРОВЕРКА НА ТОЧНОСТЬ - Прочитайте вслух свой текст напарнику, который параллельно следит за текстом ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д(RLOB) и обращает внимание только на ТОЧНОСТЬ перевода. \n\nОбсудите текст насколько он точен. \n\nИзменения в текст вносит переводчик, работавший над ним. Если не удалось договориться о каких-либо изменениях, оставьте этот вопрос для обсуждения всей командой.\n\nПоменяйтесь ролями и поработайте над отрывком партнёра.\n\n\n\nПРОВЕРКА НА ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ - Еще раз прочитайте вслух свой текст напарнику, который теперь не смотрит ни в какой текст, а просто слушает ваше чтение вслух, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка.\n\nОбсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте.\n\nПоменяйтесь ролями и поработайте над отрывком партнёра.\n\n\n\n\n\n_Примечание к шагу:_ \n\n- Не влюбляйтесь в свой текст. Будьте гибкими к тому, чтобы слышать другое мнение и улучшать свой набросок перевода.  Это групповая работа и текст должен соответствовать пониманию большинства в вашей команде. Если даже будут допущены ошибки в этом случае, то на проверках последующих уровней они будут исправлены.\n\n- Если в работе с напарником вам не удалось договориться по каким-то вопросам, касающихся текста, оставьте этот вопрос на обсуждение со всей командой. Ваша цель - не победить напарника, а с его помощью улучшить перевод.",
           "time": 40,
           "whole_chapter": false,
           "count_of_users": 2,
@@ -1664,7 +1612,7 @@ ADD
         },
         {
           "title": "7 ШАГ - ПРОВЕРКА КЛЮЧЕВЫХ СЛОВ",
-          "description": "всей командой улучшить перевод, выслушав больше мнений относительно самых важных слов и фраз в переводе, а также решить разногласия, оставшиеся после взаимопроверки.",
+          "description": "Это командная работа и мы рекомендуем потратить на нее не более 30 минут.\n\n\n\nЦЕЛЬ этого шага: всей командой улучшить перевод, выслушав больше мнений относительно самых важных слов и фраз в переводе, а также решить разногласия, оставшиеся после взаимопроверки.\n\n\n\nПРОВЕРКА ТЕКСТА ПО КЛЮЧЕВЫМ СЛОВАМ - Прочитайте текст всех переводчиков по очереди всей командой. Проверьте перевод на наличие ключевых слов из инструмента СЛОВА. Все ключевые слова на месте? Все ключевые слова переведены корректно?\n\nКоманда принимает решения, как переводить эти слова или фразы – переводчик вносит эти изменения в свой отрывок. В некоторых случаях, вносить изменения, которые принимает команда, может один человек, выбранный из переводчиков.",
           "time": 30,
           "whole_chapter": true,
           "count_of_users": 4,
@@ -1694,8 +1642,10 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
-                  "config": {}
+                  "name": "commandTranslate",
+                  "config": {
+                    "moderatorOnly": false
+                  }
                 },
                 {
                   "name": "personalNotes",
@@ -1715,7 +1665,7 @@ ADD
         },
         {
           "title": "8 ШАГ - КОМАНДНЫЙ ОБЗОР ПЕРЕВОДА",
-          "description": "улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.",
+          "description": "Это командная работа и мы рекомендуем потратить на нее не более 60 минут.\n\nЦЕЛЬ этого шага: улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.\n\n\n\nПРОВЕРКА НА ТОЧНОСТЬ - Прочитайте вслух свой текст команде. Команда в это время смотрит в текст ДОСЛОВНОГО ПЕРЕВОДА БИБЛИИ РОБ-Д (RLOB) и обращает внимание только на ТОЧНОСТЬ перевода. \n\nОбсудите текст насколько он точен. Если есть ошибки в вашем тексте, исправьте. Всей командой проверьте на точность работу каждого члена команды, каждую законченную главу.\n\n\n\nПрочитайте ВОПРОСЫ и ответьте на них, глядя в ваш текст. Сравните с ответами. Если есть ошибки в вашем тексте, исправьте.\n\n\n\nПРОВЕРКА НА ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ - Еще раз прочитайте вслух свой текст команде, которая теперь не смотрит ни в какой текст, а просто слушает, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка. Обсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте. Проработайте каждую главу/ каждый отрывок, пока команда не будет довольна результатом.\n\n\n\nПримечание к шагу: \n\n- Не оставляйте текст с несколькими вариантами перевода предложения или слова. После восьмого шага не должны оставаться нерешенные вопросы. Текст должен быть готовым к чтению.",
           "time": 60,
           "whole_chapter": true,
           "count_of_users": 4,
@@ -1750,8 +1700,10 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
-                  "config": {}
+                  "name": "commandTranslate",
+                  "config": {
+                    "moderatorOnly": true
+                  }
                 },
                 {
                   "name": "personalNotes",
@@ -1770,7 +1722,7 @@ ADD
           ]
         }
       ]', 'bible'::project_type),
-      ('Vcana OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
+      ('CANA OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
           "title": "Шаг 1: Самостоятельное изучение",
           "description": "понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.",
@@ -2065,7 +2017,7 @@ ADD
               "size": 3,
               "tools": [
                 {
-                  "name": "translate",
+                  "name": "commandTranslate",
                   "config": {}
                 },
                 {

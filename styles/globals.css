@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  html {
+    font-family: "Roboto", system-ui, sans-serif;
+  }
+}
+
 .appbar{
 	@apply relative mx-auto flex flex-1 flex-col items-center justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5
 }
@@ -103,22 +109,19 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply text-4xl text-gray-800
 }
 .h2{
-	@apply text-2xl text-gray-800
-}
-.h2-3{
-	@apply text-xl text-gray-800
+	@apply text-3xl text-gray-800
 }
 .h3{
-	@apply text-lg text-gray-800
+	@apply text-2xl text-gray-800
 }
 .h4{
-	@apply text-base text-gray-800
+	@apply text-xl text-gray-800
 }
 .h5{
-	@apply text-sm text-gray-800
+	@apply text-base text-gray-800
 }
 .h6{
-	@apply text-xs text-gray-800
+	@apply text-sm text-gray-800
 }
 
 .input-base{
@@ -176,10 +179,6 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 	@apply border-b border-[#c4c4c4]
 }
 
-.sidebar-absolute{
-	@apply absolute font-medium left-0 top-0 right-0 bottom-0
-}
-
 .text-alignment{
 	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg
 }
@@ -202,4 +201,14 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
   user-select: none;
   pointer-events: none;
   opacity: .5;
+}
+
+.svg-cyan {
+	fill: #0891b2
+}
+.svg-gray {
+	fill: #e5e7eb
+}
+.svg-white {
+	fill: #fff
 }

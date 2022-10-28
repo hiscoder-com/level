@@ -11,8 +11,7 @@ function AutoSizeTextArea({
 
   useEffect(() => {
     setStartValue(verseObject.verse)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [verseObject.verse])
 
   return (
     <div
@@ -21,7 +20,7 @@ function AutoSizeTextArea({
       defaultValue={defaultValue}
       suppressContentEditableWarning={true}
       onBlur={(el) => {
-        updateVerse(index, el.target.innerText)
+        updateVerse(index, el.target.innerText.trim())
       }}
       className={`block w-full mx-3 focus:outline-none focus:inline-none focus:bg-white  ${
         verseObject.verse || disabled ? '' : 'bg-gray-300'

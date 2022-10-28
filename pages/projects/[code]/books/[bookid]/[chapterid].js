@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import VerseDivider from 'components/VerseDivider'
 
 import { supabase } from 'utils/supabaseClient'
+import Link from 'next/link'
 
 function ChapterVersesPage() {
   const router = useRouter()
@@ -75,20 +76,31 @@ function ChapterVersesPage() {
     }
   }, [chapter?.id, project?.id])
 
-  const startProject = () => {
+  const startChapter = () => {
     supabase
       .rpc('start_chapter', { chapter_id: chapter?.id, project_id: project?.id })
       .then((res) => console.log('Start Chapter', res))
   }
+
+  const finishedChapter = () => {
+    supabase
+      .rpc('finished_chapter', { chapter_id: chapter?.id, project_id: project?.id })
+      .then((res) => console.log('Finished Chapter', res))
+  }
+
   return (
     <>
-      <h2>
-        {t('Project')}: {project?.title} ({project?.code})
-      </h2>
-      <h3>
-        {t('Book')}: {book?.code}
+      <h3 className="h3 mb-4">
+        <Link href={'/projects/' + code}>
+          <a className="underline text-blue-700">« {project?.title}</a>
+        </Link>
       </h3>
-      <h3>
+      <h4 className="h4 mb-3">
+        <Link href={'/projects/' + code + '/books/' + bookid}>
+          <a className="underline text-blue-700">« {t(`books:${book?.code}`)}</a>
+        </Link>
+      </h4>
+      <h3 className="h4 mb-3">
         {t('Chapter')}: {chapter?.num}
       </h3>
       <VerseDivider verses={verses} />
@@ -97,8 +109,19 @@ function ChapterVersesPage() {
           {t('chapters:StartedAt')} {chapter?.started_at}
         </div>
       ) : (
-        <div className="btn" onClick={() => startProject()}>
+        <div className="btn btn-cyan" onClick={startChapter}>
           {t('chapters:StartChapter')}
+        </div>
+      )}
+      {!chapter?.started_at ? (
+        ''
+      ) : chapter?.finished_at ? (
+        <div className="mt-3">
+          {t('chapters:FinishedAt')} {chapter?.finished_at}
+        </div>
+      ) : (
+        <div className="btn btn-cyan mt-3" onClick={finishedChapter}>
+          {t('chapters:FinishedChapter')}
         </div>
       )}
     </>
@@ -115,6 +138,7 @@ export async function getServerSideProps({ locale }) {
         'common',
         'verses',
         'chapters',
+        'books',
       ])),
     },
   }

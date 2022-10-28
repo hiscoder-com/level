@@ -6,14 +6,16 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import usfm from 'usfm-js'
 import axios from 'axios'
 
 import { supabase } from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectBooksPage() {
+  const { user } = useCurrentUser()
   const {
     query: { code },
+    push,
   } = useRouter()
   const { t } = useTranslation(['common'])
   const [project, setProject] = useState()
@@ -32,36 +34,20 @@ function ProjectBooksPage() {
     getProject()
   }, [code])
 
-  const handleCreate = async (book_code) => {
-    const book = project?.base_manifest?.books.find((el) => el.name === book_code)
+  const handleCreate = async () => {
+    const book = project?.base_manifest?.books.find((el) => el.name === selectedBook)
     if (!book) {
       return
     }
-    const countOfChaptersAndVerses = {}
-    await axios
-      .get(book.link)
-      .then((res) => {
-        const jsonData = usfm.toJSON(res.data)
-        if (Object.entries(jsonData?.chapters).length > 0) {
-          Object.entries(jsonData?.chapters).forEach((el) => {
-            countOfChaptersAndVerses[el[0]] = Object.keys(el[1]).filter(
-              (verse) => verse !== 'front'
-            ).length
-          })
-        }
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    axios.defaults.headers.common['token'] = user?.access_token
+    const res = await axios.post('/api/create_chapters', {
+      project_id: project.id,
+      link: book.link,
+      book_code: selectedBook,
+    })
 
-    if (Object.keys(countOfChaptersAndVerses).length !== 0) {
-      await supabase.from('books').insert([
-        {
-          code: book_code,
-          project_id: project.id,
-          chapters: countOfChaptersAndVerses,
-        },
-      ])
+    if (res.status === 201) {
+      push('/projects/' + code + '/books/' + selectedBook)
     }
   }
 
@@ -87,16 +73,15 @@ function ProjectBooksPage() {
 
   return (
     <>
-      <h2>
-        {t('Project')}: {project?.title} ({project?.code})
-        <br />
-        {t('Books')}
-      </h2>
+      <h3 className="h3">
+        <Link href={'/projects/' + code}>
+          <a className="underline text-blue-700">« {project?.title}</a>
+        </Link>
+      </h3>
+      <p className="mt-4 mb-3 h4">{t('Books')}</p>
       {books?.map((el) => (
         <Link key={el.code} href={'/projects/' + project.code + '/books/' + el.code}>
-          <a className="block text-blue-700 underline">
-            {el.code} | {JSON.stringify(el.chapters, null, 2)}
-          </a>
+          <a className="block text-blue-700 underline">{t(`books:${el.code}`)}</a>
         </Link>
       ))}
       <select onChange={(e) => setSelectedBook(e.target.value)} value={selectedBook}>
@@ -104,11 +89,11 @@ function ProjectBooksPage() {
           ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
           .map((el) => (
             <option value={el.name} key={el.name}>
-              {el.name} | {el.link.split('/').splice(-1)}
+              {t(`books:${el.name}`)}
             </option>
           ))}
       </select>
-      <div className="btn btn-cyan" onClick={() => handleCreate(selectedBook)}>
+      <div className="btn btn-cyan" onClick={handleCreate}>
         {t('Create')}
       </div>
     </>
@@ -120,7 +105,7 @@ export default ProjectBooksPage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['projects', 'common'])),
+      ...(await serverSideTranslations(locale, ['projects', 'common', 'books'])),
     },
   }
 }

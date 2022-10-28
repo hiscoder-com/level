@@ -4,7 +4,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
 
 import IntroStep from 'components/IntroStep'
 
@@ -16,31 +15,37 @@ export default function IntroPage() {
   const { project, book, chapter, step } = query
 
   const [introMd, setIntroMd] = useState('')
-  const { t } = useTranslation(['intro-steps'])
+  const [title, setTitle] = useState('')
   useEffect(() => {
     supabase
       .from('steps')
-      .select('intro,sorting,projects!inner(code,id)')
+      .select('title,intro,sorting,projects!inner(code,id)')
       .match({ 'projects.code': project, sorting: step })
       .single()
       .then((res) => {
         setIntroMd(res.data.intro)
+        setTitle(res.data.title)
         supabase
-          .rpc('get_current_step', { project_id: res.data.projects.id })
+          .rpc('get_current_steps', { project_id: res.data.projects.id })
           .then((response) => {
-            if (!response.data.step) {
+            // пришел массив из книг, глав и шагов. Надо пройти, проверить есть ли наша глава.
+            // если нет - ошибка или редирект
+            // если есть - сверить шаг. Если совпадает - все ок, если нет - перейти на нужный шаг
+            const current_step = response.data.filter(
+              (el) => el.book === book && el.chapter.toString() === chapter.toString()
+            )?.[0]?.step
+            if (!current_step) {
               return replace(`/account`)
             }
-            if (parseInt(response.data.step) !== parseInt(step)) {
+            if (parseInt(current_step) !== parseInt(step)) {
               return replace(
-                `/translate/${project}/${book}/${chapter}/${response.data.step}/intro`
+                `/translate/${project}/${book}/${chapter}/${current_step}/intro`
               )
             }
           })
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter, project, step])
-  const title = t('V-CANAIntro') + ' ' + step
   return (
     <div className="layout-appbar">
       <Head>
@@ -50,6 +55,7 @@ export default function IntroPage() {
       </Head>
       <IntroStep
         markdown={introMd}
+        title={title}
         nextLink={`/translate/${project}/${book}/${chapter}/${step}/`}
       />
     </div>

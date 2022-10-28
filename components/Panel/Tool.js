@@ -10,6 +10,7 @@ import {
   TNTWL,
   TQ,
   BlindEditor,
+  CommandEditor,
 } from './'
 
 function Tool({ config }) {
@@ -119,6 +120,11 @@ function Tool({ config }) {
     case 'translate':
       CurrentTool = Editor
       title = t('Editor')
+      break
+
+    case 'commandTranslate':
+      CurrentTool = CommandEditor
+      title = t('CommandEditor')
       break
 
     case 'draftTranslate':

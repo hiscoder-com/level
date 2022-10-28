@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
@@ -25,6 +26,8 @@ function ProjectEdit() {
   const [openModalAssignTranslator, setOpenModalAssignTranslator] = useState(false)
   const [openModalAssignCoordinator, setOpenModalAssignCoordinator] = useState(false)
   const [level, setLevel] = useState('user')
+  const [listOfTranslators, setListOfTranslators] = useState([])
+  const [listOfCoordinators, setListOfCoordinators] = useState([])
 
   const [selectedModerator, setSelectedModerator] = useState(null)
   const [selectedTranslator, setSelectedTranslator] = useState(null)
@@ -40,6 +43,22 @@ function ProjectEdit() {
     token: user?.access_token,
     code,
   })
+
+  useEffect(() => {
+    const listOf = users?.filter(
+      (el) => !translators?.map((el) => el.users.id).includes(el.id)
+    )
+    setListOfTranslators(listOf)
+    setSelectedUser(listOf?.[0]?.id)
+  }, [translators, users])
+
+  useEffect(() => {
+    const listOf = users?.filter(
+      (el) => !coordinators?.map((el) => el.users.id).includes(el.id)
+    )
+    setListOfCoordinators(listOf)
+    setSelectedUser(listOf?.[0]?.id)
+  }, [coordinators, users])
 
   useEffect(() => {
     const getLevel = async () => {
@@ -71,7 +90,7 @@ function ProjectEdit() {
     coordinators: { mutate: mutateCoordinator, reset: setSelectedCoordinator },
   }
 
-  const remove = async (userId, role) => {
+  const remove = (userId, role) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/projects/${code}/${role}/${userId}`)
@@ -82,7 +101,7 @@ function ProjectEdit() {
       .catch((error) => console.log(error))
   }
 
-  const assign = async (role) => {
+  const assign = (role) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post(`/api/projects/${code}/${role}/`, {
@@ -103,17 +122,22 @@ function ProjectEdit() {
   return (
     <div className="divide-y-2 divide-gray-400">
       <div className="pb-5">
-        <div className="pb-5 inline-block ml-2">{t('NameProject')}</div>
-        <div className="pb-5 inline-block ml-2">{project?.title}</div>
+        <div className="h3">
+          <Link href={'/projects/' + code}>
+            <a className="underline text-blue-700">« {project?.title}</a>
+          </Link>
+        </div>
         <div className="pb-5 ml-2">
           <EditBrief user={user} id={project?.id} />
         </div>
-
-        <div className="w-1/2 flex justify-between">
-          <div className="ml-2">{t('Coordinators')}</div>
+        <div className="w-1/2 flex justify-between mt-5">
+          <div>{t('Coordinators')}</div>
           {'admin' === level && (
             <button
-              onClick={() => setOpenModalAssignCoordinator(true)}
+              onClick={() => {
+                setOpenModalAssignCoordinator(true)
+                setSelectedUser(listOfCoordinators?.[0]?.id)
+              }}
               className="btn-cyan m-2"
             >
               {t('project-edit:AddCoordinator')}
@@ -128,9 +152,12 @@ function ProjectEdit() {
       </div>
       <div className="pt-5 pb-5">
         <div className="flex justify-between">
-          <div className="ml-2">{t('Translators')}</div>
+          <div className="">{t('Translators')}</div>
           <button
-            onClick={() => setOpenModalAssignTranslator(true)}
+            onClick={() => {
+              setOpenModalAssignTranslator(true)
+              setSelectedUser(listOfTranslators?.[0]?.id)
+            }}
             className="btn-cyan m-2"
           >
             {t('project-edit:AddTranslator')}
@@ -146,40 +173,36 @@ function ProjectEdit() {
             isOpen={openModalAssignTranslator}
             closeHandle={() => {
               setOpenModalAssignTranslator(false)
-              setSelectedUser(null)
+              setSelectedUser('')
             }}
           >
             <select
               className="input m-2"
-              defaultValue={users?.[0].id}
+              value={selectedUser}
               onChange={(e) => setSelectedUser(e.target.value)}
             >
-              {users
-                ?.filter((el) => !translators?.map((el) => el.users.id).includes(el.id))
-                .map((el) => {
-                  return (
-                    <option value={el.id} key={el.id}>
-                      {el.login}
-                    </option>
-                  )
-                })}
+              {listOfTranslators?.map((el) => (
+                <option value={el.id} key={el.id}>
+                  {el.login}
+                </option>
+              ))}
             </select>
             <button
               onClick={() => {
                 assign('translators')
-                setSelectedUser(null)
+                setSelectedUser(listOfTranslators?.[0]?.id)
               }}
               disabled={!selectedUser}
               className="btn-cyan mx-2"
             >
-              {t('Assign')}
+              {t('Added')}
             </button>
             <div className="mt-4">
               <button
                 className="btn-cyan w-24"
                 onClick={() => {
                   setOpenModalAssignTranslator(false)
-                  setSelectedUser(null)
+                  setSelectedUser('')
                 }}
               >
                 {t('common:Close')}
@@ -190,40 +213,36 @@ function ProjectEdit() {
             isOpen={openModalAssignCoordinator}
             closeHandle={() => {
               setOpenModalAssignCoordinator(false)
-              setSelectedUser(null)
+              setSelectedUser('')
             }}
           >
             <select
               className="input m-2"
-              defaultValue={users?.[0].id}
+              value={selectedUser}
               onChange={(e) => setSelectedUser(e.target.value)}
             >
-              {users
-                ?.filter((el) => !coordinators?.map((el) => el.users.id).includes(el.id))
-                .map((el) => {
-                  return (
-                    <option value={el.id} key={el.id}>
-                      {el.login}
-                    </option>
-                  )
-                })}
+              {listOfCoordinators?.map((el) => (
+                <option value={el.id} key={el.id}>
+                  {el.login}
+                </option>
+              ))}
             </select>
             <button
               onClick={() => {
                 assign('coordinators')
-                setSelectedUser(null)
+                setSelectedUser(listOfCoordinators?.[0]?.id)
               }}
               disabled={!selectedUser}
               className="btn-cyan mx-2"
             >
-              {t('Assign')}
+              {t('Added')}
             </button>
             <div className="mt-4">
               <button
                 className="btn-cyan w-24"
                 onClick={() => {
                   setOpenModalAssignCoordinator(false)
-                  setSelectedUser(null)
+                  setSelectedUser('')
                 }}
               >
                 {t('common:Close')}
@@ -332,7 +351,7 @@ export default ProjectEdit
 function TranslatorsList({ translators, setSelectedModerator, setSelectedTranslator }) {
   const { t } = useTranslation(['common'])
   return (
-    <div className="overflow-x-auto relative px-4">
+    <div className="overflow-x-auto relative">
       <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
@@ -401,7 +420,7 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
 function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = false }) {
   const { t } = useTranslation(['common'])
   return (
-    <div className="overflow-x-auto relative px-4">
+    <div className="overflow-x-auto relative">
       <table className="w-1/2 text-sm text-left text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>

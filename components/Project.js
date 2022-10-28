@@ -36,23 +36,18 @@ function Project({ code }) {
 
   return (
     <div>
-      <h3 className="text-3xl">
-        <b>{project?.title}</b>
-      </h3>
-
-      <div>
+      <h3 className="h3">{project?.title}</h3>
+      <div className="mt-4">
         {t('Code')} <b>{project?.code}</b>
       </div>
       <div>
         {t('Language')}{' '}
         {project?.languages && (
-          <>
-            <b>{project?.languages?.orig_name + ' ' + project?.languages?.code}</b>
-          </>
+          <b>{project?.languages?.orig_name + ' (' + project?.languages?.code + ')'}</b>
         )}
       </div>
 
-      <div>
+      <div className="mt-4">
         {translators && Object.keys(translators).length > 0 && (
           <>
             {t('Translators')}:
@@ -67,9 +62,15 @@ function Project({ code }) {
           </>
         )}
         {['admin', 'coordinator'].includes(level) && (
-          <Link key={project?.id} href={`/projects/${project?.code}/edit`}>
-            <a className="btn btn-filled btn-cyan">{t('ProjectEditing')}</a>
-          </Link>
+          <div className="mt-4">
+            <Link href={`/projects/${project?.code}/edit`}>
+              <a className="btn btn-filled btn-cyan">{t('ProjectEditing')}</a>
+            </Link>
+            <br />
+            <Link href={`/projects/${project?.code}/books`}>
+              <a className="btn btn-filled btn-cyan mt-3">{t('ProjectBooks')}</a>
+            </Link>
+          </div>
         )}
       </div>
     </div>

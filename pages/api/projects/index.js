@@ -90,11 +90,12 @@ export default async function languageProjectsHandler(req, res) {
 
         if (error) throw error
 
-        current_method.steps.forEach(async (el, index) => {
+        let sorting = 1
+        for (const step_el of current_method.steps) {
           await supabase
             .from('steps')
-            .insert([{ ...el, sorting: index + 1, project_id: data[0].id }])
-        })
+            .insert([{ ...step_el, sorting: sorting++, project_id: data[0].id }])
+        }
         res.setHeader('Location', `/projects/${data[0].code}`)
         res.status(201).json({})
       } catch (error) {
