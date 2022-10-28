@@ -4,7 +4,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
 
 import IntroStep from 'components/IntroStep'
 
@@ -16,15 +15,16 @@ export default function IntroPage() {
   const { project, book, chapter, step } = query
 
   const [introMd, setIntroMd] = useState('')
-  const { t } = useTranslation(['intro-steps'])
+  const [title, setTitle] = useState('')
   useEffect(() => {
     supabase
       .from('steps')
-      .select('intro,sorting,projects!inner(code,id)')
+      .select('title,intro,sorting,projects!inner(code,id)')
       .match({ 'projects.code': project, sorting: step })
       .single()
       .then((res) => {
         setIntroMd(res.data.intro)
+        setTitle(res.data.title)
         supabase
           .rpc('get_current_steps', { project_id: res.data.projects.id })
           .then((response) => {
@@ -46,7 +46,6 @@ export default function IntroPage() {
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter, project, step])
-  const title = t('V-CANAIntro') + ' ' + step
   return (
     <div className="layout-appbar">
       <Head>
@@ -56,6 +55,7 @@ export default function IntroPage() {
       </Head>
       <IntroStep
         markdown={introMd}
+        title={title}
         nextLink={`/translate/${project}/${book}/${chapter}/${step}/`}
       />
     </div>
