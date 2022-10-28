@@ -5,21 +5,14 @@ import { useTranslation } from 'next-i18next'
 import SideBarLink from 'components/SideBarLink'
 
 import Close from 'public/close.svg'
-import { useRouter } from 'next/router'
 
 function SideBar({ isOpen, setIsOpen }) {
   const { t } = useTranslation('common')
-  const { push } = useRouter()
   const condition = `absolute font-medium bg-black/70 left-0 top-0 right-0 bottom-0 z-10 ${
     isOpen ? '' : 'hidden'
   }`
   return (
-    <div
-      className={condition}
-      onClick={(e) => {
-        setIsOpen((prev) => !prev)
-      }}
-    >
+    <div className={condition} onClick={() => setIsOpen(false)}>
       <div
         className="fixed top-0 left-0 w-full h-full text-lg bg-blue-150 sm:w-64"
         onClick={(e) => {
@@ -30,7 +23,7 @@ function SideBar({ isOpen, setIsOpen }) {
         <div className="sidebar-hr">
           <div className="flex items-center justify-between px-4 py-3 text-[#3C3C41]">
             <Close
-              onClick={() => setIsOpen((prev) => !prev)}
+              onClick={() => setIsOpen(false)}
               className="h-6 cursor-pointer stroke-1"
             />
           </div>
