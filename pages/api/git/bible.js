@@ -72,7 +72,7 @@ export default async function bibleHandler(req, res) {
 
   let verses = req.query['verses[]'] || req.query.verses
   if (typeof verses === 'string') {
-    verses = verses.split(',').map((el) => parseInt(el.trim()))
+    verses = verses.split(',').map((el) => el.trim())
   }
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
@@ -85,9 +85,7 @@ export default async function bibleHandler(req, res) {
       (el) => el.verse !== 'front'
     )
 
-    res
-      .status(200)
-      .json({ verseObjects: data, jsonData: jsonData.chapters[chapter], verses })
+    res.status(200).json({ verseObjects: data })
     return
   } catch (error) {
     res.status(404).json({ error })
