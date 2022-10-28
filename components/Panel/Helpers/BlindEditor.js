@@ -2,36 +2,37 @@ import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from 'utils/supabaseClient'
-
 import { useSetRecoilState } from 'recoil'
+
+import { supabase } from 'utils/supabaseClient'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { checkedVersesBibleState } from '../state/atoms'
 
 import Pencil from 'public/pencil.svg'
+import Check from 'public/check.svg'
 
 function BlindEditor({ config }) {
   const [enabledIcons, setEnabledIcons] = useState([])
   const [enabledInputs, setEnabledInputs] = useState([])
   const [verseObjects, setVerseObjects] = useState([])
+  const [translatedVerses, setTranslatedVerses] = useState([])
   const [isShowFinalButton, setIsShowFinalButton] = useState(false)
   const { t } = useTranslation(['common'])
 
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
-
   useEffect(() => {
     setVerseObjects(config.reference.verses)
     let updatedArray = []
     const _verseObjects = config.reference.verses
     config.reference.verses.forEach((el) => {
-      if (el.verse !== null) {
+      if (el.verse) {
         updatedArray.push(el.num.toString())
       }
     })
     setCheckedVersesBible(updatedArray)
-
+    setTranslatedVerses(updatedArray)
     if (!updatedArray.length) {
       return
     }
@@ -64,12 +65,13 @@ function BlindEditor({ config }) {
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
-      prev[id].verse = text
+      prev[id].verse = text.trim()
       return [...prev]
     })
   }
 
   const sendToDb = async (index) => {
+    setTranslatedVerses((prev) => [...prev, verseObjects[index].num.toString()])
     const res = await supabase.rpc('save_verse', {
       new_verse: verseObjects[index].verse,
       verse_id: verseObjects[index].verse_id,
@@ -87,39 +89,53 @@ function BlindEditor({ config }) {
           (index === 0 && !enabledIcons.length) ||
           enabledIcons.includes(currentNumVerse)
         )
-
+        const isTranslating = enabledInputs.includes(el.num.toString())
+        const isTranslated = translatedVerses.includes(currentNumVerse)
         return (
           <div key={el.verse_id} data-id={el.num} className="flex my-3">
-            <button disabled={disabledButton}>
-              <Pencil
-                onClick={() => {
-                  if (index !== 0 && !verseObjects[index - 1].verse) {
-                    return
-                  }
-                  setEnabledIcons((prev) => {
-                    return [
-                      ...prev,
-                      ...(index === 0 ? [currentNumVerse, nextNumVerse] : [nextNumVerse]),
-                    ].filter((el) => el !== prevNumVerse)
-                  })
-                  setCheckedVersesBible((prev) => [...prev, currentNumVerse])
+            <button
+              onClick={() => {
+                if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
+                  return
+                }
+                setEnabledIcons((prev) => {
+                  return [
+                    ...prev,
+                    ...(index === 0 ? [currentNumVerse, nextNumVerse] : [nextNumVerse]),
+                  ].filter((el) => el !== prevNumVerse)
+                })
+                setCheckedVersesBible((prev) => [...prev, currentNumVerse])
 
-                  setEnabledInputs((prev) =>
-                    [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
-                  )
-                  if (index === 0) {
-                    return
-                  }
+                setEnabledInputs((prev) =>
+                  [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
+                )
+                if (index === 0) {
+                  return
+                }
 
-                  sendToDb(index - 1)
-                }}
-                className={`w-4 h-4 mt-1 ${!disabledButton ? 'svg-cyan' : 'svg-gray'}`}
-              />
+                sendToDb(index - 1)
+              }}
+              className={`${isTranslating ? 'btn-cyan' : 'btn-white'}`}
+              disabled={disabledButton}
+            >
+              {isTranslated ? (
+                <Check className="w-4 h-4" />
+              ) : (
+                <Pencil
+                  className={`w-4  h-4 mt-1 ${
+                    disabledButton
+                      ? 'svg-gray'
+                      : !isTranslating
+                      ? 'svg-cyan'
+                      : 'svg-white'
+                  }`}
+                />
+              )}
             </button>
 
             <div className="ml-4">{el.num}</div>
             <AutoSizeTextArea
-              disabled={!enabledInputs.includes(el.num.toString())}
+              disabled={!isTranslating}
               updateVerse={updateVerse}
               index={index}
               verseObject={el}
