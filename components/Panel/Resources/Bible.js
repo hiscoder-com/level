@@ -53,23 +53,6 @@ function VersesExtended({ verseObjects }) {
         const checkedCurrent = checkedVersesBible.includes(el.verse)
         return (
           <div key={el.verse} className={`my-3 flex items-start`}>
-            {/* <input
-              checked={checkedCurrent}
-              type="checkbox"
-              className={`mt-1`}
-              style={{
-                filter: checkedCurrent ? '' : 'saturate(9) hue-rotate(273deg)',
-              }}
-              disabled={
-                checkedCurrent ||
-                (index !== 0 &&
-                  (!translatedVerses.includes(verseObjects?.[index - 1]?.verse) ||
-                    checkedCurrent))
-              }
-              onChange={() => {
-                setCheckedVersesBible((prev) => [...prev, el.verse])
-              }}
-            /> */}
             <div className={`ml-2`}>{el.verse}</div>
             {checkedCurrent ? (
               <Blur verse={el.text} />

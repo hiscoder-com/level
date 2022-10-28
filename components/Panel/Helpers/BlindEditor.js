@@ -22,6 +22,7 @@ function BlindEditor({ config }) {
   const { t } = useTranslation(['common'])
 
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
+
   useEffect(() => {
     setVerseObjects(config.reference.verses)
     let updatedArray = []
@@ -83,8 +84,8 @@ function BlindEditor({ config }) {
       {verseObjects.map((el, index) => {
         const currentNumVerse = el.num.toString()
         const nextNumVerse =
-          index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : []
-        const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : []
+          index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : ''
+        const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : ''
         const disabledButton = !(
           (index === 0 && !enabledIcons.length) ||
           enabledIcons.includes(currentNumVerse)
@@ -122,7 +123,7 @@ function BlindEditor({ config }) {
                 <Check className="w-4 h-4" />
               ) : (
                 <Pencil
-                  className={`w-4  h-4 mt-1 ${
+                  className={`w-4 h-4 ${
                     disabledButton
                       ? 'svg-gray'
                       : !isTranslating
