@@ -4,8 +4,8 @@ import ReactMarkdown from 'react-markdown'
 
 import { Placeholder } from '../UI'
 
-import { checkedVersesBibleState, translatedVersesState } from '../state/atoms'
-import { useRecoilState, useRecoilValue } from 'recoil'
+import { checkedVersesBibleState } from '../state/atoms'
+import { useRecoilValue } from 'recoil'
 import { useGetResource } from 'utils/hooks'
 
 // draft: true/false
@@ -45,10 +45,7 @@ function Verses({ verseObjects }) {
 }
 
 function VersesExtended({ verseObjects }) {
-  const [checkedVersesBible, setCheckedVersesBible] = useRecoilState(
-    checkedVersesBibleState
-  )
-  const translatedVerses = useRecoilValue(translatedVersesState)
+  const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
 
   return (
     <>
@@ -56,23 +53,6 @@ function VersesExtended({ verseObjects }) {
         const checkedCurrent = checkedVersesBible.includes(el.verse)
         return (
           <div key={el.verse} className={`my-3 flex items-start`}>
-            <input
-              checked={checkedCurrent}
-              type="checkbox"
-              className={`mt-1`}
-              style={{
-                filter: checkedCurrent ? '' : 'saturate(9) hue-rotate(273deg)',
-              }}
-              disabled={
-                checkedCurrent ||
-                (index !== 0 &&
-                  (!translatedVerses.includes(verseObjects?.[index - 1]?.verse) ||
-                    checkedCurrent))
-              }
-              onChange={() => {
-                setCheckedVersesBible((prev) => [...prev, el.verse])
-              }}
-            />
             <div className={`ml-2`}>{el.verse}</div>
             {checkedCurrent ? (
               <Blur verse={el.text} />
