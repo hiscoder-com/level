@@ -82,7 +82,9 @@ export default async function bibleHandler(req, res) {
       (el) => el.verse !== 'front'
     )
 
-    res.status(200).json({ verseObjects: data })
+    res
+      .status(200)
+      .json({ verseObjects: data, jsonData: jsonData.chapters[chapter], verses })
     return
   } catch (error) {
     res.status(404).json({ error })
