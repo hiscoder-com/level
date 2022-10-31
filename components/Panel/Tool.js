@@ -36,7 +36,7 @@ function Tool({ config }) {
   config.verses = config.wholeChapter
     ? []
     : config.reference.verses.map((v) => (v?.num ? v.num : v))
-  console.log({ config: config.verses, configReferenceVerses: config.reference.verses })
+
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
       CurrentTool = TNTWL
