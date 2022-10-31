@@ -2,6 +2,14 @@ import axios from 'axios'
 
 import { tsvToJson } from 'utils/tsvHelper'
 
+const uniqueFilter = (uniqueObject, key, value) => {
+  if (!Object.keys(uniqueObject).includes(key)) {
+    uniqueObject[key] = [value]
+    return false
+  } else {
+    return true
+  }
+}
 /**
  *  @swagger
  *  /api/git/twl:
@@ -87,36 +95,45 @@ export default async function twlHandler(req, res) {
             const [chapterQuestion] = el.Reference.split(':')
             return chapterQuestion === chapter
           })
+
     const promises = data.map(async (el) => {
       const url = `https://git.door43.org/${owner}/${repo.slice(
         0,
         -1
       )}/raw/branch/master/${el.TWLink.split('/').slice(-3).join('/')}.md`
       const res = await axios.get(url)
+
       const splitter = res.data.search('\n')
+
       return {
         reference: el.Reference,
         title: res.data.slice(0, splitter),
         text: res.data.slice(splitter),
+        url: el.TWLink,
       }
     })
     const words = await Promise.all(promises)
-
     const groupData = {}
     let countID = 0
+    const chunkUnique = {}
+    let verseUnique = {}
 
     words?.forEach((el) => {
       const id = `${el.reference}_${new Date().getTime()}_${String(countID)}`
       countID++
-      const twl = { id, title: el.title, text: el.text }
+      const repeatedInChunk = uniqueFilter(chunkUnique, el.url, el.title)
+      const wordObject = { id, title: el.title, url: el.url, repeatedInChunk }
       const verse = el.reference.split(':').slice(-1)[0]
+      let repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
+
       if (!groupData[verse]) {
-        groupData[verse] = [twl]
+        verseUnique = {}
+        repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
+        groupData[verse] = [{ ...wordObject, repeatedInVerse }]
       } else {
-        groupData[verse].push(twl)
+        groupData[verse].push({ ...wordObject, repeatedInVerse })
       }
     })
-
     res.status(200).json(groupData)
     return
   } catch (error) {
