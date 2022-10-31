@@ -41,7 +41,6 @@ function ProjectCreate() {
         setMethod(selectedMethod)
         setCustomSteps(JSON.stringify(selectedMethod.steps, null, 2))
         setCustomResources(selectedMethod.resources)
-        console.log(methodId, methods, selectedMethod.resources)
       }
     }
   }, [methodId, methods])
