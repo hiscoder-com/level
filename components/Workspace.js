@@ -51,13 +51,13 @@ function Panel({ tools, resources, reference, wholeChapter }) {
   }
   return (
     <Tab.Group>
-      <Tab.List className="space-x-3 text-xs">
+      <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-6 flex overflow-auto">
         {tools?.map((tool) => (
           <Tab
             key={tool.name}
             className={({ selected }) =>
               classNames(
-                'btn text-xs md:text-sm lg:text-base',
+                'btn text-xs p-1 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-auto',
                 selected ? 'btn-cyan' : 'btn-white'
               )
             }

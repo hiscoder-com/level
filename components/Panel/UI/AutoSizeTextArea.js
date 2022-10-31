@@ -10,8 +10,9 @@ function AutoSizeTextArea({
   const [startValue, setStartValue] = useState()
 
   useEffect(() => {
-    setStartValue(verseObject.verse)
-  }, [verseObject.verse])
+    setStartValue(verseObject.verse?.trim())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div
