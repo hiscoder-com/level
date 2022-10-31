@@ -81,6 +81,9 @@ function ToolList({ setItem, data, type }) {
                       case 'verse':
                         itemFilter = item.repeatedInVerse
                         break
+                      case 'book':
+                        itemFilter = item.repeatedInBook
+                        break
 
                       default:
                         break
@@ -134,6 +137,7 @@ function FilterRepeated({ setFilter, filter }) {
   const options = [
     { value: 'verse', name: 'By verse' },
     { value: 'chunk', name: 'By chunk' },
+    { value: 'book', name: 'By book' },
     { value: 'disabled', name: 'Disabled' },
   ]
 

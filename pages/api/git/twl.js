@@ -10,6 +10,55 @@ const uniqueFilter = (uniqueObject, key, value) => {
     return true
   }
 }
+
+const getListBook = (data) => {
+  if (!data) {
+    return
+  }
+  const listBook = {}
+
+  data.forEach((verse) => {
+    if (!Object.keys(listBook).includes(verse.TWLink)) {
+      listBook[verse.TWLink] = [verse.Reference]
+      return
+    }
+    listBook[verse.TWLink].push(verse.Reference)
+  })
+
+  return { ...listBook }
+}
+const uniqueFilterInBook = (wordsBook, item, wordObject) => {
+  if (Object.keys(wordsBook).find((wordLink) => wordLink === item.url)) {
+    const [chapterCurrentWord, verseCurrentWord] = item.reference
+      .split(':')
+      .map((el) => parseInt(el))
+    const [chapterFirstLink, verseFirstLink] = wordsBook[item.url][0]
+      .split(':')
+      .map((el) => parseInt(el))
+
+    if (chapterFirstLink > chapterCurrentWord) {
+      return false
+    }
+    if (chapterFirstLink < chapterCurrentWord) {
+      return true
+    }
+    if (chapterFirstLink === chapterCurrentWord) {
+      if (verseFirstLink > verseCurrentWord) {
+        return false
+      }
+      if (verseFirstLink < verseCurrentWord) {
+        return true
+      }
+      if (verseFirstLink === verseCurrentWord) {
+        if (wordObject.repeatedInChunk || wordObject.repeatedInVerse) {
+          return true
+        } else {
+          return false
+        }
+      }
+    }
+  }
+}
 /**
  *  @swagger
  *  /api/git/twl:
@@ -85,6 +134,7 @@ export default async function twlHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
+    const uniqueWordsBook = getListBook(jsonData)
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
@@ -114,24 +164,27 @@ export default async function twlHandler(req, res) {
     })
     const words = await Promise.all(promises)
     const groupData = {}
-    let countID = 0
     const chunkUnique = {}
     let verseUnique = {}
+    let countID = 0
 
     words?.forEach((el) => {
       const id = `${el.reference}_${new Date().getTime()}_${String(countID)}`
       countID++
+
       const repeatedInChunk = uniqueFilter(chunkUnique, el.url, el.title)
+      let repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
+      const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, el, wordObject)
+
       const wordObject = { id, title: el.title, url: el.url, repeatedInChunk }
       const verse = el.reference.split(':').slice(-1)[0]
-      let repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
 
       if (!groupData[verse]) {
         verseUnique = {}
         repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
-        groupData[verse] = [{ ...wordObject, repeatedInVerse }]
+        groupData[verse] = [{ ...wordObject, repeatedInVerse, repeatedInBook }]
       } else {
-        groupData[verse].push({ ...wordObject, repeatedInVerse })
+        groupData[verse].push({ ...wordObject, repeatedInVerse, repeatedInBook })
       }
     })
     res.status(200).json(groupData)
