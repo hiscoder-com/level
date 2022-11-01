@@ -175,7 +175,13 @@ export default async function twlHandler(req, res) {
       const repeatedInChunk = uniqueFilter(chunkUnique, el.url, el.title)
       let repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
 
-      const wordObject = { id, title: el.title, url: el.url, repeatedInChunk }
+      const wordObject = {
+        id,
+        title: el.title,
+        text: el.text,
+        url: el.url,
+        repeatedInChunk,
+      }
       const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, el, wordObject)
 
       const verse = el.reference.split(':').slice(-1)[0]

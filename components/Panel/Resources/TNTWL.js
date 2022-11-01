@@ -127,7 +127,7 @@ function ToolContent({ setItem, item }) {
         <Close />
       </div>
       <div className=" font-bold text-xl mb-2">
-        <ReactMarkdown>{item?.title}</ReactMarkdown>
+        <ReactMarkdown className="text-2xl mb-4">{item?.title}</ReactMarkdown>
       </div>
       <MarkdownExtended>{item?.text}</MarkdownExtended>
     </div>
