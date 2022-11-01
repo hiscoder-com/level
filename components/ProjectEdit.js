@@ -173,37 +173,39 @@ function ProjectEdit() {
               setSelectedUser('')
             }}
           >
-            <select
-              className="input m-2"
-              value={selectedUser}
-              onChange={(e) => setSelectedUser(e.target.value)}
-            >
-              {listOfTranslators?.map((el) => (
-                <option value={el.id} key={el.id}>
-                  {el.login}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={() => {
-                assign('translators')
-                setSelectedUser(listOfTranslators?.[0]?.id)
-              }}
-              disabled={!selectedUser}
-              className="btn-cyan mx-2"
-            >
-              {t('Added')}
-            </button>
-            <div className="mt-4">
-              <button
-                className="btn-cyan w-24"
-                onClick={() => {
-                  setOpenModalAssignTranslator(false)
-                  setSelectedUser('')
-                }}
+            <div className="text-center">
+              <select
+                className="input m-2"
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
               >
-                {t('common:Close')}
+                {listOfTranslators?.map((el) => (
+                  <option value={el.id} key={el.id}>
+                    {el.login}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => {
+                  assign('translators')
+                  setSelectedUser(listOfTranslators?.[0]?.id)
+                }}
+                disabled={!selectedUser}
+                className="btn-cyan mx-2"
+              >
+                {t('Added')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setOpenModalAssignTranslator(false)
+                    setSelectedUser('')
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </div>
           </Modal>
           <Modal
@@ -213,37 +215,39 @@ function ProjectEdit() {
               setSelectedUser('')
             }}
           >
-            <select
-              className="input m-2"
-              value={selectedUser}
-              onChange={(e) => setSelectedUser(e.target.value)}
-            >
-              {listOfCoordinators?.map((el) => (
-                <option value={el.id} key={el.id}>
-                  {el.login}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={() => {
-                assign('coordinators')
-                setSelectedUser(listOfCoordinators?.[0]?.id)
-              }}
-              disabled={!selectedUser}
-              className="btn-cyan mx-2"
-            >
-              {t('Added')}
-            </button>
-            <div className="mt-4">
-              <button
-                className="btn-cyan w-24"
-                onClick={() => {
-                  setOpenModalAssignCoordinator(false)
-                  setSelectedUser('')
-                }}
+            <div className="text-center">
+              <select
+                className="input m-2"
+                value={selectedUser}
+                onChange={(e) => setSelectedUser(e.target.value)}
               >
-                {t('common:Close')}
+                {listOfCoordinators?.map((el) => (
+                  <option value={el.id} key={el.id}>
+                    {el.login}
+                  </option>
+                ))}
+              </select>
+              <button
+                onClick={() => {
+                  assign('coordinators')
+                  setSelectedUser(listOfCoordinators?.[0]?.id)
+                }}
+                disabled={!selectedUser}
+                className="btn-cyan mx-2"
+              >
+                {t('Added')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setOpenModalAssignCoordinator(false)
+                    setSelectedUser('')
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </div>
           </Modal>
           <Modal
@@ -252,34 +256,38 @@ function ProjectEdit() {
               setSelectedModerator(false)
             }}
           >
-            <div className="mb-2">
-              {moderatorIds?.includes(selectedModerator?.id)
-                ? t('project-edit:RemovingModerator')
-                : t('project-edit:AssigningModerator')}
-            </div>
+            <div className="text-center">
+              <div className="mb-2">
+                {moderatorIds?.includes(selectedModerator?.id)
+                  ? t('project-edit:RemovingModerator')
+                  : t('project-edit:AssigningModerator')}
+              </div>
 
-            <button
-              onClick={() =>
-                changeModerator(
-                  moderatorIds?.includes(selectedModerator.id)
-                    ? 'remove_moderator'
-                    : 'assign_moderator'
-                )
-              }
-              disabled={!selectedModerator}
-              className="btn-cyan mx-2"
-            >
-              {moderatorIds?.includes(selectedModerator?.id) ? t('Remove') : t('Assign')}
-            </button>
-            <div className="mt-4">
               <button
-                className="btn-cyan w-24"
-                onClick={() => {
-                  setSelectedModerator(false)
-                }}
+                onClick={() =>
+                  changeModerator(
+                    moderatorIds?.includes(selectedModerator.id)
+                      ? 'remove_moderator'
+                      : 'assign_moderator'
+                  )
+                }
+                disabled={!selectedModerator}
+                className="btn-cyan mx-2"
               >
-                {t('common:Close')}
+                {moderatorIds?.includes(selectedModerator?.id)
+                  ? t('Remove')
+                  : t('Assign')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setSelectedModerator(false)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </div>
           </Modal>
           <Modal
@@ -290,23 +298,25 @@ function ProjectEdit() {
               setSelectedTranslator(false)
             }}
           >
-            <div className="mb-2">{t('project-edit:RemovingTranslator')}</div>
-            <button
-              onClick={() => remove(selectedTranslator.id, 'translators')}
-              disabled={!selectedTranslator}
-              className="btn-cyan mx-2"
-            >
-              {t('Remove')}
-            </button>
-            <div className="mt-4">
+            <div className="text-center">
+              <div className="mb-2">{t('project-edit:RemovingTranslator')}</div>
               <button
-                className="btn-cyan w-24"
-                onClick={() => {
-                  setSelectedTranslator(false)
-                }}
+                onClick={() => remove(selectedTranslator.id, 'translators')}
+                disabled={!selectedTranslator}
+                className="btn-cyan mx-2"
               >
-                {t('common:Close')}
+                {t('Remove')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setSelectedTranslator(false)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </div>
           </Modal>
           <Modal
@@ -317,24 +327,26 @@ function ProjectEdit() {
               setSelectedCoordinator(false)
             }}
           >
-            <div className="mb-2">{t('project-edit:RemovingCoordinator')}</div>
+            <div className="text-center">
+              <div className="mb-2">{t('project-edit:RemovingCoordinator')}</div>
 
-            <button
-              onClick={() => remove(selectedCoordinator.id, 'coordinators')}
-              disabled={!selectedCoordinator}
-              className="btn-cyan mx-2"
-            >
-              {t('Remove')}
-            </button>
-            <div className="mt-4">
               <button
-                className="btn-cyan w-24"
-                onClick={() => {
-                  setSelectedCoordinator(false)
-                }}
+                onClick={() => remove(selectedCoordinator.id, 'coordinators')}
+                disabled={!selectedCoordinator}
+                className="btn-cyan mx-2"
               >
-                {t('common:Close')}
+                {t('Remove')}
               </button>
+              <div className="mt-4">
+                <button
+                  className="btn-cyan w-24"
+                  onClick={() => {
+                    setSelectedCoordinator(false)
+                  }}
+                >
+                  {t('common:Close')}
+                </button>
+              </div>
             </div>
           </Modal>
         </div>

@@ -51,7 +51,7 @@ function Panel({ tools, resources, reference, wholeChapter }) {
   }
   return (
     <Tab.Group>
-      <Tab.List className="space-x-3 text-xs px-3 -mb-3 lg:-mb-6 flex overflow-auto">
+      <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-7 flex overflow-auto">
         {tools?.map((tool) => (
           <Tab
             key={tool.name}
