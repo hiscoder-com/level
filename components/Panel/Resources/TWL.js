@@ -8,6 +8,7 @@ import MarkdownExtended from 'components/MarkdownExtended'
 import { Placeholder } from '../UI'
 
 import { useGetResource } from 'utils/hooks'
+import { checkLSVal } from 'utils/helper'
 
 import Close from 'public/close.svg'
 
@@ -116,8 +117,6 @@ function ToolContent({ setItem, item }) {
     </div>
   )
 }
-
-import { checkLSVal } from 'utils/helper'
 
 function FilterRepeated({ setFilter, filter }) {
   const { t } = useTranslation('common')

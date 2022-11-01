@@ -3,7 +3,7 @@ import axios from 'axios'
 import { tsvToJson } from 'utils/tsvHelper'
 
 const uniqueFilter = (uniqueObject, key, value) => {
-  if (!Object.keys(uniqueObject).includes(key)) {
+  if (!uniqueObject?.[key]) {
     uniqueObject[key] = [value]
     return false
   } else {
