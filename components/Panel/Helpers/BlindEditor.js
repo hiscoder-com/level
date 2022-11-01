@@ -90,7 +90,7 @@ function BlindEditor({ config }) {
         const isTranslating = enabledInputs.includes(el.num.toString())
         const isTranslated = translatedVerses.includes(currentNumVerse)
         return (
-          <div key={el.verse_id} className="flex my-3 justify-start">
+          <div key={el.verse_id} className="flex my-3 items-start">
             <button
               onClick={() => {
                 if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
@@ -151,7 +151,7 @@ function BlindEditor({ config }) {
                 defaultValue={el.verse ?? ''}
               />
             ) : (
-              <div>{el.verse}</div>
+              <div className="whitespace-pre-line">{el.verse}</div>
             )}
           </div>
         )
