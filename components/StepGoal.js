@@ -26,7 +26,7 @@ function StepGoal({ description }) {
             {description.replaceAll('\n\n', '\n')}
           </p>
         </div>
-        <div className="mt-4">
+        <div className="mt-3 text-center">
           <button className="btn-cyan w-24" onClick={closeModal}>
             {t('Close')}
           </button>

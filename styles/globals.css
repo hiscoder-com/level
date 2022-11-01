@@ -160,7 +160,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .modal-step-goal{
-	@apply transform overflow-hidden p-6 w-full max-w-md text-center align-middle bg-white rounded-2xl shadow-xl transition-all
+	@apply transform overflow-hidden p-6 w-full max-w-md align-middle bg-white rounded-2xl shadow-xl transition-all
 }
 
 .password-control{
