@@ -45,24 +45,34 @@ function Workspace({ stepConfig, reference }) {
 export default Workspace
 
 function Panel({ tools, resources, reference, wholeChapter }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
   }
   return (
     <Tab.Group>
-      <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-6 flex overflow-auto">
+      <Tab.List className="space-x-3 text-xs px-3 -mb-3 lg:-mb-6 flex overflow-auto">
         {tools?.map((tool) => (
           <Tab
             key={tool.name}
             className={({ selected }) =>
               classNames(
-                'btn text-xs p-1 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-auto',
+                'btn text-xs p-1 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-auto whitespace-nowrap',
                 selected ? 'btn-cyan' : 'btn-white'
               )
             }
           >
-            {tool.name}
+            {[
+              'translate',
+              'commandTranslate',
+              'draftTranslate',
+              'teamNotes',
+              'personalNotes',
+              'audio',
+              'dictionary',
+            ].includes(tool.name)
+              ? t(tool.name)
+              : tool.name}
           </Tab>
         ))}
       </Tab.List>

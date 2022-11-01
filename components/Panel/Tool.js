@@ -119,37 +119,37 @@ function Tool({ config }) {
 
     case 'translate':
       CurrentTool = Editor
-      title = t('Editor')
+      title = t('translate')
       break
 
     case 'commandTranslate':
       CurrentTool = CommandEditor
-      title = t('CommandEditor')
+      title = t('commandTranslate')
       break
 
     case 'draftTranslate':
       CurrentTool = BlindEditor
-      title = t('BlindEditor')
+      title = t('draftTranslate')
       break
 
     case 'teamNotes':
       CurrentTool = TeamNotes
-      title = t('TeamNotes')
+      title = t('teamNotes')
       break
 
     case 'personalNotes':
       CurrentTool = PersonalNotes
-      title = t('PersonalNotes')
+      title = t('personalNotes')
       break
 
     case 'audio':
       CurrentTool = Audio
-      title = t('Audio')
+      title = t('audio')
       break
 
     case 'dictionary':
       CurrentTool = Dictionary
-      title = t('Dictionary')
+      title = t('dictionary')
       break
 
     default:
