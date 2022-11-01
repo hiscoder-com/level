@@ -35,8 +35,12 @@ function ToolList({ setItem, data, type }) {
   const { t } = useTranslation('common')
   const [intro, setIntro] = useState([])
   const [verses, setVerses] = useState([])
-  const [filter, setFilter] = useState('disabled')
-  console.log(filter)
+  const [filter, setFilter] = useState(() => {
+    return checkLSVal('filter_words', 'disabled', 'string')
+  })
+  useEffect(() => {
+    localStorage.setItem('filter_words', filter)
+  }, [filter])
 
   useEffect(() => {
     if (data) {
@@ -47,14 +51,14 @@ function ToolList({ setItem, data, type }) {
   }, [data])
   return (
     <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
-      <div className="justify-center flex">
+      <div className="text-center">
         {type === 'twl' ? (
           <FilterRepeated filter={filter} setFilter={setFilter} />
         ) : (
           intro.map((el) => (
             <div
               onClick={() => setItem({ text: el.text, title: t(el.title) })}
-              className="mx-2  btn-white my-2"
+              className="mx-2 btn-white my-2"
               key={el.id}
             >
               {t(el.title)}
@@ -130,29 +134,32 @@ function ToolContent({ setItem, item }) {
   )
 }
 
-import React from 'react'
-import { RadioGroup } from '@headlessui/react'
+import { checkLSVal } from 'utils/helper'
 
 function FilterRepeated({ setFilter, filter }) {
+  const { t } = useTranslation('common')
+
   const options = [
-    { value: 'verse', name: 'By verse' },
-    { value: 'chunk', name: 'By chunk' },
-    { value: 'book', name: 'By book' },
-    { value: 'disabled', name: 'Disabled' },
+    { value: 'verse', name: t('By_verse') },
+    { value: 'chunk', name: t('By_chunk') },
+    { value: 'book', name: t('By_book') },
+    { value: 'disabled', name: t('Disabled') },
   ]
 
   return (
-    <RadioGroup value={filter} onChange={setFilter}>
-      <RadioGroup.Label>Filter</RadioGroup.Label>
-      {options.map((option) => {
-        return (
-          <RadioGroup.Option key={option.value} value={option.value}>
-            {({ checked }) => (
-              <span className={checked ? 'bg-blue-200' : ''}>{option.name}</span>
-            )}
-          </RadioGroup.Option>
-        )
-      })}
-    </RadioGroup>
+    <div className="flex items-center justify-center">
+      <div className="">{t('Filter_unique_words')}</div>
+      <select
+        className="input m-2 !w-auto"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+      >
+        {options?.map((option) => (
+          <option value={option.value} key={option.value}>
+            {option.name}
+          </option>
+        ))}
+      </select>
+    </div>
   )
 }

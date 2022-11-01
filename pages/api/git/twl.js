@@ -11,21 +11,21 @@ const uniqueFilter = (uniqueObject, key, value) => {
   }
 }
 
-const getListBook = (data) => {
+const getListWordsReference = (data) => {
   if (!data) {
     return
   }
-  const listBook = {}
+  const list = {}
 
   data.forEach((verse) => {
-    if (!Object.keys(listBook).includes(verse.TWLink)) {
-      listBook[verse.TWLink] = [verse.Reference]
+    if (!Object.keys(list).includes(verse.TWLink)) {
+      list[verse.TWLink] = [verse.Reference]
       return
     }
-    listBook[verse.TWLink].push(verse.Reference)
+    list[verse.TWLink].push(verse.Reference)
   })
 
-  return { ...listBook }
+  return { ...list }
 }
 const uniqueFilterInBook = (wordsBook, item, wordObject) => {
   if (Object.keys(wordsBook).find((wordLink) => wordLink === item.url)) {
@@ -134,7 +134,7 @@ export default async function twlHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
-    const uniqueWordsBook = getListBook(jsonData)
+    const uniqueWordsBook = getListWordsReference(jsonData)
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
@@ -163,7 +163,7 @@ export default async function twlHandler(req, res) {
       }
     })
     const words = await Promise.all(promises)
-    const groupData = {}
+    const finalData = {}
     const chunkUnique = {}
     let verseUnique = {}
     let countID = 0
@@ -174,20 +174,21 @@ export default async function twlHandler(req, res) {
 
       const repeatedInChunk = uniqueFilter(chunkUnique, el.url, el.title)
       let repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
-      const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, el, wordObject)
 
       const wordObject = { id, title: el.title, url: el.url, repeatedInChunk }
+      const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, el, wordObject)
+
       const verse = el.reference.split(':').slice(-1)[0]
 
-      if (!groupData[verse]) {
+      if (!finalData[verse]) {
         verseUnique = {}
         repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
-        groupData[verse] = [{ ...wordObject, repeatedInVerse, repeatedInBook }]
+        finalData[verse] = [{ ...wordObject, repeatedInVerse, repeatedInBook }]
       } else {
-        groupData[verse].push({ ...wordObject, repeatedInVerse, repeatedInBook })
+        finalData[verse].push({ ...wordObject, repeatedInVerse, repeatedInBook })
       }
     })
-    res.status(200).json(groupData)
+    res.status(200).json(finalData)
     return
   } catch (error) {
     res.status(404).json({ error })
