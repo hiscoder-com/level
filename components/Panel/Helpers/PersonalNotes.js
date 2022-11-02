@@ -10,6 +10,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { usePersonalNotes } from 'utils/hooks'
 import Close from 'public/close.svg'
 import Waste from 'public/waste.svg'
+import Modal from 'components/Modal'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -26,8 +27,10 @@ const ListOfNotes = dynamic(
 )
 
 function PersonalNotes() {
-  const [noteId, setNoteId] = useState('test_noteId')
+  const [noteId, setNoteId] = useState('')
   const [activeNote, setActiveNote] = useState(null)
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [noteToDel, setNoteToDel] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
   const [notes, { loading, error, mutate }] = usePersonalNotes({
@@ -73,28 +76,48 @@ function PersonalNotes() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNote])
+  const removeAllNote = () => {
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .delete(`/api/personal_notes`)
+      .then(() => mutate())
+      .catch((err) => console.log(err))
+  }
 
   return (
     <div className="relative">
       {!activeNote ? (
         <div>
           <div className="flex justify-end">
-            <button className="btn-cyan mb-4 right-0" onClick={addNote}>
-              {t('Create')}
+            <button
+              className="btn-cyan text-xl font-bold mb-4 mr-4 right-0"
+              onClick={addNote}
+            >
+              +
+            </button>
+            <button
+              className="btn-gray-red mb-4 right-0"
+              onClick={() => setIsOpenModal(true)}
+              disabled={!notes?.length}
+            >
+              {t('Remove_all')}
             </button>
           </div>
           <ListOfNotes
             notes={notes}
-            removeNote={removeNote}
+            removeNote={(e) => {
+              setIsOpenModal(true)
+              setNoteToDel(notes?.find((el) => el.id === e))
+            }}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-6 rounded-lg shadow-md relative',
+              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group',
               title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'p-3 absolute right-0 top-0',
+              delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn
-            delBtnIcon={<Waste className={'w-4 h-4'} />}
+            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
           />
         </div>
       ) : (
@@ -120,6 +143,44 @@ function PersonalNotes() {
           />
         </>
       )}
+      <Modal
+        isOpen={isOpenModal}
+        closeHandle={() => {
+          setIsOpenModal(false)
+        }}
+      >
+        <div className="text-center">
+          <div className="mb-4">
+            {t('Are_you_sure_delete') +
+              ' ' +
+              t(noteToDel ? noteToDel?.title : t('All_notes').toLowerCase()) +
+              '?'}
+          </div>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
+              setIsOpenModal(false)
+              if (noteToDel) {
+                removeNote(noteToDel.id)
+                setNoteToDel(null)
+              } else {
+                removeAllNote()
+              }
+            }}
+          >
+            {t('Yes')}
+          </button>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
+              setNoteToDel(null)
+              setIsOpenModal(false)
+            }}
+          >
+            {t('No')}
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }

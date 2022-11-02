@@ -19,7 +19,7 @@ function Modal({ title, children, isOpen, closeHandle }) {
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center p-4 min-h-full text-center">
+          <div className="flex items-center justify-center p-4 min-h-full">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -30,7 +30,7 @@ function Modal({ title, children, isOpen, closeHandle }) {
               leaveTo="opacity-0 scale-95"
             >
               <Dialog.Panel className="modal-step-goal">
-                <Dialog.Title as="h3" className="h3 font-medium leading-6">
+                <Dialog.Title as="h3" className="h3 font-medium leading-6 text-center">
                   {title}
                 </Dialog.Title>
                 {children}

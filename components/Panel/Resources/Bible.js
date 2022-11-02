@@ -75,7 +75,11 @@ function Blur({ verse }) {
         .join(' '),
     [verse]
   )
-  return <ReactMarkdown className={`ml-2 blur-sm select-none`}>{text}</ReactMarkdown>
+  return (
+    <ReactMarkdown className={`ml-2 bg-blue-350 text-blue-350 select-none`}>
+      {text}
+    </ReactMarkdown>
+  )
 }
 
 const shuffle = (text) => {
