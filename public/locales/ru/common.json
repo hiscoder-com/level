@@ -1,5 +1,7 @@
 {
   "Account": "Личный кабинет",
+  "All_notes":"Все заметки",
+  "Are_you_sure_delete": "Вы точно хотите удалить",
   "Added": "Добавить",
   "Agree": "Согласен",
   "Agreements": "Соглашение",
@@ -44,6 +46,7 @@
   "Progress": "Прогресс",
   "Project": "Проект",
   "PurposeTranslation": "Цель перевода",
+  "Remove_all":"Удалить все",
   "Questions": "Вопросы",
   "Remove": "Убрать",
   "RU": "RU",

@@ -67,6 +67,14 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
 }
 
+.btn-gray-red-base{
+	@apply text-white bg-gray-500 border-gray-600
+	hover:bg-red-700 hover:border-red-700
+	active:bg-red-800 active:border-red-800
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
+}
+
+
 .btn-start{
 	@apply btn-cyan-base rounded-full duration-300 uppercase text-2xl font-medium cursor-pointer
 }
@@ -77,6 +85,9 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .btn-red{
 	@apply btn btn-red-base
+}
+.btn-gray-red{
+	@apply btn btn-gray-red-base
 }
 
 .btn-white{
@@ -203,12 +214,3 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
   opacity: .5;
 }
 
-.svg-cyan {
-	fill: #0891b2
-}
-.svg-gray {
-	fill: #e5e7eb
-}
-.svg-white {
-	fill: #fff
-}
