@@ -18,7 +18,7 @@ const getListWordsReference = (data) => {
   const list = {}
 
   data.forEach((verse) => {
-    if (!Object.keys(list).includes(verse.TWLink)) {
+    if (!list?.[verse.TWLink]) {
       list[verse.TWLink] = [verse.Reference]
       return
     }
@@ -28,7 +28,7 @@ const getListWordsReference = (data) => {
   return { ...list }
 }
 const uniqueFilterInBook = (wordsBook, item, wordObject) => {
-  if (Object.keys(wordsBook).find((wordLink) => wordLink === item.url)) {
+  if (wordsBook?.[item.url]) {
     const [chapterCurrentWord, verseCurrentWord] = item.reference
       .split(':')
       .map((el) => parseInt(el))
@@ -36,25 +36,13 @@ const uniqueFilterInBook = (wordsBook, item, wordObject) => {
       .split(':')
       .map((el) => parseInt(el))
 
-    if (chapterFirstLink > chapterCurrentWord) {
-      return false
-    }
-    if (chapterFirstLink < chapterCurrentWord) {
-      return true
-    }
-    if (chapterFirstLink === chapterCurrentWord) {
-      if (verseFirstLink > verseCurrentWord) {
-        return false
-      }
-      if (verseFirstLink < verseCurrentWord) {
-        return true
-      }
-      if (verseFirstLink === verseCurrentWord) {
-        if (wordObject.repeatedInChunk || wordObject.repeatedInVerse) {
-          return true
-        } else {
-          return false
-        }
+    if (chapterFirstLink !== chapterCurrentWord) {
+      return chapterFirstLink < chapterCurrentWord
+    } else {
+      if (verseFirstLink !== verseCurrentWord) {
+        return verseFirstLink < verseCurrentWord
+      } else {
+        return wordObject.repeatedInChunk || wordObject.repeatedInVerse
       }
     }
   }
@@ -138,12 +126,12 @@ export default async function twlHandler(req, res) {
     const data =
       verses && verses.length > 0
         ? jsonData.filter((el) => {
-            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter && verses.includes(verseQuestion)
+            const [_chapter, _verse] = el.Reference.split(':')
+            return _chapter === chapter && verses.includes(_verse)
           })
         : jsonData.filter((el) => {
-            const [chapterQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter
+            const [_chapter] = el.Reference.split(':')
+            return _chapter === chapter
           })
 
     const promises = data.map(async (el) => {
@@ -166,17 +154,12 @@ export default async function twlHandler(req, res) {
     const finalData = {}
     const chunkUnique = {}
     let verseUnique = {}
-    let countID = 0
 
     words?.forEach((el) => {
-      const id = `${el.reference}_${new Date().getTime()}_${String(countID)}`
-      countID++
-
       const repeatedInChunk = uniqueFilter(chunkUnique, el.url, el.title)
       let repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
 
       const wordObject = {
-        id,
         title: el.title,
         text: el.text,
         url: el.url,

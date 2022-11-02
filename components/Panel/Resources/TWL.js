@@ -50,49 +50,48 @@ function ToolList({ setItem, data }) {
       <div className="text-center">
         {<FilterRepeated filter={filter} setFilter={setFilter} />}
       </div>
-      {data &&
-        verses.map((el, index) => {
-          return (
-            <div key={index} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0]}</div>
-              <div className="text-gray-700 pl-7">
-                <ul>
-                  {el[1]?.map((item) => {
-                    let itemFilter
-                    switch (filter) {
-                      case 'disabled':
-                        itemFilter = false
-                        break
-                      case 'chunk':
-                        itemFilter = item.repeatedInChunk
-                        break
-                      case 'verse':
-                        itemFilter = item.repeatedInVerse
-                        break
-                      case 'book':
-                        itemFilter = item.repeatedInBook
-                        break
+      {verses?.map((el, index) => {
+        return (
+          <div key={index} className="p-4 flex mx-4">
+            <div className="text-2xl">{el[0]}</div>
+            <div className="text-gray-700 pl-7">
+              <ul>
+                {el[1]?.map((item) => {
+                  let itemFilter
+                  switch (filter) {
+                    case 'disabled':
+                      itemFilter = false
+                      break
+                    case 'chunk':
+                      itemFilter = item.repeatedInChunk
+                      break
+                    case 'verse':
+                      itemFilter = item.repeatedInVerse
+                      break
+                    case 'book':
+                      itemFilter = item.repeatedInBook
+                      break
 
-                      default:
-                        break
-                    }
-                    return (
-                      <li
-                        key={item.id}
-                        className={`py-2 cursor-pointer ${
-                          itemFilter ? 'text-gray-400' : ''
-                        } hover:bg-cyan-50`}
-                        onClick={() => setItem({ text: item.text, title: item.title })}
-                      >
-                        <ReactMarkdown>{item.title}</ReactMarkdown>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
+                    default:
+                      break
+                  }
+                  return (
+                    <li
+                      key={item.id}
+                      className={`py-2 cursor-pointer ${
+                        itemFilter ? 'text-gray-400' : ''
+                      } hover:bg-cyan-50`}
+                      onClick={() => setItem({ text: item.text, title: item.title })}
+                    >
+                      <ReactMarkdown>{item.title}</ReactMarkdown>
+                    </li>
+                  )
+                })}
+              </ul>
             </div>
-          )
-        })}
+          </div>
+        )
+      })}
     </div>
   )
 }
