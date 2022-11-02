@@ -14,6 +14,7 @@ import { supabase } from 'utils/supabaseClient'
 
 import Close from 'public/close.svg'
 import Waste from 'public/waste.svg'
+import Modal from 'components/Modal'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -33,6 +34,8 @@ function TeamNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
   const [editable, setEditable] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [noteToDel, setNoteToDel] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
   const router = useRouter()
@@ -102,23 +105,29 @@ function TeamNotes() {
         <div>
           {editable && (
             <div className="flex justify-end">
-              <button className="btn-cyan mb-4 right-0" onClick={addNote}>
-                {t('Create')}
+              <button
+                className="btn-cyan text-xl font-bold mb-4 right-0"
+                onClick={addNote}
+              >
+                +
               </button>
             </div>
           )}
           <ListOfNotes
             notes={notes}
-            removeNote={removeNote}
+            removeNote={(e) => {
+              setIsOpenModal(true)
+              setNoteToDel(notes?.find((el) => el.id === e))
+            }}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-6 rounded-lg shadow-md relative',
+              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group',
               title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'p-3 absolute right-0 top-0',
+              delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn={editable}
-            delBtnIcon={<Waste className={'w-4 h-4'} />}
+            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
           />
         </div>
       ) : (
@@ -146,6 +155,40 @@ function TeamNotes() {
           />
         </>
       )}
+      <Modal
+        isOpen={isOpenModal}
+        closeHandle={() => {
+          setIsOpenModal(false)
+        }}
+      >
+        {' '}
+        <div className="text-center">
+          <div className="mb-4">
+            {t('Are_you_sure_delete') + ' ' + t(noteToDel?.title) + '?'}
+          </div>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
+              setIsOpenModal(false)
+              if (noteToDel) {
+                removeNote(noteToDel.id)
+                setNoteToDel(null)
+              }
+            }}
+          >
+            {t('Yes')}
+          </button>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
+              setNoteToDel(null)
+              setIsOpenModal(false)
+            }}
+          >
+            {t('No')}
+          </button>
+        </div>
+      </Modal>
     </div>
   )
 }

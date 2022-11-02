@@ -7,7 +7,8 @@ import {
   Audio,
   Editor,
   Bible,
-  TNTWL,
+  TN,
+  TWL,
   TQ,
   BlindEditor,
   CommandEditor,
@@ -39,7 +40,7 @@ function Tool({ config }) {
 
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
-      CurrentTool = TNTWL
+      CurrentTool = TWL
 
       config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
@@ -57,7 +58,7 @@ function Tool({ config }) {
 
     case 'OBS Translation Notes':
     case 'TSV OBS Translation Notes':
-      CurrentTool = TNTWL
+      CurrentTool = TN
 
       config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
@@ -65,7 +66,7 @@ function Tool({ config }) {
       break
 
     case 'TSV Translation Words Links':
-      CurrentTool = TNTWL
+      CurrentTool = TWL
 
       config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
@@ -75,7 +76,7 @@ function Tool({ config }) {
       break
 
     case 'TSV Translation Notes':
-      CurrentTool = TNTWL
+      CurrentTool = TN
 
       config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
