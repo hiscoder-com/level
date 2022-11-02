@@ -125,7 +125,7 @@ function BlindEditor({ config }) {
                 <Pencil
                   className={`w-4 h-4 ${
                     disabledButton
-                      ? 'svg-gray'
+                      ? 'svg-lightgray'
                       : !isTranslating
                       ? 'svg-cyan'
                       : 'svg-white'

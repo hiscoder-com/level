@@ -79,7 +79,7 @@ function PersonalNotes() {
   const removeAllNote = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/personal_notes/`)
+      .delete(`/api/personal_notes`)
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
@@ -89,18 +89,19 @@ function PersonalNotes() {
       {!activeNote ? (
         <div>
           <div className="flex justify-end">
-            <div className="flex flex-col">
-              <button className="btn-cyan mb-4 right-0" onClick={addNote}>
-                {t('Create')}
-              </button>
-              <button
-                className="btn-cyan mb-4 right-0"
-                onClick={() => setIsOpenModal(true)}
-                disabled={!notes?.length}
-              >
-                {t('Remove_all')}
-              </button>
-            </div>
+            <button
+              className="btn-cyan text-xl font-bold mb-4 mr-4 right-0"
+              onClick={addNote}
+            >
+              +
+            </button>
+            <button
+              className="btn-red mb-4 right-0"
+              onClick={() => setIsOpenModal(true)}
+              disabled={!notes?.length}
+            >
+              {t('Remove_all')}
+            </button>
           </div>
           <ListOfNotes
             notes={notes}
@@ -110,13 +111,13 @@ function PersonalNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-6 rounded-lg shadow-md relative',
+              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group',
               title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'p-3 absolute right-0 top-0',
+              delBtn: 'p-3 top-0 hover:svg-red ml-2 opacity-0  group-hover:opacity-100',
             }}
             isShowDelBtn
-            delBtnIcon={<Waste className={'w-4 h-4'} />}
+            delBtnChildren={<Waste className={'w-4 h-4 svg-gray'} />}
           />
         </div>
       ) : (
@@ -148,35 +149,37 @@ function PersonalNotes() {
           setIsOpenModal(false)
         }}
       >
-        <div className="mb-4">
-          {t('Are_you_sure_delete') +
-            ' ' +
-            t(noteToDel ? noteToDel?.title : t('All_notes').toLowerCase()) +
-            '?'}
-        </div>
-        <button
-          className="btn-cyan mx-2"
-          onClick={() => {
-            setIsOpenModal(false)
-            if (noteToDel) {
-              removeNote(noteToDel.id)
+        <div className="text-center">
+          <div className="mb-4">
+            {t('Are_you_sure_delete') +
+              ' ' +
+              t(noteToDel ? noteToDel?.title : t('All_notes').toLowerCase()) +
+              '?'}
+          </div>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
+              setIsOpenModal(false)
+              if (noteToDel) {
+                removeNote(noteToDel.id)
+                setNoteToDel(null)
+              } else {
+                removeAllNote()
+              }
+            }}
+          >
+            {t('Yes')}
+          </button>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
               setNoteToDel(null)
-            } else {
-              removeAllNote()
-            }
-          }}
-        >
-          {t('Yes')}
-        </button>
-        <button
-          className="btn-cyan mx-2"
-          onClick={() => {
-            setNoteToDel(null)
-            setIsOpenModal(false)
-          }}
-        >
-          {t('No')}
-        </button>
+              setIsOpenModal(false)
+            }}
+          >
+            {t('No')}
+          </button>
+        </div>
       </Modal>
     </div>
   )

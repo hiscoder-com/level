@@ -206,9 +206,15 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 .svg-cyan {
 	fill: #0891b2
 }
-.svg-gray {
+.svg-lightgray {
 	fill: #e5e7eb
+}
+.svg-gray {
+	fill: #6b7280
 }
 .svg-white {
 	fill: #fff
+}
+.svg-red {
+	fill: #ef4444
 }

@@ -105,8 +105,11 @@ function TeamNotes() {
         <div>
           {editable && (
             <div className="flex justify-end">
-              <button className="btn-cyan mb-4 right-0" onClick={addNote}>
-                {t('Create')}
+              <button
+                className="btn-cyan text-xl font-bold mb-4 right-0"
+                onClick={addNote}
+              >
+                +
               </button>
             </div>
           )}
@@ -118,13 +121,13 @@ function TeamNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-6 rounded-lg shadow-md relative',
+              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group hover:bg-cyan-100',
               title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'p-3 absolute right-0 top-0',
+              delBtn: 'p-3 top-0 hover:svg-red ml-2 opacity-0  group-hover:opacity-100',
             }}
             isShowDelBtn={editable}
-            delBtnIcon={<Waste className={'w-4 h-4'} />}
+            delBtnChildren={<Waste className={'w-4 h-4 svg-red'} />}
           />
         </div>
       ) : (
@@ -158,30 +161,33 @@ function TeamNotes() {
           setIsOpenModal(false)
         }}
       >
-        <div className="mb-4">
-          {t('Are_you_sure_delete') + ' ' + t(noteToDel?.title) + '?'}
-        </div>
-        <button
-          className="btn-cyan mx-2"
-          onClick={() => {
-            setIsOpenModal(false)
-            if (noteToDel) {
-              removeNote(noteToDel.id)
+        {' '}
+        <div className="text-center">
+          <div className="mb-4">
+            {t('Are_you_sure_delete') + ' ' + t(noteToDel?.title) + '?'}
+          </div>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
+              setIsOpenModal(false)
+              if (noteToDel) {
+                removeNote(noteToDel.id)
+                setNoteToDel(null)
+              }
+            }}
+          >
+            {t('Yes')}
+          </button>
+          <button
+            className="btn-cyan mx-2"
+            onClick={() => {
               setNoteToDel(null)
-            }
-          }}
-        >
-          {t('Yes')}
-        </button>
-        <button
-          className="btn-cyan mx-2"
-          onClick={() => {
-            setNoteToDel(null)
-            setIsOpenModal(false)
-          }}
-        >
-          {t('No')}
-        </button>
+              setIsOpenModal(false)
+            }}
+          >
+            {t('No')}
+          </button>
+        </div>
       </Modal>
     </div>
   )
