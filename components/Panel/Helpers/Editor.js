@@ -11,21 +11,6 @@ function Editor({ config }) {
     setVerseObjects(config.reference.verses)
   }, [config.reference.verses])
 
-  // Пока что не работает
-  const handleClean = () => {
-    setVerseObjects((prev) => {
-      prev.forEach((el) => {
-        if (el.verse) {
-          el.verse = el.verse
-            .replace(/  +/g, ' ')
-            .replace(/ +([\.\,\)\!\?\;\:])/g, '$1')
-            .trim()
-        }
-      })
-      return [...prev]
-    })
-  }
-
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
       prev[id].verse = text
@@ -36,15 +21,6 @@ function Editor({ config }) {
       saveInDB()
       return [...prev]
     })
-  }
-
-  // пакетное сохранение по кнопке например, сейчас не работает
-  const handleSave = async () => {
-    const updateData = {}
-    verseObjects.forEach((el) => {
-      updateData[el.verse_id] = el.verse
-    })
-    await supabase.rpc('save_verses', { verses: updateData })
   }
 
   return (

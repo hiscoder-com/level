@@ -133,7 +133,7 @@ function CommandEditor({ config }) {
                   ? ['user', 'translator'].includes(level)
                   : !el.editable
               )
-                ? ''
+                ? 'text-blue-600'
                 : 'font-bold'
             }
           >
