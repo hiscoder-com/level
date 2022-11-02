@@ -80,7 +80,7 @@ function Panel({ tools, resources, reference, wholeChapter }) {
         {tools.map((tool, index) => {
           return (
             <Tab.Panel key={index}>
-              <div className="flex flex-col h-80 md:h-96 bg-white rounded-lg lg:h-full">
+              <div className="flex flex-col bg-white rounded-lg h-full">
                 <Tool
                   config={{
                     reference,

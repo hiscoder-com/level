@@ -212,3 +212,7 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 .svg-white {
 	fill: #fff
 }
+
+.adaptive-card {
+  height: calc(100vh - 230px);
+}
