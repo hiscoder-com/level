@@ -214,5 +214,17 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 }
 
 .adaptive-card {
-  height: calc(100vh - 230px);
+  height: calc(50vh);
+}
+
+@media (min-width: 768px) {
+  .adaptive-card {
+    height: calc(50vh - 110px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .adaptive-card {
+    height: calc(100vh - 230px);
+  }
 }

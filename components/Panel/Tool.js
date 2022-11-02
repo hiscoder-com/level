@@ -160,7 +160,7 @@ function Tool({ config }) {
       <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
         {title}
       </div>
-      <div className="h5 h-80 md:h-96 lg:adaptive-card">
+      <div className="h5 adaptive-card">
         <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
           <CurrentTool config={config} url={url} />
         </div>
