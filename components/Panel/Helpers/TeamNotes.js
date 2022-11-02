@@ -121,13 +121,13 @@ function TeamNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group hover:bg-cyan-100',
+              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group',
               title: 'font-bold p-2 mr-4',
               text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'p-3 top-0 hover:svg-red ml-2 opacity-0  group-hover:opacity-100',
+              delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn={editable}
-            delBtnChildren={<Waste className={'w-4 h-4 svg-red'} />}
+            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
           />
         </div>
       ) : (

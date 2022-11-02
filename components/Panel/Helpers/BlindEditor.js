@@ -125,10 +125,10 @@ function BlindEditor({ config }) {
                 <Pencil
                   className={`w-4 h-4 ${
                     disabledButton
-                      ? 'svg-lightgray'
+                      ? 'fill-gray-200'
                       : !isTranslating
-                      ? 'svg-cyan'
-                      : 'svg-white'
+                      ? 'fill-cyan-600'
+                      : 'fill-white'
                   }`}
                 />
               )}
