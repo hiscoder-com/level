@@ -27,7 +27,7 @@ export default async function handler(req, res) {
       // TODO валидацию
       // is it admin
       return false
-      const { email, password, login, is_admin } = req.body
+      const { email, password, login } = req.body
 
       try {
         const { error: errorPost } = await supabaseService.auth.api.createUser({
