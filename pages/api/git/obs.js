@@ -70,6 +70,9 @@ import { mdToJson } from 'utils/mdHelper'
 export default async function obsHandler(req, res) {
   const { repo, owner, commit, bookPath, chapter, step } = req.query
   let verses = req.query['verses[]'] || req.query.verses
+  if (typeof verses === 'string') {
+    verses = verses.split(',').map((el) => el.trim())
+  }
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}/${String(chapter).padStart(2, '0')}.md`
