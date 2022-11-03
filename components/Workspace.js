@@ -17,6 +17,15 @@ const sizes = {
   '6': 'lg:w-full',
 }
 
+const icons = {
+  translate: '✏️',
+  commandTranslate: '✏️',
+  draftTranslate: '👓',
+  teamNotes: '📌',
+  personalNotes: '✍️',
+  audio: '🎧',
+  dictionary: '📙',
+}
 function Workspace({ stepConfig, reference }) {
   const inactive = useRecoilValue(inactiveState)
   return (
@@ -70,9 +79,14 @@ function Panel({ tools, resources, reference, wholeChapter }) {
               'personalNotes',
               'audio',
               'dictionary',
-            ].includes(tool.name)
-              ? t(tool.name)
-              : tool.name}
+            ].includes(tool.name) ? (
+              <span title={t(tool.name)}>
+                {icons[tool.name]}
+                <span className="hidden sm:inline">{t(tool.name)}</span>
+              </span>
+            ) : (
+              tool.name
+            )}
           </Tab>
         ))}
       </Tab.List>
