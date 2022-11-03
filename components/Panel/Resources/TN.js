@@ -43,11 +43,11 @@ function ToolList({ setItem, data }) {
   return (
     <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
       <div className="text-center">
-        {intro?.map((el) => (
+        {intro?.map((el, index) => (
           <div
             onClick={() => setItem({ text: el.text, title: t(el.title) })}
             className="mx-2 btn-white my-2"
-            key={el.id}
+            key={index}
           >
             {t(el.title)}
           </div>

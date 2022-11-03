@@ -53,7 +53,7 @@ function ToolList({ setItem, data }) {
             <div className="text-2xl">{el[0]}</div>
             <div className="text-gray-700 pl-7">
               <ul>
-                {el[1]?.map((item) => {
+                {el[1]?.map((item, index) => {
                   let itemFilter
                   switch (filter) {
                     case 'disabled':
@@ -71,7 +71,7 @@ function ToolList({ setItem, data }) {
                   }
                   return (
                     <li
-                      key={item.id}
+                      key={index}
                       className={`py-2 cursor-pointer ${
                         itemFilter ? 'text-gray-400' : ''
                       } hover:bg-cyan-50`}
@@ -100,7 +100,7 @@ function FilterRepeated({ setFilter, filter }) {
 
   return (
     <div className="flex items-center justify-center">
-      <div className="">{t('Filter_unique_words')}</div>
+      <div className="">{t('Filter_repeated_words')}</div>
       <select
         className="input m-2 !w-auto"
         value={filter}

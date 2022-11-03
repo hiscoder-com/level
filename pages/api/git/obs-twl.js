@@ -70,6 +70,9 @@ import { tsvToJson } from 'utils/tsvHelper'
 export default async function twlHandler(req, res) {
   const { repo, owner, commit, bookPath, book, chapter, step } = req.query
   let verses = req.query['verses[]'] || req.query.verses
+  if (typeof verses === 'string') {
+    verses = verses.split(',').map((el) => el.trim())
+  }
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
