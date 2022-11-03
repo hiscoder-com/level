@@ -51,7 +51,10 @@ export default async function notesHandler(req, res) {
       break
     case 'DELETE':
       try {
-        const { data, error } = await supabase.from('personal_notes').delete()
+        const { data, error } = await supabase
+          .from('personal_notes')
+          .delete()
+          .not('user_id', 'is', null)
 
         if (error) throw error
         res.status(200).json(data)

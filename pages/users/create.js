@@ -1,4 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+
+import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import axios from 'axios'
 
@@ -13,7 +16,18 @@ function UserCreatePage() {
   const [message, setMessage] = useState('')
   const [password, setPassword] = useState('')
   const [login, setLogin] = useState('')
+  const router = useRouter()
   const { t } = useTranslation(['users', 'common'])
+
+  useEffect(() => {
+    if (!user) {
+      return
+    }
+    if (!user?.is_admin) {
+      router.push('/')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
 
   const handleSaveUser = () => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -30,38 +44,44 @@ function UserCreatePage() {
       })
   }
   return (
-    <div>
-      <h3>{t('UserCreatePage')}</h3>
-      <p>{t('Explanation')}</p>
-      <div>{t('Email')}</div>
-      <input
-        className={'form'}
-        type="text"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <br />
-      <div>{t('Password')}</div>
-      <input
-        className={'form'}
-        type="text"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <br />
-      <div>{t('Login')}</div>
-      <input
-        className={'form'}
-        type="text"
-        value={login}
-        onChange={(e) => setLogin(e.target.value)}
-      />
-      <br />
-      <div className="text-red-500">{message}</div>
-      <button className={'btn btn-cyan'} onClick={handleSaveUser}>
-        {t('Save')}
-      </button>
-    </div>
+    <>
+      {!user ? (
+        <Link href="/">V-CANA</Link>
+      ) : (
+        <div>
+          <h3>{t('UserCreatePage')}</h3>
+          <p>{t('Explanation')}</p>
+          <div>{t('Email')}</div>
+          <input
+            className={'form'}
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          <br />
+          <div>{t('Password')}</div>
+          <input
+            className={'form'}
+            type="text"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          <br />
+          <div>{t('Login')}</div>
+          <input
+            className={'form'}
+            type="text"
+            value={login}
+            onChange={(e) => setLogin(e.target.value)}
+          />
+          <br />
+          <div className="text-red-500">{message}</div>
+          <button className={'btn btn-cyan'} onClick={handleSaveUser}>
+            {t('Save')}
+          </button>
+        </div>
+      )}
+    </>
   )
 }
 
