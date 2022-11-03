@@ -18,7 +18,6 @@ function UserCreatePage() {
   const [login, setLogin] = useState('')
   const router = useRouter()
   const { t } = useTranslation(['users', 'common'])
-
   useEffect(() => {
     if (!user) {
       return
@@ -32,7 +31,7 @@ function UserCreatePage() {
   const handleSaveUser = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post('/api/users', { email, password, login })
+      .post('/api/users', { email, password, login, is_admin: user?.is_admin })
       .then((res) => {
         setMessage('')
         setLogin('')
@@ -45,7 +44,7 @@ function UserCreatePage() {
   }
   return (
     <>
-      {!user ? (
+      {user ? (
         <Link href="/">V-CANA</Link>
       ) : (
         <div>

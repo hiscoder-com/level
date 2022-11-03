@@ -26,7 +26,11 @@ export default async function handler(req, res) {
     case 'POST':
       // TODO валидацию
       // is it admin
-      const { email, password, login } = req.body
+      const { email, password, login, is_admin } = req.body
+      if (!is_admin) {
+        res.status(401).json('You have not permissions to create user')
+        return
+      }
       try {
         const { error: errorPost } = await supabaseService.auth.api.createUser({
           email,
