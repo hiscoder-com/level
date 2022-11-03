@@ -70,6 +70,9 @@ import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 export default async function tnHandler(req, res) {
   const { repo, owner, commit, bookPath, chapter } = req.query
   let verses = req.query['verses[]'] || req.query.verses
+  if (typeof verses === 'string') {
+    verses = verses.split(',').map((el) => el.trim())
+  }
   const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
     1
   )}`
