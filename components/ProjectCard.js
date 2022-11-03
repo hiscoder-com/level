@@ -41,18 +41,18 @@ function ProjectCard({ project }) {
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
       </div>
-      {currentSteps &&
-        currentSteps.length &&
-        currentSteps.map((el, index) => (
-          <Link
-            key={index}
-            href={`/translate/${el.project}/${el.book}/${el.chapter}/${el.step}/intro`}
-          >
-            <a className="btn btn-white mt-2">
-              {t(`books:${el.book}`)} {el.chapter} | {el.title}
-            </a>
-          </Link>
-        ))}
+      {currentSteps?.length
+        ? currentSteps.map((el, index) => (
+            <Link
+              key={index}
+              href={`/translate/${el.project}/${el.book}/${el.chapter}/${el.step}/intro`}
+            >
+              <a className="btn btn-white mt-2 text-ellipsis overflow-hidden whitespace-nowrap max-w-full">
+                {t(`books:${el.book}_abbr`)}.{el.chapter} | {el.title}
+              </a>
+            </Link>
+          ))
+        : ''}
     </div>
   )
 }

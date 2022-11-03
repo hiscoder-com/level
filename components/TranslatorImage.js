@@ -3,7 +3,7 @@ const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9
 function TranslatorImage({ item, size }) {
   return (
     <div
-      title={`${item.users ? `${item.users?.login} ${item.users?.email}` : ''}`}
+      title={`${item.users ? `${item.users?.login}` : ''}`}
       className={`relative border-2 ${
         item.is_moderator ? 'border-blue-800 ' : ''
       } rounded-full cursor-default select-none`}
