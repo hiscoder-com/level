@@ -78,7 +78,7 @@ function TeamNotes() {
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/team_notes/${id}`, { id, project_id: project?.id })
+      .delete(`/api/team_notes/${id}`)
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
