@@ -100,7 +100,7 @@ function FilterRepeated({ setFilter, filter }) {
 
   return (
     <div className="flex items-center justify-center">
-      <div className="">{t('Filter_unique_words')}</div>
+      <div className="">{t('Filter_repeated_words')}</div>
       <select
         className="input m-2 !w-auto"
         value={filter}
