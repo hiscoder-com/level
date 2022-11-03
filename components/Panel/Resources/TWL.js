@@ -53,7 +53,7 @@ function ToolList({ setItem, data }) {
             <div className="text-2xl">{el[0]}</div>
             <div className="text-gray-700 pl-7">
               <ul>
-                {el[1]?.map((item) => {
+                {el[1]?.map((item, index) => {
                   let itemFilter
                   switch (filter) {
                     case 'disabled':
@@ -71,7 +71,7 @@ function ToolList({ setItem, data }) {
                   }
                   return (
                     <li
-                      key={item.id}
+                      key={index}
                       className={`py-2 cursor-pointer ${
                         itemFilter ? 'text-gray-400' : ''
                       } hover:bg-cyan-50`}
