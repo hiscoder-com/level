@@ -26,20 +26,22 @@ function TGoal({ user }) {
   return (
     <>
       <button
-        className="btn-cyan w-36"
+        className="w-36 py-1 rounded-md hover:bg-cyan-50
+        active:bg-cyan-200"
         onClick={(e) => (setShowModalTGoal(!showModalTGoal), e.stopPropagation())}
       >
         {t('AboutTranslation')}
       </button>
+
       <Modal
         isOpen={showModalTGoal}
         closeHandle={closeModal}
-        title={t('TranslationGoal') + ':'}
+        title={t('TranslationGoal')}
       >
-        <div className="mt-2">
+        <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
           <p className="text-sm text-gray-500 whitespace-pre-line">{briefs?.text}</p>
         </div>
-        <div className="mt-4">
+        <div className="text-center">
           <button className="btn-cyan w-24" onClick={closeModal}>
             {t('Close')}
           </button>

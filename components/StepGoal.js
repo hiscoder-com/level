@@ -15,19 +15,20 @@ function StepGoal({ description }) {
   return (
     <>
       <button
-        className="btn-cyan w-36"
+        className="w-36 py-1 rounded-md	hover:bg-cyan-50
+        active:bg-cyan-200"
         onClick={(e) => (setShowModalStepGoal(!showModalStepGoal), e.stopPropagation())}
       >
         {t('AboutStep')}
       </button>
 
       <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal')}>
-        <div className="mt-2 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
+        <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
           <p className="text-sm text-gray-500 whitespace-pre-line">
             {description.replaceAll('\n\n', '\n')}
           </p>
         </div>
-        <div className="mt-3 text-center">
+        <div className="text-center">
           <button className="btn-cyan w-24" onClick={closeModal}>
             {t('Close')}
           </button>

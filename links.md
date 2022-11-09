@@ -154,3 +154,45 @@ pg_dump postgresql://postgres:postgres@localhost:64322/postgres --a --inserts -n
         NULL,
         TRUE
       );
+
+
+
+      Юзеры Павла
+      INSERT INTO
+      PUBLIC.users (
+        id,
+        login,
+        email,
+        agreement,
+        confession,
+        blocked,
+        is_admin
+      )
+    VALUES
+      (
+        'ce3f61ee-f101-4cde-af6b-c99b86453b76',
+        'Ali_M',
+        'moderatorali@mail.com',
+        TRUE,
+        TRUE,
+        NULL,
+        FALSE
+      ),
+      (
+        '5b289eaf-f224-4e33-8d61-1b8a8d429ac1',
+        'Andrew_T',
+        'translatorandrew@mail.com',
+        TRUE,
+        TRUE,
+        NULL,
+        FALSE
+      ),     
+      (
+        '302f0053-435f-43dd-b2fd-0bbd38d8c2fc',
+        'Brawn_A',
+        'adminbrawn@mail.com',
+        TRUE,
+        TRUE,
+        NULL,
+        TRUE
+      );

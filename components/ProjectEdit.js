@@ -127,7 +127,7 @@ function ProjectEdit() {
             <a className="underline text-blue-700">« {project?.title}</a>
           </Link>
         </div>
-        <div className="pb-5 ml-2">
+        <div className="py-5">
           <EditBrief user={user} id={project?.id} />
         </div>
         <div className="w-1/2 flex justify-between mt-5">

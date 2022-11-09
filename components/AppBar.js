@@ -85,7 +85,7 @@ export default function AppBar({ setIsOpen }) {
                 <a className="cursor-pointer">
                   <Tools />
                 </a>
-                <div className="absolute right-0 mt-4 p-3 shadow-md gap-3 border-2 border-cyan-600 z-50 bg-white rounded-md hidden group-hover:flex">
+                <div className="absolute right-0 mt-4 p-3 shadow-md gap-1 border-2 border-cyan-600 z-50 bg-white rounded-md hidden group-hover:flex flex-col">
                   <StepGoal description={stepConfig?.description} />
                   <TranslationGoal user={user} />
                 </div>

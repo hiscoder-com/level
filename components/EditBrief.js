@@ -33,20 +33,23 @@ function EditBrief({ user, id }) {
       >
         {t('project-edit:EditBrief')}
       </button>
+
       <Modal
         isOpen={showModalTGoal}
         closeHandle={closeModal}
-        title={t('TranslationGoal') + ':'}
+        title={t('TranslationGoal')}
       >
-        <textarea
-          placeholder={t('project-edit:BriefPlaceholder')}
-          defaultValue={briefs?.text}
-          onChange={(e) => setBriefText(e.target.value)}
-          rows="15"
-          cols="45"
-          className="mt-5 text-sm text-gray-500 outline-none whitespace-pre-line"
-        ></textarea>
-        <div className="inline-flex mt-4 gap-4">
+        <div className="text-center">
+          <textarea
+            placeholder={t('project-edit:BriefPlaceholder')}
+            defaultValue={briefs?.text}
+            onChange={(e) => setBriefText(e.target.value)}
+            rows="15"
+            cols="45"
+            className="my-6 text-sm text-gray-500 outline-none whitespace-pre-line"
+          ></textarea>
+        </div>
+        <div className="flex justify-center gap-4">
           <button className="btn-cyan w-28" onClick={saveToDatabase}>
             {t('Save')}
           </button>
