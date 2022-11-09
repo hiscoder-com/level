@@ -7,7 +7,8 @@ import {
   Audio,
   Editor,
   Bible,
-  TNTWL,
+  TN,
+  TWL,
   TQ,
   BlindEditor,
   CommandEditor,
@@ -39,7 +40,7 @@ function Tool({ config }) {
 
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
-      CurrentTool = TNTWL
+      CurrentTool = TWL
 
       config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
@@ -57,7 +58,7 @@ function Tool({ config }) {
 
     case 'OBS Translation Notes':
     case 'TSV OBS Translation Notes':
-      CurrentTool = TNTWL
+      CurrentTool = TN
 
       config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
@@ -65,7 +66,7 @@ function Tool({ config }) {
       break
 
     case 'TSV Translation Words Links':
-      CurrentTool = TNTWL
+      CurrentTool = TWL
 
       config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
@@ -75,7 +76,7 @@ function Tool({ config }) {
       break
 
     case 'TSV Translation Notes':
-      CurrentTool = TNTWL
+      CurrentTool = TN
 
       config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
@@ -119,37 +120,37 @@ function Tool({ config }) {
 
     case 'translate':
       CurrentTool = Editor
-      title = t('Editor')
+      title = t('translate')
       break
 
     case 'commandTranslate':
       CurrentTool = CommandEditor
-      title = t('CommandEditor')
+      title = t('commandTranslate')
       break
 
     case 'draftTranslate':
       CurrentTool = BlindEditor
-      title = t('BlindEditor')
+      title = t('draftTranslate')
       break
 
     case 'teamNotes':
       CurrentTool = TeamNotes
-      title = t('TeamNotes')
+      title = t('teamNotes')
       break
 
     case 'personalNotes':
       CurrentTool = PersonalNotes
-      title = t('PersonalNotes')
+      title = t('personalNotes')
       break
 
     case 'audio':
       CurrentTool = Audio
-      title = t('Audio')
+      title = t('audio')
       break
 
     case 'dictionary':
       CurrentTool = Dictionary
-      title = t('Dictionary')
+      title = t('dictionary')
       break
 
     default:
@@ -160,7 +161,7 @@ function Tool({ config }) {
       <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
         {title}
       </div>
-      <div style={{ height: 'calc(100vh - 250px)' }} className="h5">
+      <div className="h5 adaptive-card">
         <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
           <CurrentTool config={config} url={url} />
         </div>

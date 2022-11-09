@@ -1837,10 +1837,10 @@
     "@testing-library/dom" "^8.5.0"
     "@types/react-dom" "^18.0.0"
 
-"@texttree/notepad-rcl@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@texttree/notepad-rcl/-/notepad-rcl-0.2.0.tgz#c6aa41ab3defb19c28763168b77723b9eabcfd29"
-  integrity sha512-+AnF7cTAMiyGgSbwWCmRJtEDOPd1MVAmUZseqhdfekXnrWqkgq9bmbjpYPfwLFJaS6fEKpfNFNGPKOVbFhymSQ==
+"@texttree/notepad-rcl@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@texttree/notepad-rcl/-/notepad-rcl-0.3.0.tgz#2f3fdd623ea7cdb4b3f35ee4c7d074ce9b7e5f65"
+  integrity sha512-fs0ZioUMBfebDCRl3AEi4UHDlGpVQcrV5xln8FG4SMogWyiTgKXdo3i6gvYD0qKekVnWOkGAevhFqeaXwNX/+w==
   dependencies:
     "@editorjs/editorjs" "^2.25.0"
     "@editorjs/paragraph" "^2.8.0"

@@ -6,8 +6,6 @@ import { useSetRecoilState } from 'recoil'
 
 import { supabase } from 'utils/supabaseClient'
 
-import AutoSizeTextArea from '../UI/AutoSizeTextArea'
-
 import { checkedVersesBibleState } from '../state/atoms'
 
 import Pencil from 'public/pencil.svg'
@@ -49,7 +47,6 @@ function BlindEditor({ config }) {
         }
       }
     }
-
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
@@ -93,7 +90,7 @@ function BlindEditor({ config }) {
         const isTranslating = enabledInputs.includes(el.num.toString())
         const isTranslated = translatedVerses.includes(currentNumVerse)
         return (
-          <div key={el.verse_id} data-id={el.num} className="flex my-3">
+          <div key={el.verse_id} className="flex my-3 items-start">
             <button
               onClick={() => {
                 if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
@@ -125,22 +122,37 @@ function BlindEditor({ config }) {
                 <Pencil
                   className={`w-4 h-4 ${
                     disabledButton
-                      ? 'svg-gray'
+                      ? 'fill-gray-200'
                       : !isTranslating
-                      ? 'svg-cyan'
-                      : 'svg-white'
+                      ? 'fill-cyan-600'
+                      : 'fill-white'
                   }`}
                 />
               )}
             </button>
 
-            <div className="ml-4">{el.num}</div>
-            <AutoSizeTextArea
-              disabled={!isTranslating}
-              updateVerse={updateVerse}
-              index={index}
-              verseObject={el}
-            />
+            <div className="mx-4">{el.num}</div>
+            {isTranslating ? (
+              <textarea
+                autoFocus
+                rows={1}
+                className="resize-none focus:outline-none focus:inline-none w-full"
+                onChange={(e) => {
+                  e.target.style.height = 'inherit'
+                  e.target.style.height = `${e.target.scrollHeight}px`
+                  updateVerse(
+                    index,
+                    e.target.value
+                      .replace(/  +/g, ' ')
+                      .replace(/ +([\.\,\)\!\?\;\:])/g, '$1')
+                      .trim()
+                  )
+                }}
+                defaultValue={el.verse ?? ''}
+              />
+            ) : (
+              <div className="whitespace-pre-line">{el.verse}</div>
+            )}
           </div>
         )
       })}

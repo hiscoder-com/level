@@ -57,12 +57,6 @@ INSERT INTO public.project_translators (project_id, is_moderator, user_id) VALUE
 
 
 
-
-
-
-
-
-
     INSERT INTO
       PUBLIC.users (
         id,
@@ -117,3 +111,46 @@ WHERE verses.project_id=2
   AND project_translator_id=(SELECT id FROM project_translators WHERE project_id=2 AND user_id='a15e7e6f-5fc8-49b4-8d58-f6b5e99ee1d3') GROUP BY books.id, chapters.id, verses.current_step;
 
 pg_dump postgresql://postgres:postgres@localhost:64322/postgres --a --inserts -n public > backup.sql
+
+
+Юзеры Александра
+
+
+    INSERT INTO
+      PUBLIC.users (
+        id,
+        login,
+        email,
+        agreement,
+        confession,
+        blocked,
+        is_admin
+      )
+    VALUES
+      (
+        '79b9a691-f8ef-4023-ae22-3a297c7536c7',
+        't1',
+        't1@mail.com',
+        TRUE,
+        TRUE,
+        NULL,
+        FALSE
+      ),
+      (
+        '2026ee1c-f61f-4a7c-b21a-05f5485d9179',
+        'moderator',
+        'moderator@mail.com',
+        TRUE,
+        TRUE,
+        NULL,
+        FALSE
+      ),     
+      (
+        'fdc5c406-3b87-4eea-84b0-f962fce846ce',
+        'admin',
+        'fdc5c406-3b87-4eea-84b0-f962fce846ce',
+        TRUE,
+        TRUE,
+        NULL,
+        TRUE
+      );

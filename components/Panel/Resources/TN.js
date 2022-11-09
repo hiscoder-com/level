@@ -4,23 +4,21 @@ import ReactMarkdown from 'react-markdown'
 
 import { useTranslation } from 'next-i18next'
 
-import MarkdownExtended from 'components/MarkdownExtended'
-import { Placeholder } from '../UI'
+import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource } from 'utils/hooks'
 
-import Close from 'public/close.svg'
-
-function TNTWL({ config, url }) {
+function TN({ config, url }) {
   const [item, setItem] = useState(null)
   const { loading, data, error } = useGetResource({ config, url })
+
   return (
     <>
       {loading ? (
         <Placeholder />
       ) : (
         <div className="relative h-full">
-          <ToolContent setItem={setItem} item={item} />
+          <TNTWLContent setItem={setItem} item={item} />
           <ToolList setItem={setItem} data={data} />
         </div>
       )}
@@ -28,12 +26,13 @@ function TNTWL({ config, url }) {
   )
 }
 
-export default TNTWL
+export default TN
 
 function ToolList({ setItem, data }) {
   const { t } = useTranslation('common')
   const [intro, setIntro] = useState([])
   const [verses, setVerses] = useState([])
+
   useEffect(() => {
     if (data) {
       const { intro, ...verses } = data
@@ -43,12 +42,12 @@ function ToolList({ setItem, data }) {
   }, [data])
   return (
     <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
-      <div className="justify-center flex">
-        {intro.map((el) => (
+      <div className="text-center">
+        {intro?.map((el, index) => (
           <div
             onClick={() => setItem({ text: el.text, title: t(el.title) })}
-            className="mx-2  btn-white my-2"
-            key={el.id}
+            className="mx-2 btn-white my-2"
+            key={index}
           >
             {t(el.title)}
           </div>
@@ -65,9 +64,7 @@ function ToolList({ setItem, data }) {
                     return (
                       <li
                         key={item.id}
-                        className={`py-2 cursor-pointer ${
-                          item.repeat ? 'text-gray-400' : ''
-                        }`}
+                        className="py-2 cursor-pointer hover:bg-cyan-50"
                         onClick={() => setItem({ text: item.text, title: item.title })}
                       >
                         <ReactMarkdown>{item.title}</ReactMarkdown>
@@ -79,27 +76,6 @@ function ToolList({ setItem, data }) {
             </div>
           )
         })}
-    </div>
-  )
-}
-
-function ToolContent({ setItem, item }) {
-  return (
-    <div
-      className={`absolute top-0 bottom-0 bg-white overflow-auto left-0 right-0 p-8 ${
-        item ? '' : 'hidden'
-      }`}
-    >
-      <div
-        className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
-        onClick={() => setItem(null)}
-      >
-        <Close />
-      </div>
-      <div className=" font-bold text-xl mb-2">
-        <ReactMarkdown>{item?.title}</ReactMarkdown>
-      </div>
-      <MarkdownExtended>{item?.text}</MarkdownExtended>
     </div>
   )
 }
