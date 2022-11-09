@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
@@ -7,22 +7,38 @@ import { Placeholder } from '../UI'
 import { checkedVersesBibleState } from '../state/atoms'
 import { useRecoilValue } from 'recoil'
 import { useGetResource } from 'utils/hooks'
+import { checkLSVal } from 'utils/helper'
 
 // draft: true/false
-function Bible({ config, url }) {
+function Bible({ config, url, toolName }) {
   const { loading, data, error } = useGetResource({
     config,
     url,
   })
+  const [currentVerseId, setCurrentVerseId] = useState(() => {
+    return checkLSVal(toolName, '', 'string')
+  })
 
+  const handleSave = (id) => {
+    localStorage.setItem(toolName, 'id' + id)
+    setCurrentVerseId('id' + id)
+  }
   return (
     <>
       {loading ? (
         <Placeholder />
       ) : config?.config?.draft ? (
-        <VersesExtended verseObjects={data?.verseObjects} />
+        <VersesExtended
+          verseObjects={data?.verseObjects}
+          handleSave={handleSave}
+          currentVerseId={currentVerseId}
+        />
       ) : (
-        <Verses verseObjects={data?.verseObjects} />
+        <Verses
+          verseObjects={data?.verseObjects}
+          handleSave={handleSave}
+          currentVerseId={currentVerseId}
+        />
       )}
     </>
   )
@@ -30,12 +46,16 @@ function Bible({ config, url }) {
 
 export default Bible
 
-function Verses({ verseObjects }) {
+function Verses({ verseObjects, handleSave, currentVerseId }) {
   return (
     <>
       {verseObjects?.map((el) => (
         <ul key={el.verse} className="flex">
-          <li className={`py-2`}>
+          <li
+            id={'id' + el.verse}
+            className={`py-2 ${currentVerseId === 'id' + el.verse ? 'underline' : ''}`}
+            onClick={() => handleSave(el.verse)}
+          >
             <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
           </li>
         </ul>
