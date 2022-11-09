@@ -52,11 +52,11 @@ function Panel({ tools, resources, reference, wholeChapter }) {
   return (
     <Tab.Group
       onChange={(index) => {
-        const scrollId = localStorage.getItem(tools[index].name)
-
-        if (scrollId) {
+        const scrollIds = JSON.parse(localStorage.getItem('scrollIds'))
+        const id = scrollIds?.[tools[index].name]
+        if (id) {
           setTimeout(() => {
-            document?.getElementById(scrollId)?.scrollIntoView()
+            document?.getElementById(id)?.scrollIntoView()
           }, 500)
         }
       }}

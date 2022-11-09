@@ -6,8 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
-import { useGetResource } from 'utils/hooks'
-import { checkLSVal } from 'utils/helper'
+import { useGetResource, useScroll } from 'utils/hooks'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
@@ -33,14 +32,7 @@ function ToolList({ setItem, data, toolName }) {
   const { t } = useTranslation('common')
   const [intro, setIntro] = useState([])
   const [verses, setVerses] = useState([])
-  const [currentNoteId, setCurrentNoteId] = useState(() => {
-    return checkLSVal(toolName, '', 'string')
-  })
-
-  const handleSave = (id) => {
-    localStorage.setItem(toolName, 'id' + id)
-    setCurrentNoteId('id' + id)
-  }
+  const { scrollId, handleSave } = useScroll({ toolName })
   useEffect(() => {
     if (data) {
       const { intro, ...verses } = data
@@ -74,7 +66,7 @@ function ToolList({ setItem, data, toolName }) {
                         key={item.id}
                         id={'id' + item.id}
                         className={`py-2 cursor-pointer hover:bg-cyan-50  ${
-                          currentNoteId === 'id' + item.id ? 'underline' : ''
+                          scrollId === 'id' + item.id ? 'underline' : ''
                         }`}
                         onClick={() => {
                           handleSave(item.id)

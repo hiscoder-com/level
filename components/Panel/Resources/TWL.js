@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
-import { useGetResource } from 'utils/hooks'
+import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 
 function TWL({ config, url, toolName }) {
@@ -33,14 +33,8 @@ function ToolList({ setItem, data, toolName }) {
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
-  const [currentWordId, setCurrentWordId] = useState(() => {
-    return checkLSVal(toolName, '', 'string')
-  })
+  const { scrollId, handleSave } = useScroll({ toolName })
 
-  const handleSave = (id) => {
-    localStorage.setItem(toolName, 'id' + id)
-    setCurrentWordId('id' + id)
-  }
   useEffect(() => {
     localStorage.setItem('filter_words', filter)
   }, [filter])
@@ -86,7 +80,7 @@ function ToolList({ setItem, data, toolName }) {
                       className={`py-2 cursor-pointer ${
                         itemFilter ? 'text-gray-400' : ''
                       } hover:bg-cyan-50
-                       ${currentWordId === 'id' + item.id ? 'underline' : ''}
+                      ${scrollId === 'id' + item.id ? 'underline' : ''}
                       `}
                       onClick={() => {
                         handleSave(item.id)

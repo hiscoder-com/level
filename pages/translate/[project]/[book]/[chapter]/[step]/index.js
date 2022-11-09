@@ -92,6 +92,7 @@ export default function ProgressPage({ last_step }) {
     } else {
       replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
     }
+    localStorage.setItem('scrollIds', {})
   }
   return (
     <div>

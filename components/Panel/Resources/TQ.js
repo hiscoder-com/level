@@ -4,9 +4,7 @@ import { Disclosure } from '@headlessui/react'
 
 import { Placeholder } from '../UI'
 
-import { useGetResource } from 'utils/hooks'
-import { useState } from 'react'
-import { checkLSVal } from 'utils/helper'
+import { useGetResource, useScroll } from 'utils/hooks'
 
 function TQ({ config, url, toolName }) {
   const { loading, data, error } = useGetResource({ config, url })
@@ -36,14 +34,7 @@ function ToolList({ data, viewAll, toolName }) {
     }
   }
 
-  const [currentQuestionId, setCurrentQuestionId] = useState(() => {
-    return checkLSVal(toolName, '', 'string')
-  })
-
-  const handleSave = (id) => {
-    localStorage.setItem(toolName, 'id' + id)
-    setCurrentQuestionId('id' + id)
-  }
+  const { scrollId, handleSave } = useScroll({ toolName })
 
   return (
     <div className="divide-y divide-gray-800 divide-dashed">
@@ -67,7 +58,7 @@ function ToolList({ data, viewAll, toolName }) {
                           reduceQuestions={() => reduceQuestions(item.title)}
                           viewAll={viewAll}
                           toolName={toolName}
-                          currentQuestionId={currentQuestionId}
+                          scrollId={scrollId}
                         />
                       </li>
                     )
@@ -81,13 +72,11 @@ function ToolList({ data, viewAll, toolName }) {
   )
 }
 
-function ToolContent({ item, reduceQuestions, viewAll, currentQuestionId }) {
+function ToolContent({ item, reduceQuestions, viewAll, scrollId }) {
   return (
     <Disclosure>
       <Disclosure.Button
-        className={`text-left w-fit ${
-          currentQuestionId === 'id' + item.id ? 'underline' : ''
-        }`}
+        className={`text-left w-fit ${scrollId === 'id' + item.id ? 'underline' : ''}`}
         onClick={() => {
           if (viewAll) {
             reduceQuestions()
