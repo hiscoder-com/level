@@ -77,10 +77,10 @@ function ToolList({ setItem, data, toolName }) {
                     <li
                       key={index}
                       id={'id' + item.id}
-                      className={`py-2 cursor-pointer ${
+                      className={`p-2 cursor-pointer ${
                         itemFilter ? 'text-gray-400' : ''
                       } hover:bg-cyan-50
-                      ${scrollId === 'id' + item.id ? 'underline' : ''}
+                      ${scrollId === 'id' + item.id ? 'bg-gray-100' : ''}
                       `}
                       onClick={() => {
                         handleSave(item.id)
