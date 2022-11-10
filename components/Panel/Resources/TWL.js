@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
@@ -17,7 +17,7 @@ function TWL({ config, url, toolName }) {
       {loading ? (
         <Placeholder />
       ) : (
-        <div className="relative h-full ">
+        <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
           <ToolList setItem={setItem} data={data} toolName={toolName} />
         </div>

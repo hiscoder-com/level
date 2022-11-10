@@ -57,7 +57,6 @@ function ToolList({ data, viewAll, toolName }) {
                           item={item}
                           reduceQuestions={() => reduceQuestions(item.title)}
                           viewAll={viewAll}
-                          toolName={toolName}
                           scrollId={scrollId}
                         />
                       </li>
