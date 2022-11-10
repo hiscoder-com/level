@@ -57,7 +57,7 @@ function Panel({ tools, resources, reference, wholeChapter }) {
         if (id) {
           setTimeout(() => {
             document?.getElementById(id)?.scrollIntoView()
-          }, 500)
+          }, 100)
         }
       }}
     >
