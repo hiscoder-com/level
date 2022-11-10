@@ -75,7 +75,7 @@ function ToolContent({ item, reduceQuestions, viewAll, scrollId }) {
   return (
     <Disclosure>
       <Disclosure.Button
-        className={`text-left w-fit ${scrollId === 'id' + item.id ? 'underline' : ''}`}
+        className={`text-left w-fit ${scrollId === 'id' + item.id ? 'bg-gray-100' : ''}`}
         onClick={() => {
           if (viewAll) {
             reduceQuestions()

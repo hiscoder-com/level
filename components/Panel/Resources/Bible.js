@@ -45,7 +45,7 @@ function Verses({ verseObjects, handleSave, scrollId }) {
         <ul key={el.verse} className="flex">
           <li
             id={'id' + el.verse}
-            className={`py-2 ${scrollId === 'id' + el.verse ? 'underline' : ''}`}
+            className={`p-2 ${scrollId === 'id' + el.verse ? 'bg-gray-100' : ''}`}
             onClick={() => handleSave(el.verse)}
           >
             <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
@@ -70,7 +70,7 @@ function VersesExtended({ verseObjects, handleSave, scrollId }) {
               handleSave(el.verse)
             }}
             className={`my-3 flex items-start ${
-              scrollId === 'id' + el.verse ? 'underline' : ''
+              scrollId === 'id' + el.verse ? 'bg-gray-100' : ''
             }`}
           >
             <div id={'id' + el.verse} className={`ml-2`}>
