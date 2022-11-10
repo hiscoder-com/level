@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
 
-function StepGoal({ description }) {
+function StepGoal({ description, setOpen }) {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const { t } = useTranslation(['common'])
 
@@ -15,7 +15,7 @@ function StepGoal({ description }) {
   return (
     <>
       <button
-        className="w-36 py-1 rounded-md	hover:bg-cyan-50
+        className="w-36 py-2 rounded-t-lg	hover:bg-cyan-50
         active:bg-cyan-200"
         onClick={(e) => (setShowModalStepGoal(!showModalStepGoal), e.stopPropagation())}
       >

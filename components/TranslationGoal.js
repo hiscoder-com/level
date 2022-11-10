@@ -26,7 +26,7 @@ function TGoal({ user }) {
   return (
     <>
       <button
-        className="w-36 py-1 rounded-md hover:bg-cyan-50
+        className="w-36 py-2 rounded-b-lg hover:bg-cyan-50
         active:bg-cyan-200"
         onClick={(e) => (setShowModalTGoal(!showModalTGoal), e.stopPropagation())}
       >
