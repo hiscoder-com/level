@@ -9,7 +9,6 @@ import Dropdown from './Dropdown'
 import Timer from 'components/Timer'
 
 import { supabase } from 'utils/supabaseClient'
-import { useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
@@ -25,10 +24,6 @@ export default function AppBar({ setIsOpen }) {
   const [isStepPage, setIsStepPage] = useState(false)
 
   const router = useRouter()
-  const {
-    query: { project: code },
-  } = router
-  const [project] = useProject({ token: user?.access_token, code })
 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
@@ -85,11 +80,7 @@ export default function AppBar({ setIsOpen }) {
                 <Timer time={stepConfig.time} />
               </div>
 
-              <Dropdown
-                project={project}
-                description={stepConfig?.description}
-                user={user}
-              />
+              <Dropdown description={stepConfig?.description} user={user} />
             </div>
           </>
         )}

@@ -1,36 +1,32 @@
 import { useState } from 'react'
 
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Modal from './Modal'
 
-import { useBriefs } from 'utils/hooks'
+import { useBriefs, useProject } from 'utils/hooks'
 
 import Tools from 'public/tools.svg'
 
-function Dropdown({ project, description, user }) {
+function Dropdown({ description, user }) {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
-  const [showModalTGoal, setShowModalTGoal] = useState(false)
+  const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const opposite = () => setOpen((prev) => !prev)
+  const toggle = () => setOpen((prev) => !prev)
   const { t } = useTranslation(['common'])
-
-  const [briefs] = useBriefs({
-    token: user?.access_token,
-    project_id: project?.id,
-  })
 
   const closeModal = () => {
     setShowModalStepGoal(false)
-    setShowModalTGoal(false)
+    setShowModalTranslationGoal(false)
   }
 
   return (
     <div>
       <div
         className="relative hidden px-3 py-4 rounded-md whitespace-nowrap md:flex"
-        onClick={opposite}
+        onClick={toggle}
       >
         <a className="cursor-pointer">
           <Tools />
@@ -39,13 +35,13 @@ function Dropdown({ project, description, user }) {
 
       {open && (
         <>
-          <div className="fixed inset-0" onClick={opposite} />
+          <div className="fixed inset-0" onClick={toggle} />
           <div className="absolute flex flex-col right-5 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40 xl:right-0">
             <button
               className="w-36 py-2 rounded-t-lg	hover:bg-cyan-50
 			active:bg-cyan-200"
               onClick={(e) => {
-                opposite()
+                toggle()
                 setShowModalStepGoal((prev) => !prev)
                 e.stopPropagation()
               }}
@@ -57,8 +53,8 @@ function Dropdown({ project, description, user }) {
               className="w-36 py-2 rounded-b-lg hover:bg-cyan-50
 			active:bg-cyan-200"
               onClick={(e) => {
-                opposite()
-                setShowModalTGoal((prev) => !prev)
+                toggle()
+                setShowModalTranslationGoal((prev) => !prev)
                 e.stopPropagation()
               }}
             >
@@ -69,16 +65,13 @@ function Dropdown({ project, description, user }) {
       )}
       <StepGoal
         showModalStepGoal={showModalStepGoal}
-        t={t}
         closeModal={closeModal}
         description={description}
       />
       <TranslationGoal
-        showModalTGoal={showModalTGoal}
-        t={t}
+        showModalTranslationGoal={showModalTranslationGoal}
         user={user}
         closeModal={closeModal}
-        briefs={briefs}
       />
 
       <div className="py-1 whitespace-nowrap text-xs font-bold border-2 border-cyan-600 rounded-md divide-x divide-solid md:hidden">
@@ -95,7 +88,7 @@ function Dropdown({ project, description, user }) {
         <button
           className="w-24 rounded-r-lg active:bg-cyan-50"
           onClick={(e) => {
-            setShowModalTGoal((prev) => !prev)
+            setShowModalTranslationGoal((prev) => !prev)
             e.stopPropagation()
           }}
         >
@@ -108,7 +101,9 @@ function Dropdown({ project, description, user }) {
 
 export default Dropdown
 
-function StepGoal({ showModalStepGoal, t, closeModal, description }) {
+function StepGoal({ showModalStepGoal, closeModal, description }) {
+  const { t } = useTranslation(['common'])
+
   return (
     <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal')}>
       <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
@@ -125,11 +120,24 @@ function StepGoal({ showModalStepGoal, t, closeModal, description }) {
   )
 }
 
-function TranslationGoal({ showModalTGoal, t, closeModal, briefs }) {
+function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
+  const { t } = useTranslation(['common'])
+  const router = useRouter()
+
+  const {
+    query: { project: code },
+  } = router
+  const [project] = useProject({ token: user?.access_token, code })
+
+  const [briefs] = useBriefs({
+    token: user?.access_token,
+    project_id: project?.id,
+  })
+
   return (
     <>
       <Modal
-        isOpen={showModalTGoal}
+        isOpen={showModalTranslationGoal}
         closeHandle={closeModal}
         title={t('TranslationGoal')}
       >
