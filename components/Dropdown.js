@@ -46,7 +46,8 @@ function Dropdown({ project, description, user }) {
 			active:bg-cyan-200"
               onClick={(e) => {
                 opposite()
-                setShowModalStepGoal((prev) => !prev), e.stopPropagation()
+                setShowModalStepGoal((prev) => !prev)
+                e.stopPropagation()
               }}
             >
               {t('AboutStep')}
@@ -57,7 +58,8 @@ function Dropdown({ project, description, user }) {
 			active:bg-cyan-200"
               onClick={(e) => {
                 opposite()
-                setShowModalTGoal((prev) => !prev), e.stopPropagation()
+                setShowModalTGoal((prev) => !prev)
+                e.stopPropagation()
               }}
             >
               {t('AboutTranslation')}
@@ -83,7 +85,8 @@ function Dropdown({ project, description, user }) {
         <button
           className="w-24 rounded-l-lg active:bg-cyan-50"
           onClick={(e) => {
-            setShowModalStepGoal((prev) => !prev), e.stopPropagation()
+            setShowModalStepGoal((prev) => !prev)
+            e.stopPropagation()
           }}
         >
           {t('AboutStep')}
@@ -92,7 +95,8 @@ function Dropdown({ project, description, user }) {
         <button
           className="w-24 rounded-r-lg active:bg-cyan-50"
           onClick={(e) => {
-            setShowModalTGoal((prev) => !prev), e.stopPropagation()
+            setShowModalTGoal((prev) => !prev)
+            e.stopPropagation()
           }}
         >
           {t('AboutTranslation')}
