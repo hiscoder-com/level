@@ -101,7 +101,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .condition-title{
-	@apply text-center h3 lg:text-2xl md:flex
+	@apply text-center h3 pt-2 lg:text-2xl md:flex
 }
 
 .condition-optional-info{

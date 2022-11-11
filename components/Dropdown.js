@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -28,7 +28,10 @@ function Dropdown({ project, description, user }) {
 
   return (
     <div>
-      <div className="relative px-3 py-4 whitespace-nowrap rounded-md" onClick={opposite}>
+      <div
+        className="relative hidden px-3 py-4 rounded-md whitespace-nowrap md:flex"
+        onClick={opposite}
+      >
         <a className="cursor-pointer">
           <Tools />
         </a>
@@ -37,10 +40,10 @@ function Dropdown({ project, description, user }) {
       {open && (
         <>
           <div className="fixed inset-0" onClick={opposite} />
-          <div className="absolute right-0 flex flex-col shadow-md border-2 border-cyan-600 z-40 divide-y divide-solid bg-white rounded-md">
+          <div className="absolute flex flex-col right-0 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40">
             <button
               className="w-36 py-2 rounded-t-lg	hover:bg-cyan-50
-        active:bg-cyan-200"
+			active:bg-cyan-200"
               onClick={(e) => {
                 opposite()
                 setShowModalStepGoal((prev) => !prev), e.stopPropagation()
@@ -51,7 +54,7 @@ function Dropdown({ project, description, user }) {
 
             <button
               className="w-36 py-2 rounded-b-lg hover:bg-cyan-50
-        active:bg-cyan-200"
+			active:bg-cyan-200"
               onClick={(e) => {
                 opposite()
                 setShowModalTGoal((prev) => !prev), e.stopPropagation()
@@ -75,6 +78,26 @@ function Dropdown({ project, description, user }) {
         closeModal={closeModal}
         briefs={briefs}
       />
+
+      <div className="py-1 whitespace-nowrap text-xs font-bold border-2 border-cyan-600 rounded-md divide-x divide-solid md:hidden">
+        <button
+          className="w-24 rounded-l-lg active:bg-cyan-50"
+          onClick={(e) => {
+            setShowModalStepGoal((prev) => !prev), e.stopPropagation()
+          }}
+        >
+          {t('AboutStep')}
+        </button>
+
+        <button
+          className="w-24 rounded-r-lg active:bg-cyan-50"
+          onClick={(e) => {
+            setShowModalTGoal((prev) => !prev), e.stopPropagation()
+          }}
+        >
+          {t('AboutTranslation')}
+        </button>
+      </div>
     </div>
   )
 }
