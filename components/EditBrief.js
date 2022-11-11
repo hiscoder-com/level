@@ -9,6 +9,7 @@ import { useBriefs } from 'utils/hooks'
 function EditBrief({ user, id }) {
   const [showModalTGoal, setShowModalTGoal] = useState(false)
   const [briefText, setBriefText] = useState('')
+
   const { t } = useTranslation(['common', 'project-edit'])
   const [briefs, { mutate }] = useBriefs({
     token: user?.access_token,
@@ -25,11 +26,12 @@ function EditBrief({ user, id }) {
   const closeModal = () => {
     setShowModalTGoal(false)
   }
+
   return (
     <>
       <button
         className="btn-cyan"
-        onClick={(e) => (setShowModalTGoal(!showModalTGoal), e.stopPropagation())}
+        onClick={(e) => (setShowModalTGoal((prev) => !prev), e.stopPropagation())}
       >
         {t('project-edit:EditBrief')}
       </button>

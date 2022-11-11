@@ -10,6 +10,7 @@ export default async function notesDeleteHandler(req, res) {
     body: { data: data_note, title, parent_id },
     method,
   } = req
+
   switch (method) {
     case 'GET':
       try {
@@ -26,6 +27,7 @@ export default async function notesDeleteHandler(req, res) {
         return
       }
       break
+
     case 'DELETE':
       try {
         const { data, error } = await supabase.from('team_notes').delete().match({ id })
@@ -37,6 +39,7 @@ export default async function notesDeleteHandler(req, res) {
         return
       }
       break
+
     case 'PUT':
       try {
         const { data, error } = await supabase
@@ -50,6 +53,7 @@ export default async function notesDeleteHandler(req, res) {
         return
       }
       break
+
     default:
       res.setHeader('Allow', ['GET', 'DELETE', 'PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)

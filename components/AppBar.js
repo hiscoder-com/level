@@ -5,17 +5,17 @@ import Link from 'next/link'
 
 import { useRecoilValue } from 'recoil'
 
+import Dropdown from './Dropdown'
 import Timer from 'components/Timer'
 
 import { supabase } from 'utils/supabaseClient'
+import { useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
 import Burger from 'public/burger.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
-import Dropdown from './Dropdown'
-import { useProject } from 'utils/hooks'
 
 export default function AppBar({ setIsOpen }) {
   const { user } = useCurrentUser()
