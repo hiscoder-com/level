@@ -15,6 +15,7 @@ import Burger from 'public/burger.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 import Dropdown from './Dropdown'
+import { useProject } from 'utils/hooks'
 
 export default function AppBar({ setIsOpen }) {
   const { user } = useCurrentUser()
@@ -24,6 +25,10 @@ export default function AppBar({ setIsOpen }) {
   const [isStepPage, setIsStepPage] = useState(false)
 
   const router = useRouter()
+  const {
+    query: { project: code },
+  } = router
+  const [project] = useProject({ token: user?.access_token, code })
 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
@@ -79,16 +84,12 @@ export default function AppBar({ setIsOpen }) {
               <div className="hidden md:flex">
                 <Timer time={stepConfig.time} />
               </div>
-              <Dropdown description={stepConfig?.description} user={user} />
-              {/* <div className="relative px-3 py-4 whitespace-nowrap rounded-md group">
-                <a className="cursor-pointer">
-                  <Tools />
-                </a>
-                <div className="absolute right-0 mt-4 p-3 shadow-md gap-1 border-2 border-cyan-600 z-50 bg-white rounded-md hidden group-hover:flex flex-col">
-                  <StepGoal description={stepConfig?.description} />
-                  <TranslationGoal user={user} />
-                </div>
-              </div> */}
+
+              <Dropdown
+                project={project}
+                description={stepConfig?.description}
+                user={user}
+              />
             </div>
           </>
         )}
