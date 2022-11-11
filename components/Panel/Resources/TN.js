@@ -6,9 +6,9 @@ import { useTranslation } from 'next-i18next'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
-import { useGetResource } from 'utils/hooks'
+import { useGetResource, useScroll } from 'utils/hooks'
 
-function TN({ config, url }) {
+function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const { loading, data, error } = useGetResource({ config, url })
 
@@ -19,7 +19,7 @@ function TN({ config, url }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <ToolList setItem={setItem} data={data} />
+          <ToolList setItem={setItem} data={data} toolName={toolName} />
         </div>
       )}
     </>
@@ -28,11 +28,11 @@ function TN({ config, url }) {
 
 export default TN
 
-function ToolList({ setItem, data }) {
+function ToolList({ setItem, data, toolName }) {
   const { t } = useTranslation('common')
   const [intro, setIntro] = useState([])
   const [verses, setVerses] = useState([])
-
+  const { scrollId, handleSave } = useScroll({ toolName })
   useEffect(() => {
     if (data) {
       const { intro, ...verses } = data
@@ -64,8 +64,14 @@ function ToolList({ setItem, data }) {
                     return (
                       <li
                         key={item.id}
-                        className="py-2 cursor-pointer hover:bg-cyan-50"
-                        onClick={() => setItem({ text: item.text, title: item.title })}
+                        id={'id' + item.id}
+                        className={`p-2 cursor-pointer hover:bg-cyan-50  ${
+                          scrollId === 'id' + item.id ? 'bg-gray-100' : ''
+                        }`}
+                        onClick={() => {
+                          handleSave(item.id)
+                          setItem({ text: item.text, title: item.title })
+                        }}
                       >
                         <ReactMarkdown>{item.title}</ReactMarkdown>
                       </li>

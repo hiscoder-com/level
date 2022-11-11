@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import axios from 'axios'
 import useSWR from 'swr'
+import { checkLSVal } from './helper'
 
 const fetcher = async (url, token) => {
   const res = await fetch(url, {
@@ -210,4 +211,18 @@ export function useBriefs({ token, project_id }) {
   } = useSWR(token && project_id ? [`/api/briefs/${project_id}`, token] : null, fetcher)
   const loading = !briefs && !error
   return [briefs, { mutate, loading, error }]
+  }
+export function useScroll({ toolName }) {
+  const [scrollIds, setScrollIds] = useState(() => {
+    return checkLSVal('scrollIds', {}, 'object')
+  })
+
+  const handleSave = (id) => {
+    localStorage.setItem(
+      'scrollIds',
+      JSON.stringify({ ...scrollIds, [toolName]: 'id' + id })
+    )
+    setScrollIds((prev) => ({ ...prev, [toolName]: 'id' + id }))
+  }
+  return { scrollId: scrollIds[toolName], handleSave }
 }

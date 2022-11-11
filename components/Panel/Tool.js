@@ -14,7 +14,7 @@ import {
   CommandEditor,
 } from './'
 
-function Tool({ config }) {
+function Tool({ config, toolName }) {
   const { t } = useTranslation('common')
   const {
     resource: {
@@ -163,7 +163,7 @@ function Tool({ config }) {
       </div>
       <div className="h5 adaptive-card">
         <div className="h-full p-4 overflow-x-hidden overflow-y-auto">
-          <CurrentTool config={config} url={url} />
+          <CurrentTool config={config} url={url} toolName={toolName} />
         </div>
       </div>
     </>
