@@ -13,7 +13,7 @@ function Dropdown({ project, description, user }) {
   const [showModalTGoal, setShowModalTGoal] = useState(false)
   const [open, setOpen] = useState(false)
 
-  const opposite = () => setOpen(!open)
+  const opposite = () => setOpen((prev) => !prev)
   const { t } = useTranslation(['common'])
 
   const [briefs] = useBriefs({
@@ -40,7 +40,7 @@ function Dropdown({ project, description, user }) {
       {open && (
         <>
           <div className="fixed inset-0" onClick={opposite} />
-          <div className="absolute flex flex-col right-0 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40">
+          <div className="absolute flex flex-col right-5 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40 xl:right-0">
             <button
               className="w-36 py-2 rounded-t-lg	hover:bg-cyan-50
 			active:bg-cyan-200"
@@ -71,7 +71,7 @@ function Dropdown({ project, description, user }) {
         closeModal={closeModal}
         description={description}
       />
-      <TGoal
+      <TranslationGoal
         showModalTGoal={showModalTGoal}
         t={t}
         user={user}
@@ -121,7 +121,7 @@ function StepGoal({ showModalStepGoal, t, closeModal, description }) {
   )
 }
 
-function TGoal({ showModalTGoal, t, closeModal, briefs }) {
+function TranslationGoal({ showModalTGoal, t, closeModal, briefs }) {
   return (
     <>
       <Modal
