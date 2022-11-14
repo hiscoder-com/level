@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
@@ -6,26 +6,31 @@ import axios from 'axios'
 import Modal from 'components/Modal'
 import { useBriefs } from 'utils/hooks'
 
-function EditBrief({ user, id }) {
+function EditBrief({ user, projectId }) {
   const [showModalTGoal, setShowModalTGoal] = useState(false)
   const [briefText, setBriefText] = useState('')
 
   const { t } = useTranslation(['common', 'project-edit'])
   const [briefs, { mutate }] = useBriefs({
     token: user?.access_token,
-    project_id: id,
+    project_id: projectId,
   })
 
   const saveToDatabase = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .put(`/api/briefs/${id}`, { text: briefText })
+      .put(`/api/briefs/${projectId}`, { text: briefText })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
+
   const closeModal = () => {
     setShowModalTGoal(false)
   }
+
+  useEffect(() => {
+    setBriefText(briefs?.text)
+  }, [briefs])
 
   return (
     <>
@@ -48,7 +53,7 @@ function EditBrief({ user, id }) {
             onChange={(e) => setBriefText(e.target.value)}
             rows="15"
             cols="45"
-            className="my-6 text-gray-500 outline-none whitespace-pre-line"
+            className="my-6 text-gray-500 outline-none"
           ></textarea>
         </div>
         <div className="flex justify-center gap-4">

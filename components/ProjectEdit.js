@@ -128,7 +128,7 @@ function ProjectEdit() {
           </Link>
         </div>
         <div className="py-5">
-          <EditBrief user={user} id={project?.id} />
+          <EditBrief user={user} projectId={project?.id} />
         </div>
         <div className="w-1/2 flex justify-between mt-5">
           <div>{t('Coordinators')}</div>
