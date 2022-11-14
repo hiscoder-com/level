@@ -1,11 +1,13 @@
 import { useState } from 'react'
 
-import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+import { useRecoilValue } from 'recoil'
 
 import Modal from './Modal'
 
-import { useBriefs, useProject } from 'utils/hooks'
+import { useBriefs } from 'utils/hooks'
+import { projectState } from './Panel/state/atoms'
 
 import Tools from 'public/tools.svg'
 
@@ -122,12 +124,8 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
 
 function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
   const { t } = useTranslation(['common'])
-  const router = useRouter()
 
-  const {
-    query: { project: code },
-  } = router
-  const [project] = useProject({ token: user?.access_token, code })
+  const project = useRecoilValue(projectState)
 
   const [briefs] = useBriefs({
     token: user?.access_token,

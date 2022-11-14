@@ -11,13 +11,14 @@ import { useRecoilState } from 'recoil'
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
 
-import { stepConfigState } from 'components/Panel/state/atoms'
+import { projectState, stepConfigState } from 'components/Panel/state/atoms'
 import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default function ProgressPage({ last_step }) {
   const { query, replace } = useRouter()
   const [, setStepConfigData] = useRecoilState(stepConfigState)
+  const [, setProjectData] = useRecoilState(projectState)
   const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
@@ -66,6 +67,7 @@ export default function ProgressPage({ last_step }) {
               resources: { ...res.data?.projects?.resources },
               base_manifest: res.data?.projects?.base_manifest?.resource,
             }
+            setProjectData({ id: projectId })
             setStepConfigData({
               count_of_users: res.data?.count_of_users,
               time: res.data?.time,
@@ -79,7 +81,7 @@ export default function ProgressPage({ last_step }) {
           })
       })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter, project, step])
+  }, [book, chapter, project, step, projectId])
 
   const handleNextStep = async () => {
     const { data: next_step } = await supabase.rpc('go_to_next_step', {

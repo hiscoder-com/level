@@ -44,11 +44,11 @@ function EditBrief({ user, id }) {
         <div className="text-center">
           <textarea
             placeholder={t('project-edit:BriefPlaceholder')}
-            defaultValue={briefs?.text}
+            value={briefText}
             onChange={(e) => setBriefText(e.target.value)}
             rows="15"
             cols="45"
-            className="my-6 text-sm text-gray-500 outline-none whitespace-pre-line"
+            className="my-6 text-gray-500 outline-none whitespace-pre-line"
           ></textarea>
         </div>
         <div className="flex justify-center gap-4">
