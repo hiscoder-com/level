@@ -55,6 +55,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
     DROP FUNCTION IF EXISTS PUBLIC.get_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.go_to_step;
     DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
 
