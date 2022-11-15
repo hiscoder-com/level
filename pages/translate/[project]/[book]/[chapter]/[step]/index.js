@@ -82,10 +82,11 @@ export default function ProgressPage({ last_step }) {
   }, [book, chapter, project, step])
 
   const handleNextStep = async () => {
-    const { data: next_step } = await supabase.rpc('go_to_next_step', {
+    const { data: next_step } = await supabase.rpc('go_to_step', {
       project,
       book,
       chapter,
+      current_step: step,
     })
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
