@@ -23,6 +23,7 @@ export default function ProgressPage({ last_step }) {
   const [stepConfig, setStepConfig] = useState(null)
   const [projectId, setProjectId] = useState(null)
   const [versesRange, setVersesRange] = useState([])
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (projectId) {
@@ -82,17 +83,19 @@ export default function ProgressPage({ last_step }) {
   }, [book, chapter, project, step])
 
   const handleNextStep = async () => {
-    const { data: next_step } = await supabase.rpc('go_to_next_step', {
+    setLoading(true)
+    const { data: next_step } = await supabase.rpc('go_to_step', {
       project,
       book,
       chapter,
+      current_step: step,
     })
+    localStorage.setItem('scrollIds', JSON.stringify({}))
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {
       replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
     }
-    localStorage.setItem('scrollIds', JSON.stringify({}))
   }
   return (
     <div>
@@ -113,6 +116,7 @@ export default function ProgressPage({ last_step }) {
         textButton={t('Next')}
         textCheckbox={t('Done')}
         handleClick={handleNextStep}
+        loading={loading}
       />
     </div>
   )
