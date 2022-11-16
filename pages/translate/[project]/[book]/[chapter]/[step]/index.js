@@ -18,13 +18,13 @@ import { supabaseService } from 'utils/supabaseServer'
 export default function ProgressPage({ last_step }) {
   const [stepConfig, setStepConfig] = useState(null)
   const [versesRange, setVersesRange] = useState([])
+  const [loading, setLoading] = useState(false)
   const { query, replace } = useRouter()
   const { project, book, chapter, step } = query
   const [, setStepConfigData] = useRecoilState(stepConfigState)
   const [, setProjectData] = useRecoilState(projectIdState)
   const projectId = useRecoilValue(projectIdState)
   const { t } = useTranslation(['common'])
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (projectId) {
