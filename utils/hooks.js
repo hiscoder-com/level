@@ -203,14 +203,14 @@ export function useTeamNotes({ token, project_id }) {
   return [notes, { mutate, loading, error }]
 }
 
-export function useBriefs({ token, project_id }) {
+export function useBrief({ token, project_id }) {
   const {
-    data: briefs,
+    data: brief,
     mutate,
     error,
   } = useSWR(token && project_id ? [`/api/briefs/${project_id}`, token] : null, fetcher)
-  const loading = !briefs && !error
-  return [briefs, { mutate, loading, error }]
+  const loading = !brief && !error
+  return [brief, { mutate, loading, error }]
 }
 export function useScroll({ toolName }) {
   const [scrollIds, setScrollIds] = useState(() => {

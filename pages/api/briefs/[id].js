@@ -10,6 +10,7 @@ export default async function briefsGetHandler(req, res) {
     body: { text },
     method,
   } = req
+
   switch (method) {
     case 'GET':
       try {
@@ -31,7 +32,7 @@ export default async function briefsGetHandler(req, res) {
         const { data, error } = await supabase
           .from('briefs')
           .update({ text })
-          .match({ projectId })
+          .match({ project_id: id })
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {

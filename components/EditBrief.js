@@ -4,17 +4,21 @@ import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
 import Modal from 'components/Modal'
-import { useBriefs } from 'utils/hooks'
+import { useBrief } from 'utils/hooks'
 
 function EditBrief({ user, projectId }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [briefText, setBriefText] = useState('')
 
   const { t } = useTranslation(['common', 'project-edit'])
-  const [briefs, { mutate }] = useBriefs({
+  const [brief, { mutate }] = useBrief({
     token: user?.access_token,
     project_id: projectId,
   })
+
+  useEffect(() => {
+    setBriefText(brief?.text)
+  }, [brief])
 
   const saveToDatabase = () => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -27,10 +31,6 @@ function EditBrief({ user, projectId }) {
   const closeModal = () => {
     setShowModalTranslationGoal(false)
   }
-
-  useEffect(() => {
-    setBriefText(briefs?.text)
-  }, [briefs])
 
   return (
     <>

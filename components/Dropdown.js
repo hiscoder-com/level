@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil'
 
 import Modal from './Modal'
 
-import { useBriefs } from 'utils/hooks'
+import { useBrief } from 'utils/hooks'
 import { projectState } from './Panel/state/atoms'
 
 import Tools from 'public/tools.svg'
@@ -127,7 +127,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
 
   const project = useRecoilValue(projectState)
 
-  const [briefs] = useBriefs({
+  const [brief] = useBrief({
     token: user?.access_token,
     project_id: project?.id,
   })
@@ -140,7 +140,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
         title={t('TranslationGoal')}
       >
         <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
-          <p className="text-sm text-gray-500 whitespace-pre-line">{briefs?.text}</p>
+          <p className="text-sm text-gray-500 whitespace-pre-line">{brief?.text}</p>
         </div>
         <div className="text-center">
           <button className="btn-cyan w-24" onClick={closeModal}>
