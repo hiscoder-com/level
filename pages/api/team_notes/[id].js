@@ -28,24 +28,12 @@ export default async function notesDeleteHandler(req, res) {
       }
       break
 
-    case 'DELETE':
-      try {
-        const { data, error } = await supabase.from('team_notes').delete().match({ id })
-
-        if (error) throw error
-        res.status(200).json(data)
-      } catch (error) {
-        res.status(404).json({ error })
-        return
-      }
-      break
-
     case 'PUT':
       try {
         const { data, error } = await supabase
           .from('team_notes')
           .update([{ data: data_note, title, parent_id }])
-          .match({ id })
+          .match({ projectId })
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {
@@ -55,7 +43,7 @@ export default async function notesDeleteHandler(req, res) {
       break
 
     default:
-      res.setHeader('Allow', ['GET', 'DELETE', 'PUT'])
+      res.setHeader('Allow', ['GET', 'PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
