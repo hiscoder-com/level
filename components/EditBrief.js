@@ -7,7 +7,7 @@ import Modal from 'components/Modal'
 import { useBriefs } from 'utils/hooks'
 
 function EditBrief({ user, projectId }) {
-  const [showModalTGoal, setShowModalTGoal] = useState(false)
+  const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [briefText, setBriefText] = useState('')
 
   const { t } = useTranslation(['common', 'project-edit'])
@@ -25,7 +25,7 @@ function EditBrief({ user, projectId }) {
   }
 
   const closeModal = () => {
-    setShowModalTGoal(false)
+    setShowModalTranslationGoal(false)
   }
 
   useEffect(() => {
@@ -36,13 +36,15 @@ function EditBrief({ user, projectId }) {
     <>
       <button
         className="btn-cyan"
-        onClick={(e) => (setShowModalTGoal((prev) => !prev), e.stopPropagation())}
+        onClick={(e) => (
+          setShowModalTranslationGoal((prev) => !prev), e.stopPropagation()
+        )}
       >
         {t('project-edit:EditBrief')}
       </button>
 
       <Modal
-        isOpen={showModalTGoal}
+        isOpen={showModalTranslationGoal}
         closeHandle={closeModal}
         title={t('TranslationGoal')}
       >
