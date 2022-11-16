@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
 
@@ -22,6 +22,15 @@ function ProjectCard({ project }) {
       .then((res) => setCurrentSteps(res.data))
   }, [project?.id])
 
+  const chapters = useMemo(() => {
+    const _chapters = {}
+    currentSteps?.forEach((step) => {
+      _chapters[step.book] = _chapters?.[step.book]?.length
+        ? [..._chapters[step.book], step]
+        : [step]
+    })
+    return _chapters
+  }, [currentSteps])
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>
@@ -41,18 +50,25 @@ function ProjectCard({ project }) {
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
       </div>
-      {currentSteps &&
-        currentSteps.length &&
-        currentSteps.map((el, index) => (
-          <Link
-            key={index}
-            href={`/translate/${el.project}/${el.book}/${el.chapter}/${el.step}/intro`}
-          >
-            <a className="btn btn-white mt-2">
-              {t(`books:${el.book}`)} {el.chapter} | {el.title}
-            </a>
-          </Link>
-        ))}
+      <div className="divide-y-2">
+        {Object.entries(chapters).map((chapter, i) => {
+          return (
+            <div key={i} className="mb-2">
+              {t(`books:${chapter[0]}`)}
+              {chapter[1].map((step, index) => (
+                <Link
+                  key={index}
+                  href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+                >
+                  <a className="btn btn-white mt-2 mx-1">
+                    {step.chapter} гл. | {step.step} ш.
+                  </a>
+                </Link>
+              ))}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }

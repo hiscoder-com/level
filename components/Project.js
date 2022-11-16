@@ -1,23 +1,29 @@
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
+import axios from 'axios'
 import { useTranslation } from 'next-i18next'
+
+import Modal from './Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
 import Download from '../public/download.svg'
+import Eye from '../public/eye-icon.svg'
 
 function Project({ code }) {
   const { t } = useTranslation(['projects', 'common', 'books'])
   const [level, setLevel] = useState('user')
   const [books, setBooks] = useState()
   const [project, setProject] = useState()
-  const [creatingBook, setCreatingBook] = useState(false)
-  console.log(creatingBook)
-  const { user } = useCurrentUser()
   const [selectedBook, setSelectedBook] = useState('')
+  const [creatingBook, setCreatingBook] = useState(false)
+
+  const { user } = useCurrentUser()
+
   const handleCreate = async () => {
     setCreatingBook(true)
     const book = project?.base_manifest?.books.find((el) => el.name === selectedBook)
@@ -25,7 +31,6 @@ function Project({ code }) {
       return
     }
     axios.defaults.headers.common['token'] = user?.access_token
-    console.log({ project_id: project.id, link: book.link, book_code: selectedBook })
     try {
       await axios
         .post('/api/create_chapters', {
@@ -36,8 +41,6 @@ function Project({ code }) {
         .then(setCreatingBook(false))
     } catch (error) {
       setCreatingBook(false)
-
-      console.log(error)
     }
 
     // if (res.status === 201) {
@@ -64,7 +67,6 @@ function Project({ code }) {
         .select('id,code,chapters')
         .eq('project_id', project.id)
       setBooks(books)
-      console.log(books)
       const defaultVal = project?.base_manifest?.books?.filter(
         (el) => !books?.map((el) => el.code)?.includes(el.name)
       )?.[0]?.name
@@ -98,7 +100,7 @@ function Project({ code }) {
 
   const highLevelAccess = ['admin', 'coordinator'].includes(level)
   return (
-    <div className="">
+    <>
       <h3 className="h3 inline-block">{project?.title}</h3>
       {highLevelAccess && (
         <div className="mt-4 ml-4 inline-block">
@@ -133,6 +135,7 @@ function Project({ code }) {
           </>
         )}
       </div>
+
       <BookList
         creatingBook={creatingBook}
         books={books}
@@ -141,47 +144,57 @@ function Project({ code }) {
       />
 
       {highLevelAccess && (
-        <div className="mt-4 pb-4">
-          <select
-            className="input max-w-xs"
-            onChange={(e) => setSelectedBook(e.target.value)}
-            value={selectedBook}
-          >
-            {project?.base_manifest?.books
-              ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
-              .map((el) => (
-                <option value={el.name} key={el.name}>
-                  {t(`books:${el.name}`)}
-                </option>
-              ))}
-          </select>
-          <button
-            className="btn btn-cyan"
-            onClick={() => {
-              handleCreate()
-            }}
-            disabled={creatingBook}
-          >
-            {t('Create')}
-          </button>
-        </div>
+        <>
+          <h3 className="mt-4 ">Создать книгу</h3>
+          <div className="mt-4 pb-4">
+            <select
+              className="input max-w-xs"
+              onChange={(e) => setSelectedBook(e.target.value)}
+              value={selectedBook}
+            >
+              {project?.base_manifest?.books
+                ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
+                .map((el) => (
+                  <option value={el.name} key={el.name}>
+                    {t(`books:${el.name}`)}
+                  </option>
+                ))}
+            </select>
+            <button
+              className="btn btn-cyan"
+              onClick={() => {
+                handleCreate()
+              }}
+              disabled={creatingBook}
+            >
+              {t('Create')}
+            </button>
+          </div>
+        </>
       )}
-    </div>
+    </>
   )
 }
 
 export default Project
 
-import { useRouter } from 'next/router'
-import axios from 'axios'
-import Modal from './Modal'
-
 function BookList({ creatingBook, books, highLevelAccess, project }) {
+  const router = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
+  useEffect(() => {
+    if (router?.query?.book && books?.length) {
+      const book = books?.find((book) => book.code === router?.query?.book)
+      console.log(book)
+      setSelectedBook(book)
+      return
+    }
+    setSelectedBook(null)
+  }, [router.query, books])
+
   return (
     <>
       {!selectedBook ? (
-        <table className="w-fit text-sm text-left table-auto text-gray-500 dark:text-gray-400">
+        <table className="shadow-md w-fit text-sm text-left table-auto text-gray-500 dark:text-gray-400">
           <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
               <th scope="col" className="py-3 px-6">
@@ -200,12 +213,18 @@ function BookList({ creatingBook, books, highLevelAccess, project }) {
             </tr>
           </thead>
           <tbody>
-            {books?.map((el, index) => {
+            {books?.map((book, index) => {
               return (
                 <tr
                   key={index}
                   onClick={() => {
-                    setSelectedBook(el)
+                    router.replace({
+                      pathname: `/projects/${project?.code}`,
+
+                      query: { book: book.code },
+
+                      shallow: true,
+                    })
                   }}
                   className="cursor-pointer hover:bg-cyan-50 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                 >
@@ -213,9 +232,9 @@ function BookList({ creatingBook, books, highLevelAccess, project }) {
                     scope="row"
                     className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <div className="w-8">{el.code}</div>
+                    <div className="w-8">{book.code}</div>
                   </th>
-                  <td className="py-4 px-6">{Object.keys(el.chapters).length}</td>
+                  <td className="py-4 px-6">{Object.keys(book.chapters).length} </td>
                   <td className="py-4 px-6 hidden sm:block">{'0%'}</td>
 
                   <td className="py-4 px-6">
@@ -235,16 +254,11 @@ function BookList({ creatingBook, books, highLevelAccess, project }) {
           </tbody>
         </table>
       ) : (
-        <>
-          <div className="btn-cyan" onClick={() => setSelectedBook(null)}>
-            Back
-          </div>
-          <ChapterList
-            selectedBook={selectedBook}
-            project={project}
-            highLevelAccess={highLevelAccess}
-          />
-        </>
+        <ChapterList
+          selectedBook={selectedBook}
+          project={project}
+          highLevelAccess={highLevelAccess}
+        />
       )}
     </>
   )
@@ -283,13 +297,12 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapters?.length, project?.id])
-  // const [currentSteps, setCurrentSteps] = useState(null)
-  // useEffect(() => {
-  //   supabase
-  //     .rpc('get_current_steps', { project_id: project.id })
-  //     .then((res) => setCurrentSteps(res.data))
-  // }, [project?.id])
-
+  const [currentSteps, setCurrentSteps] = useState(null)
+  useEffect(() => {
+    supabase
+      .rpc('get_current_steps', { project_id: project.id })
+      .then((res) => setCurrentSteps(res.data))
+  }, [project?.id])
   useEffect(() => {
     const getChapters = async () => {
       const { data: chapters, error } = await supabase
@@ -321,26 +334,48 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapters?.length, project?.id])
-
+  const getCurrentStep = (chapter, index) => {
+    const step = currentSteps?.find((step) => step.chapter === chapter.num)
+    if (step) {
+      return (
+        <Link
+          key={index}
+          href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+        >
+          <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2">
+            {step.title}
+          </a>
+        </Link>
+      )
+    }
+  }
   return (
     <div className="overflow-x-auto relative">
-      <div>{selectedBook.code}</div>
-      <table className="w-fit text-sm text-left table-auto text-gray-500 dark:text-gray-400">
+      <div className="my-4">
+        <Link href={`/projects/${project.code}`}>
+          <a
+            onClick={(e) => e.stopPropagation()}
+            className="text-blue-450  decoration-2 "
+          >
+            {project.code}
+          </a>
+        </Link>
+        /{t(`books:${selectedBook.code}`)}
+      </div>
+      <table className="text-center w-fit text-sm table-auto text-gray-500 dark:text-gray-400">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
           <tr>
-            <th scope="col" className="py-3 px-6">
+            <th scope="col" className="py-3 px-3">
               Номер главы
             </th>
-            <th scope="col" className="py-3 px-6">
+            <th scope="col" className="py-3 px-3">
               Начата
             </th>
-            <th scope="col" className="py-3 px-6 hidden sm:block">
+            <th scope="col" className="py-3 px-3 ">
               Закончена
             </th>
 
-            <th scope="col" className="py-3 px-6">
-              Скачать
-            </th>
+            <th scope="col" className="py-3 px-6"></th>
           </tr>
         </thead>
         <tbody>
@@ -377,12 +412,29 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     scope="row"
                     className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                   >
-                    <div className="w-8">{el.num}</div>
+                    {el.num}
                   </th>
-                  <td className="py-4 px-6">{el.started_at}</td>
-                  <td className="py-4 px-6 hidden sm:block">{el.finished_at}</td>
+                  <td className="py-4 px-6">
+                    {el.started_at && new Date(el.started_at).toLocaleString('ru', {})}
+                  </td>
+                  <td className="py-4 px-6 ">
+                    {el.finished_at && new Date(el.finished_at).toLocaleString('ru', {})}
+                  </td>
 
-                  <td className="py-4 px-6">d</td>
+                  <td className="py-4 px-6">
+                    {el.finished_at ? (
+                      <div className="flex justify-center ">
+                        <div
+                          className="p-2 hover:bg-cyan-100 rounded-md"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <Eye />
+                        </div>
+                      </div>
+                    ) : (
+                      getCurrentStep(el, index)
+                    )}
+                  </td>
                 </tr>
               )
             })}
