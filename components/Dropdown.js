@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil'
 import Modal from './Modal'
 
 import { useBrief } from 'utils/hooks'
-import { projectState } from './Panel/state/atoms'
+import { projectIdState } from './Panel/state/atoms'
 
 import Tools from 'public/tools.svg'
 
@@ -125,11 +125,11 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
 function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
   const { t } = useTranslation(['common'])
 
-  const project = useRecoilValue(projectState)
+  const project = useRecoilValue(projectIdState)
 
   const [brief] = useBrief({
     token: user?.access_token,
-    project_id: project?.id,
+    project_id: project,
   })
 
   return (
