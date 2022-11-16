@@ -26,7 +26,7 @@ const icons = {
   audio: '🎧',
   dictionary: '📙',
 }
-function Workspace({ stepConfig, reference }) {
+function Workspace({ stepConfig, reference, editable = false }) {
   const inactive = useRecoilValue(inactiveState)
   return (
     <div className="layout-step">
@@ -43,6 +43,7 @@ function Workspace({ stepConfig, reference }) {
               resources={stepConfig.resources}
               reference={reference}
               wholeChapter={stepConfig.whole_chapter}
+              editable={editable}
             />
           </div>
         )
@@ -53,7 +54,7 @@ function Workspace({ stepConfig, reference }) {
 
 export default Workspace
 
-function Panel({ tools, resources, reference, wholeChapter }) {
+function Panel({ tools, resources, reference, wholeChapter, editable = false }) {
   const { t } = useTranslation('common')
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -82,7 +83,7 @@ function Panel({ tools, resources, reference, wholeChapter }) {
             ].includes(tool.name) ? (
               <span title={t(tool.name)}>
                 {icons[tool.name]}
-                <span className="hidden sm:inline">{t(tool.name)}</span>
+                <span className="hidden ml-2 sm:inline">{t(tool.name)}</span>
               </span>
             ) : (
               tool.name

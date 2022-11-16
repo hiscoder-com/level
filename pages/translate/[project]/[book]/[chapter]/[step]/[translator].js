@@ -1,48 +1,29 @@
-import { useEffect, useState } from 'react'
-
-import Head from 'next/head'
-import { useRouter } from 'next/router'
-
+import Footer from 'components/Footer'
+import { stepConfigState } from 'components/Panel/state/atoms'
+import Workspace from 'components/Workspace'
+import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
+import Head from 'next/head'
+import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 import { useSetRecoilState } from 'recoil'
-
-import Footer from 'components/Footer'
-import Workspace from 'components/Workspace'
-
-import { stepConfigState } from 'components/Panel/state/atoms'
 import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
-import { useCurrentUser } from 'lib/UserContext'
 
-export default function ProgressPage({ last_step }) {
+/**
+ * что если тут мы заменим все инструменты на обычную читалку, и так же надо погрузить чужие стихи
+ * либо в компонентах для редактора надо проверять, чьи стихи
+ */
+function TranslatorPage({ last_step }) {
   const { user } = useCurrentUser()
   const { query, replace } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)
-  const { project, book, chapter, step } = query
+  const { project, book, chapter, step, translator } = query
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
-  const [projectId, setProjectId] = useState(null)
   const [versesRange, setVersesRange] = useState([])
-  /**
-   * На странице мы выполняем rpc функцию, которая возвращает массив из айди стиха, номера и текста {verse_id, num, verse}
-   * Этот массив как часть референса мы передаем в воркспейс
-   * Там мы этот же массив передаем в config для Tool
-   * В зависимости от типа ресурса, Tool подключает нужный компонент
-   * Мы берем только номера стихов и прокидываем их отдельно в verses в конфиг компонента
-   * В каждом компоненте этот массив с номерами стихов используется для того чтобы получить через апи определенный контент для каждого ресурса
-   * После этого каждый компонент рендерит то что получил через апи
-   *
-   * Я хочу чтобы по клику на аватарку у меня загружался контент так, как видит его этот юзер, за исключением того что он не может редактировать
-   *
-   * Сейчас рендер компонента не знает, его это стихи или нет
-   *
-   * Что если мы на каких-то этапах будем смотреть так же на айди юзера, и сверять его
-   * И к тому же у нас настроена рпц  функция для сохранения, обычное сохраненеие не работает. То есть даже если мы криво отобразим и случайно дадим возможность менять контент - то он не сохранится
-   *
-   *
-   */
+
   useEffect(() => {
     if (user?.login) {
       supabase
@@ -52,11 +33,10 @@ export default function ProgressPage({ last_step }) {
           book_code: book,
         })
         .then((res) => {
-          console.log(res.data.filter((el) => el.translator === user.login))
-          setVersesRange(res.data.filter((el) => el.translator === user.login))
+          setVersesRange(res.data.filter((el) => el.translator === translator))
         })
     }
-  }, [book, chapter, project, user?.login])
+  }, [book, chapter, project, translator, user?.login])
 
   useEffect(() => {
     supabase
@@ -83,7 +63,6 @@ export default function ProgressPage({ last_step }) {
                 `/translate/${project}/${book}/${chapter}/${current_step}/intro`
               )
             }
-            setProjectId(res.data?.projects?.id)
 
             let stepConfig = {
               title: res.data?.title,
@@ -107,18 +86,6 @@ export default function ProgressPage({ last_step }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter, project, step])
 
-  const handleNextStep = async () => {
-    const { data: next_step } = await supabase.rpc('go_to_next_step', {
-      project,
-      book,
-      chapter,
-    })
-    if (parseInt(step) === parseInt(next_step)) {
-      replace(`/account`)
-    } else {
-      replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
-    }
-  }
   return (
     <div>
       <Head>
@@ -130,19 +97,20 @@ export default function ProgressPage({ last_step }) {
         <Workspace
           reference={{ step, book, chapter, verses: versesRange }}
           stepConfig={stepConfig}
-          editable={true}
         />
       ) : (
         t('Loading')
       )}
       <Footer
-        textButton={t('Next')}
+        textButton={t('Back to my screen')}
         textCheckbox={t('Done')}
-        handleClick={handleNextStep}
+        href={`/translate/${project}/${book}/${chapter}/${step}`}
       />
     </div>
   )
 }
+
+export default TranslatorPage
 
 export async function getServerSideProps({ locale, params }) {
   const steps = await supabaseService

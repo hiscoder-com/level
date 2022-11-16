@@ -1,12 +1,30 @@
+import { useMemo } from 'react'
+
+import { useRouter } from 'next/router'
+
 const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9D27AE']
 
-function TranslatorImage({ item, size }) {
+function TranslatorImage({ item, size, clickable }) {
+  const {
+    push,
+    query: { project, book, chapter, step, translator },
+  } = useRouter()
+
+  const canClick = useMemo(
+    () => clickable && (!translator || translator !== item.users?.login),
+    [clickable, item.users?.login, translator]
+  )
   return (
     <div
       title={`${item.users ? `${item.users?.login}` : ''}`}
-      className={`relative border-2 ${
+      onClick={() => {
+        if (canClick) {
+          push(`/translate/${project}/${book}/${chapter}/${step}/${item.users.login}`)
+        }
+      }}
+      className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
         item.is_moderator ? 'border-blue-800 ' : ''
-      } rounded-full cursor-default select-none`}
+      } rounded-full select-none`}
     >
       {item.avatar ? (
         <div
