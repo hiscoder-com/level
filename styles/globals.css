@@ -150,10 +150,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	focus:border-red-700
 }
 
-.layout-footer{
-	@apply flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-blue-150 md:flex-row-reverse lg:px-0
-}
-
 .layout-appbar{
 	@apply flex flex-col gap-7 items-center px-5 f-screen-appbar font-sans sm:justify-center
 }
