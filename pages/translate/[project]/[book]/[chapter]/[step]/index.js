@@ -16,15 +16,14 @@ import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default function ProgressPage({ last_step }) {
+  const [stepConfig, setStepConfig] = useState(null)
+  const [versesRange, setVersesRange] = useState([])
   const { query, replace } = useRouter()
+  const { project, book, chapter, step } = query
   const [, setStepConfigData] = useRecoilState(stepConfigState)
   const [, setProjectData] = useRecoilState(projectIdState)
-  const { project, book, chapter, step } = query
+  const projectId = useRecoilValue(projectIdState)
   const { t } = useTranslation(['common'])
-  const [stepConfig, setStepConfig] = useState(null)
-  const [projectId, setProjectId] = useState(null)
-  // const projectId = useRecoilValue(projectIdState)
-  const [versesRange, setVersesRange] = useState([])
 
   useEffect(() => {
     if (projectId) {
@@ -60,8 +59,6 @@ export default function ProgressPage({ last_step }) {
               )
             }
 
-            setProjectId(res.data?.projects?.id)
-            // setProjectData({ id: res.data?.projects?.id })
             setProjectData(res.data?.projects?.id)
 
             let stepConfig = {
