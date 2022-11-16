@@ -137,7 +137,7 @@ function BookList({
   user,
 }) {
   const { t } = useTranslation(['common', 'books'])
-  const { replace, query } = useRouter()
+  const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
   useEffect(() => {
     if (query?.book && books?.length) {
@@ -165,7 +165,7 @@ function BookList({
                   <tr
                     key={index}
                     onClick={() => {
-                      replace({
+                      push({
                         pathname: `/projects/${project?.code}`,
                         query: { book: book?.code },
                         shallow: true,
