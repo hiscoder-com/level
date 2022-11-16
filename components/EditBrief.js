@@ -56,7 +56,7 @@ function EditBrief({ user, projectId }) {
             rows="15"
             cols="45"
             className="my-6 text-gray-500 outline-none"
-          ></textarea>
+          />
         </div>
         <div className="flex justify-center gap-4">
           <button className="btn-cyan w-28" onClick={saveToDatabase}>

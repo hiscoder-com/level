@@ -44,11 +44,11 @@ function Dropdown({ description, user }) {
 			active:bg-cyan-200"
               onClick={(e) => {
                 toggle()
-                setShowModalStepGoal((prev) => !prev)
+                setShowModalStepGoal(true)
                 e.stopPropagation()
               }}
             >
-              {t('AboutStep')}
+              {t('AboutStep').toUpperCase()}
             </button>
 
             <button
@@ -56,11 +56,11 @@ function Dropdown({ description, user }) {
 			active:bg-cyan-200"
               onClick={(e) => {
                 toggle()
-                setShowModalTranslationGoal((prev) => !prev)
+                setShowModalTranslationGoal(true)
                 e.stopPropagation()
               }}
             >
-              {t('AboutTranslation')}
+              {t('AboutTranslation').toUpperCase()}
             </button>
           </div>
         </>
@@ -80,21 +80,21 @@ function Dropdown({ description, user }) {
         <button
           className="w-24 rounded-l-lg active:bg-cyan-50"
           onClick={(e) => {
-            setShowModalStepGoal((prev) => !prev)
+            setShowModalStepGoal(true)
             e.stopPropagation()
           }}
         >
-          {t('AboutStep')}
+          {t('AboutStep').toUpperCase()}
         </button>
 
         <button
           className="w-24 rounded-r-lg active:bg-cyan-50"
           onClick={(e) => {
-            setShowModalTranslationGoal((prev) => !prev)
+            setShowModalTranslationGoal(true)
             e.stopPropagation()
           }}
         >
-          {t('AboutTranslation')}
+          {t('AboutTranslation').toUpperCase()}
         </button>
       </div>
     </div>
