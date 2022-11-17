@@ -59,10 +59,10 @@ function EditBrief({ user, projectId }) {
           />
         </div>
         <div className="flex justify-center gap-4">
-          <button className="btn-cyan w-28" onClick={saveToDatabase}>
+          <button className="btn-cyan" onClick={saveToDatabase}>
             {t('Save')}
           </button>
-          <button className="btn-cyan w-28" onClick={closeModal}>
+          <button className="btn-cyan" onClick={closeModal}>
             {t('Close')}
           </button>
         </div>

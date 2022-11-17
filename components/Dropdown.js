@@ -27,12 +27,10 @@ function Dropdown({ description, user }) {
   return (
     <div>
       <div
-        className="relative hidden px-3 py-4 rounded-md whitespace-nowrap md:flex"
+        className="relative hidden px-3 py-4 rounded-md whitespace-nowrap cursor-pointer md:flex"
         onClick={toggle}
       >
-        <a className="cursor-pointer">
-          <Tools />
-        </a>
+        <Tools />
       </div>
 
       {open && (
@@ -40,7 +38,7 @@ function Dropdown({ description, user }) {
           <div className="fixed inset-0" onClick={toggle} />
           <div className="absolute flex flex-col right-5 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40 xl:right-0">
             <button
-              className="w-36 py-2 rounded-t-lg	hover:bg-cyan-50
+              className="px-4 py-2 rounded-t-lg	hover:bg-cyan-50
 			active:bg-cyan-200"
               onClick={(e) => {
                 toggle()
@@ -52,7 +50,7 @@ function Dropdown({ description, user }) {
             </button>
 
             <button
-              className="w-36 py-2 rounded-b-lg hover:bg-cyan-50
+              className="px-4 py-2 rounded-b-lg hover:bg-cyan-50
 			active:bg-cyan-200"
               onClick={(e) => {
                 toggle()
@@ -78,7 +76,7 @@ function Dropdown({ description, user }) {
 
       <div className="py-1 whitespace-nowrap text-xs font-bold border-2 border-cyan-600 rounded-md divide-x divide-solid md:hidden">
         <button
-          className="w-24 rounded-l-lg active:bg-cyan-50"
+          className="px-2 rounded-l-lg active:bg-cyan-50"
           onClick={(e) => {
             setShowModalStepGoal(true)
             e.stopPropagation()
@@ -88,7 +86,7 @@ function Dropdown({ description, user }) {
         </button>
 
         <button
-          className="w-24 rounded-r-lg active:bg-cyan-50"
+          className="px-2 rounded-r-lg active:bg-cyan-50"
           onClick={(e) => {
             setShowModalTranslationGoal(true)
             e.stopPropagation()
@@ -114,7 +112,7 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
         </p>
       </div>
       <div className="text-center">
-        <button className="btn-cyan w-24" onClick={closeModal}>
+        <button className="btn-cyan" onClick={closeModal}>
           {t('Close')}
         </button>
       </div>
@@ -125,11 +123,11 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
 function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
   const { t } = useTranslation(['common'])
 
-  const project = useRecoilValue(projectIdState)
+  const projectId = useRecoilValue(projectIdState)
 
   const [brief] = useBrief({
     token: user?.access_token,
-    project_id: project,
+    project_id: projectId,
   })
 
   return (
@@ -143,7 +141,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
           <p className="text-sm text-gray-500 whitespace-pre-line">{brief?.text}</p>
         </div>
         <div className="text-center">
-          <button className="btn-cyan w-24" onClick={closeModal}>
+          <button className="btn-cyan" onClick={closeModal}>
             {t('Close')}
           </button>
         </div>
