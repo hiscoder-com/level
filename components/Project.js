@@ -17,9 +17,7 @@ function Project({ code }) {
   const { t } = useTranslation(['projects', 'common', 'books'])
   const [level, setLevel] = useState('user')
   const [language, setLanguage] = useState()
-  const [books, setBooks] = useState()
   const [project, setProject] = useState()
-  const [creatingBook, setCreatingBook] = useState(false)
   const highLevelAccess = ['admin', 'coordinator'].includes(level)
   const { user } = useCurrentUser()
 
@@ -36,20 +34,6 @@ function Project({ code }) {
       getProject()
     }
   }, [code])
-
-  useEffect(() => {
-    const getBooks = async () => {
-      const { data: books, error } = await supabase
-        .from('books')
-        .select('id,code,chapters')
-        .eq('project_id', project.id)
-      setBooks(books)
-    }
-    if (project?.id) {
-      getBooks()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id, creatingBook])
 
   useEffect(() => {
     const getLevel = async () => {
@@ -116,31 +100,33 @@ function Project({ code }) {
           </>
         )}
       </div>
-      <BookList
-        books={books}
-        highLevelAccess={highLevelAccess}
-        project={project}
-        setCreatingBook={setCreatingBook}
-        creatingBook={creatingBook}
-        user={user}
-      />
+      <BookList highLevelAccess={highLevelAccess} project={project} user={user} />
     </>
   )
 }
 
 export default Project
 
-function BookList({
-  books,
-  highLevelAccess,
-  project,
-  setCreatingBook,
-  creatingBook,
-  user,
-}) {
+function BookList({ highLevelAccess, project, user }) {
   const { t } = useTranslation(['common', 'books'])
   const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
+  const [books, setBooks] = useState()
+
+  useEffect(() => {
+    const getBooks = async () => {
+      const { data: books, error } = await supabase
+        .from('books')
+        .select('id,code,chapters')
+        .eq('project_id', project.id)
+      setBooks(books)
+    }
+    if (project?.id) {
+      getBooks()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.id, query?.book])
+
   useEffect(() => {
     if (query?.book && books?.length) {
       const book = books?.find((book) => book.code === query?.book)
@@ -185,8 +171,6 @@ function BookList({
             project={project}
             highLevelAccess={highLevelAccess}
             books={books}
-            setCreatingBook={setCreatingBook}
-            creatingBook={creatingBook}
             user={user}
           />
         </>
@@ -394,15 +378,10 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
   )
 }
 
-function BookCreate({
-  highLevelAccess,
-  project,
-  books,
-  setCreatingBook,
-  creatingBook,
-  user,
-}) {
+function BookCreate({ highLevelAccess, project, books, user }) {
   const [selectedBook, setSelectedBook] = useState('')
+  const [creatingBook, setCreatingBook] = useState(false)
+
   const { push } = useRouter()
   const { t } = useTranslation(['common'])
 
@@ -418,7 +397,7 @@ function BookCreate({
   const handleCreate = async () => {
     setCreatingBook(true)
     const book = project?.base_manifest?.books.find((el) => el.name === selectedBook)
-    if (!book) {
+    if (!book && !project.id) {
       return
     }
     axios.defaults.headers.common['token'] = user?.access_token
@@ -430,14 +409,17 @@ function BookCreate({
           book_code: selectedBook,
         })
         .then((res) => {
-          setCreatingBook(false)
-          if (res.status === 201) {
-            push({
-              pathname: `/projects/${project?.code}`,
-              query: { book: selectedBook },
-              shallow: true,
-            })
+          if (res.status == 201) {
+            push(
+              {
+                pathname: `/projects/${project?.code}`,
+                query: { book: selectedBook },
+              },
+              undefined,
+              { shallow: true }
+            )
           }
+          setCreatingBook(false)
         })
     } catch (error) {
       console.log(error)

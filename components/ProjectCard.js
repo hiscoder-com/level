@@ -47,15 +47,15 @@ function ProjectCard({ project }) {
         {Object.entries(chapters).map((chapter, i) => {
           return (
             <div key={i} className="mb-2">
-              {t(`books:${chapter[0]}`)}
+              <div>{t(`books:${chapter[0]}`)}</div>
               {chapter[1].map((step, index) => (
                 <Link
                   key={index}
                   href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
                 >
                   <a className="btn btn-white mt-2 mx-1">
-                    {step.chapter} {t('common:Ch').toLowerCase()}. | {step.step}{' '}
-                    {t('common:St').toLowerCase()}.
+                    {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
+                    {t('common:Step').toLowerCase()}
                   </a>
                 </Link>
               ))}
