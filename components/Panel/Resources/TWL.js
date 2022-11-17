@@ -6,10 +6,10 @@ import { useTranslation } from 'next-i18next'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
-import { useGetResource } from 'utils/hooks'
+import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 
-function TWL({ config, url }) {
+function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const { loading, data, error } = useGetResource({ config, url })
   return (
@@ -19,7 +19,7 @@ function TWL({ config, url }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <ToolList setItem={setItem} data={data} />
+          <ToolList setItem={setItem} data={data} toolName={toolName} />
         </div>
       )}
     </>
@@ -28,11 +28,13 @@ function TWL({ config, url }) {
 
 export default TWL
 
-function ToolList({ setItem, data }) {
+function ToolList({ setItem, data, toolName }) {
   const [verses, setVerses] = useState([])
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
+  const { scrollId, handleSave } = useScroll({ toolName })
+
   useEffect(() => {
     localStorage.setItem('filter_words', filter)
   }, [filter])
@@ -42,14 +44,15 @@ function ToolList({ setItem, data }) {
       setVerses(Object.entries(data))
     }
   }, [data])
+
   return (
     <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
       <div className="text-center">
         {<FilterRepeated filter={filter} setFilter={setFilter} />}
       </div>
-      {verses?.map((el, index) => {
+      {verses?.map((el, verseIndex) => {
         return (
-          <div key={index} className="p-4 flex mx-4">
+          <div key={verseIndex} className="p-4 flex mx-4">
             <div className="text-2xl">{el[0]}</div>
             <div className="text-gray-700 pl-7">
               <ul>
@@ -69,13 +72,20 @@ function ToolList({ setItem, data }) {
                     default:
                       break
                   }
+
                   return (
                     <li
                       key={index}
-                      className={`py-2 cursor-pointer ${
+                      id={'id' + item.id}
+                      className={`p-2 cursor-pointer ${
                         itemFilter ? 'text-gray-400' : ''
-                      } hover:bg-cyan-50`}
-                      onClick={() => setItem({ text: item.text, title: item.title })}
+                      } hover:bg-cyan-50
+                      ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}
+                      `}
+                      onClick={() => {
+                        handleSave(item.id)
+                        setItem({ text: item.text, title: item.title })
+                      }}
                     >
                       <ReactMarkdown>{item.title}</ReactMarkdown>
                     </li>

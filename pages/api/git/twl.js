@@ -145,8 +145,8 @@ export default async function twlHandler(req, res) {
       const res = await axios.get(url)
 
       const splitter = res.data.search('\n')
-
       return {
+        id: el.ID,
         reference: el.Reference,
         title: res.data.slice(0, splitter),
         text: res.data.slice(splitter),
@@ -163,6 +163,7 @@ export default async function twlHandler(req, res) {
       let repeatedInVerse = uniqueFilter(verseUnique, el.url, el.title)
 
       const wordObject = {
+        id: el.id,
         title: el.title,
         text: el.text,
         url: el.url,

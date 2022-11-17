@@ -3,18 +3,21 @@ import ReactMarkdown from 'react-markdown'
 import { Disclosure } from '@headlessui/react'
 
 import { Placeholder } from '../UI'
-import MarkdownExtended from 'components/MarkdownExtended'
 
-import { useGetResource } from 'utils/hooks'
+import { useGetResource, useScroll } from 'utils/hooks'
 
-function TQ({ config, url }) {
+function TQ({ config, url, toolName }) {
   const { loading, data, error } = useGetResource({ config, url })
   return (
     <>
       {loading ? (
         <Placeholder />
       ) : (
-        <ToolList data={data} viewAll={config?.resource?.viewAllQuestions} />
+        <ToolList
+          data={data}
+          viewAll={config?.resource?.viewAllQuestions}
+          toolName={toolName}
+        />
       )}
     </>
   )
@@ -22,7 +25,7 @@ function TQ({ config, url }) {
 
 export default TQ
 
-function ToolList({ data, viewAll }) {
+function ToolList({ data, viewAll, toolName }) {
   let uniqueVerses = new Set()
   const reduceQuestions = (title) => {
     uniqueVerses.add(title)
@@ -30,6 +33,9 @@ function ToolList({ data, viewAll }) {
       console.log('все вопросы просмотрены!') //TODO это для проверки просмотра всех вопросов
     }
   }
+
+  const { scrollId, handleSave } = useScroll({ toolName })
+
   return (
     <div className="divide-y divide-gray-800 divide-dashed">
       {data &&
@@ -41,11 +47,17 @@ function ToolList({ data, viewAll }) {
                 <ul>
                   {el[1]?.map((item) => {
                     return (
-                      <li key={item.id} className="py-2">
+                      <li
+                        key={item.id}
+                        id={'id' + item.id}
+                        onClick={() => handleSave(item.id)}
+                        className="py-2"
+                      >
                         <ToolContent
                           item={item}
                           reduceQuestions={() => reduceQuestions(item.title)}
                           viewAll={viewAll}
+                          scrollId={scrollId}
                         />
                       </li>
                     )
@@ -59,16 +71,20 @@ function ToolList({ data, viewAll }) {
   )
 }
 
-function ToolContent({ item, reduceQuestions, viewAll }) {
+function ToolContent({ item, reduceQuestions, viewAll, scrollId }) {
   return (
     <Disclosure>
-      <Disclosure.Button className="text-left w-fit" onClick={viewAll && reduceQuestions}>
+      <Disclosure.Button
+        className={`text-left w-fit ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
+        onClick={() => {
+          if (viewAll) {
+            reduceQuestions()
+          }
+        }}
+      >
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
-      <Disclosure.Panel
-        onChange={() => console.log('test')}
-        className="text-cyan-700 w-fit py-4"
-      >
+      <Disclosure.Panel className="text-cyan-700 w-fit py-4">
         <p>{item.text}</p>
       </Disclosure.Panel>
     </Disclosure>
