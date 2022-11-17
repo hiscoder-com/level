@@ -96,7 +96,7 @@ function ChapterVersesPage() {
         </Link>
       </h3>
       <h4 className="h4 mb-3">
-        <Link href={'/projects/' + code + '/books/' + bookid}>
+        <Link href={'/projects/' + code + '?book=' + bookid}>
           <a className="underline text-blue-700">« {t(`books:${book?.code}`)}</a>
         </Link>
       </h4>
