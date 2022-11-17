@@ -7,7 +7,6 @@ export default async function handler(req, res) {
     return
   }
   supabase.auth.setAuth(req.headers.token)
-  console.log(req.headers.token)
   const { method } = req
 
   switch (method) {
@@ -26,9 +25,8 @@ export default async function handler(req, res) {
     case 'POST':
       // TODO валидацию
       // is it admin
-      // return false
+      return false
       const { email, password, login } = req.body
-      console.log(supabase)
       try {
         const { error: errorPost } = await supabaseService.auth.api.createUser({
           email,
@@ -36,7 +34,6 @@ export default async function handler(req, res) {
           user_metadata: { login },
           email_confirm: true,
         })
-        console.log(errorPost)
         if (errorPost) throw errorPost
         res.status(201).json({})
       } catch (error) {

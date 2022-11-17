@@ -32,7 +32,9 @@ function Project({ code }) {
         .single()
       setProject(project)
     }
-    getProject()
+    if (code) {
+      getProject()
+    }
   }, [code])
 
   useEffect(() => {
@@ -52,12 +54,12 @@ function Project({ code }) {
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
-        user_id: user?.id,
+        user_id: user.id,
         project_id: project.id,
       })
       setLevel(level.data)
     }
-    if ((user?.id, project?.id)) {
+    if (user?.id && project?.id) {
       getLevel()
     }
   }, [user?.id, project?.id])
@@ -76,7 +78,7 @@ function Project({ code }) {
         .maybeSingle()
       setLanguage(language)
     }
-    if (project?.id) {
+    if (project?.language_id) {
       getLanguage()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -99,7 +101,7 @@ function Project({ code }) {
         {t('Language')}{' '}
         {language && <b>{language?.orig_name + ' (' + language?.code + ')'}</b>}
       </div>
-      <div className="mt-4 mb-4">
+      <div className="my-4">
         {translators && Object.keys(translators).length > 0 && (
           <>
             {t('Translators')}:
@@ -143,9 +145,9 @@ function BookList({
     if (query?.book && books?.length) {
       const book = books?.find((book) => book.code === query?.book)
       setSelectedBook(book)
-      return
+    } else {
+      setSelectedBook(null)
     }
-    setSelectedBook(null)
   }, [query, books])
 
   return (
@@ -160,24 +162,22 @@ function BookList({
               </tr>
             </thead>
             <tbody>
-              {books?.map((book, index) => {
-                return (
-                  <tr
-                    key={index}
-                    onClick={() => {
-                      push({
-                        pathname: `/projects/${project?.code}`,
-                        query: { book: book?.code },
-                        shallow: true,
-                      })
-                    }}
-                    className="cursor-pointer hover:bg-cyan-50 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                  >
-                    <th className="py-4 px-6">{t(`books:${book?.code}`)}</th>
-                    <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
-                  </tr>
-                )
-              })}
+              {books?.map((book, index) => (
+                <tr
+                  key={index}
+                  onClick={() => {
+                    push({
+                      pathname: `/projects/${project?.code}`,
+                      query: { book: book?.code },
+                      shallow: true,
+                    })
+                  }}
+                  className="cursor-pointer hover:bg-cyan-50 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                >
+                  <th className="py-4 px-6">{t(`books:${book?.code}`)}</th>
+                  <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <BookCreate
@@ -203,8 +203,10 @@ function BookList({
 
 function ChapterList({ selectedBook, project, highLevelAccess }) {
   const [openModal, setOpenModal] = useState(false)
-  const { query, push } = useRouter()
-  const { code } = query
+  const {
+    query: { book, code },
+    push,
+  } = useRouter()
   const [selectedChapter, setSelectedChapter] = useState(null)
   const [chapters, setChapters] = useState([])
   const [createdChapters, setCreatedChapters] = useState([])
@@ -236,16 +238,20 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapters?.length, project?.id])
+
   useEffect(() => {
-    supabase
-      .rpc('get_current_steps', { project_id: project.id })
-      .then((res) => setCurrentSteps(res.data))
+    if (project?.id) {
+      supabase
+        .rpc('get_current_steps', { project_id: project.id })
+        .then((res) => setCurrentSteps(res.data))
+    }
   }, [project?.id])
+
   useEffect(() => {
     const getChapters = async () => {
       const { data: chapters, error } = await supabase
         .from('chapters')
-        .select('id,num,verses,text,started_at,finished_at')
+        .select('id,num,verses,started_at,finished_at')
         .eq('project_id', project.id)
         .eq('book_id', selectedBook.id)
       setChapters(chapters)
@@ -256,7 +262,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
   }, [selectedBook?.id, project?.id])
   const getCurrentStep = (chapter, index) => {
     const step = currentSteps
-      ?.filter((step) => step.book === query?.book)
+      ?.filter((step) => step.book === book)
       ?.find((step) => step.chapter === chapter.num)
     if (step) {
       return (
@@ -276,7 +282,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     <div className="overflow-x-auto relative">
       <div className="my-4">
         <Link href={`/projects/${project.code}`}>
-          <a onClick={(e) => e.stopPropagation()} className="text-blue-450 decoration-2 ">
+          <a onClick={(e) => e.stopPropagation()} className="text-blue-450 decoration-2">
             {project.code}
           </a>
         </Link>
@@ -460,9 +466,7 @@ function BookCreate({
             </select>
             <button
               className="btn btn-cyan ml-2"
-              onClick={() => {
-                handleCreate()
-              }}
+              onClick={handleCreate}
               disabled={creatingBook}
             >
               {t('Create')}
