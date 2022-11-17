@@ -19,11 +19,12 @@ export default function ProgressPage({ last_step }) {
   const [stepConfig, setStepConfig] = useState(null)
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
-  const { query, replace } = useRouter()
-  const { project, book, chapter, step } = query
+  const {
+    query: { project, book, chapter, step },
+    replace,
+  } = useRouter()
   const [, setStepConfigData] = useRecoilState(stepConfigState)
-  const [, setProjectData] = useRecoilState(projectIdState)
-  const projectId = useRecoilValue(projectIdState)
+  const [projectId, setProjectId] = useRecoilState(projectIdState)
   const { t } = useTranslation(['common'])
 
   useEffect(() => {
@@ -59,8 +60,7 @@ export default function ProgressPage({ last_step }) {
                 `/translate/${project}/${book}/${chapter}/${current_step}/intro`
               )
             }
-
-            setProjectData(res.data?.projects?.id)
+            setProjectId(res.data?.projects?.id)
 
             let stepConfig = {
               title: res.data?.title,

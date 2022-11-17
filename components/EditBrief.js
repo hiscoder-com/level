@@ -36,9 +36,7 @@ function EditBrief({ user, projectId }) {
     <>
       <button
         className="btn-cyan"
-        onClick={(e) => (
-          setShowModalTranslationGoal((prev) => !prev), e.stopPropagation()
-        )}
+        onClick={(e) => (setShowModalTranslationGoal(true), e.stopPropagation())}
       >
         {t('project-edit:EditBrief')}
       </button>
@@ -53,9 +51,7 @@ function EditBrief({ user, projectId }) {
             placeholder={t('project-edit:BriefPlaceholder')}
             value={briefText}
             onChange={(e) => setBriefText(e.target.value)}
-            rows="15"
-            cols="45"
-            className="my-6 text-gray-500 outline-none"
+            className="my-6 text-gray-500 outline-none w-full h-96"
           />
         </div>
         <div className="flex justify-center gap-4">

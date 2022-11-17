@@ -25,5 +25,5 @@ export const stepConfigState = atom({
 
 export const projectIdState = atom({
   key: 'projectIdState',
-  default: 1,
+  default: null,
 })
