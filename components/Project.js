@@ -16,7 +16,6 @@ import Eye from '../public/eye-icon.svg'
 function Project({ code }) {
   const { t } = useTranslation(['projects', 'common', 'books'])
   const [level, setLevel] = useState('user')
-  const [language, setLanguage] = useState()
   const [project, setProject] = useState()
   const highLevelAccess = ['admin', 'coordinator'].includes(level)
   const { user } = useCurrentUser()
@@ -25,7 +24,7 @@ function Project({ code }) {
     const getProject = async () => {
       const { data: project, error } = await supabase
         .from('projects')
-        .select()
+        .select('*,languages!inner(orig_name,code)')
         .eq('code', code)
         .single()
       setProject(project)
@@ -53,21 +52,6 @@ function Project({ code }) {
     code: code,
   })
 
-  useEffect(() => {
-    const getLanguage = async () => {
-      const { data: language, error } = await supabase
-        .from('languages')
-        .select('orig_name,code')
-        .eq('id', project?.language_id)
-        .maybeSingle()
-      setLanguage(language)
-    }
-    if (project?.language_id) {
-      getLanguage()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id])
-
   return (
     <>
       <h3 className="h3 inline-block">{project?.title}</h3>
@@ -83,7 +67,9 @@ function Project({ code }) {
       </div>
       <div>
         {t('Language')}{' '}
-        {language && <b>{language?.orig_name + ' (' + language?.code + ')'}</b>}
+        {project?.languages && (
+          <b>{project?.languages?.orig_name + ' (' + project?.languages?.code + ')'}</b>
+        )}
       </div>
       <div className="my-4">
         {translators && Object.keys(translators).length > 0 && (
@@ -140,8 +126,8 @@ function BookList({ highLevelAccess, project, user }) {
     <>
       {!selectedBook ? (
         <>
-          <table className="shadow-md text-sm text-center table-auto text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <table className="shadow-md text-sm text-center table-auto text-gray-500">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
               <tr>
                 <th className="py-3 px-6">{t('NameBook')}</th>
                 <th className="py-3 px-6">{t('CountChapters')}</th>
@@ -158,7 +144,7 @@ function BookList({ highLevelAccess, project, user }) {
                       shallow: true,
                     })
                   }}
-                  className="cursor-pointer hover:bg-cyan-50 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
+                  className="cursor-pointer hover:bg-cyan-50 bg-white border-b"
                 >
                   <th className="py-4 px-6">{t(`books:${book?.code}`)}</th>
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
@@ -272,8 +258,8 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         </Link>
         /{t(`books:${selectedBook.code}`)}
       </div>
-      <table className="shadow-md mb-4 text-center w-fit text-sm table-auto text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table className="shadow-md mb-4 text-center w-fit text-sm table-auto text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th className="py-3 px-3">{t('Chapter')}</th>
             <th className="py-3 px-3">{t('Started')}а</th>
@@ -309,11 +295,11 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     highLevelAccess ? 'cursor-pointer hover:bg-cyan-50' : ''
                   } ${
                     !createdChapters.includes(el.id) ? 'bg-gray-100' : 'bg-white'
-                  } border-b dark:bg-gray-800 dark:border-gray-700`}
+                  } border-b`}
                 >
                   <th
                     scope="row"
-                    className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
                   >
                     {el.num}
                   </th>
