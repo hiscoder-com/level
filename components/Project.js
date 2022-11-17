@@ -254,9 +254,10 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       getChapters()
     }
   }, [selectedBook?.id, project?.id])
-
   const getCurrentStep = (chapter, index) => {
-    const step = currentSteps?.find((step) => step.chapter === chapter.num)
+    const step = currentSteps
+      ?.filter((step) => step.book === query?.book)
+      ?.find((step) => step.chapter === chapter.num)
     if (step) {
       return (
         <Link
@@ -270,6 +271,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       )
     }
   }
+
   return (
     <div className="overflow-x-auto relative">
       <div className="my-4">
