@@ -97,6 +97,7 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
             <Tab.Panel key={index}>
               <div className="flex flex-col bg-white rounded-lg h-full">
                 <Tool
+                  editable={editable}
                   config={{
                     reference,
                     wholeChapter,

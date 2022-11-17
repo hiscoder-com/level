@@ -12,7 +12,7 @@ import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 /**
- * что если тут мы заменим все инструменты на обычную читалку, и так же надо погрузить чужие стихи
+ * что если тут мы заменим все инструменты на обычную читалку, и так же надо подгрузить чужие стихи
  * либо в компонентах для редактора надо проверять, чьи стихи
  */
 function TranslatorPage({ last_step }) {

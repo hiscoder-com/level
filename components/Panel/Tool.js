@@ -12,9 +12,10 @@ import {
   TQ,
   BlindEditor,
   CommandEditor,
+  Reader,
 } from './'
 
-function Tool({ config }) {
+function Tool({ config, editable = false }) {
   const { t } = useTranslation('common')
   const {
     resource: {
@@ -119,17 +120,17 @@ function Tool({ config }) {
       break
 
     case 'translate':
-      CurrentTool = Editor
+      CurrentTool = editable ? Editor : Reader
       title = t('translate')
       break
 
     case 'commandTranslate':
-      CurrentTool = CommandEditor
+      CurrentTool = editable ? CommandEditor : Reader
       title = t('commandTranslate')
       break
 
     case 'draftTranslate':
-      CurrentTool = BlindEditor
+      CurrentTool = editable ? BlindEditor : Reader
       title = t('draftTranslate')
       break
 
