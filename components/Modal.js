@@ -5,7 +5,7 @@ import { Transition, Dialog } from '@headlessui/react'
 function Modal({ title, children, isOpen, closeHandle }) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-10" onClose={closeHandle}>
+      <Dialog as="div" className="relative z-50" onClose={closeHandle}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -29,7 +29,7 @@ function Modal({ title, children, isOpen, closeHandle }) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="modal-step-goal">
+              <Dialog.Panel className="transform overflow-hidden p-6 w-full max-w-md align-middle bg-white rounded-2xl shadow-xl transition-all">
                 <Dialog.Title as="h3" className="h3 font-medium leading-6 text-center">
                   {title}
                 </Dialog.Title>

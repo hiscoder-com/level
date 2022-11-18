@@ -40,7 +40,7 @@ export default function Footer({
         <div className="flex flex-row items-center space-x-6">
           <div className="space-x-1.5 items-center h5">
             <input
-              className="cursor-pointer"
+              className="cursor-pointer accent-cyan-600"
               id="cb"
               type="checkbox"
               checked={checked}

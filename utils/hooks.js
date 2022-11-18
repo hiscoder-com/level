@@ -203,6 +203,15 @@ export function useTeamNotes({ token, project_id }) {
   return [notes, { mutate, loading, error }]
 }
 
+export function useBrief({ token, project_id }) {
+  const {
+    data: brief,
+    mutate,
+    error,
+  } = useSWR(token && project_id ? [`/api/briefs/${project_id}`, token] : null, fetcher)
+  const loading = !brief && !error
+  return [brief, { mutate, loading, error }]
+}
 export function useScroll({ toolName }) {
   const [scrollIds, setScrollIds] = useState(() => {
     return checkLSVal('scrollIds', {}, 'object')

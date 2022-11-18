@@ -11,21 +11,24 @@ import { useSetRecoilState } from 'recoil'
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
 
-import { stepConfigState } from 'components/Panel/state/atoms'
-import { supabase } from 'utils/supabaseClient'
-import { supabaseService } from 'utils/supabaseServer'
 import { useCurrentUser } from 'lib/UserContext'
+import { supabaseService } from 'utils/supabaseServer'
+import { supabase } from 'utils/supabaseClient'
+import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
 
 export default function ProgressPage({ last_step }) {
   const { user } = useCurrentUser()
-  const { query, replace } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)
-  const { project, book, chapter, step } = query
   const { t } = useTranslation(['common'])
+  const {
+    query: { project, book, chapter, step },
+    replace,
+  } = useRouter()
   const [stepConfig, setStepConfig] = useState(null)
-  const [projectId, setProjectId] = useState(null)
+  const setProjectId = useSetRecoilState(projectIdState)
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
+
   useEffect(() => {
     if (user?.login) {
       supabase
@@ -35,7 +38,6 @@ export default function ProgressPage({ last_step }) {
           book_code: book,
         })
         .then((res) => {
-          console.log(res.data.filter((el) => el.translator === user.login))
           setVersesRange(res.data.filter((el) => el.translator === user.login))
         })
     }
@@ -105,6 +107,7 @@ export default function ProgressPage({ last_step }) {
       replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
     }
   }
+
   return (
     <div>
       <Head>

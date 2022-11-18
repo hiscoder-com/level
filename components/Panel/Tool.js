@@ -163,7 +163,7 @@ function Tool({ config, toolName, editable = false }) {
         {title}
       </div>
       <div className="h5 adaptive-card">
-        <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
+        <div className="h-full p-4 overflow-x-hidden overflow-y-auto">
           <CurrentTool config={config} url={url} toolName={toolName} />
         </div>
       </div>
