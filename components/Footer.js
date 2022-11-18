@@ -52,7 +52,7 @@ export default function Footer({
           </div>
           {href ? (
             <Link href={href}>
-              <button className="btn-cyan w-28" disabled={!checked}>
+              <button className="btn-cyan !px-6" disabled={!checked}>
                 {textButton}
               </button>
             </Link>
@@ -100,7 +100,11 @@ export default function Footer({
           </div>
           <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
             <div>{t('Fulfilled')}:</div>
-            <Translators projectCode={stepConfig.project_code} size="34px" />
+            <Translators
+              projectCode={stepConfig.project_code}
+              size="34px"
+              clickable={true}
+            />
           </div>
         </>
       )}

@@ -3,31 +3,31 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
+import { useSetRecoilState } from 'recoil'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import { useSetRecoilState } from 'recoil'
 
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
 
-import { useCurrentUser } from 'lib/UserContext'
-import { supabaseService } from 'utils/supabaseServer'
-import { supabase } from 'utils/supabaseClient'
-import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
+import { stepConfigState } from 'components/Panel/state/atoms'
 
-export default function ProgressPage({ last_step }) {
+import { useCurrentUser } from 'lib/UserContext'
+import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
+
+/**
+ * что если тут мы заменим все инструменты на обычную читалку, и так же надо подгрузить чужие стихи
+ * либо в компонентах для редактора надо проверять, чьи стихи
+ */
+function TranslatorPage({ last_step }) {
   const { user } = useCurrentUser()
+  const { query, replace } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)
+  const { project, book, chapter, step, translator } = query
   const { t } = useTranslation(['common'])
-  const {
-    query: { project, book, chapter, step },
-    replace,
-  } = useRouter()
   const [stepConfig, setStepConfig] = useState(null)
-  const setProjectId = useSetRecoilState(projectIdState)
   const [versesRange, setVersesRange] = useState([])
-  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     if (user?.login) {
@@ -38,10 +38,10 @@ export default function ProgressPage({ last_step }) {
           book_code: book,
         })
         .then((res) => {
-          setVersesRange(res.data.filter((el) => el.translator === user.login))
+          setVersesRange(res.data.filter((el) => el.translator === translator))
         })
     }
-  }, [book, chapter, project, user?.login])
+  }, [book, chapter, project, translator, user?.login])
 
   useEffect(() => {
     supabase
@@ -68,7 +68,6 @@ export default function ProgressPage({ last_step }) {
                 `/translate/${project}/${book}/${chapter}/${current_step}/intro`
               )
             }
-            setProjectId(res.data?.projects?.id)
 
             let stepConfig = {
               title: res.data?.title,
@@ -92,22 +91,6 @@ export default function ProgressPage({ last_step }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter, project, step])
 
-  const handleNextStep = async () => {
-    setLoading(true)
-    const { data: next_step } = await supabase.rpc('go_to_step', {
-      project,
-      book,
-      chapter,
-      current_step: step,
-    })
-    localStorage.setItem('scrollIds', JSON.stringify({}))
-    if (parseInt(step) === parseInt(next_step)) {
-      replace(`/account`)
-    } else {
-      replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
-    }
-  }
-
   return (
     <div>
       <Head>
@@ -119,20 +102,20 @@ export default function ProgressPage({ last_step }) {
         <Workspace
           reference={{ step, book, chapter, verses: versesRange }}
           stepConfig={stepConfig}
-          editable={true}
         />
       ) : (
         t('Loading')
       )}
       <Footer
-        textButton={t('Next')}
+        textButton={t('Back_to')}
         textCheckbox={t('Done')}
-        handleClick={handleNextStep}
-        loading={loading}
+        href={`/translate/${project}/${book}/${chapter}/${step}`}
       />
     </div>
   )
 }
+
+export default TranslatorPage
 
 export async function getServerSideProps({ locale, params }) {
   const steps = await supabaseService
