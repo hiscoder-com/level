@@ -51,7 +51,7 @@ function EditBrief({ user, projectId }) {
             placeholder={t('project-edit:BriefPlaceholder')}
             value={briefText}
             onChange={(e) => setBriefText(e.target.value)}
-            className="my-6 text-gray-500 outline-none w-full h-[55vh]"
+            className="my-6 text-gray-500 outline-none w-full h-[50vh]"
           />
         </div>
         <div className="flex justify-center gap-4">

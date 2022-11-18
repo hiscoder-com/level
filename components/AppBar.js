@@ -66,11 +66,17 @@ export default function AppBar({ setIsOpen }) {
         </div>
         {isStepPage && (
           <>
-            <div className={`condition-title ${showFullAppbar ? '' : 'hidden '}`}>
+            <div
+              className={`text-center h3 pt-2 lg:text-2xl md:flex ${
+                showFullAppbar ? '' : 'hidden '
+              }`}
+            >
               {stepConfig.title}
             </div>
             <div
-              className={`condition-optional-info ${showFullAppbar ? 'flex' : 'hidden '}`}
+              className={`items-center gap-4 md:flex ${
+                showFullAppbar ? 'flex' : 'hidden '
+              }`}
             >
               <div className="flex row items-center gap-1 cursor-default">
                 <User />
