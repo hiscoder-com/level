@@ -364,8 +364,8 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
   const { t } = useTranslation(['common'])
   return (
     <div className="overflow-x-auto relative">
-      <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table className="w-full text-sm text-left text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
@@ -383,13 +383,10 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
         <tbody>
           {translators?.map((el) => {
             return (
-              <tr
-                key={el.users.id}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-              >
+              <tr key={el.users.id} className="bg-white border-b">
                 <th
                   scope="row"
-                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
                 >
                   <div className="w-8">
                     <TranslatorImage item={el} />
@@ -433,8 +430,8 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = fa
   const { t } = useTranslation(['common'])
   return (
     <div className="overflow-x-auto relative">
-      <table className="w-1/2 text-sm text-left text-gray-500 dark:text-gray-400">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+      <table className="w-1/2 text-sm text-left text-gray-500">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
@@ -450,13 +447,10 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = fa
         <tbody>
           {coordinators?.map((el) => {
             return (
-              <tr
-                key={el.users.id}
-                className="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-              >
+              <tr key={el.users.id} className="bg-white border-b">
                 <th
                   scope="row"
-                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
                 >
                   <div className="w-8">
                     <TranslatorImage item={el} />
