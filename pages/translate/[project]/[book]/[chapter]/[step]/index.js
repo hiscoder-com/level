@@ -6,24 +6,26 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useRecoilState } from 'recoil'
+import { useRecoilValue, useRecoilState } from 'recoil'
 
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
 
-import { stepConfigState } from 'components/Panel/state/atoms'
+import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
 import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default function ProgressPage({ last_step }) {
-  const { query, replace } = useRouter()
-  const [, setStepConfigData] = useRecoilState(stepConfigState)
-  const { project, book, chapter, step } = query
-  const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
-  const [projectId, setProjectId] = useState(null)
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
+  const {
+    query: { project, book, chapter, step },
+    replace,
+  } = useRouter()
+  const [, setStepConfigData] = useRecoilState(stepConfigState)
+  const [projectId, setProjectId] = useRecoilState(projectIdState)
+  const { t } = useTranslation(['common'])
 
   useEffect(() => {
     if (projectId) {

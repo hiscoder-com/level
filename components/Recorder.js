@@ -124,7 +124,7 @@ function Modal({ showModal, setShowModal }) {
               leaveFrom="opacity-100 scale-100"
               leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="modal-step-goal">
+              <Dialog.Panel className="transform overflow-hidden p-6 w-full max-w-md align-middle bg-white rounded-2xl shadow-xl transition-all">
                 <Dialog.Title as="h3" className="h3 font-medium leading-6">
                   {t('MicrophoneAccess')}
                 </Dialog.Title>

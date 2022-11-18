@@ -10,6 +10,7 @@ import { Switch } from '@headlessui/react'
 
 import Modal from 'components/Modal'
 import TranslatorImage from 'components/TranslatorImage'
+import EditBrief from './EditBrief'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators, useUsers } from 'utils/hooks'
@@ -38,7 +39,6 @@ function ProjectEdit() {
     token: user?.access_token,
     code,
   })
-
   const [coordinators, { mutate: mutateCoordinator }] = useCoordinators({
     token: user?.access_token,
     code,
@@ -126,6 +126,9 @@ function ProjectEdit() {
           <Link href={'/projects/' + code}>
             <a className="underline text-blue-700">« {project?.title}</a>
           </Link>
+        </div>
+        <div className="py-5">
+          <EditBrief user={user} projectId={project?.id} />
         </div>
         <div className="w-1/2 flex justify-between mt-5">
           <div>{t('Coordinators')}</div>
