@@ -17,7 +17,16 @@ const sizes = {
   '6': 'lg:w-full',
 }
 
-function Workspace({ stepConfig, reference }) {
+const icons = {
+  translate: '✏️',
+  commandTranslate: '✏️',
+  draftTranslate: '👓',
+  teamNotes: '📌',
+  personalNotes: '✍️',
+  audio: '🎧',
+  dictionary: '📙',
+}
+function Workspace({ stepConfig, reference, editable = false }) {
   const inactive = useRecoilValue(inactiveState)
   return (
     <div className="layout-step">
@@ -34,6 +43,7 @@ function Workspace({ stepConfig, reference }) {
               resources={stepConfig.resources}
               reference={reference}
               wholeChapter={stepConfig.whole_chapter}
+              editable={editable}
             />
           </div>
         )
@@ -44,7 +54,7 @@ function Workspace({ stepConfig, reference }) {
 
 export default Workspace
 
-function Panel({ tools, resources, reference, wholeChapter }) {
+function Panel({ tools, resources, reference, wholeChapter, editable = false }) {
   const { t } = useTranslation('common')
   function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -80,9 +90,14 @@ function Panel({ tools, resources, reference, wholeChapter }) {
               'personalNotes',
               'audio',
               'dictionary',
-            ].includes(tool.name)
-              ? t(tool.name)
-              : tool.name}
+            ].includes(tool.name) ? (
+              <span title={t(tool.name)}>
+                {icons[tool.name]}
+                <span className="hidden ml-2 sm:inline">{t(tool.name)}</span>
+              </span>
+            ) : (
+              tool.name
+            )}
           </Tab>
         ))}
       </Tab.List>
@@ -92,6 +107,7 @@ function Panel({ tools, resources, reference, wholeChapter }) {
             <Tab.Panel key={index}>
               <div className="flex flex-col bg-white rounded-lg h-full">
                 <Tool
+                  editable={editable}
                   config={{
                     reference,
                     wholeChapter,

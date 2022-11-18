@@ -40,7 +40,7 @@ export default function Footer({
         <div className="flex flex-row items-center space-x-6">
           <div className="space-x-1.5 items-center h5">
             <input
-              className="cursor-pointer"
+              className="cursor-pointer accent-cyan-600"
               id="cb"
               type="checkbox"
               checked={checked}
@@ -52,7 +52,7 @@ export default function Footer({
           </div>
           {href ? (
             <Link href={href}>
-              <button className="btn-cyan w-28" disabled={!checked}>
+              <button className="btn-cyan !px-6" disabled={!checked}>
                 {textButton}
               </button>
             </Link>
@@ -100,7 +100,11 @@ export default function Footer({
           </div>
           <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
             <div>{t('Fulfilled')}:</div>
-            <Translators projectCode={stepConfig.project_code} size="34px" />
+            <Translators
+              projectCode={stepConfig.project_code}
+              size="34px"
+              clickable={true}
+            />
           </div>
         </>
       )}

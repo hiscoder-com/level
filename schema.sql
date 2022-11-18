@@ -37,8 +37,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
-    DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
-    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.start_chapter; --Deprecated
+    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter; --Deprecated
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
@@ -58,6 +58,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.go_to_step;
     DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
 
   -- END DROP FUNCTION
 
@@ -213,8 +215,8 @@
     END;
   $$;
 
-  -- получить все стихи переводчика
-  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num int2, book_code PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text)
+  -- получить все стихи главы
+  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num int2, book_code PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text, translator text)
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       verses_list RECORD;
@@ -246,8 +248,8 @@
       END IF;
 
       -- вернуть айди стиха, номер и текст из определенной главы
-      return query SELECT verses.id as verse_id, verses.num, verses.text as verse
-      FROM public.verses
+      return query SELECT verses.id as verse_id, verses.num, verses.text as verse, users.login as translator
+      FROM public.verses LEFT OUTER JOIN public.project_translators ON (verses.project_translator_id = project_translators.id) LEFT OUTER JOIN public.users ON (project_translators.user_id = users.id)
       WHERE verses.project_id = cur_project_id
         AND verses.chapter_id = cur_chapter_id
       ORDER BY verses.num;
@@ -314,6 +316,7 @@
     END;
   $$;
 
+  -- DEPRECATED - сейчас используем функцию change_start_chapter
   -- Устанавливает дату начала перевода главы
   CREATE FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
@@ -329,7 +332,8 @@
     END;
   $$;
 
-  -- Устанавливает дату начала перевода главы
+  -- DEPRECATED - сейчас используем функцию change_finish_chapter
+  -- Устанавливает дату окончания перевода главы
   CREATE FUNCTION PUBLIC.finished_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 
@@ -344,12 +348,89 @@
     END;
   $$;
 
-  -- Сохранить стих
+   -- Устанавливает дату начала перевода главы, если её нет или убирает, если дата уже стоит
+  CREATE FUNCTION PUBLIC.change_start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      chap RECORD;
+    BEGIN
+      IF authorize(auth.uid(), change_start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;  
+
+      SELECT started_at,finished_at INTO chap FROM PUBLIC.chapters WHERE change_start_chapter.chapter_id = chapters.id AND change_start_chapter.project_id = chapters.project_id;
+
+      IF chap.finished_at IS NOT NULL
+      THEN RETURN FALSE;
+      END IF;
+    
+      IF chap.started_at  IS NULL THEN
+        UPDATE PUBLIC.chapters SET started_at = NOW() WHERE change_start_chapter.chapter_id = chapters.id;
+      ELSE 
+        UPDATE PUBLIC.chapters SET started_at = NULL WHERE change_start_chapter.chapter_id = chapters.id;
+      END IF;
+      
+      RETURN true;
+
+    END;
+  $$;
+
+   -- Устанавливает дату завершения перевода главы, если её нет или убирает, если дата уже стоит
+  CREATE FUNCTION PUBLIC.change_finish_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      chap RECORD;
+    BEGIN
+      IF authorize(auth.uid(), change_finish_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;  
+
+      SELECT finished_at,started_at INTO chap FROM PUBLIC.chapters WHERE change_finish_chapter.chapter_id = chapters.id AND change_finish_chapter.project_id = chapters.project_id;
+
+      IF chap.started_at IS NULL
+      THEN RETURN FALSE;
+      END IF;
+
+      IF chap.finished_at  IS NULL THEN
+        UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE change_finish_chapter.chapter_id = chapters.id;
+      ELSE 
+        UPDATE PUBLIC.chapters SET finished_at = NULL WHERE change_finish_chapter.chapter_id = chapters.id;
+      END IF;
+      
+      RETURN true;
+
+    END;
+  $$;
+
+   -- Сохранить стих
+  -- я думаю что вообще можно количество запросов сократить, но оставим это на фазу рефакторинга)
   CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
-
+    DECLARE
+     current_verse record;
+     current_chapter record;
+     cur_user record;
     BEGIN
-      -- TODO проверить что глава начата и не закончена, что стих назначен переводчику
+      SELECT * FROM public.verses where verses.id = verse_id INTO current_verse;
+      -- стих должен существовать и должен быть назначен переводчику
+      IF current_verse.project_translator_id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+
+      -- юзер должен быть на этом проекте
+      IF authorize(auth.uid(), current_verse.project_id) IN ('user') THEN RETURN FALSE;
+      END IF;
+
+      SELECT chapters.id FROM public.chapters where chapters.id = current_verse.chapter_id AND chapters.started_at IS NOT NULL AND chapters.finished_at IS NULL INTO current_chapter;
+      -- глава должна быть в процессе перевода
+      IF current_chapter.id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+
+      SELECT project_translators.user_id as id FROM public.project_translators where project_translators.id = current_verse.project_translator_id AND project_translators.project_id = current_verse.project_id AND project_translators.user_id = auth.uid() into cur_user;
+      -- текущий юзер должен быть переводчиком на проекте, и должен быть назначен на этот стих
+      IF cur_user.id IS NULL THEN
+        RETURN FALSE;
+      END IF;
+
       UPDATE PUBLIC.verses SET "text" = save_verse.new_verse WHERE verses.id = save_verse.verse_id;
 
       RETURN true;
@@ -705,7 +786,8 @@
       -- узнать айди переводчика на проекте
       -- узнать айди главы, которую переводим, убедиться что перевод еще в процессе
       -- в цикле обновить текст стихов, с учетом айди переводчика и главы
-
+      -- Может быть тут принять номер главы. Получить айдишники всех стихов, которые на этом юзере. И потом уже в цикле сравнивать эти айдишники
+      -- TODO исправить обязательно
       FOR new_verses IN SELECT * FROM json_each_text(save_verses.verses)
       LOOP
         UPDATE

@@ -42,15 +42,14 @@ function Verses({ verseObjects, handleSave, scrollId }) {
   return (
     <>
       {verseObjects?.map((el) => (
-        <ul key={el.verse} className="flex">
-          <li
-            id={'id' + el.verse}
-            className={`p-2 ${scrollId === 'id' + el.verse ? 'bg-gray-200' : ''}`}
-            onClick={() => handleSave(el.verse)}
-          >
-            <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
-          </li>
-        </ul>
+        <div
+          key={el.verse}
+          id={'id' + el.verse}
+          className={`p-2 ${scrollId === 'id' + el.verse ? 'bg-gray-200' : ''}`}
+          onClick={() => handleSave(el.verse)}
+        >
+          <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
+        </div>
       ))}
     </>
   )

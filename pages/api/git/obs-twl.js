@@ -105,12 +105,9 @@ export default async function twlHandler(req, res) {
     const words = await Promise.all(promises)
 
     const groupData = {}
-    let countID = 0
 
     words?.forEach((el) => {
-      const id = `${el.reference}_${new Date().getTime()}_${countID}`
-      countID++
-      const twl = { id, title: el.title, text: el.text }
+      const twl = { title: el.title, text: el.text }
       const verse = el.reference.split(':').slice(-1)[0]
       if (!groupData[verse]) {
         groupData[verse] = [twl]

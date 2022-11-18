@@ -12,9 +12,10 @@ import {
   TQ,
   BlindEditor,
   CommandEditor,
+  Reader,
 } from './'
 
-function Tool({ config, toolName }) {
+function Tool({ config, toolName, editable = false }) {
   const { t } = useTranslation('common')
   const {
     resource: {
@@ -119,17 +120,17 @@ function Tool({ config, toolName }) {
       break
 
     case 'translate':
-      CurrentTool = Editor
+      CurrentTool = editable ? Editor : Reader
       title = t('translate')
       break
 
     case 'commandTranslate':
-      CurrentTool = CommandEditor
+      CurrentTool = editable ? CommandEditor : Reader
       title = t('commandTranslate')
       break
 
     case 'draftTranslate':
-      CurrentTool = BlindEditor
+      CurrentTool = editable ? BlindEditor : Reader
       title = t('draftTranslate')
       break
 
@@ -162,7 +163,7 @@ function Tool({ config, toolName }) {
         {title}
       </div>
       <div className="h5 adaptive-card">
-        <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
+        <div className="h-full p-4 overflow-x-hidden overflow-y-auto">
           <CurrentTool config={config} url={url} toolName={toolName} />
         </div>
       </div>
