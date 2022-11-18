@@ -55,6 +55,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.create_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.create_verses;
     DROP FUNCTION IF EXISTS PUBLIC.get_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.go_to_step;
     DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
 
@@ -489,6 +490,76 @@
       -- Есть ли закрепленные за ним стихи, и узнать на каком сейчас шаге
       IF cur_step IS NULL THEN
         RETURN 0;
+      END IF;
+
+      SELECT id, sorting into next_step
+      FROM PUBLIC.steps
+      WHERE steps.project_id = proj_trans.project_id
+        AND steps.sorting > cur_step
+      ORDER BY steps.sorting
+      LIMIT 1;
+
+      -- получить с базы, какой следующий шаг, если его нет то ничего не делать
+      IF next_step.id IS NULL THEN
+        RETURN cur_step;
+      END IF;
+
+      -- Если есть, то обновить в базе
+      UPDATE PUBLIC.verses SET current_step = next_step.id WHERE verses.chapter_id = cur_chapter_id
+        AND verses.project_translator_id = proj_trans.id;
+
+      RETURN next_step.sorting;
+
+    END;
+  $$;
+
+  -- Новая функция для перехода на следующий шаг(указываем конкретно, какой сейчас шаг) (проверим что юзер имеет право редактировать эти стихи, узнаем айди следующего шага, поменяем у всех стихов айди шага)
+  CREATE FUNCTION PUBLIC.go_to_step(project TEXT, chapter int2, book PUBLIC.book_code, current_step int2) returns INTEGER
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      proj_trans RECORD;
+      cur_step int2;
+      cur_chapter_id bigint;
+      next_step RECORD;
+    BEGIN
+
+      SELECT
+        project_translators.id, projects.id as project_id INTO proj_trans
+      FROM
+        PUBLIC.project_translators LEFT JOIN PUBLIC.projects ON (projects.id = project_translators.project_id)
+      WHERE
+        project_translators.user_id = auth.uid() AND projects.code = go_to_step.project;
+
+      -- Есть ли такой переводчик на проекте
+      IF proj_trans.id IS NULL THEN
+        RETURN 0;
+      END IF;
+
+      -- получаем айди главы
+      SELECT chapters.id into cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = go_to_step.chapter AND chapters.project_id = proj_trans.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = go_to_step.book AND books.project_id = proj_trans.project_id);
+
+      -- валидация главы
+      IF cur_chapter_id IS NULL THEN
+        RETURN 0;
+      END IF;
+
+      SELECT
+        sorting INTO cur_step
+      FROM
+        PUBLIC.verses LEFT JOIN PUBLIC.steps ON (steps.id = verses.current_step)
+      WHERE verses.chapter_id = cur_chapter_id
+        AND project_translator_id = proj_trans.id
+      LIMIT 1;
+
+      -- Есть ли закрепленные за ним стихи, и узнать на каком сейчас шаге
+      IF cur_step IS NULL THEN
+        RETURN 0;
+      END IF;
+
+      IF cur_step != go_to_step.current_step THEN
+        RETURN cur_step;
       END IF;
 
       SELECT id, sorting into next_step

@@ -15,7 +15,7 @@ import {
   Reader,
 } from './'
 
-function Tool({ config, editable = false }) {
+function Tool({ config, toolName, editable = false }) {
   const { t } = useTranslation('common')
   const {
     resource: {
@@ -164,7 +164,7 @@ function Tool({ config, editable = false }) {
       </div>
       <div className="h5 adaptive-card">
         <div className="h-full p-4 overflow-x-hidden overflow-y-scroll">
-          <CurrentTool config={config} url={url} />
+          <CurrentTool config={config} url={url} toolName={toolName} />
         </div>
       </div>
     </>

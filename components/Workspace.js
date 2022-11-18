@@ -60,7 +60,17 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
     return classes.filter(Boolean).join(' ')
   }
   return (
-    <Tab.Group>
+    <Tab.Group
+      onChange={(index) => {
+        const scrollIds = JSON.parse(localStorage.getItem('scrollIds'))
+        const id = scrollIds?.[tools[index].name]
+        if (id) {
+          setTimeout(() => {
+            document?.getElementById(id)?.scrollIntoView()
+          }, 100)
+        }
+      }}
+    >
       <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-7 flex overflow-auto">
         {tools?.map((tool) => (
           <Tab
@@ -106,6 +116,7 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
                       ? resources[tool.name]
                       : { manifest: { dublin_core: { subject: tool.name } } },
                   }}
+                  toolName={tool.name}
                 />
               </div>
             </Tab.Panel>

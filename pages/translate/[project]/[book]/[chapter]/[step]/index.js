@@ -25,24 +25,7 @@ export default function ProgressPage({ last_step }) {
   const [stepConfig, setStepConfig] = useState(null)
   const [projectId, setProjectId] = useState(null)
   const [versesRange, setVersesRange] = useState([])
-  /**
-   * На странице мы выполняем rpc функцию, которая возвращает массив из айди стиха, номера и текста {verse_id, num, verse}
-   * Этот массив как часть референса мы передаем в воркспейс
-   * Там мы этот же массив передаем в config для Tool
-   * В зависимости от типа ресурса, Tool подключает нужный компонент
-   * Мы берем только номера стихов и прокидываем их отдельно в verses в конфиг компонента
-   * В каждом компоненте этот массив с номерами стихов используется для того чтобы получить через апи определенный контент для каждого ресурса
-   * После этого каждый компонент рендерит то что получил через апи
-   *
-   * Я хочу чтобы по клику на аватарку у меня загружался контент так, как видит его этот юзер, за исключением того что он не может редактировать
-   *
-   * Сейчас рендер компонента не знает, его это стихи или нет
-   *
-   * Что если мы на каких-то этапах будем смотреть так же на айди юзера, и сверять его
-   * И к тому же у нас настроена рпц  функция для сохранения, обычное сохраненеие не работает. То есть даже если мы криво отобразим и случайно дадим возможность менять контент - то он не сохранится
-   *
-   *
-   */
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     if (user?.login) {
       supabase
@@ -108,11 +91,14 @@ export default function ProgressPage({ last_step }) {
   }, [book, chapter, project, step])
 
   const handleNextStep = async () => {
-    const { data: next_step } = await supabase.rpc('go_to_next_step', {
+    setLoading(true)
+    const { data: next_step } = await supabase.rpc('go_to_step', {
       project,
       book,
       chapter,
+      current_step: step,
     })
+    localStorage.setItem('scrollIds', JSON.stringify({}))
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {
@@ -139,6 +125,7 @@ export default function ProgressPage({ last_step }) {
         textButton={t('Next')}
         textCheckbox={t('Done')}
         handleClick={handleNextStep}
+        loading={loading}
       />
     </div>
   )
