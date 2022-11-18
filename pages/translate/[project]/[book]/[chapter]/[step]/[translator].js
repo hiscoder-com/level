@@ -102,7 +102,7 @@ function TranslatorPage({ last_step }) {
         t('Loading')
       )}
       <Footer
-        textButton={t('Back to my screen')}
+        textButton={t('Back_to')}
         textCheckbox={t('Done')}
         href={`/translate/${project}/${book}/${chapter}/${step}`}
       />

@@ -15,11 +15,9 @@ export default async function handler(req, res) {
       // TODO валидацию
       // is it admin
       const { id, text } = req.body
-      //
       try {
-        const { error: errorPost } = await supabaseService.rpc('save_verse', {
-          verse_id: id,
-          new_verse: text,
+        const { error: errorPost } = await supabaseService.rpc('save_verses', {
+          verses: { [id]: text },
         })
         if (errorPost) throw errorPost
         res.status(201).json({})
