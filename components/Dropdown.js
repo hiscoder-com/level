@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -14,9 +14,11 @@ import Tools from 'public/tools.svg'
 function Dropdown({ description, user }) {
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
-  const [open, setOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const dropdownMenu = useRef(null)
+  const toolsButton = useRef(null)
 
-  const toggle = () => setOpen((prev) => !prev)
+  const toggle = () => setIsOpen((prev) => !prev)
   const { t } = useTranslation(['common'])
 
   const closeModal = () => {
@@ -24,19 +26,39 @@ function Dropdown({ description, user }) {
     setShowModalTranslationGoal(false)
   }
 
+  useEffect(() => {
+    const onClick = (e) => {
+      if (
+        isOpen &&
+        !toolsButton?.current?.contains(e.target) &&
+        !dropdownMenu?.current?.contains(e.target)
+      ) {
+        // если дропдаун открыт, клик не по иконке Tools и не внутри меню, то закрываем дропдаун
+        setIsOpen(false)
+      }
+    }
+    if (isOpen) {
+      document.addEventListener('click', onClick)
+    }
+    return () => document.removeEventListener('click', onClick)
+  }, [isOpen])
+
   return (
     <div>
       <div
         className="relative hidden px-3 py-4 rounded-md whitespace-nowrap cursor-pointer md:flex"
         onClick={toggle}
+        ref={toolsButton}
       >
         <Tools />
       </div>
 
-      {open && (
+      {isOpen && (
         <>
-          <div className="fixed inset-0" onClick={toggle} />
-          <div className="absolute flex flex-col right-5 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40 xl:right-0">
+          <div
+            ref={dropdownMenu}
+            className="absolute flex flex-col right-5 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40 xl:right-0"
+          >
             <button
               className="px-4 py-2 rounded-t-lg	hover:bg-cyan-50
 			active:bg-cyan-200"
