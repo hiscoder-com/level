@@ -37,8 +37,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.divide_verses;
-    DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
-    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.start_chapter; --Deprecated
+    DROP FUNCTION IF EXISTS PUBLIC.finished_chapter; --Deprecated
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
@@ -58,6 +58,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.go_to_step;
     DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
 
   -- END DROP FUNCTION
 
@@ -314,6 +316,7 @@
     END;
   $$;
 
+  -- DEPRECATED - сейчас используем функцию change_start_chapter
   -- Устанавливает дату начала перевода главы
   CREATE FUNCTION PUBLIC.start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
@@ -329,7 +332,8 @@
     END;
   $$;
 
-  -- Устанавливает дату начала перевода главы
+  -- DEPRECATED - сейчас используем функцию change_finish_chapter
+  -- Устанавливает дату окончания перевода главы
   CREATE FUNCTION PUBLIC.finished_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 
@@ -344,7 +348,59 @@
     END;
   $$;
 
-  -- Сохранить стих
+   -- Устанавливает дату начала перевода главы, если её нет или убирает, если дата уже стоит
+  CREATE FUNCTION PUBLIC.change_start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      chap RECORD;
+    BEGIN
+      IF authorize(auth.uid(), change_start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;  
+
+      SELECT started_at,finished_at INTO chap FROM PUBLIC.chapters WHERE change_start_chapter.chapter_id = chapters.id AND change_start_chapter.project_id = chapters.project_id;
+
+      IF chap.finished_at IS NOT NULL
+      THEN RETURN FALSE;
+      END IF;
+    
+      IF chap.started_at  IS NULL THEN
+        UPDATE PUBLIC.chapters SET started_at = NOW() WHERE change_start_chapter.chapter_id = chapters.id;
+      ELSE 
+        UPDATE PUBLIC.chapters SET started_at = NULL WHERE change_start_chapter.chapter_id = chapters.id;
+      END IF;
+      
+      RETURN true;
+
+    END;
+  $$;
+
+   -- Устанавливает дату завершения перевода главы, если её нет или убирает, если дата уже стоит
+  CREATE FUNCTION PUBLIC.change_finish_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS boolean
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      chap RECORD;
+    BEGIN
+      IF authorize(auth.uid(), change_finish_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
+      END IF;  
+
+      SELECT finished_at,started_at INTO chap FROM PUBLIC.chapters WHERE change_finish_chapter.chapter_id = chapters.id AND change_finish_chapter.project_id = chapters.project_id;
+
+      IF chap.started_at IS NULL
+      THEN RETURN FALSE;
+      END IF;
+
+      IF chap.finished_at  IS NULL THEN
+        UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE change_finish_chapter.chapter_id = chapters.id;
+      ELSE 
+        UPDATE PUBLIC.chapters SET finished_at = NULL WHERE change_finish_chapter.chapter_id = chapters.id;
+      END IF;
+      
+      RETURN true;
+
+    END;
+  $$;
+
+   -- Сохранить стих
   CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
 

@@ -18,6 +18,7 @@ function ChapterVersesPage() {
   const [book, setBook] = useState()
   const [chapter, setChapter] = useState()
   const [verses, setVerses] = useState([])
+  const [changing, setChanging] = useState(false)
 
   useEffect(() => {
     const getProject = async () => {
@@ -60,7 +61,7 @@ function ChapterVersesPage() {
     if (project?.id && book?.id) {
       getChapter()
     }
-  }, [book?.id, chapterid, project?.id])
+  }, [book?.id, chapterid, project?.id, changing])
 
   useEffect(() => {
     const getVerses = async () => {
@@ -76,16 +77,31 @@ function ChapterVersesPage() {
     }
   }, [chapter?.id, project?.id])
 
-  const startChapter = () => {
+  const changeStartChapter = () => {
+    setChanging(true)
     supabase
-      .rpc('start_chapter', { chapter_id: chapter?.id, project_id: project?.id })
-      .then((res) => console.log('Start Chapter', res))
+      .rpc('change_start_chapter', { chapter_id: chapter?.id, project_id: project?.id })
+      .then((res) => {
+        console.log('Start Chapter', res)
+        setChanging(false)
+      })
+      .catch((error) => {
+        console.log(error)
+        setChanging(false)
+      })
   }
-
-  const finishedChapter = () => {
+  const changeFinishChapter = () => {
+    setChanging(true)
     supabase
-      .rpc('finished_chapter', { chapter_id: chapter?.id, project_id: project?.id })
-      .then((res) => console.log('Finished Chapter', res))
+      .rpc('change_finish_chapter', { chapter_id: chapter?.id, project_id: project?.id })
+      .then((res) => {
+        console.log('Finish Chapter', res)
+        setChanging(false)
+      })
+      .catch((error) => {
+        console.log(error)
+        setChanging(false)
+      })
   }
 
   return (
@@ -104,25 +120,39 @@ function ChapterVersesPage() {
         {t('Chapter')}: {chapter?.num}
       </h3>
       <VerseDivider verses={verses} />
-      {chapter?.started_at ? (
+
+      <button
+        className={`btn ${!chapter?.started_at ? 'btn-cyan' : 'btn-red'} mt-4`}
+        onClick={changeStartChapter}
+        disabled={chapter?.finished_at}
+      >
+        {!chapter?.started_at
+          ? t('chapters:StartChapter')
+          : t('chapters:CancelStartChapter')}
+      </button>
+      {chapter?.started_at && (
         <div>
-          {t('chapters:StartedAt')} {chapter?.started_at}
-        </div>
-      ) : (
-        <div className="btn btn-cyan" onClick={startChapter}>
-          {t('chapters:StartChapter')}
+          {t('common:Chapter')} {t('chapters:StartedAt').toLowerCase()}{' '}
+          {new Date(chapter?.started_at).toLocaleString('ru', {})}
         </div>
       )}
-      {!chapter?.started_at ? (
-        ''
-      ) : chapter?.finished_at ? (
-        <div className="mt-3">
-          {t('chapters:FinishedAt')} {chapter?.finished_at}
-        </div>
-      ) : (
-        <div className="btn btn-cyan mt-3" onClick={finishedChapter}>
-          {t('chapters:FinishedChapter')}
-        </div>
+      {chapter?.started_at && (
+        <>
+          <div
+            className={`btn ${!chapter?.finished_at ? 'btn-cyan' : 'btn-red'} mt-4`}
+            onClick={changeFinishChapter}
+          >
+            {!chapter?.finished_at
+              ? t('chapters:FinishedChapter')
+              : t('chapters:CancelFinishedChapter')}
+          </div>
+          {chapter?.finished_at && (
+            <div>
+              {t('common:Chapter')} {t('chapters:FinishedAt').toLowerCase()}{' '}
+              {new Date(chapter?.finished_at).toLocaleString('ru', {})}
+            </div>
+          )}
+        </>
       )}
     </>
   )
