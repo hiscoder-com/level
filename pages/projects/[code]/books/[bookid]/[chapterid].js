@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -8,7 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import VerseDivider from 'components/VerseDivider'
 
 import { supabase } from 'utils/supabaseClient'
-import Link from 'next/link'
+import { readableDate } from 'utils/helper'
 
 function ChapterVersesPage() {
   const router = useRouter()
@@ -58,7 +59,7 @@ function ChapterVersesPage() {
         .single()
       setChapter(chapter)
     }
-    if (project?.id && book?.id) {
+    if (project?.id && book?.id && !changing) {
       getChapter()
     }
   }, [book?.id, chapterid, project?.id, changing])
@@ -80,28 +81,23 @@ function ChapterVersesPage() {
   const changeStartChapter = () => {
     setChanging(true)
     supabase
-      .rpc('change_start_chapter', { chapter_id: chapter?.id, project_id: project?.id })
-      .then((res) => {
-        console.log('Start Chapter', res)
-        setChanging(false)
+      .rpc('change_start_chapter', {
+        chapter_id: chapter?.id,
+        project_id: project?.id,
       })
-      .catch((error) => {
-        console.log(error)
-        setChanging(false)
-      })
+      .then()
+      .finally(() => setChanging(false))
   }
+
   const changeFinishChapter = () => {
     setChanging(true)
     supabase
-      .rpc('change_finish_chapter', { chapter_id: chapter?.id, project_id: project?.id })
-      .then((res) => {
-        console.log('Finish Chapter', res)
-        setChanging(false)
+      .rpc('change_finish_chapter', {
+        chapter_id: chapter?.id,
+        project_id: project?.id,
       })
-      .catch((error) => {
-        console.log(error)
-        setChanging(false)
-      })
+      .then()
+      .finally(() => setChanging(false))
   }
 
   return (
@@ -133,23 +129,23 @@ function ChapterVersesPage() {
       {chapter?.started_at && (
         <div>
           {t('common:Chapter')} {t('chapters:StartedAt').toLowerCase()}{' '}
-          {new Date(chapter?.started_at).toLocaleString('ru', {})}
+          {readableDate(chapter?.started_at)}
         </div>
       )}
       {chapter?.started_at && (
         <>
-          <div
+          <button
             className={`btn ${!chapter?.finished_at ? 'btn-cyan' : 'btn-red'} mt-4`}
             onClick={changeFinishChapter}
           >
             {!chapter?.finished_at
               ? t('chapters:FinishedChapter')
               : t('chapters:CancelFinishedChapter')}
-          </div>
+          </button>
           {chapter?.finished_at && (
             <div>
               {t('common:Chapter')} {t('chapters:FinishedAt').toLowerCase()}{' '}
-              {new Date(chapter?.finished_at).toLocaleString('ru', {})}
+              {readableDate(chapter?.finished_at)}
             </div>
           )}
         </>

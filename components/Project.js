@@ -11,6 +11,8 @@ import Modal from './Modal'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+import { readableDate } from 'utils/helper'
+
 import Eye from '../public/eye-icon.svg'
 
 function Project({ code }) {
@@ -304,10 +306,10 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     {el.num}
                   </th>
                   <td className="py-4 px-6">
-                    {el.started_at && new Date(el.started_at).toLocaleString('ru', {})}
+                    {el.started_at && readableDate(el.started_at)}
                   </td>
                   <td className="py-4 px-6 ">
-                    {el.finished_at && new Date(el.finished_at).toLocaleString('ru', {})}
+                    {el.finished_at && readableDate(el.finished_at)}
                   </td>
 
                   <td className="py-4 px-6">
@@ -405,10 +407,10 @@ function BookCreate({ highLevelAccess, project, books, user }) {
               { shallow: true }
             )
           }
-          setCreatingBook(false)
         })
     } catch (error) {
       console.log(error)
+    } finally {
       setCreatingBook(false)
     }
   }
