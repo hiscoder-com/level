@@ -3,7 +3,7 @@
   "CancelStartChapter": "Cancel start chapter",
   "Created": "Created",
   "FinishedAt": "Finished at",
-  "FinishedChapter": "Закончить главу",
-  "StartChapter": "Начать главу",
-  "StartedAt": "Начата"
+  "FinishedChapter": "Finish the chapter",
+  "StartChapter": "Start a chapter",
+  "StartedAt": "Started at"
 }
