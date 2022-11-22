@@ -1,10 +1,10 @@
 {
   "AddCoordinator": "Add coordinator",
   "AddTranslator": "Add translator",
-  "AssigningModerator": "Назначение модератора",
-  "BriefPlaceholder": "Распишите предназначение перевода...",
-  "EditBrief": "Редактировать бриф",
-  "RemovingCoordinator": "Удаление координатора",
-  "RemovingModerator": "Удаление модератора",
-  "RemovingTranslator": "Удаление переводчика"
+  "AssigningModerator": "Moderator appointment",
+  "BriefPlaceholder": "Describe the purpose of the translation...",
+  "EditBrief": "Edit brief",
+  "RemovingCoordinator": "Removing a coordinator",
+  "RemovingModerator": "Removing a moderator",
+  "RemovingTranslator": "Removing a translator"
 }
