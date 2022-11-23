@@ -128,32 +128,25 @@ pg_dump postgresql://postgres:postgres@localhost:64322/postgres --a --inserts -n
       )
     VALUES
       (
-        '79b9a691-f8ef-4023-ae22-3a297c7536c7',
+        'b75a51d5-ee4d-4ea0-afa3-2366d7716742',
         't1',
         't1@mail.com',
         TRUE,
         TRUE,
         NULL,
         FALSE
-      ),
+      ),   
       (
-        '2026ee1c-f61f-4a7c-b21a-05f5485d9179',
-        'moderator',
-        'moderator@mail.com',
-        TRUE,
-        TRUE,
-        NULL,
-        FALSE
-      ),     
-      (
-        'fdc5c406-3b87-4eea-84b0-f962fce846ce',
+        '1dfaa269-2eda-41c4-9a71-72db8cbd6db2',
         'admin',
-        'fdc5c406-3b87-4eea-84b0-f962fce846ce',
+        'admin@mail.com',
         TRUE,
         TRUE,
         NULL,
         TRUE
       );
+
+
 
 
 

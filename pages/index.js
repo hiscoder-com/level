@@ -8,6 +8,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCurrentUser } from 'lib/UserContext'
 import { useRedirect } from 'utils/hooks'
 
+import SwitchLocalization from 'components/SwitchLocalization'
+
 import VcanaLogo from 'public/vcana-logo.svg'
 import TtLogo from 'public/tt-logo.svg'
 
@@ -27,17 +29,8 @@ export default function Home() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="absolute top-10 right-10 font-bold text-xl lg:text-base">
-        <Link href={{ pathname, query }} as={asPath} locale={'ru'}>
-          <a className={`text-teal-500 p-2 ${locale === 'ru' ? 'opacity-50' : ''}`}>
-            {t('RU')}
-          </a>
-        </Link>
-        <Link replace href={{ pathname, query }} as={asPath} locale={'en'}>
-          <a className={`text-teal-500 p-2 ${locale === 'en' ? 'opacity-50' : ''}`}>
-            {t('EN')}
-          </a>
-        </Link>
+      <div className="absolute top-10 right-10">
+        <SwitchLocalization />
       </div>
       <div className="flex flex-col justify-center items-center m-3">
         <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-32" />

@@ -39,15 +39,14 @@ export default function Footer({
       <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
           <div className="space-x-1.5 items-center h5">
-            <input
-              className="cursor-pointer accent-cyan-600"
-              id="cb"
-              type="checkbox"
-              checked={checked}
-              onChange={() => setChecked((prev) => !prev)}
-            />
-            <label className="cursor-pointer" htmlFor="cb">
-              {textCheckbox}
+            <label className="cursor-pointer p-3">
+              <input
+                className="h-[17px] w-[17px] cursor-pointer accent-cyan-600"
+                type="checkbox"
+                checked={checked}
+                onChange={() => setChecked((prev) => !prev)}
+              />
+              <span className="ml-2">{textCheckbox}</span>
             </label>
           </div>
           {href ? (
