@@ -12,9 +12,11 @@ import { supabase } from 'utils/supabaseClient'
 import { readableDate } from 'utils/helper'
 
 function ChapterVersesPage() {
-  const router = useRouter()
+  const {
+    locale,
+    query: { code, bookid, chapterid },
+  } = useRouter()
   const { t } = useTranslation(['common', 'chapters'])
-  const { code, bookid, chapterid } = router.query
   const [project, setProject] = useState()
   const [book, setBook] = useState()
   const [chapter, setChapter] = useState()
@@ -129,7 +131,7 @@ function ChapterVersesPage() {
       {chapter?.started_at && (
         <div>
           {t('common:Chapter')} {t('chapters:StartedAt').toLowerCase()}{' '}
-          {readableDate(chapter?.started_at)}
+          {readableDate(chapter?.started_at, locale)}
         </div>
       )}
       {chapter?.started_at && (
@@ -145,7 +147,7 @@ function ChapterVersesPage() {
           {chapter?.finished_at && (
             <div>
               {t('common:Chapter')} {t('chapters:FinishedAt').toLowerCase()}{' '}
-              {readableDate(chapter?.finished_at)}
+              {readableDate(chapter?.finished_at, locale)}
             </div>
           )}
         </>

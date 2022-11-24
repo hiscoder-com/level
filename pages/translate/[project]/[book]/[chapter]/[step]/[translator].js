@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useSetRecoilState } from 'recoil'
 import { useTranslation } from 'next-i18next'
@@ -106,11 +107,12 @@ function TranslatorPage({ last_step }) {
       ) : (
         t('Loading')
       )}
-      <Footer
-        textButton={t('Back_to')}
-        textCheckbox={t('Done')}
-        href={`/translate/${project}/${book}/${chapter}/${step}`}
-      />
+
+      <div className="mx-auto w-full max-w-7xl bg-blue-150 flex justify-end px-6 lg:px-0">
+        <Link href={`/translate/${project}/${book}/${chapter}/${step}`}>
+          <button className="my-4 btn-cyan !px-6">{t('Back_to')}</button>
+        </Link>
+      </div>
     </div>
   )
 }

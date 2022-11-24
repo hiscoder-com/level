@@ -30,6 +30,6 @@ export const checkLSVal = (el, val, type = 'string', ext = false) => {
     return value
   }
 }
-export const readableDate = (date) => {
-  return new Date(date).toLocaleString('ru', {})
+export const readableDate = (date, locale = 'ru') => {
+  return new Date(date).toLocaleString(locale, {})
 }

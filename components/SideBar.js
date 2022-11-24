@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next'
 import SideBarLink from 'components/SideBarLink'
 
 import Close from 'public/close.svg'
+import SwitchLocalization from './SwitchLocalization'
 
 function SideBar({ isOpen, setIsOpen }) {
   const { t } = useTranslation('common')
@@ -36,23 +37,8 @@ function SideBar({ isOpen, setIsOpen }) {
           </Link>
         </div>
 
-        <div>
-          <ul className="flex flex-col py-4">
-            <div className="text-xs font-light px-4 text-[#3C3C41]">{t('Project')}:</div>
-            <div className="sidebar-hr">
-              <SideBarLink href={'#'} text={t('OBS')} />
-              <SideBarLink href={'#'} text={t('Bible')} />
-              <SideBarLink href={'#'} text={t('NewProject')} />
-            </div>
-            <div className="sidebar-hr">
-              <SideBarLink href={'#'} text={t('Management')} />
-              <SideBarLink href={'#'} text={t('Dictionary')} />
-              <SideBarLink href={'#'} text={t('Progress')} />
-              <SideBarLink href={'#'} text={t('PurposeTranslation')} />
-            </div>
-            <SideBarLink href={'#'} text={t('Training')} />
-            <SideBarLink href={'#'} text={t('Settings')} />
-          </ul>
+        <div className="ml-4 mt-4">
+          <SwitchLocalization />
         </div>
       </div>
     </div>

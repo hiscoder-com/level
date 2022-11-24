@@ -16,7 +16,7 @@ import { readableDate } from 'utils/helper'
 import Eye from '../public/eye-icon.svg'
 
 function Project({ code }) {
-  const { t } = useTranslation(['projects', 'common', 'books'])
+  const { t } = useTranslation(['projects', 'common', 'books', 'chapters'])
   const [level, setLevel] = useState('user')
   const [project, setProject] = useState()
   const highLevelAccess = ['admin', 'coordinator'].includes(level)
@@ -178,6 +178,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
   const {
     query: { book, code },
     push,
+    locale,
   } = useRouter()
   const [selectedChapter, setSelectedChapter] = useState(null)
   const [chapters, setChapters] = useState([])
@@ -264,8 +265,8 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>
             <th className="py-3 px-3">{t('Chapter')}</th>
-            <th className="py-3 px-3">{t('Started')}а</th>
-            <th className="py-3 px-3 ">{t('Finished')}а</th>
+            <th className="py-3 px-3">{t('chapters:StartedAt')}</th>
+            <th className="py-3 px-3 ">{t('chapters:FinishedAt')}</th>
             <th className="py-3 px-6"></th>
           </tr>
         </thead>
@@ -306,10 +307,10 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     {el.num}
                   </th>
                   <td className="py-4 px-6">
-                    {el.started_at && readableDate(el.started_at)}
+                    {el.started_at && readableDate(el.started_at, locale)}
                   </td>
                   <td className="py-4 px-6 ">
-                    {el.finished_at && readableDate(el.finished_at)}
+                    {el.finished_at && readableDate(el.finished_at, locale)}
                   </td>
 
                   <td className="py-4 px-6">
@@ -427,7 +428,11 @@ function BookCreate({ highLevelAccess, project, books, user }) {
               value={selectedBook}
             >
               {project?.base_manifest?.books
-                ?.filter((el) => !books?.map((el) => el.code)?.includes(el.name))
+                ?.filter(
+                  (el) =>
+                    !books?.map((book) => book.code)?.includes(el.name) &&
+                    el.name !== 'frt'
+                )
                 .map((el) => (
                   <option value={el.name} key={el.name}>
                     {t(`books:${el.name}`)}

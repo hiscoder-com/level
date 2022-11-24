@@ -94,7 +94,7 @@ export default async function tnHandler(req, res) {
       const newNote = {
         id: el.ID,
         text: el.OccurrenceNote,
-        title: el.Verse === 'intro' ? 'intro' : el.GLQuote ? el.GLQuote : 'title',
+        title: el.Verse === 'intro' ? 'intro' : el.GLQuote ? el.GLQuote : el.OrigQuote,
       }
       if (el.Chapter === 'front') {
         newNote['title'] = 'front'
