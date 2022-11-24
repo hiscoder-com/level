@@ -5,7 +5,7 @@ import Close from 'public/close.svg'
 function TNTWLContent({ setItem, item }) {
   return (
     <div
-      className={`absolute top-0 bottom-0 bg-white overflow-auto left-0 right-0 p-8 ${
+      className={`absolute top-0 bottom-0 bg-white overflow-auto left-0 right-0 px-2 ${
         item ? '' : 'hidden'
       }`}
     >
@@ -15,9 +15,11 @@ function TNTWLContent({ setItem, item }) {
       >
         <Close />
       </div>
-      <div className=" font-bold text-xl mb-2">
-        <ReactMarkdown className="text-2xl mb-4">{item?.title}</ReactMarkdown>
-      </div>
+      {!['intro', 'front'].includes(item?.title) && (
+        <div className=" font-bold text-xl mb-2">
+          <ReactMarkdown className="text-2xl mb-4">{item?.title}</ReactMarkdown>
+        </div>
+      )}
       <MarkdownExtended>{item?.text}</MarkdownExtended>
     </div>
   )

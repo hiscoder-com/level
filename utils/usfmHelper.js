@@ -88,6 +88,6 @@ export const parseChapter = (chapter, verses) => {
     resultChapter = resultChapter.filter((el) => verses.includes(el[0]))
   }
   return resultChapter.map((el) => {
-    return { verse: el[0], text: getVerseText(el[1].verseObjects, true) }
+    return { verse: el[0], text: getVerseText(el[1].verseObjects, false) }
   })
 }

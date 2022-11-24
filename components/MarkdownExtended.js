@@ -29,7 +29,7 @@ function MarkdownExtended({ children }) {
         style={{ width: '100%', aspectRatio: '16/9', outline: 'none' }}
       ></iframe>
     ) : (
-      <a href={props.href}>{props.children}</a>
+      <span>{props.children}</span>
     )
   }
   return (

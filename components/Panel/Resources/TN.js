@@ -58,14 +58,14 @@ function ToolList({ setItem, data, toolName }) {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{el[0]}</div>
-              <div className="text-gray-700 pl-7">
+              <div className="text-gray-700 pl-7 flex-1">
                 <ul>
                   {el[1]?.map((item) => {
                     return (
                       <li
                         key={item.id}
                         id={'id' + item.id}
-                        className={`p-2 cursor-pointer hover:bg-cyan-50  ${
+                        className={`p-2 cursor-pointer hover:bg-blue-100/75 ${
                           scrollId === 'id' + item.id ? 'bg-gray-200' : ''
                         }`}
                         onClick={() => {
