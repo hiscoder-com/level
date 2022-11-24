@@ -1,9 +1,9 @@
 {
   "CancelFinishedChapter": "Cancel finished chapter",
-  "CancelStartChapter": "Cancel start chapter",
+  "CancelStartChapter": "Cancel started chapter",
   "Created": "Created",
   "FinishedAt": "Finished at",
   "FinishedChapter": "Finish the chapter",
-  "StartChapter": "Start a chapter",
+  "StartChapter": "Start the chapter",
   "StartedAt": "Started at"
 }
