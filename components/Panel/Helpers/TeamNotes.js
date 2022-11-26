@@ -38,10 +38,9 @@ function TeamNotes() {
   const [noteToDel, setNoteToDel] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
-  const router = useRouter()
   const {
     query: { project: code },
-  } = router
+  } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
   const [notes, { loading, error, mutate }] = useTeamNotes({
     token: user?.access_token,

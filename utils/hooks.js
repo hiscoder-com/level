@@ -226,3 +226,16 @@ export function useScroll({ toolName }) {
   }
   return { scrollId: scrollIds[toolName], handleSave }
 }
+
+export function useDictionary({ token, project_id }) {
+  const {
+    data: words,
+    mutate,
+    error,
+  } = useSWR(
+    token && project_id ? [`/api/dictionary/${project_id}`, token] : null,
+    fetcher
+  )
+  const loading = !words && !error
+  return [words, { mutate, loading, error }]
+}
