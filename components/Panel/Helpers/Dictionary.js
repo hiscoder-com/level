@@ -31,14 +31,14 @@ const ListOfNotes = dynamic(
 )
 
 function Dictionary() {
-  const [noteId, setNoteId] = useState('test_noteId')
+  const [wordId, setWordId] = useState('test_wordId')
   const [editable, setEditable] = useState(false)
-  const [activeNote, setActiveNote] = useState(null)
+  const [activeWord, setActiveWord] = useState()
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const [noteToDel, setNoteToDel] = useState(null)
-  const [letter, setLetter] = useState(null)
-  const [words, setWords] = useState([])
+  const [wordToDel, setWordToDel] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [words, setWords] = useState([])
+
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
 
@@ -46,31 +46,38 @@ function Dictionary() {
     query: { project: code },
   } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
+
   const [allWords, { loading, error, mutate }] = useDictionary({
     token: user?.access_token,
     project_id: project?.id,
   })
 
-  useEffect(() => {
-    const getwords = async () => {
-      const { data, error } = await supabase
-        .from('dictionary')
-        .select('*')
-        .eq('project_id', project?.id)
-        .ilike('title', `${letter}%`)
-        .order('title', { ascending: true })
-      if (data && data.length) {
-        setWords(data)
-      }
+  const getWords = async (searchQuery) => {
+    const { data, error } = await supabase
+      .from('dictionary')
+      .select('*')
+      .eq('project_id', project?.id)
+      .ilike('title', `${searchQuery}%`)
+      .order('title', { ascending: true })
+    if (data && data.length) {
+      setWords(data)
+    } else {
+      setWords([])
     }
+  }
+  useEffect(() => {
+    if (allWords) {
+      setWords(allWords)
+    }
+  }, [allWords])
 
+  const filterByLetter = (letter) => {
     if (letter && letter !== 'all') {
-      getwords()
+      getWords(letter)
     } else {
       setWords(allWords)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [letter, allWords])
+  }
 
   useEffect(() => {
     const getLevel = async () => {
@@ -86,22 +93,18 @@ function Dictionary() {
   }, [user?.id, project?.id])
 
   useEffect(() => {
-    const currentNote = words?.find((el) => el.id === noteId)
-
-    setActiveNote(currentNote)
+    const currentNote = words?.find((el) => el.id === wordId)
+    setActiveWord(currentNote)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteId])
+  }, [wordId, words])
 
   const addNote = () => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/dictionary', { id, project_id: project?.id })
-      .then((res) => setActiveNote(res.data[0]))
+      .then((res) => setActiveWord(res.data[0]))
       .catch((err) => console.log(err))
-      .finally(() => {
-        mutate()
-      })
   }
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -113,27 +116,15 @@ function Dictionary() {
   const saveWord = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .put(`/api/dictionary/${activeNote?.id}`, activeNote)
+      .put(`/api/dictionary/${activeWord?.id}`, activeWord)
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
   const search = () => {
-    const getwords = async () => {
-      const { data, error } = await supabase
-        .from('dictionary')
-        .select('*')
-        .eq('project_id', project?.id)
-        .ilike('title', `%${searchQuery}%`)
-        .order('title', { ascending: true })
-      console.log(data)
-      if (data && data.length) {
-        setWords(data)
-      }
-    }
-    getwords()
+    getWords(searchQuery)
   }
   useEffect(() => {
-    if (!activeNote || !editable) {
+    if (!activeWord || !editable) {
       return
     }
     const timer = setTimeout(() => {
@@ -143,22 +134,21 @@ function Dictionary() {
       clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNote, editable])
-
+  }, [activeWord, editable])
   return (
     <div className="relative">
-      {!activeNote ? (
+      {!activeWord ? (
         <div className="relative">
           <div className=" mr-11">
-            <Alphabet setLetter={setLetter} />
+            <Alphabet filterByLetter={filterByLetter} />
           </div>
           <input
             className="input max-w-xs"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
-          <button className="btn-cyan" onClick={search}>
-            Поиск
+          <button className="btn-cyan m-2" onClick={search}>
+            {t('Search')}
           </button>
           {editable && (
             <div className="absolute top-0 right-0 ">
@@ -170,30 +160,34 @@ function Dictionary() {
               </button>
             </div>
           )}
-          <ListOfNotes
-            notes={words}
-            removeNote={(e) => {
-              setIsOpenModal(true)
-              setNoteToDel(words?.find((el) => el.id === e))
-            }}
-            setNoteId={setNoteId}
-            classes={{
-              item: 'rounded-lg cursor-pointer flex justify-between items-start group hover:bg-blue-100/75',
-              title: 'font-bold p-2 mr-4',
-              text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
-            }}
-            isShowDelBtn={editable}
-            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
-          />
+          {words?.length ? (
+            <ListOfNotes
+              notes={words}
+              removeNote={(e) => {
+                setIsOpenModal(true)
+                setWordToDel(words?.find((el) => el.id === e))
+              }}
+              setNoteId={setWordId}
+              classes={{
+                item: 'rounded-lg cursor-pointer flex justify-between items-start group hover:bg-blue-100/75',
+                title: 'font-bold p-2 mr-4',
+                text: 'px-2 h-10 overflow-hidden',
+                delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
+              }}
+              isShowDelBtn={editable}
+              delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
+            />
+          ) : (
+            <div>{t('NoMatches')}</div>
+          )}
         </div>
       ) : (
         <>
           <div
             className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
             onClick={() => {
-              setActiveNote(null)
-              setNoteId(null)
+              setActiveWord(null)
+              setWordId(null)
               saveWord()
             }}
           >
@@ -206,10 +200,10 @@ function Dictionary() {
               redactor:
                 'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
             }}
-            activeNote={activeNote}
-            setActiveNote={setActiveNote}
+            activeNote={activeWord}
+            setActiveNote={setActiveWord}
             readOnly={!editable}
-            placeholder={editable ? t('Text_new_note') : ''}
+            placeholder={editable ? t('TextNewNote') : ''}
           />
         </>
       )}
@@ -222,15 +216,15 @@ function Dictionary() {
         {' '}
         <div className="text-center">
           <div className="mb-4">
-            {t('Are_you_sure_delete') + ' ' + t(noteToDel?.title) + '?'}
+            {t('AreYouSureDelete') + ' ' + t(wordToDel?.title) + '?'}
           </div>
           <button
             className="btn-cyan mx-2"
             onClick={() => {
               setIsOpenModal(false)
-              if (noteToDel) {
-                removeNote(noteToDel.id)
-                setNoteToDel(null)
+              if (wordToDel) {
+                removeNote(wordToDel.id)
+                setWordToDel(null)
               }
             }}
           >
@@ -239,7 +233,7 @@ function Dictionary() {
           <button
             className="btn-cyan mx-2"
             onClick={() => {
-              setNoteToDel(null)
+              setWordToDel(null)
               setIsOpenModal(false)
             }}
           >
@@ -253,7 +247,7 @@ function Dictionary() {
 
 export default Dictionary
 
-function Alphabet({ setLetter }) {
+function Alphabet({ filterByLetter }) {
   const [alphabet, setAlphabet] = useState([])
   useEffect(() => {
     setAlphabet(generateAlphabets())
@@ -273,11 +267,11 @@ function Alphabet({ setLetter }) {
       {alphabet &&
         alphabet?.map((el) => (
           <div
-            onClick={() => setLetter(el.toLowerCase())}
+            onClick={() => filterByLetter(el.toLowerCase())}
             className="p-1 rounded-md cursor-pointer hover:bg-cyan-100"
             key={el}
           >
-            {el}
+            {el === 'All' ? 'Показать все' : el}
           </div>
         ))}
     </div>

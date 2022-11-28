@@ -100,7 +100,7 @@ function PersonalNotes() {
               onClick={() => setIsOpenModal(true)}
               disabled={!notes?.length}
             >
-              {t('Remove_all')}
+              {t('RemoveAll')}
             </button>
           </div>
           <ListOfNotes
@@ -139,7 +139,7 @@ function PersonalNotes() {
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            placeholder={t('Text_new_note')}
+            placeholder={t('TextNewNote')}
           />
         </>
       )}
@@ -151,9 +151,9 @@ function PersonalNotes() {
       >
         <div className="text-center">
           <div className="mb-4">
-            {t('Are_you_sure_delete') +
+            {t('AreYouSureDelete') +
               ' ' +
-              t(noteToDel ? noteToDel?.title : t('All_notes').toLowerCase()) +
+              t(noteToDel ? noteToDel?.title : t('AllNotes').toLowerCase()) +
               '?'}
           </div>
           <button

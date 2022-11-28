@@ -150,7 +150,7 @@ function TeamNotes() {
             activeNote={activeNote}
             setActiveNote={setActiveNote}
             readOnly={!editable}
-            placeholder={editable ? t('Text_new_note') : ''}
+            placeholder={editable ? t('TextNewNote') : ''}
           />
         </>
       )}
@@ -163,7 +163,7 @@ function TeamNotes() {
         {' '}
         <div className="text-center">
           <div className="mb-4">
-            {t('Are_you_sure_delete') + ' ' + t(noteToDel?.title) + '?'}
+            {t('AreYouSureDelete') + ' ' + t(noteToDel?.title) + '?'}
           </div>
           <button
             className="btn-cyan mx-2"
