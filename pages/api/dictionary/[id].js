@@ -7,7 +7,7 @@ export default async function notesDeleteHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
   const {
     query: { id },
-    body: { data: data_note, title, parent_id, sort },
+    body: { data: data_note, title, parent_id },
     method,
   } = req
 

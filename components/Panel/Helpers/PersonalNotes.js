@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import { useCurrentUser } from 'lib/UserContext'
 import { usePersonalNotes } from 'utils/hooks'
 import Close from 'public/close.svg'
-import Waste from 'public/waste.svg'
+import Trash from 'public/trash.svg'
 import Modal from 'components/Modal'
 
 const Redactor = dynamic(
@@ -117,7 +117,7 @@ function PersonalNotes() {
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn
-            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
+            delBtnChildren={<Trash className={'w-4 h-4  text-cyan-800'} />}
           />
         </div>
       ) : (

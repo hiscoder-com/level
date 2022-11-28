@@ -13,7 +13,7 @@ import { useProject, useDictionary } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
 
 import Close from 'public/close.svg'
-import Waste from 'public/waste.svg'
+import Trash from 'public/trash.svg'
 import Modal from 'components/Modal'
 
 const Redactor = dynamic(
@@ -59,7 +59,7 @@ function Dictionary() {
       .eq('project_id', project?.id)
       .ilike('title', `${searchQuery}%`)
       .order('title', { ascending: true })
-    if (data && data.length) {
+    if (data?.length) {
       setWords(data)
     } else {
       setWords([])
@@ -72,6 +72,7 @@ function Dictionary() {
   }, [allWords])
 
   const filterByLetter = (letter) => {
+    setSearchQuery('')
     if (letter && letter !== 'all') {
       getWords(letter)
     } else {
@@ -175,7 +176,7 @@ function Dictionary() {
                 delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
               }}
               isShowDelBtn={editable}
-              delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
+              delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
             />
           ) : (
             <div>{t('NoMatches')}</div>
@@ -203,7 +204,7 @@ function Dictionary() {
             activeNote={activeWord}
             setActiveNote={setActiveWord}
             readOnly={!editable}
-            placeholder={editable ? t('TextNewNote') : ''}
+            placeholder={editable ? t('TextDescriptionWord') : ''}
           />
         </>
       )}

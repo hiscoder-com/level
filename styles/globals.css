@@ -58,7 +58,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply text-white bg-cyan-600 border-cyan-600
 	hover:bg-cyan-700 hover:border-cyan-700
 	active:bg-cyan-800 active:border-cyan-800
-	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300	fill-white
 }
 .btn-red-base{
 	@apply text-white bg-red-500 border-red-600
@@ -94,6 +94,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply btn bg-white text-cyan-600 border-cyan-600
 	hover:bg-cyan-50
 	active:bg-cyan-200
+	fill-cyan-600
 }
 
 .confession-text{

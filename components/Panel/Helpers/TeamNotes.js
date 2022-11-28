@@ -13,7 +13,7 @@ import { useTeamNotes, useProject } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
 
 import Close from 'public/close.svg'
-import Waste from 'public/waste.svg'
+import Trash from 'public/trash.svg'
 import Modal from 'components/Modal'
 
 const Redactor = dynamic(
@@ -126,7 +126,7 @@ function TeamNotes() {
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn={editable}
-            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
+            delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
           />
         </div>
       ) : (
