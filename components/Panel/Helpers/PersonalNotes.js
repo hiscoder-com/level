@@ -37,6 +37,13 @@ function PersonalNotes() {
     token: user?.access_token,
     sort: 'changed_at',
   })
+  const saveNote = () => {
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .put(`/api/personal_notes/${noteId}`, activeNote)
+      .then(() => mutate())
+      .catch((err) => console.log(err))
+  }
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
     setActiveNote(currentNote)
@@ -65,11 +72,7 @@ function PersonalNotes() {
       return
     }
     const timer = setTimeout(() => {
-      axios.defaults.headers.common['token'] = user?.access_token
-      axios
-        .put(`/api/personal_notes/${noteId}`, activeNote)
-        .then(() => mutate())
-        .catch((err) => console.log(err))
+      saveNote()
     }, 2000)
     return () => {
       clearTimeout(timer)
@@ -125,6 +128,7 @@ function PersonalNotes() {
           <div
             className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
             onClick={() => {
+              saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}

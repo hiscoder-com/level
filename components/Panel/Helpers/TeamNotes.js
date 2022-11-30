@@ -46,6 +46,14 @@ function TeamNotes() {
     token: user?.access_token,
     project_id: project?.id,
   })
+
+  const saveNote = () => {
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .put(`/api/team_notes/${activeNote?.id}`, activeNote)
+      .then(() => mutate())
+      .catch((err) => console.log(err))
+  }
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
@@ -86,11 +94,7 @@ function TeamNotes() {
       return
     }
     const timer = setTimeout(() => {
-      axios.defaults.headers.common['token'] = user?.access_token
-      axios
-        .put(`/api/team_notes/${activeNote?.id}`, activeNote)
-        .then(() => mutate())
-        .catch((err) => console.log(err))
+      saveNote()
     }, 2000)
     return () => {
       clearTimeout(timer)
@@ -134,6 +138,7 @@ function TeamNotes() {
           <div
             className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
             onClick={() => {
+              saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}

@@ -157,7 +157,6 @@ function Dictionary() {
         mutateProject()
       })
   }
-  console.log(activeWord)
   const showError = (err, placeholder) => {
     if (err?.response?.data?.error?.code === '23505') {
       setErrorText(`${t('WordExist')} "${placeholder}"`)
