@@ -10,12 +10,12 @@ export default async function notesHandler(req, res) {
   switch (method) {
     case 'POST':
       try {
-        const { id, project_id } = body
-        const { data, error } = await supabase.from('dictionary').insert([
+        const { id, project_id, placeholder } = body
+        const { data, error } = await supabase.from('dictionaries').insert([
           {
             id,
             project_id,
-            title: 'new word',
+            title: placeholder,
             data: {
               blocks: [
                 {

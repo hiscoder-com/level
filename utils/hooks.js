@@ -233,7 +233,7 @@ export function useDictionary({ token, project_id }) {
     mutate,
     error,
   } = useSWR(
-    token && project_id ? [`/api/dictionary/${project_id}`, token] : null,
+    token && project_id ? [`/api/dictionaries/${project_id}`, token] : null,
     fetcher
   )
   const loading = !words && !error

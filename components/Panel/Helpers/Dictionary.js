@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -10,11 +10,14 @@ import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useProject, useDictionary } from 'utils/hooks'
+
 import { supabase } from 'utils/supabaseClient'
 
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
 import Modal from 'components/Modal'
+import LeftArrow from 'public/left-arrow.svg'
+import RightArrow from 'public/right-arrow.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -29,15 +32,23 @@ const ListOfNotes = dynamic(
     ssr: false,
   }
 )
+const CountWordsOnPage = 5
 
 function Dictionary() {
-  const [wordId, setWordId] = useState('test_wordId')
+  const [wordId, setWordId] = useState('')
   const [editable, setEditable] = useState(false)
   const [activeWord, setActiveWord] = useState()
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [wordToDel, setWordToDel] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [words, setWords] = useState([])
+  const [words, setWords] = useState(null)
+  const [errorText, setErrorText] = useState(false)
+  const [currentPageWords, setCurrentPageWords] = useState(0)
+
+  const totalPageCount = useMemo(
+    () => Math.ceil(words?.count / CountWordsOnPage),
+    [words]
+  )
 
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
@@ -45,40 +56,46 @@ function Dictionary() {
   const {
     query: { project: code },
   } = useRouter()
-  const [project] = useProject({ token: user?.access_token, code })
-
-  const [allWords, { loading, error, mutate }] = useDictionary({
+  const [project, { mutate: mutateProject }] = useProject({
+    token: user?.access_token,
+    code,
+  })
+  const [allWords, { error, mutate }] = useDictionary({
     token: user?.access_token,
     project_id: project?.id,
   })
 
-  const getWords = async (searchQuery) => {
-    const { data, error } = await supabase
-      .from('dictionary')
-      .select('*')
+  const getWords = async (searchQuery, count) => {
+    const { from, to } = getPagination(count, CountWordsOnPage)
+    const { data, count: wordsCount } = await supabase
+      .from('dictionaries')
+      .select('*', { count: 'exact' })
       .eq('project_id', project?.id)
       .ilike('title', `${searchQuery}%`)
       .order('title', { ascending: true })
+      .range(from, to)
+
     if (data?.length) {
-      setWords(data)
+      setWords({ data, count: wordsCount })
     } else {
-      setWords([])
+      setWords({ data: [], count: 0 })
     }
   }
   useEffect(() => {
     if (allWords) {
-      setWords(allWords)
+      setWords({ data: allWords })
     }
   }, [allWords])
 
-  const filterByLetter = (letter) => {
-    setSearchQuery('')
-    if (letter && letter !== 'all') {
-      getWords(letter)
-    } else {
-      setWords(allWords)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      getWords(searchQuery, currentPageWords)
+    }, 500)
+    return () => {
+      clearTimeout(timer)
     }
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery, allWords])
 
   useEffect(() => {
     const getLevel = async () => {
@@ -94,36 +111,68 @@ function Dictionary() {
   }, [user?.id, project?.id])
 
   useEffect(() => {
-    const currentNote = words?.find((el) => el.id === wordId)
+    const currentNote = words?.data?.find((el) => el.id === wordId)
     setActiveWord(currentNote)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wordId, words])
+  }, [wordId])
 
-  const addNote = () => {
+  function addNote() {
+    const placeholder = t('NewWord').toLowerCase()
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .post('/api/dictionary', { id, project_id: project?.id })
-      .then((res) => setActiveWord(res.data[0]))
-      .catch((err) => console.log(err))
+      .post('/api/dictionaries', {
+        id,
+        project_id: project?.id,
+        placeholder,
+      })
+      .then((res) => {
+        setActiveWord(res.data[0])
+      })
+      .catch((err) => {
+        showError(err, placeholder)
+      })
+      .finally(() => {
+        setCurrentPageWords(0)
+      })
   }
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/dictionary/${id}`)
-      .then(() => mutate())
+      .delete(`/api/dictionaries/${id}`)
+      .then()
       .catch((err) => console.log(err))
+      .finally(() => {
+        mutate()
+      })
   }
-  const saveWord = () => {
+  const saveWord = async () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .put(`/api/dictionary/${activeWord?.id}`, activeWord)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
+      .then()
+      .catch((err) => showError(err, activeWord?.title))
+      .finally(() => {
+        mutate()
+        mutateProject()
+      })
   }
-  const search = () => {
-    getWords(searchQuery)
+  console.log(activeWord)
+  const showError = (err, placeholder) => {
+    if (err?.response?.data?.error?.code === '23505') {
+      setErrorText(`${t('WordExist')} "${placeholder}"`)
+    }
+    setTimeout(() => {
+      setErrorText(null)
+    }, 2000)
   }
+  const getPagination = (page, size) => {
+    const limit = size ? +size : 3
+    const from = page ? page * limit : 0
+    const to = page ? from + size - 1 : size - 1
+    return { from, to }
+  }
+
   useEffect(() => {
     if (!activeWord || !editable) {
       return
@@ -136,60 +185,105 @@ function Dictionary() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWord, editable])
+
   return (
     <div className="relative">
       {!activeWord ? (
-        <div className="relative">
-          <div className=" mr-11">
-            <Alphabet filterByLetter={filterByLetter} />
+        <>
+          <div className="mr-11">
+            <Alphabet
+              alphabet={project?.dictionaries_alphabet}
+              setSearchQuery={setSearchQuery}
+              setCurrentPageWords={setCurrentPageWords}
+              t={t}
+            />
+            <input
+              className="input max-w-xs mt-2"
+              value={searchQuery}
+              onChange={(e) => {
+                setCurrentPageWords(0)
+                setSearchQuery(e.target.value)
+              }}
+            />
           </div>
-          <input
-            className="input max-w-xs"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <button className="btn-cyan m-2" onClick={search}>
-            {t('Search')}
-          </button>
           {editable && (
-            <div className="absolute top-0 right-0 ">
-              <button
-                className="btn-cyan text-xl font-bold mb-4 right-0"
-                onClick={addNote}
+            <div className="">
+              <div className="absolute top-0 right-0 ">
+                <button
+                  className="btn-cyan text-xl font-bold mb-4 right-0"
+                  onClick={addNote}
+                >
+                  +
+                </button>
+              </div>
+              <div
+                className={`${
+                  errorText ? 'block' : 'hidden'
+                } absolute top-11 right-0 p-3 bg-red-200`}
               >
-                +
-              </button>
+                {errorText}
+              </div>
             </div>
           )}
-          {words?.length ? (
-            <ListOfNotes
-              notes={words}
-              removeNote={(e) => {
-                setIsOpenModal(true)
-                setWordToDel(words?.find((el) => el.id === e))
-              }}
-              setNoteId={setWordId}
-              classes={{
-                item: 'rounded-lg cursor-pointer flex justify-between items-start group hover:bg-blue-100/75',
-                title: 'font-bold p-2 mr-4',
-                text: 'px-2 h-10 overflow-hidden',
-                delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
-              }}
-              isShowDelBtn={editable}
-              delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
-            />
+          {words?.data.length ? (
+            <div className="mt-2">
+              <ListOfNotes
+                notes={words?.data}
+                removeNote={(e) => {
+                  setIsOpenModal(true)
+                  setWordToDel(words?.data?.find((el) => el.id === e))
+                }}
+                setNoteId={setWordId}
+                classes={{
+                  item: 'rounded-lg cursor-pointer flex justify-between items-start group hover:bg-blue-100/75',
+                  title: 'font-bold p-2 mr-4',
+                  text: 'px-2 h-10 overflow-hidden',
+                  delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
+                }}
+                isShowDelBtn={editable}
+                delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
+              />
+              {totalPageCount > 1 && (
+                <div className="bottom-0 left-0 flex justify-around">
+                  <button
+                    className="arrow"
+                    disabled={currentPageWords === 0}
+                    onClick={() => {
+                      setCurrentPageWords((prev) => {
+                        getWords(searchQuery, prev - 1)
+                        return prev - 1
+                      })
+                    }}
+                  >
+                    <LeftArrow />
+                  </button>
+                  <button
+                    className="arrow"
+                    disabled={currentPageWords >= totalPageCount - 1}
+                    onClick={() => {
+                      setCurrentPageWords((prev) => {
+                        getWords(searchQuery, prev + 1)
+                        return prev + 1
+                      })
+                    }}
+                  >
+                    <RightArrow />
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
-            <div>{t('NoMatches')}</div>
+            <div className="mt-2">{t('NoMatches')}</div>
           )}
-        </div>
+        </>
       ) : (
         <>
           <div
             className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
             onClick={() => {
+              saveWord()
               setActiveWord(null)
               setWordId(null)
-              saveWord()
             }}
           >
             <Close />
@@ -208,6 +302,7 @@ function Dictionary() {
           />
         </>
       )}
+
       <Modal
         isOpen={isOpenModal}
         closeHandle={() => {
@@ -248,33 +343,33 @@ function Dictionary() {
 
 export default Dictionary
 
-function Alphabet({ filterByLetter }) {
-  const [alphabet, setAlphabet] = useState([])
-  useEffect(() => {
-    setAlphabet(generateAlphabets())
-  }, [])
-  function generateAlphabets() {
-    var _alphabets = []
-    var start = 'А'.charCodeAt(0)
-    var last = 'Я'.charCodeAt(0)
-    for (var i = start; i <= last; ++i) {
-      _alphabets.push(String.fromCharCode(i))
-    }
-    _alphabets.push('All')
-    return _alphabets
-  }
+function Alphabet({ alphabet, setSearchQuery, setCurrentPageWords, t }) {
   return (
-    <div className="flex flex-wrap ">
+    <div className="flex flex-wrap">
       {alphabet &&
-        alphabet?.map((el) => (
-          <div
-            onClick={() => filterByLetter(el.toLowerCase())}
-            className="p-1 rounded-md cursor-pointer hover:bg-cyan-100"
-            key={el}
-          >
-            {el === 'All' ? 'Показать все' : el}
-          </div>
-        ))}
+        alphabet
+          ?.sort((a, b) => a.localeCompare(b))
+          .map((el) => (
+            <div
+              onClick={() => {
+                setCurrentPageWords(0)
+                setSearchQuery(el.toLowerCase())
+              }}
+              className="py-1 px-3 rounded-md cursor-pointer hover:bg-cyan-100"
+              key={el}
+            >
+              {el}
+            </div>
+          ))}
+      <div
+        className="py-1 px-3 rounded-md cursor-pointer hover:bg-cyan-100"
+        onClick={() => {
+          setCurrentPageWords(0)
+          setSearchQuery('')
+        }}
+      >
+        {t('ShowAll')}
+      </div>
     </div>
   )
 }
