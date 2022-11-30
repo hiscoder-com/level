@@ -1423,7 +1423,7 @@
       title text DEFAULT NULL,
       data json DEFAULT NULL,
       created_at TIMESTAMP DEFAULT now(),
-      changed_at TIMESTAMP DEFAULT now()  
+      changed_at TIMESTAMP DEFAULT now(),  
       UNIQUE (project_id, title)   
     );
     ALTER TABLE
