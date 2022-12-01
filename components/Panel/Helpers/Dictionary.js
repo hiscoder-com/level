@@ -56,20 +56,21 @@ function Dictionary() {
   const {
     query: { project: code },
   } = useRouter()
-  const [project, { mutate: mutateProject }] = useProject({
+  const [project] = useProject({
     token: user?.access_token,
     code,
   })
-  const [allWords, { error, mutate }] = useDictionary({
-    token: user?.access_token,
-    project_id: project?.id,
-  })
-
-  const getWords = async (searchQuery, count) => {
+  const getAll = () => {
+    setCurrentPageWords(0)
+    setSearchQuery('')
+    getWords()
+  }
+  const getWords = async (searchQuery = '', count = 0) => {
     const { from, to } = getPagination(count, CountWordsOnPage)
+
     const { data, count: wordsCount } = await supabase
       .from('dictionaries')
-      .select('*', { count: 'exact' })
+      .select('id,project_id,title,data', { count: 'exact' })
       .eq('project_id', project?.id)
       .ilike('title', `${searchQuery}%`)
       .order('title', { ascending: true })
@@ -77,15 +78,8 @@ function Dictionary() {
 
     if (data?.length) {
       setWords({ data, count: wordsCount })
-    } else {
-      setWords({ data: [], count: 0 })
     }
   }
-  useEffect(() => {
-    if (allWords) {
-      setWords({ data: allWords })
-    }
-  }, [allWords])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -95,7 +89,7 @@ function Dictionary() {
       clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchQuery, allWords])
+  }, [searchQuery])
 
   useEffect(() => {
     const getLevel = async () => {
@@ -111,6 +105,9 @@ function Dictionary() {
   }, [user?.id, project?.id])
 
   useEffect(() => {
+    if (!words?.data) {
+      return
+    }
     const currentNote = words?.data?.find((el) => el.id === wordId)
     setActiveWord(currentNote)
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -132,9 +129,6 @@ function Dictionary() {
       .catch((err) => {
         showError(err, placeholder)
       })
-      .finally(() => {
-        setCurrentPageWords(0)
-      })
   }
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -143,22 +137,24 @@ function Dictionary() {
       .then()
       .catch((err) => console.log(err))
       .finally(() => {
-        mutate()
+        getWords(searchQuery, currentPageWords)
       })
   }
   const saveWord = async () => {
+    if (!editable) {
+      return
+    }
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
       .then()
       .catch((err) => showError(err, activeWord?.title))
       .finally(() => {
-        mutate()
-        mutateProject()
+        getWords(searchQuery, currentPageWords)
       })
   }
   const showError = (err, placeholder) => {
-    if (err?.response?.data?.error?.code === '23505') {
+    if (err?.response?.data?.error) {
       setErrorText(`${t('WordExist')} "${placeholder}"`)
     }
     setTimeout(() => {
@@ -166,8 +162,7 @@ function Dictionary() {
     }, 2000)
   }
   const getPagination = (page, size) => {
-    const limit = size ? +size : 3
-    const from = page ? page * limit : 0
+    const from = page ? page * size : 0
     const to = page ? from + size - 1 : size - 1
     return { from, to }
   }
@@ -192,6 +187,7 @@ function Dictionary() {
           <div className="mr-11">
             <Alphabet
               alphabet={project?.dictionaries_alphabet}
+              getAll={getAll}
               setSearchQuery={setSearchQuery}
               setCurrentPageWords={setCurrentPageWords}
               t={t}
@@ -342,7 +338,7 @@ function Dictionary() {
 
 export default Dictionary
 
-function Alphabet({ alphabet, setSearchQuery, setCurrentPageWords, t }) {
+function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) {
   return (
     <div className="flex flex-wrap">
       {alphabet &&
@@ -363,8 +359,7 @@ function Alphabet({ alphabet, setSearchQuery, setCurrentPageWords, t }) {
       <div
         className="py-1 px-3 rounded-md cursor-pointer hover:bg-cyan-100"
         onClick={() => {
-          setCurrentPageWords(0)
-          setSearchQuery('')
+          getAll()
         }}
       >
         {t('ShowAll')}

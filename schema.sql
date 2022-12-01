@@ -1431,19 +1431,19 @@
   -- END TABLE
 
   -- RLS
-    --Администратор или координатор может добавить новое слово
+    --Администратор, координатор или модератор может добавить новое слово
     DROP POLICY IF EXISTS "word insert" ON PUBLIC.dictionaries;
     CREATE policy "word insert" ON PUBLIC.dictionaries FOR
     INSERT
       WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
-    --Администратор или координатор может удалить слово
+    --Администратор, координатор или модератор может удалить слово
     DROP POLICY IF EXISTS "word delete" ON PUBLIC.dictionaries;
     CREATE policy "word delete" ON PUBLIC.dictionaries FOR
     DELETE
       USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
 
-    --Администратор или координатор может изменить слово
+    --Администратор, координатор или модератор может изменить слово
     DROP POLICY IF EXISTS "word update" ON PUBLIC.dictionaries;
     CREATE policy "word update" ON PUBLIC.dictionaries FOR
     UPDATE

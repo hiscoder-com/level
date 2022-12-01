@@ -120,7 +120,7 @@ function PersonalNotes() {
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn
-            delBtnChildren={<Trash className={'w-4 h-4  text-cyan-800'} />}
+            delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
           />
         </div>
       ) : (
