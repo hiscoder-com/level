@@ -30,7 +30,7 @@ function Tool({ config, toolName, editable = false }) {
   if (!resource) {
     return (
       <div>
-        <h1>{t('No_content')}</h1>
+        <h1>{t('NoContent')}</h1>
       </div>
     )
   }
@@ -155,7 +155,7 @@ function Tool({ config, toolName, editable = false }) {
       break
 
     default:
-      return <div>{t('Wrong_resource')}</div>
+      return <div>{t('WrongResource')}</div>
   }
   return (
     <>

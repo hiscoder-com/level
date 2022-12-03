@@ -103,14 +103,14 @@ function ToolList({ setItem, data, toolName }) {
 function FilterRepeated({ setFilter, filter }) {
   const { t } = useTranslation('common')
   const options = [
-    { value: 'verse', name: t('By_verse') },
-    { value: 'book', name: t('By_book') },
+    { value: 'verse', name: t('ByVerse') },
+    { value: 'book', name: t('ByBook') },
     { value: 'disabled', name: t('Disabled') },
   ]
 
   return (
     <div className="flex items-center justify-center">
-      <div className="">{t('Filter_repeated_words')}</div>
+      <div className="">{t('FilterRepeatedWords')}</div>
       <select
         className="input m-2 !w-auto"
         value={filter}

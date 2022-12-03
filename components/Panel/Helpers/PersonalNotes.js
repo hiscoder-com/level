@@ -9,7 +9,7 @@ import { useTranslation } from 'next-i18next'
 import { useCurrentUser } from 'lib/UserContext'
 import { usePersonalNotes } from 'utils/hooks'
 import Close from 'public/close.svg'
-import Waste from 'public/waste.svg'
+import Trash from 'public/trash.svg'
 import Modal from 'components/Modal'
 
 const Redactor = dynamic(
@@ -37,6 +37,13 @@ function PersonalNotes() {
     token: user?.access_token,
     sort: 'changed_at',
   })
+  const saveNote = () => {
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .put(`/api/personal_notes/${noteId}`, activeNote)
+      .then(() => mutate())
+      .catch((err) => console.log(err))
+  }
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
     setActiveNote(currentNote)
@@ -65,11 +72,7 @@ function PersonalNotes() {
       return
     }
     const timer = setTimeout(() => {
-      axios.defaults.headers.common['token'] = user?.access_token
-      axios
-        .put(`/api/personal_notes/${noteId}`, activeNote)
-        .then(() => mutate())
-        .catch((err) => console.log(err))
+      saveNote()
     }, 2000)
     return () => {
       clearTimeout(timer)
@@ -100,7 +103,7 @@ function PersonalNotes() {
               onClick={() => setIsOpenModal(true)}
               disabled={!notes?.length}
             >
-              {t('Remove_all')}
+              {t('RemoveAll')}
             </button>
           </div>
           <ListOfNotes
@@ -117,7 +120,7 @@ function PersonalNotes() {
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn
-            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
+            delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
           />
         </div>
       ) : (
@@ -125,6 +128,7 @@ function PersonalNotes() {
           <div
             className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
             onClick={() => {
+              saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}
@@ -139,7 +143,7 @@ function PersonalNotes() {
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            placeholder={t('Text_new_note')}
+            placeholder={t('TextNewNote')}
           />
         </>
       )}
@@ -151,9 +155,9 @@ function PersonalNotes() {
       >
         <div className="text-center">
           <div className="mb-4">
-            {t('Are_you_sure_delete') +
+            {t('AreYouSureDelete') +
               ' ' +
-              t(noteToDel ? noteToDel?.title : t('All_notes').toLowerCase()) +
+              t(noteToDel ? noteToDel?.title : t('AllNotes').toLowerCase()) +
               '?'}
           </div>
           <button
