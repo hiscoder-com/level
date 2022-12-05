@@ -1,5 +1,5 @@
 {
   "version": "0.10.0",
   "date": "2022-06-05",
-  "dependencies": ["npm/@texttree/projector-mode-rcl", "npm/scripture-resources-rcl", "npm/@texttree/filter-translation-words-rcl"]
+  "dependencies": ["npm/@texttree/notepad-rcl"]
 }
