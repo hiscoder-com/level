@@ -13,7 +13,7 @@ import { useTeamNotes, useProject } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
 
 import Close from 'public/close.svg'
-import Waste from 'public/waste.svg'
+import Trash from 'public/trash.svg'
 import Modal from 'components/Modal'
 
 const Redactor = dynamic(
@@ -38,15 +38,22 @@ function TeamNotes() {
   const [noteToDel, setNoteToDel] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
-  const router = useRouter()
   const {
     query: { project: code },
-  } = router
+  } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
   const [notes, { loading, error, mutate }] = useTeamNotes({
     token: user?.access_token,
     project_id: project?.id,
   })
+
+  const saveNote = () => {
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .put(`/api/team_notes/${activeNote?.id}`, activeNote)
+      .then(() => mutate())
+      .catch((err) => console.log(err))
+  }
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
@@ -87,11 +94,7 @@ function TeamNotes() {
       return
     }
     const timer = setTimeout(() => {
-      axios.defaults.headers.common['token'] = user?.access_token
-      axios
-        .put(`/api/team_notes/${activeNote?.id}`, activeNote)
-        .then(() => mutate())
-        .catch((err) => console.log(err))
+      saveNote()
     }, 2000)
     return () => {
       clearTimeout(timer)
@@ -127,7 +130,7 @@ function TeamNotes() {
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn={editable}
-            delBtnChildren={<Waste className={'w-4 h-4 fill-gray-500'} />}
+            delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
           />
         </div>
       ) : (
@@ -135,6 +138,7 @@ function TeamNotes() {
           <div
             className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
             onClick={() => {
+              saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}
@@ -151,7 +155,7 @@ function TeamNotes() {
             activeNote={activeNote}
             setActiveNote={setActiveNote}
             readOnly={!editable}
-            placeholder={editable ? t('Text_new_note') : ''}
+            placeholder={editable ? t('TextNewNote') : ''}
           />
         </>
       )}
@@ -164,7 +168,7 @@ function TeamNotes() {
         {' '}
         <div className="text-center">
           <div className="mb-4">
-            {t('Are_you_sure_delete') + ' ' + t(noteToDel?.title) + '?'}
+            {t('AreYouSureDelete') + ' ' + t(noteToDel?.title) + '?'}
           </div>
           <button
             className="btn-cyan mx-2"

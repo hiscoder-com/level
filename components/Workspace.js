@@ -8,6 +8,12 @@ import Tool from 'components/Panel/Tool'
 
 import { inactiveState } from './Panel/state/atoms'
 
+import Dict from 'public/dictionary.svg'
+import TeamNote from 'public/team-note.svg'
+import Notepad from 'public/notepad.svg'
+import Audio from 'public/audio.svg'
+import Pencil from 'public/editor-pencil.svg'
+
 const sizes = {
   '1': 'lg:w-1/6',
   '2': 'lg:w-2/6',
@@ -16,16 +22,17 @@ const sizes = {
   '5': 'lg:w-5/6',
   '6': 'lg:w-full',
 }
-
+const translateIcon = <Pencil className="w-5 inline" />
 const icons = {
-  translate: '✏️',
-  commandTranslate: '✏️',
-  draftTranslate: '👓',
-  teamNotes: '📌',
-  personalNotes: '✍️',
-  audio: '🎧',
-  dictionary: '📙',
+  translate: translateIcon,
+  commandTranslate: translateIcon,
+  draftTranslate: translateIcon,
+  teamNotes: <TeamNote className="w-5 inline" />,
+  personalNotes: <Notepad className="w-5 inline" />,
+  audio: <Audio className="w-5 inline" />,
+  dictionary: <Dict className="w-5 inline" />,
 }
+
 function Workspace({ stepConfig, reference, editable = false }) {
   const inactive = useRecoilValue(inactiveState)
   return (

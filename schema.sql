@@ -15,6 +15,7 @@
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
+    DROP TABLE IF EXISTS PUBLIC.dictionaries;
 
 
   -- EDN DROP TABLE
@@ -26,6 +27,8 @@
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
     DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
+    DROP TRIGGER IF EXISTS on_dictionaries_update ON PUBLIC.dictionaries;
+
 
   -- END DROP TRIGGER
 
@@ -60,6 +63,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;  
+
 
   -- END DROP FUNCTION
 
@@ -748,6 +753,25 @@
     END;
   $$;
 
+-- update array of alphabet in projects column when added new word with new first symbol
+ CREATE FUNCTION PUBLIC.handle_update_dictionaries() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      alphabet JSONB;
+    BEGIN
+      IF OLD.title::varchar(1) = NEW.title::varchar(1) THEN
+        RETURN NEW;
+      END IF;
+      SELECT dictionaries_alphabet INTO alphabet FROM PUBLIC.projects WHERE NEW.project_id = projects.id;
+        IF (SELECT alphabet ? NEW.title::varchar(1)) THEN
+          RETURN NEW;
+        ELSE  
+          UPDATE PUBLIC.projects SET dictionaries_alphabet = alphabet || to_jsonb( NEW.title::varchar(1)) WHERE projects.id = NEW.project_id;
+        END IF;      
+      RETURN NEW;
+    END;
+  $$;
+
   -- создать главы
   CREATE FUNCTION PUBLIC.create_chapters(book_id bigint) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
@@ -982,6 +1006,11 @@
     ALTER TABLE
       PUBLIC.projects enable ROW LEVEL security;
   -- END TABLE
+
+  -- ADD COLUMN 
+    ALTER TABLE
+      PUBLIC.projects add column dictionaries_alphabet jsonb;
+
 
   -- RLS
     DROP POLICY IF EXISTS "Админ видит все проекты, остальные только те, на которых они назначены" ON PUBLIC.projects;
@@ -1384,6 +1413,51 @@
   -- END RLS
 -- TEAM NOTES
 
+-- DICTIONARIES
+  -- TABLE
+    CREATE TABLE PUBLIC.dictionaries (
+      id text NOT NULL primary key,
+      project_id bigint references PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      title text DEFAULT NULL,
+      data json DEFAULT NULL,
+      created_at TIMESTAMP DEFAULT now(),
+      changed_at TIMESTAMP DEFAULT now(),  
+      UNIQUE (project_id, title)   
+    );
+    ALTER TABLE
+      PUBLIC.dictionaries enable ROW LEVEL security;
+  -- END TABLE
+
+  -- RLS
+    --Администратор, координатор или модератор может добавить новое слово
+    DROP POLICY IF EXISTS "word insert" ON PUBLIC.dictionaries;
+    CREATE policy "word insert" ON PUBLIC.dictionaries FOR
+    INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
+
+    --Администратор, координатор или модератор может удалить слово
+    DROP POLICY IF EXISTS "word delete" ON PUBLIC.dictionaries;
+    CREATE policy "word delete" ON PUBLIC.dictionaries FOR
+    DELETE
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
+
+    --Администратор, координатор или модератор может изменить слово
+    DROP POLICY IF EXISTS "word update" ON PUBLIC.dictionaries;
+    CREATE policy "word update" ON PUBLIC.dictionaries FOR
+    UPDATE
+      USING (authorize(auth.uid(), project_id) IN ('admin', 'coordinator', 'moderator'));
+
+    --Все на проекте могут просматривать слова
+    DROP POLICY IF EXISTS "words select" ON PUBLIC.dictionaries;
+    CREATE policy "words select" ON PUBLIC.dictionaries FOR
+    SELECT
+     USING (authorize(auth.uid(), project_id) != 'user');
+
+  -- END RLS
+-- DICTIONARIES
+
 
 
 -- Send "previous data" on change
@@ -1429,6 +1503,11 @@ ALTER TABLE
   CREATE TRIGGER on_public_team_notes_update BEFORE
   UPDATE
     ON PUBLIC.team_notes FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_team_notes();
+
+  CREATE TRIGGER on_dictionaries_update BEFORE
+  UPDATE
+    ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_dictionaries();
+
 -- END TRIGGERS
 
 /**
