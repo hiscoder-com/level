@@ -79,7 +79,7 @@ export default function AppBar({ setIsOpen }) {
               }`}
             >
               <div className="flex row items-center gap-1 cursor-default">
-                <User />
+                <User className="w-5 fill-cyan-600" />
                 {stepConfig.count_of_users}
               </div>
               <div className="hidden md:flex">

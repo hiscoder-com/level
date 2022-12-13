@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 @layer base {
-  html {
-    font-family: "Roboto", system-ui, sans-serif;
-  }
+	html {
+		font-family: "Roboto", system-ui, sans-serif;
+	}
 }
 
 .appbar{
@@ -49,16 +49,16 @@
 }
 
 .btn{
-@apply text-center border-2 rounded-md inline-block px-3 py-1 cursor-pointer
+	@apply text-center border-2 rounded-md inline-block px-3 py-1 cursor-pointer
 disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white
- disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400
+	disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400
 }
 
 .btn-cyan-base{
 	@apply text-white bg-cyan-600 border-cyan-600
 	hover:bg-cyan-700 hover:border-cyan-700
 	active:bg-cyan-800 active:border-cyan-800
-	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300	fill-white
 }
 .btn-red-base{
 	@apply text-white bg-red-500 border-red-600
@@ -94,6 +94,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply btn bg-white text-cyan-600 border-cyan-600
 	hover:bg-cyan-50
 	active:bg-cyan-200
+	fill-cyan-600
 }
 
 .confession-text{
@@ -129,12 +130,12 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .input-base{
 	@apply w-full text-sm rounded-md py-2 pl-2 border-2
-  focus:outline-none
+	focus:outline-none
 }
 
 .input{
-	@apply input-base text-gray-600 placeholder-gray-400  border-gray-200 bg-gray-100
-  focus:border-gray-300
+	@apply input-base text-gray-600 placeholder-gray-400 border-gray-200 bg-gray-100
+ focus:border-gray-300
 }
 
 .input-invalid{
@@ -162,13 +163,13 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	background: url(/public/eyeIcon.svg) 0 0 no-repeat;
 }
 .password-control.view{
-background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
+	background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 }
 
 .sidebar-link-a{
 	@apply flex transition transform px-4 py-3 text-[#3C3C41]
-  hover:-translate-x-0.5 hover:text-[#0E7490]
-  focus:outline-none
+	hover:-translate-x-0.5 hover:text-[#0E7490]
+	focus:outline-none
 }
 .sidebar-hr{
 	@apply border-b border-[#c4c4c4]
@@ -179,37 +180,37 @@ background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
 }
 
 .markdown-body img{
-  display: inline;
-  vertical-align: inherit;
+	display: inline;
+	vertical-align: inherit;
 }
 
 .markdown-body ol{
-  list-style: decimal;
+	list-style: decimal;
 }
 
 .markdown-body ul{
-  list-style: inherit;
+	list-style: inherit;
 }
 
 .inactive {
-  filter: blur(6px) grayscale(1);
-  user-select: none;
-  pointer-events: none;
-  opacity: .5;
+	filter: blur(6px) grayscale(1);
+	user-select: none;
+	pointer-events: none;
+	opacity: .5;
 }
 
 .adaptive-card {
-  height: calc(50vh);
+	height: calc(50vh);
 }
 
 @media (min-width: 768px) {
-  .adaptive-card {
-    height: calc(50vh - 110px);
-  }
+	.adaptive-card {
+		height: calc(50vh - 110px);
+	}
 }
 
 @media (min-width: 1024px) {
-  .adaptive-card {
-    height: calc(100vh - 230px);
-  }
+	.adaptive-card {
+		height: calc(100vh - 230px);
+	}
 }
