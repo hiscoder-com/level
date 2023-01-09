@@ -56,7 +56,7 @@ function Dictionary() {
   const {
     query: { project: code },
   } = useRouter()
-  const [project] = useProject({
+  const [project, { mutate }] = useProject({
     token: user?.access_token,
     code,
   })
@@ -151,6 +151,7 @@ function Dictionary() {
       .catch((err) => showError(err, activeWord?.title))
       .finally(() => {
         getWords(searchQuery, currentPageWords)
+        mutate()
       })
   }
   const showError = (err, placeholder) => {
@@ -230,7 +231,7 @@ function Dictionary() {
                 }}
                 setNoteId={setWordId}
                 classes={{
-                  item: 'rounded-lg cursor-pointer flex justify-between items-start group hover:bg-blue-100/75',
+                  item: 'rounded-lg cursor-pointer flex justify-between items-start group hover:bg-gray-200',
                   title: 'font-bold p-2 mr-4',
                   text: 'px-2 h-10 overflow-hidden',
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
@@ -350,14 +351,14 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
                 setCurrentPageWords(0)
                 setSearchQuery(el.toLowerCase())
               }}
-              className="py-1 px-3 rounded-md cursor-pointer hover:bg-cyan-100"
+              className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-200"
               key={el}
             >
               {el}
             </div>
           ))}
       <div
-        className="py-1 px-3 rounded-md cursor-pointer hover:bg-cyan-100"
+        className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-200"
         onClick={() => {
           getAll()
         }}
