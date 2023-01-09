@@ -79,7 +79,7 @@ function ToolList({ setItem, data, toolName }) {
                       id={'id' + item.id}
                       className={`p-2 cursor-pointer ${
                         itemFilter ? 'text-gray-400' : ''
-                      } hover:bg-blue-100/75
+                      } hover:bg-gray-200
                       ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}
                       `}
                       onClick={() => {

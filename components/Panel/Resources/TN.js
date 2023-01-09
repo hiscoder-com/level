@@ -65,7 +65,7 @@ function ToolList({ setItem, data, toolName }) {
                       <li
                         key={item.id}
                         id={'id' + item.id}
-                        className={`p-2 cursor-pointer hover:bg-blue-100/75 ${
+                        className={`p-2 cursor-pointer hover:bg-gray-200 ${
                           scrollId === 'id' + item.id ? 'bg-gray-200' : ''
                         }`}
                         onClick={() => {
