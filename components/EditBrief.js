@@ -17,13 +17,13 @@ function EditBrief({ user, projectId }) {
   })
 
   useEffect(() => {
-    setBriefText(brief?.text)
+    setBriefText(brief?.summary)
   }, [brief])
 
   const saveToDatabase = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .put(`/api/briefs/${projectId}`, { text: briefText })
+      .put(`/api/briefs/${projectId}`, { summary: briefText })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }

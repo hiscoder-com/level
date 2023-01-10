@@ -160,7 +160,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
         title={t('TranslationGoal')}
       >
         <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
-          <p className="text-sm text-gray-500 whitespace-pre-line">{brief?.text}</p>
+          <p className="text-sm text-gray-500 whitespace-pre-line">{brief?.summary}</p>
         </div>
         <div className="text-center">
           <button className="btn-cyan" onClick={closeModal}>

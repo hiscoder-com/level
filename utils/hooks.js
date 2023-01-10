@@ -212,6 +212,7 @@ export function useBrief({ token, project_id }) {
   const loading = !brief && !error
   return [brief, { mutate, loading, error }]
 }
+
 export function useScroll({ toolName }) {
   const [scrollIds, setScrollIds] = useState(() => {
     return checkLSVal('scrollIds', {}, 'object')
