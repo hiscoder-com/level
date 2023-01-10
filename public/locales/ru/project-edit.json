@@ -1,10 +1,15 @@
 {
   "AddCoordinator": "Добавить координатора",
   "AddTranslator": "Добавить переводчика",
+  "Answers": "Ответы",
+  "AnswersPlaceholder": "Распишите ответы на вопросы...",
   "AssigningModerator": "Назначение модератора",
-  "BriefPlaceholder": "Распишите предназначение перевода...",
   "EditBrief": "Заполнить бриф",
+  "Questions": "Вопросы",
+  "QuestionsPlaceholder": "Распишите вопросы...",
   "RemovingCoordinator": "Удаление координатора",
   "RemovingModerator": "Удаление модератора",
-  "RemovingTranslator": "Удаление переводчика"
+  "RemovingTranslator": "Удаление переводчика",
+  "Summary": "Резюме",
+  "SummaryPlaceholder": "Распишите предназначение перевода..."
 }

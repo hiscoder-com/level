@@ -1,10 +1,15 @@
 {
   "AddCoordinator": "Add coordinator",
   "AddTranslator": "Add translator",
+  "Answers": "Answers",
+  "AnswersPlaceholder": "Write down the answers to the questions...",
   "AssigningModerator": "Moderator appointment",
-  "BriefPlaceholder": "Describe the purpose of the translation...",
   "EditBrief": "Fill out a brief",
+  "Questions": "Questions",
+  "QuestionsPlaceholder": "Write down the questions...",
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
-  "RemovingTranslator": "Removing a translator"
+  "RemovingTranslator": "Removing a translator",
+  "Summary": "Summary",
+  "SummaryPlaceholder": "Describe the purpose of the translation..."
 }
