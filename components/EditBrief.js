@@ -50,38 +50,38 @@ function EditBrief({ user, projectId }) {
       </button>
 
       <Modal
+        title={t('project-edit:EditBriefTitle')}
+        addClassName={'w-full max-w-full'}
         isOpen={showModalTranslationGoal}
         closeHandle={closeModal}
-        title={t('TranslationGoal')}
-        addClassName={'max-w-full'}
       >
-        <div className="text-center flex flex-row gap-4 my-6 w-full">
+        <div className="text-center flex flex-row gap-4 my-6">
           <div className="w-1/3">
-            <p className="mb-2">{t('project-edit:Questions')}</p>
+            <p className="mb-2">{t('Questions')}</p>
             <textarea
-              readOnly
+              className="border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
               placeholder={t('project-edit:QuestionsPlaceholder')}
-              value={questionsText}
               onChange={(e) => setQuestionsText(e.target.value)}
-              className=" border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
+              value={questionsText}
+              readOnly
             />
           </div>
           <div className="w-1/3">
             <p className="mb-2">{t('project-edit:Answers')}</p>
             <textarea
+              className="border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
               placeholder={t('project-edit:AnswersPlaceholder')}
-              value={answersText}
               onChange={(e) => setAnswersText(e.target.value)}
-              className=" border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
+              value={answersText}
             />
           </div>
           <div className="w-1/3">
             <p className="mb-2">{t('project-edit:Summary')}</p>
             <textarea
+              className="border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
               placeholder={t('project-edit:SummaryPlaceholder')}
-              value={summaryText}
               onChange={(e) => setSummaryText(e.target.value)}
-              className=" border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
+              value={summaryText}
             />
           </div>
         </div>
