@@ -759,14 +759,14 @@
     DECLARE
       alphabet JSONB;
     BEGIN
-      IF OLD.title::varchar(1) = NEW.title::varchar(1) THEN
+      IF upper(OLD.title::varchar(1)) = upper(NEW.title::varchar(1)) THEN
         RETURN NEW;
       END IF;
       SELECT dictionaries_alphabet INTO alphabet FROM PUBLIC.projects WHERE NEW.project_id = projects.id;
-        IF (SELECT alphabet ? NEW.title::varchar(1)) THEN
+        IF (SELECT alphabet ? upper(NEW.title::varchar(1))) THEN
           RETURN NEW;
         ELSE  
-          UPDATE PUBLIC.projects SET dictionaries_alphabet = alphabet || to_jsonb( NEW.title::varchar(1)) WHERE projects.id = NEW.project_id;
+          UPDATE PUBLIC.projects SET dictionaries_alphabet = alphabet || to_jsonb( upper(NEW.title::varchar(1))) WHERE projects.id = NEW.project_id;
         END IF;      
       RETURN NEW;
     END;
@@ -991,6 +991,7 @@
       resources json,
       method text NOT NULL,
       base_manifest json,
+      dictionaries_alphabet jsonb DEFAULT '[]',
       UNIQUE (code, language_id)
     );
 
@@ -1006,10 +1007,6 @@
     ALTER TABLE
       PUBLIC.projects enable ROW LEVEL security;
   -- END TABLE
-
-  -- ADD COLUMN 
-    ALTER TABLE
-      PUBLIC.projects add column dictionaries_alphabet jsonb;
 
 
   -- RLS

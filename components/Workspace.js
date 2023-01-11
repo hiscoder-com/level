@@ -84,7 +84,7 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
             key={tool.name}
             className={({ selected }) =>
               classNames(
-                'btn text-xs p-1 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap',
+                'btn text-xs p-1 lg:pb-3 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap',
                 selected ? 'btn-cyan' : 'btn-white'
               )
             }
