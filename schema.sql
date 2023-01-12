@@ -28,6 +28,7 @@
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
     DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
     DROP TRIGGER IF EXISTS on_dictionaries_update ON PUBLIC.dictionaries;
+    DROP TRIGGER IF EXISTS on_public_chapters_update ON PUBLIC.chapters;
 
 
   -- END DROP TRIGGER
@@ -63,7 +64,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
-    DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;  
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;  
 
 
   -- END DROP FUNCTION
@@ -754,7 +756,7 @@
   $$;
 
 -- update array of alphabet in projects column when added new word with new first symbol
- CREATE FUNCTION PUBLIC.handle_update_dictionaries() returns TRIGGER
+  CREATE FUNCTION PUBLIC.handle_update_dictionaries() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       alphabet JSONB;
@@ -768,6 +770,21 @@
         ELSE  
           UPDATE PUBLIC.projects SET dictionaries_alphabet = alphabet || to_jsonb( upper(NEW.title::varchar(1))) WHERE projects.id = NEW.project_id;
         END IF;      
+      RETURN NEW;
+    END;
+  $$;
+
+ CREATE FUNCTION PUBLIC.handle_compile_chapter() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE      
+      chapter JSONB;
+    BEGIN
+      IF (NEW.finished_at IS NOT NULL ) THEN
+        SELECT  jsonb_object_agg(num, text) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
+        New.text=chapter; 
+      ELSE
+        RETURN NEW;
+      END IF;        
       RETURN NEW;
     END;
   $$;
@@ -1504,6 +1521,10 @@ ALTER TABLE
   CREATE TRIGGER on_dictionaries_update BEFORE
   UPDATE
     ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_dictionaries();
+
+  CREATE TRIGGER on_public_chapters_update BEFORE
+  UPDATE
+    ON PUBLIC.chapters FOR each ROW EXECUTE FUNCTION PUBLIC.handle_compile_chapter();
 
 -- END TRIGGERS
 

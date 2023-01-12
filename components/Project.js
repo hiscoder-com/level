@@ -13,7 +13,8 @@ import { useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
 import { readableDate } from 'utils/helper'
 
-import Eye from '../public/eye-icon.svg'
+import Pdf from '../public/pdf.svg'
+import Download from '../public/download.svg'
 
 function Project({ code }) {
   const { t } = useTranslation(['projects', 'common', 'books', 'chapters'])
@@ -133,6 +134,7 @@ function BookList({ highLevelAccess, project, user }) {
               <tr>
                 <th className="py-3 px-6">{t('NameBook')}</th>
                 <th className="py-3 px-6">{t('CountChapters')}</th>
+                <th className="py-3 px-6"></th>
               </tr>
             </thead>
             <tbody>
@@ -148,8 +150,12 @@ function BookList({ highLevelAccess, project, user }) {
                   }}
                   className="cursor-pointer hover:bg-cyan-50 bg-white border-b"
                 >
-                  <th className="py-4 px-6">{t(`books:${book?.code}`)}</th>
+                  <td className="py-4 px-6">{t(`books:${book?.code}`)}</td>
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
+
+                  <td className="py-4">
+                    <DownloadBlock />
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -224,7 +230,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     const getChapters = async () => {
       const { data: chapters, error } = await supabase
         .from('chapters')
-        .select('id,num,verses,started_at,finished_at')
+        .select('id,num,verses,started_at,finished_at,text')
         .eq('project_id', project.id)
         .eq('book_id', selectedBook.id)
       setChapters(chapters)
@@ -250,6 +256,64 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       )
     }
   }
+  const compileChapter = (chapter, type = 'txt') => {
+    if (Object.keys(chapter).length > 0) {
+      const text = Object.entries(chapter).reduce((txt, verse) => {
+        if (type === 'txt') {
+          return txt + `${verse[0]}. ${verse[1] || ''}\n`
+        } else {
+          return txt + `<p><sup>${verse[0]}</sup> ${verse[1] || ''}</p>`
+        }
+      }, '')
+      return text
+    }
+  }
+
+  const generateHTML = (main, title) => {
+    let new_window = window.open()
+    new_window.document
+      .write(`<html lang="${project.languages.code}" dir="${project.languages.title}">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>${title}</title>
+        <style type="text/css">
+            body > div {
+                page-break-after: always;
+            }
+        </style>
+    </head>
+    <body onLoad="window.print()">
+        <h1>${title}</h1>
+        <div>${main}</div>
+        </body>
+        </html>`)
+    new_window.document.close()
+  }
+
+  const downloadTxt = (e, chapterJson, chapterNum) => {
+    e.stopPropagation()
+    if (!chapterJson) {
+      return
+    }
+    const text = compileChapter(chapterJson)
+    const element = document.createElement('a')
+    const file = new Blob([text], { type: 'text/plain' })
+    element.href = URL.createObjectURL(file)
+    element.download = `${selectedBook.code}_chapter${chapterNum}.txt`
+    element.click()
+  }
+  const downloadPdf = (e, chapterJson, chapterNum) => {
+    e.stopPropagation()
+    if (!chapterJson || !selectedBook) {
+      return
+    }
+
+    const main = compileChapter(chapterJson, 'html')
+    const title = `${t('Book')} ${t(`books:${selectedBook.code}`)} ${t(
+      'Chapter'
+    ).toLowerCase()} ${chapterNum || ''}`
+    generateHTML(main, title)
+  }
 
   return (
     <div className="overflow-x-auto relative">
@@ -273,14 +337,15 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         <tbody>
           {chapters
             ?.sort((a, b) => a.num - b.num)
-            .map((el, index) => {
+            .map((chapter, index) => {
+              const { id, num, text, started_at, finished_at } = chapter
               return (
                 <tr
                   key={index}
                   onClick={() => {
                     if (highLevelAccess) {
-                      if (!createdChapters.includes(el.id)) {
-                        setSelectedChapter(el)
+                      if (!createdChapters.includes(id)) {
+                        setSelectedChapter(chapter)
                         setOpenModal(true)
                       } else {
                         push(
@@ -289,7 +354,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                             '/books/' +
                             selectedBook?.code +
                             '/' +
-                            el.num
+                            num
                         )
                       }
                     }
@@ -297,34 +362,30 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                   className={`${
                     highLevelAccess ? 'cursor-pointer hover:bg-cyan-50' : ''
                   } ${
-                    !createdChapters.includes(el.id) ? 'bg-gray-100' : 'bg-white'
+                    !createdChapters.includes(id) ? 'bg-gray-100' : 'bg-white'
                   } border-b`}
                 >
                   <th
                     scope="row"
                     className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
                   >
-                    {el.num}
+                    {num}
                   </th>
                   <td className="py-4 px-6">
-                    {el.started_at && readableDate(el.started_at, locale)}
+                    {started_at && readableDate(started_at, locale)}
                   </td>
                   <td className="py-4 px-6 ">
-                    {el.finished_at && readableDate(el.finished_at, locale)}
+                    {finished_at && readableDate(finished_at, locale)}
                   </td>
 
                   <td className="py-4 px-6">
-                    {el.finished_at ? (
-                      <div className="flex justify-center ">
-                        <div
-                          className="p-2 hover:bg-cyan-100 rounded-md"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Eye />
-                        </div>
-                      </div>
+                    {finished_at ? (
+                      <DownloadBlock
+                        actions={{ downloadPdf, downloadTxt }}
+                        chapter={{ num, text }}
+                      />
                     ) : (
-                      getCurrentStep(el, index)
+                      getCurrentStep(chapter, index)
                     )}
                   </td>
                 </tr>
@@ -450,5 +511,26 @@ function BookCreate({ highLevelAccess, project, books, user }) {
         </>
       )}
     </>
+  )
+}
+
+function DownloadBlock({ actions = {}, chapter = {} }) {
+  const { text, num } = chapter
+  const { downloadPdf, downloadTxt } = actions
+  return (
+    <div className="flex justify-center ">
+      <div
+        className="p-2 mr-4 hover:bg-cyan-100 rounded-md"
+        onClick={(e) => downloadPdf(e, text, num)}
+      >
+        <Pdf />
+      </div>
+      <div
+        className="p-2 w-10 h-10 hover:bg-cyan-100 rounded-md"
+        onClick={(e) => downloadTxt(e, text, num)}
+      >
+        <Download />
+      </div>
+    </div>
   )
 }
