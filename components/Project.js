@@ -125,6 +125,33 @@ function BookList({ highLevelAccess, project, user }) {
     }
   }, [query, books])
 
+  const compileBook = (book, type = 'txt') => {
+    const main = ''
+    if (Object.keys(book).length > 0) {
+      for (const [key, value] of Object.entries(book)) {
+        if (value) {
+          main += ` <h1>${t('Chapter')} ${key}</h1>
+          <div>${compileChapter(value, 'html')}</div>`
+        }
+      }
+    }
+    return main
+  }
+  const downloadPdf = (e, state) => {
+    const { book } = state
+    e.stopPropagation()
+    if (book) {
+      const title = `${t('Book')} ${t(`books:${book.code}`)}`
+
+      const handleCreate = async () => {
+        const res = await supabase.rpc('handle_compile_book', { books_id: 1 })
+        const main = compileBook(res.data)
+        generateHTML(main, title, project.languages.code, project.languages.title)
+      }
+
+      handleCreate()
+    }
+  }
   return (
     <>
       {!selectedBook ? (
@@ -154,7 +181,7 @@ function BookList({ highLevelAccess, project, user }) {
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
 
                   <td className="py-4">
-                    <DownloadBlock />
+                    <DownloadBlock actions={{ downloadPdf }} state={{ book }} />
                   </td>
                 </tr>
               ))}
@@ -177,6 +204,37 @@ function BookList({ highLevelAccess, project, user }) {
       )}
     </>
   )
+}
+const compileChapter = (chapter, type = 'txt') => {
+  if (Object.keys(chapter).length > 0) {
+    const text = Object.entries(chapter).reduce((txt, verse) => {
+      if (type === 'txt') {
+        return txt + `${verse[0]}. ${verse[1] || ''}\n`
+      } else {
+        return txt + `<sup>${verse[0]}</sup> ${verse[1] || ''} `
+      }
+    }, '')
+    return text
+  }
+}
+const generateHTML = (main, title = '', lang = 'en', dir = 'project') => {
+  let new_window = window.open()
+  new_window.document.write(`<html lang="${lang}" dir="${dir}">
+  <head>
+      <meta charset="UTF-8"/>
+      <title>${title}</title>
+      <style type="text/css">
+          body > div {
+              page-break-after: always;
+          }
+      </style>
+  </head>
+  <body onLoad="window.print()">
+      <h1>${title}</h1>
+      <div>${main}</div>
+      </body>
+      </html>`)
+  new_window.document.close()
 }
 
 function ChapterList({ selectedBook, project, highLevelAccess }) {
@@ -256,39 +314,6 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       )
     }
   }
-  const compileChapter = (chapter, type = 'txt') => {
-    if (Object.keys(chapter).length > 0) {
-      const text = Object.entries(chapter).reduce((txt, verse) => {
-        if (type === 'txt') {
-          return txt + `${verse[0]}. ${verse[1] || ''}\n`
-        } else {
-          return txt + `<p><sup>${verse[0]}</sup> ${verse[1] || ''}</p>`
-        }
-      }, '')
-      return text
-    }
-  }
-
-  const generateHTML = (main, title) => {
-    let new_window = window.open()
-    new_window.document
-      .write(`<html lang="${project.languages.code}" dir="${project.languages.title}">
-    <head>
-        <meta charset="UTF-8"/>
-        <title>${title}</title>
-        <style type="text/css">
-            body > div {
-                page-break-after: always;
-            }
-        </style>
-    </head>
-    <body onLoad="window.print()">
-        <h1>${title}</h1>
-        <div>${main}</div>
-        </body>
-        </html>`)
-    new_window.document.close()
-  }
 
   const downloadTxt = (e, chapterJson, chapterNum) => {
     e.stopPropagation()
@@ -302,17 +327,22 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     element.download = `${selectedBook.code}_chapter${chapterNum}.txt`
     element.click()
   }
-  const downloadPdf = (e, chapterJson, chapterNum) => {
+  const downloadPdf = (e, state) => {
+    const {
+      chapter: { text: chapterJson, num: chapterNum },
+      book,
+    } = state
     e.stopPropagation()
-    if (!chapterJson || !selectedBook) {
+    if (!chapterJson || !book) {
       return
     }
 
     const main = compileChapter(chapterJson, 'html')
-    const title = `${t('Book')} ${t(`books:${selectedBook.code}`)} ${t(
+    const title = `${t('Book')} ${t(`books:${book.code}`)} ${t(
       'Chapter'
     ).toLowerCase()} ${chapterNum || ''}`
-    generateHTML(main, title)
+
+    generateHTML(main, title, project.languages.code, project.languages.title)
   }
 
   return (
@@ -382,7 +412,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     {finished_at ? (
                       <DownloadBlock
                         actions={{ downloadPdf, downloadTxt }}
-                        chapter={{ num, text }}
+                        state={{ chapter: { num, text }, book: selectedBook }}
                       />
                     ) : (
                       getCurrentStep(chapter, index)
@@ -514,20 +544,19 @@ function BookCreate({ highLevelAccess, project, books, user }) {
   )
 }
 
-function DownloadBlock({ actions = {}, chapter = {} }) {
-  const { text, num } = chapter
+function DownloadBlock({ actions = {}, state = {} }) {
   const { downloadPdf, downloadTxt } = actions
   return (
     <div className="flex justify-center ">
       <div
         className="p-2 mr-4 hover:bg-cyan-100 rounded-md"
-        onClick={(e) => downloadPdf(e, text, num)}
+        onClick={(e) => downloadPdf(e, state)}
       >
         <Pdf />
       </div>
       <div
         className="p-2 w-10 h-10 hover:bg-cyan-100 rounded-md"
-        onClick={(e) => downloadTxt(e, text, num)}
+        onClick={(e) => downloadTxt(e, state)}
       >
         <Download />
       </div>
