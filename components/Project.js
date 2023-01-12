@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
+import usfm from 'usfm-js'
 
 import Modal from './Modal'
 
@@ -54,7 +55,6 @@ function Project({ code }) {
     token: user?.access_token,
     code: code,
   })
-
   return (
     <>
       <h3 className="h3 inline-block">{project?.title}</h3>
@@ -124,32 +124,67 @@ function BookList({ highLevelAccess, project, user }) {
       setSelectedBook(null)
     }
   }, [query, books])
-
+  const convertUsfm = (txt) => {
+    let chapters = {}
+    for (const [num, chapter] of Object.entries(txt)) {
+      let oneChapter = {}
+      if (chapter) {
+        for (const [key, verse] of Object.entries(chapter)) {
+          oneChapter[key] = { verseObjects: [{ type: 'text', text: verse + '\n' }] }
+        }
+      }
+      chapters[num] = oneChapter
+    }
+    console.log(chapters)
+    const newUsfm = usfm.toUSFM({ chapters }, { forcedNewLines: true })
+    return newUsfm
+  }
   const compileBook = (book, type = 'txt') => {
     const main = ''
-    if (Object.keys(book).length > 0) {
+    if (!Object.keys(book).length > 0) {
+      return
+    }
+    if (type === 'txt') {
+      console.log(convertUsfm(book))
+    } else {
       for (const [key, value] of Object.entries(book)) {
         if (value) {
           main += ` <h1>${t('Chapter')} ${key}</h1>
-          <div>${compileChapter(value, 'html')}</div>`
+        <div>${compileChapter(value, 'html')}</div>`
         }
       }
     }
+
     return main
   }
+
   const downloadPdf = (e, state) => {
     const { book } = state
     e.stopPropagation()
     if (book) {
       const title = `${t('Book')} ${t(`books:${book.code}`)}`
 
-      const handleCreate = async () => {
+      const handleOpenHTML = async () => {
         const res = await supabase.rpc('handle_compile_book', { books_id: 1 })
-        const main = compileBook(res.data)
+        const main = compileBook(res.data, 'html')
         generateHTML(main, title, project.languages.code, project.languages.title)
       }
 
-      handleCreate()
+      handleOpenHTML()
+    }
+  }
+  const downloadTxt = (e, state) => {
+    const { book } = state
+    e.stopPropagation()
+    if (book) {
+      //     const title = `${t('Book')} ${t(`books:${book.code}`)}`
+      const handleOpenHTML = async () => {
+        const { data } = await supabase.rpc('handle_compile_book', { books_id: 1 })
+        // console.log(data)
+        const main = compileBook(data)
+        // generateHTML(main, title, project.languages.code, project.languages.title)
+      }
+      handleOpenHTML()
     }
   }
   return (
@@ -181,7 +216,10 @@ function BookList({ highLevelAccess, project, user }) {
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
 
                   <td className="py-4">
-                    <DownloadBlock actions={{ downloadPdf }} state={{ book }} />
+                    <DownloadBlock
+                      actions={{ downloadPdf, downloadTxt }}
+                      state={{ book }}
+                    />
                   </td>
                 </tr>
               ))}
