@@ -66,6 +66,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
     DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;  
+    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_book
 
 
   -- END DROP FUNCTION
@@ -669,6 +670,18 @@
 
       RETURN TRUE;
 
+    END;
+  $$;
+
+
+  CREATE FUNCTION public.handle_compile_book(books_id bigint) RETURNS jsonb
+    LANGUAGE plpgsql SECURITY DEFINER
+    AS $$
+    DECLARE      
+      book JSONB;
+    BEGIN      
+        SELECT  jsonb_object_agg(num, text) FROM PUBLIC.chapters WHERE book_id = handle_compile_book.books_id INTO book;
+        return book;      
     END;
   $$;
 

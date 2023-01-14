@@ -124,10 +124,52 @@ function BookList({ highLevelAccess, project, user }) {
       setSelectedBook(null)
     }
   }, [query, books])
-  const convertUsfm = (txt) => {
-    let chapters = {}
+
+  const generateUSFM = (txt, bookCode, project) => {
+    const bookName = t(`books:${bookCode}`)
+    const headers = [
+      {
+        tag: 'id',
+        content: `${bookCode.toUpperCase()} ${project.code.toUpperCase()} ${
+          project.languages.code
+        }_${project.languages.orig_name}_${project.title}  ${Date()} v-cana`,
+      },
+      {
+        tag: 'usfm',
+        content: '3.0',
+      },
+      {
+        tag: 'ide',
+        content: 'UTF-8',
+      },
+      {
+        tag: 'h',
+        content: bookName,
+      },
+      {
+        tag: 'toc1',
+        // content: 'Послание Иуды',
+      },
+      {
+        tag: 'toc2',
+        content: bookName,
+      },
+      {
+        tag: 'toc3',
+        content: bookCode ? bookCode[0].toUpperCase() + bookCode.slice(1) : bookCode,
+      },
+      {
+        tag: 'mt',
+        content: bookName,
+      },
+      {
+        tag: 'cl',
+        content: t('Chapter'),
+      },
+    ]
+    const chapters = {}
     for (const [num, chapter] of Object.entries(txt)) {
-      let oneChapter = {}
+      const oneChapter = {}
       if (chapter) {
         for (const [key, verse] of Object.entries(chapter)) {
           oneChapter[key] = { verseObjects: [{ type: 'text', text: verse + '\n' }] }
@@ -135,19 +177,21 @@ function BookList({ highLevelAccess, project, user }) {
       }
       chapters[num] = oneChapter
     }
-    console.log(chapters)
-    const newUsfm = usfm.toUSFM({ chapters }, { forcedNewLines: true })
-    return newUsfm
+    const contentUsfm = usfm.toUSFM({ chapters, headers }, { forcedNewLines: true })
+    return contentUsfm
   }
-  const compileBook = (book, type = 'txt') => {
-    const main = ''
-    if (!Object.keys(book).length > 0) {
+
+  const compileBook = (book_id, type = 'txt', bookCode) => {
+    console.log('book_id')
+    const bookJson = getBookJson(book_id)
+    let main = ''
+    if (!Object.keys(bookJson).length > 0) {
       return
     }
     if (type === 'txt') {
-      console.log(convertUsfm(book))
+      main = generateUSFM(bookJson, bookCode, project)
     } else {
-      for (const [key, value] of Object.entries(book)) {
+      for (const [key, value] of Object.entries(bookJson)) {
         if (value) {
           main += ` <h1>${t('Chapter')} ${key}</h1>
         <div>${compileChapter(value, 'html')}</div>`
@@ -157,35 +201,52 @@ function BookList({ highLevelAccess, project, user }) {
 
     return main
   }
-
-  const downloadPdf = (e, state) => {
-    const { book } = state
-    e.stopPropagation()
-    if (book) {
-      const title = `${t('Book')} ${t(`books:${book.code}`)}`
-
-      const handleOpenHTML = async () => {
-        const res = await supabase.rpc('handle_compile_book', { books_id: 1 })
-        const main = compileBook(res.data, 'html')
-        generateHTML(main, title, project.languages.code, project.languages.title)
-      }
-
-      handleOpenHTML()
-    }
+  const getBookJson = async (book_id) => {
+    const { data } = await supabase.rpc('handle_compile_book', { book_id })
+    return data
   }
-  const downloadTxt = (e, state) => {
-    const { book } = state
-    e.stopPropagation()
-    if (book) {
-      //     const title = `${t('Book')} ${t(`books:${book.code}`)}`
-      const handleOpenHTML = async () => {
-        const { data } = await supabase.rpc('handle_compile_book', { books_id: 1 })
-        // console.log(data)
-        const main = compileBook(data)
-        // generateHTML(main, title, project.languages.code, project.languages.title)
-      }
-      handleOpenHTML()
+
+  // const downloadPdf = (e, state) => {
+  //   const { book } = state
+  //   e.stopPropagation()
+  //   if (book) {
+  // const title =
+
+  //   const handleOpenHTML = async () => {
+  //     const res = getBookJson(book.id)
+  //     const main = compileBook(res.data, 'html')
+  //     generateHTML(main, title, project.languages.code, project.languages.title)
+  //   }
+
+  //   handleOpenHTML()
+  // }
+  // }
+  // const downloadTxt = (e, state) => {
+  //   const { book } = state
+  //   e.stopPropagation()
+  //   if (book) {
+  //     //     const title = `${t('Book')} ${t(`books:${book.code}`)}`
+  //     const handleDownloadUsfm = async () => {
+  //       const { data } = await supabase.rpc('handle_compile_book', { books_id: book.id })
+
+  //       const main = compileBook(data, 'txt', book.code)
+  //     }
+  //     handleDownloadUsfm()
+  //   }
+  // }
+  const compileChapter = (chapter, type = 'txt') => {
+    console.log('lk;,l;')
+    if (Object.keys(chapter).length > 0) {
+      const text = Object.entries(chapter).reduce((txt, verse) => {
+        if (type === 'txt') {
+          return txt + `${verse[0]}. ${verse[1] || ''}\n`
+        } else {
+          return txt + `<sup>${verse[0]}</sup> ${verse[1] || ''} `
+        }
+      }, '')
+      return text
     }
+    return 'dd'
   }
   return (
     <>
@@ -217,8 +278,24 @@ function BookList({ highLevelAccess, project, user }) {
 
                   <td className="py-4">
                     <DownloadBlock
-                      actions={{ downloadPdf, downloadTxt }}
-                      state={{ book }}
+                      actions={{
+                        downloadPdf,
+                        downloadTxt,
+                      }}
+                      state={{
+                        txt: {
+                          text: compileChapter(book.id),
+                          title: `${t('Book')} ${t(`books:${book.code}`)}`,
+                        },
+                        pdf: {
+                          htmlContent: compileBook(book.id, 'html'),
+                          title: `${t('Book')} ${t(`books:${book.code}`)}`,
+                          projectLanguage: {
+                            code: project.languages.code,
+                            title: project.languages.title,
+                          },
+                        },
+                      }}
                     />
                   </td>
                 </tr>
@@ -243,18 +320,7 @@ function BookList({ highLevelAccess, project, user }) {
     </>
   )
 }
-const compileChapter = (chapter, type = 'txt') => {
-  if (Object.keys(chapter).length > 0) {
-    const text = Object.entries(chapter).reduce((txt, verse) => {
-      if (type === 'txt') {
-        return txt + `${verse[0]}. ${verse[1] || ''}\n`
-      } else {
-        return txt + `<sup>${verse[0]}</sup> ${verse[1] || ''} `
-      }
-    }, '')
-    return text
-  }
-}
+
 const generateHTML = (main, title = '', lang = 'en', dir = 'project') => {
   let new_window = window.open()
   new_window.document.write(`<html lang="${lang}" dir="${dir}">
@@ -273,6 +339,27 @@ const generateHTML = (main, title = '', lang = 'en', dir = 'project') => {
       </body>
       </html>`)
   new_window.document.close()
+}
+
+const downloadTxt = (e, text, title) => {
+  e.stopPropagation()
+  console.log(text)
+  if (!text) {
+    return
+  }
+  const element = document.createElement('a')
+  const file = new Blob([text], { type: 'text/plain' })
+  element.href = URL.createObjectURL(file)
+  element.download = title
+  element.click()
+}
+
+const downloadPdf = (e, htmlContent, title, projectLanguage) => {
+  e.stopPropagation()
+  if (!htmlContent || !title) {
+    return
+  }
+  generateHTML(htmlContent, title, projectLanguage.code, projectLanguage.title)
 }
 
 function ChapterList({ selectedBook, project, highLevelAccess }) {
@@ -353,36 +440,6 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     }
   }
 
-  const downloadTxt = (e, chapterJson, chapterNum) => {
-    e.stopPropagation()
-    if (!chapterJson) {
-      return
-    }
-    const text = compileChapter(chapterJson)
-    const element = document.createElement('a')
-    const file = new Blob([text], { type: 'text/plain' })
-    element.href = URL.createObjectURL(file)
-    element.download = `${selectedBook.code}_chapter${chapterNum}.txt`
-    element.click()
-  }
-  const downloadPdf = (e, state) => {
-    const {
-      chapter: { text: chapterJson, num: chapterNum },
-      book,
-    } = state
-    e.stopPropagation()
-    if (!chapterJson || !book) {
-      return
-    }
-
-    const main = compileChapter(chapterJson, 'html')
-    const title = `${t('Book')} ${t(`books:${book.code}`)} ${t(
-      'Chapter'
-    ).toLowerCase()} ${chapterNum || ''}`
-
-    generateHTML(main, title, project.languages.code, project.languages.title)
-  }
-
   return (
     <div className="overflow-x-auto relative">
       <div className="my-4">
@@ -449,8 +506,26 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                   <td className="py-4 px-6">
                     {finished_at ? (
                       <DownloadBlock
-                        actions={{ downloadPdf, downloadTxt }}
-                        state={{ chapter: { num, text }, book: selectedBook }}
+                        actions={{
+                          downloadPdf,
+                          downloadTxt,
+                        }}
+                        state={{
+                          txt: {
+                            text: compileChapter(chapter.text),
+                            title: `${selectedBook.code}_chapter${chapter.num}.txt`,
+                          },
+                          pdf: {
+                            htmlContent: compileChapter(chapter.text, 'html'),
+                            title: `${t('Book')} ${t(`books:${selectedBook.code}`)} ${t(
+                              'Chapter'
+                            ).toLowerCase()} ${chapter.num || ''}`,
+                            projectLanguage: {
+                              code: project.languages.code,
+                              title: project.languages.title,
+                            },
+                          },
+                        }}
                       />
                     ) : (
                       getCurrentStep(chapter, index)
@@ -582,19 +657,27 @@ function BookCreate({ highLevelAccess, project, books, user }) {
   )
 }
 
-function DownloadBlock({ actions = {}, state = {} }) {
+function DownloadBlock({ actions, state }) {
   const { downloadPdf, downloadTxt } = actions
+
   return (
     <div className="flex justify-center ">
       <div
         className="p-2 mr-4 hover:bg-cyan-100 rounded-md"
-        onClick={(e) => downloadPdf(e, state)}
+        onClick={(e) =>
+          downloadPdf(
+            e,
+            state?.pdf?.htmlContent,
+            state?.pdf?.title,
+            state?.pdf?.projectLanguage
+          )
+        }
       >
         <Pdf />
       </div>
       <div
         className="p-2 w-10 h-10 hover:bg-cyan-100 rounded-md"
-        onClick={(e) => downloadTxt(e, state)}
+        onClick={(e) => downloadTxt(e, state?.txt?.text, state?.txt?.title)}
       >
         <Download />
       </div>
