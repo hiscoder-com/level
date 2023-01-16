@@ -66,7 +66,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
     DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;  
-    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_book
+    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_book;
 
 
   -- END DROP FUNCTION
