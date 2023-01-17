@@ -40,6 +40,8 @@ function EditBrief({ user, projectId }) {
     setShowModalTranslationGoal(false)
   }
 
+  // console.log(questionsText)
+
   return (
     <>
       <button
@@ -125,12 +127,117 @@ function EditBrief({ user, projectId }) {
             <p className="mb-2 font-bold text-lg text-gray-500">
               {t('project-edit:Answers')}
             </p>
-            <textarea
-              className="border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
-              placeholder={t('project-edit:AnswersPlaceholder')}
-              onChange={(e) => setAnswersText(e.target.value)}
-              value={answersText}
-            />
+
+            <div className="border-2 overflow-auto divide-y rounded-md p-2 text-gray-500 w-full h-[69vh]">
+              <div className="text-left pb-3">
+                <p className="font-bold mb-1">
+                  {questionsText?.question1?.question_title}
+                </p>
+                <textarea
+                  className="p-2 outline-none w-full h-40"
+                  value={questionsText?.question1?.answers.join('\n')}
+                  onChange={(e) => {
+                    setQuestionsText((prev) => ({
+                      ...prev,
+                      question1: {
+                        ...prev.question1,
+                        answers: e.target.value.split('\n'),
+                      },
+                    }))
+                  }}
+                />
+              </div>
+              <div className="text-left py-3">
+                <p className="font-bold mb-1">
+                  {questionsText?.question2?.question_title}
+                </p>
+                <textarea
+                  className="p-2 outline-none w-full h-40"
+                  value={questionsText?.question2?.answers.join('\n')}
+                  onChange={(e) => {
+                    setQuestionsText((prev) => ({
+                      ...prev,
+                      question2: {
+                        ...prev.question2,
+                        answers: e.target.value.split('\n'),
+                      },
+                    }))
+                  }}
+                />
+              </div>
+              <div className="text-left py-3">
+                <p className="font-bold mb-1">
+                  {questionsText?.question3?.question_title}
+                </p>
+                <textarea
+                  className="p-2 outline-none w-full h-60"
+                  value={questionsText?.question3?.answers.join('\n')}
+                  onChange={(e) => {
+                    setQuestionsText((prev) => ({
+                      ...prev,
+                      question3: {
+                        ...prev.question3,
+                        answers: e.target.value.split('\n'),
+                      },
+                    }))
+                  }}
+                />
+              </div>
+              <div className="text-left py-3">
+                <p className="font-bold mb-1">
+                  {questionsText?.question4?.question_title}
+                </p>
+                <textarea
+                  className="p-2 outline-none w-full h-24"
+                  value={questionsText?.question4?.answers.join('\n')}
+                  onChange={(e) => {
+                    setQuestionsText((prev) => ({
+                      ...prev,
+                      question4: {
+                        ...prev.question4,
+                        answers: e.target.value.split('\n'),
+                      },
+                    }))
+                  }}
+                />
+              </div>
+              <div className="text-left py-3">
+                <p className="font-bold mb-1">
+                  {questionsText?.question5?.question_title}
+                </p>
+                <textarea
+                  className="p-2 outline-none w-full h-16"
+                  value={questionsText?.question5?.answers.join('\n')}
+                  onChange={(e) => {
+                    setQuestionsText((prev) => ({
+                      ...prev,
+                      question5: {
+                        ...prev.question5,
+                        answers: e.target.value.split('\n'),
+                      },
+                    }))
+                  }}
+                />
+              </div>
+              <div className="text-left pt-3">
+                <p className="font-bold mb-1">
+                  {questionsText?.question6?.question_title}
+                </p>
+                <textarea
+                  className="p-2 outline-none w-full h-24"
+                  value={questionsText?.question6?.answers.join('\n')}
+                  onChange={(e) => {
+                    setQuestionsText((prev) => ({
+                      ...prev,
+                      question6: {
+                        ...prev.question6,
+                        answers: e.target.value.split('\n'),
+                      },
+                    }))
+                  }}
+                />
+              </div>
+            </div>
           </div>
           <div className="w-1/3">
             <p className="mb-2 font-bold text-lg text-gray-500">
