@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import { BookCreate, ChapterList, DownloadBlock } from './index'
 import { supabase } from 'utils/supabaseClient'
-import { compileChapter, convertUsfm } from 'utils/helper'
+import { compileChapter, convertToUsfm } from 'utils/helper'
 
 function BookList({ highLevelAccess, project, user }) {
   const { t } = useTranslation(['common', 'books'])
@@ -14,8 +14,8 @@ function BookList({ highLevelAccess, project, user }) {
   const [selectedBook, setSelectedBook] = useState(null)
   const [books, setBooks] = useState()
 
-  const getBookJson = async (books_id) => {
-    const { data } = await supabase.rpc('handle_compile_book', { books_id })
+  const getBookJson = async (book_id) => {
+    const { data } = await supabase.rpc('handle_compile_book', { book_id })
     return data
   }
 
@@ -44,7 +44,6 @@ function BookList({ highLevelAccess, project, user }) {
 
   const compileBook = async (book_id, type = 'txt', bookCode = 'book') => {
     const bookJson = await getBookJson(book_id)
-
     let main = ''
     if (!bookJson || !Object.keys(bookJson).length > 0) {
       return
@@ -52,7 +51,7 @@ function BookList({ highLevelAccess, project, user }) {
     if (type === 'txt') {
       const bookName = t(`books:${bookCode}`)
       const cl = t('Chapter')
-      main = convertUsfm({
+      main = convertToUsfm({
         book: { json: bookJson, code: bookCode, title: bookName },
         cl,
         project: {
@@ -111,15 +110,15 @@ function BookList({ highLevelAccess, project, user }) {
                       }}
                       state={{
                         txt: {
-                          ref: { text: book.id, bookCode: book.code },
-                          title: `${t('Book')} ${t(`books:${book.code}`)}.usfm`,
+                          ref: { text: book?.id, bookCode: book?.code },
+                          title: `${t('Book')} ${t(`books:${book?.code}`)}.usfm`,
                         },
                         pdf: {
-                          ref: { text: book.id },
-                          title: `${t('Book')} ${t(`books:${book.code}`)}`,
+                          ref: { text: book?.id },
+                          title: `${t('Book')} ${t(`books:${book?.code}`)}`,
                           projectLanguage: {
-                            code: project.languages.code,
-                            title: project.languages.title,
+                            code: project?.languages?.code,
+                            title: project?.languages?.title,
                           },
                         },
                       }}

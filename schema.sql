@@ -674,13 +674,13 @@
   $$;
 
 
-  CREATE FUNCTION public.handle_compile_book(books_id bigint) RETURNS jsonb
+  CREATE FUNCTION public.handle_compile_book(book_id bigint) RETURNS jsonb
     LANGUAGE plpgsql SECURITY DEFINER
     AS $$
     DECLARE      
       book JSONB;
     BEGIN      
-        SELECT  jsonb_object_agg(num, text) FROM PUBLIC.chapters WHERE book_id = handle_compile_book.books_id INTO book;
+        SELECT  jsonb_object_agg(num, text) FROM PUBLIC.chapters WHERE chapters.book_id = handle_compile_book.book_id INTO book;
         return book;      
     END;
   $$;
@@ -748,7 +748,7 @@
     END;
   $$;
 
- -- update changed_at to current time/date when personal_notes is updating
+  -- update changed_at to current time/date when personal_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_personal_notes() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       NEW.changed_at:=NOW();
@@ -758,7 +758,7 @@
     END;
   $$;
 
--- update changed_at to current time/date when team_notes is updating
+  -- update changed_at to current time/date when team_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       NEW.changed_at:=NOW();
@@ -768,7 +768,7 @@
     END;
   $$;
 
--- update array of alphabet in projects column when added new word with new first symbol
+  -- update array of alphabet in projects column when added new word with new first symbol
   CREATE FUNCTION PUBLIC.handle_update_dictionaries() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -787,7 +787,7 @@
     END;
   $$;
 
- CREATE FUNCTION PUBLIC.handle_compile_chapter() returns TRIGGER
+  CREATE FUNCTION PUBLIC.handle_compile_chapter() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$
     DECLARE      
       chapter JSONB;
@@ -1275,8 +1275,11 @@
     CREATE policy "Получают книги все кто на проекте" ON PUBLIC.chapters FOR
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+      
 
   -- END RLS
+
+     ALTER TABLE chapters ALTER COLUMN "text" TYPE jsonb USING "text"::jsonb;
 -- END CHAPTERS
 
 -- VERSES

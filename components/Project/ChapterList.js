@@ -71,6 +71,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       getChapters()
     }
   }, [selectedBook?.id, project?.id])
+
   const getCurrentStep = (chapter, index) => {
     const step = currentSteps
       ?.filter((step) => step.book === book)

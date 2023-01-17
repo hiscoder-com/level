@@ -88,7 +88,7 @@ export const downloadPdf = (htmlContent, title, projectLanguage) => {
   generateHTML(htmlContent, title, projectLanguage.code, projectLanguage.title)
 }
 
-export const convertUsfm = ({ book, cl, project }) => {
+export const convertToUsfm = ({ book, cl, project }) => {
   const headers = [
     {
       tag: 'id',
