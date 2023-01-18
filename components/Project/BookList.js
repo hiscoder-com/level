@@ -15,7 +15,7 @@ function BookList({ highLevelAccess, project, user }) {
   const [books, setBooks] = useState()
 
   const getBookJson = async (book_id) => {
-    const { data } = await supabase.rpc('handle_compile_book', { book_id })
+    const { data } = await supabase.rpc('handle_compile_book', { book_id }) //TODO сделать обычный запрос вместо функции
     return data
   }
 

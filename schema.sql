@@ -988,7 +988,8 @@
       title text NOT NULL,
       steps json,
       resources json,
-      "type" project_type NOT NULL DEFAULT 'bible'::project_type
+      "type" project_type NOT NULL DEFAULT 'bible'::project_type,
+      -- add brief cloumn
     );
     -- Secure methods
     ALTER TABLE
