@@ -8,8 +8,7 @@ import { useBrief } from 'utils/hooks'
 
 function EditBrief({ user, projectId }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
-  const [questionsText, setQuestionsText] = useState('')
-  const [answersText, setAnswersText] = useState('')
+  const [questionsArray, setQuestionsArray] = useState('')
   const [summaryText, setSummaryText] = useState('')
 
   const { t } = useTranslation(['common', 'project-edit'])
@@ -19,8 +18,7 @@ function EditBrief({ user, projectId }) {
   })
 
   useEffect(() => {
-    setQuestionsText(brief?.questions)
-    setAnswersText(brief?.answers)
+    setQuestionsArray(brief?.questions)
     setSummaryText(brief?.summary)
   }, [brief])
 
@@ -28,8 +26,7 @@ function EditBrief({ user, projectId }) {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${projectId}`, {
-        questions: questionsText,
-        answers: answersText,
+        questions: questionsArray,
         summary: summaryText,
       })
       .then(() => mutate())
@@ -40,7 +37,7 @@ function EditBrief({ user, projectId }) {
     setShowModalTranslationGoal(false)
   }
 
-  // console.log(questionsText)
+  // console.log(questionsArray[0].title)
 
   return (
     <>
@@ -57,200 +54,118 @@ function EditBrief({ user, projectId }) {
         isOpen={showModalTranslationGoal}
         closeHandle={closeModal}
       >
-        <div className="text-center flex flex-row gap-4 my-6">
-          <div className="w-1/3">
-            <p className="mb-2 font-bold text-lg text-gray-500">{t('Questions')}</p>
-            <div className="border-2 overflow-auto divide-y rounded-md p-2 text-gray-500 w-full h-[69vh]">
-              <div className="text-left pb-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question1?.question_title}
-                </p>
-                <div>
-                  {questionsText?.question1?.questions?.map((question, index) => {
-                    return <li key={index}>{question}</li>
-                  })}
-                </div>
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question2?.question_title}
-                </p>
-                <div>
-                  {questionsText?.question2?.questions?.map((question, index) => {
-                    return <li key={index}>{question}</li>
-                  })}
-                </div>
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question3?.question_title}
-                </p>
-                <div>
-                  {questionsText?.question3?.questions?.map((question, index) => {
-                    return <li key={index}>{question}</li>
-                  })}
-                </div>
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question4?.question_title}
-                </p>
-                <div>
-                  {questionsText?.question4?.questions?.map((question, index) => {
-                    return <li key={index}>{question}</li>
-                  })}
-                </div>
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question5?.question_title}
-                </p>
-                <div>
-                  {questionsText?.question5?.questions?.map((question, index) => {
-                    return <li key={index}>{question}</li>
-                  })}
-                </div>
-              </div>
-              <div className="text-left pt-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question6?.question_title}
-                </p>
-                <div>
-                  {questionsText?.question6?.questions?.map((question, index) => {
-                    return <li key={index}>{question}</li>
-                  })}
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="w-1/3">
-            <p className="mb-2 font-bold text-lg text-gray-500">
-              {t('project-edit:Answers')}
-            </p>
+        {questionsArray && (
+          // <div className="text-center flex flex-row gap-4 my-6">
+          //   <div className="w-1/3">
+          //     <p className="mb-2 font-bold text-lg text-gray-500">{t('Questions')}</p>
+          //     <div className="border-2 overflow-auto divide-y rounded-md p-2 text-gray-500 w-full h-[69vh]">
+          //       <div className="text-left pb-3">
+          //         <p className="font-bold mb-3">{`${questionsArray[0].id}. ${questionsArray[0].title}`}</p>
+          //         <div className="h-20">{questionsArray[0].block[2].question}</div>
+          //         <div className="mt-2 h-20">{questionsArray[0].block[1].question}</div>
+          //       </div>
+          //
+          //   <div className="w-1/3">
+          //     <p className="mb-2 font-bold text-lg text-gray-500">
+          //       {t('project-edit:Answers')}
+          //     </p>
 
-            <div className="border-2 overflow-auto divide-y rounded-md p-2 text-gray-500 w-full h-[69vh]">
-              <div className="text-left pb-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question1?.question_title}
-                </p>
-                <textarea
-                  className="p-2 outline-none w-full h-40"
-                  value={questionsText?.question1?.answers.join('\n')}
-                  onChange={(e) => {
-                    setQuestionsText((prev) => ({
-                      ...prev,
-                      question1: {
-                        ...prev.question1,
-                        answers: e.target.value.split('\n'),
-                      },
-                    }))
-                  }}
-                />
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question2?.question_title}
-                </p>
-                <textarea
-                  className="p-2 outline-none w-full h-40"
-                  value={questionsText?.question2?.answers.join('\n')}
-                  onChange={(e) => {
-                    setQuestionsText((prev) => ({
-                      ...prev,
-                      question2: {
-                        ...prev.question2,
-                        answers: e.target.value.split('\n'),
-                      },
-                    }))
-                  }}
-                />
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question3?.question_title}
-                </p>
-                <textarea
-                  className="p-2 outline-none w-full h-60"
-                  value={questionsText?.question3?.answers.join('\n')}
-                  onChange={(e) => {
-                    setQuestionsText((prev) => ({
-                      ...prev,
-                      question3: {
-                        ...prev.question3,
-                        answers: e.target.value.split('\n'),
-                      },
-                    }))
-                  }}
-                />
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question4?.question_title}
-                </p>
-                <textarea
-                  className="p-2 outline-none w-full h-24"
-                  value={questionsText?.question4?.answers.join('\n')}
-                  onChange={(e) => {
-                    setQuestionsText((prev) => ({
-                      ...prev,
-                      question4: {
-                        ...prev.question4,
-                        answers: e.target.value.split('\n'),
-                      },
-                    }))
-                  }}
-                />
-              </div>
-              <div className="text-left py-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question5?.question_title}
-                </p>
-                <textarea
-                  className="p-2 outline-none w-full h-16"
-                  value={questionsText?.question5?.answers.join('\n')}
-                  onChange={(e) => {
-                    setQuestionsText((prev) => ({
-                      ...prev,
-                      question5: {
-                        ...prev.question5,
-                        answers: e.target.value.split('\n'),
-                      },
-                    }))
-                  }}
-                />
-              </div>
-              <div className="text-left pt-3">
-                <p className="font-bold mb-1">
-                  {questionsText?.question6?.question_title}
-                </p>
-                <textarea
-                  className="p-2 outline-none w-full h-24"
-                  value={questionsText?.question6?.answers.join('\n')}
-                  onChange={(e) => {
-                    setQuestionsText((prev) => ({
-                      ...prev,
-                      question6: {
-                        ...prev.question6,
-                        answers: e.target.value.split('\n'),
-                      },
-                    }))
-                  }}
-                />
-              </div>
-            </div>
+          //     <div className="border-2 overflow-auto divide-y rounded-md p-2 text-gray-500 w-full h-[69vh]">
+          //       <div className="text-left pb-3">
+          //         <p className="font-bold mb-1">{`${questionsArray[0].id}. ${questionsArray[0].title}`}</p>
+          //         <textarea
+          //           className="p-2 outline-none w-full h-20"
+          //           value={questionsArray[0].block[2].answer}
+          //           // onChange={(e) => {
+          //           //   setQuestionsArray((prev) => ({
+          //           //     ...prev,
+          //           //     question1: {
+          //           //       ...prev[0],
+          //           //       answers: e.target.value.split('\n'),
+          //           //     },
+
+          //           //     question1: {
+          //           //       ...prev.question1,
+          //           //       answers: e.target.value.split('\n'),
+          //           //     },
+          //           //   }))
+          //           // }}
+          //         />
+          //         <textarea
+          //           className="p-2 outline-none w-full h-28"
+          //           value={questionsArray[0].block[1].answer}
+          //         />
+          //       </div>
+          //       {/* <div className="text-left py-3">
+          //         <p className="font-bold mb-1">
+          //           {`${questionsArray[0].id}. ${questionsArray[1].title}`}
+          //         </p>
+          //         <textarea
+          //           className="p-2 outline-none w-full h-40"
+          //           // value={questionsArray?.question2?.answers.join('\n')}
+          //           // onChange={(e) => {
+          //           //   setQuestionsArray((prev) => ({
+          //           //     ...prev,
+          //           //     question2: {
+          //           //       ...prev.question2,
+          //           //       answers: e.target.value.split('\n'),
+          //           //     },
+          //           //   }))
+          //           // }}
+          //         />
+          //   <div className="w-1/3">
+          //     <p className="mb-2 font-bold text-lg text-gray-500">
+          //       {t('PurposeTranslation')}
+          //     </p>
+          //     <textarea
+          //       className="border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
+          //       placeholder={t('project-edit:SummaryPlaceholder')}
+          //       onChange={(e) => setSummaryText(e.target.value)}
+          //       value={summaryText}
+          //     />
+          //   </div>
+          // </div>
+          <div className="w-full h-[69vh]">
+            <table className="table-fixed border-spacing-x-4 w-full border-separate border-spacing-y-0 my-6 text-gray-500">
+              <thead className="font-bold text-lg">
+                <tr>
+                  <th className="pb-2 w-1\3">{t('Questions')}</th>
+                  <th className="pb-2 w-1\3">{t('project-edit:Answers')}</th>
+                  <th className="pb-2 w-1\3">{t('PurposeTranslation')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td className="border p-2 font-bold">{`${questionsArray[0].id}. ${questionsArray[0].title}`}</td>
+                  <td className="border p-2 font-bold">{`${questionsArray[0].id}. ${questionsArray[0].title}`}</td>
+                  <td rowSpan={6} className="border p-2">
+                    Перевод будет сделан на азербайджанский язык, на латинице
+                  </td>
+                </tr>
+                <tr>
+                  <td className="border p-2">{questionsArray[0].block[0].question}</td>
+                  <td className="border p-2">{questionsArray[0].block[0].answer}</td>
+                </tr>
+                <tr>
+                  <td className="border p-2">{questionsArray[0].block[1].question}</td>
+                  <td className="border p-2">{questionsArray[0].block[1].answer}</td>
+                </tr>
+                <tr>
+                  <td className="border p-2">{questionsArray[0].block[2].question}</td>
+                  <td className="border p-2">{questionsArray[0].block[2].answer}</td>
+                </tr>
+                <tr>
+                  <td className="border p-2">{questionsArray[0].block[3].question}</td>
+                  <td className="border p-2">{questionsArray[0].block[3].answer}</td>
+                </tr>
+                <tr>
+                  <td className="border p-2">{questionsArray[0].block[4].question}</td>
+                  <td className="border p-2">{questionsArray[0].block[4].answer}</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <div className="w-1/3">
-            <p className="mb-2 font-bold text-lg text-gray-500">
-              {t('PurposeTranslation')}
-            </p>
-            <textarea
-              className="border-2 rounded-md p-2 text-gray-500 outline-none w-full h-[69vh]"
-              placeholder={t('project-edit:SummaryPlaceholder')}
-              onChange={(e) => setSummaryText(e.target.value)}
-              value={summaryText}
-            />
-          </div>
-        </div>
+        )}
         <div className="flex justify-center gap-4">
           <button className="btn-cyan" onClick={saveToDatabase}>
             {t('Save')}
