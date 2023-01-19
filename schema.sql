@@ -783,7 +783,7 @@
     BEGIN
       IF (NEW.finished_at IS NOT NULL) THEN
         SELECT jsonb_object_agg(num, text ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
-        New.text=chapter;
+        NEW.text=chapter;
       END IF;               
       RETURN NEW;
     END;
@@ -975,8 +975,7 @@
       title text NOT NULL,
       steps json,
       resources json,
-      "type" project_type NOT NULL DEFAULT 'bible'::project_type,
-      -- add brief cloumn
+      "type" project_type NOT NULL DEFAULT 'bible'::project_type
     );
     -- Secure methods
     ALTER TABLE
@@ -1247,7 +1246,7 @@
       project_id bigint references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
-      "text" text DEFAULT NULL,
+      "text" jsonb DEFAULT NULL,
       verses integer,
       started_at TIMESTAMP DEFAULT NULL,
       finished_at TIMESTAMP DEFAULT NULL,
@@ -1267,7 +1266,6 @@
 
   -- END RLS
 
-     ALTER TABLE chapters ALTER COLUMN "text" TYPE jsonb USING "text"::jsonb;
 -- END CHAPTERS
 
 -- VERSES
