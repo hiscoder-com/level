@@ -275,7 +275,7 @@ function Dictionary() {
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
+            className="absolute top-0 right-0 w-10 pr-3 cursor-pointer"
             onClick={() => {
               saveWord()
               setActiveWord(null)

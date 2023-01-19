@@ -137,7 +137,7 @@ function ProjectCreate() {
   }, [customResources, resourcesUrl])
 
   return (
-    <div>
+    <div className="mx-auto max-w-7xl pb-4">
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>
           Повесить слушателя чтобы проверять, есть такой код проекта или нет. Либо на ввод
