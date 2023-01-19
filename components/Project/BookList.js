@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { BookCreate, ChapterList, DownloadBlock } from './index'
 import { supabase } from 'utils/supabaseClient'
 import { compileChapter, convertToUsfm } from 'utils/helper'
+import { usfmFileNames } from 'utils/config'
 
 function BookList({ highLevelAccess, project, user }) {
   const { t } = useTranslation(['common', 'books'])
@@ -15,7 +16,11 @@ function BookList({ highLevelAccess, project, user }) {
   const [books, setBooks] = useState()
 
   const getBookJson = async (book_id) => {
-    const { data } = await supabase.rpc('handle_compile_book', { book_id }) //TODO сделать обычный запрос вместо функции
+    const { data } = await supabase
+      .from('chapters')
+      .select('num,text')
+      .eq('book_id', book_id)
+      .order('num')
     return data
   }
 
@@ -42,18 +47,18 @@ function BookList({ highLevelAccess, project, user }) {
     }
   }, [query, books])
 
-  const compileBook = async (book_id, type = 'txt', bookCode = 'book') => {
-    const bookJson = await getBookJson(book_id)
+  const compileBook = async (ref, type = 'txt') => {
+    const chapters = await getBookJson(ref?.book_id)
     let main = ''
-    if (!bookJson || !Object.keys(bookJson).length > 0) {
+    if (chapters?.length === 0) {
       return
     }
     if (type === 'txt') {
-      const bookName = t(`books:${bookCode}`)
+      const bookName = t(`books:${ref?.bookCode}`)
       const cl = t('Chapter')
       main = convertToUsfm({
-        book: { json: bookJson, code: bookCode, title: bookName },
-        cl,
+        book: { json: chapters, code: ref?.bookCode, title: bookName },
+
         project: {
           code: project?.code,
           title: project?.title,
@@ -64,14 +69,14 @@ function BookList({ highLevelAccess, project, user }) {
         },
       })
     } else {
-      for (const [key, value] of Object.entries(bookJson)) {
-        if (value) {
-          main += ` <h1>${t('Chapter')} ${key}</h1>
-        <div>${compileChapter(value, 'html')}</div>`
+      main = chapters.reduce((html, el) => {
+        if (el.text) {
+          html += ` <h1>${t('Chapter')} ${el.num}</h1>
+        <div>${compileChapter({ json: el.text }, 'html')}</div>`
         }
-      }
+        return html
+      }, '')
     }
-
     return main
   }
 
@@ -80,11 +85,11 @@ function BookList({ highLevelAccess, project, user }) {
       {!selectedBook ? (
         <>
           <table className="shadow-md text-sm text-center table-auto text-gray-500">
-            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-100">
               <tr>
                 <th className="py-3 px-6">{t('NameBook')}</th>
                 <th className="py-3 px-6">{t('CountChapters')}</th>
-                <th className="py-3 px-6"></th>
+                <th className="py-3 px-6">{t('Download')}</th>
               </tr>
             </thead>
             <tbody>
@@ -98,24 +103,26 @@ function BookList({ highLevelAccess, project, user }) {
                       shallow: true,
                     })
                   }}
-                  className="cursor-pointer hover:bg-cyan-50 bg-white border-b"
+                  className="cursor-pointer hover:bg-gray-50 bg-white border-b"
                 >
                   <td className="py-4 px-6">{t(`books:${book?.code}`)}</td>
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
-
-                  <td className="py-4">
+                  <td className="py-4 px-6">
                     <DownloadBlock
                       actions={{
                         compile: compileBook,
                       }}
                       state={{
                         txt: {
-                          ref: { text: book?.id, bookCode: book?.code },
-                          title: `${t('Book')} ${t(`books:${book?.code}`)}.usfm`,
+                          ref: { book_id: book?.id, bookCode: book?.code },
+                          fileName: usfmFileNames[book?.code] || '',
                         },
                         pdf: {
-                          ref: { text: book?.id },
-                          title: `${t('Book')} ${t(`books:${book?.code}`)}`,
+                          ref: {
+                            book_id: book?.id,
+                            title: project.title,
+                            subtitle: `${t('Book')} ${t(`books:${book?.code}`)}`,
+                          },
                           projectLanguage: {
                             code: project?.languages?.code,
                             title: project?.languages?.title,

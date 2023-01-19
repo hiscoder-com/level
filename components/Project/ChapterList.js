@@ -23,7 +23,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
   const [createdChapters, setCreatedChapters] = useState([])
   const [currentSteps, setCurrentSteps] = useState(null)
 
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'books'])
 
   const handleCreate = async (chapter_id, num) => {
     const res = await supabase.rpc('create_verses', { chapter_id })
@@ -101,12 +101,12 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         /{t(`books:${selectedBook.code}`)}
       </div>
       <table className="shadow-md mb-4 text-center w-fit text-sm table-auto text-gray-500">
-        <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+        <thead className="text-xs text-gray-700 uppercase bg-gray-100">
           <tr>
             <th className="py-3 px-3">{t('Chapter')}</th>
             <th className="py-3 px-3">{t('chapters:StartedAt')}</th>
             <th className="py-3 px-3 ">{t('chapters:FinishedAt')}</th>
-            <th className="py-3 px-6"></th>
+            <th className="py-3 px-6">{t('Download')}</th>
           </tr>
         </thead>
         <tbody>
@@ -135,7 +135,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     }
                   }}
                   className={`${
-                    highLevelAccess ? 'cursor-pointer hover:bg-cyan-50' : ''
+                    highLevelAccess ? 'cursor-pointer hover:bg-gray-50' : ''
                   } ${
                     !createdChapters.includes(id) ? 'bg-gray-100' : 'bg-white'
                   } border-b`}
@@ -159,14 +159,24 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                         actions={{ compile: compileChapter }}
                         state={{
                           txt: {
-                            ref: { text: chapter.text, bookCode: selectedBook.code },
-                            title: `${selectedBook.code}_chapter${chapter.num}.txt`,
+                            ref: {
+                              json: chapter?.text,
+                              bookCode: selectedBook.code,
+                              title: `${project.title} ${t(
+                                `books:${selectedBook?.code}`
+                              )} ${t('Chapter')} ${chapter.num} `,
+                            },
+                            fileName: `${selectedBook.code}_chapter${chapter.num}.txt`,
                           },
                           pdf: {
-                            ref: { text: chapter.text },
-                            title: `${t('Book')} ${t(`books:${selectedBook.code}`)} ${t(
-                              'Chapter'
-                            ).toLowerCase()} ${chapter.num || ''}`,
+                            ref: {
+                              json: chapter?.text,
+                              title: project.title,
+                              subtitle: `${t(`books:${selectedBook?.code}`)} ${t(
+                                'Chapter'
+                              )} ${chapter.num}`,
+                            },
+
                             projectLanguage: {
                               code: project.languages.code,
                               title: project.languages.title,

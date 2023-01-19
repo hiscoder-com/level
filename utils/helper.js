@@ -37,33 +37,35 @@ export const readableDate = (date, locale = 'ru') => {
   return new Date(date).toLocaleString(locale, {})
 }
 
-export const compileChapter = (chapter, type = 'txt') => {
-  if (Object.keys(chapter).length > 0) {
-    const text = Object.entries(chapter).reduce((txt, verse) => {
-      if (type === 'txt') {
-        return txt + `${verse[0]}. ${verse[1] || ''}\n`
-      } else {
-        return txt + `<sup>${verse[0]}</sup> ${verse[1] || ''} `
-      }
-    }, '')
+export const compileChapter = (ref, type = 'txt') => {
+  if (!ref?.json) {
+    return
+  }
+  if (Object.keys(ref.json).length > 0) {
+    const text = Object.entries(ref?.json).reduce(
+      (summary, verse) => {
+        if (type === 'txt') {
+          return summary + `${verse[0]}. ${verse[1] || ''}\n`
+        } else {
+          return summary + `<sup>${verse[0]}</sup> ${verse[1] || ''} `
+        }
+      },
+      type === 'txt' ? ref?.title + '\n' : ''
+    )
     return text
   }
 }
 
-const generateHTML = (main, title = 'pdf', lang = 'en', dir = 'project') => {
+const generateHTML = (main, title = '', subtitle = '', lang = 'en', dir = 'project') => {
   let new_window = window.open()
   new_window?.document.write(`<html lang="${lang}" dir="${dir}">
   <head>
       <meta charset="UTF-8"/>
-      <title>${title}</title>
-      <style type="text/css">
-          body > div {
-              page-break-after: always;
-          }
-      </style>
+      <title>${title}</title>      
   </head>
   <body onLoad="window.print()">
       <h1>${title}</h1>
+      <h2>${subtitle}</h2>
       <div>${main}</div>
       </body>
       </html>`)
@@ -81,20 +83,33 @@ export const downloadTxt = (text, title) => {
   element.click()
 }
 
-export const downloadPdf = (htmlContent, title, projectLanguage) => {
+export const downloadPdf = (htmlContent, title, subTitle, projectLanguage) => {
   if (!htmlContent || !title) {
     return
   }
-  generateHTML(htmlContent, title, projectLanguage.code, projectLanguage.title)
+  generateHTML(htmlContent, title, subTitle, projectLanguage.code, projectLanguage.title)
 }
 
-export const convertToUsfm = ({ book, cl, project }) => {
+export const convertToUsfm = ({ book, cl, toc1, project }) => {
+  const capitalize = (text) => {
+    if (!text) {
+      return ''
+    }
+    if (text.search(/\d/) === 0) {
+      text = text.split('')
+      text[1] = text[1].toUpperCase()
+      text = text.join('')
+      return text
+    } else {
+      return text[0].toUpperCase() + text.slice(1)
+    }
+  }
   const headers = [
     {
       tag: 'id',
-      content: `${book.code.toUpperCase()} ${project.code.toUpperCase()} ${
-        project.language.code
-      }_${project.language.orig_name}_${project.title}  ${Date()} v-cana`,
+      content: `${book?.code.toUpperCase()} ${project?.code.toUpperCase()} ${
+        project?.language.code
+      }_${capitalize(project?.language?.orig_name)}_${project?.title} ${Date()} v-cana`,
     },
     {
       tag: 'usfm',
@@ -110,7 +125,7 @@ export const convertToUsfm = ({ book, cl, project }) => {
     },
     {
       tag: 'toc1',
-      // content: 'Послание Иуды',
+      content: toc1,
     },
     {
       tag: 'toc2',
@@ -118,9 +133,7 @@ export const convertToUsfm = ({ book, cl, project }) => {
     },
     {
       tag: 'toc3',
-      content: book?.code
-        ? book?.code[0].toUpperCase() + book?.code.slice(1)
-        : book?.code,
+      content: book?.code ? capitalize(book?.code) : '',
     },
     {
       tag: 'mt',
@@ -132,14 +145,21 @@ export const convertToUsfm = ({ book, cl, project }) => {
     },
   ]
   const chapters = {}
-  for (const [num, chapter] of Object.entries(book?.json)) {
-    const oneChapter = {}
-    if (chapter) {
-      for (const [key, verse] of Object.entries(chapter)) {
-        oneChapter[key] = { verseObjects: [{ type: 'text', text: verse + '\n' }] }
+  if (book?.json.length > 0) {
+    book.json.forEach((el) => {
+      const oneChapter = {}
+      if (el.text) {
+        for (const [num, verse] of Object.entries(el.text)) {
+          oneChapter[num] = {
+            verseObjects: [{ type: 'text', text: verse ? verse + '\n' : '' }],
+          }
+        }
+        oneChapter['front'] = {
+          verseObjects: [{ type: 'paragraph', tag: 'p', nextChar: '\n' }],
+        }
       }
-    }
-    chapters[num] = oneChapter
+      chapters[el.num] = oneChapter
+    })
   }
   const contentUsfm = usfm.toUSFM({ chapters, headers }, { forcedNewLines: true })
   return contentUsfm

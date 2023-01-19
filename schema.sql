@@ -66,7 +66,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
     DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;  
-    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_book;
+    
 
 
   -- END DROP FUNCTION
@@ -674,17 +674,6 @@
   $$;
 
 
-  CREATE FUNCTION public.handle_compile_book(book_id bigint) RETURNS jsonb
-    LANGUAGE plpgsql SECURITY DEFINER
-    AS $$
-    DECLARE      
-      book JSONB;
-    BEGIN      
-        SELECT  jsonb_object_agg(num, text) FROM PUBLIC.chapters WHERE chapters.book_id = handle_compile_book.book_id INTO book;
-        return book;      
-    END;
-  $$;
-
   -- create policy "политика с джойном"
   --   on teams
   --   for update using (
@@ -792,12 +781,10 @@
     DECLARE      
       chapter JSONB;
     BEGIN
-      IF (NEW.finished_at IS NOT NULL ) THEN
-        SELECT  jsonb_object_agg(num, text) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
-        New.text=chapter; 
-      ELSE
-        RETURN NEW;
-      END IF;        
+      IF (NEW.finished_at IS NOT NULL) THEN
+        SELECT jsonb_object_agg(num, text ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
+        New.text=chapter;
+      END IF;               
       RETURN NEW;
     END;
   $$;
