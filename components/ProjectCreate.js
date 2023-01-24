@@ -9,12 +9,14 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import { supabase } from 'utils/supabaseClient'
 
 // TODO не работает если создавать ОБС
 function ProjectCreate() {
   const router = useRouter()
   const { t } = useTranslation(['projects'])
   const [customSteps, setCustomSteps] = useState('')
+  const [customBriefs, setCustomBriefs] = useState('')
   const [customResources, setCustomResources] = useState('')
   const [method, setMethod] = useState()
   const [resourcesUrl, setResourcesUrl] = useState()
@@ -40,6 +42,7 @@ function ProjectCreate() {
       if (selectedMethod) {
         setMethod(selectedMethod)
         setCustomSteps(JSON.stringify(selectedMethod.steps, null, 2))
+        setCustomBriefs(JSON.stringify(selectedMethod.brief, null, 2))
         setCustomResources(selectedMethod.resources)
       }
     }
@@ -82,6 +85,14 @@ function ProjectCreate() {
         }
       })
       .catch((error) => console.log(error))
+  }
+
+  const saveBrief = async () => {
+    supabase
+      .from('briefs')
+      .insert({ project_id: 2, data_collection: JSON.parse(customBriefs) })
+      .then((res) => console.log({ error: res.error, data: res.data }))
+      .catch((err) => console.log(err))
   }
 
   const inputs = [
@@ -185,6 +196,13 @@ function ProjectCreate() {
               )
             })}
         </select>
+        <div>{t('Brief')}</div>
+        <textarea
+          cols="50"
+          rows="30"
+          onChange={(e) => setCustomBriefs(e.target.value)}
+          value={customBriefs}
+        />
         <br />
         <p>
           Тут самое сложное, так как это будет настройка шагов метода. Нужно как-то

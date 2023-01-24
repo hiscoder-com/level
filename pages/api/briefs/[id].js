@@ -7,7 +7,7 @@ export default async function briefsGetHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
   const {
     query: { id },
-    body: { questions },
+    body: { data_collection },
     method,
   } = req
 
@@ -31,7 +31,7 @@ export default async function briefsGetHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('briefs')
-          .update({ questions })
+          .update({ data_collection })
           .match({ project_id: id })
         if (error) throw error
         res.status(200).json(data)

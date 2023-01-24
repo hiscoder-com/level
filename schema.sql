@@ -958,7 +958,8 @@
       title text NOT NULL,
       steps json,
       resources json,
-      "type" project_type NOT NULL DEFAULT 'bible'::project_type
+      "type" project_type NOT NULL DEFAULT 'bible'::project_type,
+      brief json 
     );
     -- Secure methods
     ALTER TABLE
@@ -1123,7 +1124,11 @@
         IS 'бриф пишем в формате маркдаун';
 
     ALTER TABLE
-      PUBLIC.briefs enable ROW LEVEL security;
+      PUBLIC.briefs enable ROW LEVEL security,
+      ADD data_collection json,
+      ADD is_enable boolean,
+      DROP text;
+
   -- END TABLE
 
   -- RLS
@@ -1552,7 +1557,7 @@ ADD
       PUBLIC.methods;
 
     INSERT INTO
-      PUBLIC.methods (title, resources, steps, "type")
+      PUBLIC.methods (title, resources, steps, "type", brief)
     VALUES
       ('CANA Bible', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
@@ -1952,7 +1957,130 @@ ADD
             }
           ]
         }
-      ]', 'bible'::project_type),
+      ]', 'bible'::project_type, '[
+  {
+    "id": 1,
+    "title": "О языке",
+    "block": [
+      {
+        "question": "Как называется язык?",
+        "answer": ""
+      },
+      {
+        "question": "Какое межд.сокращение для языка?",
+        "answer": ""
+      },
+      {
+        "question": "Где распространён?",
+        "answer": ""
+      },
+      {
+        "question": "Почему выбран именно этот язык или диалект?",
+        "answer": ""
+      },
+      {
+        "question": "Какой алфавит используется в данном языке?",
+        "answer": ""
+      }
+    ],
+    "resume": ""
+  },
+  {
+    "id": 2,
+    "title": "О необходимости перевода",
+    "block": [
+      {
+        "question": "Почему нужен этот перевод?",
+        "answer": ""
+      },
+      {
+        "question": "Какие переводы уже есть на этом языке?",
+        "answer": ""
+      },
+      {
+        "question": "Какие диалекты или другие языки могли бы пользоваться этим переводом?",
+        "answer": ""
+      },
+      {
+        "question": "Как вы думаете могут ли возникнуть трудности с другими командами, уже работающими над переводом библейского контента на этот язык?",
+        "answer": ""
+      }
+    ],
+    "resume": ""
+  },
+  {
+    "id": 3,
+    "title": "О целевой аудитории перевода",
+    "block": [
+      {
+        "question": "кто будет пользоваться переводом?",
+        "answer": ""
+      },
+      {
+        "question": "На сколько человек в данной народности рассчитан этот перевод?",
+        "answer": ""
+      },
+      {
+        "question": "какие языки используют постоянно эти люди, кроме своего родного языка?",
+        "answer": ""
+      },
+      {
+        "question": "В этой народности больше мужчин/женщин, пожилых/молодых, грамотных/неграмотных?",
+        "answer": ""
+      }
+    ],
+    "resume": ""
+  },
+   {
+    "id": 4,
+    "title": "О стиле перевода",
+    "block": [
+      {
+        "question": "Какой будет тип перевода, смысловой или подстрочный (дословный, буквальный)?",
+        "answer": ""
+      },
+      {
+        "question": "Какой будет стиль языка у перевода?",
+        "answer": ""
+      },
+      {
+        "question": "Как будет распространяться перевод?",
+        "answer": ""
+      }
+    ],
+    "resume": ""
+  },
+   {
+    "id": 5,
+    "title": "О команде",
+    "block": [
+       {
+        "question": "Кто инициаторы перевода (кто проявил интерес к тому, чтобы начать работу над переводом)?",
+        "answer": ""
+      },
+     {
+        "question": "Кто будет работать над переводом?",
+        "answer": ""
+      }
+    ],
+    "resume": ""
+  },
+   {
+    "id": 6,
+    "title": "О качестве перевода",
+    "block": [
+      {
+        "question": "О будет оценивать перевод?",
+        "answer": ""
+      },
+      {
+        "question": "Как будет поддерживаться качество перевода?",
+        "answer": ""
+      }
+    ],
+    "resume": ""
+  }
+]'),
       ('CANA OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
         {
           "title": "Шаг 1: Самостоятельное изучение",
@@ -2267,7 +2395,7 @@ ADD
             }
           ]
         }
-      ]', 'obs'::project_type);
+      ]', 'obs'::project_type, '');
   -- END METHODS
 
   -- ROLE PERMISSIONS
