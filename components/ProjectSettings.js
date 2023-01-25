@@ -5,9 +5,10 @@ import { useRouter } from 'next/router'
 import CommitsList from './CommitsList'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { countOfChaptersAndVerses, parseManifests } from 'utils/helper'
+
 import { useProject, useMethod } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+import axios from 'axios'
 
 function ProjectSettings() {
   const { user } = useCurrentUser()
@@ -29,137 +30,47 @@ function ProjectSettings() {
   }, [project?.method, methods])
 
   useEffect(() => {
-    if (project?.resources) {
-      const resources = {}
-      for (const [key, value] of Object.entries(project?.resources)) {
-        resources[
-          key
-        ] = `https://git.door43.org/${value.owner}/${value.repo}/src/commit/${value.commit}`
-      }
-      setResourcesUrl(resources)
-    }
-  }, [project?.resources])
-
-  const handleSaveCommits = async (resources) => {
-    setIsErrorCommit(false)
-    setIsSaving(true)
-    try {
-      const { baseResource, newResources } = await parseManifests({
-        resources,
-        current_method: currentMethod,
-      })
-
-      const { data: baseResourceDb } = await supabase
-        .from('projects')
-        .select('base_manifest')
-        .eq('id', project.id)
-        .single()
-
-      const isEqualBaseResource =
-        JSON.stringify(baseResourceDb.base_manifest) ===
-        JSON.stringify({ resource: baseResource.name, books: baseResource.books })
-
-      if (newResources && project && baseResource) {
-        const { error } = await supabase
+    const getResources = async () => {
+      if (project?.id) {
+        const { data, error } = await supabase
           .from('projects')
-          .update({
-            resources: newResources,
-            base_manifest: {
-              resource: baseResource.name,
-              books: baseResource.books,
-            },
-          })
+          .select('resources')
           .eq('id', project.id)
-        if (error) throw error
-      }
+          .single()
+        if (data?.resources) {
+          const resources = {}
 
-      // if (isEqualBaseResource) {
-      //   return
-      // }
-    } catch (error) {
-      setIsErrorCommit(true)
-
-      return
-    } finally {
-      setIsSaving(false)
-    }
-
-    const { data: books, count } = await supabase
-      .from('books')
-      .select('*', { count: 'exact' })
-      .eq('project_id', project?.id)
-    if (!count) {
-      return
-    }
-
-    books.forEach(async (book) => {
-      const bookFromGit = project.base_manifest.books.find((el) => el.name === book.code)
-      const jsonfromGit = await countOfChaptersAndVerses({
-        link: bookFromGit.link,
-      })
-      if (JSON.stringify(book.chapters) === JSON.stringify(jsonfromGit)) {
-        return
-      }
-      for (const key in jsonfromGit) {
-        if (Object.hasOwnProperty.call(jsonfromGit, key)) {
-          if (book.chapters[key]) {
-            if ((jsonfromGit[key] = book.chapters[key])) {
-              const { data: dataLog, error: ErrorLog } = await supabase
-                .from('logs')
-                .insert({
-                  text: `Project #${project.id} - in ${book.code} chapter ${key} have more verses - ${jsonfromGit[key]} than before - ${book.chapters[key]} `,
-                })
-              const { data: chapter, error } = await supabase
-                .from('chapters')
-                .select('id,started_at')
-                .eq('project_id', project.id)
-                .eq('book_id', book.id)
-                .eq('num', key)
-                .single()
-              if (chapter?.started_at) {
-                const { data: dataLog, error: ErrorLog } = await supabase
-                  .from('logs')
-                  .insert({
-                    text: `Project #${project.id} - in ${
-                      book.code
-                    } chapter ${key} already started and script added new verses from ${
-                      book.chapters[key] + 1
-                    } to ${jsonfromGit[key]}`,
-                  })
-                for (
-                  let index = book.chapters[key] + 1;
-                  index <= jsonfromGit[key];
-                  index++
-                ) {
-                  const { data: dataLog, error: ErrorLog } = await supabase
-                    .from('verses')
-                    .insert({
-                      chapter_id: chapter.id,
-                      num: index,
-                      project_id: project.id,
-                      // что вставлять в step?
-                    })
-                }
-              }
-            }
-          } else {
-            const { data: dataLog, error: ErrorLog } = await supabase
-              .from('logs')
-              .insert({
-                text: `Project #${project.id} - in ${book.code} new chapter ${key}`,
-              })
-            const { data, error } = await supabase.from('chapters').insert([
-              {
-                num: key,
-                verses: jsonfromGit[key],
-                book_id: book.id,
-                project_id: project.id,
-              },
-            ])
+          for (const [key, value] of Object.entries(data?.resources)) {
+            resources[
+              key
+            ] = `https://git.door43.org/${value.owner}/${value.repo}/src/commit/${value.commit}`
           }
+          setResourcesUrl(resources)
         }
       }
-    })
+    }
+    getResources()
+  }, [project?.id])
+
+  const handleSaveCommits = async () => {
+    setIsErrorCommit(false)
+    setIsSaving(true)
+
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .post(`/api/projects/${code}/update_commits`, {
+        resources: resourcesUrl,
+        current_method: currentMethod,
+        project_id: project.id,
+      })
+      .then((result) => console.log(result))
+      .catch((error) => {
+        setIsErrorCommit(true)
+        console.log(error)
+      })
+      .finally(() => {
+        setIsSaving(false)
+      })
 
     //проверка books
   } //TODO проверить - совпадает ли то что вводим и то что было, если да, тогда либо кнопку сохранить неактивной, либо предупреждение, что изменений не было
@@ -179,13 +90,7 @@ function ProjectSettings() {
       />
       {isErrorCommit && <div className="mt-3">Одна из ссылок на коммит некоректна</div>}
 
-      <button
-        className="btn-cyan mt-3"
-        onClick={() => {
-          handleSaveCommits(resourcesUrl)
-        }}
-        disabled={isSaving}
-      >
+      <button className="btn-cyan mt-3" onClick={handleSaveCommits} disabled={isSaving}>
         {isSaving ? (
           <svg
             className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600"
