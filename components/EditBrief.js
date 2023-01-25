@@ -33,6 +33,8 @@ function EditBrief({ user, projectId }) {
   const closeModal = () => {
     setShowModalTranslationGoal(false)
   }
+  // получить resume из массива
+  // result = arr.map(obj => obj.resume).filter(item => item !== '')
 
   return (
     <>
@@ -86,7 +88,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[0].block[0].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[0].block[0].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[0].block[0].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[0].block[0] = {
+                            ...newArray[0].block[0],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -94,7 +109,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[0].block[1].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[0].block[1].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[0].block[1].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[0].block[1] = {
+                            ...newArray[0].block[1],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -102,7 +130,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[0].block[2].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[0].block[2].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[0].block[2].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[0].block[2] = {
+                            ...newArray[0].block[2],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -110,7 +151,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[0].block[3].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[0].block[3].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[0].block[3].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[0].block[3] = {
+                            ...newArray[0].block[3],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -118,7 +172,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[0].block[4].question}
                   </td>
                   <td className="border border-x-4 border-b-2 p-2">
-                    {briefDataCollection[0].block[4].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[0].block[4].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[0].block[4] = {
+                            ...newArray[0].block[4],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
 
@@ -126,7 +193,20 @@ function EditBrief({ user, projectId }) {
                   <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[1].id}. ${briefDataCollection[1].title}`}</td>
                   <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[1].id}. ${briefDataCollection[1].title}`}</td>
                   <td rowSpan={5} className="p-2 border-b-4 border-x-4 text-center">
-                    {briefDataCollection[1].resume}
+                    <textarea
+                      defaultValue={briefDataCollection[1].resume}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[1] = {
+                            ...newArray[1],
+                            resume: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="p-2 outline-none w-full h-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -134,7 +214,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[1].block[0].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[1].block[0].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[1].block[0].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[1].block[0] = {
+                            ...newArray[1].block[0],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -142,7 +235,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[1].block[1].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[1].block[1].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[1].block[1].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[1].block[1] = {
+                            ...newArray[1].block[1],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -150,7 +256,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[1].block[2].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[1].block[2].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[1].block[2].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[1].block[2] = {
+                            ...newArray[1].block[2],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -158,7 +277,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[1].block[3].question}
                   </td>
                   <td className="border border-x-4 border-b-2 p-2">
-                    {briefDataCollection[1].block[3].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[1].block[3].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[1].block[3] = {
+                            ...newArray[1].block[3],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
 
@@ -166,7 +298,20 @@ function EditBrief({ user, projectId }) {
                   <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[2].id}. ${briefDataCollection[2].title}`}</td>
                   <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[2].id}. ${briefDataCollection[2].title}`}</td>
                   <td rowSpan={6} className="p-2 border-x-4 text-center">
-                    {briefDataCollection[2].resume}
+                    <textarea
+                      defaultValue={briefDataCollection[2].resume}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[2] = {
+                            ...newArray[2],
+                            resume: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="p-2 outline-none w-full h-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -174,7 +319,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[2].block[0].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[2].block[0].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[2].block[0].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[2].block[0] = {
+                            ...newArray[2].block[0],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -182,7 +340,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[2].block[1].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[2].block[1].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[2].block[1].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[2].block[1] = {
+                            ...newArray[2].block[1],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -190,7 +361,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[2].block[2].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[2].block[2].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[2].block[2].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[2].block[2] = {
+                            ...newArray[2].block[2],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
                 <tr>
@@ -198,7 +382,20 @@ function EditBrief({ user, projectId }) {
                     {briefDataCollection[2].block[3].question}
                   </td>
                   <td className="border border-x-4 p-2">
-                    {briefDataCollection[2].block[3].answer}
+                    <textarea
+                      defaultValue={briefDataCollection[2].block[3].answer}
+                      onChange={(e) => {
+                        setBriefDataCollection((prev) => {
+                          const newArray = prev
+                          newArray[2].block[3] = {
+                            ...newArray[2].block[3],
+                            answer: e.target.value,
+                          }
+                          return newArray
+                        })
+                      }}
+                      className="outline-none w-full"
+                    />
                   </td>
                 </tr>
               </tbody>
