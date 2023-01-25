@@ -7,6 +7,8 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { useForm, useWatch } from 'react-hook-form'
 
+import CommitsList from './CommitsList'
+
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -62,6 +64,7 @@ function ProjectCreate() {
     if (!title || !code || !languageId) {
       return
     }
+
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {
@@ -114,27 +117,6 @@ function ProjectCreate() {
       errorMessage: errors?.code ? errors?.code.message : '',
     },
   ]
-
-  const setResources = useMemo(() => {
-    const listOfResources = []
-    for (const resource in customResources) {
-      if (Object.hasOwnProperty.call(customResources, resource)) {
-        const isPrimary = customResources[resource]
-        listOfResources.push(
-          <div className={isPrimary ? 'bg-slate-400' : ''} key={resource}>
-            {resource}:{' '}
-            <input
-              value={resourcesUrl?.[resource] ?? ''}
-              onChange={(e) =>
-                setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))
-              }
-            />
-          </div>
-        )
-      }
-    }
-    return listOfResources
-  }, [customResources, resourcesUrl])
 
   return (
     <div>
@@ -245,7 +227,12 @@ twl
 https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c864a2ca1
 `}
         </pre>
-        {setResources}
+        <br />
+        <CommitsList
+          methodId={methodId}
+          resourcesUrl={resourcesUrl}
+          setResourcesUrl={setResourcesUrl}
+        />
         <br />
         <p>
           После того как нажимают на кнопку сохранить, мы делаем следующее: <br />

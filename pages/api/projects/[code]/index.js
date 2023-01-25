@@ -18,7 +18,7 @@ export default async function languageProjectHandler(req, res) {
         const { data: value, error } = await supabase
           .from('projects')
           .select(
-            'id, title, code, type, method, languages(orig_name,code),dictionaries_alphabet'
+            'id, title, code, type, method, languages(orig_name,code),dictionaries_alphabet,resources,base_manifest' //убрать - проверить, где использовал
           )
           .eq('code', code)
           .maybeSingle()

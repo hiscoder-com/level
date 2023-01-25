@@ -2,6 +2,7 @@ import usfm from 'usfm-js'
 import axios from 'axios'
 
 import { supabase } from 'utils/supabaseClient'
+import { countOfChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -15,25 +16,20 @@ export default async function handler(req, res) {
   switch (method) {
     case 'POST':
       const { link, book_code, project_id } = req.body
-      const countOfChaptersAndVerses = {}
+
       try {
-        const result = await axios.get(link)
+        const jsonChapterVerse = await countOfChaptersAndVerses({
+          link,
+          book_code,
+          project_id,
+        })
 
-        const jsonData = usfm.toJSON(result.data)
-        if (Object.entries(jsonData?.chapters).length > 0) {
-          Object.entries(jsonData?.chapters).forEach((el) => {
-            countOfChaptersAndVerses[el[0]] = Object.keys(el[1]).filter(
-              (verse) => verse !== 'front'
-            ).length
-          })
-        }
-
-        if (Object.keys(countOfChaptersAndVerses).length !== 0) {
+        if (Object.keys(jsonChapterVerse).length !== 0) {
           const { error: errorPost } = await supabase.from('books').insert([
             {
               code: book_code,
               project_id,
-              chapters: countOfChaptersAndVerses,
+              chapters: jsonChapterVerse,
             },
           ])
           if (errorPost) throw errorPost

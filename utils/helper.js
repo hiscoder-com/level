@@ -1,4 +1,6 @@
+import axios from 'axios'
 import usfm from 'usfm-js'
+import jsyaml from 'js-yaml'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
   let value
@@ -163,4 +165,56 @@ export const convertToUsfm = ({ book, cl, toc1, project }) => {
   }
   const contentUsfm = usfm.toUSFM({ chapters, headers }, { forcedNewLines: true })
   return contentUsfm
+}
+
+export const parseManifests = async ({ resources, current_method }) => {
+  let baseResource = {}
+  const promises = Object.keys(resources).map(async (el) => {
+    const url = resources[el].replace('/src/', '/raw/') + '/manifest.yaml'
+    const { data } = await axios.get(url)
+
+    const manifest = jsyaml.load(data, { json: true })
+
+    if (current_method.resources[el]) {
+      baseResource = { books: manifest.projects, name: el }
+    }
+    return {
+      resource: el,
+      url: resources[el],
+      manifest,
+    }
+  })
+
+  const manifests = await Promise.all(promises)
+
+  let newResources = {}
+  manifests.forEach((el) => {
+    const url = el.url.split('://')[1].split('/')
+    newResources[el.resource] = {
+      owner: url[1],
+      repo: url[2],
+      commit: url[5],
+      manifest: el.manifest,
+    }
+  })
+  baseResource.books = baseResource.books.map((el) => ({
+    name: el.identifier,
+    link: resources[baseResource.name].replace('/src/', '/raw/') + el.path.substring(1),
+  }))
+  return { baseResource, newResources }
+}
+
+export const countOfChaptersAndVerses = async ({ link }) => {
+  const jsonChapterVerse = {}
+  const result = await axios.get(link)
+
+  const jsonData = usfm.toJSON(result.data)
+  if (Object.entries(jsonData?.chapters).length > 0) {
+    Object.entries(jsonData?.chapters).forEach((el) => {
+      jsonChapterVerse[el[0]] = Object.keys(el[1]).filter(
+        (verse) => verse !== 'front'
+      ).length
+    })
+  }
+  return jsonChapterVerse
 }
