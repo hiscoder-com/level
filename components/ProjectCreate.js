@@ -68,6 +68,7 @@ function ProjectCreate() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {
+        customBriefs,
         title,
         language_id: languageId,
         code,
@@ -85,14 +86,6 @@ function ProjectCreate() {
         }
       })
       .catch((error) => console.log(error))
-  }
-
-  const saveBrief = async () => {
-    supabase
-      .from('briefs')
-      .insert({ project_id: 2, data_collection: JSON.parse(customBriefs) })
-      .then((res) => console.log({ error: res.error, data: res.data }))
-      .catch((err) => console.log(err))
   }
 
   const inputs = [
