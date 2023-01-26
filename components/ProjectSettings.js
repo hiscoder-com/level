@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 
 import CommitsList from './CommitsList'
+
+import { supabase } from 'utils/supabaseClient'
 
 import { useCurrentUser } from 'lib/UserContext'
 
 import { useProject, useMethod } from 'utils/hooks'
-import { supabase } from 'utils/supabaseClient'
-import axios from 'axios'
 
 function ProjectSettings() {
   const { user } = useCurrentUser()
@@ -17,6 +19,7 @@ function ProjectSettings() {
   const [currentMethod, setCurrentMethod] = useState()
   const [isErrorCommit, setIsErrorCommit] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const { t } = useTranslation()
 
   const {
     query: { code },
@@ -63,7 +66,7 @@ function ProjectSettings() {
         current_method: currentMethod,
         project_id: project.id,
       })
-      .then((result) => console.log(result))
+      .then()
       .catch((error) => {
         setIsErrorCommit(true)
         console.log(error)
@@ -71,9 +74,7 @@ function ProjectSettings() {
       .finally(() => {
         setIsSaving(false)
       })
-
-    //проверка books
-  } //TODO проверить - совпадает ли то что вводим и то что было, если да, тогда либо кнопку сохранить неактивной, либо предупреждение, что изменений не было
+  }
   return (
     <div className="mx-auto max-w-7xl">
       <div className="h3 mb-3">
@@ -81,8 +82,8 @@ function ProjectSettings() {
           <a className="underline text-blue-700">« {project?.title}/edit</a>
         </Link>
       </div>
-      <h1 className="h1 mb-3">Настройки проекта</h1>
-      <h1 className="h2 mb-3">List of commits</h1>
+      <h1 className="h1 mb-3">{t('ProjectSettings')}</h1>
+      <h1 className="h2 mb-3">{t('ListResources')}</h1>
       <CommitsList
         resourcesUrl={resourcesUrl}
         setResourcesUrl={setResourcesUrl}

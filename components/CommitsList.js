@@ -1,5 +1,6 @@
+import { useEffect, useMemo, useState } from 'react'
+
 import { useCurrentUser } from 'lib/UserContext'
-import React, { useEffect, useMemo, useState } from 'react'
 import { useMethod } from 'utils/hooks'
 
 function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {

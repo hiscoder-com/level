@@ -67,7 +67,13 @@
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;  
+    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
+    DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
+    DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
+
     
 
 
@@ -676,6 +682,74 @@
   $$;
 
 
+  CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters JSON, project_id BIGINT) RETURNS BOOLEAN
+      LANGUAGE plpgsql SECURITY definer AS $$         
+      BEGIN
+        IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+        END IF;
+        UPDATE PUBLIC.books SET chapters = update_chapters_in_books.chapters WHERE books.id = book_id;
+        RETURN TRUE;
+      END;
+    $$;
+
+
+
+  CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4,project_id BIGINT,num int2) RETURNS BOOLEAN
+      LANGUAGE plpgsql SECURITY definer AS $$         
+      BEGIN
+        IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+        END IF;
+        INSERT INTO PUBLIC.chapters (num, verses, book_id, project_id) VALUES (num , verses, book_id, project_id);
+        RETURN TRUE;
+      END;
+    $$; 
+
+
+  CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses INTEGER, num int2,project_id BIGINT) RETURNS JSON
+      LANGUAGE plpgsql SECURITY definer AS $$ 
+      DECLARE chapter JSON;        
+      BEGIN
+        IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+        END IF;
+        UPDATE PUBLIC.chapters SET verses = update_verses_in_chapters.verses WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num;
+        SELECT JSON_build_object(  'id',id,'started_at',started_at) FROM PUBLIC.chapters WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num INTO chapter;
+        RETURN chapter;
+      END;
+    $$; 
+
+
+  CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse int2, finish_verse int2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
+      LANGUAGE plpgsql SECURITY definer AS $$ 
+      DECLARE step_id BIGINT;    
+      BEGIN
+        IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+        END IF;
+        IF finish_verse < start_verse THEN
+          RETURN false;
+        END IF;
+        SELECT id FROM steps WHERE steps.project_id=insert_additional_verses.project_id AND sorting=1 INTO step_id;
+        FOR i IN start_verse..finish_verse LOOP
+          INSERT INTO
+            PUBLIC.verses (num, chapter_id, current_step, project_id)
+          VALUES
+            (i , chapter_id, step_id, project_id);
+        END LOOP;
+        RETURN true;
+      END;
+    $$; 
+
+
+  CREATE FUNCTION PUBLIC.update_resources_in_projects(resources JSON, base_manifest JSON, project_id BIGINT) RETURNS BOOLEAN
+      LANGUAGE plpgsql SECURITY definer AS $$ 
+      BEGIN
+        IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+        END IF;
+        UPDATE PUBLIC.projects SET resources = update_resources_in_projects.resources ,  base_manifest = update_resources_in_projects.base_manifest WHERE id= project_id;
+        RETURN true;
+      END;
+    $$; 
+
+
   -- create policy "политика с джойном"
   --   on teams
   --   for update using (
@@ -1042,12 +1116,11 @@
       WITH CHECK (admin_only());
 
     -- пока что сделаем что обновлять только админ может. Может для координатора сделать функцию для обновления только некоторых полей
-    
-    --Администратор или координатор может изменить запись
-    DROP POLICY IF EXISTS "projects update" ON PUBLIC.projects;
-    CREATE policy "projects update" ON PUBLIC.projects FOR
+    DROP POLICY IF EXISTS "Обновлять может только админ" ON PUBLIC.projects;
+
+    CREATE policy "Обновлять может только админ" ON PUBLIC.projects FOR
     UPDATE
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+      USING (admin_only());
 
     -- удалять пока что ничего не будем. Только в режиме супер админа
   -- END RLS
@@ -1234,14 +1307,8 @@
 
     CREATE policy "Добавлять можно только админу" ON PUBLIC.books FOR
     INSERT
-      WITH CHECK (admin_only())
-
-    --Администратор или координатор может изменить запись
-    DROP POLICY IF EXISTS "books update" ON PUBLIC.books;
-    CREATE policy "books update" ON PUBLIC.books FOR
-    UPDATE
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
-
+      WITH CHECK (admin_only());
+   
   -- END RLS
 -- END BOOK
 
@@ -1272,16 +1339,6 @@
     CREATE policy "Получают книги все кто на проекте" ON PUBLIC.chapters FOR
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
-    --Администратор или координатор может добавить запись
-    DROP POLICY IF EXISTS "chapters insert" ON PUBLIC.chapters;
-    CREATE policy "chapters insert" ON PUBLIC.chapters FOR
-    INSERT
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
-    --Администратор или координатор может изменить запись
-    DROP POLICY IF EXISTS "chapters update" ON PUBLIC.chapters;
-    CREATE policy "chapters update" ON PUBLIC.chapters FOR
-    UPDATE
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
       
 
   -- END RLS
@@ -1325,13 +1382,8 @@
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    --Администратор или координатор может добавить запись
-    DROP POLICY IF EXISTS "verses insert" ON PUBLIC.verses;
-    CREATE policy "verses insert" ON PUBLIC.verses FOR
-    INSERT
-      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+    -- Создаются у нас стихи автоматом, так что никто не может добавлять
 
-    
     -- Редактировать на прямую тоже запретим. Нам можно редактировать только два поля, текущий шаг и текст стиха
 
   -- END RLS
@@ -1506,16 +1558,14 @@
       created_at TIMESTAMP DEFAULT now(),
       log jsonb,        
     );
-    --TODO Надо сделать RLS для аутентифицированных пользователей для чтения и инсерта, но ошибка вылетает, нужно проверить ещё раз 
+    
     ALTER TABLE
-      PUBLIC.dictionaries disable ROW LEVEL security;  
+      PUBLIC.logs enable ROW LEVEL security;  
   -- END TABLE
 
   -- RLS
-    
-
   -- END RLS
--- DICTIONARIES
+-- LOGS
 
 
 

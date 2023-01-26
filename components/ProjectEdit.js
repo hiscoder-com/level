@@ -127,7 +127,7 @@ function ProjectEdit() {
             <a className="underline text-blue-700">« {project?.title}</a>
           </Link>
         </div>
-        <div className="">
+        <div>
           <Link href={`/projects/${project?.code}/edit/settings`}>
             <a className="btn btn-filled btn-cyan">{t('SettingsEdit')}</a>
           </Link>
