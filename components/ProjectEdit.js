@@ -10,7 +10,6 @@ import { Switch } from '@headlessui/react'
 
 import Modal from 'components/Modal'
 import TranslatorImage from 'components/TranslatorImage'
-import EditBrief from './EditBrief'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators, useUsers } from 'utils/hooks'
@@ -22,17 +21,17 @@ function ProjectEdit() {
     query: { code },
   } = useRouter()
   const { user } = useCurrentUser()
-  const [users] = useUsers(user?.access_token)
-  const [openModalAssignTranslator, setOpenModalAssignTranslator] = useState(false)
-  const [openModalAssignCoordinator, setOpenModalAssignCoordinator] = useState(false)
   const [level, setLevel] = useState('user')
+  const [users] = useUsers(user?.access_token)
   const [listOfTranslators, setListOfTranslators] = useState([])
   const [listOfCoordinators, setListOfCoordinators] = useState([])
+  const [openModalAssignTranslator, setOpenModalAssignTranslator] = useState(false)
+  const [openModalAssignCoordinator, setOpenModalAssignCoordinator] = useState(false)
 
+  const [selectedUser, setSelectedUser] = useState(null)
   const [selectedModerator, setSelectedModerator] = useState(null)
   const [selectedTranslator, setSelectedTranslator] = useState(null)
   const [selectedCoordinator, setSelectedCoordinator] = useState(null)
-  const [selectedUser, setSelectedUser] = useState(null)
 
   const [project] = useProject({ token: user?.access_token, code })
   const [translators, { mutate: mutateTranslator }] = useTranslators({
@@ -128,7 +127,9 @@ function ProjectEdit() {
           </Link>
         </div>
         <div className="py-5">
-          <EditBrief user={user} projectId={project?.id} />
+        <Link href={`/projects/${project?.code}/edit/brief`}>
+            <a className="btn btn-filled btn-cyan">{t('project-edit:EditBrief')}</a>
+          </Link>
         </div>
         <div className="w-1/2 flex justify-between mt-5">
           <div>{t('Coordinators')}</div>

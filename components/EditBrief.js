@@ -1,19 +1,25 @@
 import { useEffect, useState } from 'react'
 
+import Link from 'next/link'
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
-import Modal from 'components/Modal'
-import { useBrief } from 'utils/hooks'
+import { useBrief, useProject } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 
-function EditBrief({ user, projectId }) {
-  const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
+function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
+  const {
+    query: { code },
+  } = useRouter()
+  const { user } = useCurrentUser()
+  const [project] = useProject({ token: user?.access_token, code })
 
   const { t } = useTranslation(['common', 'project-edit'])
   const [brief, { mutate }] = useBrief({
     token: user?.access_token,
-    project_id: projectId,
+    project_id: project?.id,
   })
 
   useEffect(() => {
@@ -23,48 +29,38 @@ function EditBrief({ user, projectId }) {
   const saveToDatabase = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .put(`/api/briefs/${projectId}`, {
+      .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
-
-  const closeModal = () => {
-    setShowModalTranslationGoal(false)
-  }
-
+  
   return (
-    <>
-      <button
-        className="btn-cyan"
-        onClick={(e) => (setShowModalTranslationGoal(true), e.stopPropagation())}
-      >
-        {t('project-edit:EditBrief')}
-      </button>
-
-      <Modal
-        title={t('project-edit:EditBriefTitle')}
-        addClassName={'w-full max-w-full'}
-        isOpen={showModalTranslationGoal}
-        closeHandle={closeModal}
-      >
-        {briefDataCollection && (
-          // <div className="w-full h-[69vh]">
+    <div className="divide-y-2 divide-gray-400">
+    <div className="pb-5">
+      <div className="h3">
+        <Link href={`/projects/${project?.code}/edit`}>
+          <a className="underline text-blue-700">« {project?.title}</a>
+        </Link>
+      </div>
+      
+      <div className='mt-5'>
+      {briefDataCollection && (
           <div className="w-full">
-            <table className="table-fixed border-b-4 w-full my-6 text-gray-500">
-              <thead className="font-bold text-lg">
+            <table className="table-fixed border-b-4 w-full my-6 text-sm text-gray-500">
+            <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                 <tr>
-                  <th className="pb-2 w-1\3 border-b-4">{t('Questions')}</th>
-                  <th className="pb-2 w-1\3 border-b-4">{t('project-edit:Answers')}</th>
-                  <th className="pb-2 w-1\3 border-b-4">{t('PurposeTranslation')}</th>
+                  <th className="py-3 px-6">{t('Questions')}</th>
+                  <th className="py-3 px-6">{t('project-edit:Answers')}</th>
+                  <th className="py-3 px-6">{t('PurposeTranslation')}</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="border p-2 font-bold border-x-4">{`${briefDataCollection[0].id}. ${briefDataCollection[0].title}`}</td>
-                  <td className="border p-2 font-bold border-x-4">{`${briefDataCollection[0].id}. ${briefDataCollection[0].title}`}</td>
-                  <td rowSpan={6} className="p-2 border-b-4 border-x-4 text-center">
+                <tr className="bg-white border-b">
+                  <td className="border p-2 font-bold border-x-2">{`${briefDataCollection[0].id}. ${briefDataCollection[0].title}`}</td>
+                  <td className="border p-2 font-bold border-x-2">{`${briefDataCollection[0].id}. ${briefDataCollection[0].title}`}</td>
+                  <td rowSpan={6} className="border p-2 border-b-4 border-x-2 text-center">
                     <textarea
                       defaultValue={briefDataCollection[0].resume}
                       onChange={(e) => {
@@ -81,11 +77,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border-x-2 p-2">
                     {briefDataCollection[0].block[0].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[0].block[0].answer}
                       onChange={(e) => {
@@ -102,11 +98,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[0].block[1].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[0].block[1].answer}
                       onChange={(e) => {
@@ -123,11 +119,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[0].block[2].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[0].block[2].answer}
                       onChange={(e) => {
@@ -144,11 +140,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[0].block[3].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[0].block[3].answer}
                       onChange={(e) => {
@@ -165,11 +161,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 border-b-2 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 border-b-2 p-2">
                     {briefDataCollection[0].block[4].question}
                   </td>
-                  <td className="border border-x-4 border-b-2 p-2">
+                  <td className="border border-x-2 border-b-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[0].block[4].answer}
                       onChange={(e) => {
@@ -187,10 +183,10 @@ function EditBrief({ user, projectId }) {
                   </td>
                 </tr>
 
-                <tr>
-                  <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[1].id}. ${briefDataCollection[1].title}`}</td>
-                  <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[1].id}. ${briefDataCollection[1].title}`}</td>
-                  <td rowSpan={5} className="p-2 border-b-4 border-x-4 text-center">
+                <tr className="bg-white border-b">
+                  <td className="border p-2 font-bold border-t-4 border-x-2">{`${briefDataCollection[1].id}. ${briefDataCollection[1].title}`}</td>
+                  <td className="border p-2 font-bold border-t-4 border-x-2">{`${briefDataCollection[1].id}. ${briefDataCollection[1].title}`}</td>
+                  <td rowSpan={5} className="p-2 border-b-4 border-x-2 text-center">
                     <textarea
                       defaultValue={briefDataCollection[1].resume}
                       onChange={(e) => {
@@ -207,11 +203,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border-x-2 p-2">
                     {briefDataCollection[1].block[0].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[1].block[0].answer}
                       onChange={(e) => {
@@ -228,11 +224,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[1].block[1].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[1].block[1].answer}
                       onChange={(e) => {
@@ -249,11 +245,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[1].block[2].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[1].block[2].answer}
                       onChange={(e) => {
@@ -270,11 +266,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 border-b-2 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 border-b-2 p-2">
                     {briefDataCollection[1].block[3].question}
                   </td>
-                  <td className="border border-x-4 border-b-2 p-2">
+                  <td className="border border-x-2 border-b-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[1].block[3].answer}
                       onChange={(e) => {
@@ -292,10 +288,10 @@ function EditBrief({ user, projectId }) {
                   </td>
                 </tr>
 
-                <tr>
-                  <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[2].id}. ${briefDataCollection[2].title}`}</td>
-                  <td className="border p-2 font-bold border-t-4 border-x-4">{`${briefDataCollection[2].id}. ${briefDataCollection[2].title}`}</td>
-                  <td rowSpan={6} className="p-2 border-x-4 text-center">
+                <tr className="bg-white border-b">
+                  <td className="border p-2 font-bold border-t-4 border-x-2">{`${briefDataCollection[2].id}. ${briefDataCollection[2].title}`}</td>
+                  <td className="border p-2 font-bold border-t-4 border-x-2">{`${briefDataCollection[2].id}. ${briefDataCollection[2].title}`}</td>
+                  <td rowSpan={6} className="p-2 border-x-2 text-center">
                     <textarea
                       defaultValue={briefDataCollection[2].resume}
                       onChange={(e) => {
@@ -312,11 +308,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border-x-2 p-2">
                     {briefDataCollection[2].block[0].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[2].block[0].answer}
                       onChange={(e) => {
@@ -333,11 +329,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[2].block[1].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[2].block[1].answer}
                       onChange={(e) => {
@@ -354,11 +350,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[2].block[2].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[2].block[2].answer}
                       onChange={(e) => {
@@ -375,11 +371,11 @@ function EditBrief({ user, projectId }) {
                     />
                   </td>
                 </tr>
-                <tr>
-                  <td className="border border-x-4 p-2">
+                <tr className="bg-white border-b">
+                  <td className="border border-x-2 p-2">
                     {briefDataCollection[2].block[3].question}
                   </td>
-                  <td className="border border-x-4 p-2">
+                  <td className="border border-x-2 p-2">
                     <textarea
                       defaultValue={briefDataCollection[2].block[3].answer}
                       onChange={(e) => {
@@ -400,16 +396,15 @@ function EditBrief({ user, projectId }) {
             </table>
           </div>
         )}
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center">
           <button className="btn-cyan" onClick={saveToDatabase}>
             {t('Save')}
           </button>
-          <button className="btn-cyan" onClick={closeModal}>
-            {t('Close')}
-          </button>
         </div>
-      </Modal>
-    </>
+    </div>      
+    </div>    
+  </div>
+
   )
 }
 
