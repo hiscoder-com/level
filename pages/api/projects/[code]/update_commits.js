@@ -9,7 +9,6 @@ export default async function languageProjectHandler(req, res) {
 
   let data = {}
   const {
-    query: { code },
     method,
     body: { resources, current_method, project_id },
   } = req
@@ -91,7 +90,7 @@ export default async function languageProjectHandler(req, res) {
                       .match({ book_id: book.id, num: key })
                     if (errorUpdateChapter) throw errorUpdateChapter
 
-                    const { data: chapter, error } = await supabase
+                    const { data: chapter, error: errorChapter } = await supabase
                       .from('chapters')
                       .select('id,started_at')
                       .eq('project_id', project_id)
@@ -118,6 +117,7 @@ export default async function languageProjectHandler(req, res) {
                           .eq('project_id', 2)
                           .eq('sorting', 1)
                           .single()
+
                         const { data: dataLog, error: ErrorLog } = await supabase
                           .from('verses')
                           .insert({

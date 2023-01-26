@@ -16,6 +16,8 @@
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
     DROP TABLE IF EXISTS PUBLIC.dictionaries;
+    DROP TABLE IF EXISTS PUBLIC.logs;
+
 
 
   -- EDN DROP TABLE
@@ -1040,11 +1042,12 @@
       WITH CHECK (admin_only());
 
     -- пока что сделаем что обновлять только админ может. Может для координатора сделать функцию для обновления только некоторых полей
-    DROP POLICY IF EXISTS "Обновлять может только админ" ON PUBLIC.projects;
-
-    CREATE policy "Обновлять может только админ" ON PUBLIC.projects FOR
+    
+    --Администратор или координатор может изменить запись
+    DROP POLICY IF EXISTS "projects update" ON PUBLIC.projects;
+    CREATE policy "projects update" ON PUBLIC.projects FOR
     UPDATE
-      USING (admin_only());
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
 
     -- удалять пока что ничего не будем. Только в режиме супер админа
   -- END RLS
@@ -1231,7 +1234,14 @@
 
     CREATE policy "Добавлять можно только админу" ON PUBLIC.books FOR
     INSERT
-      WITH CHECK (admin_only());
+      WITH CHECK (admin_only())
+
+    --Администратор или координатор может изменить запись
+    DROP POLICY IF EXISTS "books update" ON PUBLIC.books;
+    CREATE policy "books update" ON PUBLIC.books FOR
+    UPDATE
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+
   -- END RLS
 -- END BOOK
 
@@ -1262,6 +1272,16 @@
     CREATE policy "Получают книги все кто на проекте" ON PUBLIC.chapters FOR
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+    --Администратор или координатор может добавить запись
+    DROP POLICY IF EXISTS "chapters insert" ON PUBLIC.chapters;
+    CREATE policy "chapters insert" ON PUBLIC.chapters FOR
+    INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+    --Администратор или координатор может изменить запись
+    DROP POLICY IF EXISTS "chapters update" ON PUBLIC.chapters;
+    CREATE policy "chapters update" ON PUBLIC.chapters FOR
+    UPDATE
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
       
 
   -- END RLS
@@ -1305,8 +1325,13 @@
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    -- Создаются у нас стихи автоматом, так что никто не может добавлять
+    --Администратор или координатор может добавить запись
+    DROP POLICY IF EXISTS "verses insert" ON PUBLIC.verses;
+    CREATE policy "verses insert" ON PUBLIC.verses FOR
+    INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
 
+    
     -- Редактировать на прямую тоже запретим. Нам можно редактировать только два поля, текущий шаг и текст стиха
 
   -- END RLS
@@ -1470,6 +1495,24 @@
     CREATE policy "words select" ON PUBLIC.dictionaries FOR
     SELECT
      USING (authorize(auth.uid(), project_id) != 'user');
+
+  -- END RLS
+-- DICTIONARIES
+
+-- LOGS
+  -- TABLE
+    CREATE TABLE PUBLIC.logs (
+      id bigint GENERATED ALWAYS AS IDENTITY primary key,
+      created_at TIMESTAMP DEFAULT now(),
+      log jsonb,        
+    );
+    --TODO Надо сделать RLS для аутентифицированных пользователей для чтения и инсерта, но ошибка вылетает, нужно проверить ещё раз 
+    ALTER TABLE
+      PUBLIC.dictionaries disable ROW LEVEL security;  
+  -- END TABLE
+
+  -- RLS
+    
 
   -- END RLS
 -- DICTIONARIES
