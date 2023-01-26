@@ -33,8 +33,6 @@ function EditBrief({ user, projectId }) {
   const closeModal = () => {
     setShowModalTranslationGoal(false)
   }
-  // получить resume из массива
-  // result = arr.map(obj => obj.resume).filter(item => item !== '')
 
   return (
     <>

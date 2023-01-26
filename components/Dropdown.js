@@ -152,6 +152,8 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
     project_id: projectId,
   })
 
+  const briefResume = brief?.data_collection.map(obj => obj.resume).filter(obj => obj !== '').join('\n')
+
   return (
     <>
       <Modal
@@ -160,7 +162,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
         title={t('TranslationGoal')}
       >
         <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
-          <p className="text-sm text-gray-500 whitespace-pre-line">{brief?.summary}</p>
+          <p className="text-sm text-gray-500 whitespace-pre-line">{briefResume}</p>
         </div>
         <div className="text-center">
           <button className="btn-cyan" onClick={closeModal}>
