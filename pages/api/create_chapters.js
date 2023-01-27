@@ -1,7 +1,5 @@
-import usfm from 'usfm-js'
-import axios from 'axios'
-
 import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
 import { countOfChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
@@ -15,14 +13,29 @@ export default async function handler(req, res) {
 
   switch (method) {
     case 'POST':
+      const sendLog = async (log) => {
+        const { data, error } = await supabaseService.from('logs').insert({
+          log,
+        })
+        return { data, error }
+      }
       const { link, book_code, project_id } = req.body
 
       try {
-        const jsonChapterVerse = await countOfChaptersAndVerses({
-          link,
-          book_code,
-          project_id,
-        })
+        const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
+          await countOfChaptersAndVerses({
+            link,
+            book_code,
+            project_id,
+          })
+        if (errorJsonChapterVerse) {
+          await sendLog({
+            url: 'api/create_chapters',
+            type: 'errorJsonChapterVerse',
+            error: errorJsonChapterVerse,
+          })
+          throw errorJsonChapterVerse
+        }
 
         if (Object.keys(jsonChapterVerse).length !== 0) {
           const { error: errorPost } = await supabase.from('books').insert([

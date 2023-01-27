@@ -206,15 +206,21 @@ export const parseManifests = async ({ resources, current_method }) => {
 
 export const countOfChaptersAndVerses = async ({ link }) => {
   const jsonChapterVerse = {}
-  const result = await axios.get(link)
+  const errorParse = null
+  try {
+    const result = await axios.get(link)
 
-  const jsonData = usfm.toJSON(result.data)
-  if (Object.entries(jsonData?.chapters).length > 0) {
-    Object.entries(jsonData?.chapters).forEach((el) => {
-      jsonChapterVerse[el[0]] = Object.keys(el[1]).filter(
-        (verse) => verse !== 'front'
-      ).length
-    })
+    const jsonData = usfm.toJSON(result.data)
+    if (Object.entries(jsonData?.chapters).length > 0) {
+      Object.entries(jsonData?.chapters).forEach((el) => {
+        jsonChapterVerse[el[0]] = Object.keys(el[1]).filter(
+          (verse) => verse !== 'front'
+        ).length
+      })
+    }
+  } catch (error) {
+    errorParse = error
   }
-  return jsonChapterVerse
+
+  return { data: jsonChapterVerse, error: errorParse }
 }

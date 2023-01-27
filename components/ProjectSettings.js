@@ -89,7 +89,7 @@ function ProjectSettings() {
         setResourcesUrl={setResourcesUrl}
         methodId={currentMethod?.id}
       />
-      {isErrorCommit && <div className="mt-3">Одна из ссылок на коммит некоректна</div>}
+      {isErrorCommit && <div className="mt-3">{t('WrongResource')}</div>}
 
       <button className="btn-cyan mt-3" onClick={handleSaveCommits} disabled={isSaving}>
         {isSaving ? (
@@ -114,7 +114,7 @@ function ProjectSettings() {
             ></path>
           </svg>
         ) : (
-          'сохранить'
+          t('Save')
         )}
       </button>
     </div>
