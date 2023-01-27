@@ -10,7 +10,7 @@ import { inactiveState } from './Panel/state/atoms'
 
 import RecorderButton from 'public/recorder.svg'
 import StopButton from 'public/stop.svg'
-import RecorderCrossedButton from 'public/recorder-crossed.svg'
+import RecorderCrossedButton from 'public/error-outline.svg'
 import TrashButton from 'public/trash.svg'
 
 export default function Recorder() {
@@ -49,7 +49,7 @@ export default function Recorder() {
         setMediaRec(mediaRecorder)
       })
       .catch((err) => {
-        setButton(<RecorderCrossedButton className="stroke-red-700 stroke-1" />)
+        setButton(<RecorderCrossedButton className="stroke-red-700 stroke-2" />)
         console.error(`You have not given access to the microphone: ${err}`)
       })
   }, [])

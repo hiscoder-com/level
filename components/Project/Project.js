@@ -48,7 +48,7 @@ function Project({ code }) {
     code: code,
   })
   return (
-    <>
+    <div className="mx-auto max-w-7xl">
       <h3 className="h3 inline-block">{project?.title}</h3>
       {highLevelAccess && (
         <div className="mt-4 ml-4 inline-block">
@@ -82,7 +82,7 @@ function Project({ code }) {
         )}
       </div>
       <BookList highLevelAccess={highLevelAccess} project={project} user={user} />
-    </>
+    </div>
   )
 }
 

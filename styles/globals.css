@@ -41,7 +41,7 @@
 }
 
 .arrow{
-	@apply px-6 py-5 rounded-full duration-300
+	@apply px-5 py-5 rounded-full duration-300
 	hover:bg-white
 	active:bg-gray-100
 	disabled:opacity-30
@@ -74,7 +74,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300
 }
 
-
 .btn-start{
 	@apply btn-cyan-base rounded-full duration-300 uppercase text-2xl font-medium cursor-pointer
 }
@@ -102,7 +101,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .eye{
-	@apply absolute right-2 bottom-2 cursor-pointer
+	@apply absolute right-2 bottom-2 cursor-pointer stroke-2 text-[#3C3C41]
 }
 
 .f-screen-appbar{

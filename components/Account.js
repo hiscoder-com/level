@@ -22,7 +22,9 @@ function Account() {
   }, [router, user, loading])
 
   return (
-    <>
+    <div className="mx-auto max-w-7xl">
+      <h1 className="h1">{t('common:Account')}</h1>
+
       {user?.id && (
         <>
           <p className="mt-3">
@@ -36,7 +38,7 @@ function Account() {
           <Projects />
         </>
       )}
-    </>
+    </div>
   )
 }
 
