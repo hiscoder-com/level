@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { supabase } from 'utils/supabaseClient'
 
-import Report from 'public/report.svg'
+import Report from 'public/error-outline.svg'
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
 
@@ -114,7 +114,7 @@ export default function Login() {
             {error && (
               <>
                 <p className="flex text-xs text-red-600">
-                  <Report /> {t('WrongLoginPassword')}
+                  <Report className="w-4 h-4" /> {t('WrongLoginPassword')}
                 </p>
                 <a
                   href="#"

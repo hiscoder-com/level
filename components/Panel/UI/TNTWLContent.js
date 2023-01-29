@@ -5,12 +5,12 @@ import Close from 'public/close.svg'
 function TNTWLContent({ setItem, item }) {
   return (
     <div
-      className={`absolute top-0 bottom-0 bg-white overflow-auto left-0 right-0 px-2 ${
+      className={`absolute top-0 bottom-0 bg-white overflow-auto left-0 right-0 px-2 pt-8 ${
         item ? '' : 'hidden'
       }`}
     >
       <div
-        className="absolute top-0 right-0 w-8 pt-3 pr-3 cursor-pointer"
+        className="absolute flex top-0 right-0 w-12 pr-4 cursor-pointer"
         onClick={() => setItem(null)}
       >
         <Close />

@@ -25,7 +25,7 @@ function SideBar({ isOpen, setIsOpen }) {
           <div className="flex items-center justify-between px-4 py-3 text-[#3C3C41]">
             <Close
               onClick={() => setIsOpen(false)}
-              className="h-6 cursor-pointer stroke-1"
+              className="h-8 cursor-pointer stroke-2"
             />
           </div>
         </div>
