@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import TextareaAutosize from 'react-textarea-autosize'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -48,7 +49,7 @@ function EditBrief() {
         <div className="mt-5">
           {briefDataCollection && (
             <div className="w-full">
-              <table className="table-fixed border-b-4 w-full my-6 text-sm text-gray-500">
+              <table className="table-fixed w-full my-6 text-sm text-gray-500">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50">
                   <tr>
                     <th className="py-3 px-6">{t('Questions')}</th>
@@ -59,7 +60,7 @@ function EditBrief() {
                 <tbody>
                   {briefDataCollection.map((briefItem, index) => {
                     const resume = (
-                      <textarea
+                      <TextareaAutosize
                         defaultValue={briefItem.resume}
                         onChange={(e) => {
                           setBriefDataCollection((prev) => {
@@ -71,30 +72,30 @@ function EditBrief() {
                             return newDataCollection
                           })
                         }}
-                        className="p-2 outline-none w-full h-full"
+                        className="p-2 outline-none w-full resize-none"
                       />
                     )
                     const questionTitle = `${briefItem.id}. ${briefItem.title}`
 
                     return (
                       <>
-                        <tr key={index} className="bg-white border-b">
-                          <td className="border p-2 font-bold border-x-2">
+                        <tr key={index} className="bg-white border-t-4">
+                          <td className="border p-2 font-bold border-b-2 border-x-2">
                             {questionTitle}
                           </td>
-                          <td className="border p-2 font-bold border-x-2">
+                          <td className="border p-2 font-bold border-b-2 border-x-2">
                             {questionTitle}
                           </td>
                           <td
                             rowSpan={briefItem.block.length + 1}
-                            className="border p-2 border-b-4 border-x-2 text-center"
+                            className="border p-2 text-center"
                           >
                             {resume}
                           </td>
                         </tr>
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           const answer = (
-                            <textarea
+                            <TextareaAutosize
                               defaultValue={questionAndAnswerPair.answer}
                               onChange={(e) => {
                                 setBriefDataCollection((prev) => {
@@ -111,15 +112,15 @@ function EditBrief() {
                                   return newDataCollection
                                 })
                               }}
-                              className="outline-none w-full"
+                              className="outline-none w-full resize-none"
                             />
                           )
                           return (
                             <tr key={blockIndex} className="bg-white border-b">
-                              <td className="border-x-2 p-2">
+                              <td className="border p-2 border-x-2">
                                 {questionAndAnswerPair.question}
                               </td>
-                              <td className="border border-x-2 p-2">{answer}</td>
+                              <td className="p-2 border-x-2">{answer}</td>
                             </tr>
                           )
                         })}
