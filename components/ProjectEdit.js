@@ -127,7 +127,7 @@ function ProjectEdit() {
           </Link>
         </div>
         <div className="py-5">
-        <Link href={`/projects/${project?.code}/edit/brief`}>
+          <Link href={`/projects/${project?.code}/edit/brief`}>
             <a className="btn btn-filled btn-cyan">{t('project-edit:EditBrief')}</a>
           </Link>
         </div>
