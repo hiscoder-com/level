@@ -1,7 +1,6 @@
-import usfm from 'usfm-js'
-import axios from 'axios'
-
 import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
+import { countOfChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
   if (!req.headers.token) {
@@ -14,26 +13,36 @@ export default async function handler(req, res) {
 
   switch (method) {
     case 'POST':
+      const sendLog = async (log) => {
+        const { data, error } = await supabaseService.from('logs').insert({
+          log,
+        })
+        return { data, error }
+      }
       const { link, book_code, project_id } = req.body
-      const countOfChaptersAndVerses = {}
-      try {
-        const result = await axios.get(link)
 
-        const jsonData = usfm.toJSON(result.data)
-        if (Object.entries(jsonData?.chapters).length > 0) {
-          Object.entries(jsonData?.chapters).forEach((el) => {
-            countOfChaptersAndVerses[el[0]] = Object.keys(el[1]).filter(
-              (verse) => verse !== 'front'
-            ).length
+      try {
+        const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
+          await countOfChaptersAndVerses({
+            link,
+            book_code,
+            project_id,
           })
+        if (errorJsonChapterVerse) {
+          await sendLog({
+            url: 'api/create_chapters',
+            type: 'errorJsonChapterVerse',
+            error: errorJsonChapterVerse,
+          })
+          throw errorJsonChapterVerse
         }
 
-        if (Object.keys(countOfChaptersAndVerses).length !== 0) {
+        if (Object.keys(jsonChapterVerse).length !== 0) {
           const { error: errorPost } = await supabase.from('books').insert([
             {
               code: book_code,
               project_id,
-              chapters: countOfChaptersAndVerses,
+              chapters: jsonChapterVerse,
             },
           ])
           if (errorPost) throw errorPost

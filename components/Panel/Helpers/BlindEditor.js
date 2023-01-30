@@ -117,10 +117,10 @@ function BlindEditor({ config }) {
               disabled={disabledButton}
             >
               {isTranslated ? (
-                <Check className="w-4 h-4" />
+                <Check className="w-4 h-4 stroke-2" />
               ) : (
                 <Pencil
-                  className={`w-4 h-4 ${
+                  className={`w-5 h-5 stroke-2 ${
                     disabledButton
                       ? 'fill-gray-200'
                       : !isTranslating
