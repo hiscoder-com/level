@@ -47,27 +47,27 @@
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
-        SELECT json_build_object('chapters',chapters) FROM PUBLIC.books WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id INTO chapters_old;
-        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function','update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));   
+        SELECT json_build_object('chapters', chapters) FROM PUBLIC.books WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id INTO chapters_old;
+        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));   
         UPDATE PUBLIC.books SET chapters = update_chapters_in_books.chapters_new WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id;
         RETURN TRUE;
       END;
     $$;
 
-    DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
+  DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
 
-    CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
-        LANGUAGE plpgsql SECURITY definer AS $$         
-        BEGIN
-          IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-          END IF;      
-          INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num',  num));  
-          INSERT INTO PUBLIC.chapters (num, verses, book_id, project_id) VALUES (num, verses, book_id, project_id)
-          ON CONFLICT ON CONSTRAINT chapters_book_id_num_key
-              DO NOTHING;
-          RETURN TRUE;
-        END;
-      $$; 
+  CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
+      LANGUAGE plpgsql SECURITY definer AS $$         
+      BEGIN
+        IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+        END IF;      
+        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num',  num));  
+        INSERT INTO PUBLIC.chapters (num, verses, book_id, project_id) VALUES (num, verses, book_id, project_id)
+        ON CONFLICT ON CONSTRAINT chapters_book_id_num_key
+            DO NOTHING;
+        RETURN TRUE;
+      END;
+    $$; 
 
   DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
 
@@ -122,7 +122,7 @@
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
         SELECT json_build_object('resources', resources, 'base_manifest', base_manifest) FROM PUBLIC.projects WHERE id = update_resources_in_projects.project_id INTO old_values;
-        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects','resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));  
+        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects', 'resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));  
         UPDATE PUBLIC.projects SET resources = update_resources_in_projects.resources_new, base_manifest = update_resources_in_projects.base_manifest_new WHERE id = project_id;
         RETURN TRUE;
       END;
