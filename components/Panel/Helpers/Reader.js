@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
@@ -10,6 +12,7 @@ function Reader({ config }) {
   const {
     query: { project, book, chapter },
   } = useRouter()
+  const { t } = useTranslation(['common'])
 
   const [chapterId, setChapterId] = useState(false)
   const [verseObjects, setVerseObjects] = useState([])
@@ -82,7 +85,9 @@ function Reader({ config }) {
     <div>
       {verseObjects.map((el, index) => (
         <div key={el.verse_id} className="flex my-3">
-          <div>{el.num}</div>
+          <div>
+            {el.num === 0 ? t('Title') : el.num === 200 ? t('Reference') : el.num}
+          </div>
           <AutoSizeTextArea
             disabled={true}
             verseObject={el}

@@ -2,6 +2,8 @@ import { useMemo } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { useTranslation } from 'next-i18next'
+
 import { Placeholder } from '../UI'
 
 import { checkedVersesBibleState } from '../state/atoms'
@@ -10,6 +12,7 @@ import { useGetResource, useScroll } from 'utils/hooks'
 
 // draft: true/false
 function Bible({ config, url, toolName }) {
+  const { t } = useTranslation('common')
   const { loading, data, error } = useGetResource({
     config,
     url,
@@ -24,12 +27,14 @@ function Bible({ config, url, toolName }) {
           verseObjects={data?.verseObjects}
           handleSave={handleSave}
           scrollId={scrollId}
+          t={t}
         />
       ) : (
         <Verses
           verseObjects={data?.verseObjects}
           handleSave={handleSave}
           scrollId={scrollId}
+          t={t}
         />
       )}
     </>
@@ -38,7 +43,7 @@ function Bible({ config, url, toolName }) {
 
 export default Bible
 
-function Verses({ verseObjects, handleSave, scrollId }) {
+function Verses({ verseObjects, handleSave, scrollId, t }) {
   return (
     <>
       {verseObjects?.map((el) => (
@@ -48,14 +53,22 @@ function Verses({ verseObjects, handleSave, scrollId }) {
           className={`p-2 ${scrollId === 'id' + el.verse ? 'bg-gray-200' : ''}`}
           onClick={() => handleSave(el.verse)}
         >
-          <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
+          <ReactMarkdown>
+            {(el.verse === '0'
+              ? t('Title')
+              : el.verse === '200'
+              ? t('Reference')
+              : el.verse) +
+              ' ' +
+              el.text}
+          </ReactMarkdown>
         </div>
       ))}
     </>
   )
 }
 
-function VersesExtended({ verseObjects, handleSave, scrollId }) {
+function VersesExtended({ verseObjects, handleSave, scrollId, t }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
 
   return (
@@ -73,7 +86,11 @@ function VersesExtended({ verseObjects, handleSave, scrollId }) {
             }`}
           >
             <div id={'id' + el.verse} className={`ml-2`}>
-              {el.verse}
+              {el.verse === '0'
+                ? t('Title')
+                : el.verse === '200'
+                ? t('Reference')
+                : el.verse}
             </div>
             {checkedCurrent ? (
               <Blur verse={el.text} />

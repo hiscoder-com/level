@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react'
 
+import { useTranslation } from 'next-i18next'
+
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
 
 function Editor({ config }) {
+  const { t } = useTranslation(['common'])
+
   const [verseObjects, setVerseObjects] = useState([])
 
   useEffect(() => {
@@ -27,7 +31,9 @@ function Editor({ config }) {
     <div>
       {verseObjects.map((el, index) => (
         <div key={el.verse_id} className="flex my-3">
-          <div>{el.num}</div>
+          <div>
+            {el.num === 0 ? t('Title') : el.num === 200 ? t('Reference') : el.num}
+          </div>
           <AutoSizeTextArea verseObject={el} index={index} updateVerse={updateVerse} />
         </div>
       ))}

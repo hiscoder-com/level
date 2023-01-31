@@ -131,7 +131,9 @@ function BlindEditor({ config }) {
               )}
             </button>
 
-            <div className="mx-4">{el.num}</div>
+            <div className="mx-4">
+              {el.num === 0 ? t('Title') : el.num === 200 ? t('Reference') : el.num}
+            </div>
             {isTranslating ? (
               <textarea
                 autoFocus
@@ -159,7 +161,7 @@ function BlindEditor({ config }) {
       {isShowFinalButton && (
         <button
           onClick={() => {
-            setEnabledIcons(['0'])
+            setEnabledIcons(['201'])
             setEnabledInputs([])
             sendToDb(verseObjects.length - 1)
           }}

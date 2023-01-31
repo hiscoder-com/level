@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
@@ -19,6 +20,7 @@ function CommandEditor({ config }) {
   const {
     query: { project, book, chapter },
   } = useRouter()
+  const { t } = useTranslation(['common'])
 
   const [level, setLevel] = useState('user')
   const [chapterId, setChapterId] = useState(false)
@@ -137,7 +139,7 @@ function CommandEditor({ config }) {
                 : 'font-bold'
             }
           >
-            {el.num}
+            {el.num === 0 ? t('Title') : el.num === 200 ? t('Reference') : el.num}
           </div>
           <AutoSizeTextArea
             disabled={

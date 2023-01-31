@@ -931,10 +931,13 @@
   $$;
 
   -- создать стихи
+  --TODO добавить в миграцию
   CREATE FUNCTION PUBLIC.create_verses(chapter_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       chapter RECORD;
+      start_verse int;
+      method_type text;
     BEGIN
       -- 1. Получаем количество стихов
       SELECT  chapters.id as id,
@@ -949,17 +952,31 @@
         INTO chapter;
 
       IF authorize(auth.uid(), chapter.project_id) NOT IN ('admin', 'coordinator')
-      THEN
+      THEN 
         RETURN FALSE;
       END IF;
-
-      FOR i IN 1..chapter.verses LOOP
+      method_type = (SELECT type FROM projects  WHERE id = chapter.project_id);
+      IF method_type = 'obs'
+      THEN
+        start_verse = 0;
+      ELSE 
+        start_verse = 1;
+      END IF;
+      FOR i IN start_verse..chapter.verses LOOP
         INSERT INTO
           PUBLIC.verses (num, chapter_id, current_step, project_id)
         VALUES
           (i , chapter.id, chapter.step_id, chapter.project_id);
       END LOOP;
-
+      IF method_type = 'obs'
+      THEN
+       INSERT INTO
+          PUBLIC.verses (num, chapter_id, current_step, project_id)
+        VALUES
+          (200 , chapter.id, chapter.step_id, chapter.project_id);
+      ELSE 
+        RETURN true;
+      END IF;
       RETURN true;
 
     END;

@@ -213,7 +213,7 @@ export const countOfChaptersAndVerses = async ({ link, book_code }) => {
         const chapterNum = String(index).padStart(2, '0')
         const res = await axios.get(link + '/' + chapterNum + '.md')
 
-        jsonChapterVerse[chapterNum] = mdToVerses(res.data).versesObject.length
+        jsonChapterVerse[chapterNum] = mdToJson(res.data).verseObjects.length
       }
     } catch (error) {
       errorParse = error
@@ -236,15 +236,15 @@ export const countOfChaptersAndVerses = async ({ link, book_code }) => {
 
   return { data: jsonChapterVerse, error: errorParse }
 }
-export const mdToVerses = (md) => {
+export const mdToJson = (md) => {
   let _markdown = md.replaceAll('\u200B', '').split(/\n\s*\n\s*/)
-  const headerMd = _markdown.shift().trim().slice(1)
-  let linkMd = _markdown.pop().trim().slice(1, -1)
-  if (linkMd === '') {
-    linkMd = _markdown.pop().trim().slice(1, -1)
+  const title = _markdown.shift().trim().slice(1)
+  let reference = _markdown.pop().trim().slice(1, -1)
+  if (reference === '') {
+    reference = _markdown.pop().trim().slice(1, -1)
   }
-  const versesObject = []
-
+  const verseObjects = []
+  let verseObjectsExtended = []
   for (let n = 0; n < _markdown.length / 2; n++) {
     let urlImage
     let text
@@ -254,10 +254,16 @@ export const mdToVerses = (md) => {
     } else {
       text = _markdown[n * 2] + '\n' + _markdown[n * 2 + 1]
     }
-    versesObject.push({ urlImage, text, key: (n + 1).toString() })
+    verseObjects.push({ urlImage, text, verse: (n + 1).toString() })
   }
 
-  return { versesObject, headerMd, linkMd }
+  verseObjectsExtended = [
+    ...verseObjects,
+    { text: title, verse: '0' },
+    { text: reference, verse: '200' },
+  ].sort((a, b) => a.verse - b.verse)
+
+  return { verseObjects, title, reference, verseObjectsExtended }
 }
 
 export const uniqueFilter = (uniqueObject, key, value) => {

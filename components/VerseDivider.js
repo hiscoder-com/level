@@ -22,7 +22,7 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
-  const { t } = useTranslation('verses')
+  const { t } = useTranslation(['verses', 'common'])
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -122,7 +122,13 @@ function VerseDivider({ verses }) {
                 } w-32 border-slate-200 border-2 cursor-pointer hover:border-1 hover:border-cyan-300 truncate flex justify-between p-1`}
                 key={index}
               >
-                <div>{el.num}</div>
+                <div className="mr-1">
+                  {el.num === 0
+                    ? t('common:Title')
+                    : el.num === 200
+                    ? t('common:Reference')
+                    : el.num}
+                </div>
                 <div>{el.translator_name}</div>
               </div>
             )
