@@ -106,3 +106,13 @@ CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_man
       RETURN TRUE;
     END;
   $$; 
+--31.01.23
+DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
+
+DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
+
+ALTER TABLE
+      PUBLIC.briefs enable ROW LEVEL security,
+      ADD data_collection json,
+      ADD is_enable boolean,
+      DROP text;

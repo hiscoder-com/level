@@ -24,7 +24,6 @@
 
   -- DROP TRIGGER
     DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
-    DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects; -- TODO удалить это из schema и добавить в migrations.sql
     DROP TRIGGER IF EXISTS on_public_book_created ON PUBLIC.books;
     DROP TRIGGER IF EXISTS on_public_verses_next_step ON PUBLIC.verses;
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
@@ -53,7 +52,6 @@
     DROP FUNCTION IF EXISTS PUBLIC.save_verse;
     DROP FUNCTION IF EXISTS PUBLIC.save_verses;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
-    DROP FUNCTION IF EXISTS PUBLIC.handle_new_project; -- TODO удалить из схема и добавить в мигратионс
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_book;
     DROP FUNCTION IF EXISTS PUBLIC.handle_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_personal_notes;
@@ -787,20 +785,6 @@
 
   $$;
 
-  -- TODO удалить это из схема
-  -- после создания проекта создаем бриф
-  CREATE FUNCTION PUBLIC.handle_new_project() returns TRIGGER
-    LANGUAGE plpgsql security definer AS $$ BEGIN
-      INSERT INTO
-        PUBLIC.briefs (project_id)
-      VALUES
-        (NEW.id);
-
-      RETURN NEW;
-
-    END;
-  $$;
-
   -- после создания книги создаем главы
   CREATE FUNCTION PUBLIC.handle_new_book() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
@@ -1225,18 +1209,12 @@
       project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL UNIQUE,
-      "text" text DEFAULT NULL
+      data_collection json,
+      is_enable boolean  
     );
 
     COMMENT ON COLUMN public.briefs.text
         IS 'бриф пишем в формате маркдаун';
-
-    ALTER TABLE
-      PUBLIC.briefs enable ROW LEVEL security,
-      ADD data_collection json,
-      ADD is_enable boolean,
-      DROP text;
-
   -- END TABLE
 
   -- RLS
@@ -1604,12 +1582,6 @@ ALTER TABLE
   CREATE TRIGGER on_auth_user_created AFTER
   INSERT
     ON auth.users FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_user();
-
-  -- trigger the function every time a project is created
-
-  CREATE TRIGGER on_public_project_created AFTER
-  INSERT
-    ON PUBLIC.projects FOR each ROW EXECUTE FUNCTION PUBLIC.handle_new_project(); -- todo удалить это из schema.sql
 
   -- trigger the function every time a book is created
 
