@@ -9,13 +9,12 @@ function AccountHomePage() {
   const { t } = useTranslation(['users', 'common'])
 
   return (
-    <div className="container">
+    <div>
       <Head>
         <title>{t('V-CANAAccount')}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1 className="h1">{t('common:Account')}</h1>
       <Account />
     </div>
   )

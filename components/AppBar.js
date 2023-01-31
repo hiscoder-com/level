@@ -44,15 +44,17 @@ export default function AppBar({ setIsOpen }) {
       hasAccess()
     }
   }, [user])
-
   return (
     <div className="bg-white">
       <div className="appbar">
         <div className="flex items-center gap-7 cursor-pointer">
           {access && (
-            <Burger onClick={() => setIsOpen((prev) => !prev)} className="h-6 stroke-1" />
+            <Burger
+              onClick={() => setIsOpen((prev) => !prev)}
+              className="h-6 text-[#1D1D1D] stroke-2"
+            />
           )}
-          <Link href="/">
+          <Link href="/account">
             <a>
               <VCANA_logo className="h-5" />
             </a>
@@ -79,7 +81,7 @@ export default function AppBar({ setIsOpen }) {
               }`}
             >
               <div className="flex row items-center gap-1 cursor-default">
-                <User className="w-5 fill-cyan-600" />
+                <User className="w-5 text-cyan-600" />
                 {stepConfig.count_of_users}
               </div>
               <div className="hidden md:flex">

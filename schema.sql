@@ -16,6 +16,8 @@
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
     DROP TABLE IF EXISTS PUBLIC.dictionaries;
+    DROP TABLE IF EXISTS PUBLIC.logs;
+
 
 
   -- EDN DROP TABLE
@@ -28,6 +30,7 @@
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
     DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
     DROP TRIGGER IF EXISTS on_dictionaries_update ON PUBLIC.dictionaries;
+    DROP TRIGGER IF EXISTS on_public_chapters_update ON PUBLIC.chapters;
 
 
   -- END DROP TRIGGER
@@ -63,7 +66,15 @@
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
-    DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;  
+    DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
+    DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
+    DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
+    DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
+    DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
+
+    
 
 
   -- END DROP FUNCTION
@@ -100,7 +111,7 @@
   -- функция возвращает твою максимальную роль на проекте
   CREATE FUNCTION PUBLIC.authorize(
       user_id uuid,
-      project_id bigint
+      project_id BIGINT
     ) returns TEXT
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -160,7 +171,7 @@
   $$;
 
   -- возвращает, на каком шаге сейчас юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
-  CREATE FUNCTION PUBLIC.get_current_steps(project_id bigint) returns TABLE(title text, project text, book PUBLIC.book_code, chapter int2, step int2, started_at TIMESTAMP)
+  CREATE FUNCTION PUBLIC.get_current_steps(project_id BIGINT) returns TABLE(title text, project text, book PUBLIC.book_code, chapter INT2, step INT2, started_at TIMESTAMP)
     LANGUAGE plpgsql security definer AS $$
 
     BEGIN
@@ -186,7 +197,7 @@
   $$;
 
   -- получить все стихи переводчика
-  CREATE FUNCTION PUBLIC.get_verses(project_id BIGINT, chapter int2, book PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text)
+  CREATE FUNCTION PUBLIC.get_verses(project_id BIGINT, chapter INT2, book PUBLIC.book_code) returns TABLE(verse_id BIGINT, num INT2, verse text)
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       verses_list RECORD;
@@ -221,7 +232,7 @@
   $$;
 
   -- получить все стихи главы
-  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num int2, book_code PUBLIC.book_code) returns TABLE(verse_id bigint, num int2, verse text, translator text)
+  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num INT2, book_code PUBLIC.book_code) returns TABLE(verse_id BIGINT, num INT2, verse text, translator text)
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       verses_list RECORD;
@@ -263,7 +274,7 @@
   $$;
 
   -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
-  CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id bigint) returns BOOLEAN
+  CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       usr RECORD;
@@ -282,7 +293,7 @@
     END;
   $$;
 
-  CREATE FUNCTION PUBLIC.remove_moderator(user_id uuid, project_id bigint) returns BOOLEAN
+  CREATE FUNCTION PUBLIC.remove_moderator(user_id uuid, project_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       usr RECORD;
@@ -407,7 +418,7 @@
 
    -- Сохранить стих
   -- я думаю что вообще можно количество запросов сократить, но оставим это на фазу рефакторинга)
-  CREATE FUNCTION PUBLIC.save_verse(verse_id bigint, new_verse text) RETURNS boolean
+  CREATE FUNCTION PUBLIC.save_verse(verse_id BIGINT, new_verse text) RETURNS boolean
     LANGUAGE plpgsql security definer AS $$
     DECLARE
      current_verse record;
@@ -490,7 +501,7 @@
 
   -- для rls, функция которая проверяет, является ли юзер переводчиком стиха
   -- может используя функцию записать в таблицу сразу айди юзера, а то часто придется такие проверки делать
-  CREATE FUNCTION PUBLIC.can_translate(translator_id bigint)
+  CREATE FUNCTION PUBLIC.can_translate(translator_id BIGINT)
     returns BOOLEAN LANGUAGE plpgsql security definer AS $$
     DECLARE
       access INT;
@@ -509,12 +520,12 @@
   $$;
 
   -- Функция для перехода на следующий шаг (проверим что юзер имеет право редактировать эти стихи, узнаем айди следующего шага, поменяем у всех стихов айди шага)
-  CREATE FUNCTION PUBLIC.go_to_next_step(project TEXT, chapter int2, book PUBLIC.book_code) returns INTEGER
+  CREATE FUNCTION PUBLIC.go_to_next_step(project TEXT, chapter INT2, book PUBLIC.book_code) returns INTEGER
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       proj_trans RECORD;
-      cur_step int2;
-      cur_chapter_id bigint;
+      cur_step INT2;
+      cur_chapter_id BIGINT;
       next_step RECORD;
     BEGIN
 
@@ -575,12 +586,12 @@
   $$;
 
   -- Новая функция для перехода на следующий шаг(указываем конкретно, какой сейчас шаг) (проверим что юзер имеет право редактировать эти стихи, узнаем айди следующего шага, поменяем у всех стихов айди шага)
-  CREATE FUNCTION PUBLIC.go_to_step(project TEXT, chapter int2, book PUBLIC.book_code, current_step int2) returns INTEGER
+  CREATE FUNCTION PUBLIC.go_to_step(project TEXT, chapter INT2, book PUBLIC.book_code, current_step INT2) returns INTEGER
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       proj_trans RECORD;
-      cur_step int2;
-      cur_chapter_id bigint;
+      cur_step INT2;
+      cur_chapter_id BIGINT;
       next_step RECORD;
     BEGIN
 
@@ -670,6 +681,89 @@
     END;
   $$;
 
+
+  CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
+    LANGUAGE plpgsql SECURITY definer AS $$  
+    DECLARE chapters_old JSON;        
+    BEGIN
+      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+      END IF;
+      SELECT json_build_object('chapters',chapters) FROM PUBLIC.books WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id INTO chapters_old;
+      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function','update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));   
+      UPDATE PUBLIC.books SET chapters = update_chapters_in_books.chapters_new WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id;
+      RETURN TRUE;
+    END;
+  $$;
+
+
+  CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
+    LANGUAGE plpgsql SECURITY definer AS $$         
+    BEGIN
+      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+      END IF;      
+      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num',  num));  
+      INSERT INTO PUBLIC.chapters (num, verses, book_id, project_id) VALUES (num, verses, book_id, project_id)
+      ON CONFLICT ON CONSTRAINT chapters_book_id_num_key
+            DO NOTHING;
+      RETURN TRUE;
+    END;
+  $$; 
+
+  CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
+    LANGUAGE plpgsql SECURITY definer AS $$ 
+    DECLARE chapter JSON;
+            verses_old JSON;        
+    BEGIN
+      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+      END IF;
+      SELECT json_build_object('verses', verses) FROM PUBLIC.chapters WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.project_id = update_verses_in_chapters.project_id INTO verses_old;
+      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_verses_in_chapters', 'book_id', book_id, 'verses', update_verses_in_chapters.verses_new, 'project_id', project_id, 'old values', verses_old));
+      UPDATE PUBLIC.chapters SET verses = update_verses_in_chapters.verses_new WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num AND chapters.project_id = update_verses_in_chapters.project_id;
+      SELECT json_build_object('id', id, 'started_at', started_at) FROM PUBLIC.chapters WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num INTO chapter;
+      RETURN chapter;
+    END;
+  $$; 
+
+
+  CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
+    LANGUAGE plpgsql SECURITY definer AS $$ 
+    DECLARE step_id BIGINT;    
+    BEGIN
+      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+      END IF;      
+      IF finish_verse < start_verse THEN
+        RETURN false;
+      END IF;    
+      SELECT id FROM steps WHERE steps.project_id = insert_additional_verses.project_id AND sorting = 1 INTO step_id;
+      INSERT INTO PUBLIC.logs (log) VALUES ( json_build_object('function', 'insert_additional_verses', 'start_verse', start_verse, 'step_id', id, 'finish_verse', finish_verse, 'chapter_id', chapter_id, 'project_id', project_id)); 
+      
+      FOR i IN start_verse..finish_verse LOOP
+        INSERT INTO
+          PUBLIC.verses (num, chapter_id, current_step, project_id)
+        VALUES
+          (i, chapter_id, step_id, project_id)
+          ON CONFLICT ON CONSTRAINT verses_chapter_id_num_key
+          DO NOTHING;
+      END LOOP;      
+      RETURN TRUE;
+    END;
+  $$;
+
+
+  CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
+    LANGUAGE plpgsql SECURITY definer AS $$ 
+    DECLARE old_values JSON;
+    BEGIN
+      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
+      END IF;
+      SELECT json_build_object('resources', resources, 'base_manifest', base_manifest) FROM PUBLIC.projects WHERE id = update_resources_in_projects.project_id INTO old_values;
+      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects','resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));  
+      UPDATE PUBLIC.projects SET resources = update_resources_in_projects.resources_new, base_manifest = update_resources_in_projects.base_manifest_new WHERE id = project_id;
+      RETURN TRUE;
+    END;
+  $$; 
+
+
   -- create policy "политика с джойном"
   --   on teams
   --   for update using (
@@ -734,7 +828,7 @@
     END;
   $$;
 
- -- update changed_at to current time/date when personal_notes is updating
+  -- update changed_at to current time/date when personal_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_personal_notes() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       NEW.changed_at:=NOW();
@@ -744,7 +838,7 @@
     END;
   $$;
 
--- update changed_at to current time/date when team_notes is updating
+  -- update changed_at to current time/date when team_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_team_notes() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$ BEGIN
       NEW.changed_at:=NOW();
@@ -754,8 +848,8 @@
     END;
   $$;
 
--- update array of alphabet in projects column when added new word with new first symbol
- CREATE FUNCTION PUBLIC.handle_update_dictionaries() returns TRIGGER
+  -- update array of alphabet in projects column when added new word with new first symbol
+  CREATE FUNCTION PUBLIC.handle_update_dictionaries() returns TRIGGER
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       alphabet JSONB;
@@ -773,8 +867,21 @@
     END;
   $$;
 
+  CREATE FUNCTION PUBLIC.handle_compile_chapter() returns TRIGGER
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE      
+      chapter JSONB;
+    BEGIN
+      IF (NEW.finished_at IS NOT NULL) THEN
+        SELECT jsonb_object_agg(num, text ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
+        NEW.text=chapter;
+      END IF;               
+      RETURN NEW;
+    END;
+  $$;
+
   -- создать главы
-  CREATE FUNCTION PUBLIC.create_chapters(book_id bigint) returns BOOLEAN
+  CREATE FUNCTION PUBLIC.create_chapters(book_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       book RECORD;
@@ -792,7 +899,7 @@
         INSERT INTO
           PUBLIC.chapters (num, book_id, verses, project_id)
         VALUES
-          (chapter.key::int2 , book.id, chapter.value::int4, book.project_id);
+          (chapter.key::INT2 , book.id, chapter.value::int4, book.project_id);
       END LOOP;
       -- 2. Наверное не вариант сразу создавать все стихи и все главы
       -- 3. Создадим все главы книги. И сделаем какую-нить функцию которая потом создаст все стихи
@@ -819,7 +926,7 @@
           PUBLIC.verses
         SET "text" = new_verses.value::text
         WHERE
-          verses.id = new_verses.key::bigint;
+          verses.id = new_verses.key::BIGINT;
       END LOOP;
 
       RETURN true;
@@ -828,7 +935,7 @@
   $$;
 
   -- создать стихи
-  CREATE FUNCTION PUBLIC.create_verses(chapter_id bigint) returns BOOLEAN
+  CREATE FUNCTION PUBLIC.create_verses(chapter_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       chapter RECORD;
@@ -895,7 +1002,7 @@
 -- ROLE PERMISSIONS
   -- TABLE
     CREATE TABLE PUBLIC.role_permissions (
-      id bigint generated ALWAYS AS identity primary key,
+      id BIGINT generated ALWAYS AS identity primary key,
       role project_role NOT NULL,
       permission app_permission NOT NULL,
       UNIQUE (role, permission)
@@ -913,7 +1020,7 @@
 -- LANGUAGES
   --TABLE
     CREATE TABLE PUBLIC.languages (
-      id bigint generated ALWAYS AS identity primary key,
+      id BIGINT generated ALWAYS AS identity primary key,
       eng text NOT NULL,
       code text NOT NULL UNIQUE,
       orig_name text NOT NULL,
@@ -955,7 +1062,7 @@
 -- METHODS
   -- TABLE
     CREATE TABLE PUBLIC.methods (
-      id bigint generated ALWAYS AS identity primary key,
+      id BIGINT generated ALWAYS AS identity primary key,
       title text NOT NULL,
       steps json,
       resources json,
@@ -983,10 +1090,10 @@
 -- PROJECTS
   -- TABLE
     CREATE TABLE PUBLIC.projects (
-      id bigint generated ALWAYS AS identity primary key,
+      id BIGINT generated ALWAYS AS identity primary key,
       title text NOT NULL,
       code text NOT NULL,
-      language_id bigint references PUBLIC.languages ON
+      language_id BIGINT references PUBLIC.languages ON
       DELETE
         CASCADE NOT NULL,
       "type" project_type NOT NULL,
@@ -1038,8 +1145,8 @@
 -- PROJECT TRANSLATORS
   -- TABLE
     CREATE TABLE PUBLIC.project_translators (
-      id bigint generated ALWAYS AS identity primary key,
-      project_id bigint references PUBLIC.projects ON
+      id BIGINT generated ALWAYS AS identity primary key,
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
       is_moderator boolean DEFAULT false,
@@ -1077,8 +1184,8 @@
 -- PROJECT COORDINATORS
   -- TABLE
     CREATE TABLE PUBLIC.project_coordinators (
-      id bigint generated ALWAYS AS identity primary key,
-      project_id bigint references PUBLIC.projects ON
+      id BIGINT generated ALWAYS AS identity primary key,
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
       user_id uuid references PUBLIC.users ON
@@ -1114,8 +1221,8 @@
 -- BRIEFS
   -- TABLE
     CREATE TABLE PUBLIC.briefs (
-      id bigint generated ALWAYS AS identity primary key,
-      project_id bigint references PUBLIC.projects ON
+      id BIGINT generated ALWAYS AS identity primary key,
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL UNIQUE,
       "text" text DEFAULT NULL
@@ -1151,18 +1258,18 @@
 -- STEPS
   -- TABLE
     CREATE TABLE PUBLIC.steps (
-      id bigint generated ALWAYS AS identity primary key,
+      id BIGINT generated ALWAYS AS identity primary key,
       title text NOT NULL,
       "description" text DEFAULT NULL,
       intro text DEFAULT NULL,
-      count_of_users int2 NOT NULL,
+      count_of_users INT2 NOT NULL,
       whole_chapter BOOLEAN DEFAULT true,
-      "time" int2 NOT NULL,
-      project_id bigint REFERENCES PUBLIC.projects ON
+      "time" INT2 NOT NULL,
+      project_id BIGINT REFERENCES PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
       config json NOT NULL,
-      sorting int2 NOT NULL,
+      sorting INT2 NOT NULL,
         UNIQUE (project_id, sorting)
     );
 
@@ -1190,9 +1297,9 @@
 -- BOOKS
   -- TABLE
     CREATE TABLE PUBLIC.books (
-      id bigint generated ALWAYS AS identity primary key,
+      id BIGINT generated ALWAYS AS identity primary key,
       code book_code NOT NULL,
-      project_id bigint references PUBLIC.projects ON
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
@@ -1221,21 +1328,22 @@
     CREATE policy "Добавлять можно только админу" ON PUBLIC.books FOR
     INSERT
       WITH CHECK (admin_only());
+   
   -- END RLS
 -- END BOOK
 
 -- CHAPTERS
   -- TABLE
     CREATE TABLE PUBLIC.chapters (
-      id bigint generated ALWAYS AS identity primary key,
-      num int2 NOT NULL,
-      book_id bigint REFERENCES PUBLIC.books ON
+      id BIGINT generated ALWAYS AS identity primary key,
+      num INT2 NOT NULL,
+      book_id BIGINT REFERENCES PUBLIC.books ON
       DELETE
         CASCADE NOT NULL,
-      project_id bigint references PUBLIC.projects ON
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
-      "text" text DEFAULT NULL,
+      "text" jsonb DEFAULT NULL,
       verses integer,
       started_at TIMESTAMP DEFAULT NULL,
       finished_at TIMESTAMP DEFAULT NULL,
@@ -1251,26 +1359,28 @@
     CREATE policy "Получают книги все кто на проекте" ON PUBLIC.chapters FOR
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+      
 
   -- END RLS
+
 -- END CHAPTERS
 
 -- VERSES
   -- TABLE
     CREATE TABLE PUBLIC.verses (
-      id bigint GENERATED ALWAYS AS IDENTITY primary key,
-      num int2 NOT NULL,
+      id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
+      num INT2 NOT NULL,
       "text" text DEFAULT NULL,
-      current_step bigint REFERENCES PUBLIC.steps ON
+      current_step BIGINT REFERENCES PUBLIC.steps ON
       DELETE
         CASCADE NOT NULL,
-      chapter_id bigint REFERENCES PUBLIC.chapters ON
+      chapter_id BIGINT REFERENCES PUBLIC.chapters ON
       DELETE
         CASCADE NOT NULL,
-      project_id bigint references PUBLIC.projects ON
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
-      project_translator_id bigint REFERENCES PUBLIC.project_translators ON
+      project_translator_id BIGINT REFERENCES PUBLIC.project_translators ON
       DELETE
         CASCADE DEFAULT NULL,
         UNIQUE (chapter_id, num)
@@ -1302,11 +1412,11 @@
 -- PROGRESS
   -- TABLE
     CREATE TABLE PUBLIC.progress (
-      id bigint generated ALWAYS AS identity primary key,
-      verse_id bigint REFERENCES PUBLIC.verses ON
+      id BIGINT generated ALWAYS AS identity primary key,
+      verse_id BIGINT REFERENCES PUBLIC.verses ON
       DELETE
         CASCADE NOT NULL,
-      step_id bigint REFERENCES PUBLIC.steps ON
+      step_id BIGINT REFERENCES PUBLIC.steps ON
       DELETE
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
@@ -1374,7 +1484,7 @@
   -- TABLE
     CREATE TABLE PUBLIC.team_notes (
       id text NOT NULL primary key,
-      project_id bigint references PUBLIC.projects ON
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
       title text DEFAULT NULL,
@@ -1420,7 +1530,7 @@
   -- TABLE
     CREATE TABLE PUBLIC.dictionaries (
       id text NOT NULL primary key,
-      project_id bigint references PUBLIC.projects ON
+      project_id BIGINT references PUBLIC.projects ON
       DELETE
         CASCADE NOT NULL,
       title text DEFAULT NULL,
@@ -1460,6 +1570,22 @@
 
   -- END RLS
 -- DICTIONARIES
+
+-- LOGS
+  -- TABLE
+    CREATE TABLE PUBLIC.logs (
+      id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
+      created_at TIMESTAMP DEFAULT now(),
+      log jsonb,        
+    );
+    
+    ALTER TABLE
+      PUBLIC.logs enable ROW LEVEL security;  
+  -- END TABLE
+
+  -- RLS
+  -- END RLS
+-- LOGS
 
 
 
@@ -1510,6 +1636,10 @@ ALTER TABLE
   CREATE TRIGGER on_dictionaries_update BEFORE
   UPDATE
     ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_dictionaries();
+
+  CREATE TRIGGER on_public_chapters_update BEFORE
+  UPDATE
+    ON PUBLIC.chapters FOR each ROW EXECUTE FUNCTION PUBLIC.handle_compile_chapter();
 
 -- END TRIGGERS
 

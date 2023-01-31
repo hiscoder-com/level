@@ -7417,10 +7417,10 @@ use-sync-external-store@1.2.0:
   resolved "https://registry.yarnpkg.com/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz#7dbefd6ef3fe4e767a0cf5d7287aacfb5846928a"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
 
-usfm-js@^3.4.1:
-  version "3.4.1"
-  resolved "https://registry.yarnpkg.com/usfm-js/-/usfm-js-3.4.1.tgz#cf2cc73aced372c3bc3ffe144d1094c56c4ea4a7"
-  integrity sha512-i+C0pEAbMmaH9rnWVKqsKGzEXWyl0QIq08NZI7ctKzYIFmuNS51GyJ1FshodIwi9MluxIBMpF9Bw353soZ8JEw==
+usfm-js@^3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/usfm-js/-/usfm-js-3.4.2.tgz#a4232cffe38c9f521246b007a4045648cbcf419a"
+  integrity sha512-i5nGxGwFhkOWd7xgfVWQ6GTkCpksfy5AUIwNJcwanTn3ua5J1nwl3pjApCDA6x1B++8ICkcQMUt0FB/bkKdE2g==
   dependencies:
     lodash.clonedeep "^4.5.0"
 

@@ -1,7 +1,5 @@
-import jsyaml from 'js-yaml'
-import axios from 'axios'
-
 import { supabase } from 'utils/supabaseClient'
+import { parseManifests } from 'utils/helper'
 
 export default async function languageProjectsHandler(req, res) {
   if (!req.headers.token) {
@@ -41,38 +39,12 @@ export default async function languageProjectsHandler(req, res) {
         ) {
           throw 'Resources not an equal'
         }
-        let baseResource = {}
-        const promises = Object.keys(resources).map(async (el) => {
-          const url = resources[el].replace('/src/', '/raw/') + '/manifest.yaml'
-          const { data } = await axios.get(url)
-          const manifest = jsyaml.load(data, { json: true })
-          if (current_method.resources[el]) {
-            baseResource = { books: manifest.projects, name: el }
-          }
-          return {
-            resource: el,
-            url: resources[el],
-            manifest,
-          }
+        const { baseResource, newResources } = await parseManifests({
+          resources,
+          current_method,
         })
-        const manifests = await Promise.all(promises)
 
-        let newResources = {}
-        manifests.forEach((el) => {
-          const url = el.url.split('://')[1].split('/')
-          newResources[el.resource] = {
-            owner: url[1],
-            repo: url[2],
-            commit: url[5],
-            manifest: el.manifest,
-          }
-        })
-        baseResource.books = baseResource.books.map((el) => ({
-          name: el.identifier,
-          link:
-            resources[baseResource.name].replace('/src/', '/raw/') + el.path.substring(1),
-        }))
-
+        //TODO когда выбираешь obs, вводишь коммит, а потом выбираешь bible - то летит ключ obs тоже
         const { data, error } = await supabase.from('projects').insert([
           {
             title,
