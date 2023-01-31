@@ -1,52 +1,8 @@
 import axios from 'axios'
 
 import { tsvToJson } from 'utils/tsvHelper'
+import { uniqueFilterInBook, uniqueFilter, getListWordsReference } from 'utils/helper'
 
-const uniqueFilter = (uniqueObject, key, value) => {
-  if (!uniqueObject?.[key]) {
-    uniqueObject[key] = [value]
-    return false
-  } else {
-    return true
-  }
-}
-
-const getListWordsReference = (data) => {
-  if (!data) {
-    return
-  }
-  const list = {}
-
-  data.forEach((verse) => {
-    if (!list?.[verse.TWLink]) {
-      list[verse.TWLink] = [verse.Reference]
-      return
-    }
-    list[verse.TWLink].push(verse.Reference)
-  })
-
-  return { ...list }
-}
-const uniqueFilterInBook = (wordsBook, item, wordObject) => {
-  if (wordsBook?.[item.url]) {
-    const [chapterCurrentWord, verseCurrentWord] = item.reference
-      .split(':')
-      .map((el) => parseInt(el))
-    const [chapterFirstLink, verseFirstLink] = wordsBook[item.url][0]
-      .split(':')
-      .map((el) => parseInt(el))
-
-    if (chapterFirstLink !== chapterCurrentWord) {
-      return chapterFirstLink < chapterCurrentWord
-    } else {
-      if (verseFirstLink !== verseCurrentWord) {
-        return verseFirstLink < verseCurrentWord
-      } else {
-        return wordObject.repeatedInChunk || wordObject.repeatedInVerse
-      }
-    }
-  }
-}
 /**
  *  @swagger
  *  /api/git/twl:

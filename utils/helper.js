@@ -204,23 +204,104 @@ export const parseManifests = async ({ resources, current_method }) => {
   return { baseResource, newResources }
 }
 
-export const countOfChaptersAndVerses = async ({ link }) => {
+export const countOfChaptersAndVerses = async ({ link, book_code }) => {
   const jsonChapterVerse = {}
   const errorParse = null
-  try {
-    const result = await axios.get(link)
+  if (book_code === 'obs') {
+    try {
+      for (let index = 1; index <= 50; index++) {
+        const chapterNum = String(index).padStart(2, '0')
+        const res = await axios.get(link + '/' + chapterNum + '.md')
 
-    const jsonData = usfm.toJSON(result.data)
-    if (Object.entries(jsonData?.chapters).length > 0) {
-      Object.entries(jsonData?.chapters).forEach((el) => {
-        jsonChapterVerse[el[0]] = Object.keys(el[1]).filter(
-          (verse) => verse !== 'front'
-        ).length
-      })
+        jsonChapterVerse[chapterNum] = mdToVerses(res.data).versesObject.length
+      }
+    } catch (error) {
+      errorParse = error
     }
-  } catch (error) {
-    errorParse = error
+  } else {
+    try {
+      const result = await axios.get(link)
+      const jsonData = usfm.toJSON(result.data)
+      if (Object.entries(jsonData?.chapters).length > 0) {
+        Object.entries(jsonDataclg?.chapters).forEach((el) => {
+          jsonChapterVerse[el[0]] = Object.keys(el[1]).filter(
+            (verse) => verse !== 'front'
+          ).length
+        })
+      }
+    } catch (error) {
+      errorParse = error
+    }
   }
 
   return { data: jsonChapterVerse, error: errorParse }
+}
+export const mdToVerses = (md) => {
+  let _markdown = md.replaceAll('\u200B', '').split(/\n\s*\n\s*/)
+  const headerMd = _markdown.shift().trim().slice(1)
+  let linkMd = _markdown.pop().trim().slice(1, -1)
+  if (linkMd === '') {
+    linkMd = _markdown.pop().trim().slice(1, -1)
+  }
+  const versesObject = []
+
+  for (let n = 0; n < _markdown.length / 2; n++) {
+    let urlImage
+    let text
+    if (/\(([^)]*)\)/g.test(_markdown[n * 2])) {
+      urlImage = /\(([^)]*)\)/g.exec(_markdown[n * 2])[1]
+      text = _markdown[n * 2 + 1]
+    } else {
+      text = _markdown[n * 2] + '\n' + _markdown[n * 2 + 1]
+    }
+    versesObject.push({ urlImage, text, key: (n + 1).toString() })
+  }
+
+  return { versesObject, headerMd, linkMd }
+}
+
+export const uniqueFilter = (uniqueObject, key, value) => {
+  if (!uniqueObject?.[key]) {
+    uniqueObject[key] = [value]
+    return false
+  } else {
+    return true
+  }
+}
+
+export const getListWordsReference = (data) => {
+  if (!data) {
+    return
+  }
+  const list = {}
+
+  data.forEach((verse) => {
+    if (!list?.[verse.TWLink]) {
+      list[verse.TWLink] = [verse.Reference]
+      return
+    }
+    list[verse.TWLink].push(verse.Reference)
+  })
+
+  return { ...list }
+}
+export const uniqueFilterInBook = (wordsBook, item, wordObject) => {
+  if (wordsBook?.[item.url]) {
+    const [chapterCurrentWord, verseCurrentWord] = item.reference
+      .split(':')
+      .map((el) => parseInt(el))
+    const [chapterFirstLink, verseFirstLink] = wordsBook[item.url][0]
+      .split(':')
+      .map((el) => parseInt(el))
+
+    if (chapterFirstLink !== chapterCurrentWord) {
+      return chapterFirstLink < chapterCurrentWord
+    } else {
+      if (verseFirstLink !== verseCurrentWord) {
+        return verseFirstLink < verseCurrentWord
+      } else {
+        return wordObject.repeatedInChunk || wordObject.repeatedInVerse
+      }
+    }
+  }
 }

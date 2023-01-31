@@ -20,7 +20,7 @@
 
 
 
-  -- EDN DROP TABLE
+  -- END DROP TABLE
 
   -- DROP TRIGGER
     DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -72,10 +72,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
-    DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
-
-    
-
+    DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects  
 
   -- END DROP FUNCTION
 

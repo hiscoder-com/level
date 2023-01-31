@@ -26,8 +26,8 @@ export default async function handler(req, res) {
           await countOfChaptersAndVerses({
             link,
             book_code,
-            project_id,
           })
+
         if (errorJsonChapterVerse) {
           await sendLog({
             url: 'api/create_chapters',
@@ -50,6 +50,11 @@ export default async function handler(req, res) {
 
         res.status(201).json({})
       } catch (error) {
+        await sendLog({
+          url: 'api/create_chapters',
+          type: 'error',
+          error: error,
+        })
         res.status(404).json(error)
         return
       }
