@@ -61,6 +61,9 @@ function EditBrief() {
                   {briefDataCollection.map((briefItem, index) => {
                     const resume = (
                       <TextareaAutosize
+                        onBlur={() => {
+                          setTimeout(() => saveToDatabase(), 2000)
+                        }}
                         defaultValue={briefItem.resume}
                         onChange={(e) => {
                           setBriefDataCollection((prev) => {
@@ -96,6 +99,9 @@ function EditBrief() {
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           const answer = (
                             <TextareaAutosize
+                              onBlur={() => {
+                                setTimeout(() => saveToDatabase(), 2000)
+                              }}
                               defaultValue={questionAndAnswerPair.answer}
                               onChange={(e) => {
                                 setBriefDataCollection((prev) => {
