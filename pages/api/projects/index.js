@@ -8,7 +8,7 @@ export default async function languageProjectsHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   const {
-    body: { language_id, method_id, code, title, resources, customBriefs },
+    body: { language_id, method_id, code, title, resources, steps, customBriefs },
     method,
   } = req
   // TODO не работает если создавать ОБС

@@ -2,7 +2,7 @@ import { Fragment } from 'react'
 
 import { Transition, Dialog } from '@headlessui/react'
 
-function Modal({ title, children, isOpen, closeHandle, addClassName }) {
+function Modal({ title, children, isOpen, closeHandle }) {
   return (
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={closeHandle}>
@@ -29,11 +29,7 @@ function Modal({ title, children, isOpen, closeHandle, addClassName }) {
               leaveTo="opacity-0 scale-95"
               leave="ease-in duration-200"
             >
-              <Dialog.Panel
-                className={`transform overflow-hidden p-6 align-middle bg-white rounded-2xl shadow-xl transition-all ${
-                  addClassName ? addClassName : 'w-full max-w-md'
-                }`}
-              >
+              <Dialog.Panel className="w-full max-w-md transform overflow-hidden p-6 align-middle bg-white rounded-2xl shadow-xl transition-all">
                 <Dialog.Title as="h3" className="h3 font-medium leading-6 text-center">
                   {title}
                 </Dialog.Title>
