@@ -166,7 +166,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                                 `books:${selectedBook?.code}`
                               )} ${t('Chapter')} ${chapter.num} `,
                             },
-                            fileName: `${selectedBook.code}_chapter${chapter.num}.txt`,
+                            fileName: `${selectedBook.code}_chapter${chapter.num}.md`,
                           },
                           pdf: {
                             ref: {
@@ -180,6 +180,17 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                             projectLanguage: {
                               code: project.languages.code,
                               title: project.languages.title,
+                            },
+                          },
+                          markdown: {
+                            ref: {
+                              json: chapter?.text,
+                              title: project.title,
+                              subtitle: `${t(`books:${selectedBook?.code}`)} ${t(
+                                'Chapter'
+                              )} ${chapter.num}`,
+                              baseManifest: project?.base_manifest,
+                              chapterNum: chapter?.num,
                             },
                           },
                         }}

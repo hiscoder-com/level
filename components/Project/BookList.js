@@ -108,7 +108,7 @@ function BookList({ highLevelAccess, project, user }) {
                   <td className="py-4 px-6">{t(`books:${book?.code}`)}</td>
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
                   <td className="py-4 px-6">
-                    <DownloadBlock
+                    {/* <DownloadBlock
                       actions={{
                         compile: compileBook,
                       }}
@@ -128,8 +128,8 @@ function BookList({ highLevelAccess, project, user }) {
                             title: project?.languages?.title,
                           },
                         },
-                      }}
-                    />
+                      }} */}
+                    {/* /> */}
                   </td>
                 </tr>
               ))}

@@ -1,7 +1,8 @@
-import { downloadPdf, downloadTxt } from 'utils/helper'
+import { downloadPdf, downloadTxt, downloadMarkdown } from 'utils/helper'
 
 import Pdf from 'public/pdf.svg'
 import Usfm from 'public/usfm.svg'
+import Markdown from 'public/dictionary.svg'
 
 function DownloadBlock({ actions, state }) {
   return (
@@ -28,6 +29,18 @@ function DownloadBlock({ actions, state }) {
         }}
       >
         <Usfm />
+      </div>
+      <div
+        className="p-2 hover:bg-gray-200 rounded-md"
+        onClick={async (e) => {
+          e.stopPropagation()
+          downloadMarkdown(
+            await actions.compile(state?.markdown?.ref, 'markdown'),
+            state?.txt?.fileName
+          )
+        }}
+      >
+        <Markdown className="h-12 stroke-black" />
       </div>
     </div>
   )

@@ -38,9 +38,23 @@ export const checkLSVal = (el, val, type = 'string', ext = false) => {
 export const readableDate = (date, locale = 'ru') => {
   return new Date(date).toLocaleString(locale, {})
 }
+const compileMarkdown = (ref) => {
+  console.log(ref.chapterNum)
+  console.log(ref.json)
+  console.log(ref.baseManifest.books[0].link)
+  const url = `${ref.baseManifest.books[0].link}/${String(ref.chapterNum).padStart(
+    2,
+    '0'
+  )}.md`
+  console.log(url)
+}
 
 export const compileChapter = (ref, type = 'txt') => {
   if (!ref?.json) {
+    return
+  }
+  if (type === 'markdown') {
+    compileMarkdown(ref)
     return
   }
   if (Object.keys(ref.json).length > 0) {
@@ -90,6 +104,16 @@ export const downloadPdf = (htmlContent, title, subTitle, projectLanguage) => {
     return
   }
   generateHTML(htmlContent, title, subTitle, projectLanguage.code, projectLanguage.title)
+}
+export const downloadMarkdown = (text, title) => {
+  if (!text || !title) {
+    return
+  }
+  const element = document.createElement('a')
+  const file = new Blob([text], { type: 'text/plain' })
+  element.href = URL.createObjectURL(file)
+  element.download = title
+  element.click()
 }
 
 export const convertToUsfm = ({ book, cl, toc1, project }) => {
