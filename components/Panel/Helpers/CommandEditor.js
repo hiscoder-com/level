@@ -151,6 +151,7 @@ function CommandEditor({ config }) {
           />
         </div>
       ))}
+      <div className="select-none">ㅤ</div>
     </div>
   )
 }
