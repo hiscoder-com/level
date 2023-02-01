@@ -1051,7 +1051,7 @@
       steps json,
       resources json,
       "type" project_type NOT NULL DEFAULT 'bible'::project_type,
-      brief json 
+      brief json DEFAULT '[]'
     );
     -- Secure methods
     ALTER TABLE

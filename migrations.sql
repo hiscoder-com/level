@@ -111,10 +111,13 @@ DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
 
 DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
 
-ALTER TABLE
+ALTER TABLE PUBLIC.briefs
       ADD data_collection json,
       ADD is_enable boolean,
       DROP text;
+
+--добавить столбец в методы
+ALTER TABLE PUBLIC.methods ADD brief json DEFAULT '[]';
 
 UPDATE PUBLIC.methods 
 SET brief = '[
@@ -277,11 +280,4 @@ SET brief = '[
           }
         ]'
 WHERE title = 'CANA OBS';
-
-
--- UPDATE PUBLIC.methods  SET brief = 
--- CASE 
--- WHEN title = 'CANA Bible' THEN '[...]'
--- WHEN title = 'CANA OBS' THEN '[...]'
--- END;
 

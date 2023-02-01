@@ -67,12 +67,11 @@ function EditBrief() {
                         defaultValue={briefItem.resume}
                         onChange={(e) => {
                           setBriefDataCollection((prev) => {
-                            const newDataCollection = prev
-                            newDataCollection[index] = {
-                              ...newDataCollection[index],
+                            prev[index] = {
+                              ...prev[index],
                               resume: e.target.value,
                             }
-                            return newDataCollection
+                            return prev
                           })
                         }}
                         className="p-2 outline-none w-full resize-none"
@@ -110,12 +109,11 @@ function EditBrief() {
                                     ...questionAndAnswerPair,
                                     answer: e.target.value,
                                   }
-                                  const newDataCollection = prev
-                                  newDataCollection[index] = {
-                                    ...newDataCollection[index],
+                                  prev[index] = {
+                                    ...prev[index],
                                     block: newBriefItemBlock,
                                   }
-                                  return newDataCollection
+                                  return prev
                                 })
                               }}
                               className="outline-none w-full resize-none"
