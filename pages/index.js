@@ -11,7 +11,7 @@ import { useRedirect } from 'utils/hooks'
 import SwitchLocalization from 'components/SwitchLocalization'
 
 import VcanaLogo from 'public/vcana-logo.svg'
-import TtLogo from 'public/tt-logo.svg'
+import TtLogo from 'public/omb.svg'
 
 export default function Home() {
   const { user } = useCurrentUser()
@@ -33,7 +33,7 @@ export default function Home() {
         <SwitchLocalization />
       </div>
       <div className="flex flex-col justify-center items-center m-3">
-        <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-32" />
+        <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-96" />
         <VcanaLogo className="max-w-xs sm:max-w-md" />
         <h2 className="h2 mt-9 mb-16 text-center">{t('Welcome')}</h2>
         <Link href={href}>
