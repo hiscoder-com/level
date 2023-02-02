@@ -110,16 +110,16 @@ CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_man
 DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
 
 DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
+DROP FUNCTION IF EXISTS PUBLIC.create_brief;
 
-ALTER TABLE PUBLIC.briefs
-      ADD data_collection json,
-      ADD is_enable boolean,
-      DROP text;
-
---добавить столбец в методы
 ALTER TABLE PUBLIC.methods ADD brief json DEFAULT '[]';
 
-UPDATE PUBLIC.methods 
+ALTER TABLE PUBLIC.briefs
+      ADD data_collection json DEFAULT NULL,
+      ADD is_enable boolean DEFAULT true,
+      DROP COLUMN text;
+
+UPDATE PUBLIC.methods
 SET brief = '[
           {
             "id": 1,
@@ -243,41 +243,25 @@ SET brief = '[
             ],
             "resume": ""
           }
-        ]'
-WHERE title = 'CANA Bible';
+]';
 
-UPDATE PUBLIC.methods 
-SET brief = '[
-          {
-            "id": 1,
-            "title": "Заголовок вопроса",
-            "block": [
-              {
-                "question": "Вопрос",
-                "answer": ""
-              },
-              {
-                "question": "Вопрос",
-                "answer": ""
-              }
-            ],
-            "resume": ""
-          },
-          {
-            "id": 2,
-            "title": "Заголовок вопроса",
-            "block": [
-              {
-                "question": "Вопрос",
-                "answer": ""
-              },
-              {
-                "question": "Вопрос",
-                "answer": ""
-              }
-            ],
-            "resume": ""
-          }
-        ]'
-WHERE title = 'CANA OBS';
+--обновление data_collection в уже созданных проектах
+UPDATE PUBLIC.briefs
+  SET data_collection = (SELECT brief FROM PUBLIC.methods join projects on (methods.title = projects.method) where projects.id = briefs.project_id) WHERE data_collection is null;
 
+--создание нового брифа для проекта
+CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT) returns BOOLEAN
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE 
+      brief_JSON json;
+    BEGIN
+      IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
+        RETURN false;
+      END IF;
+      SELECT brief FROM PUBLIC.methods 
+        JOIN PUBLIC.projects ON (projects.method = methods.title) 
+        WHERE projects.id = project_id into brief_JSON;
+        INSERT INTO PUBLIC.briefs (project_id, data_collection) VALUES (project_id, brief_JSON);    
+      RETURN true;
+    END;
+$$;
