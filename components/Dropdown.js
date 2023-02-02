@@ -153,7 +153,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
   })
 
   const briefResume = brief?.data_collection
-    .map((obj) => obj.resume)
+    ?.map((obj) => obj.resume)
     .filter((obj) => obj !== '')
 
   return (

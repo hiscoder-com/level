@@ -62,9 +62,9 @@ export default async function languageProjectsHandler(req, res) {
 
         if (error) throw error
 
-        const { error: errorBrief } = await supabase
-          .from('briefs')
-          .insert({ project_id: data[0].id, data_collection: JSON.parse(customBriefs) })
+        const { error: errorBrief } = await supabase.rpc('create_brief', {
+          project_id: data[0].id,
+        })
 
         if (errorBrief) throw errorBrief
 
