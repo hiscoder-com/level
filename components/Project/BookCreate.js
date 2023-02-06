@@ -53,10 +53,13 @@ function BookCreate({ highLevelAccess, project, books, user }) {
       setCreatingBook(false)
     }
   }
+  const notCreatedBooks = project?.base_manifest?.books?.filter(
+    (el) => !books?.map((book) => book.code)?.includes(el.name) && el.name !== 'frt'
+  )
 
   return (
     <>
-      {highLevelAccess && (
+      {highLevelAccess && notCreatedBooks?.length > 0 && (
         <>
           <h3 className="mt-4 ">{t('CreateBook')}</h3>
           <div className="mt-4 pb-4">
@@ -65,17 +68,11 @@ function BookCreate({ highLevelAccess, project, books, user }) {
               onChange={(e) => setSelectedBook(e.target.value)}
               value={selectedBook}
             >
-              {project?.base_manifest?.books
-                ?.filter(
-                  (el) =>
-                    !books?.map((book) => book.code)?.includes(el.name) &&
-                    el.name !== 'frt'
-                )
-                .map((el) => (
-                  <option value={el.name} key={el.name}>
-                    {t(`books:${el.name}`)}
-                  </option>
-                ))}
+              {notCreatedBooks?.map((el) => (
+                <option value={el.name} key={el.name}>
+                  {t(`books:${el.name}`)}
+                </option>
+              ))}
             </select>
             <button
               className="btn btn-cyan ml-2"

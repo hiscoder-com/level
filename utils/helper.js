@@ -38,25 +38,67 @@ export const checkLSVal = (el, val, type = 'string', ext = false) => {
 export const readableDate = (date, locale = 'ru') => {
   return new Date(date).toLocaleString(locale, {})
 }
-const compileMarkdown = (ref) => {
-  console.log(ref.chapterNum)
-  console.log(ref.json)
-  console.log(ref.baseManifest.books[0].link)
-  const url = `${ref.baseManifest.books[0].link}/${String(ref.chapterNum).padStart(
-    2,
-    '0'
-  )}.md`
-  console.log(url)
+const compileMarkdown = async (ref) => {
+  const url = `${ref.project.baseManifest.books[0].link}/${String(
+    ref.chapterNum
+  ).padStart(2, '0')}.md`
+  const result = await axios.get(url)
+  const resource = mdToJson(result.data)
+  const markdown = '# ' + ref.json[0] + '\n'
+  for (const iterator of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
+    const image = `![OBS Image](${iterator.urlImage})\n\n`
+    markdown += image + ref.json[iterator.verse] + '\n\n'
+  }
+  markdown += '_' + ref.json[200] + '_'
+  return markdown
+}
+export const compilePdfObs = async (ref, withImages = true) => {
+  if (!withImages) {
+    const html = '<h1>' + ref.json[0] + '</h1>'
+    for (const el in ref.json) {
+      if (!['0', '200'].includes(el)) {
+        html += `<p>${ref.json[el]}</p>`
+      }
+    }
+    return html
+  }
+  const url = `${ref.project.baseManifest.books[0].link}/${String(
+    ref.chapterNum
+  ).padStart(2, '0')}.md`
+  const markdown = ''
+  try {
+    markdown = await axios.get(url)
+  } catch (error) {
+    return
+  }
+
+  const resource = mdToJson(markdown.data)
+  const html = '<h1>' + ref.json[0] + '</h1>'
+  for (const iterator of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
+    const image = `<p><img alt="OBS Image"src="${iterator.urlImage}"/></p>`
+    const text = `<p>${ref.json[iterator.verse]}</p>`
+    html += image + text
+  }
+  html += `<p><em> ${ref.json[200]} </em></p>`
+  return html
 }
 
-export const compileChapter = (ref, type = 'txt') => {
+export const compileChapter = async (ref, type = 'txt') => {
   if (!ref?.json) {
     return
   }
-  if (type === 'markdown') {
-    compileMarkdown(ref)
-    return
+  if (['markdown', 'pdf-obs'].includes(type)) {
+    switch (type) {
+      case 'markdown':
+        return await compileMarkdown(ref)
+      case 'pdf-obs':
+        return await compilePdfObs(ref)
+
+      default:
+        break
+    }
   }
+
   if (Object.keys(ref.json).length > 0) {
     const text = Object.entries(ref?.json).reduce(
       (summary, verse) => {
@@ -77,46 +119,45 @@ const generateHTML = (main, title = '', subtitle = '', lang = 'en', dir = 'proje
   new_window?.document.write(`<html lang="${lang}" dir="${dir}">
   <head>
       <meta charset="UTF-8"/>
-      <title>${title}</title>      
+      <title>${title}_${subtitle}</title> 
+      <style type="text/css">
+        body > div {
+            page-break-after: always;
+        }
+    </style>     
   </head>
   <body onLoad="window.print()">
       <h1>${title}</h1>
       <h2>${subtitle}</h2>
-      <div>${main}</div>
+      ${main}
       </body>
       </html>`)
   new_window?.document.close()
 }
 
-export const downloadTxt = (text, title) => {
+export const downloadFile = ({ text, title, type = 'text/plain' }) => {
   if (!text || !title) {
     return
   }
   const element = document.createElement('a')
-  const file = new Blob([text], { type: 'text/plain' })
+  const file = new Blob([text], { type })
   element.href = URL.createObjectURL(file)
   element.download = title
   element.click()
 }
 
-export const downloadPdf = (htmlContent, title, subTitle, projectLanguage) => {
+export const downloadPdf = ({ htmlContent, title, subTitle, projectLanguage }) => {
   if (!htmlContent || !title) {
     return
   }
   generateHTML(htmlContent, title, subTitle, projectLanguage.code, projectLanguage.title)
 }
-export const downloadMarkdown = (text, title) => {
-  if (!text || !title) {
+
+export const convertToUsfm = ({ jsonChapters, book, project }) => {
+  if (!jsonChapters || !book || !project) {
     return
   }
-  const element = document.createElement('a')
-  const file = new Blob([text], { type: 'text/plain' })
-  element.href = URL.createObjectURL(file)
-  element.download = title
-  element.click()
-}
 
-export const convertToUsfm = ({ book, cl, toc1, project }) => {
   const capitalize = (text) => {
     if (!text) {
       return ''
@@ -130,6 +171,8 @@ export const convertToUsfm = ({ book, cl, toc1, project }) => {
       return text[0].toUpperCase() + text.slice(1)
     }
   }
+  const { h, toc1, toc2, toc3, mt } = book?.properties?.scripture
+
   const headers = [
     {
       tag: 'id',
@@ -147,7 +190,7 @@ export const convertToUsfm = ({ book, cl, toc1, project }) => {
     },
     {
       tag: 'h',
-      content: book.title,
+      content: h,
     },
     {
       tag: 'toc1',
@@ -155,24 +198,24 @@ export const convertToUsfm = ({ book, cl, toc1, project }) => {
     },
     {
       tag: 'toc2',
-      content: book.title,
+      content: toc2,
     },
     {
       tag: 'toc3',
-      content: book?.code ? capitalize(book?.code) : '',
+      content: toc3,
     },
     {
       tag: 'mt',
-      content: book.title,
+      content: mt,
     },
     {
       tag: 'cl',
-      content: cl,
+      content: book?.properties?.chapter_label,
     },
   ]
   const chapters = {}
-  if (book?.json.length > 0) {
-    book.json.forEach((el) => {
+  if (jsonChapters.length > 0) {
+    jsonChapters.forEach((el) => {
       const oneChapter = {}
       if (el.text) {
         for (const [num, verse] of Object.entries(el.text)) {

@@ -6,13 +6,14 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
-import DownloadBlock from './DownloadBlock'
 
 import { supabase } from 'utils/supabaseClient'
-import { readableDate, compileChapter } from 'utils/helper'
+import { readableDate, compileChapter, downloadPdf, downloadFile } from 'utils/helper'
 
 function ChapterList({ selectedBook, project, highLevelAccess }) {
-  const [openModal, setOpenModal] = useState(false)
+  const [openCreatingChapter, setOpenCreatingChapter] = useState(false)
+  const [openDownloading, setOpenDownloading] = useState(false)
+
   const {
     query: { book, code },
     push,
@@ -21,6 +22,8 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
   const [selectedChapter, setSelectedChapter] = useState(null)
   const [chapters, setChapters] = useState([])
   const [createdChapters, setCreatedChapters] = useState([])
+  const [currentChapter, setCurrentChapter] = useState([])
+
   const [currentSteps, setCurrentSteps] = useState(null)
 
   const { t } = useTranslation(['common', 'books'])
@@ -89,7 +92,6 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       )
     }
   }
-
   return (
     <div className="overflow-x-auto relative">
       <div className="my-4">
@@ -106,7 +108,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
             <th className="py-3 px-3">{t('Chapter')}</th>
             <th className="py-3 px-3">{t('chapters:StartedAt')}</th>
             <th className="py-3 px-3 ">{t('chapters:FinishedAt')}</th>
-            <th className="py-3 px-6">{t('Download')}</th>
+            <th className="py-3 px-6">{`${t('Download')} / ${t('Open')}`}</th>
           </tr>
         </thead>
         <tbody>
@@ -121,7 +123,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     if (highLevelAccess) {
                       if (!createdChapters.includes(id)) {
                         setSelectedChapter(chapter)
-                        setOpenModal(true)
+                        setOpenCreatingChapter(true)
                       } else {
                         push(
                           '/projects/' +
@@ -155,46 +157,16 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
 
                   <td className="py-4 px-6">
                     {finished_at ? (
-                      <DownloadBlock
-                        actions={{ compile: compileChapter }}
-                        state={{
-                          txt: {
-                            ref: {
-                              json: chapter?.text,
-                              bookCode: selectedBook.code,
-                              title: `${project.title} ${t(
-                                `books:${selectedBook?.code}`
-                              )} ${t('Chapter')} ${chapter.num} `,
-                            },
-                            fileName: `${selectedBook.code}_chapter${chapter.num}.md`,
-                          },
-                          pdf: {
-                            ref: {
-                              json: chapter?.text,
-                              title: project.title,
-                              subtitle: `${t(`books:${selectedBook?.code}`)} ${t(
-                                'Chapter'
-                              )} ${chapter.num}`,
-                            },
-
-                            projectLanguage: {
-                              code: project.languages.code,
-                              title: project.languages.title,
-                            },
-                          },
-                          markdown: {
-                            ref: {
-                              json: chapter?.text,
-                              title: project.title,
-                              subtitle: `${t(`books:${selectedBook?.code}`)} ${t(
-                                'Chapter'
-                              )} ${chapter.num}`,
-                              baseManifest: project?.base_manifest,
-                              chapterNum: chapter?.num,
-                            },
-                          },
+                      <button
+                        className="text-blue-600 hover:text-gray-400 p-2"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setCurrentChapter(chapter)
+                          setOpenDownloading(true)
                         }}
-                      />
+                      >
+                        {t('Download')}
+                      </button>
                     ) : (
                       getCurrentStep(chapter, index)
                     )}
@@ -205,9 +177,9 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         </tbody>
       </table>
       <Modal
-        isOpen={openModal}
+        isOpen={openCreatingChapter}
         closeHandle={() => {
-          setOpenModal(false)
+          setOpenCreatingChapter(false)
         }}
       >
         <div className="text-center mb-4">
@@ -216,7 +188,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         <div className="flex justify-center">
           <button
             onClick={() => {
-              setOpenModal(false)
+              setOpenCreatingChapter(false)
               handleCreate(selectedChapter.id, selectedChapter.num)
             }}
             className="btn-cyan"
@@ -227,12 +199,100 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
             <button
               className="btn-cyan"
               onClick={() => {
-                setOpenModal(false)
+                setOpenCreatingChapter(false)
               }}
             >
               {t('common:Close')}
             </button>
           </div>
+        </div>
+      </Modal>
+      <Modal
+        isOpen={openDownloading}
+        closeHandle={() => {
+          setOpenDownloading(false)
+        }}
+      >
+        <div className="text-center mb-4">{t('Download')}</div>
+        <div
+          className="p-2 hover:bg-gray-200  border-y-2 cursor-pointer"
+          onClick={async (e) => {
+            e.stopPropagation()
+            downloadPdf({
+              htmlContent: await compileChapter(
+                {
+                  json: currentChapter?.text,
+                  chapterNum: currentChapter?.num,
+                  project: {
+                    baseManifest: project?.base_manifest,
+                    method: project?.type,
+                    title: project.title,
+                  },
+                },
+                project?.type === 'obs' ? 'pdf-obs' : 'pdf'
+              ),
+              title: project?.title,
+              subTitle: `${
+                project?.type !== 'obs'
+                  ? selectedBook?.properties?.scripture?.toc1 ?? 'Book'
+                  : selectedBook?.properties?.obs?.title ?? 'Open bible stories'
+              } ${selectedBook?.properties?.chapter_label} ${currentChapter.num}`,
+              projectLanguage: {
+                code: project.languages.code,
+                title: project.languages.orig_name,
+              },
+            })
+          }}
+        >
+          {t('ExportToPDF')}
+        </div>
+        <div
+          className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
+          onClick={async (e) => {
+            e.stopPropagation()
+            project?.type === 'obs'
+              ? downloadFile({
+                  text: await compileChapter(
+                    {
+                      json: currentChapter?.text,
+                      chapterNum: currentChapter?.num,
+                      project: {
+                        baseManifest: project?.base_manifest,
+                      },
+                    },
+                    'markdown'
+                  ),
+                  title: `${String(currentChapter?.num).padStart(2, '0')}.md`,
+                  type: 'markdown/plain',
+                })
+              : downloadFile({
+                  text: await compileChapter(
+                    {
+                      json: currentChapter?.text,
+                      title: `${project.title}\n${selectedBook.properties.scripture.toc1}\n${selectedBook.properties.chapter_label} ${currentChapter?.num}`,
+                      subtitle: `${t(`books:${selectedBook?.code}`)} ${t('Chapter')} ${
+                        currentChapter.num
+                      }`,
+                      chapterNum: currentChapter?.num,
+                    },
+                    'txt'
+                  ),
+                  title: `${project.title}_${selectedBook.properties.scripture.toc1}_chapter_${currentChapter?.num}.txt`,
+                })
+          }}
+        >
+          {project?.type === 'obs' ? t('ExportToMD') : 'ExportToTXT'}
+        </div>
+
+        <div className="flex justify-end">
+          <button
+            className="btn-cyan mt-2"
+            onClick={() => {
+              setOpenDownloading(false)
+            }}
+          >
+            {t('common:Close')}
+          </button>
         </div>
       </Modal>
     </div>
