@@ -210,7 +210,7 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
     },
     {
       tag: 'cl',
-      content: book?.properties?.chapter_label,
+      content: book?.properties?.scripture?.chapter_label,
     },
   ]
   const chapters = {}
@@ -290,7 +290,7 @@ export const countOfChaptersAndVerses = async ({ link, book_code }) => {
       const result = await axios.get(link)
       const jsonData = usfm.toJSON(result.data)
       if (Object.entries(jsonData?.chapters).length > 0) {
-        Object.entries(jsonDataclg?.chapters).forEach((el) => {
+        Object.entries(jsonData?.chapters).forEach((el) => {
           jsonChapterVerse[el[0]] = Object.keys(el[1]).filter(
             (verse) => verse !== 'front'
           ).length

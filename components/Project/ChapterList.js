@@ -236,7 +236,11 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                 project?.type !== 'obs'
                   ? selectedBook?.properties?.scripture?.toc1 ?? 'Book'
                   : selectedBook?.properties?.obs?.title ?? 'Open bible stories'
-              } ${selectedBook?.properties?.chapter_label} ${currentChapter.num}`,
+              } ${
+                project?.type !== 'obs'
+                  ? selectedBook?.properties?.scripture?.chapter_label
+                  : selectedBook?.properties?.obs?.chapter_label
+              } ${currentChapter.num}`,
               projectLanguage: {
                 code: project.languages.code,
                 title: project.languages.orig_name,
@@ -269,7 +273,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                   text: await compileChapter(
                     {
                       json: currentChapter?.text,
-                      title: `${project.title}\n${selectedBook.properties.scripture.toc1}\n${selectedBook.properties.chapter_label} ${currentChapter?.num}`,
+                      title: `${project.title}\n${selectedBook.properties.scripture.toc1}\n${selectedBook.properties.scripture.chapter_label} ${currentChapter?.num}`,
                       subtitle: `${t(`books:${selectedBook?.code}`)} ${t('Chapter')} ${
                         currentChapter.num
                       }`,

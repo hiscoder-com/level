@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Showdown from 'showdown'
+import axios from 'axios'
 
 import Modal from 'components/Modal'
 
@@ -30,6 +31,7 @@ function BookList({ highLevelAccess, project, user }) {
   const [openDownloading, setOpenDownloading] = useState(false)
 
   const [openProperties, setOpenProperties] = useState(false)
+  const [updatingBooks, setUpdatingBooks] = useState(false)
 
   const [books, setBooks] = useState()
 
@@ -50,11 +52,12 @@ function BookList({ highLevelAccess, project, user }) {
         .eq('project_id', project.id)
       setBooks(books)
     }
-    if (project?.id) {
+
+    if (project?.id && !updatingBooks) {
       getBooks()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id, query?.book])
+  }, [project?.id, query?.book, updatingBooks])
 
   useEffect(() => {
     if (query?.book && books?.length) {
@@ -86,6 +89,7 @@ function BookList({ highLevelAccess, project, user }) {
             },
           },
         })
+        return main
         break
       case 'pdf':
         for (const el of chapters) {
@@ -95,6 +99,7 @@ function BookList({ highLevelAccess, project, user }) {
           <div>${chapter ?? ''}</div>`
           }
         }
+        return main
         break
       case 'pdf-obs':
         const converter = new Showdown.Converter()
@@ -110,7 +115,9 @@ function BookList({ highLevelAccess, project, user }) {
               project: { baseManifest: project.base_manifest },
               chapterNum: el.num,
             })
-            obs += `<div>${story}</div>`
+            if (story) {
+              obs += `<div>${story}</div>`
+            }
           }
         }
         return obs
@@ -118,8 +125,6 @@ function BookList({ highLevelAccess, project, user }) {
       default:
         break
     }
-
-    return main
   }
   return (
     <>
@@ -195,6 +200,9 @@ function BookList({ highLevelAccess, project, user }) {
         />
       )}
       <PropertiesOfBook
+        projectId={project?.id}
+        setUpdatingBooks={setUpdatingBooks}
+        user={user}
         book={selectedBookProperties}
         openDownloading={openProperties}
         setOpenDownloading={setOpenProperties}
@@ -276,19 +284,64 @@ function BookList({ highLevelAccess, project, user }) {
 }
 export default BookList
 
-function PropertiesOfBook({ book, openDownloading, setOpenDownloading, t, type }) {
-  const properties =
-    book?.properties &&
-    Object.entries(
-      type !== 'obs' ? book?.properties?.scripture : book?.properties?.obs
-    )?.map((el, index) => {
-      return (
-        <div key={index}>
-          <div>{el[0]}</div>
-          <textarea className="input" defaultValue={el[1]} />
-        </div>
-      )
-    })
+function PropertiesOfBook({
+  projectId,
+  book,
+  openDownloading,
+  setOpenDownloading,
+  t,
+  type,
+  user,
+  setUpdatingBooks,
+}) {
+  const router = useRouter()
+  const [properties, setProperties] = useState()
+  useEffect(() => {
+    setProperties(book?.properties)
+  }, [book?.properties])
+
+  const renderProperties =
+    properties &&
+    Object.entries(type !== 'obs' ? properties?.scripture : properties?.obs)?.map(
+      (el, index) => {
+        return (
+          <div key={index}>
+            <div>{el[0]}</div>
+            <textarea
+              className="input"
+              defaultValue={el[1]}
+              onChange={(e) => {
+                setProperties((prev) => {
+                  if (type !== 'obs') {
+                    return {
+                      ...prev,
+                      scripture: { ...prev.scripture, [el[0]]: e.target.value },
+                    }
+                  } else {
+                    return {
+                      ...prev,
+                      obs: { ...prev.obs, [el[0]]: e.target.value },
+                    }
+                  }
+                })
+              }}
+            />
+          </div>
+        )
+      }
+    )
+  const handleSave = () => {
+    axios.defaults.headers.common['token'] = user?.access_token
+    setUpdatingBooks(true)
+    axios
+      .put(`/api/book_properties/${book.id}`, {
+        properties,
+        project_id: projectId,
+      })
+      .then()
+      .catch((err) => console.log(err))
+      .finally(() => setUpdatingBooks(false))
+  }
   return (
     <div>
       <Modal
@@ -297,8 +350,16 @@ function PropertiesOfBook({ book, openDownloading, setOpenDownloading, t, type }
           setOpenDownloading(false)
         }}
       >
-        {properties}
+        {renderProperties}
         <div className="flex justify-end">
+          <button
+            className="btn-cyan mr-2"
+            onClick={() => {
+              handleSave()
+            }}
+          >
+            {t('common:Save')}
+          </button>
           <button
             className="btn-cyan "
             onClick={() => {

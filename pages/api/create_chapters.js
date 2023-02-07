@@ -43,6 +43,22 @@ export default async function handler(req, res) {
               code: book_code,
               project_id,
               chapters: jsonChapterVerse,
+              properties: {
+                scripture: {
+                  h: '',
+                  toc1: '',
+                  toc2: '',
+                  toc3: '',
+                  mt: '',
+                  chapter_label: '',
+                },
+                obs: {
+                  title: '',
+                  intro: '',
+                  back: '',
+                  chapter_label: '',
+                },
+              },
             },
           ])
           if (errorPost) throw errorPost
