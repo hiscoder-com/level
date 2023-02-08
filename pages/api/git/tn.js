@@ -73,10 +73,14 @@ export default async function tnHandler(req, res) {
   if (typeof verses === 'string') {
     verses = verses.split(',').map((el) => el.trim())
   }
-  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
-    1
-  )}`
-
+  let url = ''
+  if (bookPath.slice(0, 2) === './') {
+    url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
+      1
+    )}`
+  } else {
+    url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
+  }
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
@@ -84,8 +88,19 @@ export default async function tnHandler(req, res) {
     const dividedChapter = {}
 
     jsonData?.forEach((el) => {
+      let chapterNote
+      let verseNote
+      if (el.Reference) {
+        const [_chapter, _verse] = el.Reference.split(':').map((item) => parseInt(item))
+        chapterNote = _chapter
+        verseNote = _verse
+      } else {
+        chapterNote = el.Chapter
+        verseNote = el.Verse
+      }
       // пропускаем, если это не наша глава и не введение
-      if (el.Chapter !== chapter && el.Chapter !== 'front') {
+      if (parseInt(chapterNote) !== parseInt(chapter) && verseNote !== 'front') {
+        // console.log(chapterNote, chapter)
         return
       }
       // создаем экземпляр заметки
@@ -93,10 +108,11 @@ export default async function tnHandler(req, res) {
       // Если введение к книге - заголовок front
       const newNote = {
         id: el.ID,
-        text: el.OccurrenceNote,
-        title: el.Verse === 'intro' ? 'intro' : el.GLQuote ? el.GLQuote : el.OrigQuote,
+        text: el?.OccurrenceNote || el?.Note,
+        title:
+          verseNote === 'intro' ? 'intro' : el?.GLQuote || el?.OrigQuote || el?.Quote,
       }
-      if (el.Chapter === 'front') {
+      if (chapterNote === 'front') {
         newNote['title'] = 'front'
       }
       // если надо получить определенные стихи то используем dividedChapter, иначе wholeChapter
@@ -104,11 +120,11 @@ export default async function tnHandler(req, res) {
       if (
         verses &&
         verses.length > 0 &&
-        (verses.includes(el.Verse) || el.Verse === 'intro')
+        (verses.includes(verseNote) || verseNote === 'intro')
       ) {
-        filterNotes(newNote, el.Verse, dividedChapter)
+        filterNotes(newNote, verseNote, dividedChapter)
       } else {
-        filterNotes(newNote, el.Verse, wholeChapter)
+        filterNotes(newNote, verseNote, wholeChapter)
       }
     })
     const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
