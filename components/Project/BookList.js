@@ -32,6 +32,12 @@ function BookList({ highLevelAccess, project, user }) {
 
   const [openProperties, setOpenProperties] = useState(false)
   const [updatingBooks, setUpdatingBooks] = useState(false)
+  const [downloadSettings, setDownloadSettings] = useState({
+    WithImages: true,
+    WithFront: true,
+    WithIntro: true,
+    WithBack: true,
+  })
 
   const [books, setBooks] = useState()
 
@@ -68,7 +74,7 @@ function BookList({ highLevelAccess, project, user }) {
     }
   }, [query, books])
 
-  const compileBook = async (book, type = 'txt') => {
+  const compileBook = async (book, type = 'txt', downloadSettings) => {
     const chapters = await getBookJson(book?.id)
 
     let main = ''
@@ -92,40 +98,51 @@ function BookList({ highLevelAccess, project, user }) {
         return main
         break
       case 'pdf':
+        if (downloadSettings?.WithFront) {
+          main += `<div style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
+        }
         for (const el of chapters) {
-          const chapter = await compileChapter({ json: el.text }, 'html')
+          const chapter = await compileChapter(
+            { json: el.text, chapterNum: el.num, book },
+            'html'
+          )
           if (chapter) {
-            main += `<h1>${t('Chapter')} ${el.num}</h1>
-          <div>${chapter ?? ''}</div>`
+            main += `<div>${chapter ?? ''}</div>`
           }
         }
         return main
         break
       case 'pdf-obs':
         const converter = new Showdown.Converter()
-
+        const front = `<div style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.obs?.title}</h1></div>`
         const intro = converter.makeHtml(book?.properties?.obs?.intro)
         const back = converter.makeHtml(book?.properties?.obs?.back)
 
-        const obs = `<div>${intro}</div><div>${back}</div>`
+        const obs = `${downloadSettings?.WithFront ? front : ''}${
+          downloadSettings?.WithIntro ? `<div>${intro}</div>` : ''
+        }${downloadSettings?.WithBack ? `<div>${back}</div>` : ''}`
         for (const el of chapters) {
           if (el?.text) {
-            const story = await compilePdfObs({
-              json: el?.text,
-              project: { baseManifest: project.base_manifest },
-              chapterNum: el.num,
-            })
+            const story = await compilePdfObs(
+              {
+                json: el?.text,
+                project: { baseManifest: project.base_manifest },
+                chapterNum: el.num,
+              },
+              downloadSettings
+            )
             if (story) {
               obs += `<div>${story}</div>`
             }
           }
         }
         return obs
-        break
+
       default:
         break
     }
   }
+
   return (
     <>
       {!selectedBook ? (
@@ -223,51 +240,45 @@ function BookList({ highLevelAccess, project, user }) {
             downloadPdf({
               htmlContent: await compileBook(
                 downloadingBook,
-                project?.type === 'obs' ? 'pdf-obs' : 'pdf'
+                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
+                downloadSettings
               ),
-              title: project?.title,
-              subTitle: `${
-                project?.type !== 'obs'
-                  ? downloadingBook?.properties?.scripture?.toc1 ?? 'Book'
-                  : downloadingBook?.properties?.obs?.title ?? 'Open bible stories'
-              } `,
               projectLanguage: {
                 code: project.languages.code,
                 title: project.languages.orig_name,
               },
+              downloadSettings,
+              fileName: `${project.title}_${
+                project?.type !== 'obs'
+                  ? downloadingBook?.properties?.scripture?.toc1 ?? 'Book'
+                  : downloadingBook?.properties?.obs?.title ?? 'Open bible stories'
+              }`,
             })
           }}
         >
           {t('ExportToPDF')}
         </div>
-        <div
-          className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
-          onClick={async (e) => {
-            e.stopPropagation()
-            project?.type === 'obs'
-              ? downloadFile({
-                  text: await compileChapter(
-                    {
-                      json: currentChapter?.text,
-                      chapterNum: currentChapter?.num,
-                      project: {
-                        baseManifest: project?.base_manifest,
-                      },
-                    },
-                    'markdown'
-                  ),
-                  title: `${currentChapter?.num}.md`,
-                  type: 'markdown/plain',
-                })
-              : downloadFile({
-                  text: await compileBook(downloadingBook),
-                  title: usfmFileNames[downloadingBook?.code],
-                })
-          }}
-        >
-          {project?.type === 'obs' ? t('ExportToZIP') : 'ExportToUSFM'}
-        </div>
 
+        {Object.entries(downloadSettings)
+          .filter((el) => project?.type === 'obs' || el[0] === 'WithFront')
+          .map((el, index) => {
+            const [label, value] = el
+            return (
+              <div key={index}>
+                <input
+                  className="mt-4 h-[17px] w-[17px] cursor-pointer accent-cyan-600"
+                  type="checkbox"
+                  checked={value}
+                  onChange={() =>
+                    setDownloadSettings((prev) => {
+                      return { ...prev, [el[0]]: !value }
+                    })
+                  }
+                />
+                <span className="ml-2">{t(label)}</span>
+              </div>
+            )
+          })}
         <div className="flex justify-end">
           <button
             className="btn-cyan mt-2"
@@ -294,7 +305,6 @@ function PropertiesOfBook({
   user,
   setUpdatingBooks,
 }) {
-  const router = useRouter()
   const [properties, setProperties] = useState()
   useEffect(() => {
     setProperties(book?.properties)

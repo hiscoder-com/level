@@ -57,7 +57,7 @@ function ToolList({ setItem, data, toolName }) {
         verses.map((el, index) => {
           return (
             <div key={index} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0]}</div>
+              <div className="text-2xl">{el[0] === '0' ? 'title' : el[0]}</div>
               <div className="text-gray-700 pl-7 flex-1">
                 <ul>
                   {el[1]?.map((item) => {

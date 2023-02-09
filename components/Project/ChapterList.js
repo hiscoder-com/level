@@ -25,6 +25,10 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
   const [currentChapter, setCurrentChapter] = useState([])
 
   const [currentSteps, setCurrentSteps] = useState(null)
+  const [downloadSettings, setDownloadSettings] = useState({
+    WithImages: true,
+    WithFront: true,
+  })
 
   const { t } = useTranslation(['common', 'books'])
 
@@ -228,23 +232,20 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                     method: project?.type,
                     title: project.title,
                   },
+                  book: selectedBook,
                 },
-                project?.type === 'obs' ? 'pdf-obs' : 'pdf'
+                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
+                downloadSettings
               ),
-              title: project?.title,
-              subTitle: `${
-                project?.type !== 'obs'
-                  ? selectedBook?.properties?.scripture?.toc1 ?? 'Book'
-                  : selectedBook?.properties?.obs?.title ?? 'Open bible stories'
-              } ${
-                project?.type !== 'obs'
-                  ? selectedBook?.properties?.scripture?.chapter_label
-                  : selectedBook?.properties?.obs?.chapter_label
-              } ${currentChapter.num}`,
               projectLanguage: {
                 code: project.languages.code,
                 title: project.languages.orig_name,
               },
+              fileName: `${project.title}_${
+                project?.type !== 'obs'
+                  ? selectedBook?.properties?.scripture?.toc1 ?? 'Book'
+                  : selectedBook?.properties?.obs?.title ?? 'Open bible stories'
+              }`,
             })
           }}
         >
@@ -287,7 +288,26 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         >
           {project?.type === 'obs' ? t('ExportToMD') : 'ExportToTXT'}
         </div>
-
+        {Object.entries(downloadSettings)
+          .filter((el) => project?.type === 'obs' || el[0] === 'WithFront')
+          .map((el, index) => {
+            const [label, value] = el
+            return (
+              <div key={index}>
+                <input
+                  className="mt-4 h-[17px] w-[17px] cursor-pointer accent-cyan-600"
+                  type="checkbox"
+                  checked={value}
+                  onChange={() =>
+                    setDownloadSettings((prev) => {
+                      return { ...prev, [el[0]]: !value }
+                    })
+                  }
+                />
+                <span className="ml-2">{t(label)}</span>
+              </div>
+            )
+          })}
         <div className="flex justify-end">
           <button
             className="btn-cyan mt-2"

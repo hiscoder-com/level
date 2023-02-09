@@ -52,16 +52,18 @@ const compileMarkdown = async (ref) => {
   markdown += '_' + ref.json[200] + '_'
   return markdown
 }
-export const compilePdfObs = async (ref, withImages = true) => {
-  if (!withImages) {
+export const compilePdfObs = async (ref, downloadSettings) => {
+  if (!downloadSettings?.WithImages) {
     const html = '<h1>' + ref.json[0] + '</h1>'
     for (const el in ref.json) {
       if (!['0', '200'].includes(el)) {
         html += `<p>${ref.json[el]}</p>`
       }
     }
+    html += `<p><em> ${ref.json[200]} </em></p>`
     return html
   }
+
   const url = `${ref.project.baseManifest.books[0].link}/${String(
     ref.chapterNum
   ).padStart(2, '0')}.md`
@@ -69,6 +71,7 @@ export const compilePdfObs = async (ref, withImages = true) => {
   try {
     markdown = await axios.get(url)
   } catch (error) {
+    console.log(error)
     return
   }
 
@@ -83,7 +86,7 @@ export const compilePdfObs = async (ref, withImages = true) => {
   return html
 }
 
-export const compileChapter = async (ref, type = 'txt') => {
+export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
   if (!ref?.json) {
     return
   }
@@ -92,13 +95,21 @@ export const compileChapter = async (ref, type = 'txt') => {
       case 'markdown':
         return await compileMarkdown(ref)
       case 'pdf-obs':
-        return await compilePdfObs(ref)
+        if (downloadSettings?.WithFront) {
+          const front = `<div style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.obs?.title}</h1></div>`
+          return front + (await compilePdfObs(ref, downloadSettings))
+        }
+
+        return await compilePdfObs(ref, downloadSettings)
 
       default:
         break
     }
   }
-
+  const front = ''
+  if (downloadSettings?.WithFront) {
+    front = `<div style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
+  }
   if (Object.keys(ref.json).length > 0) {
     const text = Object.entries(ref?.json).reduce(
       (summary, verse) => {
@@ -108,31 +119,13 @@ export const compileChapter = async (ref, type = 'txt') => {
           return summary + `<sup>${verse[0]}</sup> ${verse[1] || ''} `
         }
       },
-      type === 'txt' ? ref?.title + '\n' : ''
+      type === 'txt'
+        ? ref?.title + '\n'
+        : front +
+            `<h1>${ref?.book?.properties?.scripture?.chapter_label} ${ref.chapterNum}</h1>`
     )
     return text
   }
-}
-
-const generateHTML = (main, title = '', subtitle = '', lang = 'en', dir = 'project') => {
-  let new_window = window.open()
-  new_window?.document.write(`<html lang="${lang}" dir="${dir}">
-  <head>
-      <meta charset="UTF-8"/>
-      <title>${title}_${subtitle}</title> 
-      <style type="text/css">
-        body > div {
-            page-break-after: always;
-        }
-    </style>     
-  </head>
-  <body onLoad="window.print()">
-      <h1>${title}</h1>
-      <h2>${subtitle}</h2>
-      ${main}
-      </body>
-      </html>`)
-  new_window?.document.close()
 }
 
 export const downloadFile = ({ text, title, type = 'text/plain' }) => {
@@ -146,11 +139,27 @@ export const downloadFile = ({ text, title, type = 'text/plain' }) => {
   element.click()
 }
 
-export const downloadPdf = ({ htmlContent, title, subTitle, projectLanguage }) => {
-  if (!htmlContent || !title) {
+export const downloadPdf = ({ htmlContent, projectLanguage, fileName }) => {
+  if (!htmlContent) {
     return
   }
-  generateHTML(htmlContent, title, subTitle, projectLanguage.code, projectLanguage.title)
+  let new_window = window.open()
+  new_window?.document
+    .write(`<html lang="${projectLanguage?.code}" dir="${projectLanguage.title}">
+  <head>
+      <meta charset="UTF-8"/>
+      <title>${fileName}</title> 
+      <style type="text/css">
+        body > div {
+            page-break-after: always;
+        }
+    </style>     
+  </head>
+  <body onLoad="window.print()">      
+      ${htmlContent}
+      </body>
+      </html>`)
+  new_window?.document.close()
 }
 
 export const convertToUsfm = ({ jsonChapters, book, project }) => {

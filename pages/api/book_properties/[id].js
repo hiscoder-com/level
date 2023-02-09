@@ -5,6 +5,16 @@ const validation = (properties) => {
   if (!properties) {
     return { error: 'Properties is null or undefined' }
   }
+
+  try {
+    const obj = JSON.parse(JSON.stringify(properties))
+    if (!obj || typeof obj !== 'object') {
+      return { error: 'This is incorrect json', properties }
+    }
+  } catch (e) {
+    return { error: 'This is incorrect json', properties }
+  }
+
   if (
     JSON.stringify(Object.keys(properties)?.sort()) !==
     JSON.stringify(['obs', 'scripture'].sort())
