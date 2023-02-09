@@ -91,7 +91,7 @@ export default async function tnHandler(req, res) {
       let chapterNote
       let verseNote
       if (el.Reference) {
-        const [_chapter, _verse] = el.Reference.split(':').map((item) => parseInt(item))
+        const [_chapter, _verse] = el.Reference.split(':').map((item) => item)
         chapterNote = _chapter
         verseNote = _verse
       } else {
@@ -99,8 +99,7 @@ export default async function tnHandler(req, res) {
         verseNote = el.Verse
       }
       // пропускаем, если это не наша глава и не введение
-      if (parseInt(chapterNote) !== parseInt(chapter) && verseNote !== 'front') {
-        // console.log(chapterNote, chapter)
+      if (parseInt(chapterNote) !== parseInt(chapter) && chapterNote !== 'front') {
         return
       }
       // создаем экземпляр заметки
