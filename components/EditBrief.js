@@ -44,7 +44,9 @@ function EditBrief() {
           <Link href={`/projects/${project?.code}/edit`}>
             <a className="underline text-blue-700">« {project?.title}</a>
           </Link>
-          <p className="uppercase text-center text-gray-700">бриф и цель перевода</p>
+          <p className="uppercase text-center text-gray-700">
+            {t('project-edit:EditBriefTitle')}
+          </p>
         </div>
 
         <div className="mt-2 md:mt-5">
