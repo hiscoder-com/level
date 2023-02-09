@@ -38,7 +38,7 @@ function EditBrief() {
   }
 
   return (
-    <div className="divide-y-2 divide-gray-400">
+    <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
       <div className="pb-5">
         <div className="h3">
           <Link href={`/projects/${project?.code}/edit`}>
@@ -49,8 +49,8 @@ function EditBrief() {
         <div className="mt-5">
           {briefDataCollection && (
             <div className="w-full">
-              <table className="table-fixed w-full my-6 text-sm text-gray-500">
-                <thead className="text-xs text-gray-700 uppercase bg-gray-50">
+              <table className="table-fixed border-separate border-spacing-x-4 w-full my-6 text-sm text-gray-500">
+                <thead className="text-xs text-gray-700 uppercase">
                   <tr>
                     <th className="py-3 px-6">{t('Questions')}</th>
                     <th className="py-3 px-6">{t('project-edit:Answers')}</th>
@@ -64,7 +64,7 @@ function EditBrief() {
                         onBlur={() => {
                           setTimeout(() => saveToDatabase(), 2000)
                         }}
-                        defaultValue={briefItem.resume}
+                        defaultValue={briefItem.resume ? briefItem.resume : '- '}
                         onChange={(e) => {
                           setBriefDataCollection((prev) => {
                             prev[index] = {
@@ -81,16 +81,16 @@ function EditBrief() {
 
                     return (
                       <>
-                        <tr key={index} className="bg-white border-t-4">
-                          <td className="border p-2 font-bold border-b-2 border-x-2">
+                        <tr key={index} className="bg-white">
+                          <td className="p-2 font-bold border-t-2 bg-gray-50">
                             {questionTitle}
                           </td>
-                          <td className="border p-2 font-bold border-b-2 border-x-2">
+                          <td className="p-2 font-bold border-t-2 bg-gray-50">
                             {questionTitle}
                           </td>
                           <td
                             rowSpan={briefItem.block.length + 1}
-                            className="border p-2 text-center"
+                            className="border-t-2 p-2 text-center"
                           >
                             {resume}
                           </td>
@@ -101,7 +101,11 @@ function EditBrief() {
                               onBlur={() => {
                                 setTimeout(() => saveToDatabase(), 2000)
                               }}
-                              defaultValue={questionAndAnswerPair.answer}
+                              defaultValue={
+                                questionAndAnswerPair.answer
+                                  ? questionAndAnswerPair.answer
+                                  : '- '
+                              }
                               onChange={(e) => {
                                 setBriefDataCollection((prev) => {
                                   const newBriefItemBlock = briefItem.block
@@ -121,10 +125,8 @@ function EditBrief() {
                           )
                           return (
                             <tr key={blockIndex} className="bg-white border-b">
-                              <td className="border p-2 border-x-2">
-                                {questionAndAnswerPair.question}
-                              </td>
-                              <td className="p-2 border-x-2">{answer}</td>
+                              <td className="p-2">- {questionAndAnswerPair.question}</td>
+                              <td className="p-2">{answer}</td>
                             </tr>
                           )
                         })}

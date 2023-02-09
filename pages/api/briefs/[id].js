@@ -11,6 +11,22 @@ export default async function briefsGetHandler(req, res) {
     method,
   } = req
 
+  const validation = (properties) => {
+    const error = null
+    if (!properties) {
+      return { error: 'Properties is null or undefined' }
+    }
+
+    if (
+      JSON.stringify(Object.keys(properties[0]).sort()) !==
+      JSON.stringify(['block', 'id', 'resume', 'title'].sort())
+    ) {
+      return { error: 'Properties has different keys', properties }
+    }
+
+    return { error }
+  }
+
   switch (method) {
     case 'GET':
       try {
@@ -29,12 +45,14 @@ export default async function briefsGetHandler(req, res) {
       break
     case 'PUT':
       try {
-        const { data, error } = await supabase
-          .from('briefs')
-          .update({ data_collection })
-          .match({ project_id: id })
-        if (error) throw error
-        res.status(200).json(data)
+        if (data_collection?.length > 1 && validation(data_collection).error === null) {
+          const { data, error } = await supabase
+            .from('briefs')
+            .update({ data_collection })
+            .match({ project_id: id })
+          if (error) throw error
+          res.status(200).json(data)
+        }
       } catch (error) {
         res.status(404).json({ error })
         return
