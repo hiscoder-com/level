@@ -22,13 +22,20 @@ export default function Footer({
   const router = useRouter()
   const stepConfig = useRecoilValue(stepConfigState)
   const [checked, setChecked] = useState(false)
+  const [localStorSteps, setLocalStorStep] = useState()
 
   const { step } = router?.query
   const { t } = useTranslation('common')
   useEffect(() => {
     setChecked(false)
   }, [step])
+  // useEffect(() => {
+  //   if (localStorage.getItem('isIntro')) {
+  //     setLocalStorStep(JSON.parse(localStorage.getItem('isIntro')))
+  //   }
+  // }, [])
 
+  console.log(localStorSteps)
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,7 +51,11 @@ export default function Footer({
                 className="h-[17px] w-[17px] cursor-pointer accent-cyan-600"
                 type="checkbox"
                 checked={checked}
-                onChange={() => setChecked((prev) => !prev)}
+                onChange={() => {
+                  // setLocalStorStep((prev) => ({ ...prev, router: router.query }))
+                  localStorage.setItem('isIntro', JSON.stringify(router.query))
+                  setChecked((prev) => !prev)
+                }}
               />
               <span className="ml-2">{textCheckbox}</span>
             </label>

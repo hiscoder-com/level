@@ -28,6 +28,9 @@ function ProjectCard({ project }) {
     })
     return _chapters
   }, [currentSteps])
+  const localStorSteps = JSON.parse(localStorage.getItem('isIntro'))
+  // console.log(localStorSteps)
+  // console.log(chapters)
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>
@@ -51,7 +54,14 @@ function ProjectCard({ project }) {
               {chapter[1].map((step, index) => (
                 <Link
                   key={index}
-                  href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+                  href={
+                    localStorSteps?.project == step.project &&
+                    localStorSteps?.book == step.book &&
+                    localStorSteps?.chapter == step.chapter &&
+                    localStorSteps?.step == step.step
+                      ? `/translate/${step.project}/${step.book}/${step.chapter}/${step.step}`
+                      : `/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`
+                  }
                 >
                   <a className="btn btn-white mt-2 mx-1">
                     {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
