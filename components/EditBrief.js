@@ -39,62 +39,64 @@ function EditBrief() {
 
   return (
     <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
-      <div className="pb-5">
+      <div className="pb-4">
         <div className="h3">
           <Link href={`/projects/${project?.code}/edit`}>
             <a className="underline text-blue-700">« {project?.title}</a>
           </Link>
+          <p className="uppercase text-center text-gray-700">бриф и цель перевода</p>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-2 md:mt-5">
           {briefDataCollection && (
-            <div className="w-full">
-              <table className="table-fixed border-separate border-spacing-x-4 w-full my-6 text-sm text-gray-500">
-                <thead className="text-xs text-gray-700 uppercase">
-                  <tr>
-                    <th className="py-3 px-6">{t('Questions')}</th>
-                    <th className="py-3 px-6">{t('project-edit:Answers')}</th>
-                    <th className="py-3 px-6">{t('PurposeTranslation')}</th>
-                  </tr>
-                </thead>
-                <tbody>
+            <div className="flex-col w-full gap-4 mb-4 flex md:flex-row">
+              <div className="md:w-1/3">
+                <p className="font-bold text-center mb-4 text-gray-700">
+                  {t('Questions')}
+                </p>
+                <div className="h-3 rounded-t-lg bg-white"></div>
+                <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
                   {briefDataCollection.map((briefItem, index) => {
-                    const resume = (
-                      <TextareaAutosize
-                        onBlur={() => {
-                          setTimeout(() => saveToDatabase(), 2000)
-                        }}
-                        defaultValue={briefItem.resume ? briefItem.resume : '- '}
-                        onChange={(e) => {
-                          setBriefDataCollection((prev) => {
-                            prev[index] = {
-                              ...prev[index],
-                              resume: e.target.value,
-                            }
-                            return prev
-                          })
-                        }}
-                        className="p-2 outline-none w-full resize-none"
-                      />
-                    )
                     const questionTitle = `${briefItem.id}. ${briefItem.title}`
-
                     return (
-                      <>
-                        <tr key={index} className="bg-white">
-                          <td className="p-2 font-bold border-t-2 bg-gray-50">
-                            {questionTitle}
-                          </td>
-                          <td className="p-2 font-bold border-t-2 bg-gray-50">
-                            {questionTitle}
-                          </td>
-                          <td
-                            rowSpan={briefItem.block.length + 1}
-                            className="border-t-2 p-2 text-center"
-                          >
-                            {resume}
-                          </td>
-                        </tr>
+                      <div
+                        key={index}
+                        className={`${
+                          briefItem.id >= briefDataCollection.length
+                            ? ''
+                            : 'border-b-2 mb-2 pb-2 leading-6'
+                        }`}
+                      >
+                        <p className="font-bold">{questionTitle}</p>
+                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                          return (
+                            <li key={blockIndex}>{questionAndAnswerPair.question}</li>
+                          )
+                        })}
+                      </div>
+                    )
+                  })}
+                </div>
+                <div className="h-3 rounded-b-lg bg-white"></div>
+              </div>
+              <div className="md:w-1/3">
+                <p className="text-gray-700 font-bold text-center mb-4">
+                  {t('project-edit:Answers')}
+                </p>
+                <div className="h-3 rounded-t-lg bg-white"></div>
+                <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
+                  {briefDataCollection.map((briefItem, index) => {
+                    const questionTitle = `${briefItem.id}. ${briefItem.title}`
+                    return (
+                      <div
+                        key={index}
+                        className={`${
+                          briefItem.id >= briefDataCollection.length
+                            ? ''
+                            : 'border-b-2 mb-2 leading-6'
+                        }`}
+                      >
+                        <p className="font-bold">{questionTitle}</p>
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           const answer = (
                             <TextareaAutosize
@@ -123,18 +125,46 @@ function EditBrief() {
                               className="outline-none w-full resize-none"
                             />
                           )
-                          return (
-                            <tr key={blockIndex} className="bg-white border-b">
-                              <td className="p-2">- {questionAndAnswerPair.question}</td>
-                              <td className="p-2">{answer}</td>
-                            </tr>
-                          )
+
+                          return <div key={blockIndex}>{answer}</div>
                         })}
-                      </>
+                      </div>
                     )
                   })}
-                </tbody>
-              </table>
+                </div>
+                <div className="h-3 rounded-b-lg bg-white"></div>
+              </div>
+              <div className="md:w-1/3">
+                <p className="font-bold text-center mb-4 text-gray-700">
+                  {t('PurposeTranslation')}
+                </p>
+                <div className="h-3 rounded-t-lg bg-white"></div>
+                <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
+                  {briefDataCollection.map((briefItem, index) => {
+                    const resume = (
+                      <TextareaAutosize
+                        onBlur={() => {
+                          setTimeout(() => saveToDatabase(), 2000)
+                        }}
+                        defaultValue={briefItem.resume ? briefItem.resume : '- '}
+                        onChange={(e) => {
+                          setBriefDataCollection((prev) => {
+                            prev[index] = {
+                              ...prev[index],
+                              resume: e.target.value,
+                            }
+                            return prev
+                          })
+                        }}
+                        className="p-2 outline-none w-full resize-none"
+                      />
+                    )
+
+                    return <div key={index}>{resume}</div>
+                  })}
+                </div>
+                <div className="h-3 rounded-b-lg bg-white"></div>
+              </div>
             </div>
           )}
           <div className="flex justify-center">
