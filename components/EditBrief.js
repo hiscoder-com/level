@@ -99,37 +99,36 @@ function EditBrief() {
                         }`}
                       >
                         <p className="font-bold">{questionTitle}</p>
-                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                          const answer = (
-                            <TextareaAutosize
-                              onBlur={() => {
-                                setTimeout(() => saveToDatabase(), 2000)
-                              }}
-                              defaultValue={
-                                questionAndAnswerPair.answer
-                                  ? questionAndAnswerPair.answer
-                                  : '- '
-                              }
-                              onChange={(e) => {
-                                setBriefDataCollection((prev) => {
-                                  const newBriefItemBlock = briefItem.block
-                                  newBriefItemBlock[blockIndex] = {
-                                    ...questionAndAnswerPair,
-                                    answer: e.target.value,
-                                  }
-                                  prev[index] = {
-                                    ...prev[index],
-                                    block: newBriefItemBlock,
-                                  }
-                                  return prev
-                                })
-                              }}
-                              className="outline-none w-full resize-none"
-                            />
-                          )
+                        <ul className="list-disc">
+                          {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                            const answer = (
+                              <TextareaAutosize
+                                onBlur={() => {
+                                  setTimeout(() => saveToDatabase(), 2000)
+                                }}
+                                disabled
+                                defaultValue={questionAndAnswerPair.answer}
+                                onChange={(e) => {
+                                  setBriefDataCollection((prev) => {
+                                    const newBriefItemBlock = briefItem.block
+                                    newBriefItemBlock[blockIndex] = {
+                                      ...questionAndAnswerPair,
+                                      answer: e.target.value,
+                                    }
+                                    prev[index] = {
+                                      ...prev[index],
+                                      block: newBriefItemBlock,
+                                    }
+                                    return prev
+                                  })
+                                }}
+                                className="leading-3 outline-none w-full resize-none"
+                              />
+                            )
 
-                          return <div key={blockIndex}>{answer}</div>
-                        })}
+                            return <li key={blockIndex}>{answer}</li>
+                          })}
+                        </ul>
                       </div>
                     )
                   })}
@@ -142,28 +141,30 @@ function EditBrief() {
                 </p>
                 <div className="h-3 rounded-t-lg bg-white"></div>
                 <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
-                  {briefDataCollection.map((briefItem, index) => {
-                    const resume = (
-                      <TextareaAutosize
-                        onBlur={() => {
-                          setTimeout(() => saveToDatabase(), 2000)
-                        }}
-                        defaultValue={briefItem.resume ? briefItem.resume : '- '}
-                        onChange={(e) => {
-                          setBriefDataCollection((prev) => {
-                            prev[index] = {
-                              ...prev[index],
-                              resume: e.target.value,
-                            }
-                            return prev
-                          })
-                        }}
-                        className="p-2 outline-none w-full resize-none"
-                      />
-                    )
+                  <ul className="list-disc">
+                    {briefDataCollection.map((briefItem, index) => {
+                      const resume = (
+                        <TextareaAutosize
+                          onBlur={() => {
+                            setTimeout(() => saveToDatabase(), 2000)
+                          }}
+                          defaultValue={briefItem.resume}
+                          onChange={(e) => {
+                            setBriefDataCollection((prev) => {
+                              prev[index] = {
+                                ...prev[index],
+                                resume: e.target.value,
+                              }
+                              return prev
+                            })
+                          }}
+                          className="p-2 outline-none w-full resize-none"
+                        />
+                      )
 
-                    return <div key={index}>{resume}</div>
-                  })}
+                      return <li key={index}>{resume}</li>
+                    })}
+                  </ul>
                 </div>
                 <div className="h-3 rounded-b-lg bg-white"></div>
               </div>
