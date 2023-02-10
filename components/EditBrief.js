@@ -7,10 +7,14 @@ import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
 import { useBrief, useProject } from 'utils/hooks'
+import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
 function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
+  const [level, setLevel] = useState('user')
+  const highLevelAccess = ['admin', 'coordinator'].includes(level)
+
   const {
     query: { code },
   } = useRouter()
@@ -36,6 +40,19 @@ function EditBrief() {
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
+
+  useEffect(() => {
+    const getLevel = async () => {
+      const level = await supabase.rpc('authorize', {
+        user_id: user.id,
+        project_id: project.id,
+      })
+      setLevel(level.data)
+    }
+    if (user?.id && project?.id) {
+      getLevel()
+    }
+  }, [user?.id, project?.id])
 
   return (
     <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
@@ -70,11 +87,13 @@ function EditBrief() {
                         }`}
                       >
                         <p className="font-bold">{questionTitle}</p>
-                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                          return (
-                            <li key={blockIndex}>{questionAndAnswerPair.question}</li>
-                          )
-                        })}
+                        <ul className="list-disc px-3">
+                          {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                            return (
+                              <li key={blockIndex}>{questionAndAnswerPair.question}</li>
+                            )
+                          })}
+                        </ul>
                       </div>
                     )
                   })}
@@ -95,40 +114,42 @@ function EditBrief() {
                         className={`${
                           briefItem.id >= briefDataCollection.length
                             ? ''
-                            : 'border-b-2 mb-2 leading-6'
+                            : 'border-b-2 mb-2 pb-2'
                         }`}
                       >
                         <p className="font-bold">{questionTitle}</p>
-                        <ul className="list-disc">
-                          {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                            const answer = (
-                              <TextareaAutosize
-                                onBlur={() => {
-                                  setTimeout(() => saveToDatabase(), 2000)
-                                }}
-                                disabled
-                                defaultValue={questionAndAnswerPair.answer}
-                                onChange={(e) => {
-                                  setBriefDataCollection((prev) => {
-                                    const newBriefItemBlock = briefItem.block
-                                    newBriefItemBlock[blockIndex] = {
-                                      ...questionAndAnswerPair,
-                                      answer: e.target.value,
-                                    }
-                                    prev[index] = {
-                                      ...prev[index],
-                                      block: newBriefItemBlock,
-                                    }
-                                    return prev
-                                  })
-                                }}
-                                className="leading-3 outline-none w-full resize-none"
-                              />
-                            )
+                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                          const answer = (
+                            <TextareaAutosize
+                              onBlur={() => {
+                                setTimeout(() => saveToDatabase(), 2000)
+                              }}
+                              readOnly={highLevelAccess ? false : true}
+                              defaultValue={questionAndAnswerPair.answer}
+                              onChange={(e) => {
+                                setBriefDataCollection((prev) => {
+                                  const newBriefItemBlock = briefItem.block
+                                  newBriefItemBlock[blockIndex] = {
+                                    ...questionAndAnswerPair,
+                                    answer: e.target.value,
+                                  }
+                                  prev[index] = {
+                                    ...prev[index],
+                                    block: newBriefItemBlock,
+                                  }
+                                  return prev
+                                })
+                              }}
+                              className="outline-none w-full resize-none"
+                            />
+                          )
 
-                            return <li key={blockIndex}>{answer}</li>
-                          })}
-                        </ul>
+                          return (
+                            <div className="flex flex-nowrap leading-6" key={blockIndex}>
+                              -&nbsp; {answer}
+                            </div>
+                          )
+                        })}
                       </div>
                     )
                   })}
@@ -141,30 +162,33 @@ function EditBrief() {
                 </p>
                 <div className="h-3 rounded-t-lg bg-white"></div>
                 <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
-                  <ul className="list-disc">
-                    {briefDataCollection.map((briefItem, index) => {
-                      const resume = (
-                        <TextareaAutosize
-                          onBlur={() => {
-                            setTimeout(() => saveToDatabase(), 2000)
-                          }}
-                          defaultValue={briefItem.resume}
-                          onChange={(e) => {
-                            setBriefDataCollection((prev) => {
-                              prev[index] = {
-                                ...prev[index],
-                                resume: e.target.value,
-                              }
-                              return prev
-                            })
-                          }}
-                          className="p-2 outline-none w-full resize-none"
-                        />
-                      )
+                  {briefDataCollection.map((briefItem, index) => {
+                    const resume = (
+                      <TextareaAutosize
+                        onBlur={() => {
+                          setTimeout(() => saveToDatabase(), 2000)
+                        }}
+                        readOnly={highLevelAccess ? false : true}
+                        defaultValue={briefItem.resume}
+                        onChange={(e) => {
+                          setBriefDataCollection((prev) => {
+                            prev[index] = {
+                              ...prev[index],
+                              resume: e.target.value,
+                            }
+                            return prev
+                          })
+                        }}
+                        className="outline-none w-full resize-none"
+                      />
+                    )
 
-                      return <li key={index}>{resume}</li>
-                    })}
-                  </ul>
+                    return (
+                      <div className="flex flex-nowrap leading-6 py-2" key={index}>
+                        -&nbsp; {resume}
+                      </div>
+                    )
+                  })}
                 </div>
                 <div className="h-3 rounded-b-lg bg-white"></div>
               </div>
