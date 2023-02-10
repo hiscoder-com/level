@@ -6,10 +6,9 @@ import remarkGfm from 'remark-gfm'
 import 'github-markdown-css/github-markdown-light.css'
 
 function MarkdownExtended({ children }) {
-  const content = (typeof children === 'string' ? children : '').replace(
-    /< *br *\/?>/gi,
-    '\n'
-  )
+  const content = (typeof children === 'string' ? children : '')
+    .replace(/< *br *\/?>/gi, '\n')
+    .replaceAll('\\n', '\n')
 
   const convertYoutube = (props) => {
     function getVideoID(userInput) {
