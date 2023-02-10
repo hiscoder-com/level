@@ -157,7 +157,6 @@ function Tool({ config, toolName, editable = false }) {
     default:
       return <div>{t('WrongResource')}</div>
   }
-  console.log(config)
   return (
     <>
       <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
