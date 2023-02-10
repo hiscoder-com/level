@@ -58,7 +58,13 @@ function EditBrief() {
     <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
       <div className="pb-4">
         <div className="h3">
-          <Link href={`/projects/${project?.code}/edit`}>
+          <Link
+            href={`${
+              highLevelAccess
+                ? `/projects/${project?.code}/edit`
+                : `/projects/${project?.code}/`
+            }`}
+          >
             <a className="underline text-blue-700">« {project?.title}</a>
           </Link>
           <p className="uppercase text-center text-gray-700">
