@@ -91,9 +91,8 @@ export default async function tnHandler(req, res) {
       const [chapterNote, verseNote] = el.Reference
         ? el.Reference.split(':')
         : [el.Chapter, el.Verse]
-
       // пропускаем, если это не наша глава и не введение
-      if (String(chapterNote) !== String(chapter) && chapterNote !== 'front') {
+      if (chapterNote !== chapter && chapterNote !== 'front') {
         return
       }
       // создаем экземпляр заметки
