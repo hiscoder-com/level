@@ -132,6 +132,8 @@
     --Update method CANA OBS
     --Rename method CANA Bible to Cana Bible crush test
     --Update method CANA Bible crush test
+    --Insert method CANA Bible
+    --Update step.config in Cana Bible crush test's `projects
 
     UPDATE public.methods SET steps='[
       {
@@ -473,10 +475,10 @@
       }
     ]' WHERE title = 'CANA OBS';
 
-  UPDATE public.methods SET title = 'CANA Bible crash test' WHERE title = 'CANA Bible';
-  UPDATE public.projects SET method = 'CANA Bible crash test' WHERE method = 'CANA Bible';
+    UPDATE public.methods SET title = 'CANA Bible crash test' WHERE title = 'CANA Bible';
+    UPDATE public.projects SET method = 'CANA Bible crash test' WHERE method = 'CANA Bible';
 
-  UPDATE public.methods SET steps='[
+    UPDATE public.methods SET steps='[
       {
         "title": "1 ШАГ - ОБЗОР КНИГИ",
         "description": "Это индивидуальная работа и выполняется до встречи с другими участниками команды КРАШ-ТЕСТА.\n\n\n\nЦЕЛЬ этого шага для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nЦЕЛЬ этого шага для ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.\n\n\n\n\n\nОБЩИЙ ОБЗОР К КНИГЕ\n\nПрочитайте общий обзор к книге. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в общем обзоре к книге.\n\nЭто задание выполняется только при работе над первой главой. При работе над другими главами книги возвращаться к общему обзору книги не нужно. \n\n\n\nОБЗОР К ГЛАВЕ\n\nПрочитайте обзор к главе. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в обзоре к главе.\n\n\n\nЧТЕНИЕ ДОСЛОВНОЙ БИБЛИИ РОБ-Д (RLOB)\n\nПрочитайте ГЛАВУ ДОСЛОВНОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nЧТЕНИЕ СМЫСЛОВОЙ БИБЛИИ РОБ-С (RSOB)\n\nПрочитайте ГЛАВУ СМЫСЛОВОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА»\n\nПрочитайте СЛОВА к главе. Необходимо прочитать статьи к каждому слову. Отметьте для обсуждения командой статьи к словам, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ»\n\nПрочитайте ЗАМЕТКИ к главе. Необходимо прочитать ЗАМЕТКИ к каждому отрывку. Отметьте для обсуждения командой ЗАМЕТКИ, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.",
@@ -898,9 +900,9 @@
       }
     ]' WHERE title = 'CANA Bible crash test'; 
 
-  INSERT INTO
+    INSERT INTO
         PUBLIC.methods (title, resources, steps, "type")
-  VALUES
+    VALUES
       ('CANA Bible','{"simplified":false, "literal":true,"reference":false, "tnotes":false, "twords":false, "tquestions":false}','[
         {
           "title": "1 ШАГ - ОБЗОР КНИГИ",
@@ -1354,3 +1356,56 @@
           ]
         }
       ]','bible'::project_type)
+
+    UPDATE public.steps SET config='[
+          {
+            "size": 3,
+            "tools": [
+              {
+                "name": "literal",
+                "config": {}
+              },
+              {
+                "name": "simplified",
+                "config": {}
+              },
+              {
+                "name": "twords",
+                "config": {}
+              },
+              {
+                "name": "tnotes",
+                "config": {}
+              },
+              {
+                "name": "tquestions",
+                "config": {}
+              }
+            ]
+          },
+          {
+            "size": 3,
+            "tools": [
+              {
+                "name": "commandTranslate",
+                "config": {
+                  "moderatorOnly": true
+                }
+              },
+              {
+                "name": "personalNotes",
+                "config": {}
+              },
+              {
+                "name": "teamNotes",
+                "config": {}
+              },
+              {
+                "name": "dictionary",
+                "config": {}
+              }
+            ]
+          }
+        ]'
+      WHERE sorting = '8' AND (SELECT method FROM public.projects WHERE id = project_id) = 'CANA Bible crash test';
+         
