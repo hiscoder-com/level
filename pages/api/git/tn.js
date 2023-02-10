@@ -88,18 +88,12 @@ export default async function tnHandler(req, res) {
     const dividedChapter = {}
 
     jsonData?.forEach((el) => {
-      let chapterNote
-      let verseNote
-      if (el.Reference) {
-        const [_chapter, _verse] = el.Reference.split(':').map((item) => item)
-        chapterNote = _chapter
-        verseNote = _verse
-      } else {
-        chapterNote = el.Chapter
-        verseNote = el.Verse
-      }
+      const [chapterNote, verseNote] = el.Reference
+        ? el.Reference.split(':')
+        : [el.Chapter, el.Verse]
+
       // пропускаем, если это не наша глава и не введение
-      if (parseInt(chapterNote) !== parseInt(chapter) && chapterNote !== 'front') {
+      if (String(chapterNote) !== String(chapter) && chapterNote !== 'front') {
         return
       }
       // создаем экземпляр заметки

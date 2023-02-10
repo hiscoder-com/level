@@ -474,6 +474,7 @@
     ]' WHERE title = 'CANA OBS';
 
   UPDATE public.methods SET title = 'CANA Bible crash test' WHERE title = 'CANA Bible';
+  UPDATE public.projects SET method = 'CANA Bible crash test' WHERE method = 'CANA Bible';
 
   UPDATE public.methods SET steps='[
       {
