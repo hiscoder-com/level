@@ -55,7 +55,7 @@ function ProjectCard({ project, user }) {
       </div>
       {!isBriefFull && (
         <Link href={`/projects/${project?.code}/edit/brief`}>
-          <a className="btn btn-white mt-2 mx-1 ">Заполните бриф</a>
+          <a className="btn btn-white mt-2 mx-1">{t('FillOutTheBrief')}</a>
         </Link>
       )}
       <div className="divide-y-2">
@@ -70,13 +70,13 @@ function ProjectCard({ project, user }) {
                     key={index}
                     href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
                   >
-                    <a className="btn btn-white mt-2 mx-1 ">
+                    <a className="btn btn-white mt-2 mx-1">
                       {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
                       {t('common:Step').toLowerCase()}
                     </a>
                   </Link>
                 ) : (
-                  <div className={`btn  mt-2 mx-1 `}>
+                  <div className="btn mt-2 mx-1">
                     {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
                     {t('common:Step').toLowerCase()}
                   </div>

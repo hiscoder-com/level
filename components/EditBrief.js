@@ -194,11 +194,13 @@ function EditBrief() {
               </div>
             </div>
           )}
-          <div className="flex justify-center">
-            <button className="btn-cyan" onClick={saveToDatabase}>
-              {t('Save')}
-            </button>
-          </div>
+          {highLevelAccess && (
+            <div className="flex justify-center">
+              <button className="btn-cyan" onClick={saveToDatabase}>
+                {t('Save')}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>
