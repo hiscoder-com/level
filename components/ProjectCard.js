@@ -76,7 +76,7 @@ function ProjectCard({ project, user }) {
                     </a>
                   </Link>
                 ) : (
-                  <div className="btn mt-2 mx-1">
+                  <div className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1">
                     {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
                     {t('common:Step').toLowerCase()}
                   </div>
