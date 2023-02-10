@@ -16,7 +16,7 @@ import {
 } from './'
 
 function Tool({ config, toolName, editable = false }) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation(['common', 'books'])
   const {
     resource: {
       manifest: { dublin_core: resource },
@@ -116,7 +116,7 @@ function Tool({ config, toolName, editable = false }) {
       )?.path
 
       url = '/api/git/bible'
-      title = `${t('Chapter')} ${config?.reference?.chapter}`
+
       break
 
     case 'translate':
@@ -157,9 +157,20 @@ function Tool({ config, toolName, editable = false }) {
     default:
       return <div>{t('WrongResource')}</div>
   }
+  console.log(config)
   return (
     <>
       <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
+        {![
+          'translate',
+          'commandTranslate',
+          'draftTranslate',
+          'teamNotes',
+          'personalNotes',
+          'audio',
+          'dictionary',
+        ].includes(toolName) &&
+          `${t(`books:${config?.reference?.book}`)}  ${config?.reference?.chapter}, `}
         {title}
       </div>
       <div className="h5 adaptive-card">
