@@ -11,7 +11,7 @@ import { useRedirect } from 'utils/hooks'
 import SwitchLocalization from 'components/SwitchLocalization'
 
 import VcanaLogo from 'public/vcana-logo.svg'
-import TtLogo from 'public/omb.svg'
+import OmbLogo from 'public/omb-logo.svg'
 
 export default function Home() {
   const { user } = useCurrentUser()
@@ -23,23 +23,28 @@ export default function Home() {
   const { locale, pathname, query, asPath } = useRouter()
   const { t } = useTranslation('common', 'users')
   return (
-    <main className="layout-empty">
+    <main className="layout-empty bg-[#E5E5E5]">
       <Head>
         <title>{t('V-CANA')}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="absolute top-10 right-10">
+      {/* <div className="absolute top-10 right-10">
         <SwitchLocalization />
-      </div>
-      <div className="flex flex-col justify-center items-center m-3">
-        <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-96" />
-        <VcanaLogo className="max-w-xs sm:max-w-md" />
-        <h2 className="h2 mt-9 mb-16 text-center">{t('Welcome')}</h2>
-        <Link href={href}>
-          <a className="btn-start py-3 px-24">{t('users:SignIn')}</a>
-        </Link>
-      </div>
+      </div> */}
+      {/* <div className="flex">
+        <div className=" w-1/2 flex flex-col items-center justify-center">
+          <div className="w-96 flex flex-col items-center">
+            <VcanaLogo className="mb-9 max-w-xs sm:max-w-md w-40" />
+            <h2 className="h4 mb-24 text-center">{`Платформа для переводчиков Библии по системе “CANA”`}</h2>
+            <div className="text-[#909090] mb-4">Разработано:</div>
+            <OmbLogo />
+          </div>
+        </div>
+        <div className="w-[950px] h-[900px] rounded-l-[128px] bg-[url('../public/login_image.png')] bg-no-repeat right-0 flex justify-center items-center">
+          <div className="w-[560px] h-[468px] bg-white"></div>
+        </div>
+      </div> */}
     </main>
   )
 }
