@@ -31,6 +31,7 @@ function Editor({ config }) {
           <AutoSizeTextArea verseObject={el} index={index} updateVerse={updateVerse} />
         </div>
       ))}
+      <div className="select-none">ㅤ</div>
     </div>
   )
 }

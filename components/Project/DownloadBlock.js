@@ -2,8 +2,9 @@ import { downloadPdf, downloadTxt } from 'utils/helper'
 
 import Pdf from 'public/pdf.svg'
 import Usfm from 'public/usfm.svg'
+import Txt from 'public/txt.svg'
 
-function DownloadBlock({ actions, state }) {
+function DownloadBlock({ actions, state, isBook }) {
   return (
     <div className="flex justify-center">
       <div
@@ -27,7 +28,7 @@ function DownloadBlock({ actions, state }) {
           downloadTxt(await actions.compile(state?.txt?.ref, 'txt'), state?.txt?.fileName)
         }}
       >
-        <Usfm />
+        {isBook ? <Usfm /> : <Txt />}
       </div>
     </div>
   )

@@ -109,6 +109,7 @@ function BookList({ highLevelAccess, project, user }) {
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
                   <td className="py-4 px-6">
                     <DownloadBlock
+                      isBook
                       actions={{
                         compile: compileBook,
                       }}
