@@ -85,7 +85,9 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
         <>
           {!isBriefFull ? (
             <Link href={`/projects/${project?.code}/edit/brief`}>
-              <a className="btn btn-white mt-2 mx-1">{t('FillOutTheBrief')}</a>
+              <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2 mx-1">
+                {t('FillOutTheBrief')}
+              </a>
             </Link>
           ) : (
             <Link

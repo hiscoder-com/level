@@ -148,7 +148,7 @@ function EditBrief() {
                                   const newBriefItemBlock = briefItem.block
                                   newBriefItemBlock[blockIndex] = {
                                     ...questionAndAnswerPair,
-                                    answer: e.target.value,
+                                    answer: e.target.value.trim(),
                                   }
                                   prev[index] = {
                                     ...prev[index],
@@ -191,7 +191,7 @@ function EditBrief() {
                           setBriefDataCollection((prev) => {
                             prev[index] = {
                               ...prev[index],
-                              resume: e.target.value,
+                              resume: e.target.value.trim(),
                             }
                             return prev
                           })
