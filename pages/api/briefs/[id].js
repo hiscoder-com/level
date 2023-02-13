@@ -16,31 +16,30 @@ export default async function briefsGetHandler(req, res) {
       return { error: 'Properties is null or undefined' }
     }
     if (Array.isArray(brief_data)) {
-      const isValidKeys = brief_data.find((item) => {
+      const isValidKeys = brief_data.find((briefObj) => {
         const isNotValid =
-          JSON.stringify(Object.keys(item).sort()) !==
+          JSON.stringify(Object.keys(briefObj).sort()) !==
           JSON.stringify(['block', 'id', 'resume', 'title'].sort())
         if (isNotValid) {
           return isNotValid
         } else {
-          item.block?.forEach((element) => {
+          briefObj.block?.forEach((blockObj) => {
             if (
-              JSON.stringify(Object.keys(element).sort()) !==
+              JSON.stringify(Object.keys(blockObj).sort()) !==
               JSON.stringify(['question', 'answer'].sort())
             ) {
-              return { error: 'test error!' } //
+              return { error: 'brief_data.block has different keys', blockObj }
             }
           })
         }
       })
       if (isValidKeys) {
-        return { error: 'Properties has different keys', isValidKeys }
+        return { error: 'brief_data has different keys', isValidKeys }
       }
     }
 
     return { error: null }
   }
-
   switch (method) {
     case 'GET':
       try {
