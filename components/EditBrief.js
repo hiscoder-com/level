@@ -4,11 +4,13 @@ import TextareaAutosize from 'react-textarea-autosize'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import { useSetRecoilState } from 'recoil'
 import axios from 'axios'
 
 import { useBrief, useProject } from 'utils/hooks'
-import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
+import { briefState } from './Panel/state/atoms'
+import { supabase } from 'utils/supabaseClient'
 
 function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
@@ -20,8 +22,10 @@ function EditBrief() {
   } = useRouter()
   const { user } = useCurrentUser()
   const [project] = useProject({ token: user?.access_token, code })
+  const setIsBriefFull = useSetRecoilState(briefState)
 
   const { t } = useTranslation(['common', 'project-edit'])
+
   const [brief, { mutate }] = useBrief({
     token: user?.access_token,
     project_id: project?.id,
@@ -53,6 +57,13 @@ function EditBrief() {
       getLevel()
     }
   }, [user?.id, project?.id])
+
+  useEffect(() => {
+    if (brief?.data_collection) {
+      setIsBriefFull(brief?.data_collection?.reduce((final, el) => final + el.resume, ''))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brief])
 
   return (
     <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">

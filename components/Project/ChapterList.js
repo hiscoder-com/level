@@ -2,28 +2,32 @@ import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
 import { useTranslation } from 'next-i18next'
+import { useRecoilValue } from 'recoil'
 
-import Modal from 'components/Modal'
+import { briefState } from 'components/Panel/state/atoms'
 import DownloadBlock from './DownloadBlock'
+import Modal from 'components/Modal'
 
-import { supabase } from 'utils/supabaseClient'
 import { readableDate, compileChapter } from 'utils/helper'
+import { supabase } from 'utils/supabaseClient'
 
 function ChapterList({ selectedBook, project, highLevelAccess }) {
   const [openModal, setOpenModal] = useState(false)
+
+  const [selectedChapter, setSelectedChapter] = useState(null)
+  const [createdChapters, setCreatedChapters] = useState([])
+  const [currentSteps, setCurrentSteps] = useState(null)
+  const isBriefFull = useRecoilValue(briefState)
+  const [chapters, setChapters] = useState([])
+
+  const { t } = useTranslation(['common', 'books'])
+
   const {
     query: { book, code },
     push,
     locale,
   } = useRouter()
-  const [selectedChapter, setSelectedChapter] = useState(null)
-  const [chapters, setChapters] = useState([])
-  const [createdChapters, setCreatedChapters] = useState([])
-  const [currentSteps, setCurrentSteps] = useState(null)
-
-  const { t } = useTranslation(['common', 'books'])
 
   const handleCreate = async (chapter_id, num) => {
     const res = await supabase.rpc('create_verses', { chapter_id })
@@ -78,14 +82,22 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       ?.find((step) => step.chapter === chapter.num)
     if (step) {
       return (
-        <Link
-          key={index}
-          href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
-        >
-          <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2">
-            {step.title}
-          </a>
-        </Link>
+        <>
+          {!isBriefFull ? (
+            <Link href={`/projects/${project?.code}/edit/brief`}>
+              <a className="btn btn-white mt-2 mx-1">{t('FillOutTheBrief')}</a>
+            </Link>
+          ) : (
+            <Link
+              key={index}
+              href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+            >
+              <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2">
+                {step.title}
+              </a>
+            </Link>
+          )}
+        </>
       )
     }
   }

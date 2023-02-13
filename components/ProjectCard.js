@@ -4,25 +4,19 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
+import { useRecoilValue } from 'recoil'
+
 import Translators from 'components/Translators'
 
 import { supabase } from 'utils/supabaseClient'
-import { useBrief } from 'utils/hooks'
+import { briefState } from './Panel/state/atoms'
 
-function ProjectCard({ project, user }) {
+function ProjectCard({ project }) {
   const { t } = useTranslation(['projects', 'common', 'books'])
 
   const [currentSteps, setCurrentSteps] = useState(null)
-  const [isBriefFull, setIsBriefFull] = useState(false)
-  const [brief, { mutate }] = useBrief({
-    token: user?.access_token,
-    project_id: project?.id,
-  })
-  useEffect(() => {
-    if (brief?.data_collection) {
-      setIsBriefFull(brief?.data_collection?.reduce((final, el) => final + el.resume, ''))
-    }
-  }, [brief])
+  const isBriefFull = useRecoilValue(briefState)
+
   useEffect(() => {
     supabase
       .rpc('get_current_steps', { project_id: project.id })
@@ -55,7 +49,7 @@ function ProjectCard({ project, user }) {
       </div>
       {!isBriefFull && (
         <Link href={`/projects/${project?.code}/edit/brief`}>
-          <a className="btn btn-white mt-2 mx-1">{t('FillOutTheBrief')}</a>
+          <a className="btn btn-white mt-2 mx-1">{t('common:FillOutTheBrief')}</a>
         </Link>
       )}
       <div className="divide-y-2">
