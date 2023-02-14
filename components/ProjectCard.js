@@ -4,14 +4,18 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
+import { useRecoilValue } from 'recoil'
+
 import Translators from 'components/Translators'
 
 import { supabase } from 'utils/supabaseClient'
+import { briefState } from './Panel/state/atoms'
 
 function ProjectCard({ project }) {
   const { t } = useTranslation(['projects', 'common', 'books'])
 
   const [currentSteps, setCurrentSteps] = useState(null)
+  const isBriefFull = useRecoilValue(briefState)
 
   useEffect(() => {
     supabase
@@ -43,22 +47,35 @@ function ProjectCard({ project }) {
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
       </div>
+      {!isBriefFull && (
+        <Link href={`/projects/${project?.code}/edit/brief`}>
+          <a className="btn btn-white mt-2 mx-1">{t('common:FillOutTheBrief')}</a>
+        </Link>
+      )}
       <div className="divide-y-2">
         {Object.entries(chapters).map((chapter, i) => {
           return (
             <div key={i} className="mb-2">
               <div>{t(`books:${chapter[0]}`)}</div>
-              {chapter[1].map((step, index) => (
-                <Link
-                  key={index}
-                  href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
-                >
-                  <a className="btn btn-white mt-2 mx-1">
+
+              {chapter[1].map((step, index) =>
+                isBriefFull ? (
+                  <Link
+                    key={index}
+                    href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+                  >
+                    <a className="btn btn-white mt-2 mx-1">
+                      {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
+                      {t('common:Step').toLowerCase()}
+                    </a>
+                  </Link>
+                ) : (
+                  <div className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1">
                     {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
                     {t('common:Step').toLowerCase()}
-                  </a>
-                </Link>
-              ))}
+                  </div>
+                )
+              )}
             </div>
           )
         })}
