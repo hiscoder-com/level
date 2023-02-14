@@ -1,21 +1,21 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
-
 import { useTranslation } from 'next-i18next'
-
-import { useRecoilValue } from 'recoil'
 
 import Translators from 'components/Translators'
 
 import { supabase } from 'utils/supabaseClient'
-import { briefState } from './Panel/state/atoms'
+import { useBriefState } from 'utils/hooks'
 
-function ProjectCard({ project }) {
-  const { t } = useTranslation(['projects', 'common', 'books'])
-
+function ProjectCard({ project, token }) {
   const [currentSteps, setCurrentSteps] = useState(null)
-  const isBriefFull = useRecoilValue(briefState)
+  const isBriefFull = useBriefState({
+    token,
+    project_id: project?.id,
+  })
+
+  const { t } = useTranslation(['projects', 'common', 'books'])
 
   useEffect(() => {
     supabase
@@ -70,7 +70,10 @@ function ProjectCard({ project }) {
                     </a>
                   </Link>
                 ) : (
-                  <div className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1">
+                  <div
+                    key={index}
+                    className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1"
+                  >
                     {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
                     {t('common:Step').toLowerCase()}
                   </div>

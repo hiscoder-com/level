@@ -203,7 +203,7 @@ export function useTeamNotes({ token, project_id }) {
   return [notes, { mutate, loading, error }]
 }
 
-export function useBrief({ token, project_id }) {
+export function useGetBrief({ token, project_id }) {
   const {
     data: brief,
     mutate,
@@ -226,4 +226,19 @@ export function useScroll({ toolName }) {
     setScrollIds((prev) => ({ ...prev, [toolName]: 'id' + id }))
   }
   return { scrollId: scrollIds[toolName], handleSave }
+}
+
+export function useBriefState({ token, project_id }) {
+  const [isBriefFull, setIsBriefFull] = useState(false)
+  const [brief, { mutate }] = useGetBrief({
+    token,
+    project_id,
+  })
+
+  useEffect(() => {
+    brief?.data_collection?.reduce((final, el) => final + el.resume, '')
+      ? setIsBriefFull(true)
+      : setIsBriefFull(false)
+  }, [brief])
+  return isBriefFull
 }

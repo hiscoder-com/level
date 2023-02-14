@@ -27,8 +27,3 @@ export const projectIdState = atom({
   key: 'projectIdState',
   default: null,
 })
-
-export const briefState = atom({
-  key: 'briefState',
-  default: false,
-})

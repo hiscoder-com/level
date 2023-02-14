@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil'
 
 import Modal from './Modal'
 
-import { useBrief } from 'utils/hooks'
+import { useGetBrief } from 'utils/hooks'
 import { projectIdState } from './Panel/state/atoms'
 
 import Tools from 'public/tools.svg'
@@ -147,7 +147,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
 
   const projectId = useRecoilValue(projectIdState)
 
-  const [brief] = useBrief({
+  const [brief] = useGetBrief({
     token: user?.access_token,
     project_id: projectId,
   })
