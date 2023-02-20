@@ -1,17 +1,14 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 
 import { useRouter } from 'next/router'
-
-import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
-import { useForm, useWatch } from 'react-hook-form'
+import axios from 'axios'
 
 import CommitsList from './CommitsList'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
 
 // TODO не работает если создавать ОБС
 function ProjectCreate() {
