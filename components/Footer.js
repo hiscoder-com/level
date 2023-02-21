@@ -22,20 +22,13 @@ export default function Footer({
   const router = useRouter()
   const stepConfig = useRecoilValue(stepConfigState)
   const [checked, setChecked] = useState(false)
-  const [localStorSteps, setLocalStorStep] = useState()
 
   const { step } = router?.query
   const { t } = useTranslation('common')
   useEffect(() => {
     setChecked(false)
   }, [step])
-  // useEffect(() => {
-  //   if (localStorage.getItem('isIntro')) {
-  //     setLocalStorStep(JSON.parse(localStorage.getItem('isIntro')))
-  //   }
-  // }, [])
 
-  console.log(localStorSteps)
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -53,7 +46,6 @@ export default function Footer({
                 checked={checked}
                 onChange={() => {
                   // setLocalStorStep((prev) => ({ ...prev, router: router.query }))
-                  localStorage.setItem('isIntro', JSON.stringify(router.query))
                   setChecked((prev) => !prev)
                 }}
               />
@@ -62,7 +54,11 @@ export default function Footer({
           </div>
           {href ? (
             <Link href={href}>
-              <button className="btn-cyan !px-6" disabled={!checked}>
+              <button
+                className="btn-cyan !px-6"
+                disabled={!checked}
+                onClick={handleClick}
+              >
                 {textButton}
               </button>
             </Link>

@@ -29,7 +29,7 @@ function ProjectCard({ project }) {
     return _chapters
   }, [currentSteps])
   const localStorSteps = JSON.parse(localStorage.getItem('isIntro'))
-  // console.log(localStorSteps)
+
   // console.log(chapters)
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
@@ -51,24 +51,27 @@ function ProjectCard({ project }) {
           return (
             <div key={i} className="mb-2">
               <div>{t(`books:${chapter[0]}`)}</div>
-              {chapter[1].map((step, index) => (
-                <Link
-                  key={index}
-                  href={
-                    localStorSteps?.project == step.project &&
-                    localStorSteps?.book == step.book &&
-                    localStorSteps?.chapter == step.chapter &&
-                    localStorSteps?.step == step.step
-                      ? `/translate/${step.project}/${step.book}/${step.chapter}/${step.step}`
-                      : `/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`
-                  }
-                >
-                  <a className="btn btn-white mt-2 mx-1">
-                    {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
-                    {t('common:Step').toLowerCase()}
-                  </a>
-                </Link>
-              ))}
+              {chapter[1].map((step, index) => {
+                const { project, book, chapter, step: numStep } = step
+                const isRepeatIntro = localStorSteps?.find(
+                  (el) =>
+                    JSON.stringify(el) ===
+                    JSON.stringify({ project, book, chapter, step: numStep })
+                )
+                return (
+                  <Link
+                    key={index}
+                    href={`/translate/${step.project}/${step.book}/${step.chapter}/${
+                      step.step
+                    }${isRepeatIntro ? '/intro' : ''}`}
+                  >
+                    <a className="btn btn-white mt-2 mx-1">
+                      {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
+                      {t('common:Step').toLowerCase()}
+                    </a>
+                  </Link>
+                )
+              })}
             </div>
           )
         })}
