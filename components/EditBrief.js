@@ -139,7 +139,7 @@ function EditBrief() {
                                 setTimeout(() => saveToDatabase(), 2000)
                               }}
                               readOnly={highLevelAccess ? false : true}
-                              placeholder={t('project-edit:enterText')}
+                              placeholder={highLevelAccess && t('project-edit:enterText')}
                               defaultValue={questionAndAnswerPair.answer}
                               onChange={(e) => {
                                 setBriefDataCollection((prev) => {
@@ -184,7 +184,7 @@ function EditBrief() {
                           setTimeout(() => saveToDatabase(), 2000)
                         }}
                         readOnly={highLevelAccess ? false : true}
-                        placeholder={t('project-edit:enterText')}
+                        placeholder={highLevelAccess && t('project-edit:enterText')}
                         defaultValue={briefItem.resume}
                         onChange={(e) => {
                           setBriefDataCollection((prev) => {

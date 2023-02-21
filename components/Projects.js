@@ -33,7 +33,7 @@ export default function Projects() {
           })}
       </div>
       {user?.is_admin && (
-        <div className="mt-3">
+        <div className="mt-3 pb-5">
           <Link href={'/projects/create'}>
             <a className="btn-cyan">{t('AddNew')}</a>
           </Link>
