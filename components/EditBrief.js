@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
+import toast, { Toaster } from 'react-hot-toast'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -12,7 +13,6 @@ import { supabase } from 'utils/supabaseClient'
 
 function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
-  const [isSaving, setIsSaving] = useState(false)
   const [level, setLevel] = useState('user')
   const highLevelAccess = ['admin', 'coordinator'].includes(level)
 
@@ -34,17 +34,18 @@ function EditBrief() {
   }, [brief])
 
   const saveToDatabase = () => {
-    setIsSaving(true)
-
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
-      .then(() => mutate())
-      .catch((err) => console.log(err))
-      .finally(() => {
-        setIsSaving(false)
+      .then(() => {
+        toast.success(t('project-edit:successfulSave'))
+        mutate()
+      })
+      .catch((err) => {
+        toast.error(t('project-edit:saveFailed'))
+        console.log(err)
       })
   }
 
@@ -138,6 +139,7 @@ function EditBrief() {
                                 setTimeout(() => saveToDatabase(), 2000)
                               }}
                               readOnly={highLevelAccess ? false : true}
+                              placeholder={t('project-edit:enterText')}
                               defaultValue={questionAndAnswerPair.answer}
                               onChange={(e) => {
                                 setBriefDataCollection((prev) => {
@@ -182,6 +184,7 @@ function EditBrief() {
                           setTimeout(() => saveToDatabase(), 2000)
                         }}
                         readOnly={highLevelAccess ? false : true}
+                        placeholder={t('project-edit:enterText')}
                         defaultValue={briefItem.resume}
                         onChange={(e) => {
                           setBriefDataCollection((prev) => {
@@ -209,32 +212,17 @@ function EditBrief() {
           )}
           {highLevelAccess && (
             <div className="flex justify-center">
-              <button className="btn-cyan" onClick={saveToDatabase} disabled={isSaving}>
-                {isSaving ? (
-                  <svg
-                    className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                ) : (
-                  t('Save')
-                )}
+              <button className="btn-cyan" onClick={saveToDatabase}>
+                {t('Save')}
               </button>
+              <Toaster
+                toastOptions={{
+                  style: {
+                    marginTop: '-6px',
+                    color: '#6b7280',
+                  },
+                }}
+              />
             </div>
           )}
         </div>

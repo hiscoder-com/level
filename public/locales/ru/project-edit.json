@@ -6,9 +6,12 @@
   "AssigningModerator": "Назначение модератора",
   "EditBrief": "Заполнить бриф",
   "EditBriefTitle": "БРИФ И ЦЕЛЬ ПЕРЕВОДА",
+  "enterText": "Заполните поле...",
   "QuestionsPlaceholder": "Распишите вопросы...",
   "RemovingCoordinator": "Удаление координатора",
   "RemovingModerator": "Удаление модератора",
   "RemovingTranslator": "Удаление переводчика",
+  "saveFailed": "Не удалось сохранить бриф",
+  "successfulSave": "Бриф сохранён",
   "SummaryPlaceholder": "Распишите предназначение перевода..."
 }
