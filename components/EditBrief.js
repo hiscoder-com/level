@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import TextareaAutosize from 'react-textarea-autosize'
 import toast, { Toaster } from 'react-hot-toast'
 
@@ -30,8 +30,16 @@ function EditBrief() {
   })
 
   useEffect(() => {
-    setBriefDataCollection(brief?.data_collection)
+    if (brief) {
+      setBriefDataCollection(brief.data_collection)
+    }
   }, [brief])
+
+  useEffect(() => {
+    if (!briefDataCollection && brief?.data_collection) {
+      setBriefDataCollection(brief.data_collection)
+    }
+  }, [brief, briefDataCollection])
 
   const saveToDatabase = () => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -61,6 +69,21 @@ function EditBrief() {
       getLevel()
     }
   }, [user?.id, project?.id])
+
+  const handleBriefUpdate = useCallback((payload) => {
+    setBriefDataCollection(payload.new.data_collection)
+  }, [])
+
+  useEffect(() => {
+    const briefUpdates = supabase
+      .from('briefs')
+      .on('UPDATE', handleBriefUpdate)
+      .subscribe()
+
+    return () => {
+      briefUpdates.unsubscribe()
+    }
+  }, [handleBriefUpdate])
 
   return (
     <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
