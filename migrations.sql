@@ -1568,3 +1568,9 @@ CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT) returns BOOLEAN
       RETURN true;
     END;
 $$;
+
+--21.02.23
+
+ALTER publication supabase_realtime
+ADD
+  TABLE PUBLIC.briefs;

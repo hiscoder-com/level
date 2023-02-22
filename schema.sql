@@ -1658,6 +1658,10 @@ ALTER publication supabase_realtime
 ADD
   TABLE PUBLIC.users;
 
+ALTER publication supabase_realtime
+ADD
+  TABLE PUBLIC.briefs;
+
 -- DUMMY DATA
   -- USERS
     DELETE FROM

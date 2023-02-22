@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
-import TextareaAutosize from 'react-textarea-autosize'
+import { useEffect, useState } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 
 import Link from 'next/link'
@@ -10,6 +9,7 @@ import axios from 'axios'
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
+import BriefResume from './BriefResume'
 
 function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
@@ -29,12 +29,7 @@ function EditBrief() {
     project_id: project?.id,
   })
 
-  useEffect(() => {
-    if (brief) {
-      setBriefDataCollection(brief.data_collection)
-    }
-  }, [brief])
-
+  // data initialization
   useEffect(() => {
     if (!briefDataCollection && brief?.data_collection) {
       setBriefDataCollection(brief.data_collection)
@@ -57,6 +52,7 @@ function EditBrief() {
       })
   }
 
+  // highLevelAccess
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
@@ -70,20 +66,31 @@ function EditBrief() {
     }
   }, [user?.id, project?.id])
 
-  const handleBriefUpdate = useCallback((payload) => {
-    setBriefDataCollection(payload.new.data_collection)
-  }, [])
-
+  // real-time api
   useEffect(() => {
     const briefUpdates = supabase
       .from('briefs')
-      .on('UPDATE', handleBriefUpdate)
+      .on('UPDATE', (payload) => {
+        console.log('payload', payload.new.data_collection)
+        setBriefDataCollection(payload.new.data_collection)
+      })
       .subscribe()
 
     return () => {
       briefUpdates.unsubscribe()
     }
-  }, [handleBriefUpdate])
+  }, [])
+
+  const updateBrief = (text, index) => {
+    setBriefDataCollection((prev) => {
+      prev[index] = {
+        ...prev[index],
+        resume: text,
+      }
+      return prev
+    })
+    console.log('briefDataCollection', briefDataCollection)
+  }
 
   return (
     <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
@@ -106,7 +113,7 @@ function EditBrief() {
         <div className="mt-2 md:mt-5">
           {briefDataCollection && (
             <div className="flex-col w-full gap-4 mb-4 flex md:flex-row">
-              <div className="md:w-1/3">
+              {/* <div className="md:w-1/3">
                 <p className="font-bold text-center mb-4 text-gray-700">
                   {t('Questions')}
                 </p>
@@ -136,8 +143,8 @@ function EditBrief() {
                   })}
                 </div>
                 <div className="h-3 rounded-b-lg bg-white"></div>
-              </div>
-              <div className="md:w-1/3">
+              </div> */}
+              {/* <div className="md:w-1/3">
                 <p className="text-gray-700 font-bold text-center mb-4">
                   {t('project-edit:Answers')}
                 </p>
@@ -193,7 +200,7 @@ function EditBrief() {
                   })}
                 </div>
                 <div className="h-3 rounded-b-lg bg-white"></div>
-              </div>
+              </div> */}
               <div className="md:w-1/3">
                 <p className="font-bold text-center mb-4 text-gray-700">
                   {t('PurposeTranslation')}
@@ -201,30 +208,17 @@ function EditBrief() {
                 <div className="h-3 rounded-t-lg bg-white"></div>
                 <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
                   {briefDataCollection.map((briefItem, index) => {
-                    const resume = (
-                      <TextareaAutosize
-                        onBlur={() => {
-                          setTimeout(() => saveToDatabase(), 2000)
-                        }}
-                        readOnly={highLevelAccess ? false : true}
-                        placeholder={highLevelAccess && t('project-edit:enterText')}
-                        defaultValue={briefItem.resume}
-                        onChange={(e) => {
-                          setBriefDataCollection((prev) => {
-                            prev[index] = {
-                              ...prev[index],
-                              resume: e.target.value.trim(),
-                            }
-                            return prev
-                          })
-                        }}
-                        className="outline-none w-full resize-none"
-                      />
-                    )
-
                     return (
                       <div className="flex flex-nowrap leading-6 py-2" key={index}>
-                        -&nbsp; {resume}
+                        -&nbsp;
+                        <BriefResume
+                          highLevelAccess={highLevelAccess} // переключение readOnly
+                          saveToDatabase={saveToDatabase} // для сохранения onBlur
+                          updateBrief={updateBrief} // запускаем в onChange и передаём index и новое значение поля
+                          briefItem={briefItem} // for data initialization
+                          index={index} // только для передачи в updateBrief
+                          t={t} // для перевода
+                        />
                       </div>
                     )
                   })}
