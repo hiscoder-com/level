@@ -54,16 +54,6 @@ function ProjectCard({ project }) {
               {chapter[1].map((step, index) => {
                 const { project, book, chapter, step: numStep } = step
                 const isRepeatIntro = localStorSteps?.find((el) => {
-                  // console.log(JSON.stringify(el))
-                  // console.log(
-                  //   JSON.stringify({
-                  //     project,
-                  //     book,
-                  //     chapter: chapter.toString(),
-                  //     step: numStep.toString(),
-                  //   })
-                  // )
-
                   return (
                     JSON.stringify(el) ===
                     JSON.stringify({
