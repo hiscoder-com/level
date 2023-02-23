@@ -2,56 +2,36 @@ import { useEffect, useState } from 'react'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 function BriefResume({
-  index,
-  saveToDatabase,
   highLevelAccess,
-  t,
+  saveToDatabase,
   updateBrief,
-  briefItem,
+  objResume,
+  index,
+  t,
 }) {
-  const [startValue, setStartValue] = useState(false)
+  const [resume, setResume] = useState(objResume)
 
   // data initialization
   useEffect(() => {
-    if (startValue === false) {
-      setStartValue(briefItem.resume?.trim())
-    }
+    setResume(objResume)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [briefItem.resume])
+  }, [objResume])
 
   return (
     <ReactTextareaAutosize
-      value={startValue}
-      onChange={(e) => updateBrief(e.target.value.trim(), index)}
+      value={resume}
+      onChange={(e) => {
+        setResume(e.target.value)
+      }}
       className="outline-none w-full resize-none"
       onBlur={() => {
-        setTimeout(() => saveToDatabase(), 2000)
+        updateBrief(resume.trim(), index)
+        setTimeout(() => saveToDatabase(), 1000)
       }}
       readOnly={highLevelAccess ? false : true}
-      // placeholder={highLevelAccess && t('project-edit:enterText')}
+      placeholder={highLevelAccess ? t('project-edit:enterText') : ''}
     />
   )
 }
 
 export default BriefResume
-
-// const resume = (
-//   <TextareaAutosize
-//     onBlur={() => {
-//       setTimeout(() => saveToDatabase(), 2000)
-//     }}
-//     readOnly={highLevelAccess ? false : true}
-//     placeholder={highLevelAccess && t('project-edit:enterText')}
-//     defaultValue={briefItem.resume}
-//     onChange={(e) => {
-//       setBriefDataCollection((prev) => {
-//         prev[index] = {
-//           ...prev[index],
-//           resume: e.target.value.trim(),
-//         }
-//         return prev
-//       })
-//     }}
-//     className="outline-none w-full resize-none"
-//   />
-// )

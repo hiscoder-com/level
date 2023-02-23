@@ -43,7 +43,6 @@ function EditBrief() {
         data_collection: briefDataCollection,
       })
       .then(() => {
-        toast.success(t('project-edit:successfulSave'))
         mutate()
       })
       .catch((err) => {
@@ -89,7 +88,6 @@ function EditBrief() {
       }
       return prev
     })
-    console.log('briefDataCollection', briefDataCollection)
   }
 
   return (
@@ -212,12 +210,12 @@ function EditBrief() {
                       <div className="flex flex-nowrap leading-6 py-2" key={index}>
                         -&nbsp;
                         <BriefResume
-                          highLevelAccess={highLevelAccess} // переключение readOnly
-                          saveToDatabase={saveToDatabase} // для сохранения onBlur
-                          updateBrief={updateBrief} // запускаем в onChange и передаём index и новое значение поля
-                          briefItem={briefItem} // for data initialization
-                          index={index} // только для передачи в updateBrief
-                          t={t} // для перевода
+                          highLevelAccess={highLevelAccess}
+                          saveToDatabase={saveToDatabase}
+                          objResume={briefItem.resume}
+                          updateBrief={updateBrief}
+                          index={index}
+                          t={t}
                         />
                       </div>
                     )
@@ -229,7 +227,13 @@ function EditBrief() {
           )}
           {highLevelAccess && (
             <div className="flex justify-center">
-              <button className="btn-cyan" onClick={saveToDatabase}>
+              <button
+                className="btn-cyan"
+                onClick={() => {
+                  saveToDatabase()
+                  toast.success(t('project-edit:successfulSave'))
+                }}
+              >
                 {t('Save')}
               </button>
               <Toaster
