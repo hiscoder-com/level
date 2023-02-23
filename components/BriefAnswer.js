@@ -1,36 +1,38 @@
 import { useEffect, useState } from 'react'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
-function BriefResume({
+function BriefAnswer({
   highLevelAccess,
   saveToDatabase,
-  updateBrief,
-  objResume,
+  updateObjQA,
+  blockIndex,
+  briefItem,
+  objQA,
   index,
   t,
 }) {
-  const [resume, setResume] = useState(objResume)
+  const [answer, setAnswer] = useState(objQA.answer)
 
   // data initialization
   useEffect(() => {
-    setResume(objResume)
-  }, [objResume])
+    setAnswer(objQA.answer)
+  }, [objQA.answer])
 
   return (
     <ReactTextareaAutosize
-      value={resume}
+      value={answer}
       onChange={(e) => {
-        setResume(e.target.value)
+        setAnswer(e.target.value)
       }}
-      className="outline-none w-full resize-none"
       onBlur={() => {
-        updateBrief(resume.trim(), index)
+        updateObjQA(answer.trim(), briefItem, blockIndex, objQA, index)
         setTimeout(() => saveToDatabase(), 1000)
       }}
       readOnly={highLevelAccess ? false : true}
       placeholder={highLevelAccess ? t('project-edit:enterText') : ''}
+      className="outline-none w-full resize-none"
     />
   )
 }
 
-export default BriefResume
+export default BriefAnswer

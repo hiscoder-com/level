@@ -10,6 +10,7 @@ import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 import BriefResume from './BriefResume'
+import BriefAnswer from './BriefAnswer'
 
 function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
@@ -70,7 +71,6 @@ function EditBrief() {
     const briefUpdates = supabase
       .from('briefs')
       .on('UPDATE', (payload) => {
-        console.log('payload', payload.new.data_collection)
         setBriefDataCollection(payload.new.data_collection)
       })
       .subscribe()
@@ -80,11 +80,28 @@ function EditBrief() {
     }
   }, [])
 
+  // when onBlur fires on the resume field, update the resume in the briefDataCollection
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {
       prev[index] = {
         ...prev[index],
         resume: text,
+      }
+      return prev
+    })
+  }
+
+  // when onBlur fires in the answer field, update the answer in the briefDataCollection
+  const updateObjQA = (text, briefItem, blockIndex, objQA, index) => {
+    setBriefDataCollection((prev) => {
+      const updateBriefItemBlock = briefItem.block
+      updateBriefItemBlock[blockIndex] = {
+        ...objQA,
+        answer: text,
+      }
+      prev[index] = {
+        ...prev[index],
+        block: updateBriefItemBlock,
       }
       return prev
     })
@@ -111,7 +128,7 @@ function EditBrief() {
         <div className="mt-2 md:mt-5">
           {briefDataCollection && (
             <div className="flex-col w-full gap-4 mb-4 flex md:flex-row">
-              {/* <div className="md:w-1/3">
+              <div className="md:w-1/3">
                 <p className="font-bold text-center mb-4 text-gray-700">
                   {t('Questions')}
                 </p>
@@ -141,8 +158,8 @@ function EditBrief() {
                   })}
                 </div>
                 <div className="h-3 rounded-b-lg bg-white"></div>
-              </div> */}
-              {/* <div className="md:w-1/3">
+              </div>
+              <div className="md:w-1/3">
                 <p className="text-gray-700 font-bold text-center mb-4">
                   {t('project-edit:Answers')}
                 </p>
@@ -161,35 +178,19 @@ function EditBrief() {
                       >
                         <p className="font-bold">{questionTitle}</p>
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                          const answer = (
-                            <TextareaAutosize
-                              onBlur={() => {
-                                setTimeout(() => saveToDatabase(), 2000)
-                              }}
-                              readOnly={highLevelAccess ? false : true}
-                              placeholder={highLevelAccess && t('project-edit:enterText')}
-                              defaultValue={questionAndAnswerPair.answer}
-                              onChange={(e) => {
-                                setBriefDataCollection((prev) => {
-                                  const newBriefItemBlock = briefItem.block
-                                  newBriefItemBlock[blockIndex] = {
-                                    ...questionAndAnswerPair,
-                                    answer: e.target.value.trim(),
-                                  }
-                                  prev[index] = {
-                                    ...prev[index],
-                                    block: newBriefItemBlock,
-                                  }
-                                  return prev
-                                })
-                              }}
-                              className="outline-none w-full resize-none"
-                            />
-                          )
-
                           return (
                             <div className="flex flex-nowrap leading-6" key={blockIndex}>
-                              -&nbsp; {answer}
+                              -&nbsp;
+                              <BriefAnswer
+                                highLevelAccess={highLevelAccess}
+                                saveToDatabase={saveToDatabase}
+                                objQA={questionAndAnswerPair}
+                                updateObjQA={updateObjQA}
+                                blockIndex={blockIndex}
+                                briefItem={briefItem}
+                                index={index}
+                                t={t}
+                              />
                             </div>
                           )
                         })}
@@ -198,7 +199,7 @@ function EditBrief() {
                   })}
                 </div>
                 <div className="h-3 rounded-b-lg bg-white"></div>
-              </div> */}
+              </div>
               <div className="md:w-1/3">
                 <p className="font-bold text-center mb-4 text-gray-700">
                   {t('PurposeTranslation')}
