@@ -60,11 +60,9 @@ function ProjectCard({ project }) {
                       project,
                       book,
                       chapter: chapter.toString(),
-                      step: numStep.toString(),
                     })
                   )
                 })
-
                 return (
                   <Link
                     key={index}

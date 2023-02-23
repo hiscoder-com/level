@@ -9,19 +9,27 @@ function IntroStep({ title, markdown, nextLink }) {
 
   const saveStepLocalStor = () => {
     let viewedSteps = JSON.parse(localStorage.getItem('isIntro'))
-    if (viewedSteps) {
-      viewedSteps = viewedSteps.filter(
-        (e) =>
-          e.project !== router.query.book &&
-          e.book !== router.query.book &&
-          e.chapter !== router.query.chapter
-      )
-    }
+
     if (!viewedSteps) {
       // console.log(router.asPath)
       localStorage.setItem('isIntro', JSON.stringify([router.query]))
       return
     }
+    if (viewedSteps) {
+      viewedSteps = viewedSteps.filter((e) => {
+        const { project, book, chapter } = router.query
+        delete e.step
+        return (
+          e !==
+          {
+            project,
+            book,
+            chapter: chapter.toString(),
+          }
+        )
+      })
+    }
+    console.log(router.query)
 
     if (viewedSteps.find((el) => JSON.stringify(el) === JSON.stringify(router.query))) {
       return
