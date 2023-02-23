@@ -18,7 +18,6 @@ import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
 
 export default function ProgressPage({ last_step }) {
   const { user } = useCurrentUser()
-  // const setStepConfigData = useSetRecoilState(stepConfigState)
   const [stepConfigData, setStepConfigData] = useRecoilState(stepConfigState)
   const { t } = useTranslation(['common'])
   const {
@@ -29,7 +28,7 @@ export default function ProgressPage({ last_step }) {
   const setProjectId = useSetRecoilState(projectIdState)
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
-  console.log(stepConfigData.last_step)
+  // console.log(stepConfigData.last_step)
   useEffect(() => {
     if (user?.login) {
       supabase

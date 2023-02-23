@@ -53,17 +53,34 @@ function ProjectCard({ project }) {
               <div>{t(`books:${chapter[0]}`)}</div>
               {chapter[1].map((step, index) => {
                 const { project, book, chapter, step: numStep } = step
-                const isRepeatIntro = localStorSteps?.find(
-                  (el) =>
+                const isRepeatIntro = localStorSteps?.find((el) => {
+                  // console.log(JSON.stringify(el))
+                  // console.log(
+                  //   JSON.stringify({
+                  //     project,
+                  //     book,
+                  //     chapter: chapter.toString(),
+                  //     step: numStep.toString(),
+                  //   })
+                  // )
+
+                  return (
                     JSON.stringify(el) ===
-                    JSON.stringify({ project, book, chapter, step: numStep })
-                )
+                    JSON.stringify({
+                      project,
+                      book,
+                      chapter: chapter.toString(),
+                      step: numStep.toString(),
+                    })
+                  )
+                })
+
                 return (
                   <Link
                     key={index}
                     href={`/translate/${step.project}/${step.book}/${step.chapter}/${
                       step.step
-                    }${isRepeatIntro ? '/intro' : ''}`}
+                    }${typeof isRepeatIntro === 'undefined' ? '/intro' : ''}`}
                   >
                     <a className="btn btn-white mt-2 mx-1">
                       {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
