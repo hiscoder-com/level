@@ -28,7 +28,6 @@ export default function ProgressPage({ last_step }) {
   const setProjectId = useSetRecoilState(projectIdState)
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
-  // console.log(stepConfigData.last_step)
   useEffect(() => {
     if (user?.login) {
       supabase
@@ -101,7 +100,6 @@ export default function ProgressPage({ last_step }) {
       current_step: step,
     })
     localStorage.setItem('scrollIds', JSON.stringify({}))
-
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {

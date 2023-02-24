@@ -30,7 +30,6 @@ function ProjectCard({ project }) {
   }, [currentSteps])
   const localStorSteps = JSON.parse(localStorage.getItem('isIntro'))
 
-  // console.log(chapters)
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>

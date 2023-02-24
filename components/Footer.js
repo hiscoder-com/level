@@ -45,7 +45,6 @@ export default function Footer({
                 type="checkbox"
                 checked={checked}
                 onChange={() => {
-                  // setLocalStorStep((prev) => ({ ...prev, router: router.query }))
                   setChecked((prev) => !prev)
                 }}
               />
