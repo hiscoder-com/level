@@ -28,8 +28,10 @@ function ProjectCard({ project }) {
     })
     return _chapters
   }, [currentSteps])
-  const localStorSteps = JSON.parse(localStorage.getItem('isIntro'))
-
+  const localStorSteps = useMemo(
+    () => JSON.parse(localStorage.getItem('ViewedIntroSteps')),
+    []
+  )
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>
@@ -52,8 +54,8 @@ function ProjectCard({ project }) {
               <div>{t(`books:${chapter[0]}`)}</div>
               {chapter[1].map((step, index) => {
                 const { project, book, chapter, step: numStep } = step
-                const isRepeatIntro = localStorSteps?.find((el) => {
-                  return (
+                const isRepeatIntro = localStorSteps?.find(
+                  (el) =>
                     JSON.stringify(el) ===
                     JSON.stringify({
                       project,
@@ -61,8 +63,7 @@ function ProjectCard({ project }) {
                       chapter: chapter.toString(),
                       step: numStep.toString(),
                     })
-                  )
-                })
+                )
 
                 return (
                   <Link

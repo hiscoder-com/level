@@ -6,32 +6,38 @@ import MarkdownExtended from 'components/MarkdownExtended'
 function IntroStep({ title, markdown, nextLink }) {
   const router = useRouter()
   const { t } = useTranslation(['common'])
-
-  const saveStepLocalStor = () => {
-    let viewedSteps = JSON.parse(localStorage.getItem('isIntro'))
+  const saveStepLocalStorage = () => {
+    let viewedSteps = JSON.parse(localStorage.getItem('ViewedIntroSteps'))
 
     if (!viewedSteps) {
-      localStorage.setItem('isIntro', JSON.stringify([router.query]))
+      localStorage.setItem('ViewedIntroSteps', JSON.stringify([router.query]))
+      router.push(nextLink)
       return
     }
     if (viewedSteps) {
       viewedSteps = viewedSteps.filter((e) => {
         const { project, book, chapter, step } = router.query
-        return (viewedSteps =
+        return (
           JSON.stringify(e) !==
           JSON.stringify({
             project,
             book,
             chapter: chapter.toString(),
             step: (step - 1).toString(),
-          }))
+          })
+        )
       })
     }
 
     if (viewedSteps.find((el) => JSON.stringify(el) === JSON.stringify(router.query))) {
+      router.push(nextLink)
       return
     }
-    localStorage.setItem('isIntro', JSON.stringify([...viewedSteps, router.query]))
+    localStorage.setItem(
+      'ViewedIntroSteps',
+      JSON.stringify([...viewedSteps, router.query])
+    )
+    router.push(nextLink)
   }
   return (
     <div className="mb-4 w-full f-screen-appbar max-w-3xl">
@@ -45,8 +51,7 @@ function IntroStep({ title, markdown, nextLink }) {
       <Footer
         textButton={t('Next')}
         textCheckbox={t('Ok')}
-        href={nextLink}
-        handleClick={saveStepLocalStor}
+        handleClick={saveStepLocalStorage}
       />
     </div>
   )
