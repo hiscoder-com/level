@@ -11,25 +11,22 @@ function IntroStep({ title, markdown, nextLink }) {
     let viewedSteps = JSON.parse(localStorage.getItem('isIntro'))
 
     if (!viewedSteps) {
-      // console.log(router.asPath)
       localStorage.setItem('isIntro', JSON.stringify([router.query]))
       return
     }
     if (viewedSteps) {
       viewedSteps = viewedSteps.filter((e) => {
-        const { project, book, chapter } = router.query
-        delete e.step
-        return (
-          e !==
-          {
+        const { project, book, chapter, step } = router.query
+        return (viewedSteps =
+          JSON.stringify(e) !==
+          JSON.stringify({
             project,
             book,
             chapter: chapter.toString(),
-          }
-        )
+            step: (step - 1).toString(),
+          }))
       })
     }
-    console.log(router.query)
 
     if (viewedSteps.find((el) => JSON.stringify(el) === JSON.stringify(router.query))) {
       return
