@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
+import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
@@ -14,8 +15,7 @@ import BriefAnswer from './BriefAnswer'
 
 function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
-  const [level, setLevel] = useState('user')
-  const highLevelAccess = ['admin', 'coordinator'].includes(level)
+  const [highLevelAccess, setHighLevelAccess] = useState(false)
 
   const {
     query: { code },
@@ -30,7 +30,6 @@ function EditBrief() {
     project_id: project?.id,
   })
 
-  // data initialization
   useEffect(() => {
     if (!briefDataCollection && brief?.data_collection) {
       setBriefDataCollection(brief.data_collection)
@@ -52,21 +51,21 @@ function EditBrief() {
       })
   }
 
-  // highLevelAccess
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
-        user_id: user.id,
+        user_id: user?.id,
         project_id: project.id,
       })
-      setLevel(level.data)
+      if (level?.data) {
+        setHighLevelAccess(['admin', 'coordinator'].includes(level.data))
+      }
     }
     if (user?.id && project?.id) {
       getLevel()
     }
   }, [user?.id, project?.id])
 
-  // real-time api
   useEffect(() => {
     const briefUpdates = supabase
       .from('briefs')
@@ -80,7 +79,6 @@ function EditBrief() {
     }
   }, [])
 
-  // when onBlur fires on the resume field, update the resume in the briefDataCollection
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {
       prev[index] = {
@@ -91,7 +89,6 @@ function EditBrief() {
     })
   }
 
-  // when onBlur fires in the answer field, update the answer in the briefDataCollection
   const updateObjQA = (text, briefItem, blockIndex, objQA, index) => {
     setBriefDataCollection((prev) => {
       const updateBriefItemBlock = briefItem.block

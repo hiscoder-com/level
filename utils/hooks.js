@@ -229,16 +229,15 @@ export function useScroll({ toolName }) {
 }
 
 export function useBriefState({ token, project_id }) {
-  const [isBriefFull, setIsBriefFull] = useState(false)
-  const [brief, { mutate }] = useGetBrief({
+  const [briefResume, setBriefResume] = useState()
+  const [brief] = useGetBrief({
     token,
     project_id,
   })
-
   useEffect(() => {
-    brief?.data_collection?.reduce((final, el) => final + el.resume, '')
-      ? setIsBriefFull(true)
-      : setIsBriefFull(false)
+    if (brief?.is_enable) {
+      setBriefResume(brief.data_collection?.reduce((final, el) => final + el.resume, ''))
+    }
   }, [brief])
-  return isBriefFull
+  return { briefResume, isBrief: brief?.is_enable }
 }

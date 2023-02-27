@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
+import { Switch } from '@headlessui/react'
 
 import CommitsList from './CommitsList'
 
@@ -10,7 +11,7 @@ import { supabase } from 'utils/supabaseClient'
 
 import { useCurrentUser } from 'lib/UserContext'
 
-import { useProject, useMethod } from 'utils/hooks'
+import { useProject, useMethod, useGetBrief } from 'utils/hooks'
 
 function ProjectSettings() {
   const { user } = useCurrentUser()
@@ -19,12 +20,16 @@ function ProjectSettings() {
   const [currentMethod, setCurrentMethod] = useState()
   const [isErrorCommit, setIsErrorCommit] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'project-edit'])
 
   const {
     query: { code },
   } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
+  const [brief, { mutate }] = useGetBrief({
+    token: user?.access_token,
+    project_id: project?.id,
+  })
   useEffect(() => {
     if (project?.method && methods) {
       const method = methods.find((method) => method.title === project.method)
@@ -33,6 +38,7 @@ function ProjectSettings() {
   }, [project?.method, methods])
 
   useEffect(() => {
+    'Brief'
     const getResources = async () => {
       if (project?.id) {
         const { data, error } = await supabase
@@ -75,6 +81,14 @@ function ProjectSettings() {
         setIsSaving(false)
       })
   }
+  const handleSwitch = () => {
+    if (brief) {
+      axios.defaults.headers.common['token'] = user?.access_token
+      axios
+        .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
+        .then((res) => mutate())
+    }
+  }
   return (
     <div className="mx-auto max-w-7xl">
       <div className="h3 mb-3">
@@ -91,7 +105,7 @@ function ProjectSettings() {
       />
       {isErrorCommit && <div className="mt-3">{t('WrongResource')}</div>}
 
-      <button className="btn-cyan mt-3" onClick={handleSaveCommits} disabled={isSaving}>
+      <button className="btn-cyan my-2" onClick={handleSaveCommits} disabled={isSaving}>
         {isSaving ? (
           <svg
             className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600"
@@ -117,6 +131,27 @@ function ProjectSettings() {
           t('Save')
         )}
       </button>
+      <div>
+        <h1 className="h2 mb-3">{t('project-edit:BriefSwitch')}</h1>
+        <div className="flex">
+          <span className="mr-3">
+            {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+          </span>
+          <Switch
+            checked={brief?.is_enable}
+            onChange={handleSwitch}
+            className={`${
+              brief?.is_enable ? 'bg-blue-600' : 'bg-gray-300'
+            } relative inline-flex h-6 w-11 items-center rounded-full`}
+          >
+            <span
+              className={`${
+                brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
+              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+            />
+          </Switch>
+        </div>
+      </div>
     </div>
   )
 }

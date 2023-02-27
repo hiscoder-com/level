@@ -103,7 +103,6 @@ function RetellPartner({ setAudioState }) {
 
 function RetellYourself({ setAudioState }) {
   const { t } = useTranslation(['audio'])
-  const [inactive, setInactive] = useRecoilState(inactiveState)
   return (
     <>
       <button

@@ -85,10 +85,10 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
     if (step) {
       return (
         <>
-          {!isBriefFull ? (
+          {isBriefFull === '' ? (
             <Link href={`/projects/${project?.code}/edit/brief`}>
               <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2 mx-1">
-                {t('FillOutTheBrief')}
+                {t(highLevelAccess ? 'EditBrief' : 'OpenBrief')}
               </a>
             </Link>
           ) : (

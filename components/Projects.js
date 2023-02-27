@@ -28,6 +28,7 @@ export default function Projects() {
                 key={project.id}
                 project={project}
                 token={user?.access_token}
+                userId={user?.id}
               />
             )
           })}

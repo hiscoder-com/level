@@ -11,13 +11,13 @@
 
   CREATE FUNCTION PUBLIC.handle_compile_chapter() returns TRIGGER
       LANGUAGE plpgsql security definer AS $$
-      DECLARE      
+      DECLARE
         chapter JSONB;
       BEGIN
         IF (NEW.finished_at IS NOT NULL) THEN
           SELECT jsonb_object_agg(num, text ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
           NEW.text=chapter;
-        END IF;               
+        END IF;
         RETURN NEW;
       END;
     $$;
@@ -33,22 +33,22 @@
   CREATE TABLE PUBLIC.logs (
       id bigint GENERATED ALWAYS AS IDENTITY primary key,
       created_at TIMESTAMP DEFAULT NOW(),
-      log JSONB        
+      log JSONB
     );
     
   ALTER TABLE
-      PUBLIC.logs enable ROW LEVEL security;   
+      PUBLIC.logs enable ROW LEVEL security; 
 
   DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
 
   CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$  
-      DECLARE chapters_old JSON;        
+      LANGUAGE plpgsql SECURITY definer AS $$
+      DECLARE chapters_old JSON; 
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
         SELECT json_build_object('chapters', chapters) FROM PUBLIC.books WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id INTO chapters_old;
-        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));   
+        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old)); 
         UPDATE PUBLIC.books SET chapters = update_chapters_in_books.chapters_new WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id;
         RETURN TRUE;
       END;
@@ -57,11 +57,11 @@
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
 
   CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$         
+      LANGUAGE plpgsql SECURITY definer AS $$
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-        END IF;      
-        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num',  num));  
+        END IF;
+        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num', num));
         INSERT INTO PUBLIC.chapters (num, verses, book_id, project_id) VALUES (num, verses, book_id, project_id)
         ON CONFLICT ON CONSTRAINT chapters_book_id_num_key
             DO NOTHING;
@@ -74,7 +74,7 @@
   CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
       LANGUAGE plpgsql SECURITY definer AS $$ 
       DECLARE chapter JSON;
-              verses_old JSON;        
+              verses_old JSON;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
@@ -84,20 +84,20 @@
         SELECT json_build_object('id', id, 'started_at', started_at) FROM PUBLIC.chapters WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num INTO chapter;
         RETURN chapter;
       END;
-    $$; 
+    $$;
 
 
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
 
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
       LANGUAGE plpgsql SECURITY definer AS $$ 
-      DECLARE step_id BIGINT;    
+      DECLARE step_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-        END IF;      
+        END IF;
         IF finish_verse < start_verse THEN
           RETURN false;
-        END IF;    
+        END IF;
         SELECT id FROM steps WHERE steps.project_id = insert_additional_verses.project_id AND sorting = 1 INTO step_id;
         INSERT INTO PUBLIC.logs (log) VALUES ( json_build_object('function', 'insert_additional_verses', 'start_verse', start_verse, 'step_id', id, 'finish_verse', finish_verse, 'chapter_id', chapter_id, 'project_id', project_id)); 
         
@@ -108,7 +108,7 @@
             (i, chapter_id, step_id, project_id)
             ON CONFLICT ON CONSTRAINT verses_chapter_id_num_key
             DO NOTHING;
-        END LOOP;      
+        END LOOP;
         RETURN TRUE;
       END;
   $$; 
@@ -122,13 +122,13 @@
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
         SELECT json_build_object('resources', resources, 'base_manifest', base_manifest) FROM PUBLIC.projects WHERE id = update_resources_in_projects.project_id INTO old_values;
-        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects', 'resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));  
+        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects', 'resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));
         UPDATE PUBLIC.projects SET resources = update_resources_in_projects.resources_new, base_manifest = update_resources_in_projects.base_manifest_new WHERE id = project_id;
         RETURN TRUE;
       END;
     $$; 
 
-  --10.02.23
+--10.02.23
     --Update method CANA OBS
     --Rename method CANA Bible to Cana Bible crush test
     --Update method CANA Bible crush test
@@ -1408,7 +1408,7 @@
           }
         ]'
       WHERE sorting = '8' AND (SELECT method FROM public.projects WHERE id = project_id) = 'CANA Bible crash test';
-         
+ 
 --31.01.23
   DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
 
@@ -1423,7 +1423,7 @@
         DROP COLUMN text;
 
   UPDATE PUBLIC.methods
-  SET brief = '[
+    SET brief = '[
             {
               "id": 1,
               "title": "О языке",
@@ -1548,12 +1548,12 @@
             }
   ]';
 
-  --обновление data_collection в уже созданных проектах
+  --updating data_collection in already created projects
   UPDATE PUBLIC.briefs
-    SET data_collection = (SELECT brief FROM PUBLIC.methods join projects on (methods.title = projects.method) where projects.id = briefs.project_id) WHERE data_collection is null;
+    SET data_collection = (SELECT brief FROM PUBLIC.methods join projects ON (methods.title = projects.method) WHERE projects.id = briefs.project_id) WHERE data_collection is null;
 
-  --создание нового брифа для проекта
-  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT) returns BOOLEAN
+  --creating a new brief for the project
+  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) returns BOOLEAN
       LANGUAGE plpgsql security definer AS $$
       DECLARE 
         brief_JSON json;
@@ -1564,12 +1564,12 @@
         SELECT brief FROM PUBLIC.methods 
           JOIN PUBLIC.projects ON (projects.method = methods.title) 
           WHERE projects.id = project_id into brief_JSON;
-          INSERT INTO PUBLIC.briefs (project_id, data_collection) VALUES (project_id, brief_JSON);    
+          INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);
         RETURN true;
       END;
   $$;
 
 --21.02.23
-  ALTER publication supabase_realtime
-  ADD
-    TABLE PUBLIC.briefs;
+  ALTER publication supabase_realtime 
+    ADD
+      TABLE PUBLIC.briefs;
