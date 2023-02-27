@@ -13,7 +13,6 @@ function BriefAnswer({
 }) {
   const [answer, setAnswer] = useState(objQA.answer)
 
-  // data initialization
   useEffect(() => {
     setAnswer(objQA.answer)
   }, [objQA.answer])
