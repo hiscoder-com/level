@@ -28,10 +28,25 @@ function ProjectCard({ project }) {
     })
     return _chapters
   }, [currentSteps])
+
   const localStorSteps = useMemo(
     () => JSON.parse(localStorage.getItem('ViewedIntroSteps')),
     []
   )
+  const searchLocalStorage = (step, localStorSteps) => {
+    const { project, book, chapter, step: numStep } = step
+    const isRepeatIntro = localStorSteps?.find(
+      (el) =>
+        JSON.stringify(el) ===
+        JSON.stringify({
+          project,
+          book,
+          chapter: chapter.toString(),
+          step: numStep.toString(),
+        })
+    )
+    return isRepeatIntro
+  }
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>
@@ -53,24 +68,16 @@ function ProjectCard({ project }) {
             <div key={i} className="mb-2">
               <div>{t(`books:${chapter[0]}`)}</div>
               {chapter[1].map((step, index) => {
-                const { project, book, chapter, step: numStep } = step
-                const isRepeatIntro = localStorSteps?.find(
-                  (el) =>
-                    JSON.stringify(el) ===
-                    JSON.stringify({
-                      project,
-                      book,
-                      chapter: chapter.toString(),
-                      step: numStep.toString(),
-                    })
-                )
-
                 return (
                   <Link
                     key={index}
                     href={`/translate/${step.project}/${step.book}/${step.chapter}/${
                       step.step
-                    }${typeof isRepeatIntro === 'undefined' ? '/intro' : ''}`}
+                    }${
+                      typeof searchLocalStorage(step, localStorSteps) === 'undefined'
+                        ? '/intro'
+                        : ''
+                    }`}
                   >
                     <a className="btn btn-white mt-2 mx-1">
                       {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}

@@ -28,11 +28,6 @@ function IntroStep({ title, markdown, nextLink }) {
         )
       })
     }
-
-    if (viewedSteps.find((el) => JSON.stringify(el) === JSON.stringify(router.query))) {
-      router.push(nextLink)
-      return
-    }
     localStorage.setItem(
       'ViewedIntroSteps',
       JSON.stringify([...viewedSteps, router.query])

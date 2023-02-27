@@ -10,12 +10,12 @@
     DROP TABLE IF EXISTS PUBLIC.project_coordinators;
     DROP TABLE IF EXISTS PUBLIC.personal_notes;
     DROP TABLE IF EXISTS PUBLIC.team_notes;
+    DROP TABLE IF EXISTS PUBLIC.dictionaries;
     DROP TABLE IF EXISTS PUBLIC.projects;
     DROP TABLE IF EXISTS PUBLIC.methods;
     DROP TABLE IF EXISTS PUBLIC.users;
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
-    DROP TABLE IF EXISTS PUBLIC.dictionaries;
     DROP TABLE IF EXISTS PUBLIC.logs;
 
 
@@ -1570,7 +1570,7 @@
     CREATE TABLE PUBLIC.logs (
       id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       created_at TIMESTAMP DEFAULT now(),
-      log jsonb,        
+      log jsonb
     );
     
     ALTER TABLE
