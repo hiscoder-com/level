@@ -20,7 +20,7 @@
 
 
 
-  -- EDN DROP TABLE
+  -- END DROP TABLE
 
   -- DROP TRIGGER
     DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
@@ -63,7 +63,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.go_to_next_step;
     DROP FUNCTION IF EXISTS PUBLIC.get_whole_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
-    DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;  
+    DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
     DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
@@ -71,9 +71,6 @@
     DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
     DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
-
-    
-
 
   -- END DROP FUNCTION
 
@@ -106,7 +103,7 @@
 -- END CREATE CUSTOM TYPE
 
 -- CREATE FUNCTION
-  -- функция возвращает твою максимальную роль на проекте
+  -- function returns your maximum role on the project
   CREATE FUNCTION PUBLIC.authorize(
       user_id uuid,
       project_id BIGINT
@@ -148,7 +145,7 @@
     END;
   $$;
 
-  -- чтобы юзер имел доступ к сайту надо чтобы стояли 2 чекбокса и он не был заблокирован
+  -- conditions for the user to have access to the site: 2 checkboxes and the user was not blocked
   CREATE FUNCTION PUBLIC.has_access() returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -168,7 +165,7 @@
     END;
   $$;
 
-  -- возвращает, на каком шаге сейчас юзер в конкретном проекте. Не знаю что будет, ели запустить сразу две главы в одном проекте
+  -- returns which step the user is currently at in a particular project
   CREATE FUNCTION PUBLIC.get_current_steps(project_id BIGINT) returns TABLE(title text, project text, book PUBLIC.book_code, chapter INT2, step INT2, started_at TIMESTAMP)
     LANGUAGE plpgsql security definer AS $$
 
@@ -194,14 +191,14 @@
     END;
   $$;
 
-  -- получить все стихи переводчика
+  -- returns all the translator's verses
   CREATE FUNCTION PUBLIC.get_verses(project_id BIGINT, chapter INT2, book PUBLIC.book_code) returns TABLE(verse_id BIGINT, num INT2, verse text)
     LANGUAGE plpgsql security definer AS $$
     DECLARE
       verses_list RECORD;
       cur_chapter_id BIGINT;
     BEGIN
-      -- должен быть на проекте
+      -- user must be assigned to this project
       IF authorize(auth.uid(), get_verses.project_id) IN ('user') THEN
         RETURN;
       END IF;
@@ -210,12 +207,12 @@
       FROM PUBLIC.chapters
       WHERE chapters.num = get_verses.chapter AND chapters.project_id = get_verses.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_verses.book AND books.project_id = get_verses.project_id);
 
-      -- узнать id главы
+      -- find out the chapter_id
       IF cur_chapter_id IS NULL THEN
         RETURN;
       END IF;
 
-      -- вернуть айди стиха, номер и текст для определенного переводчика и из определенной главы
+      -- returns the verse id, number and text for a specific translator and from a specific chapter
       return query SELECT verses.id as verse_id, verses.num, verses.text as verse
       FROM public.verses
       WHERE verses.project_translator_id = (SELECT id
@@ -229,7 +226,7 @@
     END;
   $$;
 
-  -- получить все стихи главы
+  -- get all the verses of the chapter
   CREATE FUNCTION PUBLIC.get_whole_chapter(project_code text, chapter_num INT2, book_code PUBLIC.book_code) returns TABLE(verse_id BIGINT, num INT2, verse text, translator text)
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -242,12 +239,12 @@
       FROM PUBLIC.projects
       WHERE projects.code = get_whole_chapter.project_code;
 
-      -- узнать id проекта
+      -- find out the project_id
       IF cur_project_id IS NULL THEN
         RETURN;
       END IF;
 
-      -- должен быть на проекте
+      -- user must be assigned to this project
       IF authorize(auth.uid(), cur_project_id) IN ('user') THEN
         RETURN;
       END IF;
@@ -256,12 +253,12 @@
       FROM PUBLIC.chapters
       WHERE chapters.num = get_whole_chapter.chapter_num AND chapters.project_id = cur_project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_whole_chapter.book_code AND books.project_id = cur_project_id);
 
-      -- узнать id главы
+      -- find out the chapter id
       IF cur_chapter_id IS NULL THEN
         RETURN;
       END IF;
 
-      -- вернуть айди стиха, номер и текст из определенной главы
+      -- return the verse id, number, and text from a specific chapter
       return query SELECT verses.id as verse_id, verses.num, verses.text as verse, users.login as translator
       FROM public.verses LEFT OUTER JOIN public.project_translators ON (verses.project_translator_id = project_translators.id) LEFT OUTER JOIN public.users ON (project_translators.user_id = users.id)
       WHERE verses.project_id = cur_project_id
@@ -271,7 +268,7 @@
     END;
   $$;
 
-  -- установить переводчика модератором. Проверить что такой есть, что устанавливает админ или координатор. Иначе вернуть FALSE. Условие что только один модератор на проект мы решили делать на уровне интерфейса а не базы. Оставить возможность чтобы модераторов было больше 1.
+  -- install a translator as a moderator. Check that there is such a thing, which is set by the admin or coordinator. Otherwise, return FALSE. The condition that we decided to do only one moderator per project at the interface level and not the database. Leave the possibility that there are more than 1 moderators.
   CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -291,6 +288,7 @@
     END;
   $$;
 
+  -- cancel the appointment of a specific moderator
   CREATE FUNCTION PUBLIC.remove_moderator(user_id uuid, project_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -310,7 +308,7 @@
     END;
   $$;
 
-  -- Распределение стихов среди переводчиков
+  -- distribution of verses among translators
   CREATE FUNCTION PUBLIC.divide_verses(divider VARCHAR, project_id BIGINT) RETURNS BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -329,6 +327,12 @@
 
     END;
   $$;
+
+  -- TODO 
+  -- 1.перевести все комментарии на англ. язык
+  -- 2.проверить какие функции используются в продакшене
+  -- 3. DEPRECATED очистить
+  -- 4. Проверить форматирование всего файла (отступы, пробелы, название методов с большой буквы, пустые строки и т.д.)
 
   -- DEPRECATED - сейчас используем функцию change_start_chapter
   -- Устанавливает дату начала перевода главы
@@ -786,7 +790,7 @@
   $$;
 
   --создание нового брифа для проекта
-  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT) returns BOOLEAN
+  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) returns BOOLEAN
       LANGUAGE plpgsql security definer AS $$
       DECLARE 
         brief_JSON json;
@@ -797,7 +801,7 @@
         SELECT brief FROM PUBLIC.methods 
           JOIN PUBLIC.projects ON (projects.method = methods.title) 
           WHERE projects.id = project_id into brief_JSON;
-          INSERT INTO PUBLIC.briefs (project_id, data_collection) VALUES (project_id, brief_JSON);    
+          INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);    
         RETURN true;
       END;
   $$;
@@ -1534,8 +1538,8 @@
       title text DEFAULT NULL,
       data json DEFAULT NULL,
       created_at TIMESTAMP DEFAULT now(),
-      changed_at TIMESTAMP DEFAULT now(),  
-      UNIQUE (project_id, title)   
+      changed_at TIMESTAMP DEFAULT now(),
+      UNIQUE (project_id, title) 
     );
     ALTER TABLE
       PUBLIC.dictionaries enable ROW LEVEL security;
@@ -1574,11 +1578,11 @@
     CREATE TABLE PUBLIC.logs (
       id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       created_at TIMESTAMP DEFAULT now(),
-      log jsonb,        
+      log jsonb
     );
     
     ALTER TABLE
-      PUBLIC.logs enable ROW LEVEL security;  
+      PUBLIC.logs enable ROW LEVEL security;
   -- END TABLE
 
   -- RLS
@@ -1650,13 +1654,14 @@ CREATE publication supabase_realtime;
 COMMIT;
 
 -- add tables to the publication
-ALTER publication supabase_realtime
-ADD
-  TABLE PUBLIC.verses;
+  ALTER publication supabase_realtime
+    ADD TABLE PUBLIC.verses;
 
-ALTER publication supabase_realtime
-ADD
-  TABLE PUBLIC.users;
+  ALTER publication supabase_realtime
+    ADD TABLE PUBLIC.users;
+
+  ALTER publication supabase_realtime
+    ADD TABLE PUBLIC.briefs;
 
 -- DUMMY DATA
   -- USERS

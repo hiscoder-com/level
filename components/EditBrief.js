@@ -1,39 +1,40 @@
 import { useEffect, useState } from 'react'
-import TextareaAutosize from 'react-textarea-autosize'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
+import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
-import { useSetRecoilState } from 'recoil'
 import axios from 'axios'
 
-import { useBrief, useProject } from 'utils/hooks'
+import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { briefState } from './Panel/state/atoms'
 import { supabase } from 'utils/supabaseClient'
+import BriefResume from './BriefResume'
+import BriefAnswer from './BriefAnswer'
 
 function EditBrief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
-  const [level, setLevel] = useState('user')
-  const highLevelAccess = ['admin', 'coordinator'].includes(level)
+  const [highLevelAccess, setHighLevelAccess] = useState(false)
 
   const {
     query: { code },
   } = useRouter()
   const { user } = useCurrentUser()
   const [project] = useProject({ token: user?.access_token, code })
-  const setIsBriefFull = useSetRecoilState(briefState)
 
   const { t } = useTranslation(['common', 'project-edit'])
 
-  const [brief, { mutate }] = useBrief({
+  const [brief, { mutate }] = useGetBrief({
     token: user?.access_token,
     project_id: project?.id,
   })
 
   useEffect(() => {
-    setBriefDataCollection(brief?.data_collection)
-  }, [brief])
+    if (!briefDataCollection && brief?.data_collection) {
+      setBriefDataCollection(brief.data_collection)
+    }
+  }, [brief, briefDataCollection])
 
   const saveToDatabase = () => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -41,17 +42,24 @@ function EditBrief() {
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .then(() => {
+        mutate()
+      })
+      .catch((err) => {
+        toast.error(t('project-edit:saveFailed'))
+        console.log(err)
+      })
   }
 
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
-        user_id: user.id,
+        user_id: user?.id,
         project_id: project.id,
       })
-      setLevel(level.data)
+      if (level?.data) {
+        setHighLevelAccess(['admin', 'coordinator'].includes(level.data))
+      }
     }
     if (user?.id && project?.id) {
       getLevel()
@@ -59,11 +67,42 @@ function EditBrief() {
   }, [user?.id, project?.id])
 
   useEffect(() => {
-    if (brief?.data_collection) {
-      setIsBriefFull(brief?.data_collection?.reduce((final, el) => final + el.resume, ''))
+    const briefUpdates = supabase
+      .from('briefs')
+      .on('UPDATE', (payload) => {
+        setBriefDataCollection(payload.new.data_collection)
+      })
+      .subscribe()
+
+    return () => {
+      briefUpdates.unsubscribe()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [brief])
+  }, [])
+
+  const updateBrief = (text, index) => {
+    setBriefDataCollection((prev) => {
+      prev[index] = {
+        ...prev[index],
+        resume: text,
+      }
+      return prev
+    })
+  }
+
+  const updateObjQA = (text, briefItem, blockIndex, objQA, index) => {
+    setBriefDataCollection((prev) => {
+      const updateBriefItemBlock = briefItem.block
+      updateBriefItemBlock[blockIndex] = {
+        ...objQA,
+        answer: text,
+      }
+      prev[index] = {
+        ...prev[index],
+        block: updateBriefItemBlock,
+      }
+      return prev
+    })
+  }
 
   return (
     <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
@@ -136,34 +175,19 @@ function EditBrief() {
                       >
                         <p className="font-bold">{questionTitle}</p>
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                          const answer = (
-                            <TextareaAutosize
-                              onBlur={() => {
-                                setTimeout(() => saveToDatabase(), 2000)
-                              }}
-                              readOnly={highLevelAccess ? false : true}
-                              defaultValue={questionAndAnswerPair.answer}
-                              onChange={(e) => {
-                                setBriefDataCollection((prev) => {
-                                  const newBriefItemBlock = briefItem.block
-                                  newBriefItemBlock[blockIndex] = {
-                                    ...questionAndAnswerPair,
-                                    answer: e.target.value.trim(),
-                                  }
-                                  prev[index] = {
-                                    ...prev[index],
-                                    block: newBriefItemBlock,
-                                  }
-                                  return prev
-                                })
-                              }}
-                              className="outline-none w-full resize-none"
-                            />
-                          )
-
                           return (
                             <div className="flex flex-nowrap leading-6" key={blockIndex}>
-                              -&nbsp; {answer}
+                              -&nbsp;
+                              <BriefAnswer
+                                highLevelAccess={highLevelAccess}
+                                saveToDatabase={saveToDatabase}
+                                objQA={questionAndAnswerPair}
+                                updateObjQA={updateObjQA}
+                                blockIndex={blockIndex}
+                                briefItem={briefItem}
+                                index={index}
+                                t={t}
+                              />
                             </div>
                           )
                         })}
@@ -180,29 +204,17 @@ function EditBrief() {
                 <div className="h-3 rounded-t-lg bg-white"></div>
                 <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
                   {briefDataCollection.map((briefItem, index) => {
-                    const resume = (
-                      <TextareaAutosize
-                        onBlur={() => {
-                          setTimeout(() => saveToDatabase(), 2000)
-                        }}
-                        readOnly={highLevelAccess ? false : true}
-                        defaultValue={briefItem.resume}
-                        onChange={(e) => {
-                          setBriefDataCollection((prev) => {
-                            prev[index] = {
-                              ...prev[index],
-                              resume: e.target.value.trim(),
-                            }
-                            return prev
-                          })
-                        }}
-                        className="outline-none w-full resize-none"
-                      />
-                    )
-
                     return (
                       <div className="flex flex-nowrap leading-6 py-2" key={index}>
-                        -&nbsp; {resume}
+                        -&nbsp;
+                        <BriefResume
+                          highLevelAccess={highLevelAccess}
+                          saveToDatabase={saveToDatabase}
+                          objResume={briefItem.resume}
+                          updateBrief={updateBrief}
+                          index={index}
+                          t={t}
+                        />
                       </div>
                     )
                   })}
@@ -213,9 +225,23 @@ function EditBrief() {
           )}
           {highLevelAccess && (
             <div className="flex justify-center">
-              <button className="btn-cyan" onClick={saveToDatabase}>
+              <button
+                className="btn-cyan"
+                onClick={() => {
+                  saveToDatabase()
+                  toast.success(t('project-edit:successfulSave'))
+                }}
+              >
                 {t('Save')}
               </button>
+              <Toaster
+                toastOptions={{
+                  style: {
+                    marginTop: '-6px',
+                    color: '#6b7280',
+                  },
+                }}
+              />
             </div>
           )}
         </div>

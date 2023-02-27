@@ -1,24 +1,23 @@
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useState } from 'react'
+import { useForm, useWatch } from 'react-hook-form'
 
 import { useRouter } from 'next/router'
-
-import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
-import { useForm, useWatch } from 'react-hook-form'
+import axios from 'axios'
 
 import CommitsList from './CommitsList'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import { Switch } from '@headlessui/react'
 
 // TODO не работает если создавать ОБС
 function ProjectCreate() {
   const router = useRouter()
-  const { t } = useTranslation(['projects'])
+  const { t } = useTranslation(['projects,common'])
   const [customSteps, setCustomSteps] = useState('')
   const [customBriefs, setCustomBriefs] = useState('')
+  const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [customResources, setCustomResources] = useState('')
   const [method, setMethod] = useState()
   const [resourcesUrl, setResourcesUrl] = useState()
@@ -71,6 +70,7 @@ function ProjectCreate() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {
+        isBriefEnable,
         customBriefs,
         title,
         language_id: languageId,
@@ -178,6 +178,24 @@ function ProjectCreate() {
           onChange={(e) => setCustomBriefs(e.target.value)}
           value={customBriefs}
         />
+        <div>
+          <span className="mr-3">
+            {t(`common:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
+          </span>
+          <Switch
+            checked={isBriefEnable}
+            onChange={() => setIsBriefEnable((prev) => !prev)}
+            className={`${
+              isBriefEnable ? 'bg-blue-600' : 'bg-gray-300'
+            } relative inline-flex h-6 w-11 items-center rounded-full`}
+          >
+            <span
+              className={`${
+                isBriefEnable ? 'translate-x-6' : 'translate-x-1'
+              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+            />
+          </Switch>
+        </div>
         <br />
         <p>
           Тут самое сложное, так как это будет настройка шагов метода. Нужно как-то

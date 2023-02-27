@@ -3,23 +3,25 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import { useRecoilValue } from 'recoil'
 
-import { briefState } from 'components/Panel/state/atoms'
 import DownloadBlock from './DownloadBlock'
 import Modal from 'components/Modal'
 
 import { readableDate, compileChapter } from 'utils/helper'
 import { supabase } from 'utils/supabaseClient'
+import { useBriefState } from 'utils/hooks'
 
-function ChapterList({ selectedBook, project, highLevelAccess }) {
+function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   const [openModal, setOpenModal] = useState(false)
 
   const [selectedChapter, setSelectedChapter] = useState(null)
   const [createdChapters, setCreatedChapters] = useState([])
   const [currentSteps, setCurrentSteps] = useState(null)
-  const isBriefFull = useRecoilValue(briefState)
   const [chapters, setChapters] = useState([])
+  const isBriefFull = useBriefState({
+    token,
+    project_id: project?.id,
+  })
 
   const { t } = useTranslation(['common', 'books'])
 
@@ -83,10 +85,10 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
     if (step) {
       return (
         <>
-          {!isBriefFull ? (
+          {isBriefFull === '' ? (
             <Link href={`/projects/${project?.code}/edit/brief`}>
               <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2 mx-1">
-                {t('FillOutTheBrief')}
+                {t(highLevelAccess ? 'EditBrief' : 'OpenBrief')}
               </a>
             </Link>
           ) : (

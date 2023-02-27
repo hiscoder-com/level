@@ -8,7 +8,16 @@ export default async function languageProjectsHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   const {
-    body: { language_id, method_id, code, title, resources, steps, customBriefs },
+    body: {
+      language_id,
+      method_id,
+      code,
+      title,
+      resources,
+      steps,
+      customBriefs,
+      isBriefEnable,
+    },
     method,
   } = req
   // TODO не работает если создавать ОБС
@@ -64,6 +73,7 @@ export default async function languageProjectsHandler(req, res) {
 
         const { error: errorBrief } = await supabase.rpc('create_brief', {
           project_id: data[0].id,
+          is_enable: isBriefEnable,
         })
 
         if (errorBrief) throw errorBrief
