@@ -18,6 +18,7 @@ export default async function notesDeleteHandler(req, res) {
           .from('team_notes')
           .select('*')
           .eq('project_id', id)
+          .is('deleted_at', null)
           .order('changed_at', { ascending: false })
 
         if (error) throw error
@@ -30,7 +31,10 @@ export default async function notesDeleteHandler(req, res) {
 
     case 'DELETE':
       try {
-        const { data, error } = await supabase.from('team_notes').delete().match({ id })
+        const { data, error } = await supabase
+          .from('team_notes')
+          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
+          .match({ id })
 
         if (error) throw error
         res.status(200).json(data)

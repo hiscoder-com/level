@@ -15,7 +15,7 @@ export default async function notesDeleteHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('personal_notes')
-          .delete()
+          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
           .match({ id })
         if (error) throw error
         res.status(200).json(data)

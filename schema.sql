@@ -1443,9 +1443,10 @@
         CASCADE NOT NULL,
       title text DEFAULT NULL,
       data json DEFAULT NULL,
-      created_at TIMESTAMP DEFAULT now(),
-      changed_at TIMESTAMP DEFAULT now(),
-      is_folder BOOLEAN DEFAULT FALSE,
+      created_at timestamp DEFAULT now(),
+      changed_at timestamp DEFAULT now(),
+      deleted_at timestamp DEFAULT NULL,
+      is_folder boolean DEFAULT FALSE,
       parent_id text DEFAULT NULL
     );
     ALTER TABLE
@@ -1491,9 +1492,10 @@
         CASCADE NOT NULL,
       title text DEFAULT NULL,
       data json DEFAULT NULL,
-      created_at TIMESTAMP DEFAULT now(),
-      changed_at TIMESTAMP DEFAULT now(),
-      is_folder BOOLEAN DEFAULT FALSE,
+      created_at timestamp DEFAULT now(),
+      changed_at timestamp DEFAULT now(),
+      deleted_at timestamp DEFAULT NULL,
+      is_folder boolean DEFAULT FALSE,
       parent_id text DEFAULT NULL
     );
     ALTER TABLE

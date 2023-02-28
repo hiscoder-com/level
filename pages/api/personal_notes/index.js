@@ -14,6 +14,7 @@ export default async function notesHandler(req, res) {
         const { data, error } = await supabase
           .from('personal_notes')
           .select('*')
+          .is('deleted_at', null)
           .order('changed_at', { ascending: false })
         if (error) throw error
         res.status(200).json(data)

@@ -1577,3 +1577,7 @@
 --28.02.23
   ALTER TABLE PUBLIC.dictionaries
         ADD deleted_at timestamp DEFAULT NULL;
+  ALTER TABLE PUBLIC.personal_notes
+        ADD deleted_at timestamp DEFAULT NULL;
+  ALTER TABLE PUBLIC.team_notes
+        ADD deleted_at timestamp DEFAULT NULL;
