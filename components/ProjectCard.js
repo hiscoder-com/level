@@ -16,6 +16,7 @@ function ProjectCard({ project, token, userId }) {
     token,
     project_id: project?.id,
   })
+
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
