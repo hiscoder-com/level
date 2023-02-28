@@ -1573,3 +1573,7 @@
   ALTER publication supabase_realtime 
     ADD
       TABLE PUBLIC.briefs;
+
+--28.02.23
+  ALTER TABLE PUBLIC.dictionaries
+        ADD deleted_at timestamp DEFAULT NULL;

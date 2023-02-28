@@ -65,21 +65,28 @@ function Dictionary() {
     setSearchQuery('')
     getWords()
   }
+
   const getWords = async (searchQuery = '', count = 0) => {
     const { from, to } = getPagination(count, CountWordsOnPage)
-
-    const { data, count: wordsCount } = await supabase
-      .from('dictionaries')
-      .select('id,project_id,title,data', { count: 'exact' })
-      .eq('project_id', project?.id)
-      .ilike('title', `${searchQuery}%`)
-      .order('title', { ascending: true })
-      .range(from, to)
-
-    if (data?.length) {
-      setWords({ data, count: wordsCount })
+    if (project?.id) {
+      const { data, count: wordsCount } = await supabase
+        .from('dictionaries')
+        .select('id,project_id,title,data,deleted_at', { count: 'exact' })
+        .eq('project_id', project?.id)
+        .is('deleted_at', null)
+        .ilike('title', `${searchQuery}%`)
+        .order('title', { ascending: true })
+        .range(from, to)
+      if (data?.length) {
+        setWords({ data, count: wordsCount })
+      }
     }
   }
+
+  useEffect(() => {
+    getWords()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.id])
 
   useEffect(() => {
     const timer = setTimeout(() => {

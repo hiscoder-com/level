@@ -1537,8 +1537,9 @@
         CASCADE NOT NULL,
       title text DEFAULT NULL,
       data json DEFAULT NULL,
-      created_at TIMESTAMP DEFAULT now(),
-      changed_at TIMESTAMP DEFAULT now(),
+      created_at timestamp DEFAULT now(),
+      changed_at timestamp DEFAULT now(),
+      deleted_at timestamp DEFAULT NULL,
       UNIQUE (project_id, title) 
     );
     ALTER TABLE

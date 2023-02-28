@@ -14,8 +14,10 @@ export default async function notesDeleteHandler(req, res) {
   switch (method) {
     case 'DELETE':
       try {
-        const { data, error } = await supabase.from('dictionaries').delete().match({ id })
-
+        const { data, error } = await supabase
+          .from('dictionaries')
+          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
+          .match({ id })
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {
