@@ -2,8 +2,6 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import SideBarLink from 'components/SideBarLink'
-
 import Close from 'public/close.svg'
 import SwitchLocalization from './SwitchLocalization'
 

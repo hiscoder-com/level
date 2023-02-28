@@ -203,7 +203,7 @@ export function useTeamNotes({ token, project_id }) {
   return [notes, { mutate, loading, error }]
 }
 
-export function useBrief({ token, project_id }) {
+export function useGetBrief({ token, project_id }) {
   const {
     data: brief,
     mutate,
@@ -212,6 +212,7 @@ export function useBrief({ token, project_id }) {
   const loading = !brief && !error
   return [brief, { mutate, loading, error }]
 }
+
 export function useScroll({ toolName }) {
   const [scrollIds, setScrollIds] = useState(() => {
     return checkLSVal('scrollIds', {}, 'object')
@@ -225,4 +226,18 @@ export function useScroll({ toolName }) {
     setScrollIds((prev) => ({ ...prev, [toolName]: 'id' + id }))
   }
   return { scrollId: scrollIds[toolName], handleSave }
+}
+
+export function useBriefState({ token, project_id }) {
+  const [briefResume, setBriefResume] = useState()
+  const [brief] = useGetBrief({
+    token,
+    project_id,
+  })
+  useEffect(() => {
+    if (brief?.is_enable) {
+      setBriefResume(brief.data_collection?.reduce((final, el) => final + el.resume, ''))
+    }
+  }, [brief])
+  return { briefResume, isBrief: brief?.is_enable }
 }
