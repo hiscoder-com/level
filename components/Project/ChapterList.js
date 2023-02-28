@@ -18,13 +18,12 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   const [createdChapters, setCreatedChapters] = useState([])
   const [currentSteps, setCurrentSteps] = useState(null)
   const [chapters, setChapters] = useState([])
-  const isBriefFull = useBriefState({
+  const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
   })
 
   const { t } = useTranslation(['common', 'books'])
-
   const {
     query: { book, code },
     push,
@@ -85,7 +84,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
     if (step) {
       return (
         <>
-          {isBriefFull === '' ? (
+          {!(!isBrief || briefResume) ? (
             <Link href={`/projects/${project?.code}/edit/brief`}>
               <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2 mx-1">
                 {t(highLevelAccess ? 'EditBrief' : 'OpenBrief')}

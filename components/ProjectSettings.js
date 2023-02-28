@@ -135,7 +135,7 @@ function ProjectSettings() {
         <h1 className="h2 mb-3">{t('project-edit:BriefSwitch')}</h1>
         <div className="flex">
           <span className="mr-3">
-            {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+            {t(`common:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
           </span>
           <Switch
             checked={brief?.is_enable}
