@@ -82,7 +82,7 @@ function PersonalNotes() {
   const removeAllNote = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/personal_notes`)
+      .delete(`/api/personal_notes`, { data: { user_id: user?.id } })
       .then(() => mutate())
       .catch((err) => console.log(err))
   }
