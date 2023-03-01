@@ -33,12 +33,7 @@ export default async function notesHandler(req, res) {
             user_id,
             title: 'new note',
             data: {
-              blocks: [
-                {
-                  type: 'paragraph',
-                  data: {},
-                },
-              ],
+              blocks: [],
               version: '2.8.1',
             },
           },

@@ -9,12 +9,15 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from 'lib/UserContext'
+
+import Modal from 'components/Modal'
+
 import { useTeamNotes, useProject } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import Modal from 'components/Modal'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -42,7 +45,7 @@ function TeamNotes() {
     query: { project: code },
   } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
-  const [notes, { loading, error, mutate }] = useTeamNotes({
+  const [notes, { mutate }] = useTeamNotes({
     token: user?.access_token,
     project_id: project?.id,
   })
@@ -51,7 +54,10 @@ function TeamNotes() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/team_notes/${activeNote?.id}`, activeNote)
-      .then(() => mutate())
+      .then(() => {
+        saveCacheNote('team-notes', activeNote, user)
+        mutate()
+      })
       .catch((err) => console.log(err))
   }
   useEffect(() => {
@@ -86,7 +92,10 @@ function TeamNotes() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/team_notes/${id}`)
-      .then(() => mutate())
+      .then(() => {
+        removeCacheNote('personal_notes', id)
+        mutate()
+      })
       .catch((err) => console.log(err))
   }
   useEffect(() => {

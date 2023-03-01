@@ -13,11 +13,13 @@ import { useProject } from 'utils/hooks'
 
 import { supabase } from 'utils/supabaseClient'
 
+import Modal from 'components/Modal'
+
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import Modal from 'components/Modal'
 import LeftArrow from 'public/left-arrow.svg'
 import RightArrow from 'public/right-arrow.svg'
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -141,7 +143,7 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/dictionaries/${id}`)
-      .then()
+      .then(() => removeCacheNote('dictionary', id))
       .catch((err) => console.log(err))
       .finally(() => {
         getWords(searchQuery, currentPageWords)
@@ -154,7 +156,7 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
-      .then()
+      .then(() => saveCacheNote('dictionary', activeWord, user))
       .catch((err) => showError(err, activeWord?.title))
       .finally(() => {
         getWords(searchQuery, currentPageWords)
