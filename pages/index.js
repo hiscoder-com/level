@@ -12,6 +12,7 @@ import SwitchLocalization from 'components/SwitchLocalization'
 
 import VcanaLogo from 'public/vcana-logo.svg'
 import OmbLogo from 'public/omb-logo.svg'
+import Login from 'components/Login'
 
 export default function Home() {
   const { user } = useCurrentUser()
@@ -29,10 +30,18 @@ export default function Home() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+      <div className="flex flex-col items-center">
+        <VcanaLogo className="mb-10 max-w-xs sm:max-w-md w-28" />
+        <div className="bg-white h-[353px] w-[310px] max-w-xs mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
+          <Login />
+        </div>
+        <div className="text-[#909090] mb-4 text-center">Разработано:</div>
+        <OmbLogo />
+      </div>
       {/* <div className="absolute top-10 right-10">
         <SwitchLocalization />
-      </div> */}
-      {/* <div className="flex">
+      </div>
+      <div className="flex">
         <div className=" w-1/2 flex flex-col items-center justify-center">
           <div className="w-96 flex flex-col items-center">
             <VcanaLogo className="mb-9 max-w-xs sm:max-w-md w-40" />

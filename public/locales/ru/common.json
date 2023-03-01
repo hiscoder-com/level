@@ -36,6 +36,7 @@
   "EN": "EN",
   "FilterRepeatedWords": "Фильтр повторяющихся слов",
   "Finished": "Закончен",
+  "ForRegistrations": "Для регистрации",
   "front": "Введение в книгу",
   "Fulfilled": "Выполнили",
   "Goal": "О шаге",
@@ -94,5 +95,6 @@
   "WordExist": "Такое слово уже существует:",
   "Words": "Слова",
   "WrongResource": "Ошибка загрузки ресурса",
+  "WriteAdministrator": "напишите администратору.",
   "Yes": "Да"
 }

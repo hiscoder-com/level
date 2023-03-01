@@ -8,7 +8,7 @@ function SwitchLocalization() {
   const { t } = useTranslation('common')
 
   return (
-    <div className="font-bold text-xl lg:text-base">
+    <div className="font-bold text-xs lg:text-base">
       <Link href={{ pathname, query }} as={asPath} locale={'ru'}>
         <a className={`text-teal-500 p-2 ${locale === 'ru' ? 'opacity-50' : ''}`}>
           {t('RU')}

@@ -61,6 +61,14 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	active:bg-cyan-800 active:border-cyan-800
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300	fill-white
 }
+
+.btn-blue-base{
+	@apply text-white bg-blue-600 border-blue-600
+	hover:bg-blue-700 hover:border-blue-700
+	active:bg-blue-800 active:border-blue-800
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300	fill-white
+}
+
 .btn-red-base{
 	@apply text-white bg-red-500 border-red-600
 	hover:bg-red-700 hover:border-red-700
@@ -81,6 +89,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .btn-cyan{
 	@apply btn btn-cyan-base
+}
+
+.btn-blue{
+	@apply btn btn-blue-base
 }
 
 .btn-red{
@@ -213,4 +225,12 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	.adaptive-card {
 		height: calc(100vh - 230px);
 	}
+}
+
+.label {
+	@apply peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6
+}
+
+.input-label {
+	@apply block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:text-white dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600
 }
