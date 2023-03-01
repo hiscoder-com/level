@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil'
 
 import Modal from './Modal'
 
-import { useBrief } from 'utils/hooks'
+import { useGetBrief } from 'utils/hooks'
 import { projectIdState } from './Panel/state/atoms'
 
 import Tools from 'public/tools.svg'
@@ -147,10 +147,14 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
 
   const projectId = useRecoilValue(projectIdState)
 
-  const [brief] = useBrief({
+  const [brief] = useGetBrief({
     token: user?.access_token,
     project_id: projectId,
   })
+
+  const briefResume = brief?.data_collection
+    ?.map((obj) => obj.resume)
+    .filter((obj) => obj !== '')
 
   return (
     <>
@@ -160,7 +164,11 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
         title={t('TranslationGoal')}
       >
         <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
-          <p className="text-sm text-gray-500 whitespace-pre-line">{brief?.text}</p>
+          {briefResume?.map((resumeItem, index) => (
+            <li key={index} className="text-sm text-gray-500">
+              {resumeItem}
+            </li>
+          ))}
         </div>
         <div className="text-center">
           <button className="btn-cyan" onClick={closeModal}>

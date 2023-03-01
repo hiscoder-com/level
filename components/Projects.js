@@ -23,11 +23,18 @@ export default function Projects() {
       <div className="grid grid-cols-1 gap-7 my-3 sm:grid-cols-1 md:grid-cols-2 md:my-5 xl:grid-cols-3">
         {projects &&
           projects.map((project) => {
-            return <ProjectCard key={project.id} project={project} />
+            return (
+              <ProjectCard
+                key={project.id}
+                project={project}
+                token={user?.access_token}
+                userId={user?.id}
+              />
+            )
           })}
       </div>
       {user?.is_admin && (
-        <div className="mt-3">
+        <div className="mt-3 pb-5">
           <Link href={'/projects/create'}>
             <a className="btn-cyan">{t('AddNew')}</a>
           </Link>

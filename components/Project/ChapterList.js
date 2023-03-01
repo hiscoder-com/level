@@ -2,28 +2,33 @@ import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-
 import { useTranslation } from 'next-i18next'
 
-import Modal from 'components/Modal'
 import DownloadBlock from './DownloadBlock'
+import Modal from 'components/Modal'
 
-import { supabase } from 'utils/supabaseClient'
 import { readableDate, compileChapter } from 'utils/helper'
+import { supabase } from 'utils/supabaseClient'
+import { useBriefState } from 'utils/hooks'
 
-function ChapterList({ selectedBook, project, highLevelAccess }) {
+function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   const [openModal, setOpenModal] = useState(false)
+
+  const [selectedChapter, setSelectedChapter] = useState(null)
+  const [createdChapters, setCreatedChapters] = useState([])
+  const [currentSteps, setCurrentSteps] = useState(null)
+  const [chapters, setChapters] = useState([])
+  const { briefResume, isBrief } = useBriefState({
+    token,
+    project_id: project?.id,
+  })
+
+  const { t } = useTranslation(['common', 'books'])
   const {
     query: { book, code },
     push,
     locale,
   } = useRouter()
-  const [selectedChapter, setSelectedChapter] = useState(null)
-  const [chapters, setChapters] = useState([])
-  const [createdChapters, setCreatedChapters] = useState([])
-  const [currentSteps, setCurrentSteps] = useState(null)
-
-  const { t } = useTranslation(['common', 'books'])
 
   const handleCreate = async (chapter_id, num) => {
     const res = await supabase.rpc('create_verses', { chapter_id })
@@ -78,14 +83,24 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
       ?.find((step) => step.chapter === chapter.num)
     if (step) {
       return (
-        <Link
-          key={index}
-          href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
-        >
-          <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2">
-            {step.title}
-          </a>
-        </Link>
+        <>
+          {!(!isBrief || briefResume) ? (
+            <Link href={`/projects/${project?.code}/edit/brief`}>
+              <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2 mx-1">
+                {t(highLevelAccess ? 'EditBrief' : 'OpenBrief')}
+              </a>
+            </Link>
+          ) : (
+            <Link
+              key={index}
+              href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+            >
+              <a onClick={(e) => e.stopPropagation()} className="btn btn-white mt-2">
+                {step.title}
+              </a>
+            </Link>
+          )}
+        </>
       )
     }
   }
