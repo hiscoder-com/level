@@ -30,30 +30,30 @@ export default function Home() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-col items-center">
+      <div className="flex flex-col items-center sm:hidden">
         <VcanaLogo className="mb-10 max-w-xs sm:max-w-md w-28" />
-        <div className="bg-white h-[353px] w-[310px] max-w-xs mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
+        <div className="bg-white w-screen max-w-xs mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
           <Login />
         </div>
         <div className="text-[#909090] mb-4 text-center">Разработано:</div>
         <OmbLogo />
       </div>
-      {/* <div className="absolute top-10 right-10">
-        <SwitchLocalization />
-      </div>
-      <div className="flex">
-        <div className=" w-1/2 flex flex-col items-center justify-center">
+
+      <div className="sm:flex hidden">
+        <div className="w-1/2 flex flex-col items-center justify-center">
           <div className="w-96 flex flex-col items-center">
-            <VcanaLogo className="mb-9 max-w-xs sm:max-w-md w-40" />
-            <h2 className="h4 mb-24 text-center">{`Платформа для переводчиков Библии по системе “CANA”`}</h2>
+            <VcanaLogo className="mb-9 max-w-xs w-28" />
+            <h1 className="px-10 mb-10 text-base text-center">{`Платформа для переводчиков Библии по системе “CANA”`}</h1>
             <div className="text-[#909090] mb-4">Разработано:</div>
             <OmbLogo />
           </div>
         </div>
-        <div className="w-[950px] h-[900px] rounded-l-[128px] bg-[url('../public/login_image.png')] bg-no-repeat right-0 flex justify-center items-center">
-          <div className="w-[560px] h-[468px] bg-white"></div>
+        <div className="w-1/2 rounded-l-lg lg:rounded-l-[48px] bg-[url('../public/login_image.png')] bg-cover bg-no-repeat right-0 flex justify-center items-center py-11 px-5 lg:py-32 lg:px-14">
+          <div className="bg-white w-screen max-w-xs lg:max-w-md rounded-lg shadow-lg shadow-[#0000001A]">
+            <Login />
+          </div>
         </div>
-      </div> */}
+      </div>
     </main>
   )
 }

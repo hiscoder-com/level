@@ -59,15 +59,20 @@ function Login() {
     alert('Вы написали админу')
   }
   return (
-    <div className="flex flex-col p-5">
+    <div className="flex flex-col p-5 lg:py-10">
       <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">Войти</h1>
+        <h1 className="text-2xl lg:text-3xl font-bold">Войти</h1>
         <SwitchLocalization />
       </div>
-      <p className="text-sm">{t('common:ForRegistrations')}</p>
-      <Link href={'/'}>
-        <a className="mb-6 text-sm text-blue-450">{t('common:WriteAdministrator')}</a>
-      </Link>
+      <div className="flex flex-col lg:flex-row">
+        <p className="text-sm lg:mr-1">{t('common:ForRegistrations')}</p>
+        <Link href={'/'}>
+          <a className="mb-6 lg:mb-14 text-sm text-blue-450">
+            {t('common:WriteAdministrator')}
+          </a>
+        </Link>
+      </div>
+
       <form className="space-y-3">
         <div className="relative z-0 w-full mb-6 group">
           <input
@@ -91,7 +96,7 @@ function Login() {
             ref={passwordRef}
             name="floating_password"
             id="floating_password"
-            className={`input-label peer ${isPasswordError && 'border-red-700'}`}
+            className={`input-label peer lg:mb-10 ${isPasswordError && 'border-red-700'}`}
             type={showPassword ? 'text' : 'password'}
             value={password}
             placeholder=" "
@@ -127,19 +132,19 @@ function Login() {
             </>
           )}
         </div>
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center lg:flex-row lg:items-center lg:justify-around">
           <input
             type="submit"
             disabled={loading}
             onClick={handleLogin}
-            className="btn-blue w-40"
+            className="btn-blue w-1/2"
             value={t('common:LogIn')}
           />
-        </div>
-        <div className="flex justify-center">
-          <Link href={'/'}>
-            <a className="text-sm text-blue-450">{t('common:RestoreAccess')}</a>
-          </Link>
+          <div className="flex justify-center">
+            <Link href={'/'}>
+              <a className="text-sm text-blue-450">{t('common:RestoreAccess')}</a>
+            </Link>
+          </div>
         </div>
       </form>
     </div>
