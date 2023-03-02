@@ -59,9 +59,9 @@ function Login() {
     alert('Вы написали админу')
   }
   return (
-    <div className="flex flex-col p-5 lg:py-10">
+    <div className="flex flex-col p-5 xl:px-8 lg:py-10">
       <div className="flex justify-between mb-6">
-        <h1 className="text-2xl lg:text-3xl font-bold">Войти</h1>
+        <h1 className="text-2xl xl:text-4xl lg:text-3xl font-bold">Войти</h1>
         <SwitchLocalization />
       </div>
       <div className="flex flex-col lg:flex-row">
@@ -73,7 +73,7 @@ function Login() {
         </Link>
       </div>
 
-      <form className="space-y-3">
+      <form className="space-y-3 xl:space-y-10">
         <div className="relative z-0 w-full mb-6 group">
           <input
             ref={loginRef}
@@ -137,7 +137,7 @@ function Login() {
             type="submit"
             disabled={loading}
             onClick={handleLogin}
-            className="btn-blue w-1/2"
+            className="btn-blue lg:w-1/3 w-1/2"
             value={t('common:LogIn')}
           />
           <div className="flex justify-center">

@@ -41,15 +41,15 @@ export default function Home() {
 
       <div className="sm:flex hidden">
         <div className="w-1/2 flex flex-col items-center justify-center">
-          <div className="w-96 flex flex-col items-center">
-            <VcanaLogo className="mb-9 max-w-xs w-28" />
-            <h1 className="px-10 mb-10 text-base text-center">{`Платформа для переводчиков Библии по системе “CANA”`}</h1>
+          <div className="flex flex-col items-center px-10 lg:px-24 xl:px-40 2xl:px-72 text-base xl:text-lg">
+            <VcanaLogo className="mb-9 max-w-xs w-28 xl:w-40" />
+            <h1 className="mb-10 text-center">{`Платформа для переводчиков Библии по системе “CANA”`}</h1>
             <div className="text-[#909090] mb-4">Разработано:</div>
             <OmbLogo />
           </div>
         </div>
-        <div className="w-1/2 rounded-l-lg lg:rounded-l-[48px] bg-[url('../public/login_image.png')] bg-cover bg-no-repeat right-0 flex justify-center items-center py-11 px-5 lg:py-32 lg:px-14">
-          <div className="bg-white w-screen max-w-xs lg:max-w-md rounded-lg shadow-lg shadow-[#0000001A]">
+        <div className="w-1/2 rounded-l-lg lg:rounded-l-[48px] xl:rounded-l-[72px] bg-[url('../public/login_image.png')] bg-cover bg-no-repeat right-0 flex justify-center items-center py-11 px-5 lg:py-32 lg:px-14 xl:py-28">
+          <div className="bg-white w-screen max-w-xs lg:max-w-md xl:max-w-lg rounded-lg shadow-lg shadow-[#0000001A]">
             <Login />
           </div>
         </div>
