@@ -30,7 +30,7 @@ function ProjectCard({ project }) {
   }, [currentSteps])
 
   const localStorSteps = useMemo(
-    () => JSON.parse(localStorage.getItem('ViewedIntroSteps')),
+    () => JSON.parse(localStorage.getItem('viewedIntroSteps')),
     []
   )
   const searchLocalStorage = (step, localStorSteps) => {
@@ -63,7 +63,7 @@ function ProjectCard({ project }) {
         <Translators projectCode={project.code} size="25px" />
       </div>
       <div className="divide-y-2">
-        {Object.entries(chapters).map((chapter, i) => {
+        {Object.keys(chapters).map((chapter, i) => {
           return (
             <div key={i} className="mb-2">
               <div>{t(`books:${chapter[0]}`)}</div>

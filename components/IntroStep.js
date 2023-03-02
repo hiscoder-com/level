@@ -7,14 +7,13 @@ function IntroStep({ title, markdown, nextLink }) {
   const router = useRouter()
   const { t } = useTranslation(['common'])
   const saveStepLocalStorage = () => {
-    let viewedSteps = JSON.parse(localStorage.getItem('ViewedIntroSteps'))
+    let viewedSteps = JSON.parse(localStorage.getItem('viewedIntroSteps'))
 
     if (!viewedSteps) {
-      localStorage.setItem('ViewedIntroSteps', JSON.stringify([router.query]))
+      localStorage.setItem('viewedIntroSteps', JSON.stringify([router.query]))
       router.push(nextLink)
       return
-    }
-    if (viewedSteps) {
+    } else {
       viewedSteps = viewedSteps.filter((e) => {
         const { project, book, chapter, step } = router.query
         return (
@@ -29,7 +28,7 @@ function IntroStep({ title, markdown, nextLink }) {
       })
     }
     localStorage.setItem(
-      'ViewedIntroSteps',
+      'viewedIntroSteps',
       JSON.stringify([...viewedSteps, router.query])
     )
     router.push(nextLink)
