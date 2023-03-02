@@ -2,10 +2,9 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import SideBarLink from 'components/SideBarLink'
-
 import Close from 'public/close.svg'
 import SwitchLocalization from './SwitchLocalization'
+import SignOut from './SignOut'
 
 function SideBar({ isOpen, setIsOpen }) {
   const { t } = useTranslation('common')
@@ -37,6 +36,9 @@ function SideBar({ isOpen, setIsOpen }) {
           </Link>
         </div>
 
+        <div className="ml-4 mt-4">
+          <SignOut />
+        </div>
         <div className="ml-4 mt-4">
           <SwitchLocalization />
         </div>
