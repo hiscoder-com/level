@@ -13,20 +13,20 @@ function IntroStep({ title, markdown, nextLink }) {
       localStorage.setItem('viewedIntroSteps', JSON.stringify([router.query]))
       router.push(nextLink)
       return
-    } else {
-      viewedSteps = viewedSteps.filter((e) => {
-        const { project, book, chapter, step } = router.query
-        return (
-          JSON.stringify(e) !==
-          JSON.stringify({
-            project,
-            book,
-            chapter: chapter.toString(),
-            step: (step - 1).toString(),
-          })
-        )
-      })
     }
+    viewedSteps = viewedSteps.filter((e) => {
+      const { project, book, chapter, step } = router.query
+      return (
+        JSON.stringify(e) !==
+        JSON.stringify({
+          project,
+          book,
+          chapter: chapter.toString(),
+          step: (step - 1).toString(),
+        })
+      )
+    })
+
     localStorage.setItem(
       'viewedIntroSteps',
       JSON.stringify([...viewedSteps, router.query])

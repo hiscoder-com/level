@@ -66,8 +66,8 @@ function ProjectCard({ project }) {
         {Object.keys(chapters).map((chapter, i) => {
           return (
             <div key={i} className="mb-2">
-              <div>{t(`books:${chapter[0]}`)}</div>
-              {chapter[1].map((step, index) => {
+              <div>{t(`books:${chapter}`)}</div>
+              {chapters[chapter].map((step, index) => {
                 return (
                   <Link
                     key={index}
