@@ -68,7 +68,7 @@ import { tsvToJson } from 'utils/tsvHelper'
  */
 
 export default async function tqHandler(req, res) {
-  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, chapter } = req.query
 
   let verses = req.query['verses[]'] || req.query.verses
   if (typeof verses === 'string') {
@@ -111,18 +111,18 @@ export default async function tqHandler(req, res) {
 
     const data = [...currentChapter, ...rangeVerses]
 
-    const groupData = {}
+    const questions = {}
     data?.forEach((el) => {
       const verse = el.Reference.split(':').slice(-1)[0]
       const tq = { id: el.ID, title: el.Question, text: el.Response }
-      if (!groupData[verse]) {
-        groupData[verse] = [tq]
+      if (!questions[verse]) {
+        questions[verse] = [tq]
       } else {
-        groupData[verse].push(tq)
+        questions[verse].push(tq)
       }
     })
 
-    res.status(200).json(groupData)
+    res.status(200).json(questions)
     return
   } catch (error) {
     res.status(404).json({ error })

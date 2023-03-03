@@ -5,21 +5,14 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Showdown from 'showdown'
-import axios from 'axios'
 
 import Modal from 'components/Modal'
 
 import { BookCreate, ChapterList } from './index'
 import { supabase } from 'utils/supabaseClient'
-import {
-  compileChapter,
-  compilePdfObs,
-  convertToUsfm,
-  downloadFile,
-  downloadPdf,
-} from 'utils/helper'
-import { usfmFileNames } from 'utils/config'
+import { compileChapter, compilePdfObs, convertToUsfm, downloadPdf } from 'utils/helper'
 import Properties from 'public/parameters.svg'
+import PropertiesOfBook from './PropertiesOfBook'
 
 function BookList({ highLevelAccess, project, user }) {
   const { t } = useTranslation(['common', 'books'])
@@ -142,7 +135,6 @@ function BookList({ highLevelAccess, project, user }) {
         break
     }
   }
-
   return (
     <>
       {!selectedBook ? (
@@ -258,24 +250,23 @@ function BookList({ highLevelAccess, project, user }) {
         >
           {t('ExportToPDF')}
         </div>
-
-        {Object.entries(downloadSettings)
-          .filter((el) => project?.type === 'obs' || el[0] === 'WithFront')
+        {Object.keys(downloadSettings)
+          .filter((el) => project?.type === 'obs' || el === 'WithFront')
           .map((el, index) => {
-            const [label, value] = el
+            // const [label, value] = el
             return (
               <div key={index}>
                 <input
                   className="mt-4 h-[17px] w-[17px] cursor-pointer accent-cyan-600"
                   type="checkbox"
-                  checked={value}
+                  checked={downloadSettings[el]}
                   onChange={() =>
                     setDownloadSettings((prev) => {
-                      return { ...prev, [el[0]]: !value }
+                      return { ...prev, [el]: !downloadSettings[el] }
                     })
                   }
                 />
-                <span className="ml-2">{t(label)}</span>
+                <span className="ml-2">{t(el)}</span>
               </div>
             )
           })}
@@ -294,92 +285,3 @@ function BookList({ highLevelAccess, project, user }) {
   )
 }
 export default BookList
-
-function PropertiesOfBook({
-  projectId,
-  book,
-  openDownloading,
-  setOpenDownloading,
-  t,
-  type,
-  user,
-  setUpdatingBooks,
-}) {
-  const [properties, setProperties] = useState()
-  useEffect(() => {
-    setProperties(book?.properties)
-  }, [book?.properties])
-
-  const renderProperties =
-    properties &&
-    Object.entries(type !== 'obs' ? properties?.scripture : properties?.obs)?.map(
-      (el, index) => {
-        return (
-          <div key={index}>
-            <div>{el[0]}</div>
-            <textarea
-              className="input"
-              defaultValue={el[1]}
-              onChange={(e) => {
-                setProperties((prev) => {
-                  if (type !== 'obs') {
-                    return {
-                      ...prev,
-                      scripture: { ...prev.scripture, [el[0]]: e.target.value },
-                    }
-                  } else {
-                    return {
-                      ...prev,
-                      obs: { ...prev.obs, [el[0]]: e.target.value },
-                    }
-                  }
-                })
-              }}
-            />
-          </div>
-        )
-      }
-    )
-  const handleSave = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
-    setUpdatingBooks(true)
-    axios
-      .put(`/api/book_properties/${book.id}`, {
-        properties,
-        project_id: projectId,
-      })
-      .then()
-      .catch((err) => console.log(err))
-      .finally(() => setUpdatingBooks(false))
-  }
-  return (
-    <div>
-      <Modal
-        isOpen={openDownloading}
-        closeHandle={() => {
-          setOpenDownloading(false)
-        }}
-      >
-        {renderProperties}
-        <div className="flex justify-end">
-          <button
-            className="btn-cyan mr-2"
-            onClick={() => {
-              handleSave()
-            }}
-          >
-            {t('common:Save')}
-          </button>
-          <button
-            className="btn-cyan "
-            onClick={() => {
-              setOpenDownloading(false)
-            }}
-          >
-            {t('common:Close')}
-          </button>
-        </div>
-      </Modal>
-    </div>
-  )
-}

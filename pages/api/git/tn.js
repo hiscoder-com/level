@@ -88,6 +88,7 @@ export default async function tnHandler(req, res) {
       if (el.Chapter !== chapter && el.Chapter !== 'front') {
         return
       }
+
       // создаем экземпляр заметки
       // Если это введение к главе - заголовок intro
       // Если введение к книге - заголовок front

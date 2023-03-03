@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -53,8 +53,12 @@ function BookCreate({ highLevelAccess, project, books, user }) {
       setCreatingBook(false)
     }
   }
-  const notCreatedBooks = project?.base_manifest?.books?.filter(
-    (el) => !books?.map((book) => book.code)?.includes(el.name) && el.name !== 'frt'
+  const notCreatedBooks = useMemo(
+    () =>
+      project?.base_manifest?.books?.filter(
+        (el) => !books?.map((book) => book.code)?.includes(el.name) && el.name !== 'frt'
+      ),
+    [books, project?.base_manifest?.books]
   )
 
   return (

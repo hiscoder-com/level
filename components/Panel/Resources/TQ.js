@@ -39,13 +39,13 @@ function ToolList({ data, viewAll, toolName }) {
   return (
     <div className="divide-y divide-gray-800 divide-dashed">
       {data &&
-        Object.entries(data).map((el) => {
+        Object.keys(data)?.map((key) => {
           return (
-            <div key={el[0]} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0]}</div>
+            <div key={key} className="p-4 flex mx-4">
+              <div className="text-2xl">{key}</div>
               <div className="text-gray-700 pl-7">
                 <ul>
-                  {el[1]?.map((item) => {
+                  {data[key]?.map((item) => {
                     return (
                       <li
                         key={item.id}

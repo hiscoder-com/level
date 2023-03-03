@@ -11,7 +11,6 @@ import { useRedirect } from 'utils/hooks'
 import SwitchLocalization from 'components/SwitchLocalization'
 
 import VcanaLogo from 'public/vcana-logo.svg'
-import TtLogo from 'public/tt-logo.svg'
 import OmbLogo from 'public/omb_202.svg'
 
 export default function Home() {

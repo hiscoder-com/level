@@ -931,7 +931,7 @@
   $$;
 
   -- создать стихи
-  --TODO добавить в миграцию
+  
   CREATE FUNCTION PUBLIC.create_verses(chapter_id BIGINT) returns BOOLEAN
     LANGUAGE plpgsql security definer AS $$
     DECLARE
@@ -1584,7 +1584,7 @@
     CREATE TABLE PUBLIC.logs (
       id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       created_at TIMESTAMP DEFAULT now(),
-      log jsonb,        
+      log jsonb        
     );
     
     ALTER TABLE
