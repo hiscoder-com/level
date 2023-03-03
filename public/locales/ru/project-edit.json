@@ -1,10 +1,17 @@
 {
   "AddCoordinator": "Добавить координатора",
   "AddTranslator": "Добавить переводчика",
+  "Answers": "Ответы",
+  "AnswersPlaceholder": "Распишите ответы на вопросы...",
   "AssigningModerator": "Назначение модератора",
-  "BriefPlaceholder": "Распишите предназначение перевода...",
-  "EditBrief": "Редактировать бриф",
+  "BriefSwitch": "Отключение брифа",
+  "EditBriefTitle": "БРИФ И ЦЕЛЬ ПЕРЕВОДА",
+  "enterText": "Заполните поле...",
+  "QuestionsPlaceholder": "Распишите вопросы...",
   "RemovingCoordinator": "Удаление координатора",
   "RemovingModerator": "Удаление модератора",
-  "RemovingTranslator": "Удаление переводчика"
+  "RemovingTranslator": "Удаление переводчика",
+  "saveFailed": "Не удалось сохранить бриф",
+  "successfulSave": "Бриф сохранён",
+  "SummaryPlaceholder": "Распишите предназначение перевода..."
 }

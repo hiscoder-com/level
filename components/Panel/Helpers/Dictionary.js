@@ -9,7 +9,7 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useProject, useDictionary } from 'utils/hooks'
+import { useProject } from 'utils/hooks'
 
 import { supabase } from 'utils/supabaseClient'
 
