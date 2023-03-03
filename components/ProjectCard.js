@@ -49,6 +49,25 @@ function ProjectCard({ project, token, userId }) {
     })
     return _chapters
   }, [currentSteps])
+
+  const localStorSteps = useMemo(
+    () => JSON.parse(localStorage.getItem('viewedIntroSteps')),
+    []
+  )
+  const searchLocalStorage = (step, localStorSteps) => {
+    const { project, book, chapter, step: numStep } = step
+    const isRepeatIntro = localStorSteps?.find(
+      (el) =>
+        JSON.stringify(el) ===
+        JSON.stringify({
+          project,
+          book,
+          chapter: chapter.toString(),
+          step: numStep.toString(),
+        })
+    )
+    return isRepeatIntro
+  }
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>
@@ -72,32 +91,29 @@ function ProjectCard({ project, token, userId }) {
         </Link>
       )}
       <div className="divide-y-2">
-        {Object.entries(chapters).map((chapter, i) => {
+        {Object.keys(chapters).map((chapter, i) => {
           return (
             <div key={i} className="mb-2">
-              <div>{t(`books:${chapter[0]}`)}</div>
-
-              {chapter[1].map((step, index) =>
-                !isBrief || briefResume ? (
+              <div>{t(`books:${chapter}`)}</div>
+              {chapters[chapter].map((step, index) => {
+                return (
                   <Link
                     key={index}
-                    href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+                    href={`/translate/${step.project}/${step.book}/${step.chapter}/${
+                      step.step
+                    }${
+                      typeof searchLocalStorage(step, localStorSteps) === 'undefined'
+                        ? '/intro'
+                        : ''
+                    }`}
                   >
                     <a className="btn btn-white mt-2 mx-1">
                       {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
                       {t('common:Step').toLowerCase()}
                     </a>
                   </Link>
-                ) : (
-                  <div
-                    key={index}
-                    className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1"
-                  >
-                    {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
-                    {t('common:Step').toLowerCase()}
-                  </div>
                 )
-              )}
+              })}
             </div>
           )
         })}
