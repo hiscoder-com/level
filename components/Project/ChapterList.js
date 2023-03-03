@@ -249,7 +249,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
             })
           }}
         >
-          {t('ExportToPDF')}
+          {t('ExportToPdf')}
         </div>
         <div
           className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
@@ -286,7 +286,7 @@ function ChapterList({ selectedBook, project, highLevelAccess }) {
                 })
           }}
         >
-          {project?.type === 'obs' ? t('ExportToMD') : 'ExportToTXT'}
+          {project?.type === 'obs' ? t('ExportToMd') : 'ExportToTxt'}
         </div>
         {Object.entries(downloadSettings)
           .filter((el) => project?.type === 'obs' || el[0] === 'WithFront')

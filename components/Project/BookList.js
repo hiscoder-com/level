@@ -5,14 +5,23 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Showdown from 'showdown'
+import JSZip from 'jszip'
+import { saveAs } from 'file-saver'
 
 import Modal from 'components/Modal'
 
 import { BookCreate, ChapterList } from './index'
 import { supabase } from 'utils/supabaseClient'
-import { compileChapter, compilePdfObs, convertToUsfm, downloadPdf } from 'utils/helper'
+import {
+  compileChapter,
+  compilePdfObs,
+  convertToUsfm,
+  downloadFile,
+  downloadPdf,
+} from 'utils/helper'
 import Properties from 'public/parameters.svg'
 import PropertiesOfBook from './PropertiesOfBook'
+import { usfmFileNames } from 'utils/config'
 
 function BookList({ highLevelAccess, project, user }) {
   const { t } = useTranslation(['common', 'books'])
@@ -135,6 +144,36 @@ function BookList({ highLevelAccess, project, user }) {
         break
     }
   }
+  const downloadZip = async (downloadingBook) => {
+    var zip = new JSZip()
+    const obs = await getBookJson(downloadingBook.id)
+    for (const story of obs) {
+      const text = await compileChapter(
+        {
+          json: story?.text,
+          chapterNum: story?.num,
+          project: {
+            baseManifest: project?.base_manifest,
+          },
+        },
+        'markdown'
+      )
+      zip.folder('content').file(story?.num + '.md', text)
+    }
+    zip
+      .folder('content')
+      .folder('back')
+      .file('intro.md', downloadingBook?.properties?.obs?.back)
+    zip
+      .folder('content')
+      .folder('front')
+      .file('intro.md', downloadingBook?.properties?.obs?.intro)
+      .file('title.md', downloadingBook?.properties?.obs?.title)
+
+    zip.generateAsync({ type: 'blob' }).then(function (blob) {
+      saveAs(blob, `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`)
+    })
+  }
   return (
     <>
       {!selectedBook ? (
@@ -248,8 +287,29 @@ function BookList({ highLevelAccess, project, user }) {
             })
           }}
         >
-          {t('ExportToPDF')}
+          {t('ExportToPdf')}
         </div>
+        {project?.type === 'obs' ? (
+          <div
+            onClick={() => downloadZip(downloadingBook)}
+            className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
+          >
+            {t('ExportToZip')}
+          </div>
+        ) : (
+          <div
+            className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
+            onClick={async (e) => {
+              e.stopPropagation()
+              downloadFile({
+                text: await compileBook(downloadingBook, 'txt', downloadSettings),
+                title: usfmFileNames[downloadingBook?.code],
+              })
+            }}
+          >
+            {t('ExportToUsfm')}
+          </div>
+        )}
         {Object.keys(downloadSettings)
           .filter((el) => project?.type === 'obs' || el === 'WithFront')
           .map((el, index) => {
