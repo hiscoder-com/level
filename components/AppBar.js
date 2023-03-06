@@ -70,14 +70,14 @@ export default function AppBar({ setIsOpen }) {
           <>
             <div
               className={`text-center h3 pt-2 lg:text-2xl md:flex ${
-                showFullAppbar ? '' : 'hidden '
+                showFullAppbar ? '' : 'hidden'
               }`}
             >
               {stepConfig.title}
             </div>
             <div
               className={`items-center gap-4 md:flex ${
-                showFullAppbar ? 'flex' : 'hidden '
+                showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
               <div className="flex row items-center gap-1 cursor-default">

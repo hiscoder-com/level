@@ -245,6 +245,7 @@ function BookList({ highLevelAccess, project, user }) {
           selectedBook={selectedBook}
           project={project}
           highLevelAccess={highLevelAccess}
+          token={user?.access_token}
         />
       )}
       <PropertiesOfBook

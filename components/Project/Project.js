@@ -11,9 +11,10 @@ import BookList from './BookList'
 
 function Project({ code }) {
   const { t } = useTranslation(['projects', 'common', 'books', 'chapters'])
-  const [level, setLevel] = useState('user')
+
   const [project, setProject] = useState()
-  const highLevelAccess = ['admin', 'coordinator'].includes(level)
+  const [highLevelAccess, setHighLevelAccess] = useState(false)
+
   const { user } = useCurrentUser()
 
   useEffect(() => {
@@ -33,10 +34,12 @@ function Project({ code }) {
   useEffect(() => {
     const getLevel = async () => {
       const level = await supabase.rpc('authorize', {
-        user_id: user.id,
+        user_id: user?.id,
         project_id: project.id,
       })
-      setLevel(level.data)
+      if (level?.data) {
+        setHighLevelAccess(['admin', 'coordinator'].includes(level.data))
+      }
     }
     if (user?.id && project?.id) {
       getLevel()

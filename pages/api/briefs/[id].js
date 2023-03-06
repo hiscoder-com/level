@@ -7,10 +7,39 @@ export default async function briefsGetHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
   const {
     query: { id },
-    body: { text },
+    body: { data_collection },
     method,
   } = req
 
+  const validation = (brief_data) => {
+    if (!brief_data) {
+      return { error: 'Properties is null or undefined' }
+    }
+    if (Array.isArray(brief_data)) {
+      const isValidKeys = brief_data.find((briefObj) => {
+        const isNotValid =
+          JSON.stringify(Object.keys(briefObj).sort()) !==
+          JSON.stringify(['block', 'id', 'resume', 'title'].sort())
+        if (isNotValid) {
+          return isNotValid
+        } else {
+          briefObj.block?.forEach((blockObj) => {
+            if (
+              JSON.stringify(Object.keys(blockObj).sort()) !==
+              JSON.stringify(['question', 'answer'].sort())
+            ) {
+              return { error: 'brief_data.block has different keys', blockObj }
+            }
+          })
+        }
+      })
+      if (isValidKeys) {
+        return { error: 'brief_data has different keys', isValidKeys }
+      }
+    }
+
+    return { error: null }
+  }
   switch (method) {
     case 'GET':
       try {
@@ -29,12 +58,16 @@ export default async function briefsGetHandler(req, res) {
       break
     case 'PUT':
       try {
-        const { data, error } = await supabase
-          .from('briefs')
-          .update({ text })
-          .match({ project_id: id })
-        if (error) throw error
-        res.status(200).json(data)
+        if (data_collection?.length > 1 && !validation(data_collection)?.error) {
+          const { data, error } = await supabase
+            .from('briefs')
+            .update({ data_collection })
+            .match({ project_id: id })
+          if (error) throw error
+          res.status(200).json(data)
+        } else {
+          res.status(404).json({ error })
+        }
       } catch (error) {
         res.status(404).json({ error })
         return

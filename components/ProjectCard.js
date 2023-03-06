@@ -7,11 +7,33 @@ import { useTranslation } from 'next-i18next'
 import Translators from 'components/Translators'
 
 import { supabase } from 'utils/supabaseClient'
+import { useBriefState } from 'utils/hooks'
 
-function ProjectCard({ project }) {
-  const { t } = useTranslation(['projects', 'common', 'books'])
-
+function ProjectCard({ project, token, userId }) {
   const [currentSteps, setCurrentSteps] = useState(null)
+  const [highLevelAccess, setHighLevelAccess] = useState(false)
+
+  const { briefResume, isBrief } = useBriefState({
+    token,
+    project_id: project?.id,
+  })
+
+  useEffect(() => {
+    const getLevel = async () => {
+      const level = await supabase.rpc('authorize', {
+        user_id: userId,
+        project_id: project.id,
+      })
+      if (level?.data) {
+        setHighLevelAccess(['admin', 'coordinator'].includes(level.data))
+      }
+    }
+    if (userId && project?.id) {
+      getLevel()
+    }
+  }, [userId, project?.id])
+
+  const { t } = useTranslation(['projects', 'common', 'books'])
 
   useEffect(() => {
     supabase
@@ -28,6 +50,25 @@ function ProjectCard({ project }) {
     })
     return _chapters
   }, [currentSteps])
+
+  const localStorSteps = useMemo(
+    () => JSON.parse(localStorage.getItem('viewedIntroSteps')),
+    []
+  )
+  const searchLocalStorage = (step, localStorSteps) => {
+    const { project, book, chapter, step: numStep } = step
+    const isRepeatIntro = localStorSteps?.find(
+      (el) =>
+        JSON.stringify(el) ===
+        JSON.stringify({
+          project,
+          book,
+          chapter: chapter.toString(),
+          step: numStep.toString(),
+        })
+    )
+    return isRepeatIntro
+  }
   return (
     <div className="block p-6 h-full bg-white rounded-xl">
       <Link href={`/projects/${project.code}`}>
@@ -43,22 +84,45 @@ function ProjectCard({ project }) {
         <p className="text-gray-500">{t('Translators')}:</p>
         <Translators projectCode={project.code} size="25px" />
       </div>
+      {briefResume === '' && (
+        <Link href={`/projects/${project?.code}/edit/brief`}>
+          <a className="btn btn-white mt-2 mx-1">
+            {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
+          </a>
+        </Link>
+      )}
       <div className="divide-y-2">
-        {Object.entries(chapters).map((chapter, i) => {
+        {Object.keys(chapters).map((chapter, i) => {
           return (
             <div key={i} className="mb-2">
-              <div>{t(`books:${chapter[0]}`)}</div>
-              {chapter[1].map((step, index) => (
-                <Link
-                  key={index}
-                  href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
-                >
-                  <a className="btn btn-white mt-2 mx-1">
+              <div>{t(`books:${chapter}`)}</div>
+              {chapters[chapter].map((step, index) => {
+                return !isBrief || briefResume ? (
+                  <Link
+                    key={index}
+                    href={`/translate/${step.project}/${step.book}/${step.chapter}/${
+                      step.step
+                    }${
+                      typeof searchLocalStorage(step, localStorSteps) === 'undefined'
+                        ? '/intro'
+                        : ''
+                    }`}
+                  >
+                    <a className="btn btn-white mt-2 mx-1">
+                      {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
+                      {t('common:Step').toLowerCase()}
+                    </a>
+                  </Link>
+                ) : (
+                  <div
+                    key={index}
+                    className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1"
+                  >
                     {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
                     {t('common:Step').toLowerCase()}
-                  </a>
-                </Link>
-              ))}
+                  </div>
+                )
+              })}
             </div>
           )
         })}
