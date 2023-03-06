@@ -4,10 +4,11 @@ import ReactMarkdown from 'react-markdown'
 
 import { useTranslation } from 'next-i18next'
 
+import { useRecoilValue } from 'recoil'
+
 import { Placeholder } from '../UI'
 
 import { checkedVersesBibleState } from '../state/atoms'
-import { useRecoilValue } from 'recoil'
 import { useGetResource, useScroll } from 'utils/hooks'
 
 // draft: true/false

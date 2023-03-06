@@ -1323,6 +1323,7 @@
         CASCADE NOT NULL,
       "text" text DEFAULT NULL,
       chapters json,
+      properties json DEFAULT NULL,
       UNIQUE (project_id, code)
     );
 

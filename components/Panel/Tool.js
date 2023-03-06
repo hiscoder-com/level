@@ -166,7 +166,7 @@ function Tool({ config, toolName, editable = false }) {
           'audio',
           'dictionary',
         ].includes(toolName) &&
-          `${t(`books:${config?.reference?.book}`)}  ${config?.reference?.chapter}, `}
+          `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
         {title}
       </div>
       <div className="h5 adaptive-card">

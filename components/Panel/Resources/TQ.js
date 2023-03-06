@@ -13,7 +13,7 @@ function TQ({ config, url, toolName }) {
       {loading ? (
         <Placeholder />
       ) : (
-        <ToolList
+        <QuestionList
           data={data}
           viewAll={config?.resource?.viewAllQuestions}
           toolName={toolName}
@@ -25,7 +25,7 @@ function TQ({ config, url, toolName }) {
 
 export default TQ
 
-function ToolList({ data, viewAll, toolName }) {
+function QuestionList({ data, viewAll, toolName }) {
   let uniqueVerses = new Set()
   const reduceQuestions = (title) => {
     uniqueVerses.add(title)
@@ -53,7 +53,7 @@ function ToolList({ data, viewAll, toolName }) {
                         onClick={() => handleSave(item.id)}
                         className="py-2"
                       >
-                        <ToolContent
+                        <Answer
                           item={item}
                           reduceQuestions={() => reduceQuestions(item.title)}
                           viewAll={viewAll}
@@ -71,7 +71,7 @@ function ToolList({ data, viewAll, toolName }) {
   )
 }
 
-function ToolContent({ item, reduceQuestions, viewAll, scrollId }) {
+function Answer({ item, reduceQuestions, viewAll, scrollId }) {
   return (
     <Disclosure>
       <Disclosure.Button

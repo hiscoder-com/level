@@ -1,17 +1,19 @@
 import { useEffect, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
 
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+import { useForm, useWatch } from 'react-hook-form'
+
 import axios from 'axios'
+
+import { Switch } from '@headlessui/react'
 
 import CommitsList from './CommitsList'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { Switch } from '@headlessui/react'
 
-// TODO не работает если создавать ОБС
 function ProjectCreate() {
   const router = useRouter()
   const { t } = useTranslation(['projects,common'])

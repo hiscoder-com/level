@@ -10,7 +10,7 @@ import { saveAs } from 'file-saver'
 
 import Modal from 'components/Modal'
 
-import { BookCreate, ChapterList } from './index'
+import { BookCreate, ChapterList, PropertiesOfBook } from './index'
 import { supabase } from 'utils/supabaseClient'
 import {
   compileChapter,
@@ -20,7 +20,6 @@ import {
   downloadPdf,
 } from 'utils/helper'
 import Properties from 'public/parameters.svg'
-import PropertiesOfBook from './PropertiesOfBook'
 import { usfmFileNames } from 'utils/config'
 
 function BookList({ highLevelAccess, project, user }) {
@@ -98,7 +97,6 @@ function BookList({ highLevelAccess, project, user }) {
           },
         })
         return main
-        break
       case 'pdf':
         if (downloadSettings?.WithFront) {
           main += `<div style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
@@ -113,7 +111,6 @@ function BookList({ highLevelAccess, project, user }) {
           }
         }
         return main
-        break
       case 'pdf-obs':
         const converter = new Showdown.Converter()
         const front = `<div style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.obs?.title}</h1></div>`
@@ -139,7 +136,6 @@ function BookList({ highLevelAccess, project, user }) {
           }
         }
         return obs
-
       default:
         break
     }
@@ -266,7 +262,7 @@ function BookList({ highLevelAccess, project, user }) {
       >
         <div className="text-center mb-4">{t('Download')}</div>
         <div
-          className="p-2 hover:bg-gray-200  border-y-2 cursor-pointer"
+          className="p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
           onClick={async (e) => {
             e.stopPropagation()
             downloadPdf({
@@ -293,13 +289,13 @@ function BookList({ highLevelAccess, project, user }) {
         {project?.type === 'obs' ? (
           <div
             onClick={() => downloadZip(downloadingBook)}
-            className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
+            className="p-2 hover:bg-gray-200 border-b-2 cursor-pointer"
           >
             {t('ExportToZip')}
           </div>
         ) : (
           <div
-            className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
+            className="p-2 hover:bg-gray-200 border-b-2 cursor-pointer"
             onClick={async (e) => {
               e.stopPropagation()
               downloadFile({

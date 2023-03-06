@@ -233,7 +233,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
       >
         <div className="text-center mb-4">{t('Download')}</div>
         <div
-          className="p-2 hover:bg-gray-200  border-y-2 cursor-pointer"
+          className="p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
           onClick={async (e) => {
             e.stopPropagation()
             downloadPdf({
@@ -266,7 +266,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
           {t('ExportToPdf')}
         </div>
         <div
-          className="p-2 hover:bg-gray-200  border-b-2 cursor-pointer"
+          className="p-2 hover:bg-gray-200 border-b-2 cursor-pointer"
           onClick={async (e) => {
             e.stopPropagation()
             project?.type === 'obs'

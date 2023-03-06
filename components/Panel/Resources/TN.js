@@ -19,7 +19,7 @@ function TN({ config, url, toolName }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <ToolList setItem={setItem} data={data} toolName={toolName} />
+          <TNList setItem={setItem} data={data} toolName={toolName} />
         </div>
       )}
     </>
@@ -28,7 +28,7 @@ function TN({ config, url, toolName }) {
 
 export default TN
 
-function ToolList({ setItem, data, toolName }) {
+function TNList({ setItem, data, toolName }) {
   const { t } = useTranslation('common')
   const [intro, setIntro] = useState([])
   const [verses, setVerses] = useState([])
@@ -57,7 +57,7 @@ function ToolList({ setItem, data, toolName }) {
         verses.map((el, index) => {
           return (
             <div key={index} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0] === '0' ? 'title' : el[0]}</div>
+              <div className="text-2xl">{el[0] === '0' ? t('Title') : el[0]}</div>
               <div className="text-gray-700 pl-7 flex-1">
                 <ul>
                   {el[1]?.map((item) => {
