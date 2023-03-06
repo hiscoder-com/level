@@ -60,8 +60,9 @@ function Login() {
         .from('users')
         .select('agreement,confession')
         .eq('id', user?.id)
+        .single()
       if (errorUser) throw errorUser
-      const { agreement, confession } = dataUser[0]
+      const { agreement, confession } = dataUser
       // TODO END
 
       setError(false)
@@ -104,13 +105,18 @@ function Login() {
           </div>
           <div className="flex flex-col lg:flex-row text-sm lg:text-base">
             <p className="lg:mr-1">{t('ForRegistrations')}</p>
-            <Link href={'/'}>
-              <a className="mb-6 lg:mb-14 text-blue-450">{t('WriteAdministrator')}</a>
+            <Link
+              href={
+                '/'
+                // TODO сделать функционал отправки формы администратору
+              }
+            >
+              <a className="mb-6 lg:mb-14 text-blue-600">{t('WriteAdministrator')}</a>
             </Link>
           </div>
 
           <form className="space-y-3 xl:space-y-10">
-            <div className="relative z-0 w-full mb-6">
+            <div className="relative z-0 w-full">
               <input
                 ref={loginRef}
                 className="input-label peer"
@@ -126,12 +132,12 @@ function Login() {
                 {t('Login')}
               </label>
             </div>
-            <div className="relative z-0 w-full mb-6">
+            <div className="relative z-0 w-full">
               <input
                 ref={passwordRef}
                 name="floating_password"
                 id="floating_password"
-                className="input-label peer lg:mb-10"
+                className="input-label peer"
                 type={showPassword ? 'text' : 'password'}
                 value={password}
                 placeholder=" "
@@ -158,7 +164,10 @@ function Login() {
                     <Report className="w-4 h-4" /> {t('WrongLoginPassword')}
                   </p>
                   <a
-                    href="#"
+                    href={
+                      '#'
+                      // TODO сделать восстановление пароля
+                    }
                     className="font-medium underline text-sky-500 hover:text-sky-600"
                   >
                     {t('ForgotPassword')}?
@@ -174,8 +183,13 @@ function Login() {
                 className="btn-blue w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold"
                 value={t('SignIn')}
               />
-              <Link href={'/'}>
-                <a className="text-sm lg:text-base text-blue-450">{t('RestoreAccess')}</a>
+              <Link
+                href={
+                  '/'
+                  // TODO сделать восстановление пароля
+                }
+              >
+                <a className="text-sm lg:text-base">{t('RestoreAccess')}</a>
               </Link>
             </div>
           </form>
