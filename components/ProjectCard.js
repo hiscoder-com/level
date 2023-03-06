@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
+
 import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
@@ -96,7 +97,7 @@ function ProjectCard({ project, token, userId }) {
             <div key={i} className="mb-2">
               <div>{t(`books:${chapter}`)}</div>
               {chapters[chapter].map((step, index) => {
-                return (
+                return !isBrief || briefResume ? (
                   <Link
                     key={index}
                     href={`/translate/${step.project}/${step.book}/${step.chapter}/${
@@ -112,6 +113,14 @@ function ProjectCard({ project, token, userId }) {
                       {t('common:Step').toLowerCase()}
                     </a>
                   </Link>
+                ) : (
+                  <div
+                    key={index}
+                    className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1"
+                  >
+                    {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
+                    {t('common:Step').toLowerCase()}
+                  </div>
                 )
               })}
             </div>
