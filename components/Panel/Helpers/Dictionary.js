@@ -8,6 +8,8 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import toast, { Toaster } from 'react-hot-toast'
+
 import { useCurrentUser } from 'lib/UserContext'
 import { useProject } from 'utils/hooks'
 
@@ -157,7 +159,10 @@ function Dictionary() {
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
       .then(() => saveCacheNote('dictionary', activeWord, user))
-      .catch((err) => showError(err, activeWord?.title))
+      .catch((err) => {
+        toast.error(t('SaveFailedWord'))
+        console.log(err)
+      })
       .finally(() => {
         getWords(searchQuery, currentPageWords)
         mutate()
@@ -342,6 +347,7 @@ function Dictionary() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }

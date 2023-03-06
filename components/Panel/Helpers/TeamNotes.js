@@ -8,6 +8,8 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import { toast, Toaster } from 'react-hot-toast'
+
 import { useCurrentUser } from 'lib/UserContext'
 
 import Modal from 'components/Modal'
@@ -58,7 +60,10 @@ function TeamNotes() {
         saveCacheNote('team-notes', activeNote, user)
         mutate()
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        toast.error(t('SaveFailedNote'))
+        console.log(err)
+      })
   }
   useEffect(() => {
     const getLevel = async () => {
@@ -202,6 +207,7 @@ function TeamNotes() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }

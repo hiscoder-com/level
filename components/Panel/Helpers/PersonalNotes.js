@@ -6,6 +6,8 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import { toast, Toaster } from 'react-hot-toast'
+
 import { useCurrentUser } from 'lib/UserContext'
 
 import Modal from 'components/Modal'
@@ -54,7 +56,10 @@ function PersonalNotes() {
         saveCacheNote('personal-notes', activeNote, user)
         mutate()
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        toast.error(t('SaveFailedNote'))
+        console.log(err)
+      })
   }
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
@@ -202,6 +207,7 @@ function PersonalNotes() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }

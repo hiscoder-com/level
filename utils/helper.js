@@ -283,13 +283,13 @@ export const validateNote = (note) => {
   }
 
   if (note.blocks?.length) {
-    note.blocks.forEach((blockElement) => {
+    for (const blockElement of note.blocks) {
       if (
         ['id', 'type', 'data'].find((el) => !Object?.keys(blockElement)?.includes(el))
       ) {
         return false
       }
-    })
+    }
   }
   return true
 }
