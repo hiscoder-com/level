@@ -28,6 +28,7 @@
   "Create": "Create",
   "CreateBook": "Create a book",
   "DescriptionConfession": "consistent with the historical symbols of faith:<br />The Apostolic Creed, the Nicene Creed, and the Athanasian Creed; as well as the Lausanne Covenant.",
+  "DevelopedBy": "Разработано:",
   "dictionary": "Dictionary",
   "DisableBrief": "Disable brief",
   "Disabled": "Disabled",
@@ -65,6 +66,7 @@
   "Ok": "Ok",
   "OpenBrief": "Open brief",
   "personalNotes": "Personal notes",
+  "PlatformForBibleTranslate": "Платформа для перевода Библии",
   "Progress": "Progress",
   "Project": "Project",
   "ProjectSettings": "Project settings",
@@ -98,5 +100,6 @@
   "WordExist": "Duplicated word exists:",
   "Words": "Words",
   "WrongResource": "Wrong resource",
+  "WriteAdministrator": "напишите администратору.",
   "Yes": "Yes"
 }
