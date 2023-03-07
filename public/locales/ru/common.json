@@ -28,6 +28,7 @@
   "Create": "Создать",
   "CreateBook": "Создать книгу",
   "DescriptionConfession": "согласуется с историческими символами веры:<br />Апостольский символ веры, Никейский символ веры, и Афанасьевский символ веры; а также Lausanne Covenant.",
+  "DevelopedBy": "Разработано:",
   "dictionary": "Словарь",
   "DisableBrief": "Отключить бриф",
   "Disabled": "Отключен",
@@ -65,6 +66,7 @@
   "Ok": "Понятно",
   "OpenBrief": "Открыть бриф",
   "personalNotes": "Блокнот",
+  "PlatformForBibleTranslate": "Платформа для перевода Библии",
   "Progress": "Прогресс",
   "Project": "Проект",
   "ProjectSettings": "Настройки проекта",
@@ -98,5 +100,6 @@
   "WordExist": "Такое слово уже существует:",
   "Words": "Слова",
   "WrongResource": "Ошибка загрузки ресурса",
+  "WriteAdministrator": "напишите администратору.",
   "Yes": "Да"
 }
