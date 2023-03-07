@@ -115,7 +115,7 @@ function Login() {
             </Link>
           </div>
 
-          <form className="space-y-3 xl:space-y-10">
+          <form className="space-y-6 xl:space-y-10">
             <div className="relative z-0 w-full">
               <input
                 ref={loginRef}
