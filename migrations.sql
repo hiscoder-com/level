@@ -1629,4 +1629,11 @@
 
   ALTER TABLE PUBLIC.books ADD properties json DEFAULT NULL;
 
+  UPDATE
+    public.books
+  SET
+    properties = '{"scripture": {"h": "","toc1": "","toc2": "","toc3": "","mt": "","chapter_label": ""},"obs": {"title": "","intro": "","back": "","chapter_label": ""}}'
+  WHERE
+    properties IS NULL;
+
 
