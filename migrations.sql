@@ -1,21 +1,21 @@
 --Here added scripts for updating live db before setup migrating settings for supabase
 
 --14.01.23
-  --Update chapters - change type for column text from 'text' to jsonb
-  --Added function which added text from progress to chapters when chapter is finished
+  -- Update chapters - change type for column text from 'text' to jsonb
+  -- Added function which added text from progress to chapters when chapter is finished
 
   ALTER TABLE chapters ADD text_temp JSONB;
   UPDATE chapters SET text_temp = to_jsonb("text");
   ALTER TABLE chapters DROP COLUMN "text";
   ALTER TABLE chapters RENAME COLUMN text_temp TO "text";
 
-  CREATE FUNCTION PUBLIC.handle_compile_chapter() returns TRIGGER
-      LANGUAGE plpgsql security definer AS $$
+  CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
         chapter JSONB;
       BEGIN
         IF (NEW.finished_at IS NOT NULL) THEN
-          SELECT jsonb_object_agg(num, text ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
+          SELECT jsonb_object_agg(num, "text" ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
           NEW.text=chapter;
         END IF;
         RETURN NEW;
@@ -27,22 +27,22 @@
       ON PUBLIC.chapters FOR each ROW EXECUTE FUNCTION PUBLIC.handle_compile_chapter();
 
 --26.01.23
-  --Create table for logs
-  --Create functions for update commits in settings of project
+  -- Create table for logs
+  -- Create functions for update commits in settings of project
 
   CREATE TABLE PUBLIC.logs (
-      id bigint GENERATED ALWAYS AS IDENTITY primary key,
+      id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       created_at TIMESTAMP DEFAULT NOW(),
       log JSONB
     );
     
   ALTER TABLE
-      PUBLIC.logs enable ROW LEVEL security; 
+      PUBLIC.logs enable ROW LEVEL SECURITY; 
 
   DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
 
   CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE chapters_old JSON; 
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -57,7 +57,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
 
   CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
@@ -72,7 +72,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
 
   CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
-      LANGUAGE plpgsql SECURITY definer AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
       DECLARE chapter JSON;
               verses_old JSON;
       BEGIN
@@ -86,11 +86,10 @@
       END;
     $$;
 
-
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
 
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
       DECLARE step_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -116,7 +115,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
 
   CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
       DECLARE old_values JSON;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -129,11 +128,11 @@
     $$; 
 
 --10.02.23
-    --Update method CANA OBS
-    --Rename method CANA Bible to Cana Bible crush test
-    --Update method CANA Bible crush test
-    --Insert method CANA Bible
-    --Update step.config in Cana Bible crush test's `projects
+    -- Update method CANA OBS
+    -- Rename method CANA Bible to Cana Bible crush test
+    -- Update method CANA Bible crush test
+    -- Insert method CANA Bible
+    -- Update step.config in Cana Bible crush test's `projects
 
     UPDATE public.methods SET steps='[
       {
@@ -1355,7 +1354,7 @@
             }
           ]
         }
-      ]','bible'::project_type)
+      ]','bible'::project_type);
 
     UPDATE public.steps SET config='[
           {
@@ -1415,11 +1414,11 @@
   DROP FUNCTION IF EXISTS PUBLIC.handle_new_project;
   DROP FUNCTION IF EXISTS PUBLIC.create_brief;
 
-  ALTER TABLE PUBLIC.methods ADD brief json DEFAULT '[]';
+  ALTER TABLE PUBLIC.methods ADD brief JSON DEFAULT '[]';
 
   ALTER TABLE PUBLIC.briefs
-        ADD data_collection json DEFAULT NULL,
-        ADD is_enable boolean DEFAULT true,
+        ADD data_collection JSON DEFAULT NULL,
+        ADD is_enable BOOLEAN DEFAULT true,
         DROP COLUMN text;
 
   UPDATE PUBLIC.methods
@@ -1546,24 +1545,24 @@
               ],
               "resume": ""
             }
-  ]';
+    ]';
 
-  --updating data_collection in already created projects
+  -- updating data_collection in already created projects
   UPDATE PUBLIC.briefs
-    SET data_collection = (SELECT brief FROM PUBLIC.methods join projects ON (methods.title = projects.method) WHERE projects.id = briefs.project_id) WHERE data_collection is null;
+    SET data_collection = (SELECT brief FROM PUBLIC.methods JOIN projects ON (methods.title = projects.method) WHERE projects.id = briefs.project_id) WHERE data_collection IS NULL;
 
-  --creating a new brief for the project
-  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) returns BOOLEAN
-      LANGUAGE plpgsql security definer AS $$
+  -- creating a new brief for the project
+  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) RETURNS BOOLEAN
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE 
-        brief_JSON json;
+        brief_JSON JSON;
       BEGIN
         IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
           RETURN false;
         END IF;
         SELECT brief FROM PUBLIC.methods 
           JOIN PUBLIC.projects ON (projects.method = methods.title) 
-          WHERE projects.id = project_id into brief_JSON;
+          WHERE projects.id = project_id INTO brief_JSON;
           INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);
         RETURN true;
       END;
@@ -1573,3 +1572,7 @@
   ALTER publication supabase_realtime 
     ADD
       TABLE PUBLIC.briefs;
+
+--10.03.23
+  DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
+  DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
