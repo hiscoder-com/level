@@ -62,7 +62,7 @@ export default function UserAgreement() {
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['user-agreement', 'common'])),
+      ...(await serverSideTranslations(locale, ['user-agreement', 'common', 'users'])),
     },
   }
 }
