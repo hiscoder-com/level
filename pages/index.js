@@ -9,7 +9,6 @@ import VcanaLogo from 'public/vcana-logo.svg'
 
 import OmbLogo from 'public/omb-logo.svg'
 
-
 export default function Home() {
   const { t } = useTranslation('common', 'users')
   return (
