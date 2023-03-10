@@ -167,7 +167,7 @@ export async function getServerSideProps({ locale }) {
         'verses',
         'chapters',
         'books',
-        'users'
+        'users',
       ])),
     },
   }

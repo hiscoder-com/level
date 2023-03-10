@@ -28,7 +28,7 @@ Agreements.backgroundColor = 'bg-white'
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common','users'])),
+      ...(await serverSideTranslations(locale, ['common', 'users'])),
     },
   }
 }

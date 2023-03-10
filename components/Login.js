@@ -51,12 +51,13 @@ function Login() {
       setError(false)
       router.push(agreement && confession ? `/account` : '/agreements')
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user])
 
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const {  error } = await supabase.auth.signIn({
+      const { error } = await supabase.auth.signIn({
         email: login,
         password,
       })
@@ -64,7 +65,7 @@ function Login() {
       setError(false)
     } catch (error) {
       setError(true)
-    } 
+    }
   }
 
   return (
@@ -174,7 +175,9 @@ function Login() {
                 type="submit"
                 disabled={loading}
                 onClick={handleLogin}
-                className={`${loading?'btn':'btn-blue'} w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
+                className={`${
+                  loading ? 'btn' : 'btn-blue'
+                } w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
                 value={t('SignIn')}
               />
               <Link
