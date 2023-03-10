@@ -86,7 +86,6 @@
       END;
     $$;
 
-
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
 
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
@@ -1570,13 +1569,10 @@
   $$;
 
 --21.02.23
-
   ALTER publication supabase_realtime 
     ADD
       TABLE PUBLIC.briefs;
 
-
 --10.03.23
-
   DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
   DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;

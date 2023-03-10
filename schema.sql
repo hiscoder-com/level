@@ -18,8 +18,6 @@
     DROP TABLE IF EXISTS PUBLIC.languages;
     DROP TABLE IF EXISTS PUBLIC.logs;
 
-
-
   -- END DROP TABLE
 
   -- DROP TRIGGER
@@ -30,7 +28,6 @@
     DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
     DROP TRIGGER IF EXISTS on_dictionaries_update ON PUBLIC.dictionaries;
     DROP TRIGGER IF EXISTS on_public_chapters_update ON PUBLIC.chapters;
-
 
   -- END DROP TRIGGER
 
@@ -442,7 +439,6 @@
     END;
   $$;
 
-
   -- A new function for moving to the next step (we indicate specifically which step is now) (check that the user has the right to edit these verses, find out the ID of the next step, change the ID of the step for all verses)
   CREATE FUNCTION PUBLIC.go_to_step(project TEXT, chapter INT2, book PUBLIC.book_code, current_step INT2) RETURNS INTEGER
     LANGUAGE plpgsql SECURITY definer AS $$
@@ -552,7 +548,6 @@
     END;
   $$;
 
-
   CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
     LANGUAGE plpgsql SECURITY definer AS $$         
     BEGIN
@@ -581,7 +576,6 @@
     END;
   $$; 
 
-
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
     LANGUAGE plpgsql SECURITY definer AS $$ 
     DECLARE step_id BIGINT;    
@@ -606,7 +600,6 @@
     END;
   $$;
 
-
   CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
     LANGUAGE plpgsql SECURITY definer AS $$ 
     DECLARE old_values JSON;
@@ -619,7 +612,6 @@
       RETURN TRUE;
     END;
   $$; 
-
 
   -- create policy "политика с джойном"
   --   on teams
@@ -1217,7 +1209,6 @@
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
       
-
   -- END RLS
 
 -- END CHAPTERS
@@ -1326,7 +1317,6 @@
     CREATE POLICY "Залогиненый юзер может изменить личную заметку" ON PUBLIC.personal_notes FOR
     UPDATE
       USING (auth.uid() = user_id);
-
 
     DROP POLICY IF EXISTS "Показывать личные заметки данного пользователя" ON PUBLIC.personal_notes;
 
