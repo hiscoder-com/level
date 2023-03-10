@@ -30,7 +30,7 @@
   "UsersList": "Список пользователей",
   "V-CANAAccount": "Аккаунт V-CANA",
   "WriteAdministrator": "напишите администратору.",
+  "WrongLoginPassword": "Неверный логин или пароль",
   "YourLogin": "Ваш логин",
-  "YouSignInAs": "Вы вошли как",
-  "WrongLoginPassword": "Неверный логин или пароль"
+  "YouSignInAs": "Вы вошли как"
 }
