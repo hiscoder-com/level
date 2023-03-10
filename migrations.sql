@@ -15,7 +15,7 @@
         chapter JSONB;
       BEGIN
         IF (NEW.finished_at IS NOT NULL) THEN
-          SELECT jsonb_object_agg(num, TEXT ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
+          SELECT jsonb_object_agg(num, text ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
           NEW.text=chapter;
         END IF;
         RETURN NEW;
@@ -31,7 +31,7 @@
   -- Create functions for update commits in settings of project
 
   CREATE TABLE PUBLIC.logs (
-      id BIGINT  GENERATED ALWAYS AS IDENTITY primary key,
+      id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       created_at TIMESTAMP DEFAULT NOW(),
       log JSONB
     );
@@ -1574,3 +1574,9 @@
   ALTER publication supabase_realtime 
     ADD
       TABLE PUBLIC.briefs;
+
+
+--10.03.23
+
+  DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
+  DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;

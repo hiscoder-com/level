@@ -44,6 +44,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.check_confession;
     DROP FUNCTION IF EXISTS PUBLIC.check_agreement;
     DROP FUNCTION IF EXISTS PUBLIC.admin_only;
+    DROP FUNCTION IF EXISTS PUBLIC.can_translate;
+    DROP FUNCTION IF EXISTS PUBLIC.block_user;
     DROP FUNCTION IF EXISTS PUBLIC.save_verse;
     DROP FUNCTION IF EXISTS PUBLIC.save_verses;
     DROP FUNCTION IF EXISTS PUBLIC.handle_new_user;
@@ -96,7 +98,7 @@
 -- END CREATE CUSTOM TYPE
 
 -- CREATE FUNCTION
-  -- function RETURNS your maximum role on the project
+  -- function returns your maximum role on the project
     CREATE FUNCTION PUBLIC.authorize(
         user_id uuid,
         project_id BIGINT
@@ -168,7 +170,6 @@
         RETURN;
       END IF;
 
-      --
       RETURN query SELECT steps.title, projects.code AS project, books.code AS book, chapters.num AS chapter, steps.sorting AS step, chapters.started_at
       FROM verses
         LEFT JOIN chapters ON (verses.chapter_id = chapters.id)
@@ -216,7 +217,7 @@
         RETURN;
       END IF;
 
-      -- RETURN the verse id, number, and text from a specific chapter
+      -- return the verse id, number, and text from a specific chapter
       RETURN query SELECT verses.id AS verse_id, verses.num, verses.text AS verse, users.login AS translator
       FROM public.verses LEFT OUTER JOIN public.project_translators ON (verses.project_translator_id = project_translators.id) LEFT OUTER JOIN public.users ON (project_translators.user_id = users.id)
       WHERE verses.project_id = cur_project_id
@@ -226,7 +227,7 @@
     END;
   $$;
 
-  -- install a translator AS a moderator. Check that there is such a thing, which is set by the admin or coordinator. Otherwise, RETURN FALSE. The condition that we decided to do only one moderator per project at the interface level and not the database. Leave the possibility that there are more than 1 moderators.
+  -- install a translator as a moderator. Check that there is such a thing, which is set by the admin or coordinator. Otherwise, return false. The condition that we decided to do only one moderator per project at the interface level and not the database. Leave the possibility that there are more than 1 moderators.
   CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id BIGINT) RETURNS BOOLEAN
     LANGUAGE plpgsql SECURITY definer AS $$
     DECLARE
@@ -421,6 +422,27 @@
     END;
   $$;
 
+  -- for rls, a function that checks if the user is a verse translator
+  -- can use the function to write the user ID to the table right away, otherwise you will often have to do such checks
+  CREATE FUNCTION PUBLIC.can_translate(translator_id BIGINT)
+    returns BOOLEAN LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      access INT;
+
+    BEGIN
+      SELECT
+        COUNT(*) INTO access
+      FROM
+        PUBLIC.project_translators
+      WHERE
+        user_id = auth.uid() AND id = can_translate.translator_id;
+
+      RETURN access > 0;
+
+    END;
+  $$;
+
+
   -- A new function for moving to the next step (we indicate specifically which step is now) (check that the user has the right to edit these verses, find out the ID of the next step, change the ID of the step for all verses)
   CREATE FUNCTION PUBLIC.go_to_step(project TEXT, chapter INT2, book PUBLIC.book_code, current_step INT2) RETURNS INTEGER
     LANGUAGE plpgsql SECURITY definer AS $$
@@ -487,6 +509,32 @@
         AND verses.project_translator_id = proj_trans.id;
 
       RETURN next_step.sorting;
+
+    END;
+  $$;
+
+  -- blocking a user, can only be called by an admin, it is impossible to block another admin
+  CREATE FUNCTION PUBLIC.block_user(user_id uuid) returns TEXT
+    LANGUAGE plpgsql security definer AS $$
+    DECLARE
+      blocked_user RECORD;
+    BEGIN
+      IF NOT PUBLIC.admin_only() THEN
+        RETURN FALSE;
+      END IF;
+
+      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
+      IF blocked_user.is_admin = TRUE THEN
+        RETURN FALSE;
+      END IF;
+
+      IF blocked_user.blocked IS NULL THEN
+        UPDATE PUBLIC.users SET blocked = NOW() WHERE id = block_user.user_id;
+      ELSE
+        UPDATE PUBLIC.users SET blocked = NULL WHERE id = block_user.user_id;
+      END IF;
+
+      RETURN TRUE;
 
     END;
   $$;
@@ -573,7 +621,7 @@
   $$; 
 
 
-  -- create POLICY "политика с джойном"
+  -- create policy "политика с джойном"
   --   on teams
   --   for update using (
   --     auth.uid() in (
@@ -582,7 +630,7 @@
   --     )
   --   );
 
-  -- inserts a row INTO public.users
+  -- inserts a row into public.users
   CREATE FUNCTION PUBLIC.handle_new_user() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY definer AS $$ BEGIN
       INSERT INTO
@@ -729,7 +777,7 @@
     BEGIN
       -- find out the id of the translator on the project
       -- find out the ID of the chapter we are translating, make sure that the translation is still in progress
-      -- in a loop update the text of the verses, taking INTO account the id of the translator and the chapter
+      -- in a loop update the text of the verses, taking into account the id of the translator and the chapter
       -- Maybe take the chapter number here. Get the IDs of all the poems that this user has. And then in the cycle to compare these IDs
       -- TODO correct necessarily
       FOR new_verses IN SELECT * FROM json_each_text(save_verses.verses)
@@ -801,7 +849,7 @@
   -- RLS
     -- Only the superadmin can directly work with this table
     -- Then fix it so that you can only get users with whom you work on the project. That it was impossible to receive all with one request.
-    -- And put restrictions on which fields to RETURN
+    -- And put restrictions on which fields to return
     -- If the admin needs to work, then we will either set it up here, or he will work through the service key (all requests only through api)
     DROP POLICY IF EXISTS "Залогиненый юзер может получить список всех юзеров" ON PUBLIC.users;
     CREATE POLICY "Залогиненый юзер может получить список всех юзеров" ON PUBLIC.users FOR
