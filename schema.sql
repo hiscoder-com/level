@@ -100,7 +100,7 @@
         user_id uuid,
         project_id BIGINT
       ) RETURNS TEXT
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
         bind_permissions INT;
         priv RECORD;
@@ -139,7 +139,7 @@
 
   -- conditions for the user to have access to the site: 2 checkboxes and the user was not blocked
     CREATE FUNCTION PUBLIC.has_access() RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
         access INT;
 
@@ -159,7 +159,7 @@
 
   -- RETURNS which step the user is currently at in a particular project
   CREATE FUNCTION PUBLIC.get_current_steps(project_id BIGINT) RETURNS TABLE(title TEXT, project TEXT, book PUBLIC.book_code, chapter INT2, step INT2, started_at TIMESTAMP)
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
 
     BEGIN
       -- must be on the project
@@ -184,7 +184,7 @@
 
   -- get all the verses of the chapter
   CREATE FUNCTION PUBLIC.get_whole_chapter(project_code TEXT, chapter_num INT2, book_code PUBLIC.book_code) RETURNS TABLE(verse_id BIGINT, num INT2, verse TEXT, translator TEXT)
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       verses_list RECORD;
       cur_chapter_id BIGINT;
@@ -226,7 +226,7 @@
 
   -- install a translator as a moderator. Check that there is such a thing, which is set by the admin or coordinator. Otherwise, return false. The condition that we decided to do only one moderator per project at the interface level and not the database. Leave the possibility that there are more than 1 moderators.
   CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       usr RECORD;
     BEGIN
@@ -246,7 +246,7 @@
 
   -- cancel the appointment of a specific moderator
   CREATE FUNCTION PUBLIC.remove_moderator(user_id uuid, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       usr RECORD;
     BEGIN
@@ -266,7 +266,7 @@
 
   -- distribution of verses among translators
   CREATE FUNCTION PUBLIC.divide_verses(divider VARCHAR, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
      verse_row record;
     BEGIN
@@ -286,7 +286,7 @@
 
    -- Sets the start date of the translation of the chapter if it is not there or removes it if the date is already set
   CREATE FUNCTION PUBLIC.change_start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       chap RECORD;
     BEGIN
@@ -312,7 +312,7 @@
 
    -- Sets the end date for the translation of the chapter if it is not there or removes it if the date is already set
   CREATE FUNCTION PUBLIC.change_finish_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       chap RECORD;
     BEGIN
@@ -339,7 +339,7 @@
    -- save the verse
   -- I think that in general it is possible to reduce the number of requests, but let's leave it to the refactoring phase)
   CREATE FUNCTION PUBLIC.save_verse(verse_id BIGINT, new_verse TEXT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
      current_verse record;
      current_chapter record;
@@ -376,7 +376,7 @@
 
   -- since the user cannot directly correct the fields in the user table, he calls this function to mark the confession
   CREATE FUNCTION PUBLIC.check_confession() RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
 
     BEGIN
@@ -389,7 +389,7 @@
 
   -- and this function to set the agreement
   CREATE FUNCTION PUBLIC.check_agreement() RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
 
     BEGIN
@@ -402,7 +402,7 @@
 
   -- for rls, a function that allows only the admin to do something
   CREATE FUNCTION PUBLIC.admin_only()
-    RETURNS BOOLEAN LANGUAGE plpgsql SECURITY definer AS $$
+    RETURNS BOOLEAN LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       access INT;
 
@@ -422,7 +422,7 @@
   -- for rls, a function that checks if the user is a verse translator
   -- can use the function to write the user ID to the table right away, otherwise you will often have to do such checks
   CREATE FUNCTION PUBLIC.can_translate(translator_id BIGINT)
-    returns BOOLEAN LANGUAGE plpgsql security definer AS $$
+    returns BOOLEAN LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       access INT;
 
@@ -441,7 +441,7 @@
 
   -- A new function for moving to the next step (we indicate specifically which step is now) (check that the user has the right to edit these verses, find out the ID of the next step, change the ID of the step for all verses)
   CREATE FUNCTION PUBLIC.go_to_step(project TEXT, chapter INT2, book PUBLIC.book_code, current_step INT2) RETURNS INTEGER
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       proj_trans RECORD;
       cur_step INT2;
@@ -511,7 +511,7 @@
 
   -- blocking a user, can only be called by an admin, it is impossible to block another admin
   CREATE FUNCTION PUBLIC.block_user(user_id uuid) returns TEXT
-    LANGUAGE plpgsql security definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       blocked_user RECORD;
     BEGIN
@@ -536,7 +536,7 @@
   $$;
 
   CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$  
+    LANGUAGE plpgsql SECURITY DEFINER AS $$  
     DECLARE chapters_old JSON;        
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -549,7 +549,7 @@
   $$;
 
   CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$         
+    LANGUAGE plpgsql SECURITY DEFINER AS $$         
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
       END IF;      
@@ -562,7 +562,7 @@
   $$; 
 
   CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
-    LANGUAGE plpgsql SECURITY definer AS $$ 
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ 
     DECLARE chapter JSON;
             verses_old JSON;        
     BEGIN
@@ -577,7 +577,7 @@
   $$; 
 
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$ 
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ 
     DECLARE step_id BIGINT;    
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -601,7 +601,7 @@
   $$;
 
   CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$ 
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ 
     DECLARE old_values JSON;
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -624,7 +624,7 @@
 
   -- inserts a row into public.users
   CREATE FUNCTION PUBLIC.handle_new_user() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY definer AS $$ BEGIN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
       INSERT INTO
         PUBLIC.users (id, email, login)
       VALUES
@@ -638,7 +638,7 @@
 
   -- creating a new brief for the project
   CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE 
         brief_JSON JSON;
       BEGIN
@@ -655,7 +655,7 @@
 
   -- after creating a book, create chapters
   CREATE FUNCTION PUBLIC.handle_new_book() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY definer AS $$ BEGIN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
       IF (PUBLIC.create_chapters(NEW.id)) THEN
         RETURN NEW;
       ELSE
@@ -666,7 +666,7 @@
 
   -- after switching to a new step - save the previous one in progress
   CREATE FUNCTION PUBLIC.handle_next_step() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY definer AS $$ BEGIN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
       IF NEW.current_step = OLD.current_step THEN
         RETURN NEW;
       END IF;
@@ -682,7 +682,7 @@
 
   -- update changed_at to current time/date when personal_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_personal_notes() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY definer AS $$ BEGIN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
       NEW.changed_at:=NOW();
 
       RETURN NEW;
@@ -692,7 +692,7 @@
 
   -- update changed_at to current time/date when team_notes is updating
   CREATE FUNCTION PUBLIC.handle_update_team_notes() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY definer AS $$ BEGIN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
       NEW.changed_at:=NOW();
 
       RETURN NEW;
@@ -702,7 +702,7 @@
 
   -- update array of alphabet in projects column when added new word with new first symbol
   CREATE FUNCTION PUBLIC.handle_update_dictionaries() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       alphabet JSONB;
     BEGIN
@@ -720,7 +720,7 @@
   $$;
 
   CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE      
       chapter JSONB;
     BEGIN
@@ -734,7 +734,7 @@
 
   -- create chapters
   CREATE FUNCTION PUBLIC.create_chapters(book_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       book RECORD;
       chapter RECORD;
@@ -763,7 +763,7 @@
 
   -- batch save verses
   CREATE FUNCTION PUBLIC.save_verses(verses JSON) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
     new_verses RECORD;
     BEGIN
@@ -788,7 +788,7 @@
 
   -- create verses
   CREATE FUNCTION PUBLIC.create_verses(chapter_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY definer AS $$
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       chapter RECORD;
     BEGIN

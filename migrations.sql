@@ -10,7 +10,7 @@
   ALTER TABLE chapters RENAME COLUMN text_temp TO "text";
 
   CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
         chapter JSONB;
       BEGIN
@@ -42,7 +42,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
 
   CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE chapters_old JSON; 
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -57,7 +57,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
 
   CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
@@ -72,7 +72,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
 
   CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
-      LANGUAGE plpgsql SECURITY definer AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
       DECLARE chapter JSON;
               verses_old JSON;
       BEGIN
@@ -89,7 +89,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
 
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
       DECLARE step_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -115,7 +115,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
 
   CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
       DECLARE old_values JSON;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -1553,7 +1553,7 @@
 
   -- creating a new brief for the project
   CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY definer AS $$
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE 
         brief_JSON JSON;
       BEGIN
