@@ -42,7 +42,7 @@ function TeamNotes() {
     query: { project: code },
   } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
-  const [notes, { loading, error, mutate }] = useTeamNotes({
+  const [notes, { mutate }] = useTeamNotes({
     token: user?.access_token,
     project_id: project?.id,
   })

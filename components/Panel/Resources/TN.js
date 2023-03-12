@@ -10,11 +10,11 @@ import { useGetResource, useScroll } from 'utils/hooks'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
-  const { loading, data, error } = useGetResource({ config, url })
+  const { isLoading, data, error } = useGetResource({ config, url })
 
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Placeholder />
       ) : (
         <div className="relative h-full">

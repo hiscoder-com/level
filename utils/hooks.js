@@ -4,19 +4,17 @@ import axios from 'axios'
 import useSWR from 'swr'
 import { checkLSVal } from './helper'
 
-const fetcher = async (url, token) => {
+const fetcher = async ([url, token]) => {
   const res = await fetch(url, {
     method: 'GET',
     headers: new Headers({ 'Content-Type': 'application/json', token }),
     credentials: 'same-origin',
   })
-
   if (!res.ok) {
     const error = await res.json()
     error.status = res.status
     throw error
   }
-
   return res.json()
 }
 /**
@@ -25,13 +23,17 @@ const fetcher = async (url, token) => {
  * @returns {array}
  */
 export function useLanguages(token) {
-  const { data, mutate, error } = useSWR(
+  const { data, mutate, error, isLoading } = useSWR(
     token ? ['/api/languages', token] : null,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
   )
-  const loading = !data && !error
+
   const languages = data
-  return [languages, { mutate, loading, error }]
+  return [languages, { mutate, isLoading, error }]
 }
 /**
  *hook returns information about all users
@@ -43,9 +45,13 @@ export function useUsers(token) {
     data: users,
     mutate,
     error,
-  } = useSWR(token ? ['/api/users', token] : null, fetcher)
-  const loading = !users && !error
-  return [users, { mutate, loading, error }]
+    isLoading,
+  } = useSWR(token ? ['/api/users', token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+
+  return [users, { mutate, isLoading, error }]
 }
 
 export function useUser(token, id) {
@@ -53,9 +59,9 @@ export function useUser(token, id) {
     data: user,
     mutate,
     error,
+    isLoading,
   } = useSWR(token && id ? ['/api/users/' + id, token] : null, fetcher)
-  const loading = !user && !error
-  return [user, { mutate, loading, error }]
+  return [user, { mutate, isLoading, error }]
 }
 /**
  *hook returns information about projects
@@ -63,10 +69,16 @@ export function useUser(token, id) {
  * @returns {array}
  */
 export function useProjects({ token }) {
-  const { data, mutate, error } = useSWR(token ? [`/api/projects`, token] : null, fetcher)
-  const loading = !data && !error
+  const { data, mutate, error, isLoading } = useSWR(
+    token ? [`/api/projects`, token] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
   // форматировать data, нужно пройтись по всем проектам и раскидать, чтобы каждый проект лежал внутри языка
-  return [data, { mutate, loading, error }]
+  return [data, { mutate, error, isLoading }]
 }
 
 /**
@@ -76,25 +88,35 @@ export function useProjects({ token }) {
  * @returns {array}
  */
 export function useMethod(token) {
-  const { data, mutate, error } = useSWR(token ? ['/api/methods', token] : null, fetcher)
-  const loading = !data && !error
+  const { data, mutate, error, isLoading } = useSWR(
+    token ? ['/api/methods', token] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+
   const methods = data
-  return [methods, { mutate, loading, error }]
+  return [methods, { mutate, error, isLoading }]
 }
 /**
  *hook returns information about specific project from table 'projects'
  * @param {string} code code of project
  * @param {string} token token of current session of authenticated user
- * @returns {array}
+ * @returns {object}
  */
 export function useProject({ token, code }) {
   const {
     data: project,
     mutate,
     error,
-  } = useSWR(token && code ? [`/api/projects/${code}`, token] : null, fetcher)
-  const loading = !project && !error
-  return [project, { mutate, loading, error }]
+    isLoading,
+  } = useSWR(token && code ? [`/api/projects/${code}`, token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [project, { mutate, error, isLoading }]
 }
 /**
  *hook returns all users on specific project with role 'coordinator'
@@ -107,12 +129,16 @@ export function useCoordinators({ token, code }) {
     data: coordinators,
     mutate,
     error,
+    isLoading,
   } = useSWR(
     token && code ? [`/api/projects/${code}/coordinators`, token] : null,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
   )
-  const loading = !coordinators && !error
-  return [coordinators, { mutate, loading, error }]
+  return [coordinators, { mutate, error, isLoading }]
 }
 /**
  *hook returns all users on specific project with role 'translator'
@@ -125,9 +151,17 @@ export function useTranslators({ token, code }) {
     data: translators,
     mutate,
     error,
-  } = useSWR(token && code ? [`/api/projects/${code}/translators`, token] : null, fetcher)
-  const loading = !translators && !error
-  return [translators, { mutate, loading, error }]
+    isLoading,
+  } = useSWR(
+    token && code ? [`/api/projects/${code}/translators`, token] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+
+  return [translators, { mutate, error, isLoading }]
 }
 
 /**
@@ -163,7 +197,7 @@ export function useRedirect({ user, startLink }) {
  *hook receives information from git.door43
  * @param {object} config 2 keys object: {resource:{owner, repo, commit},reference: { book, chapter, step, verses }}
  * @param {string} url url of api, for example: '/api/git/bible'
- * @returns {object} {loading, data, error}
+ * @returns {object} { data, mutate, error, isLoading }
  */
 export function useGetResource({ config, url }) {
   const {
@@ -171,13 +205,15 @@ export function useGetResource({ config, url }) {
     reference: { book, chapter, step },
     resource: { owner, repo, commit, bookPath },
   } = config
-  const params = { owner, repo, commit, bookPath, book, chapter, step, verses }
+  const params = { owner, repo, commit, bookPath, book, chapter, verses }
 
-  const fetcher = (url, params) => axios.get(url, { params }).then((res) => res.data)
-  const { data, error } = useSWR([url, params], fetcher)
-  const loading = !data && !error
+  const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
+  const { isLoading, data, error } = useSWR([url, params], fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
 
-  return { loading, data, error }
+  return { isLoading, data, error }
 }
 
 export function usePersonalNotes({ token }) {
@@ -185,9 +221,13 @@ export function usePersonalNotes({ token }) {
     data: notes,
     mutate,
     error,
-  } = useSWR(token ? [`/api/personal_notes`, token] : null, fetcher)
-  const loading = !notes && !error
-  return [notes, { mutate, loading, error }]
+    isLoading,
+  } = useSWR(token ? [`/api/personal_notes`, token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+
+  return [notes, { mutate, error, isLoading }]
 }
 
 export function useTeamNotes({ token, project_id }) {
@@ -195,12 +235,17 @@ export function useTeamNotes({ token, project_id }) {
     data: notes,
     mutate,
     error,
+    isLoading,
   } = useSWR(
     token && project_id ? [`/api/team_notes/${project_id}`, token] : null,
-    fetcher
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
   )
-  const loading = !notes && !error
-  return [notes, { mutate, loading, error }]
+
+  return [notes, { mutate, error, isLoading }]
 }
 
 export function useGetBrief({ token, project_id }) {
@@ -208,9 +253,12 @@ export function useGetBrief({ token, project_id }) {
     data: brief,
     mutate,
     error,
-  } = useSWR(token && project_id ? [`/api/briefs/${project_id}`, token] : null, fetcher)
-  const loading = !brief && !error
-  return [brief, { mutate, loading, error }]
+    isLoading,
+  } = useSWR(token && project_id ? [`/api/briefs/${project_id}`, token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [brief, { mutate, error, isLoading }]
 }
 
 export function useScroll({ toolName }) {
@@ -240,4 +288,176 @@ export function useBriefState({ token, project_id }) {
     }
   }, [brief])
   return { briefResume, isBrief: brief?.is_enable }
+}
+
+/**
+ *hook returns information about resources of specific project from table 'projects'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @returns {array}
+ */
+export function useGetProjectResources({ token, code }) {
+  const {
+    data: resources,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(token && code ? [`/api/projects/${code}/resources`, token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [resources, { mutate, error, isLoading }]
+}
+
+/**
+ *hook returns information about books of specific project from table 'books'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @returns {array}
+ */
+export function useGetBooks({ token, code }) {
+  const {
+    data: books,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(token && code ? [`/api/projects/${code}/books`, token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [books, { mutate, error, isLoading }]
+}
+
+/**
+ *hook returns information about specific book of specific project from table 'books'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {string} book_code code of book
+ * @returns {object}
+ */
+export function useGetBook({ token, code, book_code }) {
+  const {
+    data: book,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && book_code
+      ? [`/api/projects/${code}/books/${book_code}`, token]
+      : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  return [book, { mutate, error, isLoading }]
+}
+
+/**
+ *hook returns information about chapters of specific project from table 'chapters'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {string} book_code code of book
+ * @returns {array}
+ */
+export function useGetChapters({ token, code, book_code }) {
+  const {
+    data: chapters,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && book_code
+      ? [`/api/projects/${code}/books/${book_code}/chapters`, token]
+      : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  return [chapters, { mutate, error, isLoading }]
+}
+
+/**
+ *hook returns information about specific chapter from table 'chapters'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {string} book_code code of book
+ * @param {string} chapter_id num of chapter
+
+ * @returns {object}
+ */
+export function useGetChapter({ token, code, book_code, chapter_id }) {
+  const {
+    data: chapter,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && book_code && chapter_id
+      ? [`/api/projects/${code}/books/${book_code}/chapters/${chapter_id}`, token]
+      : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  return [chapter, { mutate, error, isLoading }]
+}
+
+/**
+ *hook returns information about created chapters from table 'chapters'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {array} chapters
+ *
+ * @returns {array}
+ */
+export function useGetCreatedChapters({ token, code, chapters }) {
+  const {
+    data: createdChapters,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && chapters
+      ? [`/api/projects/${code}/created_chapters?chapters=${chapters}`, token]
+      : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  return [createdChapters, { mutate, error, isLoading }]
+}
+
+/**
+ *hook returns information about verses of specific chapter from table 'verses'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {string} book_code code of book
+ * @param {string} chapter_id id of chapter
+ * @returns {array}
+ */
+export function useGetVerses({ token, code, book_code, chapter_id }) {
+  const {
+    data: verses,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && book_code && chapter_id
+      ? [`/api/projects/${code}/books/${book_code}/chapters/${chapter_id}/verses`, token]
+      : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  return [verses, { mutate, error, isLoading }]
 }

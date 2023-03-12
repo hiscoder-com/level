@@ -7,11 +7,9 @@ import { Switch } from '@headlessui/react'
 
 import CommitsList from './CommitsList'
 
-import { supabase } from 'utils/supabaseClient'
-
 import { useCurrentUser } from 'lib/UserContext'
 
-import { useProject, useMethod, useGetBrief } from 'utils/hooks'
+import { useProject, useMethod, useGetBrief, useGetProjectResources } from 'utils/hooks'
 
 function ProjectSettings() {
   const { user } = useCurrentUser()
@@ -30,6 +28,10 @@ function ProjectSettings() {
     token: user?.access_token,
     project_id: project?.id,
   })
+  const [resources] = useGetProjectResources({
+    token: user?.access_token,
+    code,
+  })
   useEffect(() => {
     if (project?.method && methods) {
       const method = methods.find((method) => method.title === project.method)
@@ -38,29 +40,17 @@ function ProjectSettings() {
   }, [project?.method, methods])
 
   useEffect(() => {
-    'Brief'
-    const getResources = async () => {
-      if (project?.id) {
-        const { data, error } = await supabase
-          .from('projects')
-          .select('resources')
-          .eq('id', project.id)
-          .single()
-        if (data?.resources) {
-          const resources = {}
+    if (resources) {
+      const _resources = {}
 
-          for (const [key, value] of Object.entries(data?.resources)) {
-            resources[
-              key
-            ] = `https://git.door43.org/${value.owner}/${value.repo}/src/commit/${value.commit}`
-          }
-          setResourcesUrl(resources)
-        }
+      for (const [key, value] of Object.entries(resources)) {
+        _resources[
+          key
+        ] = `https://git.door43.org/${value.owner}/${value.repo}/src/commit/${value.commit}`
       }
+      setResourcesUrl(_resources)
     }
-    getResources()
-  }, [project?.id])
-
+  }, [resources])
   const handleSaveCommits = async () => {
     setIsErrorCommit(false)
     setIsSaving(true)

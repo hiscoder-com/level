@@ -8,7 +8,7 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
-import { useProject } from 'utils/hooks'
+import { useGetChapter, useProject } from 'utils/hooks'
 
 // moderatorOnly
 //              - TRUE видно все стихи, только модератор может вносить исправления
@@ -17,15 +17,19 @@ function CommandEditor({ config }) {
   const { user } = useCurrentUser()
 
   const {
-    query: { project, book, chapter },
+    query: { project, book, chapter: chapter_num },
   } = useRouter()
 
   const [level, setLevel] = useState('user')
-  const [chapterId, setChapterId] = useState(false)
   const [verseObjects, setVerseObjects] = useState([])
 
   const [currentProject] = useProject({ token: user?.access_token, code: project })
-
+  const [chapter] = useGetChapter({
+    token: user?.access_token,
+    code: project,
+    book_code: book,
+    chapter_id: chapter_num,
+  })
   useEffect(() => {
     const getLevel = async (user_id, project_id) => {
       const level = await supabase.rpc('authorize', {
@@ -41,22 +45,9 @@ function CommandEditor({ config }) {
 
   useEffect(() => {
     supabase
-      .from('chapters')
-      .select('id,projects!inner(code),books!inner(code)')
-      .match({ num: chapter, 'projects.code': project, 'books.code': book })
-      .maybeSingle()
-      .then((res) => {
-        if (res.data.id) {
-          setChapterId(res.data.id)
-        }
-      })
-  }, [book, chapter, project])
-
-  useEffect(() => {
-    supabase
       .rpc('get_whole_chapter', {
         project_code: project,
-        chapter_num: chapter,
+        chapter_num,
         book_code: book,
       })
       .then((res) => {
@@ -69,7 +60,7 @@ function CommandEditor({ config }) {
         }))
         setVerseObjects(result)
       })
-  }, [book, chapter, config?.reference?.verses, project])
+  }, [book, chapter_num, config?.reference?.verses, project])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {
@@ -85,9 +76,9 @@ function CommandEditor({ config }) {
 
   useEffect(() => {
     let mySubscription = null
-    if (chapterId) {
+    if (chapter?.id) {
       mySubscription = supabase
-        .from('verses:chapter_id=eq.' + chapterId)
+        .from('verses:chapter_id=eq.' + chapter.id)
         .on('UPDATE', (payload) => {
           const { id, text } = payload.new
           updateVerseObject(id, text)
@@ -99,7 +90,7 @@ function CommandEditor({ config }) {
         supabase.removeSubscription(mySubscription)
       }
     }
-  }, [chapterId])
+  }, [chapter?.id])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {

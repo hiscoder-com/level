@@ -70,65 +70,95 @@ function ProjectCard({ project, token, userId }) {
     return isRepeatIntro
   }
   return (
-    <div className="block p-6 h-full bg-white rounded-xl">
-      <Link href={`/projects/${project.code}`}>
-        <a className="block text-2xl mb-4 text-blue-450 underline decoration-2 underline-offset-4">
-          {project.title}
-        </a>
-      </Link>
-      <div className="flex gap-2.5 mb-1.5">
-        <p className="text-gray-500">{t('Language')}:</p>
-        <p>{project.languages.orig_name}</p>
-      </div>
-      <div className="flex gap-3">
-        <p className="text-gray-500">{t('Translators')}:</p>
-        <Translators projectCode={project.code} size="25px" />
-      </div>
-      {briefResume === '' && (
-        <Link href={`/projects/${project?.code}/edit/brief`}>
-          <a className="btn btn-white mt-2 mx-1">
-            {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
-          </a>
-        </Link>
+    <>
+      {!project || !chapters || !currentSteps ? (
+        <Sceleton />
+      ) : (
+        <div className="block p-6 h-full bg-white rounded-xl">
+          <Link href={`/projects/${project.code}`}>
+            <a className="block text-2xl mb-4 text-blue-450 underline decoration-2 underline-offset-4">
+              {project.title}
+            </a>
+          </Link>
+          <div className="flex gap-2.5 mb-1.5">
+            <p className="text-gray-500">{t('Language')}:</p>
+            <p>{project.languages.orig_name}</p>
+          </div>
+          <div className="flex gap-3">
+            <p className="text-gray-500">{t('Translators')}:</p>
+            <Translators projectCode={project.code} size="25px" />
+          </div>
+          {briefResume === '' && (
+            <Link href={`/projects/${project?.code}/edit/brief`}>
+              <a className="btn btn-white mt-2 mx-1">
+                {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
+              </a>
+            </Link>
+          )}
+          <div className="divide-y-2">
+            {Object.keys(chapters).map((chapter, i) => {
+              return (
+                <div key={i} className="mb-2">
+                  <div>{t(`books:${chapter}`)}</div>
+                  {chapters[chapter].map((step, index) => {
+                    return !isBrief || briefResume ? (
+                      <Link
+                        key={index}
+                        href={`/translate/${step.project}/${step.book}/${step.chapter}/${
+                          step.step
+                        }${
+                          typeof searchLocalStorage(step, localStorSteps) === 'undefined'
+                            ? '/intro'
+                            : ''
+                        }`}
+                      >
+                        <a className="btn btn-white mt-2 mx-1">
+                          {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
+                          {t('common:Step').toLowerCase()}
+                        </a>
+                      </Link>
+                    ) : (
+                      <div
+                        key={index}
+                        className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1"
+                      >
+                        {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
+                        {t('common:Step').toLowerCase()}
+                      </div>
+                    )
+                  })}
+                </div>
+              )
+            })}
+          </div>
+        </div>
       )}
-      <div className="divide-y-2">
-        {Object.keys(chapters).map((chapter, i) => {
-          return (
-            <div key={i} className="mb-2">
-              <div>{t(`books:${chapter}`)}</div>
-              {chapters[chapter].map((step, index) => {
-                return !isBrief || briefResume ? (
-                  <Link
-                    key={index}
-                    href={`/translate/${step.project}/${step.book}/${step.chapter}/${
-                      step.step
-                    }${
-                      typeof searchLocalStorage(step, localStorSteps) === 'undefined'
-                        ? '/intro'
-                        : ''
-                    }`}
-                  >
-                    <a className="btn btn-white mt-2 mx-1">
-                      {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
-                      {t('common:Step').toLowerCase()}
-                    </a>
-                  </Link>
-                ) : (
-                  <div
-                    key={index}
-                    className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1"
-                  >
-                    {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
-                    {t('common:Step').toLowerCase()}
-                  </div>
-                )
-              })}
-            </div>
-          )
-        })}
-      </div>
-    </div>
+    </>
   )
 }
 
 export default ProjectCard
+
+function Sceleton() {
+  return (
+    <div
+      role="status"
+      className=" p-4 border border-gray-200 h-full shadow animate-pulse md:p-6 bg-white rounded-xl"
+    >
+      <div className="h-2.5 w-1/4 bg-gray-200 rounded-full mb-4"></div>
+      {[...Array(6).keys()].map((el) => (
+        <div key={el}>
+          <div className="h-2 bg-gray-200 rounded-full mb-4"></div>
+        </div>
+      ))}
+      <div className="h-2 bg-gray-200 rounded-full"></div>
+      <div className="flex items-center mt-4 space-x-3">
+        {[...Array(3).keys()].map((el) => (
+          <div key={el}>
+            <div className="h-8 btn w-1/3 mb-2"></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

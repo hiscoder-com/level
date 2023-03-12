@@ -33,7 +33,7 @@ function PersonalNotes() {
   const [noteToDel, setNoteToDel] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
-  const [notes, { loading, error, mutate }] = usePersonalNotes({
+  const [notes, { mutate }] = usePersonalNotes({
     token: user?.access_token,
     sort: 'changed_at',
   })

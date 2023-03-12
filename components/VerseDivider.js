@@ -51,7 +51,7 @@ function VerseDivider({ verses }) {
   const [versesDivided, setVersesDivided] = useState([])
   useEffect(() => {
     if (colorTranslators?.length > 0) {
-      const extVerses = verses.map((el) => {
+      const extVerses = verses?.map((el) => {
         const translator = colorTranslators.find(
           (element) => element.id === el.project_translator_id
         )
@@ -97,7 +97,7 @@ function VerseDivider({ verses }) {
         className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
         {versesDivided
-          .sort((a, b) => a.num > b.num)
+          ?.sort((a, b) => a.num > b.num)
           .map((el, index) => {
             return (
               <div
@@ -160,7 +160,7 @@ function VerseDivider({ verses }) {
         <button
           onClick={() =>
             setVersesDivided(
-              verses.map((el) => ({
+              verses?.map((el) => ({
                 ...el,
                 color: 'bg-slate-300',
                 translator_name: '',
