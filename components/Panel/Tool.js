@@ -2,17 +2,17 @@ import { useTranslation } from 'next-i18next'
 
 import {
   PersonalNotes,
-  TeamNotes,
-  Dictionary,
-  Audio,
-  Editor,
-  Bible,
-  TN,
-  TWL,
-  TQ,
-  BlindEditor,
   CommandEditor,
+  BlindEditor,
+  Dictionary,
+  TeamNotes,
+  Editor,
   Reader,
+  Audio,
+  Bible,
+  TWL,
+  TN,
+  TQ,
 } from './'
 
 function Tool({ config, toolName, editable = false }) {

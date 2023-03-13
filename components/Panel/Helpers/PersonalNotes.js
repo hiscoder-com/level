@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
-import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
+
+import axios from 'axios'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { usePersonalNotes } from 'utils/hooks'
+
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
 import Modal from 'components/Modal'

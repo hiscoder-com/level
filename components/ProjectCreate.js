@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
 import axios from 'axios'
 
 import CommitsList from './CommitsList'
@@ -13,16 +14,17 @@ import { Switch } from '@headlessui/react'
 
 // TODO не работает если создавать ОБС
 function ProjectCreate() {
-  const router = useRouter()
-  const { t } = useTranslation(['projects', 'project-edit'])
-  const [customSteps, setCustomSteps] = useState('')
-  const [customBriefs, setCustomBriefs] = useState('')
-  const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [customResources, setCustomResources] = useState('')
-  const [method, setMethod] = useState()
+  const [isBriefEnable, setIsBriefEnable] = useState(true)
+  const [customBriefs, setCustomBriefs] = useState('')
   const [resourcesUrl, setResourcesUrl] = useState()
+  const [customSteps, setCustomSteps] = useState('')
+  const [method, setMethod] = useState()
 
+  const { t } = useTranslation(['projects', 'project-edit'])
   const { user } = useCurrentUser()
+  const router = useRouter()
+
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
   const {

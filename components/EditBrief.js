@@ -5,11 +5,13 @@ import { useRouter } from 'next/router'
 
 import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
+
 import axios from 'axios'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
+
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 

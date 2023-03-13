@@ -12,14 +12,15 @@ import { projectIdState } from './Panel/state/atoms'
 import Tools from 'public/tools.svg'
 
 function Dropdown({ description, user }) {
-  const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
+  const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+
   const dropdownMenu = useRef(null)
   const toolsButton = useRef(null)
+  const { t } = useTranslation(['common'])
 
   const toggle = () => setIsOpen((prev) => !prev)
-  const { t } = useTranslation(['common'])
 
   const closeModal = () => {
     setShowModalStepGoal(false)

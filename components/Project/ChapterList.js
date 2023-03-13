@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
 import { useTranslation } from 'next-i18next'
 
 import DownloadBlock from './DownloadBlock'
@@ -12,12 +13,12 @@ import { supabase } from 'utils/supabaseClient'
 import { useBriefState } from 'utils/hooks'
 
 function ChapterList({ selectedBook, project, highLevelAccess, token }) {
-  const [openModal, setOpenModal] = useState(false)
-
   const [selectedChapter, setSelectedChapter] = useState(null)
   const [createdChapters, setCreatedChapters] = useState([])
   const [currentSteps, setCurrentSteps] = useState(null)
+  const [openModal, setOpenModal] = useState(false)
   const [chapters, setChapters] = useState([])
+
   const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
@@ -36,6 +37,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
       push('/projects/' + code + '/books/' + selectedBook.code + '/' + num)
     }
   }
+
   useEffect(() => {
     const getCreatedChapters = async () => {
       const { data: createdChaptersRaw, error } = await supabase

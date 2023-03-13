@@ -1,28 +1,28 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 import { Switch } from '@headlessui/react'
 
-import Modal from 'components/Modal'
 import TranslatorImage from 'components/TranslatorImage'
+import Modal from 'components/Modal'
 
 import { supabase } from 'utils/supabaseClient'
 import {
   useCoordinators,
+  useTranslators,
   useGetBrief,
   useProject,
-  useTranslators,
   useUsers,
 } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectEdit() {
-  const { t } = useTranslation(['common', 'project-edit', 'projects', 'users'])
+  const { t } = useTranslation(['common', 'project-edit', 'projects'])
   const {
     query: { code },
   } = useRouter()
@@ -392,6 +392,7 @@ export default ProjectEdit
 
 function TranslatorsList({ translators, setSelectedModerator, setSelectedTranslator }) {
   const { t } = useTranslation(['common', 'users'])
+
   return (
     <div className="overflow-x-auto relative">
       <table className="w-full text-sm text-left text-gray-500">
@@ -458,6 +459,7 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
 
 function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = false }) {
   const { t } = useTranslation(['common', 'users'])
+
   return (
     <div className="overflow-x-auto relative">
       <table className="w-1/2 text-sm text-left text-gray-500">

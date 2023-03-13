@@ -16,12 +16,13 @@ import TrashButton from 'public/trash.svg'
 export default function Recorder() {
   const [, setInactive] = useRecoilState(inactiveState)
   const [showModal, setShowModal] = useState(false)
-  const audioRef = useRef(null)
   const [mediaRec, setMediaRec] = useState()
   const [voice, setVoice] = useState([])
   const [button, setButton] = useState(
     <RecorderButton className="stroke-cyan-700 stroke-2" />
   )
+
+  const audioRef = useRef(null)
 
   const startStop = () => {
     if (mediaRec?.state === 'inactive') {

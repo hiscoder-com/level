@@ -7,13 +7,14 @@ import { useTranslation } from 'next-i18next'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+
 import BookList from './BookList'
 
 function Project({ code }) {
   const { t } = useTranslation(['projects'])
 
-  const [project, setProject] = useState()
   const [highLevelAccess, setHighLevelAccess] = useState(false)
+  const [project, setProject] = useState()
 
   const { user } = useCurrentUser()
 
@@ -50,6 +51,7 @@ function Project({ code }) {
     token: user?.access_token,
     code: code,
   })
+
   return (
     <div className="mx-auto max-w-7xl">
       <h3 className="h3 inline-block">{project?.title}</h3>
