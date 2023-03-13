@@ -269,7 +269,7 @@ export const removeCacheNote = (key, note_id) => {
     return
   }
   const cacheNotes = JSON.parse(localStorage.getItem(key))
-  
+
   if (cacheNotes) {
     delete cacheNotes[note_id]
     localStorage.setItem(key, JSON.stringify(cacheNotes))
@@ -287,9 +287,7 @@ export const validateNote = (note) => {
 
   if (note.blocks?.length) {
     for (const blockElement of note.blocks) {
-      if (
-        ['type', 'data'].find((el) => !Object?.keys(blockElement)?.includes(el))
-      ) {
+      if (['type', 'data'].find((el) => !Object?.keys(blockElement)?.includes(el))) {
         return false
       }
     }
