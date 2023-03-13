@@ -1,4 +1,6 @@
 {
+  "Account": "Account",
+  "Agree": "Agree",
   "Agreement": "Agreement",
   "Block": "Block",
   "Blocked": "Blocking",
@@ -27,7 +29,7 @@
   "UsersList": "List of users",
   "V-CANAAccount": "V-CANA account",
   "WriteAdministrator": "write to the administrator.",
+  "WrongLoginPassword": "Invalid username or password",
   "YourLogin": "Your login",
-  "YouSignInAs": "You are logged in as",
-  "WrongLoginPassword": "Invalid username or password"
+  "YouSignInAs": "You are logged in as"
 }

@@ -7,7 +7,7 @@ import SwitchLocalization from './SwitchLocalization'
 import SignOut from './SignOut'
 
 function SideBar({ isOpen, setIsOpen }) {
-  const { t } = useTranslation('common,users')
+  const { t } = useTranslation('users')
   const condition = `absolute font-medium bg-black/70 left-0 top-0 right-0 bottom-0 z-10 ${
     isOpen ? '' : 'hidden'
   }`

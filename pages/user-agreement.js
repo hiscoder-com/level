@@ -52,7 +52,7 @@ export default function UserAgreement() {
       </div>
       <Footer
         textButton={t('common:Next')}
-        textCheckbox={t('common:Agree')}
+        textCheckbox={t('users:Agree')}
         handleClick={handleClick}
       />
     </div>

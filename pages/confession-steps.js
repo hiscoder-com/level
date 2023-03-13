@@ -112,7 +112,7 @@ export default function ConfessionSteps() {
             checked={checked}
             onChange={() => setChecked((prev) => !prev)}
           />
-          <label htmlFor="cb">{t('common:Agree')}</label>
+          <label htmlFor="cb">{t('users:Agree')}</label>
         </div>
         <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
           {t('common:Next')}

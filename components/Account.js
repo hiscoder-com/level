@@ -12,7 +12,7 @@ function Account() {
   const { user, loading } = useCurrentUser()
   const router = useRouter()
 
-  const { t } = useTranslation(['users', 'common'])
+  const { t } = useTranslation(['users'])
 
   useEffect(() => {
     if (!loading && user === null) {
@@ -22,7 +22,7 @@ function Account() {
 
   return (
     <div className="mx-auto max-w-7xl">
-      <h1 className="h1">{t('common:Account')}</h1>
+      <h1 className="h1">{t('Account')}</h1>
 
       {user?.id && (
         <>
