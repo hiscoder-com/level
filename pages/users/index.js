@@ -9,7 +9,7 @@ import UsersList from 'components/Users/List'
 import { useCurrentUser } from 'lib/UserContext'
 
 export default function UsersPage() {
-  const { t } = useTranslation(['users'])
+  const { t } = useTranslation(['users', 'common'])
 
   const { user } = useCurrentUser()
   return (

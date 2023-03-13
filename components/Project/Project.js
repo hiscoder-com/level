@@ -10,7 +10,7 @@ import { supabase } from 'utils/supabaseClient'
 import BookList from './BookList'
 
 function Project({ code }) {
-  const { t } = useTranslation(['projects', 'common', 'books', 'chapters'])
+  const { t } = useTranslation(['projects'])
 
   const [project, setProject] = useState()
   const [highLevelAccess, setHighLevelAccess] = useState(false)
