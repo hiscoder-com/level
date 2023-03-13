@@ -1581,3 +1581,6 @@
         ADD deleted_at timestamp DEFAULT NULL;
   ALTER TABLE PUBLIC.team_notes
         ADD deleted_at timestamp DEFAULT NULL;
+  ALTER TABLE dictionaries
+        DROP CONSTRAINT dictionaries_project_id_title_key;
+  CREATE UNIQUE INDEX dictionaries_project_id_title_indx ON dictionaries (project_id, title) WHERE deleted_at IS NULL;      
