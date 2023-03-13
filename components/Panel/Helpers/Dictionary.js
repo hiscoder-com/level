@@ -7,6 +7,9 @@ import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 
+import toast, { Toaster } from 'react-hot-toast'
+
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 import { useProject } from 'utils/hooks'
@@ -69,19 +72,25 @@ function Dictionary() {
 
   const getWords = async (searchQuery = '', count = 0) => {
     const { from, to } = getPagination(count, CountWordsOnPage)
-
-    const { data, count: wordsCount } = await supabase
-      .from('dictionaries')
-      .select('id,project_id,title,data', { count: 'exact' })
-      .eq('project_id', project?.id)
-      .ilike('title', `${searchQuery}%`)
-      .order('title', { ascending: true })
-      .range(from, to)
-
-    if (data?.length) {
-      setWords({ data, count: wordsCount })
+    if (project?.id) {
+      const { data, count: wordsCount } = await supabase
+        .from('dictionaries')
+        .select('id,project_id,title,data,deleted_at', { count: 'exact' })
+        .eq('project_id', project?.id)
+        .is('deleted_at', null)
+        .ilike('title', `${searchQuery}%`)
+        .order('title', { ascending: true })
+        .range(from, to)
+      if (data?.length) {
+        setWords({ data, count: wordsCount })
+      }
     }
   }
+
+  useEffect(() => {
+    getWords()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.id])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -137,7 +146,7 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/dictionaries/${id}`)
-      .then()
+      .then(() => removeCacheNote('dictionary', id))
       .catch((err) => console.log(err))
       .finally(() => {
         getWords(searchQuery, currentPageWords)
@@ -151,8 +160,11 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
-      .then()
-      .catch((err) => showError(err, activeWord?.title))
+      .then(() => saveCacheNote('dictionary', activeWord, user))
+      .catch((err) => {
+        toast.error(t('SaveFailedWord'))
+        console.log(err)
+      })
       .finally(() => {
         getWords(searchQuery, currentPageWords)
         mutate()
@@ -339,6 +351,7 @@ function Dictionary() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }

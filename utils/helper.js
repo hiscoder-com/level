@@ -224,3 +224,73 @@ export const countOfChaptersAndVerses = async ({ link }) => {
 
   return { data: jsonChapterVerse, error: errorParse }
 }
+export const saveCacheNote = (key, note, user) => {
+  if (!note) {
+    return
+  }
+  const cache = JSON.parse(localStorage.getItem(key))
+  if (!note?.data?.blocks?.length) {
+    if (cache?.[note.id]?.length) {
+      axios.defaults.headers.common['token'] = user?.access_token
+      axios
+        .post(`/api/logs`, {
+          message: `${key} saved empty`,
+          note,
+          cache: cache?.[note.id],
+          user_id: user?.id,
+        })
+        .then()
+        .catch((err) => console.log(err))
+    }
+    return
+  }
+  if (!cache) {
+    localStorage.setItem(key, JSON.stringify({ [note.id]: [note] }))
+    return
+  }
+
+  if (cache[note.id]?.length) {
+    const cacheNotes = cache[note.id]
+    cacheNotes.sort((a, b) => a.changed_at - b.changed_at)
+    if (cacheNotes.length >= 5) {
+      cacheNotes.shift()
+    }
+    cacheNotes.push(note)
+    cache[note.id] = cacheNotes
+    localStorage.setItem(key, JSON.stringify(cache))
+  } else {
+    cache[note.id] = [note]
+    localStorage.setItem(key, JSON.stringify(cache))
+  }
+}
+
+export const removeCacheNote = (key, note_id) => {
+  if (!note_id) {
+    return
+  }
+  const cacheNotes = JSON.parse(localStorage.getItem(key))
+
+  if (cacheNotes) {
+    delete cacheNotes[note_id]
+    localStorage.setItem(key, JSON.stringify(cacheNotes))
+  }
+}
+
+export const validateNote = (note) => {
+  if (!note) {
+    return false
+  }
+
+  if (['blocks', 'version'].find((el) => !Object?.keys(note)?.includes(el))) {
+    return false
+  }
+
+  if (note.blocks?.length) {
+    for (const blockElement of note.blocks) {
+      if (['type', 'data'].find((el) => !Object?.keys(blockElement)?.includes(el))) {
+        return false
+      }
+    }
+  }
+  return true
+}

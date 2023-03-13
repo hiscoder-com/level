@@ -10,6 +10,7 @@
   "RemovingCoordinator": "Удаление координатора",
   "RemovingModerator": "Удаление модератора",
   "RemovingTranslator": "Удаление переводчика",
-  "saveFailed": "Не удалось сохранить бриф",
-  "successfulSave": "Бриф сохранён"
+  "saveFailedBrief": "Не удалось сохранить бриф",
+  "successfulSave": "Бриф сохранён",
+  "SummaryPlaceholder": "Распишите предназначение перевода..."
 }

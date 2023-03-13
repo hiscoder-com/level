@@ -1291,6 +1291,7 @@
       data JSON DEFAULT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       changed_at TIMESTAMP DEFAULT NOW(),
+      deleted_at TIMESTAMP DEFAULT NULL,
       is_folder BOOLEAN DEFAULT FALSE,
       parent_id TEXT DEFAULT NULL
     );
@@ -1338,6 +1339,7 @@
       data JSON DEFAULT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       changed_at TIMESTAMP DEFAULT NOW(),
+      deleted_at TIMESTAMP DEFAULT NULL,
       is_folder BOOLEAN DEFAULT FALSE,
       parent_id TEXT DEFAULT NULL
     );
@@ -1384,10 +1386,11 @@
       data JSON DEFAULT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       changed_at TIMESTAMP DEFAULT NOW(),
-      UNIQUE (project_id, title) 
+      deleted_at timestamp DEFAULT NULL      
     );
     ALTER TABLE
-      PUBLIC.dictionaries enable ROW LEVEL SECURITY;
+      PUBLIC.dictionaries enable ROW LEVEL security;
+    CREATE UNIQUE INDEX dictionaries_project_id_title_indx ON PUBLIC.dictionaries (project_id, title) WHERE deleted_at IS NULL;
   -- END TABLE
 
   -- RLS

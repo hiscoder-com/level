@@ -48,7 +48,7 @@ function EditBrief() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('project-edit:saveFailed'))
+        toast.error(t('project-edit:saveFailedBrief'))
         console.log(err)
       })
   }
