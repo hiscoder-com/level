@@ -70,7 +70,9 @@ function Project({ code }) {
           </>
         )}
       </div>
-      <BookList highLevelAccess={highLevelAccess} project={project} user={user} />
+      {project && (
+        <BookList highLevelAccess={highLevelAccess} project={project} user={user} />
+      )}
     </div>
   )
 }

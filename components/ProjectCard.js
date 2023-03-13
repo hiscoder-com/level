@@ -12,8 +12,7 @@ import { useBriefState } from 'utils/hooks'
 function ProjectCard({ project, token, userId }) {
   const [currentSteps, setCurrentSteps] = useState(null)
   const [highLevelAccess, setHighLevelAccess] = useState(false)
-
-  const { briefResume, isBrief } = useBriefState({
+  const { briefResume, isBrief, isLoading } = useBriefState({
     token,
     project_id: project?.id,
   })
@@ -71,7 +70,7 @@ function ProjectCard({ project, token, userId }) {
   }
   return (
     <>
-      {!project || !chapters || !currentSteps ? (
+      {!project?.code || !chapters || !currentSteps || isLoading || !userId ? (
         <Sceleton />
       ) : (
         <div className="block p-6 h-full bg-white rounded-xl">

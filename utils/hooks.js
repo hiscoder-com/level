@@ -282,7 +282,7 @@ export function useScroll({ toolName }) {
 
 export function useBriefState({ token, project_id }) {
   const [briefResume, setBriefResume] = useState()
-  const [brief] = useGetBrief({
+  const [brief, { isLoading }] = useGetBrief({
     token,
     project_id,
   })
@@ -291,7 +291,7 @@ export function useBriefState({ token, project_id }) {
       setBriefResume(brief.data_collection?.reduce((final, el) => final + el.resume, ''))
     }
   }, [brief])
-  return { briefResume, isBrief: brief?.is_enable }
+  return { briefResume, isBrief: brief?.is_enable, isLoading }
 }
 
 /**
