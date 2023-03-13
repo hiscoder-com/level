@@ -19,7 +19,7 @@ import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
 
 function Login() {
-  const { t } = useTranslation('users', 'common')
+  const { t } = useTranslation('users')
   const { user, loading } = useCurrentUser()
   const router = useRouter()
   const [error, setError] = useState(false)

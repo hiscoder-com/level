@@ -12,7 +12,7 @@ function Account() {
   const { user, loading } = useCurrentUser()
   const router = useRouter()
 
-  const { t } = useTranslation(['common', 'users'])
+  const { t } = useTranslation(['users', 'common'])
 
   useEffect(() => {
     if (!loading && user === null) {
@@ -30,7 +30,7 @@ function Account() {
             {t('Login')}: <b>{user.login}</b>
           </p>
           <p>
-            {t('users:Email')}: <b>{user.email}</b>
+            {t('Email')}: <b>{user.email}</b>
           </p>
 
           <Projects />

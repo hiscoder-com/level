@@ -22,7 +22,7 @@ import {
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectEdit() {
-  const { t } = useTranslation(['common', 'project-edit', 'projects'])
+  const { t } = useTranslation(['common', 'project-edit', 'projects', 'users'])
   const {
     query: { code },
   } = useRouter()
@@ -391,7 +391,7 @@ function ProjectEdit() {
 export default ProjectEdit
 
 function TranslatorsList({ translators, setSelectedModerator, setSelectedTranslator }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'users'])
   return (
     <div className="overflow-x-auto relative">
       <table className="w-full text-sm text-left text-gray-500">
@@ -399,7 +399,7 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
-              {t('Login')}
+              {t('users:Login')}
             </th>
             <th scope="col" className="py-3 px-6 hidden sm:block">
               {t('Email')}
@@ -457,7 +457,7 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
 }
 
 function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = false }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'users'])
   return (
     <div className="overflow-x-auto relative">
       <table className="w-1/2 text-sm text-left text-gray-500">
@@ -465,7 +465,7 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = fa
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
-              {t('Login')}
+              {t('users:Login')}
             </th>
             <th scope="col" className="py-3 px-6 hidden sm:block">
               {t('Email')}

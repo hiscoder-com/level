@@ -21,7 +21,6 @@
   "Code": "Code",
   "commandTranslate": "Editor",
   "Comments": "Comments",
-  "ConfessionFaith": "Сonfession of faith",
   "Coordinators": "Coordinators",
   "CountChapters": "Number of chapters",
   "Create": "Create",
@@ -46,7 +45,6 @@
   "intro": "Intro",
   "ListResources": "List of resources",
   "Loading": "Loading",
-  "Login": "Login",
   "Management": "Management",
   "Moderator": "Moderator",
   "MyNotes": "My notes",
@@ -98,6 +96,5 @@
   "WordExist": "Duplicated word exists:",
   "Words": "Words",
   "WrongResource": "Wrong resource",
-  "WriteAdministrator": "write to the administrator.",
   "Yes": "Yes"
 }
