@@ -17,7 +17,7 @@ export default async function versesHandler(req, res) {
         const { data: verses, error } = await supabase
           .from('verses')
           .select(
-            'id, projects!inner(code), num,text, current_step, project_translator_id'
+            'id, projects!inner(code), num, text, current_step, project_translator_id'
           )
           .match({ 'projects.code': code, chapter_id })
 

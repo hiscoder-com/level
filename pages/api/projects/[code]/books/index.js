@@ -16,7 +16,7 @@ export default async function booksHandler(req, res) {
       try {
         const { data: books, error } = await supabase
           .from('books')
-          .select('id,projects!inner(code), code, chapters')
+          .select('id, projects!inner(code), code, chapters')
           .eq('projects.code', code)
 
         if (error) throw error
