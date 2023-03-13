@@ -24,9 +24,10 @@ function PropertiesOfBook({
         const [property, content] = el
         return (
           <div key={index}>
-            <div>{property}</div>
+            <div>{t(`book-properties:${property}${type === 'obs' ? '_obs' : ''}`)}</div>
             <textarea
               className="input"
+              placeholder={t(`book-properties:${property}_placeholder`)}
               defaultValue={content}
               onChange={(e) => {
                 setProperties((prev) => {
@@ -62,34 +63,32 @@ function PropertiesOfBook({
       .finally(() => setUpdatingBooks(false))
   }
   return (
-    <div>
-      <Modal
-        isOpen={openDownloading}
-        closeHandle={() => {
-          setOpenDownloading(false)
-        }}
-      >
-        {renderProperties}
-        <div className="flex justify-end">
-          <button
-            className="btn-cyan mr-2"
-            onClick={() => {
-              handleSave()
-            }}
-          >
-            {t('common:Save')}
-          </button>
-          <button
-            className="btn-cyan "
-            onClick={() => {
-              setOpenDownloading(false)
-            }}
-          >
-            {t('common:Close')}
-          </button>
-        </div>
-      </Modal>
-    </div>
+    <Modal
+      isOpen={openDownloading}
+      closeHandle={() => {
+        setOpenDownloading(false)
+      }}
+    >
+      {renderProperties}
+      <div className="flex justify-end">
+        <button
+          className="btn-cyan mr-2"
+          onClick={() => {
+            handleSave()
+          }}
+        >
+          {t('common:Save')}
+        </button>
+        <button
+          className="btn-cyan "
+          onClick={() => {
+            setOpenDownloading(false)
+          }}
+        >
+          {t('common:Close')}
+        </button>
+      </div>
+    </Modal>
   )
 }
 export default PropertiesOfBook

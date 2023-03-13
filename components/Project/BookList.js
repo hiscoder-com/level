@@ -23,7 +23,7 @@ import Properties from 'public/parameters.svg'
 import { usfmFileNames } from 'utils/config'
 
 function BookList({ highLevelAccess, project, user }) {
-  const { t } = useTranslation(['common', 'books'])
+  const { t } = useTranslation(['common', 'books', 'book-properties'])
   const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
   const [selectedBookProperties, setSelectedBookProperties] = useState(null)
