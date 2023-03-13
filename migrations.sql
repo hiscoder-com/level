@@ -1573,6 +1573,18 @@
     ADD
       TABLE PUBLIC.briefs;
 
+--28.02.23
+  ALTER TABLE PUBLIC.dictionaries
+        ADD deleted_at timestamp DEFAULT NULL;
+  ALTER TABLE PUBLIC.personal_notes
+        ADD deleted_at timestamp DEFAULT NULL;
+  ALTER TABLE PUBLIC.team_notes
+        ADD deleted_at timestamp DEFAULT NULL;
+  ALTER TABLE dictionaries
+        DROP CONSTRAINT dictionaries_project_id_title_key;
+  CREATE UNIQUE INDEX dictionaries_project_id_title_indx ON dictionaries (project_id, title) WHERE deleted_at IS NULL;      
+
 --10.03.23
   DROP FUNCTION IF EXISTS PUBLIC.start_chapter;
   DROP FUNCTION IF EXISTS PUBLIC.finished_chapter;
+
