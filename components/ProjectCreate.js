@@ -14,7 +14,7 @@ import { Switch } from '@headlessui/react'
 // TODO не работает если создавать ОБС
 function ProjectCreate() {
   const router = useRouter()
-  const { t } = useTranslation(['projects,common'])
+  const { t } = useTranslation(['projects', 'project-edit'])
   const [customSteps, setCustomSteps] = useState('')
   const [customBriefs, setCustomBriefs] = useState('')
   const [isBriefEnable, setIsBriefEnable] = useState(true)
@@ -180,7 +180,7 @@ function ProjectCreate() {
         />
         <div>
           <span className="mr-3">
-            {t(`common:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
+            {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
           </span>
           <Switch
             checked={isBriefEnable}

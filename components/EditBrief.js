@@ -199,7 +199,7 @@ function EditBrief() {
               </div>
               <div className="md:w-1/3">
                 <p className="font-bold text-center mb-4 text-gray-700">
-                  {t('PurposeTranslation')}
+                  {t('TranslationGoal')}
                 </p>
                 <div className="h-3 rounded-t-lg bg-white"></div>
                 <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">

@@ -3,11 +3,13 @@
   "Answers": "Answers",
   "AssigningModerator": "Moderator appointment",
   "BriefSwitch": "Brief's switch",
+  "DisableBrief": "Disable brief",
   "EditBriefTitle": "BRIEF AND PURPOSE OF THE TRANSLATION",
+  "EnableBrief": "Enable brief",
   "enterText": "Fill it out...",
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
   "RemovingTranslator": "Removing a translator",
   "saveFailed": "Failed to save the brief",
-  "successfulSave": "The brief is saved",
+  "successfulSave": "The brief is saved"
 }

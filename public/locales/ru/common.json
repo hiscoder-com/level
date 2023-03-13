@@ -25,16 +25,14 @@
   "DescriptionConfession": "согласуется с историческими символами веры:<br />Апостольский символ веры, Никейский символ веры, и Афанасьевский символ веры; а также Lausanne Covenant.",
   "DevelopedBy": "Разработано:",
   "dictionary": "Словарь",
-  "DisableBrief": "Отключить бриф", // в проекты
   "Disabled": "Отключен",
   "Done": "Выполнено",
   "Download": "Скачать",
   "draftTranslate": "Редактор",
-  "EditBrief": "Заполнить бриф", // в проекты
+  "EditBrief": "Заполнить бриф",
   "EN": "EN",
-  "EnableBrief": "Включить бриф", // в проекты
   "FilterRepeatedWords": "Фильтр повторяющихся слов",
-  "Finished": "Закончен", // в проекты?
+  "Finished": "Закончен",
   "front": "Введение в книгу",
   "Fulfilled": "Выполнили",
   "Goal": "О шаге",
@@ -53,13 +51,11 @@
   "OBS": "ОБИ",
   "OfficialVersion": "Официальная версия этого документа находится на сайте ",
   "Ok": "Понятно",
-  "OpenBrief": "Открыть бриф", // в проекты
+  "OpenBrief": "Открыть бриф",
   "personalNotes": "Блокнот",
   "PlatformForBibleTranslate": "Платформа для перевода Библии",
   "Progress": "Прогресс",
-  "Project": "Проект", // в проекты
   "ProjectSettings": "Настройки проекта",
-  "PurposeTranslation": "Цель перевода", // в проекты
   "Questions": "Вопросы",
   "Remove": "Убрать",
   "RemoveAll": "Удалить все",
@@ -74,7 +70,7 @@
   "TextDescriptionWord": "Напишите значение слова",
   "TextNewNote": "Напишите новую заметку",
   "translate": "Редактор",
-  "TranslationGoal": "Цель перевода", // в проекты
+  "TranslationGoal": "Цель перевода",
   "V-CANA": "V-CANA",
   "V-CANALanguages": "V-CANA языки",
   "WantCreateChapter": "Вы хотите создать главу",
