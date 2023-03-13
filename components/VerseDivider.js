@@ -22,7 +22,7 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
-  const { t } = useTranslation('verses', 'common')
+  const { t } = useTranslation('common')
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -176,7 +176,7 @@ function VerseDivider({ verses }) {
           onClick={verseDividing}
           className={`bg-green-400 cursor-pointer ml-10 p-2 my-2 w-fit rounded-md btn`}
         >
-          {t('common:Save')}
+          {t('Save')}
         </button>
       </div>
     </div>
