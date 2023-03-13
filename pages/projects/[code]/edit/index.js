@@ -11,7 +11,7 @@ export default ProjectPageEdit
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'project-edit', 'users'])),
+      ...(await serverSideTranslations(locale, ['common', 'project-edit', 'projects'])),
     },
   }
 }

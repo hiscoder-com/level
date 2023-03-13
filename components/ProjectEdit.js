@@ -22,7 +22,7 @@ import {
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectEdit() {
-  const { t } = useTranslation(['common', 'project-edit'])
+  const { t } = useTranslation(['common', 'project-edit', 'projects'])
   const {
     query: { code },
   } = useRouter()
@@ -150,7 +150,7 @@ function ProjectEdit() {
             {brief?.is_enable && (
               <div className="py-5">
                 <Link href={`/projects/${project?.code}/edit/brief`}>
-                  <a className="btn btn-filled btn-cyan">{t('common:EditBrief')}</a>
+                  <a className="btn btn-filled btn-cyan">{t('EditBrief')}</a>
                 </Link>
               </div>
             )}
@@ -176,7 +176,7 @@ function ProjectEdit() {
           </div>
           <div className="pt-5 pb-5">
             <div className="flex justify-between">
-              <div className="">{t('Translators')}</div>
+              <div className="">{t('projects:Translators')}</div>
               <button
                 onClick={() => {
                   setOpenModalAssignTranslator(true)
@@ -184,7 +184,7 @@ function ProjectEdit() {
                 }}
                 className="btn-cyan m-2"
               >
-                {t('project-edit:AddTranslator')}
+                {t('projects:AddTranslator')}
               </button>
             </div>
             <TranslatorsList
@@ -230,7 +230,7 @@ function ProjectEdit() {
                         setSelectedUser('')
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -272,7 +272,7 @@ function ProjectEdit() {
                         setSelectedUser('')
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -314,7 +314,7 @@ function ProjectEdit() {
                         setSelectedModerator(false)
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -343,7 +343,7 @@ function ProjectEdit() {
                         setSelectedTranslator(false)
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -375,7 +375,7 @@ function ProjectEdit() {
                         setSelectedCoordinator(false)
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
