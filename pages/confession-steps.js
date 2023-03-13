@@ -124,7 +124,7 @@ export default function ConfessionSteps() {
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['confession-steps', 'common'])),
+      ...(await serverSideTranslations(locale, ['confession-steps', 'common', 'users'])),
     },
   }
 }

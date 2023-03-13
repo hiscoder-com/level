@@ -1,44 +1,47 @@
-import Link from 'next/link'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useCurrentUser } from 'lib/UserContext'
-import { useRedirect } from 'utils/hooks'
-
-import SwitchLocalization from 'components/SwitchLocalization'
+import Login from 'components/Login'
 
 import VcanaLogo from 'public/vcana-logo.svg'
-import TtLogo from 'public/omb.svg'
+import OmbLogo from 'public/omb-logo.svg'
 
 export default function Home() {
-  const { user } = useCurrentUser()
-  const { href } = useRedirect({
-    user,
-    startLink: '/login',
-  })
-
-  const { locale, pathname, query, asPath } = useRouter()
   const { t } = useTranslation('common', 'users')
   return (
-    <main className="layout-empty">
+    <main className="layout-empty bg-[#f4f4f4]">
       <Head>
         <title>{t('V-CANA')}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="absolute top-10 right-10">
-        <SwitchLocalization />
+      <div className="flex flex-col items-center sm:hidden">
+        <VcanaLogo className="my-[6vh] max-w-xs sm:max-w-md w-28" />
+        <div className="bg-white w-[90vw] mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
+          <Login />
+        </div>
+        <div className="text-[#909090] mb-4 text-center">{t('common:DevelopedBy')}</div>
+        <OmbLogo className="mb-4" />
       </div>
-      <div className="flex flex-col justify-center items-center m-3">
-        <TtLogo className="mb-10 w-1/3 md:w-1/5 lg:w-96" />
-        <VcanaLogo className="max-w-xs sm:max-w-md" />
-        <h2 className="h2 mt-9 mb-16 text-center">{t('Welcome')}</h2>
-        <Link href={href}>
-          <a className="btn-start py-3 px-24">{t('users:SignIn')}</a>
-        </Link>
+
+      <div className="hidden sm:flex">
+        <div className="flex flex-col items-center justify-center w-1/2">
+          <div className="flex flex-col items-center text-base xl:text-lg">
+            <VcanaLogo className="max-w-xs w-28 xl:w-40 mb-9" />
+            <h1 className="mb-10 2xl:mb-20 text-center">
+              {t('common:PlatformForBibleTranslate')}
+            </h1>
+            <div className="text-[#909090] mb-4">{t('common:DevelopedBy')}</div>
+            <OmbLogo />
+          </div>
+        </div>
+        <div className="flex justify-center items-center my-4 w-1/2 min-h-[90vh] bg-[url('../public/login_image.png')] bg-cover bg-no-repeat rounded-l-lg lg:rounded-l-[48px] xl:rounded-l-[72px] 2xl:rounded-l-[120px] ">
+          <div className="w-5/6 xl:w-3/4 2xl:w-3/5 bg-white rounded-lg shadow-lg shadow-[#0000001A] ">
+            <Login />
+          </div>
+        </div>
       </div>
     </main>
   )

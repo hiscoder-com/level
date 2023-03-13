@@ -11,7 +11,6 @@ function BriefResume({
 }) {
   const [resume, setResume] = useState(objResume)
 
-  // data initialization
   useEffect(() => {
     setResume(objResume)
   }, [objResume])

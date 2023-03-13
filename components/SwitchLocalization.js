@@ -8,14 +8,14 @@ function SwitchLocalization() {
   const { t } = useTranslation('common')
 
   return (
-    <div className="font-bold text-xl lg:text-base">
+    <div className="text-xs lg:text-base font-bold">
       <Link href={{ pathname, query }} as={asPath} locale={'ru'}>
-        <a className={`text-teal-500 p-2 ${locale === 'ru' ? 'opacity-50' : ''}`}>
+        <a className={`text-black p-2 ${locale === 'ru' ? 'opacity-50' : ''}`}>
           {t('RU')}
         </a>
       </Link>
       <Link replace href={{ pathname, query }} as={asPath} locale={'en'}>
-        <a className={`text-teal-500 p-2 ${locale === 'en' ? 'opacity-50' : ''}`}>
+        <a className={`text-black p-2 ${locale === 'en' ? 'opacity-50' : ''}`}>
           {t('EN')}
         </a>
       </Link>

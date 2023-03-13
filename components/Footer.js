@@ -44,7 +44,9 @@ export default function Footer({
                 className="h-[17px] w-[17px] cursor-pointer accent-cyan-600"
                 type="checkbox"
                 checked={checked}
-                onChange={() => setChecked((prev) => !prev)}
+                onChange={() => {
+                  setChecked((prev) => !prev)
+                }}
               />
               <span className="ml-2">{textCheckbox}</span>
             </label>
