@@ -76,6 +76,8 @@
   "RemoveAll": "Remove all",
   "RU": "RU",
   "Save": "Save",
+  "SaveFailedNote": "Не удалось сохранить заметку",
+  "SaveFailedWord": "Не удалось сохранить слово",
   "Search": "Search",
   "Settings": "Settings",
   "SettingsEdit": "Edit settings",
