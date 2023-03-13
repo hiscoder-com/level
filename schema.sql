@@ -69,7 +69,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
-    DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;    
+    DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
     DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
 
   -- END DROP FUNCTION
@@ -961,7 +961,7 @@
         INTO chapter;
 
       IF authorize(auth.uid(), chapter.project_id) NOT IN ('admin', 'coordinator')
-      THEN 
+      THEN
         RETURN FALSE;
       END IF;
       method_type = (SELECT type FROM projects  WHERE id = chapter.project_id);

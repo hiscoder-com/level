@@ -119,7 +119,7 @@ function BookList({ highLevelAccess, project, user }) {
 
         const obs = `${downloadSettings?.WithFront ? front : ''}${
           downloadSettings?.WithIntro ? `<div>${intro}</div>` : ''
-        }${downloadSettings?.WithBack ? `<div>${back}</div>` : ''}`
+        }`
         for (const el of chapters) {
           if (el?.text) {
             const story = await compilePdfObs(
@@ -134,6 +134,9 @@ function BookList({ highLevelAccess, project, user }) {
               obs += `<div>${story}</div>`
             }
           }
+        }
+        if (downloadSettings?.WithBack) {
+          obs += `<div>${back}</div>`
         }
         return obs
       default:

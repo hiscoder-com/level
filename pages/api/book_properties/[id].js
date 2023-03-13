@@ -1,4 +1,5 @@
 import { supabaseService } from 'utils/supabaseServer'
+import { supabase } from 'utils/supabaseClient'
 
 const validation = (properties) => {
   const error = null
@@ -48,9 +49,26 @@ export default async function bookPropertiesHandler(req, res) {
 
   const {
     query: { id },
-    body: { properties, project_id },
+    body: { properties, project_id, user_id },
     method,
   } = req
+
+  if (!project_id || !user_id) {
+    res.status(401).json({ error: 'Access denied!' })
+  }
+  try {
+    const level = await supabase.rpc('authorize', {
+      user_id,
+      project_id,
+    })
+
+    if (!['admin', 'coordinator'].includes(level.data)) {
+      res.status(401).json({ error: 'Access denied!' })
+    }
+  } catch (error) {
+    res.status(404).json({ error })
+  }
+
   const { error: validationError } = validation(properties)
   if (validationError) {
     res.status(404).json({ validationError })

@@ -55,6 +55,7 @@ function PropertiesOfBook({
       .put(`/api/book_properties/${book.id}`, {
         properties,
         project_id: projectId,
+        user_id: user?.id,
       })
       .then()
       .catch((err) => console.log(err))

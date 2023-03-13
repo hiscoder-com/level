@@ -80,13 +80,16 @@ export default async function obsHandler(req, res) {
     const _data = await axios.get(url)
     const jsonData = mdToJson(_data.data)
 
-    const { verseObjectsExtended, header } = jsonData
+    const { additionalVerses, verseObjects, header } = jsonData
+    const verseObjectsObs = [...additionalVerses, ...verseObjects].sort(
+      (a, b) => a.verse - b.verse
+    )
     const _verseObjects =
       verses && verses.length > 0
-        ? verseObjectsExtended.filter((el) => {
+        ? verseObjectsObs.filter((el) => {
             return verses.includes(el.verse)
           })
-        : verseObjectsExtended
+        : verseObjectsObs
 
     res.status(200).json({ verseObjects: _verseObjects, header })
     return

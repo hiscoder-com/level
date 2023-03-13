@@ -45,9 +45,9 @@ const compileMarkdown = async (ref) => {
   const result = await axios.get(url)
   const resource = mdToJson(result.data)
   const markdown = '# ' + ref.json[0] + '\n'
-  for (const iterator of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
-    const image = `![OBS Image](${iterator.urlImage})\n\n`
-    markdown += image + ref.json[iterator.verse] + '\n\n'
+  for (const verseObject of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
+    const image = `![OBS Image](${verseObject.urlImage})\n\n`
+    markdown += image + ref.json[verseObject.verse] + '\n\n'
   }
   markdown += '_' + ref.json[200] + '_'
   return markdown
@@ -77,9 +77,9 @@ export const compilePdfObs = async (ref, downloadSettings) => {
 
   const resource = mdToJson(markdown.data)
   const html = '<h1>' + ref.json[0] + '</h1>'
-  for (const iterator of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
-    const image = `<p><img alt="OBS Image"src="${iterator.urlImage}"/></p>`
-    const text = `<p>${ref.json[iterator.verse]}</p>`
+  for (const verseObject of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
+    const image = `<p><img alt="OBS Image"src="${verseObject.urlImage}"/></p>`
+    const text = `<p>${ref.json[verseObject.verse]}</p>`
     html += image + text
   }
   html += `<p><em> ${ref.json[200]} </em></p>`
@@ -299,10 +299,10 @@ export const countOfChaptersAndVerses = async ({ link, book_code }) => {
       const result = await axios.get(link)
       const jsonData = usfm.toJSON(result.data)
       if (Object.entries(jsonData?.chapters).length > 0) {
-        Object.entries(jsonData?.chapters).forEach((el) => {
-          jsonChapterVerse[el[0]] = Object.keys(el[1]).filter(
-            (verse) => verse !== 'front'
-          ).length
+        Object.keys(jsonData?.chapters).forEach((chapterNum) => {
+          jsonChapterVerse[chapterNum] = Object.keys(
+            jsonData?.chapters[chapterNum]
+          ).filter((verse) => verse !== 'front').length
         })
       }
     } catch (error) {
@@ -320,7 +320,7 @@ export const mdToJson = (md) => {
     reference = _markdown.pop().trim().slice(1, -1)
   }
   const verseObjects = []
-  let verseObjectsExtended = []
+
   for (let n = 0; n < _markdown.length / 2; n++) {
     let urlImage
     let text
@@ -333,22 +333,12 @@ export const mdToJson = (md) => {
     verseObjects.push({ urlImage, text, verse: (n + 1).toString() })
   }
 
-  verseObjectsExtended = [
-    ...verseObjects,
+  const additionalVerses = [
     { text: title, verse: '0' },
     { text: reference, verse: '200' },
-  ].sort((a, b) => a.verse - b.verse)
+  ]
 
-  return { verseObjects, title, reference, verseObjectsExtended }
-}
-
-export const uniqueFilter = (uniqueObject, key, value) => {
-  if (!uniqueObject?.[key]) {
-    uniqueObject[key] = [value]
-    return false
-  } else {
-    return true
-  }
+  return { verseObjects, title, reference, additionalVerses }
 }
 
 export const getListWordsReference = (data) => {
@@ -360,9 +350,9 @@ export const getListWordsReference = (data) => {
   data.forEach((verse) => {
     if (!list?.[verse.TWLink]) {
       list[verse.TWLink] = [verse.Reference]
-      return
+    } else {
+      list[verse.TWLink].push(verse.Reference)
     }
-    list[verse.TWLink].push(verse.Reference)
   })
 
   return { ...list }
@@ -382,7 +372,7 @@ export const uniqueFilterInBook = (wordsBook, item, wordObject) => {
       if (verseFirstLink !== verseCurrentWord) {
         return verseFirstLink < verseCurrentWord
       } else {
-        return wordObject.repeatedInChunk || wordObject.repeatedInVerse
+        return wordObject.repeatedInVerse
       }
     }
   }

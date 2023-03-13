@@ -235,7 +235,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
         <div
           className="p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
           onClick={async (e) => {
-            e.stopPropagation()
             downloadPdf({
               htmlContent: await compileChapter(
                 {
@@ -268,7 +267,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
         <div
           className="p-2 hover:bg-gray-200 border-b-2 cursor-pointer"
           onClick={async (e) => {
-            e.stopPropagation()
             project?.type === 'obs'
               ? downloadFile({
                   text: await compileChapter(
