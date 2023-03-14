@@ -5,9 +5,11 @@ import Time from 'public/time.svg'
 function Timer({ time }) {
   const [timeLeft, setTimeLeft] = useState(parseInt(time) * 60)
   const [isCounting, setIsCounting] = useState(false)
+
   const getPadTime = (time) => time.toString().padStart(2, '0')
   const minutes = getPadTime(Math.floor(timeLeft / 60))
   const seconds = getPadTime(timeLeft - minutes * 60)
+
   useEffect(() => {
     setTimeLeft(parseInt(time) * 60)
   }, [time])

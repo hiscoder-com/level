@@ -1,5 +1,7 @@
-import MarkdownExtended from 'components/MarkdownExtended'
 import ReactMarkdown from 'react-markdown'
+
+import MarkdownExtended from 'components/MarkdownExtended'
+
 import Close from 'public/close.svg'
 
 function TNTWLContent({ setItem, item }) {

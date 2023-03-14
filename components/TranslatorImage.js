@@ -14,6 +14,7 @@ function TranslatorImage({ item, size, clickable }) {
     () => clickable && (!translator || translator !== item.users?.login),
     [clickable, item.users?.login, translator]
   )
+
   return (
     <div
       title={`${item.users ? `${item.users?.login}` : ''}`}

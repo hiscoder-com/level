@@ -8,8 +8,8 @@ import { supabase } from 'utils/supabaseClient'
 
 export default function SignOut() {
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
   const { t } = useTranslation(['users'])
+  const router = useRouter()
 
   const handleLogout = async () => {
     try {

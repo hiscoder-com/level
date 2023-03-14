@@ -15,6 +15,7 @@ export default function Projects() {
     token: user?.access_token,
   })
   // здесь у нас придет массив проектов, разложенный по языкам
+
   return (
     <>
       <div className="h2 mt-4 mb-5">

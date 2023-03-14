@@ -19,19 +19,22 @@ import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
 
 function Login() {
-  const { t } = useTranslation('users', 'common')
-  const { user, loading } = useCurrentUser()
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+  const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const loginRef = useRef(null)
+
+  const { user, loading } = useCurrentUser()
+  const { t } = useTranslation('users')
   const passwordRef = useRef(null)
+  const loginRef = useRef(null)
+  const router = useRouter()
+
   const { href } = useRedirect({
     user,
     startLink: '/agreements',
   })
+
   useEffect(() => {
     if (passwordRef?.current) {
       passwordRef.current.focus()

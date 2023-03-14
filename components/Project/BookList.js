@@ -5,15 +5,16 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { BookCreate, ChapterList, DownloadBlock } from './index'
-import { supabase } from 'utils/supabaseClient'
+
 import { compileChapter, convertToUsfm } from 'utils/helper'
+import { supabase } from 'utils/supabaseClient'
 import { usfmFileNames } from 'utils/config'
 
 function BookList({ highLevelAccess, project, user }) {
-  const { t } = useTranslation(['common', 'books'])
-  const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
   const [books, setBooks] = useState()
+  const { push, query } = useRouter()
+  const { t } = useTranslation(['common', 'books'])
 
   const getBookJson = async (book_id) => {
     const { data } = await supabase

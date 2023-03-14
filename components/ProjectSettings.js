@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
+
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import axios from 'axios'
+
 import { useTranslation } from 'next-i18next'
 import { Switch } from '@headlessui/react'
+import axios from 'axios'
 
 import CommitsList from './CommitsList'
 
@@ -16,11 +18,12 @@ import { useProject, useMethod, useGetBrief } from 'utils/hooks'
 function ProjectSettings() {
   const { user } = useCurrentUser()
   const [methods] = useMethod(user?.access_token)
+  const { t } = useTranslation(['common', 'project-edit'])
+
+  const [isSaving, setIsSaving] = useState(false)
   const [resourcesUrl, setResourcesUrl] = useState()
   const [currentMethod, setCurrentMethod] = useState()
   const [isErrorCommit, setIsErrorCommit] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const { t } = useTranslation(['common', 'project-edit'])
 
   const {
     query: { code },
@@ -30,6 +33,7 @@ function ProjectSettings() {
     token: user?.access_token,
     project_id: project?.id,
   })
+
   useEffect(() => {
     if (project?.method && methods) {
       const method = methods.find((method) => method.title === project.method)
@@ -81,6 +85,7 @@ function ProjectSettings() {
         setIsSaving(false)
       })
   }
+
   const handleSwitch = () => {
     if (brief) {
       axios.defaults.headers.common['token'] = user?.access_token
@@ -89,6 +94,7 @@ function ProjectSettings() {
         .then((res) => mutate())
     }
   }
+
   return (
     <div className="mx-auto max-w-7xl">
       <div className="h3 mb-3">
@@ -135,7 +141,7 @@ function ProjectSettings() {
         <h1 className="h2 mb-3">{t('project-edit:BriefSwitch')}</h1>
         <div className="flex">
           <span className="mr-3">
-            {t(`common:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+            {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
           </span>
           <Switch
             checked={brief?.is_enable}
