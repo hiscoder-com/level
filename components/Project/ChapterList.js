@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import toast, { Toaster } from 'react-hot-toast'
+
 import Modal from 'components/Modal'
 
 import { supabase } from 'utils/supabaseClient'
@@ -23,8 +25,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
     WithFront: true,
   })
 
-  const [openModal, setOpenModal] = useState(false)
-
   const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
@@ -37,20 +37,26 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
     push,
     locale,
   } = useRouter()
-  const [chapters] = useGetChapters({
+  const [chapters, { mutate: mutateChapters }] = useGetChapters({
     token,
     code: project?.code,
     book_code: book,
   })
-  const [createdChapters] = useGetCreatedChapters({
+  const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({
     token,
     code: project?.code,
     chapters: chapters?.map((el) => el.id),
   })
   const handleCreate = async (chapter_id, num) => {
-    const res = await supabase.rpc('create_verses', { chapter_id })
-    if (res.data) {
-      push('/projects/' + code + '/books/' + selectedBook.code + '/' + num)
+    try {
+      const res = await supabase.rpc('create_verses', { chapter_id })
+      if (res.data) {
+        mutateChapters()
+        mutateCreatedChapters()
+        push('/projects/' + code + '/books/' + selectedBook.code + '/' + num)
+      }
+    } catch (error) {
+      toast.error(t('CreateFailed'))
     }
   }
 
@@ -121,7 +127,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
                       if (highLevelAccess) {
                         if (!createdChapters?.includes(id)) {
                           setSelectedChapter(chapter)
-                          setOpenModal(true)
+                          setOpenCreatingChapter(true)
                         } else {
                           push(
                             '/projects/' +
@@ -310,6 +316,14 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
           </button>
         </div>
       </Modal>
+      <Toaster
+        toastOptions={{
+          style: {
+            marginTop: '-6px',
+            color: '#6b7280',
+          },
+        }}
+      />
     </div>
   )
 }

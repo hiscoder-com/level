@@ -162,7 +162,7 @@ function Dictionary() {
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
       .then(() => saveCacheNote('dictionary', activeWord, user))
       .catch((err) => {
-        toast.error(t('SaveFailedWord'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
       .finally(() => {

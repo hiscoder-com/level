@@ -61,7 +61,7 @@ function TeamNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('SaveFailedNote'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }

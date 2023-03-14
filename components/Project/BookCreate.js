@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
+import { useGetBooks } from 'utils/hooks'
 
 function BookCreate({ highLevelAccess, project, books, user }) {
   const [creatingBook, setCreatingBook] = useState(false)
@@ -12,7 +13,10 @@ function BookCreate({ highLevelAccess, project, books, user }) {
 
   const { push } = useRouter()
   const { t } = useTranslation(['common'])
-
+  const [_, { mutate: mutateBooks }] = useGetBooks({
+    token: user?.access_token,
+    code: project?.code,
+  })
   useEffect(() => {
     const defaultVal = project?.base_manifest?.books?.filter(
       (el) => !books?.map((el) => el.code)?.includes(el.name)
@@ -52,6 +56,7 @@ function BookCreate({ highLevelAccess, project, books, user }) {
       console.log(error)
     } finally {
       setCreatingBook(false)
+      mutateBooks()
     }
   }
   const notCreatedBooks = useMemo(

@@ -11,7 +11,7 @@ import { Switch } from '@headlessui/react'
 
 import CommitsList from './CommitsList'
 
-import { useLanguages, useMethod } from 'utils/hooks'
+import { useLanguages, useMethod, useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectCreate() {
@@ -28,6 +28,9 @@ function ProjectCreate() {
 
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
+  const [_, { mutate: mutateProjects }] = useProjects({
+    token: user?.access_token,
+  })
   const {
     register,
     handleSubmit,
@@ -92,6 +95,7 @@ function ProjectCreate() {
         }
       })
       .catch((error) => console.log(error))
+      .finally(() => mutateProjects())
   }
 
   const inputs = [

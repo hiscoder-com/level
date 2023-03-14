@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import toast, { Toaster } from 'react-hot-toast'
+
 import Modal from 'components/Modal'
 
 function PropertiesOfBook({
@@ -10,7 +12,6 @@ function PropertiesOfBook({
   t,
   type,
   user,
-  setUpdatingBooks,
 }) {
   const [properties, setProperties] = useState()
   useEffect(() => {
@@ -51,16 +52,18 @@ function PropertiesOfBook({
     )
   const handleSave = () => {
     axios.defaults.headers.common['token'] = user?.access_token
-    setUpdatingBooks(true)
     axios
       .put(`/api/book_properties/${book.id}`, {
         properties,
         project_id: projectId,
         user_id: user?.id,
       })
-      .then()
-      .catch((err) => console.log(err))
-      .finally(() => setUpdatingBooks(false))
+
+      .then(toast.success(t('SaveSuccess')))
+      .catch((err) => {
+        toast.success(t('SaveFailed'))
+        console.log(err)
+      })
   }
   return (
     <Modal
@@ -88,6 +91,14 @@ function PropertiesOfBook({
           {t('common:Close')}
         </button>
       </div>
+      <Toaster
+        toastOptions={{
+          style: {
+            marginTop: '-6px',
+            color: '#6b7280',
+          },
+        }}
+      />
     </Modal>
   )
 }

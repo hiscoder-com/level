@@ -56,7 +56,7 @@ function PersonalNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('SaveFailedNote'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
