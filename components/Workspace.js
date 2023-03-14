@@ -33,6 +33,7 @@ const icons = {
   commandTranslate: translateIcon,
   draftTranslate: translateIcon,
   translate: translateIcon,
+  info: <Dict className="w-5 inline" />,
 }
 
 function Workspace({ stepConfig, reference, editable = false }) {
@@ -101,6 +102,7 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
               'personalNotes',
               'audio',
               'dictionary',
+              'info',
             ].includes(tool.name) ? (
               <span title={t(tool.name)}>
                 {icons[tool.name]}

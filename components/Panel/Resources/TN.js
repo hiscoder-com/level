@@ -40,6 +40,7 @@ function ToolList({ setItem, data, toolName }) {
       verses && setVerses(Object.entries(verses))
     }
   }, [data])
+
   return (
     <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
       <div className="text-center">
