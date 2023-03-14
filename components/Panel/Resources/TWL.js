@@ -11,10 +11,10 @@ import { checkLSVal } from 'utils/helper'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
-  const { loading, data, error } = useGetResource({ config, url })
+  const { isLoading, data } = useGetResource({ config, url })
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Placeholder />
       ) : (
         <div className="relative h-full">

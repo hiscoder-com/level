@@ -1,6 +1,6 @@
 import { supabase } from 'utils/supabaseClient'
 
-export default async function languageProjectHandler(req, res) {
+export default async function resourcesProjectHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
@@ -16,13 +16,11 @@ export default async function languageProjectHandler(req, res) {
       try {
         const { data: value, error } = await supabase
           .from('projects')
-          .select(
-            'id, title, code, type, method, languages(orig_name,code), dictionaries_alphabet, base_manifest'
-          )
+          .select('resources')
           .eq('code', code)
-          .maybeSingle()
+          .single()
         if (error) throw error
-        data = value
+        data = value.resources
       } catch (error) {
         res.status(404).json({ error })
         return

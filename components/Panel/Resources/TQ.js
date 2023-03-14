@@ -7,10 +7,10 @@ import { Placeholder } from '../UI'
 import { useGetResource, useScroll } from 'utils/hooks'
 
 function TQ({ config, url, toolName }) {
-  const { loading, data, error } = useGetResource({ config, url })
+  const { isLoading, data } = useGetResource({ config, url })
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Placeholder />
       ) : (
         <ToolList

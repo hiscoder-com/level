@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useTranslators } from 'utils/hooks'
+import { useProject, useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
 
 import BookList from './BookList'
@@ -14,23 +14,9 @@ function Project({ code }) {
   const { t } = useTranslation(['projects', 'common'])
 
   const [highLevelAccess, setHighLevelAccess] = useState(false)
-  const [project, setProject] = useState()
 
   const { user } = useCurrentUser()
-
-  useEffect(() => {
-    const getProject = async () => {
-      const { data: project, error } = await supabase
-        .from('projects')
-        .select('*,languages!inner(orig_name,code)')
-        .eq('code', code)
-        .single()
-      setProject(project)
-    }
-    if (code) {
-      getProject()
-    }
-  }, [code])
+  const [project] = useProject({ token: user?.access_token, code })
 
   useEffect(() => {
     const getLevel = async () => {
@@ -86,7 +72,9 @@ function Project({ code }) {
           </>
         )}
       </div>
-      <BookList highLevelAccess={highLevelAccess} project={project} user={user} />
+      {project && (
+        <BookList highLevelAccess={highLevelAccess} project={project} user={user} />
+      )}
     </div>
   )
 }

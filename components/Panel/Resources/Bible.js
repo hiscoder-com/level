@@ -10,14 +10,14 @@ import { useGetResource, useScroll } from 'utils/hooks'
 
 // draft: true/false
 function Bible({ config, url, toolName }) {
-  const { loading, data, error } = useGetResource({
+  const { isLoading, data } = useGetResource({
     config,
     url,
   })
   const { scrollId, handleSave } = useScroll({ toolName })
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Placeholder />
       ) : config?.config?.draft ? (
         <VersesExtended
@@ -60,7 +60,7 @@ function VersesExtended({ verseObjects, handleSave, scrollId }) {
 
   return (
     <>
-      {verseObjects?.map((el, index) => {
+      {verseObjects?.map((el) => {
         const checkedCurrent = checkedVersesBible.includes(el.verse)
         return (
           <div
