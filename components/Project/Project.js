@@ -14,7 +14,6 @@ function Project({ code }) {
   const { t } = useTranslation(['projects', 'common'])
 
   const [highLevelAccess, setHighLevelAccess] = useState(false)
-  const [project, setProject] = useState()
 
   const { user } = useCurrentUser()
   const [project] = useProject({ token: user?.access_token, code })

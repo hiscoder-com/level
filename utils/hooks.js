@@ -23,16 +23,16 @@ const fetcher = async ([url, token]) => {
  * @returns {array}
  */
 export function useLanguages(token) {
-  const { data, mutate, error, isLoading } = useSWR(
-    token ? ['/api/languages', token] : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
+  const {
+    data: languages,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(token ? ['/api/languages', token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
 
-  const languages = data
   return [languages, { mutate, isLoading, error }]
 }
 /**
@@ -77,7 +77,7 @@ export function useProjects({ token }) {
       revalidateIfStale: false,
     }
   )
-  // форматировать data, нужно пройтись по всем проектам и раскидать, чтобы каждый проект лежал внутри языка
+  // TODO форматировать data, нужно пройтись по всем проектам и раскидать, чтобы каждый проект лежал внутри языка
   return [data, { mutate, error, isLoading }]
 }
 
@@ -88,16 +88,16 @@ export function useProjects({ token }) {
  * @returns {array}
  */
 export function useMethod(token) {
-  const { data, mutate, error, isLoading } = useSWR(
-    token ? ['/api/methods', token] : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
+  const {
+    data: methods,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(token ? ['/api/methods', token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
 
-  const methods = data
   return [methods, { mutate, error, isLoading }]
 }
 /**

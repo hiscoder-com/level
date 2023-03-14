@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import toast, { Toaster } from 'react-hot-toast'
+
 import { supabase } from 'utils/supabaseClient'
 
 import { useProject, useTranslators } from 'utils/hooks'
@@ -81,13 +83,19 @@ function VerseDivider({ verses }) {
   }
 
   const verseDividing = async () => {
+    //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
     let { data, error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,
       project_id: project?.id,
     })
 
-    if (error) console.error(error)
-    else console.log('Success', data)
+    if (error) {
+      console.error(error)
+      toast.error(t('SaveFailed'))
+    } else {
+      console.log('Success', data)
+      toast.success(t('SaveSuccess'))
+    }
   }
 
   return (
@@ -183,6 +191,14 @@ function VerseDivider({ verses }) {
           {t('Save')}
         </button>
       </div>
+      <Toaster
+        toastOptions={{
+          style: {
+            marginTop: '-6px',
+            color: '#6b7280',
+          },
+        }}
+      />
     </div>
   )
 }
