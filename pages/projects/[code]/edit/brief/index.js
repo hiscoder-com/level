@@ -11,7 +11,7 @@ export default BriefPageEdit
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'project-edit'])),
+      ...(await serverSideTranslations(locale, ['common', 'project-edit', 'users'])),
     },
   }
 }

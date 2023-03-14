@@ -22,6 +22,7 @@ export async function getServerSideProps({ locale }) {
         'books',
         'chapters',
         'book-properties',
+        'users',
       ])),
     },
   }

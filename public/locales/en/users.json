@@ -7,6 +7,8 @@
   "Email": "Email",
   "Explanation": "Only the admin can create it, so you need to make sure that access to this page is limited",
   "ForgotPassword": "Forgot your password",
+  "ForRegistrations": "To register",
+  "GoToAccount": "Go to your personal account",
   "IsAdmin": "Admin",
   "Languages": "Languages",
   "Login": "Login",
@@ -15,6 +17,7 @@
   "Password": "Password",
   "Profile": "Profile",
   "Register": "Registration",
+  "RestoreAccess": "Restore Access",
   "Save": "Save",
   "SignIn": "Sign in",
   "SignOut": "Sign out",
@@ -26,9 +29,8 @@
   "Users": "Users",
   "UsersList": "List of users",
   "V-CANAAccount": "V-CANA account",
-  "V-CANASignIn": "V-CANA sign in",
-  "V-CANASignUp": "V-CANA sign out",
-  "WriteAdmin": "Write to the admin",
-  "WrongLoginPassword": "Invalid username or password",
-  "YourLogin": "Your login"
+  "WriteAdministrator": "write to the administrator.",
+  "YourLogin": "Your login",
+  "YouSignInAs": "You are logged in as",
+  "WrongLoginPassword": "Invalid username or password"
 }

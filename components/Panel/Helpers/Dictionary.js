@@ -8,16 +8,20 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import toast, { Toaster } from 'react-hot-toast'
+
 import { useCurrentUser } from 'lib/UserContext'
 import { useProject } from 'utils/hooks'
 
 import { supabase } from 'utils/supabaseClient'
 
+import Modal from 'components/Modal'
+
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import Modal from 'components/Modal'
 import LeftArrow from 'public/left-arrow.svg'
 import RightArrow from 'public/right-arrow.svg'
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -65,21 +69,28 @@ function Dictionary() {
     setSearchQuery('')
     getWords()
   }
+
   const getWords = async (searchQuery = '', count = 0) => {
     const { from, to } = getPagination(count, CountWordsOnPage)
-
-    const { data, count: wordsCount } = await supabase
-      .from('dictionaries')
-      .select('id,project_id,title,data', { count: 'exact' })
-      .eq('project_id', project?.id)
-      .ilike('title', `${searchQuery}%`)
-      .order('title', { ascending: true })
-      .range(from, to)
-
-    if (data?.length) {
-      setWords({ data, count: wordsCount })
+    if (project?.id) {
+      const { data, count: wordsCount } = await supabase
+        .from('dictionaries')
+        .select('id,project_id,title,data,deleted_at', { count: 'exact' })
+        .eq('project_id', project?.id)
+        .is('deleted_at', null)
+        .ilike('title', `${searchQuery}%`)
+        .order('title', { ascending: true })
+        .range(from, to)
+      if (data?.length) {
+        setWords({ data, count: wordsCount })
+      }
     }
   }
+
+  useEffect(() => {
+    getWords()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.id])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -134,7 +145,7 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/dictionaries/${id}`)
-      .then()
+      .then(() => removeCacheNote('dictionary', id))
       .catch((err) => console.log(err))
       .finally(() => {
         getWords(searchQuery, currentPageWords)
@@ -147,8 +158,11 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
-      .then()
-      .catch((err) => showError(err, activeWord?.title))
+      .then(() => saveCacheNote('dictionary', activeWord, user))
+      .catch((err) => {
+        toast.error(t('SaveFailedWord'))
+        console.log(err)
+      })
       .finally(() => {
         getWords(searchQuery, currentPageWords)
         mutate()
@@ -333,6 +347,7 @@ function Dictionary() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }
