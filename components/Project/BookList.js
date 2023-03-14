@@ -34,7 +34,6 @@ function BookList({ highLevelAccess, project, user }) {
   const [openDownloading, setOpenDownloading] = useState(false)
 
   const [openProperties, setOpenProperties] = useState(false)
-  const [updatingBooks, setUpdatingBooks] = useState(false)
   const [downloadSettings, setDownloadSettings] = useState({
     WithImages: true,
     WithFront: true,
@@ -104,10 +103,17 @@ function BookList({ highLevelAccess, project, user }) {
         return main
       case 'pdf-obs':
         const converter = new Showdown.Converter()
-        const front = `<div style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.obs?.title}</h1></div>`
-        const intro = converter.makeHtml(book?.properties?.obs?.intro)
-        const back = converter.makeHtml(book?.properties?.obs?.back)
 
+        const title = book?.properties?.obs?.title
+          ? `<h1>${book?.properties?.obs?.title}</h1>`
+          : ''
+        const front = `<div style="text-align: center"><h1>${project?.title}</h1>${title}</div>`
+        const intro = book?.properties?.obs?.intro
+          ? converter.makeHtml(book?.properties?.obs?.intro)
+          : ''
+        const back = book?.properties?.obs?.back
+          ? converter.makeHtml(book?.properties?.obs?.back)
+          : ''
         const obs = `${downloadSettings?.WithFront ? front : ''}${
           downloadSettings?.WithIntro ? `<div>${intro}</div>` : ''
         }`
@@ -148,17 +154,28 @@ function BookList({ highLevelAccess, project, user }) {
         },
         'markdown'
       )
-      zip.folder('content').file(story?.num + '.md', text)
+      if (text) {
+        zip.folder('content').file(story?.num + '.md', text)
+      }
     }
-    zip
-      .folder('content')
-      .folder('back')
-      .file('intro.md', downloadingBook?.properties?.obs?.back)
-    zip
-      .folder('content')
-      .folder('front')
-      .file('intro.md', downloadingBook?.properties?.obs?.intro)
-      .file('title.md', downloadingBook?.properties?.obs?.title)
+    if (downloadingBook?.properties?.obs?.back) {
+      zip
+        .folder('content')
+        .folder('back')
+        .file('intro.md', downloadingBook?.properties?.obs?.back)
+    }
+    if (downloadingBook?.properties?.obs?.intro) {
+      zip
+        .folder('content')
+        .folder('front')
+        .file('intro.md', downloadingBook?.properties?.obs?.intro)
+    }
+    if (downloadingBook?.properties?.obs?.title) {
+      zip
+        .folder('content')
+        .folder('front')
+        .file('title.md', downloadingBook?.properties?.obs?.title)
+    }
 
     zip.generateAsync({ type: 'blob' }).then(function (blob) {
       saveAs(blob, `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`)
@@ -240,7 +257,6 @@ function BookList({ highLevelAccess, project, user }) {
       )}
       <PropertiesOfBook
         projectId={project?.id}
-        setUpdatingBooks={setUpdatingBooks}
         user={user}
         book={selectedBookProperties}
         openDownloading={openProperties}

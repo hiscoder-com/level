@@ -1,6 +1,7 @@
 import axios from 'axios'
 import usfm from 'usfm-js'
 import jsyaml from 'js-yaml'
+import { obsStoryVerses } from './config'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
   let value
@@ -45,24 +46,33 @@ const compileMarkdown = async (ref) => {
   ).padStart(2, '0')}.md`
   const result = await axios.get(url)
   const resource = mdToJson(result.data)
-  const markdown = '# ' + ref.json[0] + '\n'
+  const title = ref.json[0] ? `# ${ref.json[0]}\n` : ''
+  const markdown = title
   for (const verseObject of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
-    const image = `![OBS Image](${verseObject.urlImage})\n\n`
-    markdown += image + ref.json[verseObject.verse] + '\n\n'
+    if (ref.json[verseObject.verse]) {
+      const image = `![OBS Image](${verseObject.urlImage})\n\n`
+      markdown += image + ref.json[verseObject.verse] + '\n\n'
+    }
   }
-  markdown += '_' + ref.json[200] + '_'
+  if (ref.json[200]) {
+    markdown += '_' + ref.json[200] + '_'
+  }
+
   return markdown
 }
 
 export const compilePdfObs = async (ref, downloadSettings) => {
   if (!downloadSettings?.WithImages) {
-    const html = '<h1>' + ref.json[0] + '</h1>'
+    const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
+    const html = title
     for (const el in ref.json) {
-      if (!['0', '200'].includes(el)) {
+      if (!['0', '200'].includes(el) && ref.json[el]) {
         html += `<p>${ref.json[el]}</p>`
       }
     }
-    html += `<p><em> ${ref.json[200]} </em></p>`
+    if (ref.json[200]) {
+      html += `<p><em> ${ref.json[200]} </em></p>`
+    }
     return html
   }
 
@@ -78,13 +88,18 @@ export const compilePdfObs = async (ref, downloadSettings) => {
   }
 
   const resource = mdToJson(markdown.data)
-  const html = '<h1>' + ref.json[0] + '</h1>'
+  const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
+  const html = title
   for (const verseObject of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
     const image = `<p><img alt="OBS Image"src="${verseObject.urlImage}"/></p>`
     const text = `<p>${ref.json[verseObject.verse]}</p>`
-    html += image + text
+    if (ref.json[verseObject.verse]) {
+      html += image + text
+    }
   }
-  html += `<p><em> ${ref.json[200]} </em></p>`
+  if (ref.json[200]) {
+    html += `<p><em> ${ref.json[200]} </em></p>`
+  }
   return html
 }
 
@@ -98,7 +113,10 @@ export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
         return await compileMarkdown(ref)
       case 'pdf-obs':
         if (downloadSettings?.WithFront) {
-          const front = `<div style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.obs?.title}</h1></div>`
+          const title = ref?.book?.properties?.obs?.title
+            ? `<h1>${ref?.book?.properties?.obs?.title}</h1>`
+            : ''
+          const front = `<div style="text-align: center"><h1>${ref?.project?.title}</h1>${title}</div>`
           return front + (await compilePdfObs(ref, downloadSettings))
         }
 
@@ -283,19 +301,10 @@ export const parseManifests = async ({ resources, current_method }) => {
 }
 
 export const countOfChaptersAndVerses = async ({ link, book_code }) => {
-  const jsonChapterVerse = {}
+  let jsonChapterVerse = {}
   const errorParse = null
   if (book_code === 'obs') {
-    try {
-      for (let index = 1; index <= 50; index++) {
-        const chapterNum = String(index).padStart(2, '0')
-        const res = await axios.get(link + '/' + chapterNum + '.md')
-
-        jsonChapterVerse[chapterNum] = mdToJson(res.data).verseObjects.length
-      }
-    } catch (error) {
-      errorParse = error
-    }
+    jsonChapterVerse = obsStoryVerses
   } else {
     try {
       const result = await axios.get(link)
@@ -311,7 +320,6 @@ export const countOfChaptersAndVerses = async ({ link, book_code }) => {
       errorParse = error
     }
   }
-
   return { data: jsonChapterVerse, error: errorParse }
 }
 
