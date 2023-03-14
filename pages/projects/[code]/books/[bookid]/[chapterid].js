@@ -149,7 +149,6 @@ export async function getServerSideProps({ locale }) {
       ...(await serverSideTranslations(locale, [
         'projects',
         'common',
-        'verses',
         'chapters',
         'books',
         'users',

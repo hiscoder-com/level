@@ -10,8 +10,11 @@ import { supabase } from 'utils/supabaseClient'
 import { useBriefState } from 'utils/hooks'
 
 function ProjectCard({ project, token, userId }) {
-  const [currentSteps, setCurrentSteps] = useState(null)
   const [highLevelAccess, setHighLevelAccess] = useState(false)
+  const [currentSteps, setCurrentSteps] = useState(null)
+
+  const { t } = useTranslation(['projects', 'common', 'books'])
+
   const { briefResume, isBrief, isLoading } = useBriefState({
     token,
     project_id: project?.id,
@@ -31,8 +34,6 @@ function ProjectCard({ project, token, userId }) {
       getLevel()
     }
   }, [userId, project?.id])
-
-  const { t } = useTranslation(['projects', 'common', 'books'])
 
   useEffect(() => {
     supabase
@@ -54,6 +55,7 @@ function ProjectCard({ project, token, userId }) {
     () => JSON.parse(localStorage.getItem('viewedIntroSteps')),
     []
   )
+
   const searchLocalStorage = (step, localStorSteps) => {
     const { project, book, chapter, step: numStep } = step
     const isRepeatIntro = localStorSteps?.find(
@@ -68,6 +70,7 @@ function ProjectCard({ project, token, userId }) {
     )
     return isRepeatIntro
   }
+
   return (
     <>
       {!project?.code || !chapters || !currentSteps || isLoading || !userId ? (

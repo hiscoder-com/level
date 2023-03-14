@@ -1,4 +1,6 @@
 {
+  "Account": "Account",
+  "Agree": "Agree",
   "Agreement": "Agreement",
   "Block": "Block",
   "Blocked": "Blocking",
@@ -15,22 +17,19 @@
   "NoAuthenticate": "No authenticate",
   "NoUsers": "No users",
   "Password": "Password",
-  "Profile": "Profile",
   "Register": "Registration",
   "RestoreAccess": "Restore Access",
-  "Save": "Save",
   "SignIn": "Sign in",
   "SignOut": "Sign out",
   "SignUp": "Sign up",
   "Unblock": "Unlock",
   "UserCreatePage": "User сreation page",
-  "UserError": "There is no such user!!",
   "UserPage": "User page",
   "Users": "Users",
   "UsersList": "List of users",
   "V-CANAAccount": "V-CANA account",
   "WriteAdministrator": "write to the administrator.",
+  "WrongLoginPassword": "Invalid username or password",
   "YourLogin": "Your login",
-  "YouSignInAs": "You are logged in as",
-  "WrongLoginPassword": "Invalid username or password"
+  "YouSignInAs": "You are logged in as"
 }

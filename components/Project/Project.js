@@ -7,12 +7,14 @@ import { useTranslation } from 'next-i18next'
 import { useCurrentUser } from 'lib/UserContext'
 import { useProject, useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+
 import BookList from './BookList'
 
 function Project({ code }) {
-  const { t } = useTranslation(['projects', 'common', 'books', 'chapters'])
+  const { t } = useTranslation(['projects', 'common'])
 
   const [highLevelAccess, setHighLevelAccess] = useState(false)
+  const [project, setProject] = useState()
 
   const { user } = useCurrentUser()
   const [project] = useProject({ token: user?.access_token, code })
@@ -36,6 +38,7 @@ function Project({ code }) {
     token: user?.access_token,
     code: code,
   })
+
   return (
     <div className="mx-auto max-w-7xl">
       <h3 className="h3 inline-block">{project?.title}</h3>
@@ -63,7 +66,7 @@ function Project({ code }) {
               return (
                 <div className="font-bold" key={key}>
                   {`${el.users.login} ${el.users.email}`}
-                  {el.is_moderator ? '(Moderator)' : ''}
+                  {el.is_moderator ? `(${t('common:Moderator')})` : ''}
                 </div>
               )
             })}

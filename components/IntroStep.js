@@ -1,11 +1,13 @@
-import { useTranslation } from 'next-i18next'
 import { useRouter } from 'next/router'
-import Footer from 'components/Footer'
+import { useTranslation } from 'next-i18next'
+
 import MarkdownExtended from 'components/MarkdownExtended'
+import Footer from 'components/Footer'
 
 function IntroStep({ title, markdown, nextLink }) {
-  const router = useRouter()
   const { t } = useTranslation(['common'])
+  const router = useRouter()
+
   const saveStepLocalStorage = () => {
     let viewedSteps = JSON.parse(localStorage.getItem('viewedIntroSteps'))
 
@@ -33,6 +35,7 @@ function IntroStep({ title, markdown, nextLink }) {
     )
     router.push(nextLink)
   }
+
   return (
     <div className="mb-4 w-full f-screen-appbar max-w-3xl">
       <div

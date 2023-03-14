@@ -17,12 +17,12 @@ import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
 export default function AppBar({ setIsOpen }) {
-  const { user } = useCurrentUser()
-  const stepConfig = useRecoilValue(stepConfigState)
-  const [access, setAccess] = useState(false)
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
+  const [access, setAccess] = useState(false)
 
+  const stepConfig = useRecoilValue(stepConfigState)
+  const { user } = useCurrentUser()
   const router = useRouter()
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function AppBar({ setIsOpen }) {
       hasAccess()
     }
   }, [user])
+
   return (
     <div className="bg-white">
       <div className="appbar">

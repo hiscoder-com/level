@@ -8,13 +8,18 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import { toast, Toaster } from 'react-hot-toast'
+
 import { useCurrentUser } from 'lib/UserContext'
+
+import Modal from 'components/Modal'
+
 import { useTeamNotes, useProject } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import Modal from 'components/Modal'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -51,8 +56,14 @@ function TeamNotes() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/team_notes/${activeNote?.id}`, activeNote)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .then(() => {
+        saveCacheNote('team-notes', activeNote, user)
+        mutate()
+      })
+      .catch((err) => {
+        toast.error(t('SaveFailedNote'))
+        console.log(err)
+      })
   }
   useEffect(() => {
     const getLevel = async () => {
@@ -86,7 +97,10 @@ function TeamNotes() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/team_notes/${id}`)
-      .then(() => mutate())
+      .then(() => {
+        removeCacheNote('personal_notes', id)
+        mutate()
+      })
       .catch((err) => console.log(err))
   }
   useEffect(() => {
@@ -193,6 +207,7 @@ function TeamNotes() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }

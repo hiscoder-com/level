@@ -7,10 +7,11 @@ import { useCurrentUser } from 'lib/UserContext'
 
 export default function SignUp() {
   const [loading, setLoading] = useState(false)
-  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const { user } = useCurrentUser()
+  const [email, setEmail] = useState('')
+
   const { t } = useTranslation(['users'])
+  const { user } = useCurrentUser()
 
   const handleLogin = async () => {
     try {
@@ -27,6 +28,7 @@ export default function SignUp() {
       setLoading(false)
     }
   }
+
   const handleLogout = async () => {
     try {
       setLoading(true)

@@ -14,6 +14,7 @@ export default async function notesHandler(req, res) {
         const { data, error } = await supabase
           .from('personal_notes')
           .select('*')
+          .is('deleted_at', null)
           .order('changed_at', { ascending: false })
         if (error) throw error
         res.status(200).json(data)
@@ -32,12 +33,7 @@ export default async function notesHandler(req, res) {
             user_id,
             title: 'new note',
             data: {
-              blocks: [
-                {
-                  type: 'paragraph',
-                  data: {},
-                },
-              ],
+              blocks: [],
               version: '2.8.1',
             },
           },
@@ -50,11 +46,12 @@ export default async function notesHandler(req, res) {
       }
       break
     case 'DELETE':
+      const { user_id } = body
       try {
         const { data, error } = await supabase
           .from('personal_notes')
-          .delete()
-          .not('user_id', 'is', null)
+          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
+          .match({ user_id })
 
         if (error) throw error
         res.status(200).json(data)

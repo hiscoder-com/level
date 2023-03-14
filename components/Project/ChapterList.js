@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
 import { useTranslation } from 'next-i18next'
 
 import DownloadBlock from './DownloadBlock'
@@ -12,11 +13,10 @@ import { supabase } from 'utils/supabaseClient'
 import { useBriefState, useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
 function ChapterList({ selectedBook, project, highLevelAccess, token }) {
+  const [selectedChapter, setSelectedChapter] = useState(null)
+  const [currentSteps, setCurrentSteps] = useState(null)
   const [openModal, setOpenModal] = useState(false)
 
-  const [selectedChapter, setSelectedChapter] = useState(null)
-
-  const [currentSteps, setCurrentSteps] = useState(null)
   const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,

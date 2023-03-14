@@ -1,4 +1,13 @@
 import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
+import { validateNote } from 'utils/helper'
+
+const sendLog = async (log) => {
+  const { data, error } = await supabaseService.from('logs').insert({
+    log,
+  })
+  return { data, error }
+}
 
 export default async function notesDeleteHandler(req, res) {
   if (!req.headers.token) {
@@ -18,6 +27,7 @@ export default async function notesDeleteHandler(req, res) {
           .from('team_notes')
           .select('*')
           .eq('project_id', id)
+          .is('deleted_at', null)
           .order('changed_at', { ascending: false })
 
         if (error) throw error
@@ -30,7 +40,10 @@ export default async function notesDeleteHandler(req, res) {
 
     case 'DELETE':
       try {
-        const { data, error } = await supabase.from('team_notes').delete().match({ id })
+        const { data, error } = await supabase
+          .from('team_notes')
+          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
+          .match({ id })
 
         if (error) throw error
         res.status(200).json(data)
@@ -41,6 +54,16 @@ export default async function notesDeleteHandler(req, res) {
       break
 
     case 'PUT':
+      if (!validateNote(data_note)) {
+        await sendLog({
+          url: `api/team_notes/${id}`,
+          type: 'update team note',
+          error: 'wrong type of the note',
+          note: data_note,
+        })
+        throw { error: 'wrong type of the note' }
+      }
+
       try {
         const { data, error } = await supabase
           .from('team_notes')

@@ -4,9 +4,10 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { useCurrentUser } from 'lib/UserContext'
-import { useProject, useTranslators } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+
+import { useProject, useTranslators } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 
 const defaultColor = [
   'bg-yellow-400',
@@ -22,7 +23,12 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
-  const { t } = useTranslation('verses')
+  const [currentTranslator, setCurrentTranslator] = useState(null)
+  const [colorTranslators, setColorTranslators] = useState([])
+  const [versesDivided, setVersesDivided] = useState([])
+  const [isHighlight, setIsHighlight] = useState(false)
+
+  const { t } = useTranslation('common')
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -32,13 +38,11 @@ function VerseDivider({ verses }) {
     token: user?.access_token,
     code,
   })
+
   const [project] = useProject({
     token: user?.access_token,
     code,
   })
-  const [currentTranslator, setCurrentTranslator] = useState(null)
-  const [isHighlight, setIsHighlight] = useState(false)
-  const [colorTranslators, setColorTranslators] = useState([])
 
   useEffect(() => {
     const colorTranslators = translators?.map((el, index) => ({
@@ -48,7 +52,6 @@ function VerseDivider({ verses }) {
     setColorTranslators(colorTranslators)
   }, [translators])
 
-  const [versesDivided, setVersesDivided] = useState([])
   useEffect(() => {
     if (colorTranslators?.length > 0) {
       const extVerses = verses?.map((el) => {
@@ -76,6 +79,7 @@ function VerseDivider({ verses }) {
     }
     setVersesDivided(newArr)
   }
+
   const verseDividing = async () => {
     let { data, error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,

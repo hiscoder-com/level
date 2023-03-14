@@ -4,15 +4,17 @@ import { useRouter } from 'next/router'
 
 import axios from 'axios'
 
+import { supabase } from 'utils/supabaseClient'
+
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
-import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { useGetChapter, useProject } from 'utils/hooks'
 
 // moderatorOnly
 //              - TRUE видно все стихи, только модератор может вносить исправления
 //              - FALSE видно все стихи, исправлять можно только свои
+
 function CommandEditor({ config }) {
   const { user } = useCurrentUser()
 

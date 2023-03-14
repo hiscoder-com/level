@@ -1,4 +1,13 @@
 import { supabase } from 'utils/supabaseClient'
+import { supabaseService } from 'utils/supabaseServer'
+import { validateNote } from 'utils/helper'
+
+const sendLog = async (log) => {
+  const { data, error } = await supabaseService.from('logs').insert({
+    log,
+  })
+  return { data, error }
+}
 
 export default async function notesDeleteHandler(req, res) {
   if (!req.headers.token) {
@@ -10,12 +19,13 @@ export default async function notesDeleteHandler(req, res) {
     body: { data: data_note, title, parent_id },
     method,
   } = req
+
   switch (method) {
     case 'DELETE':
       try {
         const { data, error } = await supabase
           .from('personal_notes')
-          .delete()
+          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
           .match({ id })
         if (error) throw error
         res.status(200).json(data)
@@ -26,6 +36,16 @@ export default async function notesDeleteHandler(req, res) {
       break
     case 'PUT':
       try {
+        if (!validateNote(data_note)) {
+          await sendLog({
+            url: `api/personal_notes/${id}`,
+            type: 'update personal note',
+            error: 'wrong type of the note',
+            note: data_note,
+          })
+          throw { error: 'wrong type of the note' }
+        }
+
         const { data, error } = await supabase
           .from('personal_notes')
           // TODO заметку же папкой не сделать, по этому isFolder не надо передавать

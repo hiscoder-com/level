@@ -12,19 +12,20 @@ import ProgressBar from 'components/ProgressBar'
 import { stepConfigState } from './Panel/state/atoms'
 import Spinner from '../public/spinner.svg'
 export default function Footer({
+  loading = false,
   textCheckbox,
+  handleClick,
   textButton,
   href,
-  handleClick,
-  loading = false,
 }) {
   const [isStepPage, setIsStepPage] = useState(false)
-  const router = useRouter()
-  const stepConfig = useRecoilValue(stepConfigState)
   const [checked, setChecked] = useState(false)
 
-  const { step } = router?.query
+  const stepConfig = useRecoilValue(stepConfigState)
   const { t } = useTranslation('common')
+  const router = useRouter()
+  const { step } = router?.query
+
   useEffect(() => {
     setChecked(false)
   }, [step])

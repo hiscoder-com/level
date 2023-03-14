@@ -1,28 +1,28 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 import { Switch } from '@headlessui/react'
 
-import Modal from 'components/Modal'
 import TranslatorImage from 'components/TranslatorImage'
+import Modal from 'components/Modal'
 
 import { supabase } from 'utils/supabaseClient'
 import {
   useCoordinators,
+  useTranslators,
   useGetBrief,
   useProject,
-  useTranslators,
   useUsers,
 } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectEdit() {
-  const { t } = useTranslation(['common', 'project-edit'])
+  const { t } = useTranslation(['common', 'project-edit', 'projects'])
   const {
     query: { code },
   } = useRouter()
@@ -150,7 +150,7 @@ function ProjectEdit() {
             {brief?.is_enable && (
               <div className="py-5">
                 <Link href={`/projects/${project?.code}/edit/brief`}>
-                  <a className="btn btn-filled btn-cyan">{t('common:EditBrief')}</a>
+                  <a className="btn btn-filled btn-cyan">{t('EditBrief')}</a>
                 </Link>
               </div>
             )}
@@ -176,7 +176,7 @@ function ProjectEdit() {
           </div>
           <div className="pt-5 pb-5">
             <div className="flex justify-between">
-              <div className="">{t('Translators')}</div>
+              <div className="">{t('projects:Translators')}</div>
               <button
                 onClick={() => {
                   setOpenModalAssignTranslator(true)
@@ -184,7 +184,7 @@ function ProjectEdit() {
                 }}
                 className="btn-cyan m-2"
               >
-                {t('project-edit:AddTranslator')}
+                {t('projects:AddTranslator')}
               </button>
             </div>
             <TranslatorsList
@@ -230,7 +230,7 @@ function ProjectEdit() {
                         setSelectedUser('')
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -272,7 +272,7 @@ function ProjectEdit() {
                         setSelectedUser('')
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -314,7 +314,7 @@ function ProjectEdit() {
                         setSelectedModerator(false)
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -343,7 +343,7 @@ function ProjectEdit() {
                         setSelectedTranslator(false)
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -375,7 +375,7 @@ function ProjectEdit() {
                         setSelectedCoordinator(false)
                       }}
                     >
-                      {t('common:Close')}
+                      {t('Close')}
                     </button>
                   </div>
                 </div>
@@ -391,7 +391,8 @@ function ProjectEdit() {
 export default ProjectEdit
 
 function TranslatorsList({ translators, setSelectedModerator, setSelectedTranslator }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'users'])
+
   return (
     <div className="overflow-x-auto relative">
       <table className="w-full text-sm text-left text-gray-500">
@@ -399,7 +400,7 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
-              {t('Login')}
+              {t('users:Login')}
             </th>
             <th scope="col" className="py-3 px-6 hidden sm:block">
               {t('Email')}
@@ -457,7 +458,8 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
 }
 
 function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = false }) {
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common', 'users'])
+
   return (
     <div className="overflow-x-auto relative">
       <table className="w-1/2 text-sm text-left text-gray-500">
@@ -465,7 +467,7 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, canDelete = fa
           <tr>
             <th scope="col" className="py-3 px-6"></th>
             <th scope="col" className="py-3 px-6">
-              {t('Login')}
+              {t('users:Login')}
             </th>
             <th scope="col" className="py-3 px-6 hidden sm:block">
               {t('Email')}

@@ -2,17 +2,17 @@ import { useTranslation } from 'next-i18next'
 
 import {
   PersonalNotes,
-  TeamNotes,
-  Dictionary,
-  Audio,
-  Editor,
-  Bible,
-  TN,
-  TWL,
-  TQ,
-  BlindEditor,
   CommandEditor,
+  BlindEditor,
+  Dictionary,
+  TeamNotes,
+  Editor,
   Reader,
+  Audio,
+  Bible,
+  TWL,
+  TN,
+  TQ,
 } from './'
 
 function Tool({ config, toolName, editable = false }) {
@@ -159,7 +159,7 @@ function Tool({ config, toolName, editable = false }) {
   }
   return (
     <>
-      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
+      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg truncate">
         {![
           'translate',
           'commandTranslate',
