@@ -4,11 +4,11 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default function Confession() {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('common', 'users')
   return (
     <div className="layout-appbar">
       <div className="text-center mx-5 max-w-lg whitespace-pre-line">
-        <h1 className="h1 mb-6">{t('ConfessionFaith')}:</h1>
+        <h1 className="h1 mb-6">{t('users:Confession')}:</h1>
 
         <p
           dangerouslySetInnerHTML={{

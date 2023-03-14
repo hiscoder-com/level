@@ -19,9 +19,9 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
       try {
         const { data: value, error } = await supabase
           .from('project_coordinators')
-          .select('projects!inner(code),users!inner(*)')
+          .select('id, projects!inner(code), users!inner(*)')
           .eq('projects.code', code)
-
+          .order('id', { ascending: true })
         if (error) throw error
         data = value
       } catch (error) {

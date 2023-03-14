@@ -20,9 +20,12 @@ import {
   downloadPdf,
 } from 'utils/helper'
 import Properties from 'public/parameters.svg'
+
 import { usfmFileNames } from 'utils/config'
+import { useGetBooks } from 'utils/hooks'
 
 function BookList({ highLevelAccess, project, user }) {
+
   const { t } = useTranslation(['common', 'books', 'book-properties'])
   const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
@@ -38,9 +41,12 @@ function BookList({ highLevelAccess, project, user }) {
     WithFront: true,
     WithIntro: true,
     WithBack: true,
-  })
+  }) 
 
-  const [books, setBooks] = useState()
+  const [books] = useGetBooks({
+    token: user?.access_token,
+    code: project?.code,
+  })
 
   const getBookJson = async (book_id) => {
     const { data } = await supabase
@@ -52,21 +58,7 @@ function BookList({ highLevelAccess, project, user }) {
   }
 
   useEffect(() => {
-    const getBooks = async () => {
-      const { data: books, error } = await supabase
-        .from('books')
-        .select('id,code,chapters,properties')
-        .eq('project_id', project.id)
-      setBooks(books)
-    }
 
-    if (project?.id && !updatingBooks) {
-      getBooks()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id, query?.book, updatingBooks])
-
-  useEffect(() => {
     if (query?.book && books?.length) {
       const book = books?.find((book) => book.code === query?.book)
       setSelectedBook(book)
@@ -82,6 +74,7 @@ function BookList({ highLevelAccess, project, user }) {
     if (chapters?.length === 0) {
       return
     }
+
     switch (type) {
       case 'txt':
         main = convertToUsfm({
@@ -211,7 +204,7 @@ function BookList({ highLevelAccess, project, user }) {
                       }}
                     >
                       {t('Download')}
-                    </button>
+                    </button
                   </td>
                   {highLevelAccess && (
                     <td className="py-6 px-6">

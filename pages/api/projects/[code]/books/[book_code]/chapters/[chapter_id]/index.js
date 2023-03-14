@@ -1,6 +1,6 @@
 import { supabase } from 'utils/supabaseClient'
 
-export default async function languageProjectHandler(req, res) {
+export default async function chapterHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
@@ -8,26 +8,26 @@ export default async function languageProjectHandler(req, res) {
 
   let data = {}
   const {
-    query: { code },
+    query: { code, book_code, chapter_id },
     method,
   } = req
   switch (method) {
     case 'GET':
       try {
-        const { data: value, error } = await supabase
-          .from('projects')
+        const { data: chapter, error } = await supabase
+          .from('chapters')
           .select(
-            'id, title, code, type, method, languages(orig_name,code), dictionaries_alphabet, base_manifest'
+            'id, num, text, started_at, finished_at, projects!inner(code), books!inner(code)'
           )
-          .eq('code', code)
-          .maybeSingle()
+          .match({ 'projects.code': code, 'books.code': book_code, num: chapter_id })
+          .single()
         if (error) throw error
-        data = value
+        data = chapter
       } catch (error) {
         res.status(404).json({ error })
         return
       }
-      res.status(200).json({ ...data })
+      res.status(200).json(data)
       break
     default:
       res.setHeader('Allow', ['GET'])

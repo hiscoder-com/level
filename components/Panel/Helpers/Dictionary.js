@@ -1,27 +1,25 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
-
 import dynamic from 'next/dynamic'
-
-import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import axios from 'axios'
+
 import toast, { Toaster } from 'react-hot-toast'
 
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import { useProject } from 'utils/hooks'
-
 import { supabase } from 'utils/supabaseClient'
+import { useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
 
+import RightArrow from 'public/right-arrow.svg'
+import LeftArrow from 'public/left-arrow.svg'
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import LeftArrow from 'public/left-arrow.svg'
-import RightArrow from 'public/right-arrow.svg'
-import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -39,15 +37,15 @@ const ListOfNotes = dynamic(
 const CountWordsOnPage = 5
 
 function Dictionary() {
-  const [wordId, setWordId] = useState('')
+  const [currentPageWords, setCurrentPageWords] = useState(0)
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [errorText, setErrorText] = useState(false)
+  const [wordToDel, setWordToDel] = useState(null)
   const [editable, setEditable] = useState(false)
   const [activeWord, setActiveWord] = useState()
-  const [isOpenModal, setIsOpenModal] = useState(false)
-  const [wordToDel, setWordToDel] = useState(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
-  const [errorText, setErrorText] = useState(false)
-  const [currentPageWords, setCurrentPageWords] = useState(0)
 
   const totalPageCount = useMemo(
     () => Math.ceil(words?.count / CountWordsOnPage),
@@ -60,10 +58,12 @@ function Dictionary() {
   const {
     query: { project: code },
   } = useRouter()
+
   const [project, { mutate }] = useProject({
     token: user?.access_token,
     code,
   })
+
   const getAll = () => {
     setCurrentPageWords(0)
     setSearchQuery('')
@@ -141,6 +141,7 @@ function Dictionary() {
         showError(err, placeholder)
       })
   }
+
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
@@ -151,6 +152,7 @@ function Dictionary() {
         getWords(searchQuery, currentPageWords)
       })
   }
+
   const saveWord = async () => {
     if (!editable) {
       return
@@ -168,6 +170,7 @@ function Dictionary() {
         mutate()
       })
   }
+
   const showError = (err, placeholder) => {
     if (err?.response?.data?.error) {
       setErrorText(`${t('WordExist')} "${placeholder}"`)
@@ -176,6 +179,7 @@ function Dictionary() {
       setErrorText(null)
     }, 2000)
   }
+
   const getPagination = (page, size) => {
     const from = page ? page * size : 0
     const to = page ? from + size - 1 : size - 1

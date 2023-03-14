@@ -31,6 +31,7 @@ function MarkdownExtended({ children }) {
       <span>{props.children}</span>
     )
   }
+
   return (
     <ReactMarkdown
       rehypePlugins={[rehypeRaw]}

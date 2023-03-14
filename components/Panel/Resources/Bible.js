@@ -11,17 +11,18 @@ import { Placeholder } from '../UI'
 import { checkedVersesBibleState } from '../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
 
-// draft: true/false
 function Bible({ config, url, toolName }) {
+
   const { t } = useTranslation('common')
-  const { loading, data, error } = useGetResource({
+
+  const { isLoading, data } = useGetResource({
     config,
     url,
   })
   const { scrollId, handleSave } = useScroll({ toolName })
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Placeholder />
       ) : config?.config?.draft ? (
         <VersesExtended
@@ -74,7 +75,7 @@ function VersesExtended({ verseObjects, handleSave, scrollId, t }) {
 
   return (
     <>
-      {verseObjects?.map((el, index) => {
+      {verseObjects?.map((el) => {
         const checkedCurrent = checkedVersesBible.includes(el.verse)
         return (
           <div

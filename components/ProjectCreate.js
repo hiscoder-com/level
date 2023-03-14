@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import { useForm, useWatch } from 'react-hook-form'
+import { useForm, useWatch } from 'react-hook-form
 
 import axios from 'axios'
 
@@ -15,16 +15,17 @@ import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectCreate() {
-  const router = useRouter()
-  const { t } = useTranslation(['projects,common'])
-  const [customSteps, setCustomSteps] = useState('')
-  const [customBriefs, setCustomBriefs] = useState('')
-  const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [customResources, setCustomResources] = useState('')
-  const [method, setMethod] = useState()
+  const [isBriefEnable, setIsBriefEnable] = useState(true)
+  const [customBriefs, setCustomBriefs] = useState('')
   const [resourcesUrl, setResourcesUrl] = useState()
+  const [customSteps, setCustomSteps] = useState('')
+  const [method, setMethod] = useState()
 
+  const { t } = useTranslation(['projects', 'project-edit'])
   const { user } = useCurrentUser()
+  const router = useRouter()
+
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
   const {
@@ -182,7 +183,7 @@ function ProjectCreate() {
         />
         <div>
           <span className="mr-3">
-            {t(`common:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
+            {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
           </span>
           <Switch
             checked={isBriefEnable}

@@ -2,26 +2,29 @@ import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
 import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
 
 import { supabase } from 'utils/supabaseClient'
+
 import { readableDate, compileChapter, downloadPdf, downloadFile } from 'utils/helper'
-import { useBriefState } from 'utils/hooks'
+import { useBriefState, useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
 function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   const [openCreatingChapter, setOpenCreatingChapter] = useState(false)
   const [openDownloading, setOpenDownloading] = useState(false)
   const [selectedChapter, setSelectedChapter] = useState(null)
-  const [createdChapters, setCreatedChapters] = useState([])
   const [currentSteps, setCurrentSteps] = useState(null)
-  const [chapters, setChapters] = useState([])
   const [currentChapter, setCurrentChapter] = useState([])
   const [downloadSettings, setDownloadSettings] = useState({
     WithImages: true,
     WithFront: true,
   })
+
+  const [openModal, setOpenModal] = useState(false)
+
 
   const { briefResume, isBrief } = useBriefState({
     token,
@@ -35,31 +38,22 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
     push,
     locale,
   } = useRouter()
-
+  const [chapters] = useGetChapters({
+    token,
+    code: project?.code,
+    book_code: book,
+  })
+  const [createdChapters] = useGetCreatedChapters({
+    token,
+    code: project?.code,
+    chapters: chapters?.map((el) => el.id),
+  })
   const handleCreate = async (chapter_id, num) => {
     const res = await supabase.rpc('create_verses', { chapter_id })
     if (res.data) {
       push('/projects/' + code + '/books/' + selectedBook.code + '/' + num)
     }
   }
-  useEffect(() => {
-    const getCreatedChapters = async () => {
-      const { data: createdChaptersRaw, error } = await supabase
-        .from('verses')
-        .select('chapter_id')
-        .eq('project_id', project.id)
-        .in(
-          'chapter_id',
-          chapters.map((el) => el.id)
-        )
-      const createdChapters = new Set(createdChaptersRaw.map((el) => el.chapter_id))
-      setCreatedChapters([...createdChapters])
-    }
-    if (project?.id && chapters?.length) {
-      getCreatedChapters()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapters?.length, project?.id])
 
   useEffect(() => {
     if (project?.id) {
@@ -68,20 +62,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
         .then((res) => setCurrentSteps(res.data))
     }
   }, [project?.id])
-
-  useEffect(() => {
-    const getChapters = async () => {
-      const { data: chapters, error } = await supabase
-        .from('chapters')
-        .select('id,num,verses,started_at,finished_at,text')
-        .eq('project_id', project.id)
-        .eq('book_id', selectedBook.id)
-      setChapters(chapters)
-    }
-    if (project?.id && selectedBook?.id) {
-      getChapters()
-    }
-  }, [selectedBook?.id, project?.id])
 
   const getCurrentStep = (chapter, index) => {
     const step = currentSteps
@@ -113,9 +93,9 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   return (
     <div className="overflow-x-auto relative">
       <div className="my-4">
-        <Link href={`/projects/${project.code}`}>
+        <Link href={`/projects/${project?.code}`}>
           <a onClick={(e) => e.stopPropagation()} className="text-blue-450 decoration-2">
-            {project.code}
+            {project?.code}
           </a>
         </Link>
         /{t(`books:${selectedBook.code}`)}
@@ -130,49 +110,52 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
           </tr>
         </thead>
         <tbody>
-          {chapters
-            ?.sort((a, b) => a.num - b.num)
-            .map((chapter, index) => {
-              const { id, num, text, started_at, finished_at } = chapter
-              return (
-                <tr
-                  key={index}
-                  onClick={() => {
-                    if (highLevelAccess) {
-                      if (!createdChapters.includes(id)) {
-                        setSelectedChapter(chapter)
-                        setOpenCreatingChapter(true)
-                      } else {
-                        push(
-                          '/projects/' +
-                            project?.code +
-                            '/books/' +
-                            selectedBook?.code +
-                            '/' +
-                            num
-                        )
+          {project?.code &&
+            chapters
+              ?.sort((a, b) => a.num - b.num)
+              .map((chapter, index) => {
+                const { id, num, started_at, finished_at } = chapter
+                return (
+                  <tr
+                    key={index}
+                    onClick={() => {
+                      if (highLevelAccess) {
+                        if (!createdChapters?.includes(id)) {
+                          setSelectedChapter(chapter)
+                          setOpenModal(true)
+                        } else {
+                          push(
+                            '/projects/' +
+                              project?.code +
+                              '/books/' +
+                              selectedBook?.code +
+                              '/' +
+                              num
+                          )
+                        }
                       }
-                    }
-                  }}
-                  className={`${
-                    highLevelAccess ? 'cursor-pointer hover:bg-gray-50' : ''
-                  } ${
-                    !createdChapters.includes(id) ? 'bg-gray-100' : 'bg-white'
-                  } border-b`}
-                >
-                  <th
-                    scope="row"
-                    className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
+                    }}
+                    className={`${
+                      highLevelAccess ? 'cursor-pointer hover:bg-gray-50' : ''
+                    } ${
+                      !createdChapters?.includes(id) ? 'bg-gray-100' : 'bg-white'
+                    } border-b`}
                   >
-                    {num}
-                  </th>
-                  <td className="py-4 px-6">
-                    {started_at && readableDate(started_at, locale)}
-                  </td>
-                  <td className="py-4 px-6 ">
-                    {finished_at && readableDate(finished_at, locale)}
-                  </td>
-
+                    <th
+                      scope="row"
+                      className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
+                    >
+                      {num}
+                    </th>
+                    <td className="py-4 px-6">
+                      {started_at && readableDate(started_at, locale)}
+                    </td>currentChapter
+CurrentChapter
+CurrentChapter
+currentChapter
+                    <td className="py-4 px-6 ">
+                      {finished_at && readableDate(finished_at, locale)}
+                    </td>
                   <td className="py-4 px-6">
                     {finished_at ? (
                       <button

@@ -1,4 +1,6 @@
 {
+  "Account": "Личный кабинет",
+  "Agree": "Согласен",
   "Agreement": "Соглашение",
   "Block": "Заблокировать",
   "Blocked": "Блокировка",
@@ -15,22 +17,19 @@
   "NoAuthenticate": "Нет аутентификации",
   "NoUsers": "Нет пользователей",
   "Password": "Пароль",
-  "Profile": "Профиль",
   "Register": "Регистрация",
   "RestoreAccess": "Восстановить доступ",
-  "Save": "Сохранить",
   "SignIn": "Войти",
   "SignOut": "Выйти",
   "SignUp": "Зарегистрироваться",
   "Unblock": "Разблокировать",
   "UserCreatePage": "Страница создания пользователя",
-  "UserError": "Нет такого юзера!!",
   "UserPage": "Страница пользователя",
   "Users": "Пользователи",
   "UsersList": "Список пользователей",
   "V-CANAAccount": "Аккаунт V-CANA",
   "WriteAdministrator": "напишите администратору.",
+  "WrongLoginPassword": "Неверный логин или пароль",
   "YourLogin": "Ваш логин",
-  "YouSignInAs": "Вы вошли как",
-  "WrongLoginPassword": "Неверный логин или пароль"
+  "YouSignInAs": "Вы вошли как"
 }
