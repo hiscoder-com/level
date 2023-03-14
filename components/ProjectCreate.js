@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import { useForm, useWatch } from 'react-hook-form
+import { useForm, useWatch } from 'react-hook-form'
 
 import axios from 'axios'
 

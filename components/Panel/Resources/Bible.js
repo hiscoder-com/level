@@ -12,7 +12,6 @@ import { checkedVersesBibleState } from '../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
 
 function Bible({ config, url, toolName }) {
-
   const { t } = useTranslation('common')
 
   const { isLoading, data } = useGetResource({

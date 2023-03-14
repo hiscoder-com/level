@@ -116,7 +116,7 @@ export default async function twlHandler(req, res) {
     let verseUnique = {}
 
     words?.forEach((word) => {
-      let repeatedInVerse = word.url in verseUnique
+      let repeatedInVerse = word.url in verseUnique //TODO переписать в РСЛ, которая использует и функции и хуки для фильтров
       if (!repeatedInVerse) {
         verseUnique[word.url] = word.title
       }

@@ -14,7 +14,7 @@ function Reader({ config }) {
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
-  
+
   const { t } = useTranslation(['common'])
 
   const { user } = useCurrentUser()

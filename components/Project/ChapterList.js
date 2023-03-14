@@ -25,7 +25,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
 
   const [openModal, setOpenModal] = useState(false)
 
-
   const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
@@ -149,32 +148,29 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
                     </th>
                     <td className="py-4 px-6">
                       {started_at && readableDate(started_at, locale)}
-                    </td>currentChapter
-CurrentChapter
-CurrentChapter
-currentChapter
+                    </td>
                     <td className="py-4 px-6 ">
                       {finished_at && readableDate(finished_at, locale)}
                     </td>
-                  <td className="py-4 px-6">
-                    {finished_at ? (
-                      <button
-                        className="text-blue-600 hover:text-gray-400 p-2"
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setCurrentChapter(chapter)
-                          setOpenDownloading(true)
-                        }}
-                      >
-                        {t('Download')}
-                      </button>
-                    ) : (
-                      getCurrentStep(chapter, index)
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
+                    <td className="py-4 px-6">
+                      {finished_at ? (
+                        <button
+                          className="text-blue-600 hover:text-gray-400 p-2"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setCurrentChapter(chapter)
+                            setOpenDownloading(true)
+                          }}
+                        >
+                          {t('Download')}
+                        </button>
+                      ) : (
+                        getCurrentStep(chapter, index)
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
         </tbody>
       </table>
       <Modal

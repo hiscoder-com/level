@@ -25,7 +25,6 @@ import { usfmFileNames } from 'utils/config'
 import { useGetBooks } from 'utils/hooks'
 
 function BookList({ highLevelAccess, project, user }) {
-
   const { t } = useTranslation(['common', 'books', 'book-properties'])
   const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
@@ -41,7 +40,7 @@ function BookList({ highLevelAccess, project, user }) {
     WithFront: true,
     WithIntro: true,
     WithBack: true,
-  }) 
+  })
 
   const [books] = useGetBooks({
     token: user?.access_token,
@@ -58,7 +57,6 @@ function BookList({ highLevelAccess, project, user }) {
   }
 
   useEffect(() => {
-
     if (query?.book && books?.length) {
       const book = books?.find((book) => book.code === query?.book)
       setSelectedBook(book)
@@ -204,7 +202,7 @@ function BookList({ highLevelAccess, project, user }) {
                       }}
                     >
                       {t('Download')}
-                    </button
+                    </button>
                   </td>
                   {highLevelAccess && (
                     <td className="py-6 px-6">
