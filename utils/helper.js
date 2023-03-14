@@ -38,6 +38,7 @@ export const checkLSVal = (el, val, type = 'string', ext = false) => {
 export const readableDate = (date, locale = 'ru') => {
   return new Date(date).toLocaleString(locale, {})
 }
+
 const compileMarkdown = async (ref) => {
   const url = `${ref.project.baseManifest.books[0].link}/${String(
     ref.chapterNum
@@ -52,6 +53,7 @@ const compileMarkdown = async (ref) => {
   markdown += '_' + ref.json[200] + '_'
   return markdown
 }
+
 export const compilePdfObs = async (ref, downloadSettings) => {
   if (!downloadSettings?.WithImages) {
     const html = '<h1>' + ref.json[0] + '</h1>'
@@ -378,6 +380,7 @@ export const uniqueFilterInBook = (wordsBook, item, wordObject) => {
       }
     }
   }
+}
 
 export const saveCacheNote = (key, note, user) => {
   if (!note) {
