@@ -11,7 +11,7 @@ import { supabase } from 'utils/supabaseClient'
 import BookList from './BookList'
 
 function Project({ code }) {
-  const { t } = useTranslation(['projects'])
+  const { t } = useTranslation(['projects', 'common'])
 
   const [highLevelAccess, setHighLevelAccess] = useState(false)
   const [project, setProject] = useState()
@@ -79,7 +79,7 @@ function Project({ code }) {
               return (
                 <div className="font-bold" key={key}>
                   {`${el.users.login} ${el.users.email}`}
-                  {el.is_moderator ? '(Moderator)' : ''}
+                  {el.is_moderator ? `(${t('common:Moderator')})` : ''}
                 </div>
               )
             })}
