@@ -85,6 +85,7 @@ export default async function infoHandler(req, res) {
   } else {
     url = `${repo}/raw/master/${bookPath}`
   }
+
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
@@ -98,9 +99,6 @@ export default async function infoHandler(req, res) {
       if (chapterNote !== chapter && chapterNote !== 'front') {
         return
       }
-      // создаем экземпляр заметки
-      // Если это введение к главе - заголовок intro
-      // Если введение к книге - заголовок front
       if (verseNote !== 'intro') {
         return
       }
@@ -108,10 +106,9 @@ export default async function infoHandler(req, res) {
       const newNote = {
         id: el.ID,
         text: el?.OccurrenceNote || el?.Note,
-        title: chapterNote === 'front' ? 'front' : 'intro',
+        title: chapterNote === 'front' ? 'bookIntro' : 'chapterIntro',
       }
-
-      filterNotes(newNote, verseNote, intros)
+      intros[newNote.title] = newNote.text
     })
 
     res.status(200).json(intros)

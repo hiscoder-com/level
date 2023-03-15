@@ -1,37 +1,23 @@
-import { useEffect, useState } from 'react'
-import { useTranslation } from 'next-i18next'
+import { Placeholder } from '../UI'
+
 import { useGetInfo } from 'utils/hooks'
-import { TNTWLContent } from '../UI'
+import MarkdownExtended from 'components/MarkdownExtended'
 
-function Info({ config, url, toolName }) {
-  const [intro, setIntro] = useState([])
-  const [item, setItem] = useState(null)
-  const { t } = useTranslation('common')
-
-  const { isLoading, data, error } = useGetInfo({ config, url })
-
-  useEffect(() => {
-    if (data) {
-      const { intro } = data
-      intro && setIntro(intro)
-    }
-  }, [data])
+function Info({ config, url }) {
+  const { isLoading, data: intro, error } = useGetInfo({ config, url })
 
   return (
-    <div className="relative h-full">
-      <TNTWLContent setItem={setItem} item={item} />
-      <div className="text-center">
-        {intro?.map((el, index) => (
-          <div
-            onClick={() => setItem({ text: el.text, title: t(el.title) })}
-            className="mx-2 btn-white my-2"
-            key={index}
-          >
-            {t(el.title)}
-          </div>
-        ))}
-      </div>
-    </div>
+    <>
+      {isLoading ? (
+        <Placeholder />
+      ) : (
+        <div>
+          <MarkdownExtended>{intro?.bookIntro}</MarkdownExtended>
+          <hr className="my-10" />
+          <MarkdownExtended>{intro?.chapterIntro}</MarkdownExtended>
+        </div>
+      )}
+    </>
   )
 }
 
