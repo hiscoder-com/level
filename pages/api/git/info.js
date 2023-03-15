@@ -1,50 +1,29 @@
 import axios from 'axios'
 import jsyaml from 'js-yaml'
 
-import { filterNotes, tsvToJson } from 'utils/tsvHelper'
+import { tsvToJson } from 'utils/tsvHelper'
 
 /**
  *  @swagger
- *  /api/git/tn:
+ *  /api/git/info:
  *    get:
- *      summary: Returns tn
- *      description: Returns tn
+ *      summary: Returns info
+ *      description: Returns book introduction & chapter introduction
  *      parameters:
  *       - name: repo
  *         in: query
- *         description: code of repo
+ *         description: url to TN repository
  *         required: true
  *         schema:
  *           type: string
- *           example: tn
- *       - name: commit
+ *           example: https://git.door43.org/ru_gl/ru_tn
+ *       - name: book
  *         in: query
- *         description: sha of commit
+ *         description: book code
  *         required: true
  *         schema:
  *           type: string
- *           example: f36b5a19fc6ebbd37a7baba671909cf71de775bc
- *       - name: owner
- *         in: query
- *         description: owner
- *         required: true
- *         schema:
- *           type: string
- *           example: ru_gl
- *       - name: bookPath
- *         in: query
- *         description: path of the book
- *         required: true
- *         schema:
- *           type: string
- *           example: ./en_tn_57-TIT.tsv
- *       - name: language
- *         in: query
- *         description: code of the language
- *         required: true
- *         schema:
- *           type: string
- *           example: ru
+ *           example: mat
  *       - name: chapter
  *         in: query
  *         description: number of chapter
@@ -52,17 +31,11 @@ import { filterNotes, tsvToJson } from 'utils/tsvHelper'
  *         schema:
  *           type: string
  *           example: 1
- *       - name: verses
- *         in: query
- *         description: array of verses
- *         schema:
- *           type: array
- *           example: [1 ,3]
  *      tags:
  *        - git.door43
  *      responses:
  *        '200':
- *          description: Returns tn
+ *          description: Returns book introduction
  *
  *        '404':
  *          description: Bad request
@@ -70,7 +43,6 @@ import { filterNotes, tsvToJson } from 'utils/tsvHelper'
 
 export default async function infoHandler(req, res) {
   const { repo, book, chapter } = req.query
-
   const manifestUrl = repo + '/raw/branch/master/manifest.yaml'
 
   const { data } = await axios.get(manifestUrl)
