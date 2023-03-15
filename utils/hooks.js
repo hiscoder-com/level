@@ -399,6 +399,7 @@ export function useGetChapter({ token, code, book_code, chapter_id }) {
     mutate,
     error,
     isLoading,
+    isValidating,
   } = useSWR(
     token && code && book_code && chapter_id
       ? [`/api/projects/${code}/books/${book_code}/chapters/${chapter_id}`, token]
@@ -409,7 +410,7 @@ export function useGetChapter({ token, code, book_code, chapter_id }) {
       revalidateIfStale: false,
     }
   )
-  return [chapter, { mutate, error, isLoading }]
+  return [chapter, { mutate, error, isLoading, isValidating }]
 }
 
 /**

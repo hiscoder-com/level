@@ -28,17 +28,15 @@ function ChapterVersesPage() {
   const { t } = useTranslation(['common', 'chapters'])
   const { user } = useCurrentUser()
 
-  const [changing, setChanging] = useState(false)
-
   const [project] = useProject({ token: user?.access_token, code })
   const [book] = useGetBook({ token: user?.access_token, code, book_code: bookid })
-  const [chapter, { mutate: mutateChapter }] = useGetChapter({
+  const [chapter, { isLoading, mutate: mutateChapter, isValidating }] = useGetChapter({
     token: user?.access_token,
     code,
     book_code: bookid,
     chapter_id: chapterid,
   })
-  const [chapters, { mutate }] = useGetChapters({
+  const [_, { mutate }] = useGetChapters({
     token: user?.access_token,
     code,
     book_code: bookid,
@@ -51,7 +49,6 @@ function ChapterVersesPage() {
   })
 
   const changeStartChapter = () => {
-    setChanging(true)
     supabase
       .rpc('change_start_chapter', {
         chapter_id: chapter?.id,
@@ -62,11 +59,9 @@ function ChapterVersesPage() {
         mutate()
       })
       .catch((err) => console.log(err))
-      .finally(() => setChanging(false))
   }
 
   const changeFinishChapter = () => {
-    setChanging(true)
     supabase
       .rpc('change_finish_chapter', {
         chapter_id: chapter?.id,
@@ -76,8 +71,8 @@ function ChapterVersesPage() {
         mutateChapter()
         mutate()
       })
-      .finally(() => setChanging(false))
   }
+
   return (
     <>
       <h3 className="h3 mb-4">
@@ -98,9 +93,9 @@ function ChapterVersesPage() {
       <button
         className={`btn ${!chapter?.started_at ? 'btn-cyan' : 'btn-red'} mt-4`}
         onClick={changeStartChapter}
-        disabled={chapter?.finished_at || changing}
+        disabled={chapter?.finished_at || isValidating}
       >
-        {changing ? (
+        {isValidating || isLoading ? (
           <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
         ) : !chapter?.started_at ? (
           t('chapters:StartChapter')
@@ -114,14 +109,14 @@ function ChapterVersesPage() {
           {readableDate(chapter?.started_at, locale)}
         </div>
       )}
-      {chapter?.started_at && (
+      {!isValidating && chapter?.started_at && (
         <>
           <button
             className={`btn ${!chapter?.finished_at ? 'btn-cyan' : 'btn-red'} mt-4`}
             onClick={changeFinishChapter}
-            disabled={changing}
+            disabled={isValidating}
           >
-            {changing ? (
+            {isValidating || isLoading ? (
               <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
             ) : !chapter?.finished_at ? (
               t('chapters:FinishedChapter')
@@ -129,7 +124,7 @@ function ChapterVersesPage() {
               t('chapters:CancelFinishedChapter')
             )}
           </button>
-          {chapter?.finished_at && (
+          {!isValidating && chapter?.finished_at && (
             <div>
               {t('common:Chapter')} {t('chapters:FinishedAt').toLowerCase()}{' '}
               {readableDate(chapter?.finished_at, locale)}
