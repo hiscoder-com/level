@@ -41,66 +41,43 @@ export const readableDate = (date, locale = 'ru') => {
 }
 
 const compileMarkdown = async (ref) => {
-  const url = `${ref.project.baseManifest.books[0].link}/${String(
-    ref.chapterNum
-  ).padStart(2, '0')}.md`
-  const result = await axios.get(url)
-  const resource = mdToJson(result.data)
-  const title = ref.json[0] ? `# ${ref.json[0]}\n` : ''
-  const markdown = title
-  for (const verseObject of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
-    if (ref.json[verseObject.verse]) {
-      const image = `![OBS Image](${verseObject.urlImage})\n\n`
-      markdown += image + ref.json[verseObject.verse] + '\n\n'
+  const title = ref.json[0] ? `# ${ref.json[0]}\n\n` : ''
+  const reference = ref.json[200] ? `'_'${ref.json[200]}'_'` : ''
+  const markdown = ''
+  for (const key in ref.json) {
+    if (Object.hasOwnProperty.call(ref.json, key)) {
+      if (ref.json[key] && !['0', '200'].includes(key)) {
+        const image = `![OBS Image](https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
+          ref.chapterNum
+        ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg)\n\n`
+
+        const verse = ref.json[key]
+        markdown += image + verse + '\n\n'
+      }
     }
   }
-  if (ref.json[200]) {
-    markdown += '_' + ref.json[200] + '_'
-  }
-
-  return markdown
+  return title + markdown + reference
 }
 
 export const compilePdfObs = async (ref, downloadSettings) => {
-  if (!downloadSettings?.WithImages) {
-    const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
-    const html = title
-    for (const el in ref.json) {
-      if (!['0', '200'].includes(el) && ref.json[el]) {
-        html += `<p>${ref.json[el]}</p>`
+  const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
+  const reference = ref.json[200] ? `<p><em> ${ref.json[200]} </em></p>` : ''
+  const frames = ''
+  for (const key in ref.json) {
+    if (Object.hasOwnProperty.call(ref.json, key)) {
+      if (ref.json[key] && !['0', '200'].includes(key)) {
+        const image = downloadSettings?.WithImages
+          ? `<p><img alt="OBS Image"src="https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
+              ref.chapterNum
+            ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg"/></p>`
+          : ''
+        const verse = `<p>${ref.json[key]}</p>`
+        frames += image + verse
       }
     }
-    if (ref.json[200]) {
-      html += `<p><em> ${ref.json[200]} </em></p>`
-    }
-    return html
   }
 
-  const url = `${ref.project.baseManifest.books[0].link}/${String(
-    ref.chapterNum
-  ).padStart(2, '0')}.md`
-  const markdown = ''
-  try {
-    markdown = await axios.get(url)
-  } catch (error) {
-    console.log(error)
-    return
-  }
-
-  const resource = mdToJson(markdown.data)
-  const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
-  const html = title
-  for (const verseObject of resource.verseObjects.sort((a, b) => a.verse - b.verse)) {
-    const image = `<p><img alt="OBS Image"src="${verseObject.urlImage}"/></p>`
-    const text = `<p>${ref.json[verseObject.verse]}</p>`
-    if (ref.json[verseObject.verse]) {
-      html += image + text
-    }
-  }
-  if (ref.json[200]) {
-    html += `<p><em> ${ref.json[200]} </em></p>`
-  }
-  return html
+  return title + frames + reference
 }
 
 export const compileChapter = async (ref, type = 'txt', downloadSettings) => {

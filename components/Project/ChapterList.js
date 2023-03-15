@@ -226,8 +226,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
                   json: currentChapter?.text,
                   chapterNum: currentChapter?.num,
                   project: {
-                    baseManifest: project?.base_manifest,
-                    method: project?.type,
                     title: project.title,
                   },
                   book: selectedBook,
@@ -258,9 +256,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
                     {
                       json: currentChapter?.text,
                       chapterNum: currentChapter?.num,
-                      project: {
-                        baseManifest: project?.base_manifest,
-                      },
                     },
                     'markdown'
                   ),
@@ -283,7 +278,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
                 })
           }}
         >
-          {project?.type === 'obs' ? t('ExportToMd') : 'ExportToTxt'}
+          {project?.type === 'obs' ? t('ExportToMd') : t('ExportToTxt')}
         </div>
         {Object.entries(downloadSettings)
           .filter((el) => project?.type === 'obs' || el[0] === 'WithFront')
