@@ -45,11 +45,16 @@ export default async function infoHandler(req, res) {
   const { repo, book, chapter } = req.query
   const manifestUrl = repo + '/raw/branch/master/manifest.yaml'
 
-  const { data } = await axios.get(manifestUrl)
+  let bookPath
 
-  const manifest = jsyaml.load(data, { json: true })
-
-  const bookPath = manifest.projects.find((el) => el.identifier === book)?.path
+  try {
+    const { data } = await axios.get(manifestUrl)
+    const manifest = jsyaml.load(data, { json: true })
+    bookPath = manifest.projects.find((el) => el.identifier === book)?.path
+  } catch (manifestUrlError) {
+    res.status(404).json({ manifestUrlError })
+    return
+  }
 
   let url = ''
   if (bookPath.slice(0, 2) === './') {
@@ -57,36 +62,36 @@ export default async function infoHandler(req, res) {
   } else {
     url = `${repo}/raw/master/${bookPath}`
   }
-
+  let _data
   try {
-    const _data = await axios.get(url)
-    const jsonData = tsvToJson(_data.data)
-    const intros = {}
-
-    jsonData?.forEach((el) => {
-      const [chapterNote, verseNote] = el.Reference
-        ? el.Reference.split(':')
-        : [el.Chapter, el.Verse]
-      // пропускаем, если это не наша глава и не введение
-      if (chapterNote !== chapter && chapterNote !== 'front') {
-        return
-      }
-      if (verseNote !== 'intro') {
-        return
-      }
-
-      const newNote = {
-        id: el.ID,
-        text: el?.OccurrenceNote || el?.Note,
-        title: chapterNote === 'front' ? 'bookIntro' : 'chapterIntro',
-      }
-      intros[newNote.title] = newNote.text
-    })
-
-    res.status(200).json(intros)
-    return
+    _data = await axios.get(url)
   } catch (error) {
     res.status(404).json({ error })
     return
   }
+  const jsonData = tsvToJson(_data.data)
+  const intros = {}
+
+  jsonData?.forEach((el) => {
+    const [chapterNote, verseNote] = el.Reference
+      ? el.Reference.split(':')
+      : [el.Chapter, el.Verse]
+    // пропускаем, если это не наша глава и не введение
+    if (chapterNote !== chapter && chapterNote !== 'front') {
+      return
+    }
+    if (verseNote !== 'intro') {
+      return
+    }
+
+    const newNote = {
+      id: el.ID,
+      text: el?.OccurrenceNote || el?.Note,
+      title: chapterNote === 'front' ? 'bookIntro' : 'chapterIntro',
+    }
+    intros[newNote.title] = newNote.text
+  })
+
+  res.status(200).json(intros)
+  return
 }
