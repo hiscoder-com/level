@@ -41,7 +41,7 @@ function BookList({ highLevelAccess, project, user }) {
     WithBack: true,
   })
 
-  const [books] = useGetBooks({
+  const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
   })
@@ -263,6 +263,7 @@ function BookList({ highLevelAccess, project, user }) {
         setOpenDownloading={setOpenProperties}
         type={project?.type}
         t={t}
+        mutateBooks={mutateBooks}
       />
       <Modal
         isOpen={openDownloading}

@@ -13,11 +13,13 @@ function PropertiesOfBook({
   t,
   type,
   user,
+  mutateBooks,
 }) {
   const [properties, setProperties] = useState()
   useEffect(() => {
     setProperties(book?.properties)
   }, [book?.properties])
+
   const updateProperty = (text, property) => {
     setProperties((prev) => {
       if (type !== 'obs') {
@@ -59,9 +61,12 @@ function PropertiesOfBook({
         user_id: user?.id,
       })
 
-      .then(toast.success(t('SaveSuccess')))
+      .then(() => {
+        toast.success(t('SaveSuccess'))
+        mutateBooks()
+      })
       .catch((err) => {
-        toast.success(t('SaveFailed'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
