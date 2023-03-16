@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import toast, { Toaster } from 'react-hot-toast'
+import ReactTextareaAutosize from 'react-textarea-autosize'
 
 import Modal from 'components/Modal'
 
@@ -17,36 +18,35 @@ function PropertiesOfBook({
   useEffect(() => {
     setProperties(book?.properties)
   }, [book?.properties])
-
+  const updateProperty = (text, property) => {
+    setProperties((prev) => {
+      if (type !== 'obs') {
+        return {
+          ...prev,
+          scripture: { ...prev.scripture, [property]: text },
+        }
+      } else {
+        return {
+          ...prev,
+          obs: { ...prev.obs, [property]: text },
+        }
+      }
+    })
+  }
   const renderProperties =
     properties &&
     Object.entries(type !== 'obs' ? properties?.scripture : properties?.obs)?.map(
       (el, index) => {
         const [property, content] = el
         return (
-          <div key={index}>
-            <div>{t(`book-properties:${property}${type === 'obs' ? '_obs' : ''}`)}</div>
-            <textarea
-              className="input"
-              placeholder={t(`book-properties:${property}_placeholder`)}
-              defaultValue={content}
-              onChange={(e) => {
-                setProperties((prev) => {
-                  if (type !== 'obs') {
-                    return {
-                      ...prev,
-                      scripture: { ...prev.scripture, [property]: e.target.value },
-                    }
-                  } else {
-                    return {
-                      ...prev,
-                      obs: { ...prev.obs, [property]: e.target.value },
-                    }
-                  }
-                })
-              }}
-            />
-          </div>
+          <Property
+            t={t}
+            key={index}
+            property={property}
+            content={content}
+            type={type}
+            updateProperty={updateProperty}
+          />
         )
       }
     )
@@ -65,6 +65,7 @@ function PropertiesOfBook({
         console.log(err)
       })
   }
+
   return (
     <Modal
       isOpen={openDownloading}
@@ -103,3 +104,32 @@ function PropertiesOfBook({
   )
 }
 export default PropertiesOfBook
+
+import React from 'react'
+
+function Property({ t, property, content, type, updateProperty }) {
+  const [propertyContent, setPropertyContent] = useState()
+  useEffect(() => {
+    setPropertyContent(content)
+  }, [content])
+
+  return (
+    <>
+      <div>{t(`book-properties:${property}${type === 'obs' ? '_obs' : ''}`)}</div>
+      <ReactTextareaAutosize
+        maxRows="5"
+        className="input"
+        placeholder={t(
+          `book-properties:${property}_placeholder${type === 'obs' ? '_obs' : ''}`
+        )}
+        value={propertyContent}
+        onChange={(e) => {
+          setPropertyContent(e.target.value)
+        }}
+        onBlur={() => {
+          updateProperty(propertyContent, property)
+        }}
+      />
+    </>
+  )
+}
