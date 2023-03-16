@@ -9,7 +9,7 @@ import { supabase } from 'utils/supabaseClient'
 
 export default function UserAgreement() {
   const router = useRouter()
-  const { t } = useTranslation(['user-agreement', 'common'])
+  const { t } = useTranslation(['user-agreement', 'common', 'users'])
   const handleClick = async () => {
     const { error } = await supabase.rpc('check_agreement')
     if (error) {
@@ -25,7 +25,7 @@ export default function UserAgreement() {
         className="text-alignment text-justify overflow-auto text-gray-800"
         style={{ height: 'calc(100vh - 11rem)' }}
       >
-        <h1 className="h1 pt-4">{t('Agreement')}:</h1>
+        <h1 className="h1 pt-4">{t('users:Agreement')}:</h1>
         <div className="mt-7">
           <b className="font-bold">{t('License')}</b>
           <p
@@ -52,7 +52,7 @@ export default function UserAgreement() {
       </div>
       <Footer
         textButton={t('common:Next')}
-        textCheckbox={t('common:Agree')}
+        textCheckbox={t('users:Agree')}
         handleClick={handleClick}
       />
     </div>
@@ -62,7 +62,7 @@ export default function UserAgreement() {
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['user-agreement', 'common'])),
+      ...(await serverSideTranslations(locale, ['user-agreement', 'common', 'users'])),
     },
   }
 }

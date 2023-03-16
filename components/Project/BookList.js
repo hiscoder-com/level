@@ -5,15 +5,22 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { BookCreate, ChapterList, DownloadBlock } from './index'
-import { supabase } from 'utils/supabaseClient'
+
 import { compileChapter, convertToUsfm } from 'utils/helper'
+import { supabase } from 'utils/supabaseClient'
 import { usfmFileNames } from 'utils/config'
+import { useGetBooks } from 'utils/hooks'
 
 function BookList({ highLevelAccess, project, user }) {
-  const { t } = useTranslation(['common', 'books'])
-  const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
-  const [books, setBooks] = useState()
+
+  const [books] = useGetBooks({
+    token: user?.access_token,
+    code: project?.code,
+  })
+
+  const { push, query } = useRouter()
+  const { t } = useTranslation(['common', 'books'])
 
   const getBookJson = async (book_id) => {
     const { data } = await supabase
@@ -23,20 +30,6 @@ function BookList({ highLevelAccess, project, user }) {
       .order('num')
     return data
   }
-
-  useEffect(() => {
-    const getBooks = async () => {
-      const { data: books, error } = await supabase
-        .from('books')
-        .select('id,code,chapters')
-        .eq('project_id', project.id)
-      setBooks(books)
-    }
-    if (project?.id) {
-      getBooks()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id, query?.book])
 
   useEffect(() => {
     if (query?.book && books?.length) {
@@ -55,10 +48,8 @@ function BookList({ highLevelAccess, project, user }) {
     }
     if (type === 'txt') {
       const bookName = t(`books:${ref?.bookCode}`)
-      const cl = t('Chapter')
       main = convertToUsfm({
         book: { json: chapters, code: ref?.bookCode, title: bookName },
-
         project: {
           code: project?.code,
           title: project?.title,
@@ -121,7 +112,7 @@ function BookList({ highLevelAccess, project, user }) {
                         pdf: {
                           ref: {
                             book_id: book?.id,
-                            title: project.title,
+                            title: project?.title,
                             subtitle: `${t('Book')} ${t(`books:${book?.code}`)}`,
                           },
                           projectLanguage: {

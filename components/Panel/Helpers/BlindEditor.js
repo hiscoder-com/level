@@ -12,11 +12,11 @@ import Pencil from 'public/pencil.svg'
 import Check from 'public/check.svg'
 
 function BlindEditor({ config }) {
-  const [enabledIcons, setEnabledIcons] = useState([])
-  const [enabledInputs, setEnabledInputs] = useState([])
-  const [verseObjects, setVerseObjects] = useState([])
-  const [translatedVerses, setTranslatedVerses] = useState([])
   const [isShowFinalButton, setIsShowFinalButton] = useState(false)
+  const [translatedVerses, setTranslatedVerses] = useState([])
+  const [enabledInputs, setEnabledInputs] = useState([])
+  const [enabledIcons, setEnabledIcons] = useState([])
+  const [verseObjects, setVerseObjects] = useState([])
   const { t } = useTranslation(['common'])
 
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)

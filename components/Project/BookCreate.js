@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
+
 import axios from 'axios'
 
 function BookCreate({ highLevelAccess, project, books, user }) {
-  const [selectedBook, setSelectedBook] = useState('')
   const [creatingBook, setCreatingBook] = useState(false)
+  const [selectedBook, setSelectedBook] = useState('')
 
   const { push } = useRouter()
   const { t } = useTranslation(['common'])

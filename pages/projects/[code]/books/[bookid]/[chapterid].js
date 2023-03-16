@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -10,6 +10,15 @@ import VerseDivider from 'components/VerseDivider'
 
 import { supabase } from 'utils/supabaseClient'
 import { readableDate } from 'utils/helper'
+import {
+  useGetBook,
+  useGetChapter,
+  useGetChapters,
+  useGetVerses,
+  useProject,
+} from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
+import Spinner from 'public/spinner.svg'
 
 function ChapterVersesPage() {
   const {
@@ -17,68 +26,29 @@ function ChapterVersesPage() {
     query: { code, bookid, chapterid },
   } = useRouter()
   const { t } = useTranslation(['common', 'chapters'])
-  const [project, setProject] = useState()
-  const [book, setBook] = useState()
-  const [chapter, setChapter] = useState()
-  const [verses, setVerses] = useState([])
+  const { user } = useCurrentUser()
+
   const [changing, setChanging] = useState(false)
 
-  useEffect(() => {
-    const getProject = async () => {
-      const { data: project, error } = await supabase
-        .from('projects')
-        .select()
-        .eq('code', code)
-        .single()
-      setProject(project)
-    }
-    getProject()
-  }, [code])
-
-  useEffect(() => {
-    const getBook = async () => {
-      const { data: book, error } = await supabase
-        .from('books')
-        .select('id,code')
-        .eq('project_id', project.id)
-        .eq('code', bookid)
-        .single()
-      setBook(book)
-    }
-    if (project?.id) {
-      getBook()
-    }
-  }, [bookid, project?.id])
-
-  useEffect(() => {
-    const getChapter = async () => {
-      const { data: chapter, error } = await supabase
-        .from('chapters')
-        .select('id,num,text,started_at,finished_at')
-        .eq('project_id', project.id)
-        .eq('num', chapterid)
-        .eq('book_id', book.id)
-        .single()
-      setChapter(chapter)
-    }
-    if (project?.id && book?.id && !changing) {
-      getChapter()
-    }
-  }, [book?.id, chapterid, project?.id, changing])
-
-  useEffect(() => {
-    const getVerses = async () => {
-      const { data: verses, error } = await supabase
-        .from('verses')
-        .select('id,num,text,current_step,project_translator_id')
-        .eq('project_id', project.id)
-        .eq('chapter_id', chapter.id)
-      setVerses(verses)
-    }
-    if (project?.id && chapter?.id) {
-      getVerses()
-    }
-  }, [chapter?.id, project?.id])
+  const [project] = useProject({ token: user?.access_token, code })
+  const [book] = useGetBook({ token: user?.access_token, code, book_code: bookid })
+  const [chapter, { mutate: mutateChapter }] = useGetChapter({
+    token: user?.access_token,
+    code,
+    book_code: bookid,
+    chapter_id: chapterid,
+  })
+  const [chapters, { mutate }] = useGetChapters({
+    token: user?.access_token,
+    code,
+    book_code: bookid,
+  })
+  const [verses] = useGetVerses({
+    token: user?.access_token,
+    code,
+    book_code: bookid,
+    chapter_id: chapter?.id,
+  })
 
   const changeStartChapter = () => {
     setChanging(true)
@@ -87,7 +57,11 @@ function ChapterVersesPage() {
         chapter_id: chapter?.id,
         project_id: project?.id,
       })
-      .then()
+      .then(() => {
+        mutateChapter()
+        mutate()
+      })
+      .catch((err) => console.log(err))
       .finally(() => setChanging(false))
   }
 
@@ -98,10 +72,12 @@ function ChapterVersesPage() {
         chapter_id: chapter?.id,
         project_id: project?.id,
       })
-      .then()
+      .then(() => {
+        mutateChapter()
+        mutate()
+      })
       .finally(() => setChanging(false))
   }
-
   return (
     <>
       <h3 className="h3 mb-4">
@@ -122,11 +98,15 @@ function ChapterVersesPage() {
       <button
         className={`btn ${!chapter?.started_at ? 'btn-cyan' : 'btn-red'} mt-4`}
         onClick={changeStartChapter}
-        disabled={chapter?.finished_at}
+        disabled={chapter?.finished_at || changing}
       >
-        {!chapter?.started_at
-          ? t('chapters:StartChapter')
-          : t('chapters:CancelStartChapter')}
+        {changing ? (
+          <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
+        ) : !chapter?.started_at ? (
+          t('chapters:StartChapter')
+        ) : (
+          t('chapters:CancelStartChapter')
+        )}
       </button>
       {chapter?.started_at && (
         <div>
@@ -139,10 +119,15 @@ function ChapterVersesPage() {
           <button
             className={`btn ${!chapter?.finished_at ? 'btn-cyan' : 'btn-red'} mt-4`}
             onClick={changeFinishChapter}
+            disabled={changing}
           >
-            {!chapter?.finished_at
-              ? t('chapters:FinishedChapter')
-              : t('chapters:CancelFinishedChapter')}
+            {changing ? (
+              <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
+            ) : !chapter?.finished_at ? (
+              t('chapters:FinishedChapter')
+            ) : (
+              t('chapters:CancelFinishedChapter')
+            )}
           </button>
           {chapter?.finished_at && (
             <div>
@@ -164,9 +149,9 @@ export async function getServerSideProps({ locale }) {
       ...(await serverSideTranslations(locale, [
         'projects',
         'common',
-        'verses',
         'chapters',
         'books',
+        'users',
       ])),
     },
   }

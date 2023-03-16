@@ -5,33 +5,27 @@ import { useRouter } from 'next/router'
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
+import { useGetChapter } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 
 function Reader({ config }) {
   const {
-    query: { project, book, chapter },
+    query: { project, book, chapter: chapter_num },
   } = useRouter()
-
-  const [chapterId, setChapterId] = useState(false)
+  const { user } = useCurrentUser()
   const [verseObjects, setVerseObjects] = useState([])
-
-  useEffect(() => {
-    supabase
-      .from('chapters')
-      .select('id,projects!inner(code),books!inner(code)')
-      .match({ num: chapter, 'projects.code': project, 'books.code': book })
-      .maybeSingle()
-      .then((res) => {
-        if (res.data.id) {
-          setChapterId(res.data.id)
-        }
-      })
-  }, [book, chapter, project])
+  const [chapter] = useGetChapter({
+    token: user?.access_token,
+    code: project,
+    book_code: book,
+    chapter_id: chapter_num,
+  })
 
   useEffect(() => {
     supabase
       .rpc('get_whole_chapter', {
         project_code: project,
-        chapter_num: chapter,
+        chapter_num,
         book_code: book,
       })
       .then((res) => {
@@ -46,7 +40,7 @@ function Reader({ config }) {
           .filter((el) => config?.wholeChapter || verses.includes(el.verse_id.toString()))
         setVerseObjects(result)
       })
-  }, [book, chapter, config?.reference?.verses, config?.wholeChapter, project])
+  }, [book, chapter_num, config?.reference?.verses, config?.wholeChapter, project])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {
@@ -62,9 +56,9 @@ function Reader({ config }) {
 
   useEffect(() => {
     let mySubscription = null
-    if (chapterId) {
+    if (chapter?.id) {
       mySubscription = supabase
-        .from('verses:chapter_id=eq.' + chapterId)
+        .from('verses:chapter_id=eq.' + chapter.id)
         .on('UPDATE', (payload) => {
           const { id, text } = payload.new
           updateVerseObject(id, text)
@@ -76,7 +70,7 @@ function Reader({ config }) {
         supabase.removeSubscription(mySubscription)
       }
     }
-  }, [chapterId])
+  }, [chapter?.id])
 
   return (
     <div>

@@ -8,7 +8,6 @@ import { useSetRecoilState } from 'recoil'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
 
 import { stepConfigState } from 'components/Panel/state/atoms'
@@ -136,7 +135,7 @@ export async function getServerSideProps({ locale, params }) {
 
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'steps', 'audio'])),
+      ...(await serverSideTranslations(locale, ['common', 'steps', 'audio', 'users'])),
       last_step: steps.data.sorting,
     },
   }

@@ -4,9 +4,9 @@ import { useCurrentUser } from 'lib/UserContext'
 import { useMethod } from 'utils/hooks'
 
 function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
-  const { user } = useCurrentUser()
-
   const [customResources, setCustomResources] = useState('')
+
+  const { user } = useCurrentUser()
   const [methods] = useMethod(user?.access_token)
 
   useEffect(() => {
@@ -46,6 +46,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
     return listOfResources
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customResources, resourcesUrl])
+
   return <div className="max-w-xl">{setResources}</div>
 }
 

@@ -6,7 +6,7 @@ import { useUsers } from 'utils/hooks'
 
 function UsersList({ access_token }) {
   const { t } = useTranslation(['users'])
-  const [users, { error, loading }] = useUsers('access_token')
+  const [users, { error, isLoading }] = useUsers(access_token)
   return (
     <table className="table-auto bg-white">
       <thead>
@@ -20,7 +20,7 @@ function UsersList({ access_token }) {
         </tr>
       </thead>
       <tbody>
-        {loading ? (
+        {isLoading ? (
           <tr>
             <td colSpan={6} className="p-3 text-center">
               {t('Loading')}

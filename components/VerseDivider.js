@@ -4,9 +4,12 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { useCurrentUser } from 'lib/UserContext'
-import { useProject, useTranslators } from 'utils/hooks'
+import toast, { Toaster } from 'react-hot-toast'
+
 import { supabase } from 'utils/supabaseClient'
+
+import { useProject, useTranslators } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 
 const defaultColor = [
   'bg-yellow-400',
@@ -22,7 +25,12 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
-  const { t } = useTranslation('verses')
+  const [currentTranslator, setCurrentTranslator] = useState(null)
+  const [colorTranslators, setColorTranslators] = useState([])
+  const [versesDivided, setVersesDivided] = useState([])
+  const [isHighlight, setIsHighlight] = useState(false)
+
+  const { t } = useTranslation('common')
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -32,13 +40,11 @@ function VerseDivider({ verses }) {
     token: user?.access_token,
     code,
   })
+
   const [project] = useProject({
     token: user?.access_token,
     code,
   })
-  const [currentTranslator, setCurrentTranslator] = useState(null)
-  const [isHighlight, setIsHighlight] = useState(false)
-  const [colorTranslators, setColorTranslators] = useState([])
 
   useEffect(() => {
     const colorTranslators = translators?.map((el, index) => ({
@@ -48,10 +54,9 @@ function VerseDivider({ verses }) {
     setColorTranslators(colorTranslators)
   }, [translators])
 
-  const [versesDivided, setVersesDivided] = useState([])
   useEffect(() => {
     if (colorTranslators?.length > 0) {
-      const extVerses = verses.map((el) => {
+      const extVerses = verses?.map((el) => {
         const translator = colorTranslators.find(
           (element) => element.id === el.project_translator_id
         )
@@ -76,14 +81,21 @@ function VerseDivider({ verses }) {
     }
     setVersesDivided(newArr)
   }
+
   const verseDividing = async () => {
+    //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
     let { data, error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,
       project_id: project?.id,
     })
 
-    if (error) console.error(error)
-    else console.log('Success', data)
+    if (error) {
+      console.error(error)
+      toast.error(t('SaveFailed'))
+    } else {
+      console.log('Success', data)
+      toast.success(t('SaveSuccess'))
+    }
   }
 
   return (
@@ -97,7 +109,7 @@ function VerseDivider({ verses }) {
         className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
         {versesDivided
-          .sort((a, b) => a.num > b.num)
+          ?.sort((a, b) => a.num > b.num)
           .map((el, index) => {
             return (
               <div
@@ -160,7 +172,7 @@ function VerseDivider({ verses }) {
         <button
           onClick={() =>
             setVersesDivided(
-              verses.map((el) => ({
+              verses?.map((el) => ({
                 ...el,
                 color: 'bg-slate-300',
                 translator_name: '',
@@ -179,6 +191,14 @@ function VerseDivider({ verses }) {
           {t('Save')}
         </button>
       </div>
+      <Toaster
+        toastOptions={{
+          style: {
+            marginTop: '-6px',
+            color: '#6b7280',
+          },
+        }}
+      />
     </div>
   )
 }

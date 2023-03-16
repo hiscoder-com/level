@@ -11,14 +11,13 @@ export default async function languageProjectHandler(req, res) {
     query: { code },
     method,
   } = req
-
   switch (method) {
     case 'GET':
       try {
         const { data: value, error } = await supabase
           .from('projects')
           .select(
-            'id, title, code, type, method, languages(orig_name,code),dictionaries_alphabet'
+            'id, title, code, type, method, languages(orig_name,code), dictionaries_alphabet, base_manifest'
           )
           .eq('code', code)
           .maybeSingle()

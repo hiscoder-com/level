@@ -92,7 +92,7 @@ export default async function tnHandler(req, res) {
         ? el.Reference.split(':')
         : [el.Chapter, el.Verse]
       // пропускаем, если это не наша глава и не введение
-      if (chapterNote !== chapter && chapterNote !== 'front') {
+      if (chapterNote !== chapter || verseNote === 'intro') {
         return
       }
       // создаем экземпляр заметки
@@ -101,19 +101,12 @@ export default async function tnHandler(req, res) {
       const newNote = {
         id: el.ID,
         text: el?.OccurrenceNote || el?.Note,
-        title:
-          verseNote === 'intro' ? 'intro' : el?.GLQuote || el?.OrigQuote || el?.Quote,
+        title: el?.GLQuote || el?.OrigQuote || el?.Quote,
       }
-      if (chapterNote === 'front') {
-        newNote['title'] = 'front'
-      }
+
       // если надо получить определенные стихи то используем dividedChapter, иначе wholeChapter
       // в каждый объект надо добавить так же введения
-      if (
-        verses &&
-        verses.length > 0 &&
-        (verses.includes(verseNote) || verseNote === 'intro')
-      ) {
+      if (verses && verses.length > 0 && verses.includes(verseNote)) {
         filterNotes(newNote, verseNote, dividedChapter)
       } else {
         filterNotes(newNote, verseNote, wholeChapter)

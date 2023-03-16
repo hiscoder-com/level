@@ -2,17 +2,18 @@ import { useTranslation } from 'next-i18next'
 
 import {
   PersonalNotes,
-  TeamNotes,
-  Dictionary,
-  Audio,
-  Editor,
-  Bible,
-  TN,
-  TWL,
-  TQ,
-  BlindEditor,
   CommandEditor,
+  BlindEditor,
+  Dictionary,
+  TeamNotes,
+  Editor,
   Reader,
+  Audio,
+  Bible,
+  Info,
+  TWL,
+  TN,
+  TQ,
 } from './'
 
 function Tool({ config, toolName, editable = false }) {
@@ -154,12 +155,19 @@ function Tool({ config, toolName, editable = false }) {
       title = t('dictionary')
       break
 
+    case 'info':
+      CurrentTool = Info
+      title = t('info')
+
+      url = '/api/git/info'
+      break
+
     default:
       return <div>{t('WrongResource')}</div>
   }
   return (
     <>
-      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
+      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg truncate">
         {![
           'translate',
           'commandTranslate',
