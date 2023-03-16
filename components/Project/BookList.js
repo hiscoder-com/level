@@ -5,23 +5,12 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Showdown from 'showdown'
-import JSZip from 'jszip'
-import { saveAs } from 'file-saver'
 
-import Modal from 'components/Modal'
-
-import { BookCreate, ChapterList, PropertiesOfBook } from './index'
+import { BookCreate, ChapterList, PropertiesOfBook, Download } from './index'
 import { supabase } from 'utils/supabaseClient'
-import {
-  compileChapter,
-  compilePdfObs,
-  convertToUsfm,
-  downloadFile,
-  downloadPdf,
-} from 'utils/helper'
+import { compileChapter, compilePdfObs, convertToUsfm } from 'utils/helper'
 import Properties from 'public/parameters.svg'
 
-import { usfmFileNames } from 'utils/config'
 import { useGetBooks } from 'utils/hooks'
 
 function BookList({ highLevelAccess, project, user }) {
@@ -34,26 +23,11 @@ function BookList({ highLevelAccess, project, user }) {
   const [openDownloading, setOpenDownloading] = useState(false)
 
   const [openProperties, setOpenProperties] = useState(false)
-  const [downloadSettings, setDownloadSettings] = useState({
-    WithImages: true,
-    WithFront: true,
-    WithIntro: true,
-    WithBack: true,
-  })
 
   const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
   })
-
-  const getBookJson = async (book_id) => {
-    const { data } = await supabase
-      .from('chapters')
-      .select('num,text')
-      .eq('book_id', book_id)
-      .order('num')
-    return data
-  }
 
   useEffect(() => {
     if (query?.book && books?.length) {
@@ -63,8 +37,16 @@ function BookList({ highLevelAccess, project, user }) {
       setSelectedBook(null)
     }
   }, [query, books])
+  const getBookJson = async (book_id) => {
+    const { data } = await supabase
+      .from('chapters')
+      .select('num,text')
+      .eq('book_id', book_id)
+      .order('num')
+    return data
+  }
 
-  const compileBook = async (book, type = 'txt', downloadSettings) => {
+  const compileBook = async (book, type = 'txt', downloadSettings, imageSetting) => {
     const chapters = await getBookJson(book?.id)
 
     let main = ''
@@ -122,10 +104,9 @@ function BookList({ highLevelAccess, project, user }) {
             const story = await compilePdfObs(
               {
                 json: el?.text,
-                project: { baseManifest: project.base_manifest },
                 chapterNum: el.num,
               },
-              downloadSettings
+              imageSetting
             )
             if (story) {
               obs += `<div>${story}</div>`
@@ -140,47 +121,7 @@ function BookList({ highLevelAccess, project, user }) {
         break
     }
   }
-  const downloadZip = async (downloadingBook) => {
-    var zip = new JSZip()
-    const obs = await getBookJson(downloadingBook.id)
-    for (const story of obs) {
-      const text = await compileChapter(
-        {
-          json: story?.text,
-          chapterNum: story?.num,
-          project: {
-            baseManifest: project?.base_manifest,
-          },
-        },
-        'markdown'
-      )
-      if (text) {
-        zip.folder('content').file(story?.num + '.md', text)
-      }
-    }
-    if (downloadingBook?.properties?.obs?.back) {
-      zip
-        .folder('content')
-        .folder('back')
-        .file('intro.md', downloadingBook?.properties?.obs?.back)
-    }
-    if (downloadingBook?.properties?.obs?.intro) {
-      zip
-        .folder('content')
-        .folder('front')
-        .file('intro.md', downloadingBook?.properties?.obs?.intro)
-    }
-    if (downloadingBook?.properties?.obs?.title) {
-      zip
-        .folder('content')
-        .folder('front')
-        .file('title.md', downloadingBook?.properties?.obs?.title)
-    }
 
-    zip.generateAsync({ type: 'blob' }).then(function (blob) {
-      saveAs(blob, `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`)
-    })
-  }
   return (
     <>
       {!selectedBook ? (
@@ -265,90 +206,16 @@ function BookList({ highLevelAccess, project, user }) {
         t={t}
         mutateBooks={mutateBooks}
       />
-      <Modal
-        isOpen={openDownloading}
-        closeHandle={() => {
-          setOpenDownloading(false)
-        }}
-      >
-        <div className="text-center mb-4">{t('Download')}</div>
-        <div
-          className="p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
-          onClick={async (e) => {
-            e.stopPropagation()
-            downloadPdf({
-              htmlContent: await compileBook(
-                downloadingBook,
-                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
-                downloadSettings
-              ),
-              projectLanguage: {
-                code: project.languages.code,
-                title: project.languages.orig_name,
-              },
-              downloadSettings,
-              fileName: `${project.title}_${
-                project?.type !== 'obs'
-                  ? downloadingBook?.properties?.scripture?.toc1 ?? 'Book'
-                  : downloadingBook?.properties?.obs?.title ?? 'Open bible stories'
-              }`,
-            })
-          }}
-        >
-          {t('ExportToPdf')}
-        </div>
-        {project?.type === 'obs' ? (
-          <div
-            onClick={() => downloadZip(downloadingBook)}
-            className="p-2 hover:bg-gray-200 border-b-2 cursor-pointer"
-          >
-            {t('ExportToZip')}
-          </div>
-        ) : (
-          <div
-            className="p-2 hover:bg-gray-200 border-b-2 cursor-pointer"
-            onClick={async (e) => {
-              e.stopPropagation()
-              downloadFile({
-                text: await compileBook(downloadingBook, 'txt', downloadSettings),
-                title: usfmFileNames[downloadingBook?.code],
-              })
-            }}
-          >
-            {t('ExportToUsfm')}
-          </div>
-        )}
-        {Object.keys(downloadSettings)
-          .filter((el) => project?.type === 'obs' || el === 'WithFront')
-          .map((el, index) => {
-            // const [label, value] = el
-            return (
-              <div key={index}>
-                <input
-                  className="mt-4 h-[17px] w-[17px] cursor-pointer accent-cyan-600"
-                  type="checkbox"
-                  checked={downloadSettings[el]}
-                  onChange={() =>
-                    setDownloadSettings((prev) => {
-                      return { ...prev, [el]: !downloadSettings[el] }
-                    })
-                  }
-                />
-                <span className="ml-2">{t(el)}</span>
-              </div>
-            )
-          })}
-        <div className="flex justify-end">
-          <button
-            className="btn-cyan mt-2"
-            onClick={() => {
-              setOpenDownloading(false)
-            }}
-          >
-            {t('common:Close')}
-          </button>
-        </div>
-      </Modal>
+      <Download
+        openDownloading={openDownloading}
+        setOpenDownloading={setOpenDownloading}
+        compileBook={compileBook}
+        downloadingBook={downloadingBook}
+        project={project}
+        t={t}
+        getBookJson={getBookJson}
+        isBook
+      />
     </>
   )
 }

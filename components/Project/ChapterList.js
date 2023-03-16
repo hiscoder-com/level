@@ -13,6 +13,7 @@ import { supabase } from 'utils/supabaseClient'
 
 import { readableDate, compileChapter, downloadPdf, downloadFile } from 'utils/helper'
 import { useBriefState, useGetChapters, useGetCreatedChapters } from 'utils/hooks'
+import Download from './Download'
 
 function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   const [openCreatingChapter, setOpenCreatingChapter] = useState(false)
@@ -20,11 +21,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   const [selectedChapter, setSelectedChapter] = useState(null)
   const [currentSteps, setCurrentSteps] = useState(null)
   const [currentChapter, setCurrentChapter] = useState([])
-  const [downloadSettings, setDownloadSettings] = useState({
-    WithImages: true,
-    WithFront: true,
-  })
-
   const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
@@ -103,7 +99,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
             {project?.code}
           </a>
         </Link>
-        /{t(`books:${selectedBook.code}`)}
+        /{t(`books:${selectedBook?.code}`)}
       </div>
       <table className="shadow-md mb-4 text-center w-fit text-sm table-auto text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-100">
@@ -210,107 +206,17 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
           </div>
         </div>
       </Modal>
-      <Modal
-        isOpen={openDownloading}
-        closeHandle={() => {
-          setOpenDownloading(false)
-        }}
-      >
-        <div className="text-center mb-4">{t('Download')}</div>
-        <div
-          className="p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
-          onClick={async (e) => {
-            downloadPdf({
-              htmlContent: await compileChapter(
-                {
-                  json: currentChapter?.text,
-                  chapterNum: currentChapter?.num,
-                  project: {
-                    title: project.title,
-                  },
-                  book: selectedBook,
-                },
-                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
-                downloadSettings
-              ),
-              projectLanguage: {
-                code: project.languages.code,
-                title: project.languages.orig_name,
-              },
-              fileName: `${project.title}_${
-                project?.type !== 'obs'
-                  ? selectedBook?.properties?.scripture?.toc1 ?? 'Book'
-                  : selectedBook?.properties?.obs?.title ?? 'Open bible stories'
-              }`,
-            })
-          }}
-        >
-          {t('ExportToPdf')}
-        </div>
-        <div
-          className="p-2 hover:bg-gray-200 border-b-2 cursor-pointer"
-          onClick={async (e) => {
-            project?.type === 'obs'
-              ? downloadFile({
-                  text: await compileChapter(
-                    {
-                      json: currentChapter?.text,
-                      chapterNum: currentChapter?.num,
-                    },
-                    'markdown'
-                  ),
-                  title: `${String(currentChapter?.num).padStart(2, '0')}.md`,
-                  type: 'markdown/plain',
-                })
-              : downloadFile({
-                  text: await compileChapter(
-                    {
-                      json: currentChapter?.text,
-                      title: `${project.title}\n${selectedBook.properties.scripture.toc1}\n${selectedBook.properties.scripture.chapter_label} ${currentChapter?.num}`,
-                      subtitle: `${t(`books:${selectedBook?.code}`)} ${t('Chapter')} ${
-                        currentChapter.num
-                      }`,
-                      chapterNum: currentChapter?.num,
-                    },
-                    'txt'
-                  ),
-                  title: `${project.title}_${selectedBook.properties.scripture.toc1}_chapter_${currentChapter?.num}.txt`,
-                })
-          }}
-        >
-          {project?.type === 'obs' ? t('ExportToMd') : t('ExportToTxt')}
-        </div>
-        {Object.entries(downloadSettings)
-          .filter((el) => project?.type === 'obs' || el[0] === 'WithFront')
-          .map((el, index) => {
-            const [label, value] = el
-            return (
-              <div key={index}>
-                <input
-                  className="mt-4 h-[17px] w-[17px] cursor-pointer accent-cyan-600"
-                  type="checkbox"
-                  checked={value}
-                  onChange={() =>
-                    setDownloadSettings((prev) => {
-                      return { ...prev, [el[0]]: !value }
-                    })
-                  }
-                />
-                <span className="ml-2">{t(label)}</span>
-              </div>
-            )
-          })}
-        <div className="flex justify-end">
-          <button
-            className="btn-cyan mt-2"
-            onClick={() => {
-              setOpenDownloading(false)
-            }}
-          >
-            {t('common:Close')}
-          </button>
-        </div>
-      </Modal>
+      <Download
+        openDownloading={openDownloading}
+        setOpenDownloading={setOpenDownloading}
+        downloadPdf={downloadPdf}
+        downloadFile={downloadFile}
+        compileChapter={compileChapter}
+        project={project}
+        downloadingBook={selectedBook}
+        currentChapter={currentChapter}
+        t={t}
+      />
       <Toaster
         toastOptions={{
           style: {
