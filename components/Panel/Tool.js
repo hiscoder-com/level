@@ -10,6 +10,7 @@ import {
   Reader,
   Audio,
   Bible,
+  Info,
   TWL,
   TN,
   TQ,
@@ -149,6 +150,13 @@ function Tool({ config, toolName, editable = false }) {
     case 'dictionary':
       CurrentTool = Dictionary
       title = t('dictionary')
+      break
+
+    case 'info':
+      CurrentTool = Info
+      title = t('info')
+
+      url = '/api/git/info'
       break
 
     default:
