@@ -18,5 +18,8 @@
   "mt": "Главный заголовок",
   "mt_placeholder": "3 Иоанна",
   "chapter_label": "Глава на языке перевода",
-  "chapter_label_placeholder": "Глава"
+  "chapter_label_placeholder": "Глава",
+  "WithoutImages": "Без изображений",
+  "WithImageLowResolution": "С изображениями стандратного разрешения",
+  "WithImageHighResolution": "С изображениями высокого разрешения"
 }
