@@ -59,18 +59,26 @@ const compileMarkdown = async (ref) => {
   return title + markdown + reference
 }
 
-export const compilePdfObs = async (ref, downloadSettings) => {
+export const compilePdfObs = async (ref, imageSetting) => {
   const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
   const reference = ref.json[200] ? `<p><em> ${ref.json[200]} </em></p>` : ''
   const frames = ''
   for (const key in ref.json) {
     if (Object.hasOwnProperty.call(ref.json, key)) {
       if (ref.json[key] && !['0', '200'].includes(key)) {
-        const image = downloadSettings?.WithImages
-          ? `<p><img alt="OBS Image"src="https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
-              ref.chapterNum
-            ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg"/></p>`
-          : ''
+        const resolution = {
+          WithImageLowResolution: '360px',
+          WithImageHighResolution: '2160px',
+        }
+        const image =
+          imageSetting !== 'WithoutImages'
+            ? `<p><img alt="OBS Image"src="https://cdn.door43.org/obs/jpg/${
+                resolution[imageSetting]
+              }/obs-en-${String(ref.chapterNum).padStart(2, '0')}-${String(key).padStart(
+                2,
+                '0'
+              )}.jpg"/></p>`
+            : ''
         const verse = `<p>${ref.json[key]}</p>`
         frames += image + verse
       }
@@ -80,7 +88,12 @@ export const compilePdfObs = async (ref, downloadSettings) => {
   return title + frames + reference
 }
 
-export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
+export const compileChapter = async (
+  ref,
+  type = 'txt',
+  downloadSettings,
+  imageSetting
+) => {
   if (!ref?.json) {
     return
   }
@@ -94,11 +107,10 @@ export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
             ? `<h1>${ref?.book?.properties?.obs?.title}</h1>`
             : ''
           const front = `<div style="text-align: center"><h1>${ref?.project?.title}</h1>${title}</div>`
-          return front + (await compilePdfObs(ref, downloadSettings))
+          return front + (await compilePdfObs(ref, imageSetting))
+        } else {
+          return await compilePdfObs(ref, imageSetting)
         }
-
-        return await compilePdfObs(ref, downloadSettings)
-
       default:
         break
     }
