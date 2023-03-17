@@ -10,6 +10,7 @@ import { checkedVersesBibleState } from '../state/atoms'
 
 import Pencil from 'public/pencil.svg'
 import Check from 'public/check.svg'
+import { obsCheckAdditionalVersesLocale } from 'utils/helper'
 
 function BlindEditor({ config }) {
   const [isShowFinalButton, setIsShowFinalButton] = useState(false)
@@ -78,8 +79,8 @@ function BlindEditor({ config }) {
 
   return (
     <div>
-      {verseObjects.map((el, index) => {
-        const currentNumVerse = el.num.toString()
+      {verseObjects.map((verseObject, index) => {
+        const currentNumVerse = verseObject.num.toString()
         const nextNumVerse =
           index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : ''
         const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : ''
@@ -87,10 +88,10 @@ function BlindEditor({ config }) {
           (index === 0 && !enabledIcons.length) ||
           enabledIcons.includes(currentNumVerse)
         )
-        const isTranslating = enabledInputs.includes(el.num.toString())
+        const isTranslating = enabledInputs.includes(verseObject.num.toString())
         const isTranslated = translatedVerses.includes(currentNumVerse)
         return (
-          <div key={el.verse_id} className="flex my-3 items-start">
+          <div key={verseObject.verse_id} className="flex my-3 items-start">
             <button
               onClick={() => {
                 if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
@@ -132,7 +133,7 @@ function BlindEditor({ config }) {
             </button>
 
             <div className="mx-4">
-              {el.num === 0 ? t('Title') : el.num === 200 ? t('Reference') : el.num}
+              {obsCheckAdditionalVersesLocale(verseObject.num, t)}
             </div>
             {isTranslating ? (
               <textarea
@@ -150,10 +151,10 @@ function BlindEditor({ config }) {
                       .trim()
                   )
                 }}
-                defaultValue={el.verse ?? ''}
+                defaultValue={verseObject.verse ?? ''}
               />
             ) : (
-              <div className="whitespace-pre-line">{el.verse}</div>
+              <div className="whitespace-pre-line">{verseObject.verse}</div>
             )}
           </div>
         )

@@ -9,6 +9,7 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 import { supabase } from 'utils/supabaseClient'
 import { useGetChapter } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import { obsCheckAdditionalVersesLocale } from 'utils/helper'
 
 function Reader({ config }) {
   const {
@@ -80,14 +81,12 @@ function Reader({ config }) {
 
   return (
     <div>
-      {verseObjects.map((el, index) => (
-        <div key={el.verse_id} className="flex my-3">
-          <div>
-            {el.num === 0 ? t('Title') : el.num === 200 ? t('Reference') : el.num}
-          </div>
+      {verseObjects.map((verseObject, index) => (
+        <div key={verseObject.verse_id} className="flex my-3">
+          <div>{obsCheckAdditionalVersesLocale(verseObject.num, t)}</div>
           <AutoSizeTextArea
             disabled={true}
-            verseObject={el}
+            verseObject={verseObject}
             index={index}
             updateVerse={() => {}}
           />

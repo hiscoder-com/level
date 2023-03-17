@@ -449,3 +449,18 @@ export const validateNote = (note) => {
   }
   return true
 }
+
+export const obsCheckAdditionalVersesLocale = (
+  numVerse,
+  translateFunction,
+  folder = ''
+) => {
+  let _numVerse = String(numVerse)
+  if (_numVerse === '0') {
+    return translateFunction(`${folder ? folder + ':' : ''}Title`)
+  }
+  if (_numVerse === '200') {
+    return translateFunction(`${folder ? folder + ':' : ''}Reference`)
+  }
+  return _numVerse
+}

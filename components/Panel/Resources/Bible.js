@@ -10,6 +10,7 @@ import { Placeholder } from '../UI'
 
 import { checkedVersesBibleState } from '../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
+import { obsCheckAdditionalVersesLocale } from 'utils/helper'
 
 function Bible({ config, url, toolName }) {
   const { t } = useTranslation('common')
@@ -47,21 +48,17 @@ export default Bible
 function Verses({ verseObjects, handleSave, scrollId, t }) {
   return (
     <>
-      {verseObjects?.map((el) => (
+      {verseObjects?.map((verseObject) => (
         <div
-          key={el.verse}
-          id={'id' + el.verse}
-          className={`p-2 ${scrollId === 'id' + el.verse ? 'bg-gray-200' : ''}`}
-          onClick={() => handleSave(el.verse)}
+          key={verseObject.verse}
+          id={'id' + verseObject.verse}
+          className={`p-2 ${scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''}`}
+          onClick={() => handleSave(verseObject.verse)}
         >
           <ReactMarkdown>
-            {(el.verse === '0'
-              ? t('Title')
-              : el.verse === '200'
-              ? t('Reference')
-              : el.verse) +
+            {obsCheckAdditionalVersesLocale(verseObject.verse, t) +
               ' ' +
-              el.text}
+              verseObject.text}
           </ReactMarkdown>
         </div>
       ))}
@@ -71,32 +68,27 @@ function Verses({ verseObjects, handleSave, scrollId, t }) {
 
 function VersesExtended({ verseObjects, handleSave, scrollId, t }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
-
   return (
     <>
-      {verseObjects?.map((el) => {
-        const checkedCurrent = checkedVersesBible.includes(el.verse)
+      {verseObjects?.map((verseObject) => {
+        const checkedCurrent = checkedVersesBible.includes(verseObject.verse)
         return (
           <div
-            key={el.verse}
+            key={verseObject.verse}
             onClick={() => {
-              handleSave(el.verse)
+              handleSave(verseObject.verse)
             }}
             className={`my-3 flex items-start ${
-              scrollId === 'id' + el.verse ? 'bg-gray-200' : ''
+              scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''
             }`}
           >
-            <div id={'id' + el.verse} className={`ml-2`}>
-              {el.verse === '0'
-                ? t('Title')
-                : el.verse === '200'
-                ? t('Reference')
-                : el.verse}
+            <div id={'id' + verseObject.verse} className={`ml-2`}>
+              {obsCheckAdditionalVersesLocale(verseObject.verse, t)}
             </div>
             {checkedCurrent ? (
-              <Blur verse={el.text} />
+              <Blur verse={verseObject.text} />
             ) : (
-              <ReactMarkdown className={`ml-2`}>{el.text}</ReactMarkdown>
+              <ReactMarkdown className={`ml-2`}>{verseObject.text}</ReactMarkdown>
             )}
           </div>
         )

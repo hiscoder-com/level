@@ -11,6 +11,7 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useGetChapter, useProject } from 'utils/hooks'
+import { obsCheckAdditionalVersesLocale } from 'utils/helper'
 
 // moderatorOnly
 //              - TRUE видно все стихи, только модератор может вносить исправления
@@ -119,28 +120,28 @@ function CommandEditor({ config }) {
 
   return (
     <div>
-      {verseObjects.map((el, index) => (
-        <div key={el.verse_id} className="flex my-3">
+      {verseObjects.map((verseObject, index) => (
+        <div key={verseObject.verse_id} className="flex my-3">
           <div
             className={
               (
                 config?.config?.moderatorOnly
                   ? ['user', 'translator'].includes(level)
-                  : !el.editable
+                  : !verseObject.editable
               )
                 ? 'text-blue-600'
                 : 'font-bold'
             }
           >
-            {el.num === 0 ? t('Title') : el.num === 200 ? t('Reference') : el.num}
+            {obsCheckAdditionalVersesLocale(verseObject.num, t)}
           </div>
           <AutoSizeTextArea
             disabled={
               config?.config?.moderatorOnly
                 ? ['user', 'translator'].includes(level)
-                : !el.editable
+                : !verseObject.editable
             }
-            verseObject={el}
+            verseObject={verseObject}
             index={index}
             updateVerse={updateVerse}
           />
