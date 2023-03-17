@@ -58,7 +58,7 @@ function ChapterVersesPage() {
         mutateChapter()
         mutate()
       })
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
 
   const changeFinishChapter = () => {

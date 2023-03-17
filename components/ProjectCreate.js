@@ -94,8 +94,8 @@ function ProjectCreate() {
           router.push(location)
         }
       })
-      .catch((error) => console.log(error))
-      .finally(() => mutateProjects())
+      .catch(console.log)
+      .finally(mutateProjects)
   }
 
   const inputs = [

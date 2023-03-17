@@ -177,9 +177,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
       </table>
       <Modal
         isOpen={openCreatingChapter}
-        closeHandle={() => {
-          setOpenCreatingChapter(false)
-        }}
+        closeHandle={() => setOpenCreatingChapter(false)}
       >
         <div className="text-center mb-4">
           {t('WantCreateChapter')} {selectedChapter?.num}?
@@ -195,12 +193,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
             {t('Create')}
           </button>
           <div className="ml-4">
-            <button
-              className="btn-cyan"
-              onClick={() => {
-                setOpenCreatingChapter(false)
-              }}
-            >
+            <button className="btn-cyan" onClick={() => setOpenCreatingChapter(false)}>
               {t('common:Close')}
             </button>
           </div>

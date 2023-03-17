@@ -12,7 +12,7 @@ const validation = (properties) => {
     if (!obj || typeof obj !== 'object') {
       return { error: 'This is incorrect json', properties }
     }
-  } catch (e) {
+  } catch (error) {
     return { error: 'This is incorrect json', properties }
   }
 

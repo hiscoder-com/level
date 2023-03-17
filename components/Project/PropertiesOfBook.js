@@ -73,28 +73,13 @@ function PropertiesOfBook({
   }
 
   return (
-    <Modal
-      isOpen={openDownloading}
-      closeHandle={() => {
-        setOpenDownloading(false)
-      }}
-    >
+    <Modal isOpen={openDownloading} closeHandle={() => setOpenDownloading(false)}>
       {renderProperties}
       <div className="flex justify-end">
-        <button
-          className="btn-cyan mr-2"
-          onClick={() => {
-            handleSave()
-          }}
-        >
+        <button className="btn-cyan mr-2" onClick={handleSave}>
           {t('common:Save')}
         </button>
-        <button
-          className="btn-cyan "
-          onClick={() => {
-            setOpenDownloading(false)
-          }}
-        >
+        <button className="btn-cyan " onClick={() => setOpenDownloading(false)}>
           {t('common:Close')}
         </button>
       </div>
@@ -141,12 +126,8 @@ function Property({ t, property, content, type, updateProperty }) {
           `book-properties:${property}_placeholder${type === 'obs' ? '_obs' : ''}`
         )}
         value={propertyContent}
-        onChange={(e) => {
-          setPropertyContent(e.target.value)
-        }}
-        onBlur={() => {
-          updateProperty(propertyContent, property)
-        }}
+        onChange={(e) => setPropertyContent(e.target.value)}
+        onBlur={() => updateProperty(propertyContent, property)}
       />
     </>
   )

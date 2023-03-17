@@ -76,9 +76,7 @@ export default function Recorder() {
       <button
         disabled={voice.length === 0}
         className="border-0 w-6 h-6"
-        onClick={() => {
-          setVoice([])
-        }}
+        onClick={() => setVoice([])}
       >
         <TrashButton
           className={`stroke-2 ${
@@ -134,12 +132,7 @@ function Modal({ showModal, setShowModal }) {
                 </div>
 
                 <div className="mt-4">
-                  <button
-                    className="btn-cyan w-24"
-                    onClick={() => {
-                      setShowModal(false)
-                    }}
-                  >
+                  <button className="btn-cyan w-24" onClick={() => setShowModal(false)}>
                     {t('common:Ok')}
                   </button>
                 </div>

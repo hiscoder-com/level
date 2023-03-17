@@ -139,13 +139,13 @@ function BookList({ highLevelAccess, project, user }) {
               {books?.map((book, index) => (
                 <tr
                   key={index}
-                  onClick={() => {
+                  onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
                       query: { book: book?.code },
                       shallow: true,
                     })
-                  }}
+                  }
                   className="cursor-pointer hover:bg-gray-50 bg-white border-b"
                 >
                   <td className="py-4 px-6">{t(`books:${book?.code}`)}</td>

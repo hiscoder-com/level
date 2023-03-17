@@ -134,12 +134,8 @@ function Dictionary() {
         project_id: project?.id,
         placeholder,
       })
-      .then((res) => {
-        setActiveWord(res.data[0])
-      })
-      .catch((err) => {
-        showError(err, placeholder)
-      })
+      .then((res) => setActiveWord(res.data[0]))
+      .catch((err) => showError(err, placeholder))
   }
 
   const removeNote = (id) => {
@@ -147,10 +143,8 @@ function Dictionary() {
     axios
       .delete(`/api/dictionaries/${id}`)
       .then(() => removeCacheNote('dictionary', id))
-      .catch((err) => console.log(err))
-      .finally(() => {
-        getWords(searchQuery, currentPageWords)
-      })
+      .catch(console.log)
+      .finally(() => getWords(searchQuery, currentPageWords))
   }
 
   const saveWord = async () => {
@@ -262,12 +256,12 @@ function Dictionary() {
                   <button
                     className="arrow"
                     disabled={currentPageWords === 0}
-                    onClick={() => {
+                    onClick={() =>
                       setCurrentPageWords((prev) => {
                         getWords(searchQuery, prev - 1)
                         return prev - 1
                       })
-                    }}
+                    }
                   >
                     <LeftArrow />
                   </button>
@@ -317,12 +311,7 @@ function Dictionary() {
         </>
       )}
 
-      <Modal
-        isOpen={isOpenModal}
-        closeHandle={() => {
-          setIsOpenModal(false)
-        }}
-      >
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         {' '}
         <div className="text-center">
           <div className="mb-4">
@@ -378,9 +367,7 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
           ))}
       <div
         className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-200"
-        onClick={() => {
-          getAll()
-        }}
+        onClick={getAll}
       >
         {t('ShowAll')}
       </div>

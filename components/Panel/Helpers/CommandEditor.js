@@ -113,7 +113,7 @@ function CommandEditor({ config }) {
         .then((res) => {
           console.log('save_verse', res)
         })
-        .catch((error) => console.log(error))
+        .catch(console.log)
       return [...prev]
     })
   }

@@ -79,12 +79,7 @@ function Download({
   }
 
   return (
-    <Modal
-      isOpen={openDownloading}
-      closeHandle={() => {
-        setOpenDownloading(false)
-      }}
-    >
+    <Modal isOpen={openDownloading} closeHandle={() => setOpenDownloading(false)}>
       <div className="text-center mb-4">{t('Download')}</div>
       <div className="border-b-2 pb-2">
         {isBook ? (

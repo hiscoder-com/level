@@ -103,9 +103,7 @@ function VerseDivider({ verses }) {
   return (
     <div className="md:flex mx-4">
       <div
-        onMouseDown={() => {
-          setIsHighlight(true)
-        }}
+        onMouseDown={() => setIsHighlight(true)}
         onMouseUp={() => setIsHighlight(false)}
         onMouseLeave={() => setIsHighlight(false)}
         className="select-none lg:grid-cols-6 grid-cols-4 grid"

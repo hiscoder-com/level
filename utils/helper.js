@@ -395,7 +395,7 @@ export const saveCacheNote = (key, note, user) => {
           user_id: user?.id,
         })
         .then()
-        .catch((err) => console.log(err))
+        .catch(console.log)
     }
     return
   }

@@ -72,9 +72,7 @@ function ProjectSettings() {
         setIsErrorCommit(true)
         console.log(error)
       })
-      .finally(() => {
-        setIsSaving(false)
-      })
+      .finally(() => setIsSaving(false))
   }
 
   const handleSwitch = () => {
