@@ -42,7 +42,7 @@ export const readableDate = (date, locale = 'ru') => {
 
 const compileMarkdown = async (ref) => {
   const title = ref.json[0] ? `# ${ref.json[0]}\n\n` : ''
-  const reference = ref.json[200] ? `'_'${ref.json[200]}'_'` : ''
+  const reference = ref.json[200] ? `_${ref.json[200]}_` : ''
   const markdown = ''
   for (const key in ref.json) {
     if (Object.hasOwnProperty.call(ref.json, key)) {
@@ -61,7 +61,9 @@ const compileMarkdown = async (ref) => {
 
 export const compilePdfObs = async (ref, imageSetting) => {
   const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
-  const reference = ref.json[200] ? `<p><em> ${ref.json[200]} </em></p>` : ''
+  const reference = ref.json[200]
+    ? `<p class="break"><em> ${ref.json[200]} </em></p>`
+    : ''
   const frames = ''
   for (const key in ref.json) {
     if (Object.hasOwnProperty.call(ref.json, key)) {
@@ -80,7 +82,7 @@ export const compilePdfObs = async (ref, imageSetting) => {
               )}.jpg"/></p>`
             : ''
         const verse = `<p>${ref.json[key]}</p>`
-        frames += image + verse
+        frames += `<div>${image}${verse}</div>`
       }
     }
   }
@@ -106,7 +108,7 @@ export const compileChapter = async (
           const title = ref?.book?.properties?.obs?.title
             ? `<h1>${ref?.book?.properties?.obs?.title}</h1>`
             : ''
-          const front = `<div style="text-align: center"><h1>${ref?.project?.title}</h1>${title}</div>`
+          const front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1>${title}</div>`
           return front + (await compilePdfObs(ref, imageSetting))
         } else {
           return await compilePdfObs(ref, imageSetting)
@@ -117,10 +119,10 @@ export const compileChapter = async (
   }
   const front = ''
   if (downloadSettings?.WithFront) {
-    front = `<div style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
+    front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
   }
   if (Object.keys(ref.json).length > 0) {
-    const text = Object.entries(ref?.json).reduce(
+    const text = Object.entries(ref.json).reduce(
       (summary, verse) => {
         if (type === 'txt') {
           return summary + `${verse[0]}. ${verse[1] || ''}\n`
@@ -159,7 +161,7 @@ export const downloadPdf = ({ htmlContent, projectLanguage, fileName }) => {
       <meta charset="UTF-8"/>
       <title>${fileName}</title> 
       <style type="text/css">
-        body > div {
+        .break {
             page-break-after: always;
         }
     </style>     
@@ -306,12 +308,11 @@ export const countOfChaptersAndVerses = async ({ link, book_code }) => {
         })
       }
     } catch (error) {
-      errorParse = error
+      return { data: jsonChapterVerse, error }
     }
   }
   return { data: jsonChapterVerse, error: errorParse }
 }
-
 export const mdToJson = (md) => {
   let _markdown = md.replaceAll('\u200B', '').split(/\n\s*\n\s*/)
   const title = _markdown.shift().trim().slice(1)

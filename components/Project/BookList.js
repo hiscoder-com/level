@@ -7,14 +7,15 @@ import { useTranslation } from 'next-i18next'
 import Showdown from 'showdown'
 
 import { BookCreate, ChapterList, PropertiesOfBook, Download } from './index'
+
 import { supabase } from 'utils/supabaseClient'
 import { compileChapter, compilePdfObs, convertToUsfm } from 'utils/helper'
-import Properties from 'public/parameters.svg'
-
 import { useGetBooks } from 'utils/hooks'
 
+import Properties from 'public/parameters.svg'
+
 function BookList({ highLevelAccess, project, user }) {
-  const { t } = useTranslation(['common', 'books', 'book-properties'])
+  const { t } = useTranslation(['common', 'books'])
   const { push, query } = useRouter()
   const [selectedBook, setSelectedBook] = useState(null)
   const [selectedBookProperties, setSelectedBookProperties] = useState(null)
@@ -48,15 +49,13 @@ function BookList({ highLevelAccess, project, user }) {
 
   const compileBook = async (book, type = 'txt', downloadSettings, imageSetting) => {
     const chapters = await getBookJson(book?.id)
-
-    let main = ''
     if (chapters?.length === 0) {
       return
     }
 
     switch (type) {
       case 'txt':
-        main = convertToUsfm({
+        return convertToUsfm({
           jsonChapters: chapters,
           book,
           project: {
@@ -68,11 +67,11 @@ function BookList({ highLevelAccess, project, user }) {
             },
           },
         })
-        return main
       case 'pdf':
-        if (downloadSettings?.WithFront) {
-          main += `<div style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
-        }
+        const frontPdf = downloadSettings?.WithFront
+          ? `<div class="break style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
+          : ''
+        const main = ''
         for (const el of chapters) {
           const chapter = await compileChapter(
             { json: el.text, chapterNum: el.num, book },
@@ -82,23 +81,10 @@ function BookList({ highLevelAccess, project, user }) {
             main += `<div>${chapter ?? ''}</div>`
           }
         }
-        return main
+        return frontPdf + book
       case 'pdf-obs':
         const converter = new Showdown.Converter()
-
-        const title = book?.properties?.obs?.title
-          ? `<h1>${book?.properties?.obs?.title}</h1>`
-          : ''
-        const front = `<div style="text-align: center"><h1>${project?.title}</h1>${title}</div>`
-        const intro = book?.properties?.obs?.intro
-          ? converter.makeHtml(book?.properties?.obs?.intro)
-          : ''
-        const back = book?.properties?.obs?.back
-          ? converter.makeHtml(book?.properties?.obs?.back)
-          : ''
-        const obs = `${downloadSettings?.WithFront ? front : ''}${
-          downloadSettings?.WithIntro ? `<div>${intro}</div>` : ''
-        }`
+        let obs = ''
         for (const el of chapters) {
           if (el?.text) {
             const story = await compilePdfObs(
@@ -109,14 +95,27 @@ function BookList({ highLevelAccess, project, user }) {
               imageSetting
             )
             if (story) {
-              obs += `<div>${story}</div>`
+              obs += `<div class="break">${story}</div>`
             }
           }
         }
-        if (downloadSettings?.WithBack) {
-          obs += `<div>${back}</div>`
+        if (!book?.properties?.obs) {
+          return obs
         }
-        return obs
+        const { title: _title, intro: _intro, back: _back } = book.properties.obs
+        const title = _title ? `<h1>${_title}</h1>` : ''
+        const front = downloadSettings?.WithFront
+          ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1>${title}</div>`
+          : ''
+        const intro =
+          _intro && downloadSettings?.WithIntro
+            ? `<div class="break" >${converter.makeHtml(_intro)}</div>`
+            : ''
+        const back =
+          _back && downloadSettings?.WithBack
+            ? `<div>${converter.makeHtml(_back)}</div>`
+            : ''
+        return front + intro + obs + back
       default:
         break
     }
