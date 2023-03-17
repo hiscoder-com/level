@@ -34,7 +34,7 @@ const ListOfNotes = dynamic(
     ssr: false,
   }
 )
-const CountWordsOnPage = 5
+const CountWordsOnPage = 10
 
 function Dictionary() {
   const [currentPageWords, setCurrentPageWords] = useState(0)
