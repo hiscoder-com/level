@@ -132,10 +132,8 @@ export default async function twlHandler(req, res) {
 
       if (!finalData[verse]) {
         verseUnique = {}
-        repeatedInVerse = word.url in verseUnique
-        if (!repeatedInVerse) {
-          verseUnique[word.url] = word.title
-        }
+        repeatedInVerse = false
+        verseUnique[word.url] = word.title
         finalData[verse] = [{ ...wordObject, repeatedInVerse, repeatedInBook }]
       } else {
         finalData[verse].push({ ...wordObject, repeatedInVerse, repeatedInBook })
