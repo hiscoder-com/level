@@ -86,12 +86,12 @@ export default function Recorder() {
   }
 
   return (
-    <div className="flex justify-center items-center">
-      <button className="border-0 w-6 h-6 mr-2" onClick={startStop}>
+    <div className="flex items-center">
+      <button className="border-0 w-6 h-6 mr-8" onClick={startStop}>
         {buttonRecord}
       </button>
       <audio ref={audioRef}></audio>
-      <button className="border-0 w-6 h-6 mr-2" onClick={playPause}>
+      <button className="border-0 w-6 h-6 mr-8" onClick={playPause}>
         {buttonPlay}
       </button>
       <br />

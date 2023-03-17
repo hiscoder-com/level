@@ -86,11 +86,11 @@ function RetellYourself({ setAudioState }) {
       </button>
       <div className="flex justify-center flex-wrap mt-8">
         <div className="w-full pb-4 px-2 mb-4 border-b-4">
-          <p className="mb-4 px-4">{t('OriginalRecording')}</p>
+          <p className="mb-4">{t('OriginalRecording')}</p>
           <Recorder />
         </div>
         <div className="w-full pb-4 px-2 mb-4 border-b-4">
-          <p className="mb-4 px-4">{t('TargetRecording')}</p>
+          <p className="mb-4">{t('TargetRecording')}</p>
           <Recorder />
         </div>
       </div>
