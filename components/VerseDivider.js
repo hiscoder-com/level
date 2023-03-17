@@ -10,7 +10,6 @@ import { supabase } from 'utils/supabaseClient'
 
 import { useProject, useTranslators } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { obsCheckAdditionalVersesLocale } from 'utils/helper'
 
 const defaultColor = [
   'bg-yellow-400',
@@ -134,7 +133,13 @@ function VerseDivider({ verses }) {
                 } w-32 border-slate-200 border-2 cursor-pointer hover:border-1 hover:border-cyan-300 truncate flex justify-between p-1`}
                 key={index}
               >
-                <div className="mr-1">{obsCheckAdditionalVersesLocale(verse.num, t)}</div>
+                <div className="mr-1">
+                  {verse.num === 0
+                    ? t('Title')
+                    : verse.num === 200
+                    ? t('Reference')
+                    : verse.num}
+                </div>
                 <div>{verse.translator_name}</div>
               </div>
             )

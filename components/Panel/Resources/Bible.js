@@ -10,7 +10,7 @@ import { Placeholder } from '../UI'
 
 import { checkedVersesBibleState } from '../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
-import { obsCheckAdditionalVersesLocale } from 'utils/helper'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Bible({ config, url, toolName }) {
   const { t } = useTranslation('common')
@@ -56,9 +56,7 @@ function Verses({ verseObjects, handleSave, scrollId, t }) {
           onClick={() => handleSave(verseObject.verse)}
         >
           <ReactMarkdown>
-            {obsCheckAdditionalVersesLocale(verseObject.verse, t) +
-              ' ' +
-              verseObject.text}
+            {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
           </ReactMarkdown>
         </div>
       ))}
@@ -81,7 +79,7 @@ function VersesExtended({ verseObjects, handleSave, scrollId, t }) {
             }`}
           >
             <div id={'id' + verseObject.verse} className={`ml-2`}>
-              {obsCheckAdditionalVersesLocale(verseObject.verse, t)}
+              {obsCheckAdditionalVerses(verseObject.verse)}
             </div>
             {checkedCurrent ? (
               <Blur verse={verseObject.text} />

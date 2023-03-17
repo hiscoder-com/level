@@ -11,7 +11,7 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useGetChapter, useProject } from 'utils/hooks'
-import { obsCheckAdditionalVersesLocale } from 'utils/helper'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 // moderatorOnly
 //              - TRUE видно все стихи, только модератор может вносить исправления
@@ -133,7 +133,7 @@ function CommandEditor({ config }) {
                 : 'font-bold'
             }
           >
-            {obsCheckAdditionalVersesLocale(verseObject.num, t)}
+            {obsCheckAdditionalVerses(verseObject.num)}
           </div>
           <AutoSizeTextArea
             disabled={

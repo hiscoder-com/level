@@ -10,7 +10,7 @@ import { checkedVersesBibleState } from '../state/atoms'
 
 import Pencil from 'public/pencil.svg'
 import Check from 'public/check.svg'
-import { obsCheckAdditionalVersesLocale } from 'utils/helper'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function BlindEditor({ config }) {
   const [isShowFinalButton, setIsShowFinalButton] = useState(false)
@@ -132,9 +132,7 @@ function BlindEditor({ config }) {
               )}
             </button>
 
-            <div className="mx-4">
-              {obsCheckAdditionalVersesLocale(verseObject.num, t)}
-            </div>
+            <div className="mx-4">{obsCheckAdditionalVerses(verseObject.num)}</div>
             {isTranslating ? (
               <textarea
                 autoFocus

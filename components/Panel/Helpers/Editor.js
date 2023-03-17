@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
-import { obsCheckAdditionalVersesLocale } from 'utils/helper'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Editor({ config }) {
   const { t } = useTranslation(['common'])
@@ -32,7 +32,7 @@ function Editor({ config }) {
     <div>
       {verseObjects.map((verseObject, index) => (
         <div key={verseObject.verse_id} className="flex my-3">
-          <div>{obsCheckAdditionalVersesLocale(verseObject.num, t)}</div>
+          <div>{obsCheckAdditionalVerses(verseObject.num)}</div>
           <AutoSizeTextArea
             verseObject={verseObject}
             index={index}
