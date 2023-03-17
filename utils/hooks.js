@@ -466,3 +466,24 @@ export function useGetVerses({ token, code, book_code, chapter_id }) {
   )
   return [verses, { mutate, error, isLoading }]
 }
+
+export function useGetInfo({ config, url }) {
+  const {
+    reference: { book, chapter },
+    config: { repo },
+  } = config
+
+  const params = { repo, book, chapter }
+
+  const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
+  const { isLoading, data, error } = useSWR(
+    url && params ? [url, params] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+
+  return { isLoading, data, error }
+}

@@ -13,6 +13,7 @@ import TeamNote from 'public/team-note.svg'
 import Notepad from 'public/notepad.svg'
 import Audio from 'public/audio.svg'
 import Pencil from 'public/editor-pencil.svg'
+import Info from 'public/info.svg'
 
 const sizes = {
   '1': 'lg:w-1/6',
@@ -30,6 +31,7 @@ const icons = {
   teamNotes: <TeamNote className="w-5 inline" />,
   dictionary: <Dict className="w-5 inline" />,
   audio: <Audio className="w-5 inline" />,
+  info: <Info className="w-5 inline" />,
   commandTranslate: translateIcon,
   draftTranslate: translateIcon,
   translate: translateIcon,
@@ -101,6 +103,7 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
               'personalNotes',
               'audio',
               'dictionary',
+              'info',
             ].includes(tool.name) ? (
               <span title={t(tool.name)}>
                 {icons[tool.name]}
