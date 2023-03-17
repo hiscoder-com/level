@@ -98,7 +98,6 @@ export default async function twlHandler(req, res) {
         0,
         -1
       )}/raw/branch/master/${wordObject.TWLink.split('/').slice(-3).join('/')}.md`
-
       const res = await axios.get(url)
 
       const splitter = res.data.search('\n')
@@ -111,8 +110,8 @@ export default async function twlHandler(req, res) {
       }
     })
     const words = await Promise.all(promises)
-
     const finalData = {}
+    const chunkUnique = {}
     let verseUnique = {}
 
     words?.forEach((word) => {
@@ -120,11 +119,17 @@ export default async function twlHandler(req, res) {
       if (!repeatedInVerse) {
         verseUnique[word.url] = word.title
       }
+      const repeatedInChunk = word.url in chunkUnique
+      if (!repeatedInChunk) {
+        chunkUnique[word.url] = word.title
+      }
+
       const wordObject = {
         id: word.id,
         title: word.title,
         text: word.text,
         url: word.url,
+        repeatedInChunk,
       }
       const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, word, wordObject)
 

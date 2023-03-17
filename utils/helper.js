@@ -293,26 +293,33 @@ export const parseManifests = async ({ resources, current_method }) => {
 
 export const countOfChaptersAndVerses = async ({ link, book_code }) => {
   let jsonChapterVerse = {}
-  const errorParse = null
+  let usfmData = ''
+
   if (book_code === 'obs') {
-    jsonChapterVerse = obsStoryVerses
-  } else {
-    try {
-      const result = await axios.get(link)
-      const jsonData = usfm.toJSON(result.data)
-      if (Object.entries(jsonData?.chapters).length > 0) {
-        Object.keys(jsonData?.chapters).forEach((chapterNum) => {
-          jsonChapterVerse[chapterNum] = Object.keys(
-            jsonData?.chapters[chapterNum]
-          ).filter((verse) => verse !== 'front').length
-        })
-      }
-    } catch (error) {
-      return { data: jsonChapterVerse, error }
-    }
+    return { data: obsStoryVerses, error: null }
   }
-  return { data: jsonChapterVerse, error: errorParse }
+
+  try {
+    usfmData = await axios.get(link)
+  } catch (error) {
+    return { data: null, error }
+  }
+  try {
+    const jsonData = usfm.toJSON(usfmData.data)
+    if (Object.entries(jsonData?.chapters).length > 0) {
+      Object.keys(jsonData?.chapters).forEach((chapterNum) => {
+        jsonChapterVerse[chapterNum] = Object.keys(jsonData?.chapters[chapterNum]).filter(
+          (verse) => verse !== 'front'
+        ).length
+      })
+    }
+  } catch (error) {
+    return { data: null, error }
+  }
+
+  return { data: jsonChapterVerse, error: null }
 }
+
 export const mdToJson = (md) => {
   let _markdown = md.replaceAll('\u200B', '').split(/\n\s*\n\s*/)
   const title = _markdown.shift().trim().slice(1)
@@ -358,7 +365,6 @@ export const getListWordsReference = (data) => {
 
   return { ...list }
 }
-
 export const uniqueFilterInBook = (wordsBook, item, wordObject) => {
   if (wordsBook?.[item.url]) {
     const [chapterCurrentWord, verseCurrentWord] = item.reference
@@ -374,7 +380,7 @@ export const uniqueFilterInBook = (wordsBook, item, wordObject) => {
       if (verseFirstLink !== verseCurrentWord) {
         return verseFirstLink < verseCurrentWord
       } else {
-        return wordObject.repeatedInVerse
+        return wordObject.repeatedInChunk || wordObject.repeatedInVerse
       }
     }
   }
