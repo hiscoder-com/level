@@ -40,7 +40,7 @@ function Download({
   const [imageSetting, setImageSetting] = useState(imageOptions[1])
 
   const downloadZip = async (downloadingBook) => {
-    var zip = new JSZip()
+    const zip = new JSZip()
     const obs = await getBookJson(downloadingBook.id)
     for (const story of obs) {
       const text = await compileChapter(
@@ -114,7 +114,7 @@ function Download({
             ))}
           </select>
         )}
-        {true &&
+        {isBook &&
           Object.keys(downloadSettings)
             .filter((key) => project?.type === 'obs' || key === 'WithFront')
             .map((key, index) => {
@@ -159,7 +159,7 @@ function Download({
             setOpenDownloading(false)
           }}
         >
-          {t('common:Close')}
+          {t('Close')}
         </button>
       </div>
     </Modal>
@@ -194,8 +194,8 @@ function BookDownloadPdf({
           },
           fileName: `${project.title}_${
             project?.type !== 'obs'
-              ? downloadingBook?.properties?.scripture?.toc1 ?? 'Book'
-              : downloadingBook?.properties?.obs?.title ?? 'Open bible stories'
+              ? downloadingBook?.properties?.scripture?.toc1 ?? t('Book')
+              : downloadingBook?.properties?.obs?.title ?? t('OpenBibleStories')
           }`,
         })
       }}
@@ -272,8 +272,8 @@ function ChapterDownloadPdf({
           },
           fileName: `${project.title}_${
             project?.type !== 'obs'
-              ? selectedBook?.properties?.scripture?.toc1 ?? 'Book'
-              : selectedBook?.properties?.obs?.title ?? 'Open bible stories'
+              ? selectedBook?.properties?.scripture?.toc1 ?? t('Book')
+              : selectedBook?.properties?.obs?.title ?? t('OpenBibleStories')
           }`,
         })
       }}

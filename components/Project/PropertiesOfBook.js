@@ -77,10 +77,10 @@ function PropertiesOfBook({
       {renderProperties}
       <div className="flex justify-end">
         <button className="btn-cyan mr-2" onClick={handleSave}>
-          {t('common:Save')}
+          {t('Save')}
         </button>
         <button className="btn-cyan " onClick={() => setOpenDownloading(false)}>
-          {t('common:Close')}
+          {t('Close')}
         </button>
       </div>
       <Toaster

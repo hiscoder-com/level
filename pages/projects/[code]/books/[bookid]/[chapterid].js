@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
@@ -105,7 +103,7 @@ function ChapterVersesPage() {
       </button>
       {chapter?.started_at && (
         <div>
-          {t('common:Chapter')} {t('chapters:StartedAt').toLowerCase()}{' '}
+          {t('Chapter')} {t('chapters:StartedAt').toLowerCase()}{' '}
           {readableDate(chapter?.started_at, locale)}
         </div>
       )}
@@ -126,7 +124,7 @@ function ChapterVersesPage() {
           </button>
           {!isValidating && chapter?.finished_at && (
             <div>
-              {t('common:Chapter')} {t('chapters:FinishedAt').toLowerCase()}{' '}
+              {t('Chapter')} {t('chapters:FinishedAt').toLowerCase()}{' '}
               {readableDate(chapter?.finished_at, locale)}
             </div>
           )}

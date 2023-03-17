@@ -8,12 +8,12 @@ import { useTranslation } from 'next-i18next'
 import toast, { Toaster } from 'react-hot-toast'
 
 import Modal from 'components/Modal'
+import Download from './Download'
 
 import { supabase } from 'utils/supabaseClient'
 
 import { readableDate, compileChapter, downloadPdf, downloadFile } from 'utils/helper'
 import { useBriefState, useGetChapters, useGetCreatedChapters } from 'utils/hooks'
-import Download from './Download'
 
 function ChapterList({ selectedBook, project, highLevelAccess, token }) {
   const [openCreatingChapter, setOpenCreatingChapter] = useState(false)
@@ -194,7 +194,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
           </button>
           <div className="ml-4">
             <button className="btn-cyan" onClick={() => setOpenCreatingChapter(false)}>
-              {t('common:Close')}
+              {t('Close')}
             </button>
           </div>
         </div>

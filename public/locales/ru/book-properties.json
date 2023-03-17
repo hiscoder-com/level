@@ -1,6 +1,6 @@
 {
   "back_obs": "Задняя обложка",
-  "back_placeholder_obs": "###Здесь нужен текст в формате markdown для задней обложки книги",
+  "back_placeholder_obs": "### Здесь нужен текст в формате markdown для задней обложки книги",
   "title_obs": "Заголовок",
   "title_placeholder_obs": "Открытые Библейские Истории",
   "chapter_label_obs": "История на языке перевода",
