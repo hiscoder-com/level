@@ -98,14 +98,18 @@ export default async function twlHandler(req, res) {
         0,
         -1
       )}/raw/branch/master/${wordObject.TWLink.split('/').slice(-3).join('/')}.md`
-      const res = await axios.get(url)
-
-      const splitter = res.data.search('\n')
+      let markdown
+      try {
+        markdown = await axios.get(url)
+      } catch (error) {
+        throw { error: 'Wrong response', url }
+      }
+      const splitter = markdown.data.search('\n')
       return {
         id: wordObject.ID,
         reference: wordObject.Reference,
-        title: res.data.slice(0, splitter),
-        text: res.data.slice(splitter),
+        title: markdown.data.slice(0, splitter),
+        text: markdown.data.slice(splitter),
         url: wordObject.TWLink,
       }
     })
