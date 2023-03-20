@@ -10,5 +10,5 @@
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
   "RemovingTranslator": "Removing a translator",
-  "successfulSave": "The brief is saved"
+  "SummaryPlaceholder": "Describe the purpose of the translation..."
 }
