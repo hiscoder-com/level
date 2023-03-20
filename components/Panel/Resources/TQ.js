@@ -37,13 +37,13 @@ function QuestionList({ data, viewAll, toolName }) {
   const { scrollId, handleSave } = useScroll({ toolName })
 
   return (
-    <div className="divide-y divide-gray-800 divide-dashed">
+    <div className="divide-y divide-dashed divide-gray-800">
       {data &&
         Object.keys(data)?.map((key) => {
           return (
-            <div key={key} className="p-4 flex mx-4">
+            <div key={key} className="flex mx-4 p-4">
               <div className="text-2xl">{key}</div>
-              <div className="text-gray-700 pl-7">
+              <div className="pl-7 text-gray-700">
                 <ul>
                   {data[key]?.map((item) => {
                     return (
@@ -75,7 +75,7 @@ function Answer({ item, reduceQuestions, viewAll, scrollId }) {
   return (
     <Disclosure>
       <Disclosure.Button
-        className={`text-left w-fit ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
+        className={`w-fit text-left${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
         onClick={() => {
           if (viewAll) {
             reduceQuestions()
@@ -84,7 +84,7 @@ function Answer({ item, reduceQuestions, viewAll, scrollId }) {
       >
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
-      <Disclosure.Panel className="text-cyan-700 w-fit py-4">
+      <Disclosure.Panel className="w-fit py-4 text-cyan-700">
         <p>{item.text}</p>
       </Disclosure.Panel>
     </Disclosure>

@@ -101,7 +101,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
         </Link>
         /{t(`books:${selectedBook?.code}`)}
       </div>
-      <table className="shadow-md mb-4 text-center w-fit text-sm table-auto text-gray-500">
+      <table className="table-auto w-fit mb-4 shadow-md text-center text-sm text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-100">
           <tr>
             <th className="py-3 px-3">{t('Chapter')}</th>
@@ -151,13 +151,13 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
                     <td className="py-4 px-6">
                       {started_at && readableDate(started_at, locale)}
                     </td>
-                    <td className="py-4 px-6 ">
+                    <td className="py-4 px-6">
                       {finished_at && readableDate(finished_at, locale)}
                     </td>
                     <td className="py-4 px-6">
                       {finished_at ? (
                         <button
-                          className="text-blue-600 hover:text-gray-400 p-2"
+                          className="p-2 text-blue-600 hover:text-gray-400"
                           onClick={(e) => {
                             e.stopPropagation()
                             setCurrentChapter(chapter)
@@ -179,7 +179,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
         isOpen={openCreatingChapter}
         closeHandle={() => setOpenCreatingChapter(false)}
       >
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           {t('WantCreateChapter')} {selectedChapter?.num}?
         </div>
         <div className="flex justify-center">
@@ -210,14 +210,7 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
         currentChapter={currentChapter}
         t={t}
       />
-      <Toaster
-        toastOptions={{
-          style: {
-            marginTop: '-6px',
-            color: '#6b7280',
-          },
-        }}
-      />
+      <Toaster />
     </div>
   )
 }

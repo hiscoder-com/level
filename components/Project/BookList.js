@@ -145,13 +145,13 @@ function BookList({ highLevelAccess, project, user }) {
                       shallow: true,
                     })
                   }
-                  className="cursor-pointer hover:bg-gray-50 bg-white border-b"
+                  className="cursor-pointer hover:bg-gray-50 bg-white border-b "
                 >
                   <td className="py-4 px-6">{t(`books:${book?.code}`)}</td>
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
                   <td className="py-4 px-6">
                     <button
-                      className="text-blue-600 hover:text-gray-400 p-2"
+                      className="p-2 text-blue-600 hover:text-gray-400"
                       onClick={(e) => {
                         e.stopPropagation()
                         setOpenDownloading(true)
@@ -164,7 +164,7 @@ function BookList({ highLevelAccess, project, user }) {
                   {highLevelAccess && (
                     <td className="py-6 px-6">
                       <button
-                        className="p-2 hover:bg-gray-200 w-12"
+                        className="w-12 p-2 hover:bg-gray-200"
                         onClick={(e) => {
                           e.stopPropagation()
                           setOpenProperties(true)

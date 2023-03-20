@@ -80,8 +80,8 @@ function Download({
 
   return (
     <Modal isOpen={openDownloading} closeHandle={() => setOpenDownloading(false)}>
-      <div className="text-center mb-4">{t('Download')}</div>
-      <div className="border-b-2 pb-2">
+      <div className="mb-4 text-center">{t('Download')}</div>
+      <div className="pb-2 border-b-2">
         {isBook ? (
           <BookDownloadPdf
             downloadingBook={downloadingBook}
@@ -121,7 +121,7 @@ function Download({
               return (
                 <div key={index}>
                   <input
-                    className="mt-4 h-[17px] w-[17px] cursor-pointer accent-cyan-600"
+                    className="h-[17px] w-[17px] mt-4 cursor-pointer accent-cyan-600"
                     type="checkbox"
                     checked={downloadSettings[key]}
                     onChange={() =>
@@ -218,13 +218,13 @@ function BookDownloadUsfmZip({
       {project?.type === 'obs' ? (
         <div
           onClick={() => downloadZip(downloadingBook)}
-          className="btn p-2 hover:bg-gray-200 mt-4 cursor-pointer"
+          className="btn p-2 mt-4 hover:bg-gray-200 cursor-pointer"
         >
           {t('ExportToZip')}
         </div>
       ) : (
         <div
-          className="btn p-2 hover:bg-gray-200 mt-4 cursor-pointer"
+          className="btn p-2 mt-4 hover:bg-gray-200 cursor-pointer"
           onClick={async (e) => {
             e.stopPropagation()
             downloadFile({
@@ -286,7 +286,7 @@ function ChapterDownloadPdf({
 function ChapterDownloadTxtMd({ project, currentChapter, selectedBook, t }) {
   return (
     <div
-      className="btn p-2 hover:bg-gray-200 mt-4 cursor-pointer"
+      className="btn p-2 mt-4 hover:bg-gray-200 cursor-pointer"
       onClick={async (e) => {
         project?.type === 'obs'
           ? downloadFile({

@@ -196,14 +196,7 @@ function VerseDivider({ verses }) {
           {t('Save')}
         </button>
       </div>
-      <Toaster
-        toastOptions={{
-          style: {
-            marginTop: '-6px',
-            color: '#6b7280',
-          },
-        }}
-      />
+      <Toaster />
     </div>
   )
 }
