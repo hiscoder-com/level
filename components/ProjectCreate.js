@@ -258,8 +258,6 @@ tn
 https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38
 tq
 https://git.door43.org/ru_gl/ru_tq/src/commit/787f3f48f4ada9f0a29451b5ef318125a5fd6c7a
-tw
-https://git.door43.org/ru_gl/ru_tw/src/commit/ea337e3dc7d8e9100af1224d1698b58abb53849d
 twl
 https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c864a2ca1
 `}
