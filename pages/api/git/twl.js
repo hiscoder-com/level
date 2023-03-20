@@ -101,9 +101,7 @@ export default async function twlHandler(req, res) {
       let markdown
       try {
         markdown = await axios.get(url)
-      } catch (error) {
-        throw { error: 'Wrong response', url }
-      }
+      } catch (error) {}
       const splitter = markdown.data.search('\n')
       return {
         id: wordObject.ID,

@@ -10,7 +10,7 @@ const validation = (properties) => {
   try {
     const obj = JSON.parse(JSON.stringify(properties))
     if (!obj || typeof obj !== 'object') {
-      return { error: 'This is incorrect json', properties }
+      throw new Error('This is incorrect json')
     }
   } catch (error) {
     return { error: 'This is incorrect json', properties }
@@ -20,24 +20,21 @@ const validation = (properties) => {
     JSON.stringify(Object.keys(properties)?.sort()) !==
     JSON.stringify(['obs', 'scripture'].sort())
   ) {
-    return { error: 'Properties has different keys', properties }
+    throw new Error('Properties has different keys')
   }
 
   if (
     JSON.stringify(Object.keys(properties.obs)?.sort()) !==
     JSON.stringify(['title', 'intro', 'back', 'chapter_label'].sort())
   ) {
-    return { error: 'Properties has different keys in OBS part', properties }
+    throw new Error('Properties has different keys in OBS part')
   }
 
   if (
     JSON.stringify(Object.keys(properties.scripture)?.sort()) !==
     JSON.stringify(['h', 'toc1', 'toc2', 'toc3', 'mt', 'chapter_label'].sort())
   ) {
-    return {
-      error: 'Properties has different keys in Scripture part',
-      properties,
-    }
+    throw new Error('Properties has different keys in Scripture part')
   }
   return { error }
 }
