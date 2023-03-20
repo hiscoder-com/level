@@ -47,7 +47,7 @@ function BookList({ highLevelAccess, project, user }) {
     return data
   }
 
-  const compileBook = async (book, type = 'txt', downloadSettings, imageSetting) => {
+  const compileBook = async (book, type = 'txt', downloadSettings) => {
     const chapters = await getBookJson(book?.id)
     if (chapters?.length === 0) {
       return
@@ -81,7 +81,7 @@ function BookList({ highLevelAccess, project, user }) {
             main += `<div>${chapter ?? ''}</div>`
           }
         }
-        return frontPdf + book
+        return frontPdf + main
       case 'pdf-obs':
         const converter = new Showdown.Converter()
         let obs = ''
@@ -92,7 +92,7 @@ function BookList({ highLevelAccess, project, user }) {
                 json: el?.text,
                 chapterNum: el.num,
               },
-              imageSetting
+              downloadSettings
             )
             if (story) {
               obs += `<div class="break">${story}</div>`

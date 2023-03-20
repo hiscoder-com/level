@@ -9,12 +9,8 @@ import Modal from 'components/Modal'
 import { usfmFileNames } from 'utils/config'
 import { compileChapter, downloadFile, downloadPdf } from 'utils/helper'
 
-const imageOptions = [
-  'WithoutImages',
-  'WithImageLowResolution',
-  'WithImageHighResolution',
-]
 const downloadSettingsChapter = {
+  WithImages: true,
   WithFront: true,
 }
 const downloadSettingsBook = {
@@ -37,7 +33,6 @@ function Download({
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
   )
-  const [imageSetting, setImageSetting] = useState(imageOptions[1])
 
   const downloadZip = async (downloadingBook) => {
     const zip = new JSZip()
@@ -86,7 +81,6 @@ function Download({
           <BookDownloadPdf
             downloadingBook={downloadingBook}
             downloadSettings={downloadSettings}
-            imageSetting={imageSetting}
             project={project}
             t={t}
             compileBook={compileBook}
@@ -98,42 +92,27 @@ function Download({
             project={project}
             downloadSettings={downloadSettings}
             t={t}
-            imageSetting={imageSetting}
           />
         )}
-        {project?.type === 'obs' && (
-          <select
-            className="input mt-4"
-            value={imageSetting}
-            onChange={(e) => setImageSetting(e.target.value)}
-          >
-            {imageOptions.map((option) => (
-              <option value={option} key={option}>
-                {t(`book-properties:${option}`)}
-              </option>
-            ))}
-          </select>
-        )}
-        {isBook &&
-          Object.keys(downloadSettings)
-            .filter((key) => project?.type === 'obs' || key === 'WithFront')
-            .map((key, index) => {
-              return (
-                <div key={index}>
-                  <input
-                    className="h-[17px] w-[17px] mt-4 cursor-pointer accent-cyan-600"
-                    type="checkbox"
-                    checked={downloadSettings[key]}
-                    onChange={() =>
-                      setDownloadSettings((prev) => {
-                        return { ...prev, [key]: !downloadSettings[key] }
-                      })
-                    }
-                  />
-                  <span className="ml-2">{t(key)}</span>
-                </div>
-              )
-            })}
+        {Object.keys(downloadSettings)
+          .filter((key) => project?.type === 'obs' || key === 'WithFront')
+          .map((key, index) => {
+            return (
+              <div key={index}>
+                <input
+                  className="h-[17px] w-[17px] mt-4 cursor-pointer accent-cyan-600"
+                  type="checkbox"
+                  checked={downloadSettings[key]}
+                  onChange={() =>
+                    setDownloadSettings((prev) => {
+                      return { ...prev, [key]: !downloadSettings[key] }
+                    })
+                  }
+                />
+                <span className="ml-2">{t(key)}</span>
+              </div>
+            )
+          })}
       </div>
       {isBook ? (
         <BookDownloadUsfmZip
@@ -168,14 +147,7 @@ function Download({
 
 export default Download
 
-function BookDownloadPdf({
-  downloadingBook,
-  downloadSettings,
-  imageSetting,
-  project,
-  t,
-  compileBook,
-}) {
+function BookDownloadPdf({ downloadingBook, downloadSettings, project, t, compileBook }) {
   return (
     <div
       className="btn p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
@@ -185,8 +157,7 @@ function BookDownloadPdf({
           htmlContent: await compileBook(
             downloadingBook,
             project?.type === 'obs' ? 'pdf-obs' : 'pdf',
-            downloadSettings,
-            imageSetting
+            downloadSettings
           ),
           projectLanguage: {
             code: project.languages.code,
@@ -246,7 +217,6 @@ function ChapterDownloadPdf({
   project,
   downloadSettings,
   t,
-  imageSetting,
 }) {
   return (
     <div
@@ -263,8 +233,7 @@ function ChapterDownloadPdf({
               book: selectedBook,
             },
             project?.type === 'obs' ? 'pdf-obs' : 'pdf',
-            downloadSettings,
-            imageSetting
+            downloadSettings
           ),
           projectLanguage: {
             code: project.languages.code,
