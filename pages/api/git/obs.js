@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { mdToJson } from 'utils/mdHelper'
+import { mdToJson } from 'utils/helper'
 
 /**
  *  @swagger
@@ -79,13 +79,17 @@ export default async function obsHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = mdToJson(_data.data)
-    const { verseObjects, header, link } = jsonData
+
+    const { additionalVerses, verseObjects, header } = jsonData
+    const verseObjectsObs = [...additionalVerses, ...verseObjects].sort(
+      (a, b) => a.verse - b.verse
+    )
     const _verseObjects =
       verses && verses.length > 0
-        ? verseObjects.filter((el) => {
+        ? verseObjectsObs.filter((el) => {
             return verses.includes(el.verse)
           })
-        : verseObjects
+        : verseObjectsObs
 
     res.status(200).json({ verseObjects: _verseObjects, header })
     return

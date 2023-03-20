@@ -1,10 +1,15 @@
 import { useEffect, useState } from 'react'
 
+import { useTranslation } from 'next-i18next'
+
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Editor({ config }) {
+  const { t } = useTranslation(['common'])
+
   const [verseObjects, setVerseObjects] = useState([])
 
   useEffect(() => {
@@ -25,10 +30,14 @@ function Editor({ config }) {
 
   return (
     <div>
-      {verseObjects.map((el, index) => (
-        <div key={el.verse_id} className="flex my-3">
-          <div>{el.num}</div>
-          <AutoSizeTextArea verseObject={el} index={index} updateVerse={updateVerse} />
+      {verseObjects.map((verseObject, index) => (
+        <div key={verseObject.verse_id} className="flex my-3">
+          <div>{obsCheckAdditionalVerses(verseObject.num)}</div>
+          <AutoSizeTextArea
+            verseObject={verseObject}
+            index={index}
+            updateVerse={updateVerse}
+          />
         </div>
       ))}
       <div className="select-none">ㅤ</div>

@@ -31,6 +31,7 @@ function VerseDivider({ verses }) {
   const [isHighlight, setIsHighlight] = useState(false)
 
   const { t } = useTranslation('common')
+
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -47,8 +48,8 @@ function VerseDivider({ verses }) {
   })
 
   useEffect(() => {
-    const colorTranslators = translators?.map((el, index) => ({
-      ...el,
+    const colorTranslators = translators?.map((translator, index) => ({
+      ...translator,
       color: defaultColor[index],
     }))
     setColorTranslators(colorTranslators)
@@ -56,13 +57,13 @@ function VerseDivider({ verses }) {
 
   useEffect(() => {
     if (colorTranslators?.length > 0) {
-      const extVerses = verses?.map((el) => {
+      const extVerses = verses?.map((verse) => {
         const translator = colorTranslators.find(
-          (element) => element.id === el.project_translator_id
+          (element) => element.id === verse.project_translator_id
         )
 
         return {
-          ...el,
+          ...verse,
           color: translator ? translator.color : 'bg-slate-300',
           translator_name: translator ? translator.users.login : '',
         }
@@ -101,16 +102,14 @@ function VerseDivider({ verses }) {
   return (
     <div className="md:flex mx-4">
       <div
-        onMouseDown={() => {
-          setIsHighlight(true)
-        }}
+        onMouseDown={() => setIsHighlight(true)}
         onMouseUp={() => setIsHighlight(false)}
         onMouseLeave={() => setIsHighlight(false)}
         className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
         {versesDivided
           ?.sort((a, b) => a.num > b.num)
-          .map((el, index) => {
+          .map((verse, index) => {
             return (
               <div
                 onMouseDown={() => {
@@ -130,28 +129,34 @@ function VerseDivider({ verses }) {
                   coloring(index)
                 }}
                 className={`${
-                  el?.color ?? 'bg-slate-300'
+                  verse?.color ?? 'bg-slate-300'
                 } w-32 border-slate-200 border-2 cursor-pointer hover:border-1 hover:border-cyan-300 truncate flex justify-between p-1`}
                 key={index}
               >
-                <div>{el.num}</div>
-                <div>{el.translator_name}</div>
+                <div className="mr-1">
+                  {verse.num === 0
+                    ? t('Title')
+                    : verse.num === 200
+                    ? t('Reference')
+                    : verse.num}
+                </div>
+                <div>{verse.translator_name}</div>
               </div>
             )
           })}
       </div>
       <div className="grid grid-cols-2 md:block">
-        {colorTranslators?.map((el, index) => (
+        {colorTranslators?.map((translator, index) => (
           <div key={index} className="flex">
             <div
-              onClick={() => setCurrentTranslator(el)}
+              onClick={() => setCurrentTranslator(translator)}
               className={`${
-                currentTranslator?.users?.login === el.users.login
+                currentTranslator?.users?.login === translator.users.login
                   ? 'border-4 border-cyan-300 p-1'
                   : 'p-2'
-              } cursor-pointer ml-10 my-2 w-fit rounded-md ${el.color} btn`}
+              } cursor-pointer ml-10 my-2 w-fit rounded-md ${translator.color} btn`}
             >
-              {el.users.login}
+              {translator.users.login}
             </div>
           </div>
         ))}
@@ -172,8 +177,8 @@ function VerseDivider({ verses }) {
         <button
           onClick={() =>
             setVersesDivided(
-              verses?.map((el) => ({
-                ...el,
+              verses?.map((verse) => ({
+                ...verse,
                 color: 'bg-slate-300',
                 translator_name: '',
                 project_translator_id: null,
@@ -191,14 +196,7 @@ function VerseDivider({ verses }) {
           {t('Save')}
         </button>
       </div>
-      <Toaster
-        toastOptions={{
-          style: {
-            marginTop: '-6px',
-            color: '#6b7280',
-          },
-        }}
-      />
+      <Toaster />
     </div>
   )
 }

@@ -2,17 +2,24 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { supabase } from 'utils/supabaseClient'
 import { useGetChapter } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Reader({ config }) {
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
+
+  const { t } = useTranslation(['common'])
+
   const { user } = useCurrentUser()
+
   const [verseObjects, setVerseObjects] = useState([])
   const [chapter] = useGetChapter({
     token: user?.access_token,
@@ -74,12 +81,12 @@ function Reader({ config }) {
 
   return (
     <div>
-      {verseObjects.map((el, index) => (
-        <div key={el.verse_id} className="flex my-3">
-          <div>{el.num}</div>
+      {verseObjects.map((verseObject, index) => (
+        <div key={verseObject.verse_id} className="flex my-3">
+          <div>{obsCheckAdditionalVerses(verseObject.num)}</div>
           <AutoSizeTextArea
             disabled={true}
-            verseObject={el}
+            verseObject={verseObject}
             index={index}
             updateVerse={() => {}}
           />

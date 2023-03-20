@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Login from 'components/Login'
 
 import VcanaLogo from 'public/vcana-logo.svg'
+
 import OmbLogo from 'public/omb-logo.svg'
 
 export default function Home() {

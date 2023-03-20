@@ -86,21 +86,19 @@ export default function Recorder() {
   }
 
   return (
-    <div className="flex justify-center items-center">
-      <button className="border-0 w-6 h-6 mr-2" onClick={startStop}>
+    <div className="flex items-center">
+      <button className="border-0 w-6 h-6 mr-8" onClick={startStop}>
         {buttonRecord}
       </button>
       <audio ref={audioRef}></audio>
-      <button className="border-0 w-6 h-6 mr-2" onClick={playPause}>
+      <button className="border-0 w-6 h-6 mr-8" onClick={playPause}>
         {buttonPlay}
       </button>
       <br />
       <button
         disabled={voice.length === 0}
         className="border-0 w-6 h-6"
-        onClick={() => {
-          setVoice([])
-        }}
+        onClick={() => setVoice([])}
       >
         <TrashButton
           className={`stroke-2 ${
@@ -156,12 +154,7 @@ function Modal({ showModal, setShowModal }) {
                 </div>
 
                 <div className="mt-4">
-                  <button
-                    className="btn-cyan w-24"
-                    onClick={() => {
-                      setShowModal(false)
-                    }}
-                  >
+                  <button className="btn-cyan w-24" onClick={() => setShowModal(false)}>
                     {t('common:Ok')}
                   </button>
                 </div>

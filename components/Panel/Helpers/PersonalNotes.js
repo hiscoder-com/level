@@ -56,7 +56,7 @@ function PersonalNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('SaveFailedNote'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
@@ -72,7 +72,7 @@ function PersonalNotes() {
     axios
       .post('/api/personal_notes', { id, user_id: user.id })
       .then(() => mutate())
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
 
   const removeNote = (id) => {
@@ -83,7 +83,7 @@ function PersonalNotes() {
         removeCacheNote('personal_notes', id)
         mutate()
       })
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
   useEffect(() => {
     if (!activeNote) {
@@ -105,7 +105,7 @@ function PersonalNotes() {
         removeCacheAllNotes('personal-notes')
         mutate()
       })
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
 
   return (
@@ -168,12 +168,7 @@ function PersonalNotes() {
           />
         </>
       )}
-      <Modal
-        isOpen={isOpenModal}
-        closeHandle={() => {
-          setIsOpenModal(false)
-        }}
-      >
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="text-center">
           <div className="mb-4">
             {t('AreYouSureDelete') +

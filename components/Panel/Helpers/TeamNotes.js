@@ -61,7 +61,7 @@ function TeamNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('SaveFailedNote'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
@@ -90,7 +90,7 @@ function TeamNotes() {
     axios
       .post('/api/team_notes', { id, project_id: project?.id })
       .then(() => mutate())
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
 
   const removeNote = (id) => {
@@ -101,7 +101,7 @@ function TeamNotes() {
         removeCacheNote('personal_notes', id)
         mutate()
       })
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
   useEffect(() => {
     if (!activeNote || !editable) {
@@ -173,12 +173,7 @@ function TeamNotes() {
           />
         </>
       )}
-      <Modal
-        isOpen={isOpenModal}
-        closeHandle={() => {
-          setIsOpenModal(false)
-        }}
-      >
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         {' '}
         <div className="text-center">
           <div className="mb-4">

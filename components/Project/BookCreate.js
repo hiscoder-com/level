@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
+import { useGetBooks } from 'utils/hooks'
 
 function BookCreate({ highLevelAccess, project, books, user }) {
   const [creatingBook, setCreatingBook] = useState(false)
@@ -12,7 +13,10 @@ function BookCreate({ highLevelAccess, project, books, user }) {
 
   const { push } = useRouter()
   const { t } = useTranslation(['common'])
-
+  const [_, { mutate: mutateBooks }] = useGetBooks({
+    token: user?.access_token,
+    code: project?.code,
+  })
   useEffect(() => {
     const defaultVal = project?.base_manifest?.books?.filter(
       (el) => !books?.map((el) => el.code)?.includes(el.name)
@@ -52,12 +56,20 @@ function BookCreate({ highLevelAccess, project, books, user }) {
       console.log(error)
     } finally {
       setCreatingBook(false)
+      mutateBooks()
     }
   }
+  const notCreatedBooks = useMemo(
+    () =>
+      project?.base_manifest?.books?.filter(
+        (el) => !books?.map((book) => book.code)?.includes(el.name) && el.name !== 'frt'
+      ),
+    [books, project?.base_manifest?.books]
+  )
 
   return (
     <>
-      {highLevelAccess && (
+      {highLevelAccess && notCreatedBooks?.length > 0 && (
         <>
           <h3 className="mt-4 ">{t('CreateBook')}</h3>
           <div className="mt-4 pb-4">
@@ -66,17 +78,11 @@ function BookCreate({ highLevelAccess, project, books, user }) {
               onChange={(e) => setSelectedBook(e.target.value)}
               value={selectedBook}
             >
-              {project?.base_manifest?.books
-                ?.filter(
-                  (el) =>
-                    !books?.map((book) => book.code)?.includes(el.name) &&
-                    el.name !== 'frt'
-                )
-                .map((el) => (
-                  <option value={el.name} key={el.name}>
-                    {t(`books:${el.name}`)}
-                  </option>
-                ))}
+              {notCreatedBooks?.map((el) => (
+                <option value={el.name} key={el.name}>
+                  {t(`books:${el.name}`)}
+                </option>
+              ))}
             </select>
             <button
               className="btn btn-cyan ml-2"

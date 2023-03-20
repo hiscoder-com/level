@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 
 import { supabase } from 'utils/supabaseClient'
 
@@ -10,6 +11,7 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useGetChapter, useProject } from 'utils/hooks'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 // moderatorOnly
 //              - TRUE видно все стихи, только модератор может вносить исправления
@@ -21,6 +23,7 @@ function CommandEditor({ config }) {
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
+  const { t } = useTranslation(['common'])
 
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
@@ -110,35 +113,35 @@ function CommandEditor({ config }) {
         .then((res) => {
           console.log('save_verse', res)
         })
-        .catch((error) => console.log(error))
+        .catch(console.log)
       return [...prev]
     })
   }
 
   return (
     <div>
-      {verseObjects.map((el, index) => (
-        <div key={el.verse_id} className="flex my-3">
+      {verseObjects.map((verseObject, index) => (
+        <div key={verseObject.verse_id} className="flex my-3">
           <div
             className={
               (
                 config?.config?.moderatorOnly
                   ? ['user', 'translator'].includes(level)
-                  : !el.editable
+                  : !verseObject.editable
               )
                 ? 'text-blue-600'
                 : 'font-bold'
             }
           >
-            {el.num}
+            {obsCheckAdditionalVerses(verseObject.num)}
           </div>
           <AutoSizeTextArea
             disabled={
               config?.config?.moderatorOnly
                 ? ['user', 'translator'].includes(level)
-                : !el.editable
+                : !verseObject.editable
             }
-            verseObject={el}
+            verseObject={verseObject}
             index={index}
             updateVerse={updateVerse}
           />

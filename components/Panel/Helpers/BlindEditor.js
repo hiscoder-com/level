@@ -8,6 +8,7 @@ import { supabase } from 'utils/supabaseClient'
 
 import { checkedVersesBibleState } from '../state/atoms'
 
+import { obsCheckAdditionalVerses } from 'utils/helper'
 import Pencil from 'public/pencil.svg'
 import Check from 'public/check.svg'
 
@@ -78,8 +79,8 @@ function BlindEditor({ config }) {
 
   return (
     <div>
-      {verseObjects.map((el, index) => {
-        const currentNumVerse = el.num.toString()
+      {verseObjects.map((verseObject, index) => {
+        const currentNumVerse = verseObject.num.toString()
         const nextNumVerse =
           index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : ''
         const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : ''
@@ -87,10 +88,10 @@ function BlindEditor({ config }) {
           (index === 0 && !enabledIcons.length) ||
           enabledIcons.includes(currentNumVerse)
         )
-        const isTranslating = enabledInputs.includes(el.num.toString())
+        const isTranslating = enabledInputs.includes(verseObject.num.toString())
         const isTranslated = translatedVerses.includes(currentNumVerse)
         return (
-          <div key={el.verse_id} className="flex my-3 items-start">
+          <div key={verseObject.verse_id} className="flex my-3 items-start">
             <button
               onClick={() => {
                 if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
@@ -131,7 +132,7 @@ function BlindEditor({ config }) {
               )}
             </button>
 
-            <div className="mx-4">{el.num}</div>
+            <div className="mx-4">{obsCheckAdditionalVerses(verseObject.num)}</div>
             {isTranslating ? (
               <textarea
                 autoFocus
@@ -148,10 +149,10 @@ function BlindEditor({ config }) {
                       .trim()
                   )
                 }}
-                defaultValue={el.verse ?? ''}
+                defaultValue={verseObject.verse ?? ''}
               />
             ) : (
-              <div className="whitespace-pre-line">{el.verse}</div>
+              <div className="whitespace-pre-line">{verseObject.verse}</div>
             )}
           </div>
         )
@@ -159,7 +160,7 @@ function BlindEditor({ config }) {
       {isShowFinalButton && (
         <button
           onClick={() => {
-            setEnabledIcons(['0'])
+            setEnabledIcons(['201'])
             setEnabledInputs([])
             sendToDb(verseObjects.length - 1)
           }}

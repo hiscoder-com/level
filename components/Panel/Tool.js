@@ -23,7 +23,6 @@ function Tool({ config, toolName, editable = false }) {
       manifest: { dublin_core: resource },
     },
   } = config
-
   let CurrentTool
   let url
   let title = config?.resource?.manifest?.dublin_core?.title
@@ -38,8 +37,7 @@ function Tool({ config, toolName, editable = false }) {
 
   config.verses = config.wholeChapter
     ? []
-    : config.reference.verses.map((v) => (v?.num ? v.num : v))
-
+    : config.reference.verses.map((v) => (v?.num || v?.num === 0 ? v.num : v))
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
       CurrentTool = TWL
@@ -90,7 +88,6 @@ function Tool({ config, toolName, editable = false }) {
     case 'TSV Translation Questions':
     case 'Translation Questions':
       CurrentTool = TQ
-
       config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
       )?.path
@@ -177,7 +174,7 @@ function Tool({ config, toolName, editable = false }) {
           'audio',
           'dictionary',
         ].includes(toolName) &&
-          `${t(`books:${config?.reference?.book}`)}  ${config?.reference?.chapter}, `}
+          `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
         {title}
       </div>
       <div className="h5 adaptive-card">

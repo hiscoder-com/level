@@ -17,7 +17,7 @@ function TN({ config, url, toolName }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <ToolList setItem={setItem} data={data} toolName={toolName} />
+          <TNList setItem={setItem} data={data} toolName={toolName} />
         </div>
       )}
     </>
@@ -26,7 +26,7 @@ function TN({ config, url, toolName }) {
 
 export default TN
 
-function ToolList({ setItem, data, toolName }) {
+function TNList({ setItem, data, toolName }) {
   const [verses, setVerses] = useState([])
   const { scrollId, handleSave } = useScroll({ toolName })
 

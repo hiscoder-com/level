@@ -4,32 +4,31 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { BookCreate, ChapterList, DownloadBlock } from './index'
+import Showdown from 'showdown'
 
-import { compileChapter, convertToUsfm } from 'utils/helper'
+import { BookCreate, ChapterList, PropertiesOfBook, Download } from './index'
+
 import { supabase } from 'utils/supabaseClient'
-import { usfmFileNames } from 'utils/config'
+import { compileChapter, compilePdfObs, convertToUsfm } from 'utils/helper'
 import { useGetBooks } from 'utils/hooks'
 
-function BookList({ highLevelAccess, project, user }) {
-  const [selectedBook, setSelectedBook] = useState(null)
+import Properties from 'public/parameters.svg'
 
-  const [books] = useGetBooks({
+function BookList({ highLevelAccess, project, user }) {
+  const { t } = useTranslation(['common', 'books'])
+  const { push, query } = useRouter()
+  const [selectedBook, setSelectedBook] = useState(null)
+  const [selectedBookProperties, setSelectedBookProperties] = useState(null)
+  const [downloadingBook, setDownloadingBook] = useState(null)
+
+  const [openDownloading, setOpenDownloading] = useState(false)
+
+  const [openProperties, setOpenProperties] = useState(false)
+
+  const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
   })
-
-  const { push, query } = useRouter()
-  const { t } = useTranslation(['common', 'books'])
-
-  const getBookJson = async (book_id) => {
-    const { data } = await supabase
-      .from('chapters')
-      .select('num,text')
-      .eq('book_id', book_id)
-      .order('num')
-    return data
-  }
 
   useEffect(() => {
     if (query?.book && books?.length) {
@@ -39,36 +38,87 @@ function BookList({ highLevelAccess, project, user }) {
       setSelectedBook(null)
     }
   }, [query, books])
+  const getBookJson = async (book_id) => {
+    const { data } = await supabase
+      .from('chapters')
+      .select('num,text')
+      .eq('book_id', book_id)
+      .order('num')
+    return data
+  }
 
-  const compileBook = async (ref, type = 'txt') => {
-    const chapters = await getBookJson(ref?.book_id)
-    let main = ''
+  const compileBook = async (book, type = 'txt', downloadSettings) => {
+    const chapters = await getBookJson(book?.id)
     if (chapters?.length === 0) {
       return
     }
-    if (type === 'txt') {
-      const bookName = t(`books:${ref?.bookCode}`)
-      main = convertToUsfm({
-        book: { json: chapters, code: ref?.bookCode, title: bookName },
-        project: {
-          code: project?.code,
-          title: project?.title,
-          language: {
-            code: project?.languages?.code,
-            orig_name: project?.languages?.orig_name,
+
+    switch (type) {
+      case 'txt':
+        return convertToUsfm({
+          jsonChapters: chapters,
+          book,
+          project: {
+            code: project?.code,
+            title: project?.title,
+            language: {
+              code: project?.languages?.code,
+              orig_name: project?.languages?.orig_name,
+            },
           },
-        },
-      })
-    } else {
-      main = chapters.reduce((html, el) => {
-        if (el.text) {
-          html += ` <h1>${t('Chapter')} ${el.num}</h1>
-        <div>${compileChapter({ json: el.text }, 'html')}</div>`
+        })
+      case 'pdf':
+        const frontPdf = downloadSettings?.withFront
+          ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
+          : ''
+        const main = ''
+        for (const el of chapters) {
+          const chapter = await compileChapter(
+            { json: el.text, chapterNum: el.num, book },
+            'html'
+          )
+          if (chapter) {
+            main += `<div>${chapter ?? ''}</div>`
+          }
         }
-        return html
-      }, '')
+        return frontPdf + main
+      case 'pdf-obs':
+        const converter = new Showdown.Converter()
+        let obs = ''
+        for (const el of chapters) {
+          if (el?.text) {
+            const story = await compilePdfObs(
+              {
+                json: el?.text,
+                chapterNum: el.num,
+              },
+              downloadSettings
+            )
+            if (story) {
+              obs += `<div class="break">${story}</div>`
+            }
+          }
+        }
+        if (!book?.properties?.obs) {
+          return obs
+        }
+        const { title: _title, intro: _intro, back: _back } = book.properties.obs
+        const title = _title ? `<h1>${_title}</h1>` : ''
+        const front = downloadSettings?.withFront
+          ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1>${title}</div>`
+          : ''
+        const intro =
+          _intro && downloadSettings?.withIntro
+            ? `<div class="break" >${converter.makeHtml(_intro)}</div>`
+            : ''
+        const back =
+          _back && downloadSettings?.withBack
+            ? `<div>${converter.makeHtml(_back)}</div>`
+            : ''
+        return front + intro + obs + back
+      default:
+        break
     }
-    return main
   }
 
   return (
@@ -81,48 +131,50 @@ function BookList({ highLevelAccess, project, user }) {
                 <th className="py-3 px-6">{t('NameBook')}</th>
                 <th className="py-3 px-6">{t('CountChapters')}</th>
                 <th className="py-3 px-6">{t('Download')}</th>
+                {highLevelAccess && <th className="py-3 px-6">{t('Properties')}</th>}
               </tr>
             </thead>
             <tbody>
               {books?.map((book, index) => (
                 <tr
                   key={index}
-                  onClick={() => {
+                  onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
                       query: { book: book?.code },
                       shallow: true,
                     })
-                  }}
+                  }
                   className="cursor-pointer hover:bg-gray-50 bg-white border-b"
                 >
                   <td className="py-4 px-6">{t(`books:${book?.code}`)}</td>
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>
                   <td className="py-4 px-6">
-                    <DownloadBlock
-                      isBook
-                      actions={{
-                        compile: compileBook,
+                    <button
+                      className="p-2 text-blue-600 hover:text-gray-400"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setOpenDownloading(true)
+                        setDownloadingBook(book)
                       }}
-                      state={{
-                        txt: {
-                          ref: { book_id: book?.id, bookCode: book?.code },
-                          fileName: usfmFileNames[book?.code] || '',
-                        },
-                        pdf: {
-                          ref: {
-                            book_id: book?.id,
-                            title: project?.title,
-                            subtitle: `${t('Book')} ${t(`books:${book?.code}`)}`,
-                          },
-                          projectLanguage: {
-                            code: project?.languages?.code,
-                            title: project?.languages?.title,
-                          },
-                        },
-                      }}
-                    />
+                    >
+                      {t('Download')}
+                    </button>
                   </td>
+                  {highLevelAccess && (
+                    <td className="py-6 px-6">
+                      <button
+                        className="w-12 p-2 hover:bg-gray-200"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setOpenProperties(true)
+                          setSelectedBookProperties(book)
+                        }}
+                      >
+                        <Properties />
+                      </button>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>
@@ -143,6 +195,26 @@ function BookList({ highLevelAccess, project, user }) {
           token={user?.access_token}
         />
       )}
+      <PropertiesOfBook
+        projectId={project?.id}
+        user={user}
+        book={selectedBookProperties}
+        openDownloading={openProperties}
+        setOpenDownloading={setOpenProperties}
+        type={project?.type}
+        t={t}
+        mutateBooks={mutateBooks}
+      />
+      <Download
+        openDownloading={openDownloading}
+        setOpenDownloading={setOpenDownloading}
+        compileBook={compileBook}
+        downloadingBook={downloadingBook}
+        project={project}
+        t={t}
+        getBookJson={getBookJson}
+        isBook
+      />
     </>
   )
 }

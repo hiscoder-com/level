@@ -111,7 +111,7 @@ function ProjectEdit() {
         roleActions[role].reset(false)
         roleActions[role].mutate()
       })
-      .catch((error) => console.log(error))
+      .catch(console.log)
   }
 
   const assign = (role) => {
@@ -120,10 +120,8 @@ function ProjectEdit() {
       .post(`/api/projects/${code}/${role}/`, {
         user_id: selectedUser,
       })
-      .then(() => {
-        roleActions[role].mutate()
-      })
-      .catch((error) => console.log(error))
+      .then(() => roleActions[role].mutate())
+      .catch(console.log)
   }
 
   const moderatorIds = useMemo(() => {
@@ -281,9 +279,7 @@ function ProjectEdit() {
                 isOpen={
                   selectedModerator ? Object.keys(selectedModerator).length > 0 : false
                 }
-                closeHandle={() => {
-                  setSelectedModerator(false)
-                }}
+                closeHandle={() => setSelectedModerator(false)}
               >
                 <div className="text-center">
                   <div className="mb-2">
@@ -310,9 +306,7 @@ function ProjectEdit() {
                   <div className="mt-4">
                     <button
                       className="btn-cyan w-24"
-                      onClick={() => {
-                        setSelectedModerator(false)
-                      }}
+                      onClick={() => setSelectedModerator(false)}
                     >
                       {t('Close')}
                     </button>
@@ -323,9 +317,7 @@ function ProjectEdit() {
                 isOpen={
                   selectedTranslator ? Object.keys(selectedTranslator).length > 0 : false
                 }
-                closeHandle={() => {
-                  setSelectedTranslator(false)
-                }}
+                closeHandle={() => setSelectedTranslator(false)}
               >
                 <div className="text-center">
                   <div className="mb-2">{t('project-edit:RemovingTranslator')}</div>
@@ -339,9 +331,7 @@ function ProjectEdit() {
                   <div className="mt-4">
                     <button
                       className="btn-cyan w-24"
-                      onClick={() => {
-                        setSelectedTranslator(false)
-                      }}
+                      onClick={() => setSelectedTranslator(false)}
                     >
                       {t('Close')}
                     </button>
@@ -354,9 +344,7 @@ function ProjectEdit() {
                     ? Object.keys(selectedCoordinator).length > 0
                     : false
                 }
-                closeHandle={() => {
-                  setSelectedCoordinator(false)
-                }}
+                closeHandle={() => setSelectedCoordinator(false)}
               >
                 <div className="text-center">
                   <div className="mb-2">{t('project-edit:RemovingCoordinator')}</div>
@@ -371,9 +359,7 @@ function ProjectEdit() {
                   <div className="mt-4">
                     <button
                       className="btn-cyan w-24"
-                      onClick={() => {
-                        setSelectedCoordinator(false)
-                      }}
+                      onClick={() => setSelectedCoordinator(false)}
                     >
                       {t('Close')}
                     </button>

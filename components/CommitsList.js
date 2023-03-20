@@ -43,7 +43,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
         )
       }
     }
-    return listOfResources
+    return listOfResources.sort((a, b) => a.key.localeCompare(b.key))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customResources, resourcesUrl])
 

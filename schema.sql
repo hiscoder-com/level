@@ -786,11 +786,15 @@
     END;
   $$;
 
+  
   -- create verses
   CREATE FUNCTION PUBLIC.create_verses(chapter_id BIGINT) RETURNS BOOLEAN
     LANGUAGE plpgsql SECURITY DEFINER AS $$
+
     DECLARE
       chapter RECORD;
+      start_verse int;
+      method_type text;
     BEGIN
       -- 1. Get the number of verses
       SELECT  chapters.id AS id,
@@ -808,14 +812,28 @@
       THEN
         RETURN FALSE;
       END IF;
-
-      FOR i IN 1..chapter.verses LOOP
+      method_type = (SELECT type FROM projects WHERE id = chapter.project_id);
+      IF method_type = 'obs'
+      THEN
+        start_verse = 0;
+      ELSE 
+        start_verse = 1;
+      END IF;
+      FOR i IN start_verse..chapter.verses LOOP
         INSERT INTO
           PUBLIC.verses (num, chapter_id, current_step, project_id)
         VALUES
           (i , chapter.id, chapter.step_id, chapter.project_id);
       END LOOP;
-
+      IF method_type = 'obs'
+      THEN
+       INSERT INTO
+          PUBLIC.verses (num, chapter_id, current_step, project_id)
+        VALUES
+          (200 , chapter.id, chapter.step_id, chapter.project_id);
+      ELSE 
+        RETURN true;
+      END IF;
       RETURN true;
 
     END;
@@ -1153,6 +1171,7 @@
         CASCADE NOT NULL,
       "text" TEXT DEFAULT NULL,
       chapters JSON,
+      properties JSON DEFAULT NULL,
       UNIQUE (project_id, code)
     );
 
@@ -2282,7 +2301,7 @@
         ]
       },
       {
-        "title": "7 ШАГ - ПРОВЕРКА КЛЮЧЕВЫХ СЛОВ",
+        "title": "7 ШАГ - КОМАНДНЫЙ ОБЗОР ПЕРЕВОДА",
         "description": "Это командная работа и мы рекомендуем потратить на нее не более 60 минут.\n\n\n\nЦЕЛЬ этого шага: улучшить перевод, приняв решения командой о трудных словах или фразах, делая текст хорошим как с точки зрения точности, так и с точки зрения естественности. Это финальный шаг в работе над текстом.\n\n\n\nВ этом шаге вам необходимо выполнить три задания.\n\n\n\nЗадание первое - Прочитайте вслух свой текст команде. Команда в это время смотрит в текст ОТКРЫТЫХ БИБЛЕЙСКИХ ИСТОРИЙ на русском языке и обращает внимание только на ТОЧНОСТЬ вашего перевода.\n\nОбсудите текст насколько он точен. Если есть ошибки в вашем тексте, исправьте. Всей командой проверьте на точность работу каждого члена команды. Уделите этому заданию 20 минут.\n\n\n\nЗадание второе - Проверьте вместе с командой ваш перевод на наличие ключевых слов из инструмента СЛОВА. Все ключевые слова на месте? Все ключевые слова переведены корректно? Уделите этому заданию 20 минут.\n\n\n\nЗадание третье - Еще раз прочитайте вслух свой текст команде, которая теперь не смотрит ни в какой текст, а просто слушает, обращая внимание на ПОНЯТНОСТЬ и ЕСТЕСТВЕННОСТЬ языка. Обсудите текст, помня о целевой аудитории и о КРАТКОМ ОПИСАНИИ ПЕРЕВОДА (Резюме к переводу). Если есть ошибки в вашем тексте, исправьте. Проработайте каждую главу/ каждый отрывок, пока команда не будет довольна результатом. Уделите этому заданию 20 минут.\n\n\n\n\n\n_Примечание к шагу:_ \n\n- Не оставляйте текст с несколькими вариантами перевода предложения или слова. После седьмого шага не должны оставаться нерешенные вопросы. Текст должен быть готовым к чтению.",
         "time": 30,
         "whole_chapter": true,

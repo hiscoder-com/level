@@ -44,11 +44,9 @@ function EditBrief() {
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
-      .then(() => {
-        mutate()
-      })
+      .then(mutate)
       .catch((err) => {
-        toast.error(t('project-edit:saveFailedBrief'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
@@ -231,7 +229,7 @@ function EditBrief() {
                 className="btn-cyan"
                 onClick={() => {
                   saveToDatabase()
-                  toast.success(t('project-edit:successfulSave'))
+                  toast.success(t('SaveSuccess'))
                 }}
               >
                 {t('Save')}

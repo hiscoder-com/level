@@ -95,6 +95,7 @@ export default async function tnHandler(req, res) {
       if (chapterNote !== chapter || verseNote === 'intro') {
         return
       }
+
       // создаем экземпляр заметки
       // Если это введение к главе - заголовок intro
       // Если введение к книге - заголовок front

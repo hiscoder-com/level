@@ -13,7 +13,7 @@ function TQ({ config, url, toolName }) {
       {isLoading ? (
         <Placeholder />
       ) : (
-        <ToolList
+        <QuestionList
           data={data}
           viewAll={config?.resource?.viewAllQuestions}
           toolName={toolName}
@@ -25,7 +25,7 @@ function TQ({ config, url, toolName }) {
 
 export default TQ
 
-function ToolList({ data, viewAll, toolName }) {
+function QuestionList({ data, viewAll, toolName }) {
   let uniqueVerses = new Set()
   const reduceQuestions = (title) => {
     uniqueVerses.add(title)
@@ -37,15 +37,15 @@ function ToolList({ data, viewAll, toolName }) {
   const { scrollId, handleSave } = useScroll({ toolName })
 
   return (
-    <div className="divide-y divide-gray-800 divide-dashed">
+    <div className="divide-y divide-dashed divide-gray-800">
       {data &&
-        Object.entries(data).map((el) => {
+        Object.keys(data)?.map((key) => {
           return (
-            <div key={el[0]} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0]}</div>
-              <div className="text-gray-700 pl-7">
+            <div key={key} className="flex mx-4 p-4">
+              <div className="text-2xl">{key}</div>
+              <div className="pl-7 text-gray-700">
                 <ul>
-                  {el[1]?.map((item) => {
+                  {data[key]?.map((item) => {
                     return (
                       <li
                         key={item.id}
@@ -53,7 +53,7 @@ function ToolList({ data, viewAll, toolName }) {
                         onClick={() => handleSave(item.id)}
                         className="py-2"
                       >
-                        <ToolContent
+                        <Answer
                           item={item}
                           reduceQuestions={() => reduceQuestions(item.title)}
                           viewAll={viewAll}
@@ -71,11 +71,11 @@ function ToolList({ data, viewAll, toolName }) {
   )
 }
 
-function ToolContent({ item, reduceQuestions, viewAll, scrollId }) {
+function Answer({ item, reduceQuestions, viewAll, scrollId }) {
   return (
     <Disclosure>
       <Disclosure.Button
-        className={`text-left w-fit ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
+        className={`w-fit text-left ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
         onClick={() => {
           if (viewAll) {
             reduceQuestions()
@@ -84,7 +84,7 @@ function ToolContent({ item, reduceQuestions, viewAll, scrollId }) {
       >
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
-      <Disclosure.Panel className="text-cyan-700 w-fit py-4">
+      <Disclosure.Panel className="w-fit py-4 text-cyan-700">
         <p>{item.text}</p>
       </Disclosure.Panel>
     </Disclosure>

@@ -78,27 +78,25 @@ export default async function obsTQHandler(req, res) {
   )}`
   try {
     const _data = await axios.get(url)
-    const jsonData = await tsvToJson(_data.data)
-    const data = jsonData.filter((el) => {
+    const jsonData = tsvToJson(_data.data)
+    const questions = {}
+    jsonData?.forEach((el) => {
       const [chapterQuestion, verseQuestion] = el.Reference.split(':')
-      return (
-        chapterQuestion === chapter &&
-        (verses?.length === 0 || verses?.includes(verseQuestion))
-      )
-    })
-    const groupData = {}
-    data?.forEach((el) => {
-      const verse = el.Reference.split(':').slice(-1)[0]
+      if (
+        chapterQuestion !== chapter ||
+        (verses?.length && !verses.includes(verseQuestion))
+      ) {
+        return
+      }
       const tq = { id: el.ID, title: el.Question, text: el.Response }
 
-      if (!groupData[verse]) {
-        groupData[verse] = [tq]
+      if (!questions[verseQuestion]) {
+        questions[verseQuestion] = [tq]
       } else {
-        groupData[verse].push(tq)
+        questions[verseQuestion].push(tq)
       }
     })
-
-    res.status(200).json(groupData)
+    res.status(200).json(questions)
     return
   } catch (error) {
     res.status(404).json({ error })
