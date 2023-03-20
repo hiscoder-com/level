@@ -10,7 +10,5 @@
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
   "RemovingTranslator": "Removing a translator",
-  "saveFailedBrief": "Failed to save the brief",
-  "successfulSave": "The brief is saved",
   "SummaryPlaceholder": "Describe the purpose of the translation..."
 }
