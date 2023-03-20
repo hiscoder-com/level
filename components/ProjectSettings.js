@@ -80,7 +80,7 @@ function ProjectSettings() {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
-        .then(() => mutate())
+        .then(mutate)
         .catch(console.log)
     }
   }

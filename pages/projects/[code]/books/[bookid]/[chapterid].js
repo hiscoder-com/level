@@ -34,7 +34,7 @@ function ChapterVersesPage() {
     book_code: bookid,
     chapter_id: chapterid,
   })
-  const [_, { mutate }] = useGetChapters({
+  const [_, { mutate: mutateChapters }] = useGetChapters({
     token: user?.access_token,
     code,
     book_code: bookid,
@@ -54,7 +54,7 @@ function ChapterVersesPage() {
       })
       .then(() => {
         mutateChapter()
-        mutate()
+        mutateChapters()
       })
       .catch(console.log)
   }
@@ -67,7 +67,7 @@ function ChapterVersesPage() {
       })
       .then(() => {
         mutateChapter()
-        mutate()
+        mutateChapters()
       })
   }
 
