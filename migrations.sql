@@ -1994,7 +1994,7 @@
         ]
       }
     ]' WHERE title = 'CANA OBS';
-    UPDATE steps SET title = '7 ШАГ - КОМАНДНЫЙ ОБЗОР ПЕРЕВОД'
+    UPDATE steps SET title = '7 ШАГ - КОМАНДНЫЙ ОБЗОР ПЕРЕВОДА'
       FROM projects
     WHERE steps.project_id = projects.id AND projects.type = 'obs' AND steps.sorting = '7';
 

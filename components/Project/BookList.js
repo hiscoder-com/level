@@ -68,8 +68,8 @@ function BookList({ highLevelAccess, project, user }) {
           },
         })
       case 'pdf':
-        const frontPdf = downloadSettings?.WithFront
-          ? `<div class="break style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
+        const frontPdf = downloadSettings?.withFront
+          ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
           : ''
         const main = ''
         for (const el of chapters) {
@@ -104,15 +104,15 @@ function BookList({ highLevelAccess, project, user }) {
         }
         const { title: _title, intro: _intro, back: _back } = book.properties.obs
         const title = _title ? `<h1>${_title}</h1>` : ''
-        const front = downloadSettings?.WithFront
+        const front = downloadSettings?.withFront
           ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1>${title}</div>`
           : ''
         const intro =
-          _intro && downloadSettings?.WithIntro
+          _intro && downloadSettings?.withIntro
             ? `<div class="break" >${converter.makeHtml(_intro)}</div>`
             : ''
         const back =
-          _back && downloadSettings?.WithBack
+          _back && downloadSettings?.withBack
             ? `<div>${converter.makeHtml(_back)}</div>`
             : ''
         return front + intro + obs + back
@@ -145,7 +145,7 @@ function BookList({ highLevelAccess, project, user }) {
                       shallow: true,
                     })
                   }
-                  className="cursor-pointer hover:bg-gray-50 bg-white border-b "
+                  className="cursor-pointer hover:bg-gray-50 bg-white border-b"
                 >
                   <td className="py-4 px-6">{t(`books:${book?.code}`)}</td>
                   <td className="py-4 px-6">{Object.keys(book?.chapters)?.length} </td>

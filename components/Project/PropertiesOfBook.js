@@ -39,19 +39,16 @@ function PropertiesOfBook({
   const renderProperties =
     properties &&
     Object.entries(type !== 'obs' ? properties?.scripture : properties?.obs)?.map(
-      (el, index) => {
-        const [property, content] = el
-        return (
-          <Property
-            t={t}
-            key={index}
-            property={property}
-            content={content}
-            type={type}
-            updateProperty={updateProperty}
-          />
-        )
-      }
+      ([property, content], index) => (
+        <Property
+          t={t}
+          key={index}
+          property={property}
+          content={content}
+          type={type}
+          updateProperty={updateProperty}
+        />
+      )
     )
   const handleSave = () => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -79,7 +76,7 @@ function PropertiesOfBook({
         <button className="btn-cyan mr-2" onClick={handleSave}>
           {t('Save')}
         </button>
-        <button className="btn-cyan " onClick={() => setOpenDownloading(false)}>
+        <button className="btn-cyan" onClick={() => setOpenDownloading(false)}>
           {t('Close')}
         </button>
       </div>

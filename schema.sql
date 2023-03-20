@@ -812,7 +812,7 @@
       THEN
         RETURN FALSE;
       END IF;
-      method_type = (SELECT type FROM projects  WHERE id = chapter.project_id);
+      method_type = (SELECT type FROM projects WHERE id = chapter.project_id);
       IF method_type = 'obs'
       THEN
         start_verse = 0;

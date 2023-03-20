@@ -10,13 +10,13 @@ import { usfmFileNames } from 'utils/config'
 import { compileChapter, downloadFile, downloadPdf } from 'utils/helper'
 
 const downloadSettingsChapter = {
-  WithImages: true,
-  WithFront: true,
+  withImages: true,
+  withFront: true,
 }
 const downloadSettingsBook = {
   ...downloadSettingsChapter,
-  WithIntro: true,
-  WithBack: true,
+  withIntro: true,
+  withBack: true,
 }
 
 function Download({
@@ -95,7 +95,7 @@ function Download({
           />
         )}
         {Object.keys(downloadSettings)
-          .filter((key) => project?.type === 'obs' || key === 'WithFront')
+          .filter((key) => project?.type === 'obs' || key === 'withFront')
           .map((key, index) => {
             return (
               <div key={index}>

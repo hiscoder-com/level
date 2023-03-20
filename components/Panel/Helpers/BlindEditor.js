@@ -8,9 +8,9 @@ import { supabase } from 'utils/supabaseClient'
 
 import { checkedVersesBibleState } from '../state/atoms'
 
+import { obsCheckAdditionalVerses } from 'utils/helper'
 import Pencil from 'public/pencil.svg'
 import Check from 'public/check.svg'
-import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function BlindEditor({ config }) {
   const [isShowFinalButton, setIsShowFinalButton] = useState(false)

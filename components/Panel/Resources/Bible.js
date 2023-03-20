@@ -2,8 +2,6 @@ import { useMemo } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { useTranslation } from 'next-i18next'
-
 import { useRecoilValue } from 'recoil'
 
 import { Placeholder } from '../UI'
@@ -13,8 +11,6 @@ import { useGetResource, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Bible({ config, url, toolName }) {
-  const { t } = useTranslation('common')
-
   const { isLoading, data } = useGetResource({
     config,
     url,
@@ -29,14 +25,12 @@ function Bible({ config, url, toolName }) {
           verseObjects={data?.verseObjects}
           handleSave={handleSave}
           scrollId={scrollId}
-          t={t}
         />
       ) : (
         <Verses
           verseObjects={data?.verseObjects}
           handleSave={handleSave}
           scrollId={scrollId}
-          t={t}
         />
       )}
     </>
@@ -45,7 +39,7 @@ function Bible({ config, url, toolName }) {
 
 export default Bible
 
-function Verses({ verseObjects, handleSave, scrollId, t }) {
+function Verses({ verseObjects, handleSave, scrollId }) {
   return (
     <>
       {verseObjects?.map((verseObject) => (
@@ -64,7 +58,7 @@ function Verses({ verseObjects, handleSave, scrollId, t }) {
   )
 }
 
-function VersesExtended({ verseObjects, handleSave, scrollId, t }) {
+function VersesExtended({ verseObjects, handleSave, scrollId }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
   return (
     <>

@@ -68,7 +68,7 @@ export const compilePdfObs = async (ref, downloadSettings) => {
   for (const key in ref.json) {
     if (Object.hasOwnProperty.call(ref.json, key)) {
       if (ref.json[key] && !['0', '200'].includes(key)) {
-        const image = downloadSettings.WithImages
+        const image = downloadSettings.withImages
           ? `<p><img alt="OBS Image"src="https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
               ref.chapterNum
             ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg"/></p>`
@@ -91,7 +91,7 @@ export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
       case 'markdown':
         return await compileMarkdown(ref)
       case 'pdf-obs':
-        if (downloadSettings?.WithFront) {
+        if (downloadSettings?.withFront) {
           const title = ref?.book?.properties?.obs?.title
             ? `<h1>${ref?.book?.properties?.obs?.title}</h1>`
             : ''
@@ -105,7 +105,7 @@ export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
     }
   }
   const front = ''
-  if (downloadSettings?.WithFront) {
+  if (downloadSettings?.withFront) {
     front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
   }
   if (Object.keys(ref.json).length > 0) {
@@ -142,8 +142,7 @@ export const downloadPdf = ({ htmlContent, projectLanguage, fileName }) => {
     return
   }
   let new_window = window.open()
-  new_window?.document
-    .write(`<html lang="${projectLanguage?.code}" dir="${projectLanguage.title}">
+  new_window?.document.write(`<html lang="${projectLanguage?.code}">
   <head>
       <meta charset="UTF-8"/>
       <title>${fileName}</title> 

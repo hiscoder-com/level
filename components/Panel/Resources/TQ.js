@@ -75,7 +75,7 @@ function Answer({ item, reduceQuestions, viewAll, scrollId }) {
   return (
     <Disclosure>
       <Disclosure.Button
-        className={`w-fit text-left${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
+        className={`w-fit text-left ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
         onClick={() => {
           if (viewAll) {
             reduceQuestions()
