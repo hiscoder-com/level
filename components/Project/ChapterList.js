@@ -2,58 +2,59 @@ import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+
 import { useTranslation } from 'next-i18next'
 
-import DownloadBlock from './DownloadBlock'
-import Modal from 'components/Modal'
+import toast, { Toaster } from 'react-hot-toast'
 
-import { readableDate, compileChapter } from 'utils/helper'
+import Modal from 'components/Modal'
+import Download from './Download'
+
 import { supabase } from 'utils/supabaseClient'
-import { useBriefState } from 'utils/hooks'
+
+import { readableDate, compileChapter, downloadPdf, downloadFile } from 'utils/helper'
+import { useBriefState, useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
 function ChapterList({ selectedBook, project, highLevelAccess, token }) {
-  const [openModal, setOpenModal] = useState(false)
-
+  const [openCreatingChapter, setOpenCreatingChapter] = useState(false)
+  const [openDownloading, setOpenDownloading] = useState(false)
   const [selectedChapter, setSelectedChapter] = useState(null)
-  const [createdChapters, setCreatedChapters] = useState([])
   const [currentSteps, setCurrentSteps] = useState(null)
-  const [chapters, setChapters] = useState([])
+  const [currentChapter, setCurrentChapter] = useState([])
   const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
   })
 
   const { t } = useTranslation(['common', 'books'])
+
   const {
     query: { book, code },
     push,
     locale,
   } = useRouter()
-
+  const [chapters, { mutate: mutateChapters }] = useGetChapters({
+    token,
+    code: project?.code,
+    book_code: book,
+  })
+  const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({
+    token,
+    code: project?.code,
+    chapters: chapters?.map((el) => el.id),
+  })
   const handleCreate = async (chapter_id, num) => {
-    const res = await supabase.rpc('create_verses', { chapter_id })
-    if (res.data) {
-      push('/projects/' + code + '/books/' + selectedBook.code + '/' + num)
+    try {
+      const res = await supabase.rpc('create_verses', { chapter_id })
+      if (res.data) {
+        mutateChapters()
+        mutateCreatedChapters()
+        push('/projects/' + code + '/books/' + selectedBook.code + '/' + num)
+      }
+    } catch (error) {
+      toast.error(t('CreateFailed'))
     }
   }
-  useEffect(() => {
-    const getCreatedChapters = async () => {
-      const { data: createdChaptersRaw, error } = await supabase
-        .from('verses')
-        .select('chapter_id')
-        .eq('project_id', project.id)
-        .in(
-          'chapter_id',
-          chapters.map((el) => el.id)
-        )
-      const createdChapters = new Set(createdChaptersRaw.map((el) => el.chapter_id))
-      setCreatedChapters([...createdChapters])
-    }
-    if (project?.id && chapters?.length) {
-      getCreatedChapters()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapters?.length, project?.id])
 
   useEffect(() => {
     if (project?.id) {
@@ -62,20 +63,6 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
         .then((res) => setCurrentSteps(res.data))
     }
   }, [project?.id])
-
-  useEffect(() => {
-    const getChapters = async () => {
-      const { data: chapters, error } = await supabase
-        .from('chapters')
-        .select('id,num,verses,started_at,finished_at,text')
-        .eq('project_id', project.id)
-        .eq('book_id', selectedBook.id)
-      setChapters(chapters)
-    }
-    if (project?.id && selectedBook?.id) {
-      getChapters()
-    }
-  }, [selectedBook?.id, project?.id])
 
   const getCurrentStep = (chapter, index) => {
     const step = currentSteps
@@ -104,123 +91,101 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
       )
     }
   }
-
   return (
     <div className="overflow-x-auto relative">
       <div className="my-4">
-        <Link href={`/projects/${project.code}`}>
+        <Link href={`/projects/${project?.code}`}>
           <a onClick={(e) => e.stopPropagation()} className="text-blue-450 decoration-2">
-            {project.code}
+            {project?.code}
           </a>
         </Link>
-        /{t(`books:${selectedBook.code}`)}
+        /{t(`books:${selectedBook?.code}`)}
       </div>
-      <table className="shadow-md mb-4 text-center w-fit text-sm table-auto text-gray-500">
+      <table className="table-auto w-fit mb-4 shadow-md text-center text-sm text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-100">
           <tr>
             <th className="py-3 px-3">{t('Chapter')}</th>
             <th className="py-3 px-3">{t('chapters:StartedAt')}</th>
             <th className="py-3 px-3 ">{t('chapters:FinishedAt')}</th>
-            <th className="py-3 px-6">{t('Download')}</th>
+            <th className="py-3 px-6">{`${t('Download')} / ${t('Open')}`}</th>
           </tr>
         </thead>
         <tbody>
-          {chapters
-            ?.sort((a, b) => a.num - b.num)
-            .map((chapter, index) => {
-              const { id, num, text, started_at, finished_at } = chapter
-              return (
-                <tr
-                  key={index}
-                  onClick={() => {
-                    if (highLevelAccess) {
-                      if (!createdChapters.includes(id)) {
-                        setSelectedChapter(chapter)
-                        setOpenModal(true)
-                      } else {
-                        push(
-                          '/projects/' +
-                            project?.code +
-                            '/books/' +
-                            selectedBook?.code +
-                            '/' +
-                            num
-                        )
+          {project?.code &&
+            chapters
+              ?.sort((a, b) => a.num - b.num)
+              .map((chapter, index) => {
+                const { id, num, started_at, finished_at } = chapter
+                return (
+                  <tr
+                    key={index}
+                    onClick={() => {
+                      if (highLevelAccess) {
+                        if (!createdChapters?.includes(id)) {
+                          setSelectedChapter(chapter)
+                          setOpenCreatingChapter(true)
+                        } else {
+                          push(
+                            '/projects/' +
+                              project?.code +
+                              '/books/' +
+                              selectedBook?.code +
+                              '/' +
+                              num
+                          )
+                        }
                       }
-                    }
-                  }}
-                  className={`${
-                    highLevelAccess ? 'cursor-pointer hover:bg-gray-50' : ''
-                  } ${
-                    !createdChapters.includes(id) ? 'bg-gray-100' : 'bg-white'
-                  } border-b`}
-                >
-                  <th
-                    scope="row"
-                    className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
+                    }}
+                    className={`${
+                      highLevelAccess ? 'cursor-pointer hover:bg-gray-50' : ''
+                    } ${
+                      !createdChapters?.includes(id) ? 'bg-gray-100' : 'bg-white'
+                    } border-b`}
                   >
-                    {num}
-                  </th>
-                  <td className="py-4 px-6">
-                    {started_at && readableDate(started_at, locale)}
-                  </td>
-                  <td className="py-4 px-6 ">
-                    {finished_at && readableDate(finished_at, locale)}
-                  </td>
-
-                  <td className="py-4 px-6">
-                    {finished_at ? (
-                      <DownloadBlock
-                        actions={{ compile: compileChapter }}
-                        state={{
-                          txt: {
-                            ref: {
-                              json: chapter?.text,
-                              bookCode: selectedBook.code,
-                              title: `${project.title} ${t(
-                                `books:${selectedBook?.code}`
-                              )} ${t('Chapter')} ${chapter.num} `,
-                            },
-                            fileName: `${selectedBook.code}_chapter${chapter.num}.txt`,
-                          },
-                          pdf: {
-                            ref: {
-                              json: chapter?.text,
-                              title: project.title,
-                              subtitle: `${t(`books:${selectedBook?.code}`)} ${t(
-                                'Chapter'
-                              )} ${chapter.num}`,
-                            },
-
-                            projectLanguage: {
-                              code: project.languages.code,
-                              title: project.languages.title,
-                            },
-                          },
-                        }}
-                      />
-                    ) : (
-                      getCurrentStep(chapter, index)
-                    )}
-                  </td>
-                </tr>
-              )
-            })}
+                    <th
+                      scope="row"
+                      className="py-4 px-6 font-medium text-gray-900 whitespace-nowrap"
+                    >
+                      {num}
+                    </th>
+                    <td className="py-4 px-6">
+                      {started_at && readableDate(started_at, locale)}
+                    </td>
+                    <td className="py-4 px-6">
+                      {finished_at && readableDate(finished_at, locale)}
+                    </td>
+                    <td className="py-4 px-6">
+                      {finished_at ? (
+                        <button
+                          className="p-2 text-blue-600 hover:text-gray-400"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setCurrentChapter(chapter)
+                            setOpenDownloading(true)
+                          }}
+                        >
+                          {t('Download')}
+                        </button>
+                      ) : (
+                        getCurrentStep(chapter, index)
+                      )}
+                    </td>
+                  </tr>
+                )
+              })}
         </tbody>
       </table>
       <Modal
-        isOpen={openModal}
-        closeHandle={() => {
-          setOpenModal(false)
-        }}
+        isOpen={openCreatingChapter}
+        closeHandle={() => setOpenCreatingChapter(false)}
       >
-        <div className="text-center mb-4">
+        <div className="mb-4 text-center">
           {t('WantCreateChapter')} {selectedChapter?.num}?
         </div>
         <div className="flex justify-center">
           <button
             onClick={() => {
-              setOpenModal(false)
+              setOpenCreatingChapter(false)
               handleCreate(selectedChapter.id, selectedChapter.num)
             }}
             className="btn-cyan"
@@ -228,17 +193,24 @@ function ChapterList({ selectedBook, project, highLevelAccess, token }) {
             {t('Create')}
           </button>
           <div className="ml-4">
-            <button
-              className="btn-cyan"
-              onClick={() => {
-                setOpenModal(false)
-              }}
-            >
-              {t('common:Close')}
+            <button className="btn-cyan" onClick={() => setOpenCreatingChapter(false)}>
+              {t('Close')}
             </button>
           </div>
         </div>
       </Modal>
+      <Download
+        openDownloading={openDownloading}
+        setOpenDownloading={setOpenDownloading}
+        downloadPdf={downloadPdf}
+        downloadFile={downloadFile}
+        compileChapter={compileChapter}
+        project={project}
+        downloadingBook={selectedBook}
+        currentChapter={currentChapter}
+        t={t}
+      />
+      <Toaster />
     </div>
   )
 }

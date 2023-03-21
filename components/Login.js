@@ -19,19 +19,22 @@ import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
 
 function Login() {
-  const { t } = useTranslation('users', 'common')
-  const { user, loading } = useCurrentUser()
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false)
+  const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
-  const [password, setPassword] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
-  const loginRef = useRef(null)
+
+  const { user, loading } = useCurrentUser()
+  const { t } = useTranslation('users')
   const passwordRef = useRef(null)
+  const loginRef = useRef(null)
+  const router = useRouter()
+
   const { href } = useRedirect({
     user,
     startLink: '/agreements',
   })
+
   useEffect(() => {
     if (passwordRef?.current) {
       passwordRef.current.focus()
@@ -45,31 +48,26 @@ function Login() {
     }
   }, [])
 
+  useEffect(() => {
+    if (user) {
+      const { agreement, confession } = user
+      setError(false)
+      router.push(agreement && confession ? `/account` : '/agreements')
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user])
+
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const { user, error } = await supabase.auth.signIn({
+      const { error } = await supabase.auth.signIn({
         email: login,
         password,
       })
       if (error) throw error
-      // TODO может попробовать использовать useCurrentUser.
-      // По идее обновится состояние и он вернет текущего юзера,
-      // у которого можно будет проверить поля и редиректить куда надо
-      const { data: dataUser, error: errorUser } = await supabase
-        .from('users')
-        .select('agreement,confession')
-        .eq('id', user?.id)
-        .single()
-      if (errorUser) throw errorUser
-      const { agreement, confession } = dataUser
-      // TODO END
-
       setError(false)
-      router.push(agreement && confession ? `/account` : '/agreements')
     } catch (error) {
       setError(true)
-    } finally {
     }
   }
 
@@ -180,7 +178,9 @@ function Login() {
                 type="submit"
                 disabled={loading}
                 onClick={handleLogin}
-                className="btn-blue w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold"
+                className={`${
+                  loading ? 'btn' : 'btn-blue'
+                } w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
                 value={t('SignIn')}
               />
               <Link

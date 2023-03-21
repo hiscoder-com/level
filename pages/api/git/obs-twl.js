@@ -1,6 +1,7 @@
 import axios from 'axios'
 
 import { tsvToJson } from 'utils/tsvHelper'
+import { uniqueFilterInBook, getListWordsReference } from 'utils/helper'
 
 /**
  *  @swagger
@@ -68,7 +69,7 @@ import { tsvToJson } from 'utils/tsvHelper'
  */
 
 export default async function twlHandler(req, res) {
-  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, chapter } = req.query
   let verses = req.query['verses[]'] || req.query.verses
   if (typeof verses === 'string') {
     verses = verses.split(',').map((el) => el.trim())
@@ -79,44 +80,65 @@ export default async function twlHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
-    const test =
+    const uniqueWordsBook = getListWordsReference(jsonData)
+    const jsonDataFiltered =
       verses && verses.length > 0
-        ? jsonData.filter((el) => {
-            const [chapterQuestion, verseQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter && verses.includes(verseQuestion)
+        ? jsonData.filter((wordObject) => {
+            const [_chapter, _verse] = wordObject.Reference.split(':')
+            return _chapter === chapter && verses.includes(_verse)
           })
-        : jsonData.filter((el) => {
-            const [chapterQuestion] = el.Reference.split(':')
-            return chapterQuestion === chapter
+        : jsonData.filter((wordObject) => {
+            const [_chapter] = wordObject.Reference.split(':')
+            return _chapter === chapter
           })
-    const promises = test.map(async (el) => {
-      const url = `https://git.door43.org/${owner}/${repo.slice(
-        0,
-        -1
-      )}/raw/branch/master/${el.TWLink.split('/').slice(-3).join('/')}.md`
+
+    const promises = jsonDataFiltered.map(async (wordObject) => {
+      const url = `https://git.door43.org/${owner}/${repo
+        .slice(0, -1)
+        .replace('obs-', '')}/raw/branch/master/${wordObject.TWLink.split('/')
+        .slice(-3)
+        .join('/')}.md`
       const res = await axios.get(url)
       const splitter = res.data.search('\n')
       return {
-        reference: el.Reference,
+        id: wordObject.ID,
+        reference: wordObject.Reference,
         title: res.data.slice(0, splitter),
         text: res.data.slice(splitter),
+        url: wordObject.TWLink,
       }
     })
     const words = await Promise.all(promises)
+    const finalData = {}
+    let verseUnique = {}
 
-    const groupData = {}
+    words?.forEach((word) => {
+      let repeatedInVerse = word.url in verseUnique
+      if (!repeatedInVerse) {
+        verseUnique[word.url] = word.title
+      }
 
-    words?.forEach((el) => {
-      const twl = { title: el.title, text: el.text }
-      const verse = el.reference.split(':').slice(-1)[0]
-      if (!groupData[verse]) {
-        groupData[verse] = [twl]
+      const wordObject = {
+        id: word.id,
+        title: word.title,
+        text: word.text,
+        url: word.url,
+      }
+      const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, word, wordObject)
+
+      const verse = word.reference.split(':').slice(-1)[0]
+
+      if (!finalData[verse]) {
+        verseUnique = {}
+        repeatedInVerse = false
+        verseUnique[word.url] = word.title
+        finalData[verse] = [{ ...wordObject, repeatedInVerse, repeatedInBook }]
       } else {
-        groupData[verse].push(twl)
+        finalData[verse].push({ ...wordObject, repeatedInVerse, repeatedInBook })
       }
     })
 
-    res.status(200).json(groupData)
+    res.status(200).json(finalData)
     return
   } catch (error) {
     res.status(404).json({ error })

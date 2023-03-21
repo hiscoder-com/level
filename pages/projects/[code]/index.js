@@ -21,6 +21,8 @@ export async function getServerSideProps({ locale }) {
         'common',
         'books',
         'chapters',
+        'book-properties',
+        'users',
       ])),
     },
   }

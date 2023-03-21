@@ -2,17 +2,18 @@ import { useTranslation } from 'next-i18next'
 
 import {
   PersonalNotes,
-  TeamNotes,
-  Dictionary,
-  Audio,
-  Editor,
-  Bible,
-  TN,
-  TWL,
-  TQ,
-  BlindEditor,
   CommandEditor,
+  BlindEditor,
+  Dictionary,
+  TeamNotes,
+  Editor,
   Reader,
+  Audio,
+  Bible,
+  Info,
+  TWL,
+  TN,
+  TQ,
 } from './'
 
 function Tool({ config, toolName, editable = false }) {
@@ -22,7 +23,6 @@ function Tool({ config, toolName, editable = false }) {
       manifest: { dublin_core: resource },
     },
   } = config
-
   let CurrentTool
   let url
   let title = config?.resource?.manifest?.dublin_core?.title
@@ -37,8 +37,7 @@ function Tool({ config, toolName, editable = false }) {
 
   config.verses = config.wholeChapter
     ? []
-    : config.reference.verses.map((v) => (v?.num ? v.num : v))
-
+    : config.reference.verses.map((v) => (v?.num || v?.num === 0 ? v.num : v))
   switch (resource?.subject) {
     case 'TSV OBS Translation Words Links':
       CurrentTool = TWL
@@ -89,7 +88,6 @@ function Tool({ config, toolName, editable = false }) {
     case 'TSV Translation Questions':
     case 'Translation Questions':
       CurrentTool = TQ
-
       config.resource.bookPath = config.resource.manifest.projects.find(
         (el) => el.identifier === config.reference.book
       )?.path
@@ -154,12 +152,19 @@ function Tool({ config, toolName, editable = false }) {
       title = t('dictionary')
       break
 
+    case 'info':
+      CurrentTool = Info
+      title = t('info')
+
+      url = '/api/git/info'
+      break
+
     default:
       return <div>{t('WrongResource')}</div>
   }
   return (
     <>
-      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg">
+      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg truncate">
         {![
           'translate',
           'commandTranslate',
@@ -169,7 +174,7 @@ function Tool({ config, toolName, editable = false }) {
           'audio',
           'dictionary',
         ].includes(toolName) &&
-          `${t(`books:${config?.reference?.book}`)}  ${config?.reference?.chapter}, `}
+          `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
         {title}
       </div>
       <div className="h5 adaptive-card">

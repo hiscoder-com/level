@@ -8,13 +8,18 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import { toast, Toaster } from 'react-hot-toast'
+
 import { useCurrentUser } from 'lib/UserContext'
+
+import Modal from 'components/Modal'
+
 import { useTeamNotes, useProject } from 'utils/hooks'
 import { supabase } from 'utils/supabaseClient'
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import Modal from 'components/Modal'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -42,7 +47,7 @@ function TeamNotes() {
     query: { project: code },
   } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
-  const [notes, { loading, error, mutate }] = useTeamNotes({
+  const [notes, { mutate }] = useTeamNotes({
     token: user?.access_token,
     project_id: project?.id,
   })
@@ -51,8 +56,14 @@ function TeamNotes() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/team_notes/${activeNote?.id}`, activeNote)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .then(() => {
+        saveCacheNote('team-notes', activeNote, user)
+        mutate()
+      })
+      .catch((err) => {
+        toast.error(t('SaveFailed'))
+        console.log(err)
+      })
   }
   useEffect(() => {
     const getLevel = async () => {
@@ -79,15 +90,18 @@ function TeamNotes() {
     axios
       .post('/api/team_notes', { id, project_id: project?.id })
       .then(() => mutate())
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
 
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/team_notes/${id}`)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .then(() => {
+        removeCacheNote('personal_notes', id)
+        mutate()
+      })
+      .catch(console.log)
   }
   useEffect(() => {
     if (!activeNote || !editable) {
@@ -159,12 +173,7 @@ function TeamNotes() {
           />
         </>
       )}
-      <Modal
-        isOpen={isOpenModal}
-        closeHandle={() => {
-          setIsOpenModal(false)
-        }}
-      >
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         {' '}
         <div className="text-center">
           <div className="mb-4">
@@ -193,6 +202,7 @@ function TeamNotes() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }

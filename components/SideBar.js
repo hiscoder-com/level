@@ -2,15 +2,17 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import Close from 'public/close.svg'
 import SwitchLocalization from './SwitchLocalization'
 import SignOut from './SignOut'
 
+import Close from 'public/close.svg'
+
 function SideBar({ isOpen, setIsOpen }) {
-  const { t } = useTranslation('common')
+  const { t } = useTranslation('users')
   const condition = `absolute font-medium bg-black/70 left-0 top-0 right-0 bottom-0 z-10 ${
     isOpen ? '' : 'hidden'
   }`
+
   return (
     <div className={condition} onClick={() => setIsOpen(false)}>
       <div

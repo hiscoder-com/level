@@ -15,6 +15,8 @@ export default async function handler(req, res) {
         const { data: users, error: errorGet } = await supabase
           .from('users')
           .select('id, login, email, blocked, agreement, confession, is_admin')
+          .order('login', { ascending: true })
+
         if (errorGet) throw errorGet
         res.status(200).json(users)
       } catch (error) {

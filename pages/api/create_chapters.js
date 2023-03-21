@@ -26,8 +26,8 @@ export default async function handler(req, res) {
           await countOfChaptersAndVerses({
             link,
             book_code,
-            project_id,
           })
+
         if (errorJsonChapterVerse) {
           await sendLog({
             url: 'api/create_chapters',
@@ -43,6 +43,22 @@ export default async function handler(req, res) {
               code: book_code,
               project_id,
               chapters: jsonChapterVerse,
+              properties: {
+                scripture: {
+                  h: '',
+                  toc1: '',
+                  toc2: '',
+                  toc3: '',
+                  mt: '',
+                  chapter_label: '',
+                },
+                obs: {
+                  title: '',
+                  intro: '',
+                  back: '',
+                  chapter_label: '',
+                },
+              },
             },
           ])
           if (errorPost) throw errorPost
@@ -50,6 +66,11 @@ export default async function handler(req, res) {
 
         res.status(201).json({})
       } catch (error) {
+        await sendLog({
+          url: 'api/create_chapters',
+          type: 'error',
+          error: error,
+        })
         res.status(404).json(error)
         return
       }

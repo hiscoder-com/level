@@ -95,6 +95,7 @@ export default async function languageProjectsHandler(req, res) {
         const { data, error } = await supabase
           .from('projects')
           .select('id,title,code,type,method,languages!inner(*)')
+          .order('title', { ascending: true })
         if (error) throw error
         return res.status(200).json(data)
       } catch (error) {

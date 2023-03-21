@@ -4,9 +4,12 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { useCurrentUser } from 'lib/UserContext'
-import { useProject, useTranslators } from 'utils/hooks'
+import toast, { Toaster } from 'react-hot-toast'
+
 import { supabase } from 'utils/supabaseClient'
+
+import { useProject, useTranslators } from 'utils/hooks'
+import { useCurrentUser } from 'lib/UserContext'
 
 const defaultColor = [
   'bg-yellow-400',
@@ -22,7 +25,13 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
-  const { t } = useTranslation('verses')
+  const [currentTranslator, setCurrentTranslator] = useState(null)
+  const [colorTranslators, setColorTranslators] = useState([])
+  const [versesDivided, setVersesDivided] = useState([])
+  const [isHighlight, setIsHighlight] = useState(false)
+
+  const { t } = useTranslation('common')
+
   const { user } = useCurrentUser()
   const {
     query: { code },
@@ -32,32 +41,29 @@ function VerseDivider({ verses }) {
     token: user?.access_token,
     code,
   })
+
   const [project] = useProject({
     token: user?.access_token,
     code,
   })
-  const [currentTranslator, setCurrentTranslator] = useState(null)
-  const [isHighlight, setIsHighlight] = useState(false)
-  const [colorTranslators, setColorTranslators] = useState([])
 
   useEffect(() => {
-    const colorTranslators = translators?.map((el, index) => ({
-      ...el,
+    const colorTranslators = translators?.map((translator, index) => ({
+      ...translator,
       color: defaultColor[index],
     }))
     setColorTranslators(colorTranslators)
   }, [translators])
 
-  const [versesDivided, setVersesDivided] = useState([])
   useEffect(() => {
     if (colorTranslators?.length > 0) {
-      const extVerses = verses.map((el) => {
+      const extVerses = verses?.map((verse) => {
         const translator = colorTranslators.find(
-          (element) => element.id === el.project_translator_id
+          (element) => element.id === verse.project_translator_id
         )
 
         return {
-          ...el,
+          ...verse,
           color: translator ? translator.color : 'bg-slate-300',
           translator_name: translator ? translator.users.login : '',
         }
@@ -76,29 +82,34 @@ function VerseDivider({ verses }) {
     }
     setVersesDivided(newArr)
   }
+
   const verseDividing = async () => {
+    //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
     let { data, error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,
       project_id: project?.id,
     })
 
-    if (error) console.error(error)
-    else console.log('Success', data)
+    if (error) {
+      console.error(error)
+      toast.error(t('SaveFailed'))
+    } else {
+      console.log('Success', data)
+      toast.success(t('SaveSuccess'))
+    }
   }
 
   return (
     <div className="md:flex mx-4">
       <div
-        onMouseDown={() => {
-          setIsHighlight(true)
-        }}
+        onMouseDown={() => setIsHighlight(true)}
         onMouseUp={() => setIsHighlight(false)}
         onMouseLeave={() => setIsHighlight(false)}
         className="select-none lg:grid-cols-6 grid-cols-4 grid"
       >
         {versesDivided
-          .sort((a, b) => a.num > b.num)
-          .map((el, index) => {
+          ?.sort((a, b) => a.num > b.num)
+          .map((verse, index) => {
             return (
               <div
                 onMouseDown={() => {
@@ -118,28 +129,34 @@ function VerseDivider({ verses }) {
                   coloring(index)
                 }}
                 className={`${
-                  el?.color ?? 'bg-slate-300'
+                  verse?.color ?? 'bg-slate-300'
                 } w-32 border-slate-200 border-2 cursor-pointer hover:border-1 hover:border-cyan-300 truncate flex justify-between p-1`}
                 key={index}
               >
-                <div>{el.num}</div>
-                <div>{el.translator_name}</div>
+                <div className="mr-1">
+                  {verse.num === 0
+                    ? t('Title')
+                    : verse.num === 200
+                    ? t('Reference')
+                    : verse.num}
+                </div>
+                <div>{verse.translator_name}</div>
               </div>
             )
           })}
       </div>
       <div className="grid grid-cols-2 md:block">
-        {colorTranslators?.map((el, index) => (
+        {colorTranslators?.map((translator, index) => (
           <div key={index} className="flex">
             <div
-              onClick={() => setCurrentTranslator(el)}
+              onClick={() => setCurrentTranslator(translator)}
               className={`${
-                currentTranslator?.users?.login === el.users.login
+                currentTranslator?.users?.login === translator.users.login
                   ? 'border-4 border-cyan-300 p-1'
                   : 'p-2'
-              } cursor-pointer ml-10 my-2 w-fit rounded-md ${el.color} btn`}
+              } cursor-pointer ml-10 my-2 w-fit rounded-md ${translator.color} btn`}
             >
-              {el.users.login}
+              {translator.users.login}
             </div>
           </div>
         ))}
@@ -160,8 +177,8 @@ function VerseDivider({ verses }) {
         <button
           onClick={() =>
             setVersesDivided(
-              verses.map((el) => ({
-                ...el,
+              verses?.map((verse) => ({
+                ...verse,
                 color: 'bg-slate-300',
                 translator_name: '',
                 project_translator_id: null,
@@ -179,6 +196,7 @@ function VerseDivider({ verses }) {
           {t('Save')}
         </button>
       </div>
+      <Toaster />
     </div>
   )
 }

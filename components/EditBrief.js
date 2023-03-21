@@ -5,11 +5,13 @@ import { useRouter } from 'next/router'
 
 import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
+
 import axios from 'axios'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
+
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 
@@ -42,11 +44,9 @@ function EditBrief() {
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
-      .then(() => {
-        mutate()
-      })
+      .then(mutate)
       .catch((err) => {
-        toast.error(t('project-edit:saveFailed'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
@@ -199,7 +199,7 @@ function EditBrief() {
               </div>
               <div className="md:w-1/3">
                 <p className="font-bold text-center mb-4 text-gray-700">
-                  {t('PurposeTranslation')}
+                  {t('TranslationGoal')}
                 </p>
                 <div className="h-3 rounded-t-lg bg-white"></div>
                 <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
@@ -229,7 +229,7 @@ function EditBrief() {
                 className="btn-cyan"
                 onClick={() => {
                   saveToDatabase()
-                  toast.success(t('project-edit:successfulSave'))
+                  toast.success(t('SaveSuccess'))
                 }}
               >
                 {t('Save')}

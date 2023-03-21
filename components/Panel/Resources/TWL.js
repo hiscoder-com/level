@@ -11,15 +11,15 @@ import { checkLSVal } from 'utils/helper'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
-  const { loading, data, error } = useGetResource({ config, url })
+  const { isLoading, data } = useGetResource({ config, url })
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Placeholder />
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <ToolList setItem={setItem} data={data} toolName={toolName} />
+          <TWLList setItem={setItem} data={data} toolName={toolName} />
         </div>
       )}
     </>
@@ -28,7 +28,7 @@ function TWL({ config, url, toolName }) {
 
 export default TWL
 
-function ToolList({ setItem, data, toolName }) {
+function TWLList({ setItem, data, toolName }) {
   const [verses, setVerses] = useState([])
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')

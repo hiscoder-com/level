@@ -2,22 +2,23 @@ import { useMemo } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { useRecoilValue } from 'recoil'
+
 import { Placeholder } from '../UI'
 
 import { checkedVersesBibleState } from '../state/atoms'
-import { useRecoilValue } from 'recoil'
 import { useGetResource, useScroll } from 'utils/hooks'
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
-// draft: true/false
 function Bible({ config, url, toolName }) {
-  const { loading, data, error } = useGetResource({
+  const { isLoading, data } = useGetResource({
     config,
     url,
   })
   const { scrollId, handleSave } = useScroll({ toolName })
   return (
     <>
-      {loading ? (
+      {isLoading ? (
         <Placeholder />
       ) : config?.config?.draft ? (
         <VersesExtended
@@ -41,14 +42,16 @@ export default Bible
 function Verses({ verseObjects, handleSave, scrollId }) {
   return (
     <>
-      {verseObjects?.map((el) => (
+      {verseObjects?.map((verseObject) => (
         <div
-          key={el.verse}
-          id={'id' + el.verse}
-          className={`p-2 ${scrollId === 'id' + el.verse ? 'bg-gray-200' : ''}`}
-          onClick={() => handleSave(el.verse)}
+          key={verseObject.verse}
+          id={'id' + verseObject.verse}
+          className={`p-2 ${scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''}`}
+          onClick={() => handleSave(verseObject.verse)}
         >
-          <ReactMarkdown>{el.verse + ' ' + el.text}</ReactMarkdown>
+          <ReactMarkdown>
+            {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
+          </ReactMarkdown>
         </div>
       ))}
     </>
@@ -57,28 +60,25 @@ function Verses({ verseObjects, handleSave, scrollId }) {
 
 function VersesExtended({ verseObjects, handleSave, scrollId }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
-
   return (
     <>
-      {verseObjects?.map((el, index) => {
-        const checkedCurrent = checkedVersesBible.includes(el.verse)
+      {verseObjects?.map((verseObject) => {
+        const checkedCurrent = checkedVersesBible.includes(verseObject.verse)
         return (
           <div
-            key={el.verse}
-            onClick={() => {
-              handleSave(el.verse)
-            }}
+            key={verseObject.verse}
+            onClick={() => handleSave(verseObject.verse)}
             className={`my-3 flex items-start ${
-              scrollId === 'id' + el.verse ? 'bg-gray-200' : ''
+              scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''
             }`}
           >
-            <div id={'id' + el.verse} className={`ml-2`}>
-              {el.verse}
+            <div id={'id' + verseObject.verse} className={`ml-2`}>
+              {obsCheckAdditionalVerses(verseObject.verse)}
             </div>
             {checkedCurrent ? (
-              <Blur verse={el.text} />
+              <Blur verse={verseObject.text} />
             ) : (
-              <ReactMarkdown className={`ml-2`}>{el.text}</ReactMarkdown>
+              <ReactMarkdown className={`ml-2`}>{verseObject.text}</ReactMarkdown>
             )}
           </div>
         )

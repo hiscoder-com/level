@@ -82,10 +82,10 @@ export default async function updateCommitsHandler(req, res) {
         }
         for (const book of books) {
           const bookFromGit = baseResource.books.find((el) => el.name === book.code)
-
           const { data: jsonFromGit, error: errorJsonFromGit } =
             await countOfChaptersAndVerses({
               link: bookFromGit.link,
+              book_code: book.code,
             })
           if (errorJsonFromGit) {
             await sendLog({

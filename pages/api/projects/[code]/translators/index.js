@@ -17,9 +17,10 @@ export default async function languageProjectTranslatorsHandler(req, res) {
         const { data, error } = await supabase
           .from('project_translators')
           .select(
-            'id,is_moderator,projects!project_translators_project_id_fkey!inner(code),users!inner(*)'
+            'id, is_moderator, projects!project_translators_project_id_fkey!inner(code), users!inner(*)'
           )
           .eq('projects.code', code)
+          .order('id', { ascending: true })
         if (error) throw error
         res.status(200).json(data)
       } catch (error) {

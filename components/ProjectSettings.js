@@ -1,26 +1,27 @@
 import { useEffect, useState } from 'react'
+
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import axios from 'axios'
+
 import { useTranslation } from 'next-i18next'
 import { Switch } from '@headlessui/react'
+import axios from 'axios'
 
 import CommitsList from './CommitsList'
 
-import { supabase } from 'utils/supabaseClient'
-
 import { useCurrentUser } from 'lib/UserContext'
 
-import { useProject, useMethod, useGetBrief } from 'utils/hooks'
+import { useProject, useMethod, useGetBrief, useGetProjectResources } from 'utils/hooks'
 
 function ProjectSettings() {
   const { user } = useCurrentUser()
   const [methods] = useMethod(user?.access_token)
+  const { t } = useTranslation(['common', 'project-edit'])
+
+  const [isSaving, setIsSaving] = useState(false)
   const [resourcesUrl, setResourcesUrl] = useState()
   const [currentMethod, setCurrentMethod] = useState()
   const [isErrorCommit, setIsErrorCommit] = useState(false)
-  const [isSaving, setIsSaving] = useState(false)
-  const { t } = useTranslation(['common', 'project-edit'])
 
   const {
     query: { code },
@@ -30,6 +31,12 @@ function ProjectSettings() {
     token: user?.access_token,
     project_id: project?.id,
   })
+
+  const [resources] = useGetProjectResources({
+    token: user?.access_token,
+    code,
+  })
+
   useEffect(() => {
     if (project?.method && methods) {
       const method = methods.find((method) => method.title === project.method)
@@ -38,29 +45,17 @@ function ProjectSettings() {
   }, [project?.method, methods])
 
   useEffect(() => {
-    'Brief'
-    const getResources = async () => {
-      if (project?.id) {
-        const { data, error } = await supabase
-          .from('projects')
-          .select('resources')
-          .eq('id', project.id)
-          .single()
-        if (data?.resources) {
-          const resources = {}
+    if (resources) {
+      const _resources = {}
 
-          for (const [key, value] of Object.entries(data?.resources)) {
-            resources[
-              key
-            ] = `https://git.door43.org/${value.owner}/${value.repo}/src/commit/${value.commit}`
-          }
-          setResourcesUrl(resources)
-        }
+      for (const [key, value] of Object.entries(resources)) {
+        _resources[
+          key
+        ] = `https://git.door43.org/${value.owner}/${value.repo}/src/commit/${value.commit}`
       }
+      setResourcesUrl(_resources)
     }
-    getResources()
-  }, [project?.id])
-
+  }, [resources])
   const handleSaveCommits = async () => {
     setIsErrorCommit(false)
     setIsSaving(true)
@@ -77,18 +72,19 @@ function ProjectSettings() {
         setIsErrorCommit(true)
         console.log(error)
       })
-      .finally(() => {
-        setIsSaving(false)
-      })
+      .finally(() => setIsSaving(false))
   }
+
   const handleSwitch = () => {
     if (brief) {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
-        .then((res) => mutate())
+        .then(mutate)
+        .catch(console.log)
     }
   }
+
   return (
     <div className="mx-auto max-w-7xl">
       <div className="h3 mb-3">
@@ -135,7 +131,7 @@ function ProjectSettings() {
         <h1 className="h2 mb-3">{t('project-edit:BriefSwitch')}</h1>
         <div className="flex">
           <span className="mr-3">
-            {t(`common:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+            {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
           </span>
           <Switch
             checked={brief?.is_enable}

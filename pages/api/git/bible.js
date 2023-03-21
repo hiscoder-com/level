@@ -68,7 +68,7 @@ import { parseChapter } from 'utils/usfmHelper'
  */
 
 export default async function bibleHandler(req, res) {
-  const { repo, owner, commit, bookPath, book, chapter, step } = req.query
+  const { repo, owner, commit, bookPath, chapter } = req.query
 
   let verses = req.query['verses[]'] || req.query.verses
   if (typeof verses === 'string') {

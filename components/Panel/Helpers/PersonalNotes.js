@@ -2,15 +2,20 @@ import { useEffect, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
-import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
 
+import axios from 'axios'
+import { toast, Toaster } from 'react-hot-toast'
+
 import { useCurrentUser } from 'lib/UserContext'
+
+import Modal from 'components/Modal'
+
 import { usePersonalNotes } from 'utils/hooks'
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
+
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import Modal from 'components/Modal'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -33,16 +38,27 @@ function PersonalNotes() {
   const [noteToDel, setNoteToDel] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
-  const [notes, { loading, error, mutate }] = usePersonalNotes({
+  const [notes, { mutate }] = usePersonalNotes({
     token: user?.access_token,
     sort: 'changed_at',
   })
+
+  const removeCacheAllNotes = (key) => {
+    localStorage.removeItem(key)
+  }
+
   const saveNote = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/personal_notes/${noteId}`, activeNote)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .then(() => {
+        saveCacheNote('personal-notes', activeNote, user)
+        mutate()
+      })
+      .catch((err) => {
+        toast.error(t('SaveFailed'))
+        console.log(err)
+      })
   }
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
@@ -56,17 +72,19 @@ function PersonalNotes() {
     axios
       .post('/api/personal_notes', { id, user_id: user.id })
       .then(() => mutate())
-      .catch((err) => console.log(err))
+      .catch(console.log)
   }
 
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/personal_notes/${id}`)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .then(() => {
+        removeCacheNote('personal_notes', id)
+        mutate()
+      })
+      .catch(console.log)
   }
-
   useEffect(() => {
     if (!activeNote) {
       return
@@ -82,9 +100,12 @@ function PersonalNotes() {
   const removeAllNote = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
-      .delete(`/api/personal_notes`)
-      .then(() => mutate())
-      .catch((err) => console.log(err))
+      .delete(`/api/personal_notes`, { data: { user_id: user?.id } })
+      .then(() => {
+        removeCacheAllNotes('personal-notes')
+        mutate()
+      })
+      .catch(console.log)
   }
 
   return (
@@ -147,12 +168,7 @@ function PersonalNotes() {
           />
         </>
       )}
-      <Modal
-        isOpen={isOpenModal}
-        closeHandle={() => {
-          setIsOpenModal(false)
-        }}
-      >
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="text-center">
           <div className="mb-4">
             {t('AreYouSureDelete') +
@@ -185,6 +201,7 @@ function PersonalNotes() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }

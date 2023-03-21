@@ -1,30 +1,36 @@
 import { useEffect, useState } from 'react'
-import { useForm, useWatch } from 'react-hook-form'
 
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+
+import { useForm, useWatch } from 'react-hook-form'
+
 import axios from 'axios'
+
+import { Switch } from '@headlessui/react'
 
 import CommitsList from './CommitsList'
 
-import { useLanguages, useMethod } from 'utils/hooks'
+import { useLanguages, useMethod, useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { Switch } from '@headlessui/react'
 
-// TODO не работает если создавать ОБС
 function ProjectCreate() {
-  const router = useRouter()
-  const { t } = useTranslation(['projects,common'])
-  const [customSteps, setCustomSteps] = useState('')
-  const [customBriefs, setCustomBriefs] = useState('')
-  const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [customResources, setCustomResources] = useState('')
-  const [method, setMethod] = useState()
+  const [isBriefEnable, setIsBriefEnable] = useState(true)
+  const [customBriefs, setCustomBriefs] = useState('')
   const [resourcesUrl, setResourcesUrl] = useState()
+  const [customSteps, setCustomSteps] = useState('')
+  const [method, setMethod] = useState()
 
+  const { t } = useTranslation(['projects', 'project-edit'])
   const { user } = useCurrentUser()
+  const router = useRouter()
+
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
+  const [_, { mutate: mutateProjects }] = useProjects({
+    token: user?.access_token,
+  })
   const {
     register,
     handleSubmit,
@@ -88,7 +94,8 @@ function ProjectCreate() {
           router.push(location)
         }
       })
-      .catch((error) => console.log(error))
+      .catch(console.log)
+      .finally(mutateProjects)
   }
 
   const inputs = [
@@ -180,7 +187,7 @@ function ProjectCreate() {
         />
         <div>
           <span className="mr-3">
-            {t(`common:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
+            {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
           </span>
           <Switch
             checked={isBriefEnable}
@@ -241,8 +248,9 @@ function ProjectCreate() {
           value={JSON.stringify(customResources, null, 2)}
         />
         <br />
-        <pre>
-          {`literal
+        {method?.type !== 'obs' ? (
+          <pre>
+            {`literal
 https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
 simplified
 https://git.door43.org/ru_gl/ru_rsob/src/commit/03519d2d1f66a07ba42d7a62afb75393cf83fa1c
@@ -250,12 +258,23 @@ tn
 https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38
 tq
 https://git.door43.org/ru_gl/ru_tq/src/commit/787f3f48f4ada9f0a29451b5ef318125a5fd6c7a
-tw
-https://git.door43.org/ru_gl/ru_tw/src/commit/ea337e3dc7d8e9100af1224d1698b58abb53849d
 twl
 https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c864a2ca1
 `}
-        </pre>
+          </pre>
+        ) : (
+          <pre>
+            {`obs
+https://git.door43.org/ru_gl/ru_obs/src/commit/e562a415f60c5262382ba936928f32479056310e
+obs-tn
+https://git.door43.org/ru_gl/ru_obs-tn/src/commit/c61f002ac87f8321ad14fb9660798be9109fcbf3
+obs-tq
+https://git.door43.org/ru_gl/ru_obs-tq/src/commit/f413397bdeb3e143b96b4d978b698fa8408a77fd
+obs-twl
+https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601faee4ecb1a0cad
+`}
+          </pre>
+        )}
         <br />
         <CommitsList
           methodId={methodId}

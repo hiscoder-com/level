@@ -1,23 +1,25 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
-
 import dynamic from 'next/dynamic'
-
-import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import axios from 'axios'
+
+import toast, { Toaster } from 'react-hot-toast'
+
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
+import { supabase } from 'utils/supabaseClient'
 import { useProject } from 'utils/hooks'
 
-import { supabase } from 'utils/supabaseClient'
+import Modal from 'components/Modal'
 
+import RightArrow from 'public/right-arrow.svg'
+import LeftArrow from 'public/left-arrow.svg'
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
-import Modal from 'components/Modal'
-import LeftArrow from 'public/left-arrow.svg'
-import RightArrow from 'public/right-arrow.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -32,18 +34,18 @@ const ListOfNotes = dynamic(
     ssr: false,
   }
 )
-const CountWordsOnPage = 5
+const CountWordsOnPage = 10
 
 function Dictionary() {
-  const [wordId, setWordId] = useState('')
+  const [currentPageWords, setCurrentPageWords] = useState(0)
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [errorText, setErrorText] = useState(false)
+  const [wordToDel, setWordToDel] = useState(null)
   const [editable, setEditable] = useState(false)
   const [activeWord, setActiveWord] = useState()
-  const [isOpenModal, setIsOpenModal] = useState(false)
-  const [wordToDel, setWordToDel] = useState(null)
-  const [searchQuery, setSearchQuery] = useState('')
+  const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
-  const [errorText, setErrorText] = useState(false)
-  const [currentPageWords, setCurrentPageWords] = useState(0)
 
   const totalPageCount = useMemo(
     () => Math.ceil(words?.count / CountWordsOnPage),
@@ -56,30 +58,39 @@ function Dictionary() {
   const {
     query: { project: code },
   } = useRouter()
+
   const [project, { mutate }] = useProject({
     token: user?.access_token,
     code,
   })
+
   const getAll = () => {
     setCurrentPageWords(0)
     setSearchQuery('')
     getWords()
   }
+
   const getWords = async (searchQuery = '', count = 0) => {
     const { from, to } = getPagination(count, CountWordsOnPage)
-
-    const { data, count: wordsCount } = await supabase
-      .from('dictionaries')
-      .select('id,project_id,title,data', { count: 'exact' })
-      .eq('project_id', project?.id)
-      .ilike('title', `${searchQuery}%`)
-      .order('title', { ascending: true })
-      .range(from, to)
-
-    if (data?.length) {
-      setWords({ data, count: wordsCount })
+    if (project?.id) {
+      const { data, count: wordsCount } = await supabase
+        .from('dictionaries')
+        .select('id,project_id,title,data,deleted_at', { count: 'exact' })
+        .eq('project_id', project?.id)
+        .is('deleted_at', null)
+        .ilike('title', `${searchQuery}%`)
+        .order('title', { ascending: true })
+        .range(from, to)
+      if (data?.length) {
+        setWords({ data, count: wordsCount })
+      }
     }
   }
+
+  useEffect(() => {
+    getWords()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [project?.id])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -123,23 +134,19 @@ function Dictionary() {
         project_id: project?.id,
         placeholder,
       })
-      .then((res) => {
-        setActiveWord(res.data[0])
-      })
-      .catch((err) => {
-        showError(err, placeholder)
-      })
+      .then((res) => setActiveWord(res.data[0]))
+      .catch((err) => showError(err, placeholder))
   }
+
   const removeNote = (id) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/dictionaries/${id}`)
-      .then()
-      .catch((err) => console.log(err))
-      .finally(() => {
-        getWords(searchQuery, currentPageWords)
-      })
+      .then(() => removeCacheNote('dictionary', id))
+      .catch(console.log)
+      .finally(() => getWords(searchQuery, currentPageWords))
   }
+
   const saveWord = async () => {
     if (!editable) {
       return
@@ -147,13 +154,17 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
-      .then()
-      .catch((err) => showError(err, activeWord?.title))
+      .then(() => saveCacheNote('dictionary', activeWord, user))
+      .catch((err) => {
+        toast.error(t('SaveFailed'))
+        console.log(err)
+      })
       .finally(() => {
         getWords(searchQuery, currentPageWords)
         mutate()
       })
   }
+
   const showError = (err, placeholder) => {
     if (err?.response?.data?.error) {
       setErrorText(`${t('WordExist')} "${placeholder}"`)
@@ -162,6 +173,7 @@ function Dictionary() {
       setErrorText(null)
     }, 2000)
   }
+
   const getPagination = (page, size) => {
     const from = page ? page * size : 0
     const to = page ? from + size - 1 : size - 1
@@ -244,12 +256,12 @@ function Dictionary() {
                   <button
                     className="arrow"
                     disabled={currentPageWords === 0}
-                    onClick={() => {
+                    onClick={() =>
                       setCurrentPageWords((prev) => {
                         getWords(searchQuery, prev - 1)
                         return prev - 1
                       })
-                    }}
+                    }
                   >
                     <LeftArrow />
                   </button>
@@ -299,12 +311,7 @@ function Dictionary() {
         </>
       )}
 
-      <Modal
-        isOpen={isOpenModal}
-        closeHandle={() => {
-          setIsOpenModal(false)
-        }}
-      >
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         {' '}
         <div className="text-center">
           <div className="mb-4">
@@ -333,6 +340,7 @@ function Dictionary() {
           </button>
         </div>
       </Modal>
+      <Toaster />
     </div>
   )
 }
@@ -359,9 +367,7 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
           ))}
       <div
         className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-200"
-        onClick={() => {
-          getAll()
-        }}
+        onClick={getAll}
       >
         {t('ShowAll')}
       </div>

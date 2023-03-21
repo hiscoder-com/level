@@ -19,7 +19,7 @@ function UserCreatePage() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/users', { email, password, login })
-      .then((res) => {
+      .then(() => {
         setMessage('')
         setLogin('')
         setPassword('')
@@ -59,7 +59,7 @@ function UserCreatePage() {
       <br />
       <div className="text-red-500">{message}</div>
       <button className={'btn btn-cyan'} onClick={handleSaveUser}>
-        {t('Save')}
+        {t('common:Save')}
       </button>
     </div>
   )
