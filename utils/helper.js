@@ -444,7 +444,7 @@ export const validateNote = (note) => {
 }
 
 export const obsCheckAdditionalVerses = (numVerse) => {
-  if (String(numVerse) === '0' || '200') {
+  if (['0', '200'].includes(String(numVerse))) {
     return ''
   }
 
