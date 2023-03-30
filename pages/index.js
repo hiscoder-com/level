@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -24,7 +25,7 @@ export default function Home() {
           <Login />
         </div>
         <div className="text-[#909090] mb-4 text-center">{t('DevelopedBy')}</div>
-        <OmbLogo className="mb-4" />
+        <OmbLogo className="logo mb-4" />
       </div>
 
       <div className="hidden sm:flex">
@@ -35,7 +36,11 @@ export default function Home() {
               {t('PlatformForBibleTranslate')}
             </h1>
             <div className="text-[#909090] mb-4">{t('DevelopedBy')}</div>
-            <OmbLogo />
+            <Link href="https://openmediabible.com/">
+              <a target="_blank">
+                <OmbLogo className="logo" />
+              </a>
+            </Link>
           </div>
         </div>
         <div className="flex justify-center items-center my-4 w-1/2 min-h-[90vh] bg-[url('../public/login_image.jpg')] bg-cover bg-no-repeat rounded-l-lg lg:rounded-l-[48px] xl:rounded-l-[72px] 2xl:rounded-l-[120px] ">

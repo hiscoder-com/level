@@ -87,7 +87,7 @@ function Login() {
               {t('Email')} {user.email}
             </div>
             <Link href={href ?? '/'}>
-              <a className=" text-blue-450">{t('GoToAccount')}</a>
+              <a className="text-blue-450">{t('GoToAccount')}</a>
             </Link>
           </div>
 
