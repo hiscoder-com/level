@@ -25,7 +25,11 @@ export default function Home() {
           <Login />
         </div>
         <div className="text-[#909090] mb-4 text-center">{t('DevelopedBy')}</div>
-        <OmbLogo className="logo mb-4" />
+        <Link href="https://openmediabible.com/">
+          <a target="_blank">
+            <OmbLogo className="logo mb-4" />
+          </a>
+        </Link>
       </div>
 
       <div className="hidden sm:flex">
