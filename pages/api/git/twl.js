@@ -1,7 +1,6 @@
 import axios from 'axios'
 
 import { tsvToJson, markRepeatedWords } from '@texttree/translation-words-helpers'
-import { uniqueFilterInBook, getListWordsReference } from 'utils/helper'
 
 /**
  *  @swagger
