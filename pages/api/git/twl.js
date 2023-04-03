@@ -81,14 +81,14 @@ export default async function twlHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
-    const uniqueWordsBook = getListWordsReference(jsonData)
+    const markedWords = markRepeatedWords(jsonData, 'all')
     const data =
       verses && verses.length > 0
-        ? jsonData.filter((wordObject) => {
+        ? markedWords.filter((wordObject) => {
             const [_chapter, _verse] = wordObject.Reference.split(':')
             return _chapter === chapter && verses.includes(_verse)
           })
-        : jsonData.filter((wordObject) => {
+        : markedWords.filter((wordObject) => {
             const [_chapter] = wordObject.Reference.split(':')
             return _chapter === chapter
           })
@@ -104,46 +104,41 @@ export default async function twlHandler(req, res) {
       } catch (error) {}
       const splitter = markdown.data.search('\n')
       return {
-        id: wordObject.ID,
-        reference: wordObject.Reference,
+        ...wordObject,
         title: markdown.data.slice(0, splitter),
         text: markdown.data.slice(splitter),
-        url: wordObject.TWLink,
       }
     })
     const words = await Promise.all(promises)
     const finalData = {}
-    const chunkUnique = {}
-    let verseUnique = {}
 
     words?.forEach((word) => {
-      let repeatedInVerse = word.url in verseUnique //TODO переписать в РСЛ, которая использует и функции и хуки для фильтров
-      if (!repeatedInVerse) {
-        verseUnique[word.url] = word.title
-      }
-      const repeatedInChunk = word.url in chunkUnique
-      if (!repeatedInChunk) {
-        chunkUnique[word.url] = word.title
-      }
-
+      const {
+        ID,
+        Reference,
+        TWLink,
+        isRepeatedInBook,
+        isRepeatedInChapter,
+        isRepeatedInVerse,
+        text,
+        title,
+      } = word
       const wordObject = {
-        id: word.id,
-        title: word.title,
-        text: word.text,
-        url: word.url,
-        repeatedInChunk,
+        id: ID,
+        title,
+        text,
+        url: TWLink,
+        isRepeatedInBook,
+        isRepeatedInChapter,
+        isRepeatedInVerse,
       }
-      const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, word, wordObject)
 
-      const verse = word.reference.split(':').slice(-1)[0]
+      const [_, verse] = Reference.split(':')
 
       if (!finalData[verse]) {
-        verseUnique = {}
-        repeatedInVerse = false
-        verseUnique[word.url] = word.title
-        finalData[verse] = [{ ...wordObject, repeatedInVerse, repeatedInBook }]
+        finalData[verse] = [wordObject]
       } else {
-        finalData[verse].push({ ...wordObject, repeatedInVerse, repeatedInBook })
+        finalData[verse].push(wordObject)
       }
     })
     res.status(200).json(finalData)
