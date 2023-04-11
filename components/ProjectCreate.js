@@ -28,7 +28,7 @@ function ProjectCreate() {
 
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
-  const [_, { mutate: mutateProjects }] = useProjects({
+  const [projects, { mutate: mutateProjects }] = useProjects({
     token: user?.access_token,
   })
   const {
@@ -38,7 +38,6 @@ function ProjectCreate() {
     setValue,
     formState: { errors },
   } = useForm({ mode: 'onChange' })
-
   const methodId = useWatch({ control, name: 'methodId' })
 
   useEffect(() => {
@@ -119,23 +118,24 @@ function ProjectCreate() {
       register: {
         ...register('code', {
           required: true,
-          pattern: {
-            value: /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i,
-            message: t('CodeMessage'),
+          validate: {
+            wrongTypeCode: (value) => /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i.test(value),
+            notUniqueProject: (value) => !projects?.find((el) => el.code === value),
           },
         }),
       },
-      errorMessage: errors?.code ? errors?.code.message : '',
+      errorMessage:
+        errors?.code?.type === 'wrongTypeCode'
+          ? t('CodeMessageErrorWrongType')
+          : errors?.code?.type === 'notUniqueProject'
+          ? t('CodeMessageErrorNotUniqueProject')
+          : '',
     },
   ]
 
   return (
     <div className="mx-auto max-w-7xl pb-4">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <p>
-          Повесить слушателя чтобы проверять, есть такой код проекта или нет. Либо на ввод
-          с задержкой, либо на отправку.
-        </p>
         {inputs.map((el) => (
           <div key={el.title}>
             <div>{el.title}</div>
