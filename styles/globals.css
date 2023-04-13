@@ -245,5 +245,5 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl 
 }
 .tab-active {
-	@apply tab bg-darkBlue cursor-default text-white 
+	@apply tab text-white bg-darkBlue cursor-default  
 }
