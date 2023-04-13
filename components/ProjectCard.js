@@ -1,21 +1,21 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import Translators from 'components/Translators'
+import Translators from './Translators'
+import Placeholder from './Placeholder'
 
 import { supabase } from 'utils/supabaseClient'
 import { useBriefState } from 'utils/hooks'
 
 function ProjectCard({ project, token, userId }) {
   const [highLevelAccess, setHighLevelAccess] = useState(false)
-  const [currentSteps, setCurrentSteps] = useState(null)
 
   const { t } = useTranslation(['projects', 'common', 'books'])
 
-  const { briefResume, isBrief, isLoading } = useBriefState({
+  const { briefResume, isLoading } = useBriefState({
     token,
     project_id: project?.id,
   })
@@ -35,132 +35,38 @@ function ProjectCard({ project, token, userId }) {
     }
   }, [userId, project?.id])
 
-  useEffect(() => {
-    supabase
-      .rpc('get_current_steps', { project_id: project.id })
-      .then((res) => setCurrentSteps(res.data))
-  }, [project?.id])
-
-  const chapters = useMemo(() => {
-    const _chapters = {}
-    currentSteps?.forEach((step) => {
-      _chapters[step.book] = _chapters?.[step.book]?.length
-        ? [..._chapters[step.book], step]
-        : [step]
-    })
-    return _chapters
-  }, [currentSteps])
-
-  const localStorSteps = useMemo(
-    () => JSON.parse(localStorage.getItem('viewedIntroSteps')),
-    []
-  )
-
-  const searchLocalStorage = (step, localStorSteps) => {
-    const { project, book, chapter, step: numStep } = step
-    const isRepeatIntro = localStorSteps?.find(
-      (el) =>
-        JSON.stringify(el) ===
-        JSON.stringify({
-          project,
-          book,
-          chapter: chapter.toString(),
-          step: numStep.toString(),
-        })
-    )
-    return isRepeatIntro
-  }
-
   return (
     <>
-      {!project?.code || !chapters || !currentSteps || isLoading || !userId ? (
-        <Sceleton />
+      {!project?.code || isLoading || !userId ? (
+        <Placeholder />
       ) : (
-        <div className="block p-6 h-full bg-white rounded-xl">
-          <Link href={`/projects/${project.code}`}>
-            <a className="block text-2xl mb-4 text-blue-450 underline decoration-2 underline-offset-4">
-              {project.title}
-            </a>
-          </Link>
-          <div className="flex gap-2.5 mb-1.5">
-            <p className="text-gray-500">{t('Language')}:</p>
-            <p>{project.languages.orig_name}</p>
-          </div>
-          <div className="flex gap-3">
-            <p className="text-gray-500">{t('Translators')}:</p>
-            <Translators projectCode={project.code} size="25px" />
-          </div>
-          {briefResume === '' && (
-            <Link href={`/projects/${project?.code}/edit/brief`}>
-              <a className="btn btn-white mt-2 mx-1">
-                {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
-              </a>
-            </Link>
-          )}
-          <div className="divide-y-2">
-            {Object.keys(chapters).map((chapter, i) => {
-              return (
-                <div key={i} className="mb-2">
-                  <div>{t(`books:${chapter}`)}</div>
-                  {chapters[chapter].map((step, index) => {
-                    return !isBrief || briefResume ? (
-                      <Link
-                        key={index}
-                        href={`/translate/${step.project}/${step.book}/${step.chapter}/${
-                          step.step
-                        }${
-                          typeof searchLocalStorage(step, localStorSteps) === 'undefined'
-                            ? '/intro'
-                            : ''
-                        }`}
-                      >
-                        <a className="btn btn-white mt-2 mx-1">
-                          {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
-                          {t('common:Step').toLowerCase()}
-                        </a>
-                      </Link>
-                    ) : (
-                      <div
-                        key={index}
-                        className="text-center text-gray-300 border-2 rounded-md inline-block px-3 py-1 cursor-not-allowed mt-2 mx-1"
-                      >
-                        {step.chapter} {t('common:Ch').toLowerCase()} | {step.step}{' '}
-                        {t('common:Step').toLowerCase()}
-                      </div>
-                    )
-                  })}
+        <Link href={`/projects/${project.code}`}>
+          <a className="cursor-pointer">
+            <div className="flex flex-col gap-9 p-7 h-full bg-white rounded-xl border border-[#bcbcbc] shadow-md">
+              <div className="text-darkBlue text-2xl font-medium">{project.title}</div>
+              <div className="flex flex-col gap-5 text-lg">
+                <div className="flex gap-3">
+                  <p className="text-darkBlue">{t('Language')}:</p>
+                  <p className="text-teal-500">{project.languages.orig_name}</p>
                 </div>
-              )
-            })}
-          </div>
-        </div>
+                <div className="flex gap-3">
+                  <p className="text-darkBlue">{t('Translators')}:</p>
+                  <Translators projectCode={project.code} size="25px" />
+                </div>
+              </div>
+              {briefResume === '' && (
+                <Link href={`/projects/${project?.code}/edit/brief`}>
+                  <a className="p-3 mt-2 mx-1 w-fit h-min text-darkBlue border border-darkBlue rounded-3xl hover:bg-[#b7c9e5]">
+                    {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                  </a>
+                </Link>
+              )}
+            </div>
+          </a>
+        </Link>
       )}
     </>
   )
 }
 
 export default ProjectCard
-
-function Sceleton() {
-  return (
-    <div
-      role="status"
-      className=" p-4 border border-gray-200 h-full shadow animate-pulse md:p-6 bg-white rounded-xl"
-    >
-      <div className="h-2.5 w-1/4 bg-gray-200 rounded-full mb-4"></div>
-      {[...Array(6).keys()].map((el) => (
-        <div key={el}>
-          <div className="h-2 bg-gray-200 rounded-full mb-4"></div>
-        </div>
-      ))}
-      <div className="h-2 bg-gray-200 rounded-full"></div>
-      <div className="flex items-center mt-4 space-x-3">
-        {[...Array(3).keys()].map((el) => (
-          <div key={el}>
-            <div className="h-8 btn w-1/3 mb-2"></div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
