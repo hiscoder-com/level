@@ -240,3 +240,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .logo:hover path:nth-child(2) {
 	fill:#003554;
 } 
+
+.tab {
+	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl 
+}
+.tab-active {
+	@apply tab bg-darkBlue cursor-default text-white 
+}
