@@ -37,7 +37,7 @@ export const checkLSVal = (el, val, type = 'string', ext = false) => {
 }
 
 export const readableDate = (date, locale = 'ru') => {
-  return new Date(date).toLocaleString(locale, {})
+  return new Date(date).toLocaleDateString(locale, {})
 }
 
 const compileMarkdown = async (ref) => {
