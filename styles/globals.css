@@ -247,3 +247,17 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .tab-active {
 	@apply tab text-white bg-darkBlue cursor-default  
 }
+
+.card {
+  @apply bg-white rounded-2xl border border-gray-350 p-7 shadow-md;
+}
+
+.step-link-base {
+  @apply flex gap-2 py-3 px-4 h-min border rounded-3xl;
+}
+.step-link {
+  @apply step-link-base text-darkBlue border-darkBlue hover:bg-[#b7c9e5];
+}
+.step-link-disabled {
+  @apply step-link-base text-gray-300 cursor-not-allowed;
+}
