@@ -41,28 +41,26 @@ function ProjectCard({ project, token, userId }) {
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`}>
-          <a className="cursor-pointer">
-            <div className="flex flex-col gap-9 p-7 h-full bg-white rounded-xl border border-[#bcbcbc] shadow-md">
-              <div className="text-darkBlue text-2xl font-medium">{project.title}</div>
-              <div className="flex flex-col gap-5 text-lg">
-                <div className="flex gap-3">
-                  <p className="text-darkBlue">{t('Language')}:</p>
-                  <p className="text-teal-500">{project.languages.orig_name}</p>
-                </div>
-                <div className="flex gap-3">
-                  <p className="text-darkBlue">{t('Translators')}:</p>
-                  <Translators projectCode={project.code} size="25px" />
-                </div>
+          <div className="card flex flex-col gap-9 h-full cursor-pointer">
+            <div className="text-darkBlue text-2xl font-medium">{project.title}</div>
+            <div className="flex flex-col gap-5 text-lg">
+              <div className="flex gap-3">
+                <p className="text-darkBlue">{t('Language')}:</p>
+                <p className="text-teal-500">{project.languages.orig_name}</p>
               </div>
-              {briefResume === '' && (
-                <Link href={`/projects/${project?.code}/edit/brief`}>
-                  <a className="p-3 mt-2 mx-1 w-fit h-min text-darkBlue border border-darkBlue rounded-3xl hover:bg-[#b7c9e5]">
-                    {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
-                  </a>
-                </Link>
-              )}
+              <div className="flex gap-3">
+                <p className="text-darkBlue">{t('Translators')}:</p>
+                <Translators projectCode={project.code} size="25px" />
+              </div>
             </div>
-          </a>
+            {briefResume === '' && (
+              <Link href={`/projects/${project?.code}/edit/brief`}>
+                <a className="step-link w-fit">
+                  {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                </a>
+              </Link>
+            )}
+          </div>
         </Link>
       )}
     </>

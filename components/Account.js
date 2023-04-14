@@ -4,17 +4,17 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import Projects from 'components/Projects'
+import ProjectCreate from './ProjectCreate'
+import Projects from './Projects'
 
 import { useCurrentUser } from 'lib/UserContext'
-import PersonalList from './PersonalList'
 
 function Account() {
   const { user, loading } = useCurrentUser()
   const router = useRouter()
-  const [accountType, setAccountType] = useState('account')
+  const [type, setType] = useState('account')
 
-  const { t } = useTranslation(['users'])
+  const { t } = useTranslation(['users', 'projects', 'common'])
 
   useEffect(() => {
     if (!loading && user === null) {
@@ -26,28 +26,25 @@ function Account() {
     <div className="mx-auto max-w-7xl">
       {user?.id && (
         <div className="divide-y divide-darkBlue">
-          <div className="grid grid-cols-2 gap-7  md:grid-cols-3 md:mt-24 xl:grid-cols-5 md:text-xl font-bold text-center">
-            <button
-              disabled={accountType === 'account'}
-              onClick={() => setAccountType('account')}
-              className={accountType === 'account' ? 'tab-active' : 'tab cursor-pointer'}
-            >
-              {t('Account')}
-            </button>
-            <button
-              disabled={accountType === 'projects'}
-              onClick={() => setAccountType('projects')}
-              className={
-                accountType === 'projects' ? 'tab-active ' : 'tab cursor-pointer'
-              }
-            >
-              {t('Projects')}
-            </button>
+          <div className="grid grid-cols-3 gap-7  md:grid-cols-3 xl:grid-cols-5 md:mt-24 mt-12 md:text-xl font-bold text-center">
+            {[
+              { type: 'account', label: 'Account' },
+              { type: 'projects', label: 'projects:Projects' },
+              { type: 'create', label: 'projects:CreateProject' },
+            ]
+              .filter((el) => (user?.is_admin ? el : el.type !== 'create'))
+              .map((el) => (
+                <button
+                  key={el.type}
+                  disabled={type === el.type}
+                  onClick={() => setType(el.type)}
+                  className={type === el.type ? 'tab-active' : 'tab cursor-pointer'}
+                >
+                  {t(el.label)}
+                </button>
+              ))}
           </div>
-          <div>
-            {accountType === 'account' && <PersonalList />}
-            {accountType === 'projects' && <Projects />}
-          </div>
+          <div>{type === 'create' ? <ProjectCreate /> : <Projects type={type} />}</div>
         </div>
       )}
     </div>
