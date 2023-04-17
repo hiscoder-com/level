@@ -261,3 +261,9 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .step-link-disabled {
   @apply step-link-base text-gray-300 cursor-not-allowed;
 }
+
+.container {
+	@apply mx-auto max-w-7xl
+}
+
+

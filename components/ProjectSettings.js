@@ -86,7 +86,7 @@ function ProjectSettings() {
   }
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="container">
       <div className="h3 mb-3">
         <Link href={'/projects/' + code + '/edit'}>
           <a className="underline text-blue-700">« {project?.title}/edit</a>

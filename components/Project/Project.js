@@ -39,7 +39,7 @@ function Project({ code }) {
   })
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="container">
       <h3 className="h3 inline-block">{project?.title}</h3>
       {highLevelAccess && (
         <div className="mt-4 ml-4 inline-block">

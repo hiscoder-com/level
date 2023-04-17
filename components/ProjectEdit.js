@@ -133,7 +133,7 @@ function ProjectEdit() {
   return (
     <>
       {highLevelAccess && (
-        <div className="divide-y-2 divide-gray-400 mx-auto max-w-7xl">
+        <div className="divide-y-2 divide-gray-400 container">
           <div className="pb-5">
             <div className="h3 mb-3">
               <Link href={'/projects/' + code}>
