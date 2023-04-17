@@ -252,14 +252,17 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
   @apply bg-white rounded-2xl border border-gray-350 p-7 shadow-md;
 }
 
-.step-link-base {
-  @apply flex gap-2 py-3 px-4 h-min border rounded-3xl;
+.btn-link-base {
+  @apply flex gap-2 py-1 px-6 h-min border rounded-3xl;
 }
-.step-link {
-  @apply step-link-base text-darkBlue border-darkBlue hover:bg-[#b7c9e5];
+.btn-link {
+  @apply btn-link-base text-darkBlue border-darkBlue hover:bg-[#b7c9e5];
 }
-.step-link-disabled {
-  @apply step-link-base text-gray-300 cursor-not-allowed;
+.btn-link-disabled {
+  @apply btn-link-base text-gray-300 cursor-not-allowed;
+}
+.btn-link-red {
+  @apply btn-link-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
 }
 
 .container {
