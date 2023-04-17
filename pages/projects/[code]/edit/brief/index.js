@@ -1,9 +1,12 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import EditBrief from 'components/EditBrief'
+import Brief from 'components/ProjectEdit/Brief/Brief'
 
 function BriefPageEdit() {
-  return <EditBrief />
+  return (
+    <div className="container">
+      <Brief />
+    </div>
+  )
 }
 
 export default BriefPageEdit

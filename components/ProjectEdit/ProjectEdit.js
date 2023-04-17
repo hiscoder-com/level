@@ -8,6 +8,7 @@ import { supabase } from 'utils/supabaseClient'
 import { useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
+import Brief from './Brief/Brief'
 
 function ProjectEdit() {
   const {
@@ -45,6 +46,7 @@ function ProjectEdit() {
         level={level}
       />
       <ResourceSettings />
+      <Brief />
     </div>
   )
 }

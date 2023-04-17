@@ -1,10 +1,8 @@
 import { useEffect, useState } from 'react'
 
-// import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
-// import { Switch } from '@headlessui/react'
 import axios from 'axios'
 
 import CommitsList from '../CommitsList'
@@ -27,10 +25,6 @@ function ResourceSettings() {
     query: { code },
   } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
-  // const [brief, { mutate }] = useGetBrief({
-  //   token: user?.access_token,
-  //   project_id: project?.id,
-  // })
 
   const [resources] = useGetProjectResources({
     token: user?.access_token,
@@ -75,16 +69,6 @@ function ResourceSettings() {
       .finally(() => setIsSaving(false))
   }
 
-  // const handleSwitch = () => {
-  //   if (brief) {
-  //     axios.defaults.headers.common['token'] = user?.access_token
-  //     axios
-  //       .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
-  //       .then(mutate)
-  //       .catch(console.log)
-  //   }
-  // }
-
   return (
     <div className="card flex flex-col gap-7">
       <h3 className="h3 font-bold">{t('ListResources')}</h3>
@@ -125,27 +109,6 @@ function ResourceSettings() {
           t('Save')
         )}
       </button>
-      {/* <div>
-        <h1 className="h2 mb-3">{t('project-edit:BriefSwitch')}</h1>
-        <div className="flex">
-          <span className="mr-3">
-            {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
-          </span>
-          <Switch
-            checked={brief?.is_enable}
-            onChange={handleSwitch}
-            className={`${
-              brief?.is_enable ? 'bg-blue-600' : 'bg-gray-300'
-            } relative inline-flex h-6 w-11 items-center rounded-full`}
-          >
-            <span
-              className={`${
-                brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-            />
-          </Switch>
-        </div>
-      </div> */}
     </div>
   )
 }

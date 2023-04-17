@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import toast, { Toaster } from 'react-hot-toast'
 import { useTranslation } from 'next-i18next'
+
+import { Switch } from '@headlessui/react'
 
 import axios from 'axios'
 
@@ -15,7 +16,7 @@ import { supabase } from 'utils/supabaseClient'
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 
-function EditBrief() {
+function Brief() {
   const [briefDataCollection, setBriefDataCollection] = useState('')
   const [highLevelAccess, setHighLevelAccess] = useState(false)
 
@@ -103,26 +104,43 @@ function EditBrief() {
       return prev
     })
   }
-
+  const handleSwitch = () => {
+    if (brief) {
+      axios.defaults.headers.common['token'] = user?.access_token
+      axios
+        .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
+        .then(mutate)
+        .catch(console.log)
+    }
+  }
   return (
-    <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
-      <div className="pb-4">
-        <div className="h3">
-          <Link
-            href={`${
-              highLevelAccess
-                ? `/projects/${project?.code}/edit`
-                : `/projects/${project?.code}/`
-            }`}
-          >
-            <a className="underline text-blue-700">« {project?.title}</a>
-          </Link>
-          <p className="uppercase text-center text-gray-700">
-            {t('project-edit:EditBriefTitle')}
-          </p>
+    <div className="card">
+      <div className="flex flex-col gap-7">
+        <div className="flex justify-between">
+          <h3 className="h3 font-bold">{t('project-edit:EditBriefTitle')}</h3>
+          <div>
+            <div className="flex">
+              <span className="mr-3">
+                {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+              </span>
+              <Switch
+                checked={brief?.is_enable}
+                onChange={handleSwitch}
+                className={`${
+                  brief?.is_enable ? 'bg-blue-600' : 'bg-gray-200'
+                } relative inline-flex h-7 w-12 items-center rounded-full`}
+              >
+                <span
+                  className={`${
+                    brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                />
+              </Switch>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-2 md:mt-5">
+        <div className="">
           {briefDataCollection && (
             <div className="flex-col w-full gap-4 mb-4 flex md:flex-row">
               <div className="md:w-1/3">
@@ -224,9 +242,9 @@ function EditBrief() {
             </div>
           )}
           {highLevelAccess && (
-            <div className="flex justify-center">
+            <>
               <button
-                className="btn-cyan"
+                className="btn-link-full text-xl"
                 onClick={() => {
                   saveToDatabase()
                   toast.success(t('SaveSuccess'))
@@ -234,15 +252,8 @@ function EditBrief() {
               >
                 {t('Save')}
               </button>
-              <Toaster
-                toastOptions={{
-                  style: {
-                    marginTop: '-6px',
-                    color: '#6b7280',
-                  },
-                }}
-              />
-            </div>
+              <Toaster />
+            </>
           )}
         </div>
       </div>
@@ -250,4 +261,4 @@ function EditBrief() {
   )
 }
 
-export default EditBrief
+export default Brief
