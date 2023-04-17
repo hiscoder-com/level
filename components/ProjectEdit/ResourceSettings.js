@@ -1,22 +1,22 @@
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
+// import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
-import { Switch } from '@headlessui/react'
+// import { Switch } from '@headlessui/react'
 import axios from 'axios'
 
-import CommitsList from './CommitsList'
+import CommitsList from '../CommitsList'
 
 import { useCurrentUser } from 'lib/UserContext'
 
-import { useProject, useMethod, useGetBrief, useGetProjectResources } from 'utils/hooks'
+import { useProject, useMethod, useGetProjectResources } from 'utils/hooks'
 
-function ProjectSettings() {
+function ResourceSettings() {
   const { user } = useCurrentUser()
   const [methods] = useMethod(user?.access_token)
-  const { t } = useTranslation(['common', 'project-edit'])
+  const { t } = useTranslation()
 
   const [isSaving, setIsSaving] = useState(false)
   const [resourcesUrl, setResourcesUrl] = useState()
@@ -27,10 +27,10 @@ function ProjectSettings() {
     query: { code },
   } = useRouter()
   const [project] = useProject({ token: user?.access_token, code })
-  const [brief, { mutate }] = useGetBrief({
-    token: user?.access_token,
-    project_id: project?.id,
-  })
+  // const [brief, { mutate }] = useGetBrief({
+  //   token: user?.access_token,
+  //   project_id: project?.id,
+  // })
 
   const [resources] = useGetProjectResources({
     token: user?.access_token,
@@ -75,25 +75,19 @@ function ProjectSettings() {
       .finally(() => setIsSaving(false))
   }
 
-  const handleSwitch = () => {
-    if (brief) {
-      axios.defaults.headers.common['token'] = user?.access_token
-      axios
-        .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
-        .then(mutate)
-        .catch(console.log)
-    }
-  }
+  // const handleSwitch = () => {
+  //   if (brief) {
+  //     axios.defaults.headers.common['token'] = user?.access_token
+  //     axios
+  //       .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
+  //       .then(mutate)
+  //       .catch(console.log)
+  //   }
+  // }
 
   return (
-    <div className="mx-auto max-w-7xl">
-      <div className="h3 mb-3">
-        <Link href={'/projects/' + code + '/edit'}>
-          <a className="underline text-blue-700">« {project?.title}/edit</a>
-        </Link>
-      </div>
-      <h1 className="h1 mb-3">{t('ProjectSettings')}</h1>
-      <h1 className="h2 mb-3">{t('ListResources')}</h1>
+    <div className="card flex flex-col gap-7">
+      <h3 className="h3 font-bold">{t('ListResources')}</h3>
       <CommitsList
         resourcesUrl={resourcesUrl}
         setResourcesUrl={setResourcesUrl}
@@ -101,7 +95,11 @@ function ProjectSettings() {
       />
       {isErrorCommit && <div className="mt-3">{t('WrongResource')}</div>}
 
-      <button className="btn-cyan my-2" onClick={handleSaveCommits} disabled={isSaving}>
+      <button
+        className="btn-link-full w-fit text-xl"
+        onClick={handleSaveCommits}
+        disabled={isSaving}
+      >
         {isSaving ? (
           <svg
             className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600"
@@ -127,7 +125,7 @@ function ProjectSettings() {
           t('Save')
         )}
       </button>
-      <div>
+      {/* <div>
         <h1 className="h2 mb-3">{t('project-edit:BriefSwitch')}</h1>
         <div className="flex">
           <span className="mr-3">
@@ -147,9 +145,9 @@ function ProjectSettings() {
             />
           </Switch>
         </div>
-      </div>
+      </div> */}
     </div>
   )
 }
 
-export default ProjectSettings
+export default ResourceSettings

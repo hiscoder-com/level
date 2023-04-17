@@ -7,13 +7,16 @@ import Parcticipants from './Participants/Participants'
 import { supabase } from 'utils/supabaseClient'
 import { useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
 
 function ProjectEdit() {
   const {
     query: { code },
   } = useRouter()
   const { user } = useCurrentUser()
+
   const [level, setLevel] = useState('user')
+
   const [users] = useUsers(user?.access_token)
 
   const [project] = useProject({ token: user?.access_token, code })
@@ -34,12 +37,15 @@ function ProjectEdit() {
   }, [user?.id, project?.id])
 
   return (
-    <Parcticipants
-      user={user}
-      users={users}
-      highLevelAccess={highLevelAccess}
-      level={level}
-    />
+    <div className="container flex flex-col gap-7">
+      <Parcticipants
+        user={user}
+        users={users}
+        highLevelAccess={highLevelAccess}
+        level={level}
+      />
+      <ResourceSettings />
+    </div>
   )
 }
 

@@ -101,8 +101,8 @@ function Parcticipants({ user, users, highLevelAccess, level }) {
   return (
     <>
       {highLevelAccess && (
-        <div className="container card text-darkBlue">
-          <div className="pb-5 text-2xl font-bold">{t('Participants')}</div>
+        <div className="card text-darkBlue">
+          <h3 className="h3 mb-5 font-bold">{t('Participants')}</h3>
           <div className="divide-y-2 divide-black">
             <div className="flex flex-col gap-7 pb-5">
               <div className="flex justify-between items-center gap-2 md:text-xl font-bold">
