@@ -186,17 +186,17 @@ function ProjectPersonalCard({ project, token, userId }) {
                             : ''
                         }`}
                       >
-                        <a className="step-link">{stepLink}</a>
+                        <a className="btn-link">{stepLink}</a>
                       </Link>
                     ) : (
-                      <div key={index} className="step-link-disabled">
+                      <div key={index} className="btn-link-disabled">
                         {stepLink}
                       </div>
                     )
                   })}
                   {briefResume === '' && (
                     <Link href={`/projects/${project?.code}/edit/brief`}>
-                      <a className="step-link">
+                      <a className="btn-link">
                         {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
                       </a>
                     </Link>

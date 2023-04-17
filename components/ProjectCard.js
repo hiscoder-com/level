@@ -55,7 +55,7 @@ function ProjectCard({ project, token, userId }) {
             </div>
             {briefResume === '' && (
               <Link href={`/projects/${project?.code}/edit/brief`}>
-                <a className="step-link w-fit">
+                <a className="btn-link w-fit">
                   {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
                 </a>
               </Link>

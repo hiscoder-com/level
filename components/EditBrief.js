@@ -105,7 +105,7 @@ function EditBrief() {
   }
 
   return (
-    <div className="container divide-y-2 divide-gray-400">
+    <div className="mx-auto max-w-7xl divide-y-2 divide-gray-400">
       <div className="pb-4">
         <div className="h3">
           <Link
