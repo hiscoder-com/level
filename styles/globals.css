@@ -121,32 +121,36 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .h1 {
-	@apply text-4xl text-gray-800;
+	@apply text-4xl text-darkBlue;
 }
 .h2 {
-	@apply text-3xl text-gray-800;
+	@apply text-3xl text-darkBlue;
 }
 .h3 {
-	@apply text-2xl text-gray-800;
+	@apply text-2xl text-darkBlue;
 }
 .h4 {
-	@apply text-xl text-gray-800;
+	@apply text-xl text-darkBlue;
 }
 .h5 {
-	@apply text-base text-gray-800;
+	@apply text-base text-darkBlue;
 }
 .h6 {
-	@apply text-sm text-gray-800;
+	@apply text-sm text-darkBlue;
 }
 
 .input-base {
-	@apply w-full text-sm rounded-md py-2 pl-2 border-2
+	@apply w-full text-sm rounded-md py-2 pl-2 border
 	focus:outline-none;
 }
 
 .input {
 	@apply input-base text-gray-600 placeholder-gray-400 border-gray-200 bg-gray-100
  focus:border-gray-300;
+}
+.input-blue {
+	@apply input-base text-blue-250 placeholder-gray-400 border-blue-250 bg-white
+	focus:border-blue-450;
 }
 
 .input-invalid {
@@ -257,6 +261,9 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 .btn-link {
   @apply btn-link-base text-darkBlue border-darkBlue hover:bg-[#b7c9e5];
+}
+.btn-link-full {
+  @apply btn-link-base text-darkBlue  hover:bg-white bg-blue-150;
 }
 .btn-link-disabled {
   @apply btn-link-base text-gray-300 cursor-not-allowed;
