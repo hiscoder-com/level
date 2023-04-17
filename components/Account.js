@@ -23,7 +23,7 @@ function Account() {
   }, [router, user, loading])
 
   return (
-    <div className="mx-auto max-w-7xl">
+    <div className="container">
       {user?.id && (
         <div className="divide-y divide-darkBlue">
           <div className="grid grid-cols-3 gap-7  md:grid-cols-3 xl:grid-cols-5 md:mt-24 mt-12 md:text-xl font-bold text-center">

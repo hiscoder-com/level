@@ -252,8 +252,16 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply tab text-white bg-darkBlue cursor-default  
 }
 
+.card-base {
+  @apply bg-white rounded-2xl border border-gray-350 shadow-md;
+}
+
 .card {
-  @apply bg-white rounded-2xl border border-gray-350 p-7 shadow-md;
+  @apply card-base p-7;
+}
+
+.bread-crumb {
+	@apply card-base py-3 px-7;
 }
 
 .btn-link-base {

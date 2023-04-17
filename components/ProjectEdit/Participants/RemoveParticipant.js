@@ -3,7 +3,6 @@ import { useTranslation } from 'next-i18next'
 import Modal from 'components/Modal'
 
 function RemoveParticipant({ selected, setSelected, remove, label, role }) {
-  console.log({ selected, setSelected, remove, label, role })
   const { t } = useTranslation()
   return (
     <Modal

@@ -115,7 +115,7 @@ function ProjectPersonalCard({ project, token, userId }) {
             return (
               <div
                 key={i}
-                className="flex flex-col sm:flex-row p-7 mb-2 h-full gap-7 text-xl card"
+                className="flex flex-col sm:flex-row p-7 mb-2 h-full gap-7 md:text-xl card"
               >
                 <div className="flex flex-col gap-7 sm:w-1/3">
                   <div className="flex gap-1 flex-wrap">

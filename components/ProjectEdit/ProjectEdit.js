@@ -9,6 +9,7 @@ import { useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
 import Brief from './Brief/Brief'
+import Link from 'next/link'
 
 function ProjectEdit() {
   const {
@@ -39,6 +40,11 @@ function ProjectEdit() {
 
   return (
     <div className="container flex flex-col gap-7">
+      <div className="bread-crumb h3">
+        <Link href={'/projects/' + code}>
+          <a className="text-darkBlue"> {project?.title}</a>
+        </Link>
+      </div>
       <Parcticipants
         user={user}
         users={users}

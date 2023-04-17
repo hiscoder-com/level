@@ -236,23 +236,6 @@ function Parcticipants({ user, users, highLevelAccess, level }) {
               </div>
             </div>
           </div>
-          {/* <div className="h3 mb-3 card">
-          <Link href={'/projects/' + code}>
-            <a className="text-darkBlue"> {project?.title}</a>
-          </Link>
-        </div> */}
-          {/* <div>
-          <Link href={`/projects/${project?.code}/edit/settings`}>
-            <a className="btn btn-filled btn-cyan">{t('SettingsEdit')}</a>
-          </Link>
-        </div> */}
-          {/* {brief?.is_enable && (
-          <div className="py-5">
-            <Link href={`/projects/${project?.code}/edit/brief`}>
-              <a className="btn btn-filled btn-cyan">{t('EditBrief')}</a>
-            </Link>
-          </div>
-        )} */}
         </div>
       )}
     </>
