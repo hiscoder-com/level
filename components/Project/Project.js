@@ -80,18 +80,16 @@ function Project({ code }) {
   //   </div>
   // )
   return (
-    <>
-      <div className="container flex gap-7">
-        <div className="flex flex-col gap-7 w-1/3">
-          <ProjectInfo project={project} />
-          <ParticipantInfo project={project} user={user} />
-          <ResumeInfo project={project} user={user} />
-        </div>
-        <div className="w-2/3">
-          <BookListNew />
-        </div>
+    <div className="container flex gap-7">
+      <div className="flex flex-col gap-7 w-1/3">
+        <ProjectInfo project={project} />
+        <ParticipantInfo project={project} user={user} />
+        <ResumeInfo project={project} user={user} />
       </div>
-    </>
+      <div className="w-2/3">
+        <BookListNew />
+      </div>
+    </div>
   )
 }
 

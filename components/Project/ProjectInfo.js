@@ -8,7 +8,7 @@ function ProjectInfo({ project }) {
     <Card title={t('Information')} link={`${project?.code}/edit`}>
       {project && (
         <div className="flex flex-col gap-4">
-          <h4 className="h4 mb-4 font-bold">{project?.title}</h4>
+          <h4 className="h4 font-bold">{project?.title}</h4>
           {[
             { label: 'OrigTitle', value: project?.orig_title },
             { label: 'ProjectCode', value: project?.code },
