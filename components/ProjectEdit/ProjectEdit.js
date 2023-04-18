@@ -2,13 +2,15 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import Brief from './Brief/Brief'
+import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
 import Parcticipants from './Participants/Participants'
+
+import LeftArrow from '../../public/left-big-arrow.svg'
 
 import { supabase } from 'utils/supabaseClient'
 import { useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
-import Brief from './Brief/Brief'
 import Link from 'next/link'
 
 function ProjectEdit() {
@@ -40,9 +42,12 @@ function ProjectEdit() {
 
   return (
     <div className="container flex flex-col gap-7">
-      <div className="bread-crumb h3">
+      <div className="bread-crumb w-2/3">
         <Link href={'/projects/' + code}>
-          <a className="text-darkBlue"> {project?.title}</a>
+          <a className="flex items-center gap-3">
+            <LeftArrow />
+            <h3 className="h3 font-bold">{project?.title}</h3>
+          </a>
         </Link>
       </div>
       <Parcticipants
