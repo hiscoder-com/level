@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Gear from '../../public/parameters.svg'
+import Gear from '../../public/gear.svg'
 
 function Card({ children, title, link = '/' }) {
   return (

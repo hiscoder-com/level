@@ -12,7 +12,7 @@ import { supabase } from 'utils/supabaseClient'
 import { compileChapter, compilePdfObs, convertToUsfm } from 'utils/helper'
 import { useGetBooks } from 'utils/hooks'
 
-import Properties from 'public/parameters.svg'
+import Properties from 'public/gear.svg'
 
 function BookList({ highLevelAccess, project, user }) {
   const { t } = useTranslation(['common', 'books'])
