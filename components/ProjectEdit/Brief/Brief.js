@@ -140,122 +140,115 @@ function Brief() {
           </div>
         </div>
 
-        <div className="">
-          {briefDataCollection && (
-            <div className="flex-col w-full gap-4 mb-4 flex md:flex-row">
-              <div className="md:w-1/3">
-                <p className="font-bold text-center mb-4 text-gray-700">
-                  {t('Questions')}
-                </p>
-                <div className="h-3 rounded-t-lg bg-white"></div>
-                <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
-                  {briefDataCollection.map((briefItem, index) => {
-                    const questionTitle = `${briefItem.id}. ${briefItem.title}`
-                    return (
-                      <div
-                        key={index}
-                        className={`${
-                          briefItem.id >= briefDataCollection.length
-                            ? ''
-                            : 'border-b-2 mb-2 pb-2 leading-6'
-                        }`}
-                      >
-                        <p className="font-bold">{questionTitle}</p>
-                        <ul className="list-disc px-3">
-                          {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                            return (
-                              <li key={blockIndex}>{questionAndAnswerPair.question}</li>
-                            )
-                          })}
-                        </ul>
-                      </div>
-                    )
-                  })}
-                </div>
-                <div className="h-3 rounded-b-lg bg-white"></div>
-              </div>
-              <div className="md:w-1/3">
-                <p className="text-gray-700 font-bold text-center mb-4">
-                  {t('project-edit:Answers')}
-                </p>
-                <div className="h-3 rounded-t-lg bg-white"></div>
-                <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
-                  {briefDataCollection.map((briefItem, index) => {
-                    const questionTitle = `${briefItem.id}. ${briefItem.title}`
-                    return (
-                      <div
-                        key={index}
-                        className={`${
-                          briefItem.id >= briefDataCollection.length
-                            ? ''
-                            : 'border-b-2 mb-2 pb-2'
-                        }`}
-                      >
-                        <p className="font-bold">{questionTitle}</p>
+        {briefDataCollection && (
+          <div className="flex flex-col md:flex-row w-full gap-4 mb-4 ">
+            <div className="md:w-1/3">
+              <p className="font-bold mb-4 text-gray-700">{t('Questions')}</p>
+              <div className="h-3 rounded-t-lg bg-white"></div>
+              <div className="h-[61vh] text-sm text-gray-500 overflow-auto bg-white">
+                {briefDataCollection.map((briefItem, index) => {
+                  const questionTitle = `${briefItem.id}. ${briefItem.title}`
+                  return (
+                    <div
+                      key={index}
+                      className={`${
+                        briefItem.id >= briefDataCollection.length
+                          ? ''
+                          : 'border-b-2 mb-2 pb-2 leading-6'
+                      }`}
+                    >
+                      <p className="font-bold">{questionTitle}</p>
+                      <ul className="list-disc px-3">
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           return (
-                            <div className="flex flex-nowrap leading-6" key={blockIndex}>
-                              -&nbsp;
-                              <BriefAnswer
-                                highLevelAccess={highLevelAccess}
-                                saveToDatabase={saveToDatabase}
-                                objQA={questionAndAnswerPair}
-                                updateObjQA={updateObjQA}
-                                blockIndex={blockIndex}
-                                briefItem={briefItem}
-                                index={index}
-                                t={t}
-                              />
-                            </div>
+                            <li key={blockIndex}>{questionAndAnswerPair.question}</li>
                           )
                         })}
-                      </div>
-                    )
-                  })}
-                </div>
-                <div className="h-3 rounded-b-lg bg-white"></div>
+                      </ul>
+                    </div>
+                  )
+                })}
               </div>
-              <div className="md:w-1/3">
-                <p className="font-bold text-center mb-4 text-gray-700">
-                  {t('TranslationGoal')}
-                </p>
-                <div className="h-3 rounded-t-lg bg-white"></div>
-                <div className="h-[61vh] px-4 text-sm text-gray-500 overflow-auto bg-white">
-                  {briefDataCollection.map((briefItem, index) => {
-                    return (
-                      <div className="flex flex-nowrap leading-6 py-2" key={index}>
-                        -&nbsp;
-                        <BriefResume
-                          highLevelAccess={highLevelAccess}
-                          saveToDatabase={saveToDatabase}
-                          objResume={briefItem.resume}
-                          updateBrief={updateBrief}
-                          index={index}
-                          t={t}
-                        />
-                      </div>
-                    )
-                  })}
-                </div>
-                <div className="h-3 rounded-b-lg bg-white"></div>
-              </div>
+              <div className="h-3 rounded-b-lg bg-white"></div>
             </div>
-          )}
-          {highLevelAccess && (
-            <>
-              <button
-                className="btn-link-full text-xl"
-                onClick={() => {
-                  saveToDatabase()
-                  toast.success(t('SaveSuccess'))
-                }}
-              >
-                {t('Save')}
-              </button>
-              <Toaster />
-            </>
-          )}
-        </div>
+            <div className="md:w-1/3">
+              <p className="text-gray-700 font-bold mb-4">{t('project-edit:Answers')}</p>
+              <div className="h-3 rounded-t-lg bg-white"></div>
+              <div className="h-[61vh] text-sm text-gray-500 overflow-auto bg-white">
+                {briefDataCollection.map((briefItem, index) => {
+                  const questionTitle = `${briefItem.id}. ${briefItem.title}`
+                  return (
+                    <div
+                      key={index}
+                      className={`${
+                        briefItem.id >= briefDataCollection.length
+                          ? ''
+                          : 'border-b-2 mb-2 pb-2'
+                      }`}
+                    >
+                      <p className="font-bold">{questionTitle}</p>
+                      {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                        return (
+                          <div className="flex flex-nowrap leading-6" key={blockIndex}>
+                            -&nbsp;
+                            <BriefAnswer
+                              highLevelAccess={highLevelAccess}
+                              saveToDatabase={saveToDatabase}
+                              objQA={questionAndAnswerPair}
+                              updateObjQA={updateObjQA}
+                              blockIndex={blockIndex}
+                              briefItem={briefItem}
+                              index={index}
+                              t={t}
+                            />
+                          </div>
+                        )
+                      })}
+                    </div>
+                  )
+                })}
+              </div>
+              <div className="h-3 rounded-b-lg bg-white"></div>
+            </div>
+            <div className="md:w-1/3">
+              <p className="font-bold mb-4 text-gray-700">{t('TranslationGoal')}</p>
+              <div className="h-3 rounded-t-lg bg-white"></div>
+              <div className="h-[61vh] text-sm text-gray-500 overflow-auto bg-white">
+                {briefDataCollection.map((briefItem, index) => {
+                  return (
+                    <div className="flex flex-nowrap leading-6 py-2" key={index}>
+                      -&nbsp;
+                      <BriefResume
+                        highLevelAccess={highLevelAccess}
+                        saveToDatabase={saveToDatabase}
+                        objResume={briefItem.resume}
+                        updateBrief={updateBrief}
+                        index={index}
+                        t={t}
+                      />
+                    </div>
+                  )
+                })}
+              </div>
+              <div className="h-3 rounded-b-lg bg-white"></div>
+            </div>
+          </div>
+        )}
+
+        {highLevelAccess && (
+          <div>
+            <button
+              className="btn-link-full text-xl"
+              onClick={() => {
+                saveToDatabase()
+                toast.success(t('SaveSuccess'))
+              }}
+            >
+              {t('Save')}
+            </button>
+            <Toaster />
+          </div>
+        )}
       </div>
     </div>
   )
