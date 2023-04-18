@@ -27,16 +27,16 @@ import Download from '../../public/download.svg'
 function Testament({ books, title }) {
   const { t } = useTranslation(['books'])
   return (
-    <div className="flex flex-col gap-7 px-3 max-h-screen">
+    <div className="flex flex-col gap-7 px-3 max-h-[80vh]">
       <h3 className="h3 font-bold">{title}</h3>
-      <div className="flex flex-col gap-4 overflow-y-scroll  px-4">
+      <div className="flex flex-col gap-4 overflow-y-scroll px-4">
         {books.map((el) => (
           <div key={el} className="flex justify-between items-center gap-2">
-            <div className="flex items-center">
+            <div className="flex items-center text-darkBlue">
               <div>{/* <Checking /> */}</div>
               <div>{t(`books:${el}`)}</div>
             </div>
-            <div className="flex gap-2">
+            <div className="flex gap-2 text-darkBlue">
               <Gear className="w-6" /> <Book className="w-6" /> <Pencil className="w-6" />{' '}
               <Download className="w-6" />
             </div>

@@ -21,7 +21,7 @@ function BriefResume({
       onChange={(e) => {
         setResume(e.target.value)
       }}
-      className="outline-none pr-2 w-full resize-none"
+      className="outline-none pr-2 w-full h5 resize-none"
       onBlur={() => {
         updateBrief(resume.trim(), index)
         setTimeout(() => saveToDatabase(), 1000)

@@ -110,102 +110,106 @@ function ProjectPersonalCard({ project, token, userId }) {
       {!project?.code || !chapters || !currentSteps || isLoading || !userId ? (
         <Placeholder />
       ) : (
-        <div className="flex flex-col gap-7">
-          {Object.keys(chapters).map((book, i) => {
-            return (
-              <div
-                key={i}
-                className="flex flex-col sm:flex-row p-7 mb-2 h-full gap-7 md:text-xl card"
-              >
-                <div className="flex flex-col gap-7 sm:w-1/3">
-                  <div className="flex gap-1 flex-wrap">
-                    <div className="self-center text-darkBlue text-2xl font-medium">
-                      {t(`books:${book}`)}
-                    </div>
-                    <div className="pt-1 self-center">{`(${
-                      countChaptersVerses?.[book].countChapters
-                    } ${t('common:Chapters')} ${
-                      countChaptersVerses?.[book].countVerses
-                    } ${t('common:Verses')})`}</div>
-                  </div>
-                  <div className="flex flex-col gap-5 text-lg">
-                    <div className="flex gap-3">
-                      <p className="text-darkBlue">{t('Project')}:</p>
-                      <Link href={`/projects/${project.code}`}>
-                        <a>
-                          <p className="text-teal-500">{project?.title}</p>
-                        </a>
-                      </Link>
-                    </div>
-                    <div className="flex gap-3">
-                      <p className="text-darkBlue">{t('Translators')}:</p>
-                      <Translators projectCode={project.code} size="25px" />
-                    </div>
-                    <div className="flex gap-3">
-                      <p className="text-darkBlue">
-                        {t('Begin')}:{' '}
-                        {chapters &&
-                          readableDate(
-                            Math.min(
-                              ...chapters?.[book].map((el) => Date.parse(el.started_at))
-                            ),
-                            locale
-                          )}
-                      </p>
-                      <p className="text-teal-500"></p>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-3 content-start w-2/3">
-                  {chapters[book].map((step, index) => {
-                    const stepLink = (
-                      <>
-                        <span>
-                          {step.chapter} {t('common:Ch').toLowerCase()}
-                        </span>
-                        <span>|</span>
-                        <span>
-                          {countChaptersVerses?.[book].chapters[step.chapter]}{' '}
-                          {t('common:Ver').toLowerCase()}
-                        </span>{' '}
-                        <span>|</span>
-                        <span>
-                          {step.step} {t('common:Step').toLowerCase()}
-                        </span>
-                      </>
-                    )
-
-                    return !isBrief || briefResume ? (
-                      <Link
-                        key={index}
-                        href={`/translate/${step.project}/${step.book}/${step.chapter}/${
-                          step.step
-                        }${
-                          typeof searchLocalStorage(step, localStorSteps) === 'undefined'
-                            ? '/intro'
-                            : ''
-                        }`}
-                      >
-                        <a className="btn-link">{stepLink}</a>
-                      </Link>
-                    ) : (
-                      <div key={index} className="btn-link-disabled">
-                        {stepLink}
+        <>
+          {Object.keys(chapters).length > 0 && (
+            <div className="flex flex-col gap-7">
+              {Object.keys(chapters).map((book, i) => {
+                return (
+                  <div
+                    key={i}
+                    className="card flex flex-col gap-7 sm:flex-row p-7 h-full"
+                  >
+                    <div className="flex flex-col gap-7 lg:w-1/3 w-1/2">
+                      <div className="flex gap-1 flex-wrap items-center">
+                        <div className="h3 font-bold">{t(`books:${book}`)}</div>
+                        <div className="h5 pt-1">{`(${
+                          countChaptersVerses?.[book].countChapters
+                        } ${t('common:Chapters')} ${
+                          countChaptersVerses?.[book].countVerses
+                        } ${t('common:Verses')})`}</div>
                       </div>
-                    )
-                  })}
-                  {briefResume === '' && (
-                    <Link href={`/projects/${project?.code}/edit/brief`}>
-                      <a className="btn-link">
-                        {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
-                      </a>
-                    </Link>
-                  )}
-                </div>
-              </div>
-            )
-          })}
-        </div>
+                      <div className="flex flex-col gap-5">
+                        <div className="flex gap-3">
+                          <p className="h4-5">{t('Project')}:</p>
+                          <Link href={`/projects/${project.code}`}>
+                            <a>
+                              <p className="text-lg text-teal-500">{project?.title}</p>
+                            </a>
+                          </Link>
+                        </div>
+                        <div className="flex gap-3">
+                          <p className="h4-5">{t('Translators')}:</p>
+                          <Translators projectCode={project.code} size="25px" />
+                        </div>
+                        <div className="flex gap-3">
+                          <p className="h4-5">
+                            {t('Begin')}:{' '}
+                            {chapters &&
+                              readableDate(
+                                Math.min(
+                                  ...chapters?.[book].map((el) =>
+                                    Date.parse(el.started_at)
+                                  )
+                                ),
+                                locale
+                              )}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3 content-start lg:w-2/3 w-1/2 h6">
+                      {chapters[book].map((step, index) => {
+                        const stepLink = (
+                          <>
+                            <span>
+                              {step.chapter} {t('common:Ch').toLowerCase()}
+                            </span>
+                            <span>|</span>
+                            <span>
+                              {countChaptersVerses?.[book].chapters[step.chapter]}{' '}
+                              {t('common:Ver').toLowerCase()}
+                            </span>{' '}
+                            <span>|</span>
+                            <span>
+                              {step.step} {t('common:Step').toLowerCase()}
+                            </span>
+                          </>
+                        )
+
+                        return !isBrief || briefResume ? (
+                          <Link
+                            key={index}
+                            href={`/translate/${step.project}/${step.book}/${
+                              step.chapter
+                            }/${step.step}${
+                              typeof searchLocalStorage(step, localStorSteps) ===
+                              'undefined'
+                                ? '/intro'
+                                : ''
+                            }`}
+                          >
+                            <a className="btn-link">{stepLink}</a>
+                          </Link>
+                        ) : (
+                          <div key={index} className="btn-link-disabled">
+                            {stepLink}
+                          </div>
+                        )
+                      })}
+                      {briefResume === '' && (
+                        <Link href={`/projects/${project?.code}/edit/brief`}>
+                          <a className="btn-link">
+                            {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                          </a>
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </>
       )}
     </>
   )

@@ -16,7 +16,7 @@ function ResumeInfo({ project, user }) {
           title={`${t('TranslationGoal')} / ${t('Resume')}`}
           link={`${project?.code}/edit#brief`}
         >
-          <ul className="pl-4 list-decimal">
+          <ul className="pl-4 list-decimal h4-5">
             {brief?.data_collection?.map(
               (el) => el?.resume && <li key={el.id}>{el?.resume}</li>
             )}

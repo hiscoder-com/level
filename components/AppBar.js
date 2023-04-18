@@ -52,12 +52,12 @@ export default function AppBar({ setIsOpen }) {
           {access && (
             <Burger
               onClick={() => setIsOpen((prev) => !prev)}
-              className="h-6 text-[#1D1D1D] stroke-2"
+              className="h-10 text-darkBlue stroke-1.5"
             />
           )}
           <Link href="/account">
             <a>
-              <VCANA_logo className="h-5" />
+              <VCANA_logo className="h-6" />
             </a>
           </Link>
           {isStepPage && (

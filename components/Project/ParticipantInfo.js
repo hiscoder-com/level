@@ -43,10 +43,7 @@ function ParticipantInfo({ project, user }) {
           ].map(
             (role) =>
               role?.value?.length > 0 && (
-                <div
-                  key={role?.label}
-                  className="flex gap-2 text-sm md:text-base lg:text-lg"
-                >
+                <div key={role?.label} className="flex gap-2 text-sm h4-5 lg:text-lg">
                   <p className="w-1/2">
                     {t(role?.label)}
                     {':'}

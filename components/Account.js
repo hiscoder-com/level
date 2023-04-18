@@ -26,11 +26,19 @@ function Account() {
     <div className="container">
       {user?.id && (
         <div className="divide-y divide-darkBlue">
-          <div className="grid grid-cols-3 gap-7  md:grid-cols-3 xl:grid-cols-5 md:mt-24 mt-12 md:text-xl font-bold text-center">
+          <div className="grid grid-cols-3 gap-7 md:grid-cols-4 xl:grid-cols-5 lg:mt-15 mt-12 h5 lg:text-xl font-bold text-center">
             {[
-              { type: 'account', label: 'Account' },
-              { type: 'projects', label: 'projects:Projects' },
-              { type: 'create', label: 'projects:CreateProject' },
+              { type: 'account', label: 'Account', class: 'tab' },
+              {
+                type: 'projects',
+                label: 'projects:Projects',
+                class: 'tab',
+              },
+              {
+                type: 'create',
+                label: 'projects:CreateProject',
+                class: 'tab bg-white',
+              },
             ]
               .filter((el) => (user?.is_admin ? el : el.type !== 'create'))
               .map((el) => (
@@ -38,7 +46,7 @@ function Account() {
                   key={el.type}
                   disabled={type === el.type}
                   onClick={() => setType(el.type)}
-                  className={type === el.type ? 'tab-active' : 'tab cursor-pointer'}
+                  className={type === el.type ? 'tab-active' : el.class}
                 >
                   {t(el.label)}
                 </button>

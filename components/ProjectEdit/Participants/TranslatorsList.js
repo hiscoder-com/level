@@ -15,7 +15,7 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
       </div>
       {translators?.map((el) => {
         return (
-          <div key={el.users.id} className="flex">
+          <div key={el.users.id} className="flex items-center">
             <div className="flex gap-2 items-center w-1/3 md:w-2/6 truncate">
               <div className="w-8">
                 <TranslatorImage item={el} />

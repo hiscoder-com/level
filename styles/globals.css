@@ -132,6 +132,9 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .h4 {
 	@apply text-xl text-darkBlue;
 }
+.h4-5 {
+	@apply text-lg text-darkBlue;
+}
 .h5 {
 	@apply text-base text-darkBlue;
 }
@@ -246,7 +249,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 } 
 
 .tab {
-	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl 
+	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl cursor-pointer 
 }
 .tab-active {
 	@apply tab text-white bg-darkBlue cursor-default  
@@ -265,7 +268,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-link-base {
-  @apply flex gap-2 py-1 px-6 h-min border rounded-3xl;
+  @apply flex gap-2 py-3 px-6 h-min border rounded-3xl;
 }
 .btn-link {
   @apply btn-link-base text-darkBlue border-darkBlue hover:bg-[#b7c9e5];

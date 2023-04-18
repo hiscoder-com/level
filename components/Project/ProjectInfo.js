@@ -14,10 +14,7 @@ function ProjectInfo({ project }) {
             { label: 'ProjectCode', value: project?.code },
             { label: 'Language', value: project?.languages?.orig_name },
           ].map((projectItem) => (
-            <div
-              key={projectItem.label}
-              className="flex gap-2 text-sm md:text-base lg:text-lg"
-            >
+            <div key={projectItem.label} className="flex gap-2 text-sm h4-5 lg:text-lg">
               <p className="w-1/2">
                 {t(projectItem.label)}
                 {':'}

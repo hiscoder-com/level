@@ -128,7 +128,7 @@ function Parcticipants({ user, users, highLevelAccess, level }) {
             </div>
 
             <div className="flex flex-col gap-7 pt-5">
-              <div className="flex justify-between items-center md:text-xl font-bold">
+              <div className="flex justify-between items-center lg:text-xl font-bold">
                 <div>{t('projects:Translators')}</div>
                 <button
                   onClick={() => {

@@ -143,9 +143,9 @@ function Brief() {
         {briefDataCollection && (
           <div className="flex flex-col md:flex-row w-full gap-4 mb-4 ">
             <div className="md:w-1/3">
-              <p className="font-bold mb-4 text-gray-700">{t('Questions')}</p>
+              <p className="mb-4 h4 font-bold">{t('Questions')}</p>
               <div className="h-3 rounded-t-lg bg-white"></div>
-              <div className="h-[61vh] text-sm text-gray-500 overflow-auto bg-white">
+              <div className="h-[61vh] text-sm overflow-auto bg-white">
                 {briefDataCollection.map((briefItem, index) => {
                   const questionTitle = `${briefItem.id}. ${briefItem.title}`
                   return (
@@ -154,11 +154,11 @@ function Brief() {
                       className={`${
                         briefItem.id >= briefDataCollection.length
                           ? ''
-                          : 'border-b-2 mb-2 pb-2 leading-6'
+                          : 'border-b-2 mb-2 pb-2 mr-2 leading-6'
                       }`}
                     >
-                      <p className="font-bold">{questionTitle}</p>
-                      <ul className="list-disc px-3">
+                      <p className="h4-5 font-bold">{questionTitle}</p>
+                      <ul className="list-disc px-4 h5">
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           return (
                             <li key={blockIndex}>{questionAndAnswerPair.question}</li>
@@ -172,9 +172,9 @@ function Brief() {
               <div className="h-3 rounded-b-lg bg-white"></div>
             </div>
             <div className="md:w-1/3">
-              <p className="text-gray-700 font-bold mb-4">{t('project-edit:Answers')}</p>
+              <p className="mb-4 h4 font-bold">{t('project-edit:Answers')}</p>
               <div className="h-3 rounded-t-lg bg-white"></div>
-              <div className="h-[61vh] text-sm text-gray-500 overflow-auto bg-white">
+              <div className="h-[61vh] text-sm overflow-auto bg-white">
                 {briefDataCollection.map((briefItem, index) => {
                   const questionTitle = `${briefItem.id}. ${briefItem.title}`
                   return (
@@ -183,10 +183,10 @@ function Brief() {
                       className={`${
                         briefItem.id >= briefDataCollection.length
                           ? ''
-                          : 'border-b-2 mb-2 pb-2'
+                          : 'border-b-2 mb-2 pb-2 mr-2'
                       }`}
                     >
-                      <p className="font-bold">{questionTitle}</p>
+                      <p className="h4-5 font-bold">{questionTitle}</p>
                       {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                         return (
                           <div className="flex flex-nowrap leading-6" key={blockIndex}>
@@ -211,7 +211,7 @@ function Brief() {
               <div className="h-3 rounded-b-lg bg-white"></div>
             </div>
             <div className="md:w-1/3">
-              <p className="font-bold mb-4 text-gray-700">{t('TranslationGoal')}</p>
+              <p className="mb-4 h4 font-bold">{t('TranslationGoal')}</p>
               <div className="h-3 rounded-t-lg bg-white"></div>
               <div className="h-[61vh] text-sm text-gray-500 overflow-auto bg-white">
                 {briefDataCollection.map((briefItem, index) => {

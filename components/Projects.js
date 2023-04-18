@@ -24,21 +24,21 @@ export default function Projects({ type }) {
     default:
       break
   }
-
   return (
     <>
       <div className={className}>
         {projects &&
-          projects.map((project) => {
-            return (
-              <CurrentCard
-                key={project.id}
-                project={project}
-                token={user?.access_token}
-                userId={user?.id}
-              />
-            )
-          })}
+          projects.map(
+            (project) =>
+              project && (
+                <CurrentCard
+                  key={project.id}
+                  project={project}
+                  token={user?.access_token}
+                  userId={user?.id}
+                />
+              )
+          )}
       </div>
     </>
   )

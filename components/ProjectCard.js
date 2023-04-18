@@ -41,16 +41,18 @@ function ProjectCard({ project, token, userId }) {
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`}>
-          <div className="card flex flex-col gap-9 h-full cursor-pointer">
-            <div className="text-darkBlue text-2xl font-medium">{project.title}</div>
-            <div className="flex flex-col gap-5 text-lg">
-              <div className="flex gap-3">
-                <p className="text-darkBlue">{t('Language')}:</p>
-                <p className="text-teal-500">{project.languages.orig_name}</p>
-              </div>
-              <div className="flex gap-3">
-                <p className="text-darkBlue">{t('Translators')}:</p>
-                <Translators projectCode={project.code} size="25px" />
+          <div className="card flex justify-between items-start h-full cursor-pointer ">
+            <div className="flex flex-col gap-9">
+              <div className="h3 font-bold">{project.title}</div>
+              <div className="flex flex-col gap-5">
+                <div className="flex gap-3">
+                  <p className="h4-5">{t('Language')}:</p>
+                  <p className="text-lg text-teal-500">{project.languages.orig_name}</p>
+                </div>
+                <div className="flex gap-3">
+                  <p className="h4-5">{t('Translators')}:</p>
+                  <Translators projectCode={project.code} size="25px" />
+                </div>
               </div>
             </div>
             {briefResume === '' && (

@@ -42,7 +42,7 @@ function ProjectEdit() {
 
   return (
     <div className="container flex flex-col gap-7">
-      <div className="bread-crumb w-2/3">
+      <div className="bread-crumb lg:w-2/3 w-full">
         <Link href={'/projects/' + code}>
           <a className="flex items-center gap-3">
             <LeftArrow />

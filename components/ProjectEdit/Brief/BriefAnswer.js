@@ -29,7 +29,7 @@ function BriefAnswer({
       }}
       readOnly={highLevelAccess ? false : true}
       placeholder={highLevelAccess ? t('project-edit:enterText') : ''}
-      className="outline-none pr-2 w-full resize-none"
+      className="outline-none pr-2 w-full h5 resize-none"
     />
   )
 }

@@ -7,7 +7,7 @@ function Card({ children, title, link = '/' }) {
       <div className="flex justify-between items-center">
         <h3 className="h3 font-bold">{title}</h3>
         <Link href={link}>
-          <a className="w-6">
+          <a className="w-6 text-darkBlue">
             <Gear />
           </a>
         </Link>
