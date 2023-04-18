@@ -50,14 +50,20 @@ function ProjectEdit() {
           </a>
         </Link>
       </div>
-      <Parcticipants
-        user={user}
-        users={users}
-        highLevelAccess={highLevelAccess}
-        level={level}
-      />
-      <ResourceSettings />
-      <Brief />
+      <div id="parcticipants">
+        <Parcticipants
+          user={user}
+          users={users}
+          highLevelAccess={highLevelAccess}
+          level={level}
+        />
+      </div>
+      <div id="resources">
+        <ResourceSettings />
+      </div>
+      <div id="brief">
+        <Brief />
+      </div>
     </div>
   )
 }
