@@ -1,16 +1,19 @@
 import Link from 'next/link'
 import Gear from '../../public/gear.svg'
 
-function Card({ children, title, link = '/' }) {
+function Card({ children, title, link = '/', access }) {
   return (
     <div className="card flex flex-col gap-7">
-      <div className="flex justify-between items-center">
+      <div className="flex justify-between items-start gap-7">
         <h3 className="h3 font-bold">{title}</h3>
-        <Link href={link}>
-          <a className="w-6 text-darkBlue">
-            <Gear />
-          </a>
-        </Link>
+        {access && (
+          <Link href={link}>
+            <a className="w-6 text-darkBlue">
+              <Gear />
+            </a>
+          </Link>
+        )}
+        {/* //TODO - когда длинный заголовок - то уменьшается иконка  */}
       </div>
       <div>{children}</div>
     </div>

@@ -2,10 +2,10 @@ import { useTranslation } from 'next-i18next'
 
 import Card from './Card'
 
-function ProjectInfo({ project }) {
+function ProjectInfo({ project, access }) {
   const { t } = useTranslation()
   return (
-    <Card title={t('Information')} link={`${project?.code}/edit`}>
+    <Card title={t('Information')} link={`${project?.code}/edit`} access={access}>
       {project && (
         <div className="flex flex-col gap-4">
           <h4 className="h4 font-bold">{project?.title}</h4>

@@ -2,7 +2,12 @@ import { useTranslation } from 'next-i18next'
 import { Switch } from '@headlessui/react'
 import TranslatorImage from 'components/TranslatorImage'
 
-function TranslatorsList({ translators, setSelectedModerator, setSelectedTranslator }) {
+function TranslatorsList({
+  translators,
+  setSelectedModerator,
+  setSelectedTranslator,
+  access,
+}) {
   const { t } = useTranslation(['common', 'users'])
 
   return (
@@ -24,19 +29,24 @@ function TranslatorsList({ translators, setSelectedModerator, setSelectedTransla
             </div>
             <div className="hidden md:block w-2/6">{el.users.email}</div>
             <div className="flex items-center w-1/3 md:w-1/6">
-              <Switch
-                checked={el.is_moderator}
-                onChange={() => setSelectedModerator(el.users)}
-                className={`${
-                  el.is_moderator ? 'bg-blue-600' : 'bg-gray-200'
-                } relative inline-flex h-7 w-12 items-center rounded-full`}
-              >
-                <span
+              {access && (
+                <Switch
+                  checked={el.is_moderator}
+                  onChange={() => setSelectedModerator(el.users)}
                   className={`${
-                    el.is_moderator ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
-                />
-              </Switch>
+                    el.is_moderator ? 'bg-blue-600' : 'bg-gray-200'
+                  } relative inline-flex h-7 w-12 items-center rounded-full`}
+                >
+                  <span
+                    className={`${
+                      el.is_moderator ? 'translate-x-6' : 'translate-x-1'
+                    } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                  />
+                </Switch>
+              )}
+              {!access && el.is_moderator && (
+                <span className="h-5 w-5 rounded-full bg-blue-600" />
+              )}
             </div>
             <div className="flex justify-end w-1/3 md:w-1/6">
               <button

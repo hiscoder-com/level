@@ -1,14 +1,7 @@
 import { useEffect, useState } from 'react'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
-function BriefResume({
-  highLevelAccess,
-  saveToDatabase,
-  updateBrief,
-  objResume,
-  index,
-  t,
-}) {
+function BriefResume({ access, saveToDatabase, updateBrief, objResume, index, t }) {
   const [resume, setResume] = useState(objResume)
 
   useEffect(() => {
@@ -26,8 +19,8 @@ function BriefResume({
         updateBrief(resume.trim(), index)
         setTimeout(() => saveToDatabase(), 1000)
       }}
-      readOnly={highLevelAccess ? false : true}
-      placeholder={highLevelAccess ? t('project-edit:enterText') : ''}
+      readOnly={access ? false : true}
+      placeholder={access ? t('project-edit:enterText') : ''}
     />
   )
 }

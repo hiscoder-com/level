@@ -35,7 +35,7 @@ export default function Projects({ type }) {
                   key={project.id}
                   project={project}
                   token={user?.access_token}
-                  userId={user?.id}
+                  user={user}
                 />
               )
           )}

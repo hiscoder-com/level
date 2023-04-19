@@ -7,7 +7,7 @@ import Card from './Card'
 
 import { useCoordinators, useTranslators } from 'utils/hooks'
 
-function ParticipantInfo({ project, user }) {
+function ParticipantInfo({ project, user, access }) {
   const { t } = useTranslation()
   const [translators] = useTranslators({
     token: user?.access_token,
@@ -24,7 +24,11 @@ function ParticipantInfo({ project, user }) {
   }, [translators])
 
   return (
-    <Card title={t('Participants')} link={`${project?.code}/edit#participants`}>
+    <Card
+      title={t('Participants')}
+      link={`${project?.code}/edit#participants`}
+      access={access}
+    >
       {project && (
         <div className="flex flex-col gap-4">
           {[

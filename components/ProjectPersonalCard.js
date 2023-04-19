@@ -9,12 +9,12 @@ import Translators from 'components/Translators'
 import Placeholder from './Placeholder'
 
 import { supabase } from 'utils/supabaseClient'
-import { useBriefState, useGetBooks } from 'utils/hooks'
+import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
 
-function ProjectPersonalCard({ project, token, userId }) {
+function ProjectPersonalCard({ project, token, user }) {
   const { locale } = useRouter()
-  const [highLevelAccess, setHighLevelAccess] = useState(false)
+
   const [currentSteps, setCurrentSteps] = useState(null)
 
   const { t } = useTranslation(['projects', 'common', 'books'])
@@ -23,21 +23,11 @@ function ProjectPersonalCard({ project, token, userId }) {
     token,
     project_id: project?.id,
   })
-
-  useEffect(() => {
-    const getLevel = async () => {
-      const level = await supabase.rpc('authorize', {
-        user_id: userId,
-        project_id: project.id,
-      })
-      if (level?.data) {
-        setHighLevelAccess(['admin', 'coordinator'].includes(level.data))
-      }
-    }
-    if (userId && project?.id) {
-      getLevel()
-    }
-  }, [userId, project?.id])
+  const [{ isCoordinatorAccess }] = useAccess({
+    token: user?.access_token,
+    user_id: user?.id,
+    code: project?.code,
+  })
 
   useEffect(() => {
     supabase
@@ -107,7 +97,7 @@ function ProjectPersonalCard({ project, token, userId }) {
 
   return (
     <>
-      {!project?.code || !chapters || !currentSteps || isLoading || !userId ? (
+      {!project?.code || !chapters || !currentSteps || isLoading || !user?.id ? (
         <Placeholder />
       ) : (
         <>
@@ -199,7 +189,9 @@ function ProjectPersonalCard({ project, token, userId }) {
                       {briefResume === '' && (
                         <Link href={`/projects/${project?.code}/edit/brief`}>
                           <a className="btn-link">
-                            {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                            {t(
+                              `common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`
+                            )}
                           </a>
                         </Link>
                       )}

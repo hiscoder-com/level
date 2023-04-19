@@ -29,7 +29,6 @@ export default function AppBar({ setIsOpen }) {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
-
   useEffect(() => {
     const hasAccess = async () => {
       try {

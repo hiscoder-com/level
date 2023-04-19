@@ -1,5 +1,3 @@
-import { useEffect, useState } from 'react'
-
 import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
@@ -7,37 +5,23 @@ import { useTranslation } from 'next-i18next'
 import Translators from './Translators'
 import Placeholder from './Placeholder'
 
-import { supabase } from 'utils/supabaseClient'
-import { useBriefState } from 'utils/hooks'
+import { useBriefState, useAccess } from 'utils/hooks'
 
-function ProjectCard({ project, token, userId }) {
-  const [highLevelAccess, setHighLevelAccess] = useState(false)
-
+function ProjectCard({ project, token, user }) {
   const { t } = useTranslation(['projects', 'common', 'books'])
-
+  const [{ isCoordinatorAccess }] = useAccess({
+    token: user?.access_token,
+    user_id: user?.id,
+    code: project?.code,
+  })
   const { briefResume, isLoading } = useBriefState({
     token,
     project_id: project?.id,
   })
 
-  useEffect(() => {
-    const getLevel = async () => {
-      const level = await supabase.rpc('authorize', {
-        user_id: userId,
-        project_id: project.id,
-      })
-      if (level?.data) {
-        setHighLevelAccess(['admin', 'coordinator'].includes(level.data))
-      }
-    }
-    if (userId && project?.id) {
-      getLevel()
-    }
-  }, [userId, project?.id])
-
   return (
     <>
-      {!project?.code || isLoading || !userId ? (
+      {!project?.code || isLoading || !user?.id ? (
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`}>
@@ -58,7 +42,7 @@ function ProjectCard({ project, token, userId }) {
             {briefResume === '' && (
               <Link href={`/projects/${project?.code}/edit/brief`}>
                 <a className="btn-link w-fit">
-                  {t(`common:${highLevelAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                  {t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                 </a>
               </Link>
             )}

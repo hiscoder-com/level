@@ -16,9 +16,8 @@ import { supabase } from 'utils/supabaseClient'
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 
-function Brief() {
+function Brief({ access }) {
   const [briefDataCollection, setBriefDataCollection] = useState('')
-  const [highLevelAccess, setHighLevelAccess] = useState(false)
 
   const {
     query: { code },
@@ -51,21 +50,6 @@ function Brief() {
         console.log(err)
       })
   }
-
-  useEffect(() => {
-    const getLevel = async () => {
-      const level = await supabase.rpc('authorize', {
-        user_id: user?.id,
-        project_id: project.id,
-      })
-      if (level?.data) {
-        setHighLevelAccess(['admin', 'coordinator'].includes(level.data))
-      }
-    }
-    if (user?.id && project?.id) {
-      getLevel()
-    }
-  }, [user?.id, project?.id])
 
   useEffect(() => {
     const briefUpdates = supabase
@@ -119,27 +103,29 @@ function Brief() {
         <div className="flex justify-between">
           <h3 className="h3 font-bold">{t('project-edit:EditBriefTitle')}</h3>
           <div>
-            <div className="flex">
-              <span className="mr-3">
-                {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
-              </span>
-              <Switch
-                checked={brief?.is_enable}
-                onChange={handleSwitch}
-                className={`${
-                  brief?.is_enable ? 'bg-blue-600' : 'bg-gray-200'
-                } relative inline-flex h-7 w-12 items-center rounded-full`}
-              >
-                <span
+            {access && (
+              <div className="flex">
+                <span className="mr-3">
+                  {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+                </span>
+
+                <Switch
+                  checked={brief?.is_enable}
+                  onChange={handleSwitch}
                   className={`${
-                    brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
-                />
-              </Switch>
-            </div>
+                    brief?.is_enable ? 'bg-blue-600' : 'bg-gray-200'
+                  } relative inline-flex h-7 w-12 items-center rounded-full`}
+                >
+                  <span
+                    className={`${
+                      brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
+                    } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                  />
+                </Switch>
+              </div>
+            )}
           </div>
         </div>
-
         {briefDataCollection && (
           <div className="flex flex-col md:flex-row w-full gap-4 mb-4 ">
             <div className="md:w-1/3">
@@ -187,23 +173,24 @@ function Brief() {
                       }`}
                     >
                       <p className="h4-5 font-bold">{questionTitle}</p>
-                      {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                        return (
-                          <div className="flex flex-nowrap leading-6" key={blockIndex}>
-                            -&nbsp;
-                            <BriefAnswer
-                              highLevelAccess={highLevelAccess}
-                              saveToDatabase={saveToDatabase}
-                              objQA={questionAndAnswerPair}
-                              updateObjQA={updateObjQA}
-                              blockIndex={blockIndex}
-                              briefItem={briefItem}
-                              index={index}
-                              t={t}
-                            />
-                          </div>
-                        )
-                      })}
+                      <ul className="list-disc px-4 h5">
+                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                          return (
+                            <li className="flex flex-nowrap leading-6" key={blockIndex}>
+                              <BriefAnswer
+                                access={access}
+                                saveToDatabase={saveToDatabase}
+                                objQA={questionAndAnswerPair}
+                                updateObjQA={updateObjQA}
+                                blockIndex={blockIndex}
+                                briefItem={briefItem}
+                                index={index}
+                                t={t}
+                              />
+                            </li>
+                          )
+                        })}
+                      </ul>
                     </div>
                   )
                 })}
@@ -219,7 +206,7 @@ function Brief() {
                     <div className="flex flex-nowrap leading-6 py-2" key={index}>
                       -&nbsp;
                       <BriefResume
-                        highLevelAccess={highLevelAccess}
+                        access={access}
                         saveToDatabase={saveToDatabase}
                         objResume={briefItem.resume}
                         updateBrief={updateBrief}
@@ -235,7 +222,7 @@ function Brief() {
           </div>
         )}
 
-        {highLevelAccess && (
+        {access && (
           <div>
             <button
               className="btn-link-full text-xl"
