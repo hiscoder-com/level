@@ -287,4 +287,12 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply mx-auto max-w-7xl
 }
 
-
+.first-check path:nth-child(1){
+	@apply fill-emerald-500
+}
+.second-check path:nth-child(2){
+	@apply fill-teal-500
+}
+.third-check path:nth-child(3){
+	@apply fill-cyan-700
+}

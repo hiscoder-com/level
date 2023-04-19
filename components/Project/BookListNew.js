@@ -43,6 +43,7 @@ function Testament({
   user,
   project,
   access: { isCoordinatorAccess, isModeratorAccess },
+  checktype = '',
 }) {
   const { t } = useTranslation(['books'])
   const [books, { mutate: mutateBooks }] = useGetBooks({
@@ -51,6 +52,19 @@ function Testament({
   })
 
   const createdBooks = useMemo(() => books?.map((el) => el.code), [books])
+
+  const checks = ['first-check', 'second-check', 'third-check'].filter((el) => {
+    switch (checktype) {
+      case 'first-check':
+        return ['first-check'].includes(el)
+      case 'second-check':
+        return ['first-check', 'second-check'].includes(el)
+      case 'third-check':
+        return ['first-check', 'second-check', 'third-check'].includes(el)
+      default:
+        break
+    }
+  })
   return (
     <div className="flex flex-col gap-7 max-h-[100vh] px-3">
       <h3 className="h3 font-bold">{title}</h3>
@@ -58,10 +72,12 @@ function Testament({
         {bookList.map((el) => (
           <div key={el} className="flex justify-between items-center gap-2">
             <div className="flex items-center h5 gap-5">
-              <div>
+              <div className={`text-gray-400 ${checks.join(' ')}`}>
                 <Checking />
               </div>
-              <div className={createdBooks?.includes(el) ? '' : 'text-teal-500'}>
+              <div
+                className={createdBooks?.includes(el) ? 'text-teal-500' : 'text-gray-400'}
+              >
                 {t(`books:${el}`)}
               </div>
             </div>
