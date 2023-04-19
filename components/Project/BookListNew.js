@@ -9,6 +9,7 @@ import Gear from '../../public/gear.svg'
 import Book from '../../public/dictionary.svg'
 import Pencil from '../../public/editor-pencil.svg'
 import Download from '../../public/download.svg'
+import Play from '../../public/play.svg'
 
 import { oldTestamentList, newTestamentList } from 'utils/config'
 
@@ -68,6 +69,7 @@ function Testament({
               {isCoordinatorAccess && (
                 <>
                   <Gear className="w-6" /> <Pencil className="w-6" />
+                  <Play className="w-6" />
                 </>
               )}
               {isModeratorAccess && <Download className="w-6" />}
