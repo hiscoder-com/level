@@ -105,7 +105,7 @@ function Parcticipants({ user, users, highLevelAccess, level }) {
           <h3 className="h3 mb-5 font-bold">{t('Participants')}</h3>
           <div className="divide-y-2 divide-black">
             <div className="flex flex-col gap-7 pb-5">
-              <div className="flex justify-between items-center gap-2 md:text-xl font-bold">
+              <div className="flex justify-between items-center gap-2 text-xl font-bold">
                 <div>{t('Coordinators')}</div>
                 {'admin' === level && (
                   <button
@@ -128,7 +128,7 @@ function Parcticipants({ user, users, highLevelAccess, level }) {
             </div>
 
             <div className="flex flex-col gap-7 pt-5">
-              <div className="flex justify-between items-center lg:text-xl font-bold">
+              <div className="flex justify-between items-center text-xl font-bold">
                 <div>{t('projects:Translators')}</div>
                 <button
                   onClick={() => {

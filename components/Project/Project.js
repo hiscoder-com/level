@@ -86,7 +86,7 @@ function Project({ code }) {
           <ProjectInfo project={project} />
           <ParticipantInfo project={project} user={user} />
         </div>
-        <div className="flex w-1/2 xl:h-full xl:w-full">
+        <div className="flex w-1/2 xl:w-full">
           <ResumeInfo project={project} user={user} />
         </div>
       </div>
