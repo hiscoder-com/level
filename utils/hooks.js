@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import axios from 'axios'
 import useSWR from 'swr'
@@ -333,32 +333,6 @@ export function useGetBooks({ token, code }) {
 }
 
 /**
- *hook returns information about specific book of specific project from table 'books'
- * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
- * @param {string} book_code code of book
- * @returns {object}
- */
-export function useGetBook({ token, code, book_code }) {
-  const {
-    data: book,
-    mutate,
-    error,
-    isLoading,
-  } = useSWR(
-    token && code && book_code
-      ? [`/api/projects/${code}/books/${book_code}`, token]
-      : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
-  return [book, { mutate, error, isLoading }]
-}
-
-/**
  *hook returns information about chapters of specific project from table 'chapters'
  * @param {string} code code of project
  * @param {string} token token of current session of authenticated user
@@ -466,7 +440,7 @@ export function useGetVerses({ token, code, book_code, chapter_id }) {
   )
   return [verses, { mutate, error, isLoading }]
 }
-
+//TODO сделать описание
 export function useGetInfo({ config, url }) {
   const {
     reference: { book, chapter },
@@ -486,4 +460,42 @@ export function useGetInfo({ config, url }) {
   )
 
   return { isLoading, data, error }
+}
+
+/**
+ *hook returns information about specific book of specific project from table 'books'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {string} book_code code of book
+ * @returns {object}
+ */
+//TODO переделать описание
+export function useAccess({ token, user_id, code }) {
+  const {
+    data: level,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && user_id ? [`/api/projects/${code}/${user_id}`, token] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  const isModeratorAccess = useMemo(
+    () => ['admin', 'coordinator', 'moderator'].includes(level),
+    [level]
+  )
+  const isCoordinatorAccess = useMemo(
+    () => ['admin', 'coordinator'].includes(level),
+    [level]
+  )
+  const isAdminAccess = useMemo(() => 'admin' === level, [level])
+
+  return [
+    { isModeratorAccess, isCoordinatorAccess, isAdminAccess },
+    { mutate, error, isLoading },
+  ]
 }
