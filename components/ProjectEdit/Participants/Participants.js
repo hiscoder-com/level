@@ -102,7 +102,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
     <>
       <div className="card text-darkBlue">
         <h3 className="h3 mb-5 font-bold">{t('Participants')}</h3>
-        <div className="divide-y-2 divide-black">
+        <div className="divide-y divide-black">
           <div className="flex flex-col gap-7 pb-5">
             <div className="flex justify-between items-center gap-2 text-xl font-bold">
               <div>{t('Coordinators')}</div>

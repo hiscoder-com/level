@@ -26,7 +26,8 @@ function ParticipantInfo({ project, user, access }) {
   return (
     <Card
       title={t('Participants')}
-      link={`${project?.code}/edit#participants`}
+      link={`${project?.code}/edit/#participants`}
+      // TODO warning когда обновляю страницу, а в url - # якорь
       access={access}
     >
       {project && (

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Brief from './Brief/Brief'
 import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
-import Parcticipants from './Participants/Participants'
+import Participants from './Participants/Participants'
 
 import LeftArrow from '../../public/left-big-arrow.svg'
 
@@ -34,8 +34,8 @@ function ProjectEdit() {
         </Link>
       </div>
       {isModeratorAccess && (
-        <div id="parcticipants">
-          <Parcticipants
+        <div id="participants">
+          <Participants
             user={user}
             users={users}
             access={{ isCoordinatorAccess, isAdminAccess }}
