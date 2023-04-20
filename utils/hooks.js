@@ -333,6 +333,32 @@ export function useGetBooks({ token, code }) {
 }
 
 /**
+ *hook returns information about specific book of specific project from table 'books'
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {string} book_code code of book
+ * @returns {object}
+ */
+export function useGetBook({ token, code, book_code }) {
+  const {
+    data: book,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && book_code
+      ? [`/api/projects/${code}/books/${book_code}`, token]
+      : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  return [book, { mutate, error, isLoading }]
+}
+
+/**
  *hook returns information about chapters of specific project from table 'chapters'
  * @param {string} code code of project
  * @param {string} token token of current session of authenticated user

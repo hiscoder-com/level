@@ -271,7 +271,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
   @apply flex gap-2 py-3 px-6 h-min border rounded-3xl;
 }
 .btn-link {
-  @apply btn-link-base text-darkBlue border-darkBlue hover:bg-[#b7c9e5];
+  @apply btn-link-base text-darkBlue border-darkBlue hover:bg-blue-250;
 }
 .btn-link-full {
   @apply btn-link-base text-darkBlue  hover:bg-white bg-blue-150;

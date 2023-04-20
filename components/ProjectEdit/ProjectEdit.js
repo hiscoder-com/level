@@ -3,8 +3,7 @@ import Link from 'next/link'
 import Brief from './Brief/Brief'
 import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
 import Participants from './Participants/Participants'
-
-import LeftArrow from '../../public/left-big-arrow.svg'
+import BreadCrumb from './BreadCrumb'
 
 import { useAccess, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -25,14 +24,7 @@ function ProjectEdit() {
   })
   return (
     <div className="container flex flex-col gap-7">
-      <div className="bread-crumb lg:w-2/3 w-full">
-        <Link href={'/projects/' + code}>
-          <a className="flex items-center gap-3">
-            <LeftArrow />
-            <h3 className="h3 font-bold">{project?.title}</h3>
-          </a>
-        </Link>
-      </div>
+      <BreadCrumb link={'/projects/' + code} title={project?.title} full />
       {isModeratorAccess && (
         <div id="participants">
           <Participants

@@ -21,7 +21,7 @@ export default async function chaptersHandler(req, res) {
             'id, projects!inner(code), books!inner(code), num, verses,started_at, finished_at, text'
           )
           .match({ 'projects.code': code, 'books.code': book_code })
-
+          .order('num', { ascending: true })
         if (error) throw error
         data = chapters
       } catch (error) {
