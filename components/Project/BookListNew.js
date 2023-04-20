@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
 
@@ -26,6 +26,7 @@ import { readableDate } from 'utils/helper'
 import { supabase } from 'utils/supabaseClient'
 
 function BookListNew({ user, project, access }) {
+  const { query } = useRouter()
   const [currentBook, setCurrentBook] = useState(null)
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
     token: user?.access_token,
@@ -41,8 +42,23 @@ function BookListNew({ user, project, access }) {
     { title: 'OldTestament', books: oldTestamentList },
     { title: 'NewTestament', books: newTestamentList },
   ]
+  const [books, { mutate: mutateBooks }] = useGetBooks({
+    token: user?.access_token,
+    code: project?.code,
+  })
+  useEffect(() => {
+    if (query?.book && books?.length) {
+      const book = books?.find((book) => book.code === query?.book)
+      if (book) {
+        setCurrentBook(book.code)
+      }
+    } else {
+      setCurrentBook(null)
+    }
+  }, [query, books, setCurrentBook])
+
   return (
-    <div className="card flex">
+    <div className="card flex h-full">
       {currentBook ? (
         <ChapterList
           chapters={chapters}
@@ -84,6 +100,7 @@ function Testament({
   setCurrentBook,
 }) {
   const { t } = useTranslation(['books'])
+  const { push } = useRouter()
   const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
@@ -103,41 +120,50 @@ function Testament({
         })
         .then((res) => {
           if (res.status == 201) {
-            alert('успешно')
-            // push(
-            //   {
-            //     pathname: `/projects/${project?.code}`,
-            //     query: { book: selectedBook },
-            //   },
-            //   undefined,
-            //   { shallow: true }
-            // )
+            push(
+              {
+                pathname: `/projects/${project?.code}`,
+                query: { book: book_code },
+              },
+              undefined,
+              { shallow: true }
+            )
           }
         })
     } catch (error) {
       console.log(error)
     } finally {
-      // setCreatingBook(false)
       mutateBooks()
     }
   }
   const createdBooks = useMemo(() => books?.map((el) => el.code), [books])
 
+  const handleOpenBook = (book, isBookCreated) => {
+    if (isBookCreated && book) {
+      setCurrentBook(book)
+      push({
+        pathname: `/projects/${project?.code}`,
+        query: { book: book },
+        shallow: true,
+      })
+    }
+  }
+
   return (
-    <div className="flex flex-col gap-7 max-h-[100vh] px-3">
+    <div className="flex flex-col gap-7  px-3">
       <h3 className="h3 font-bold">{title}</h3>
-      <div className="flex flex-col gap-4 overflow-y-scroll px-4">
+      <div className="flex flex-col gap-4 overflow-y-scroll px-4 max-h-[100vh]">
         {bookList.map((el) => {
           const isBookCreated = createdBooks?.includes(el)
           return (
             <div key={el} className="flex justify-between items-center gap-2">
               <div className="flex items-center gap-5 h5">
-                <ChecksIcon />
+                <ChecksIcon book={el} user={user} project={project} />
                 <div
                   className={
                     isBookCreated ? 'text-teal-500 cursor-pointer' : 'text-gray-400'
                   }
-                  onClick={() => isBookCreated && setCurrentBook(el)}
+                  onClick={() => handleOpenBook(el, isBookCreated)}
                 >
                   {t(`books:${el}`)}
                 </div>
@@ -172,13 +198,12 @@ function Testament({
 function ChapterList({
   chapters,
   book,
-  setCurrentBook,
   createdChapters,
   mutate: { mutateCreatedChapters, mutateChapters },
   access: { isCoordinatorAccess },
   project,
 }) {
-  const { query: locale } = useRouter()
+  const { query: locale, push } = useRouter()
   const { t } = useTranslation()
 
   const nextChapter = useMemo(() => {
@@ -186,6 +211,7 @@ function ChapterList({
       chapters?.length - createdChapters?.length > 0 && createdChapters?.length + 1
     return chapters?.find((chapter) => chapter.num === num)
   }, [chapters, createdChapters?.length])
+
   const handleAddChapter = async ({ chapter_id, num }) => {
     try {
       const res = await supabase.rpc('create_verses', { chapter_id })
@@ -201,13 +227,12 @@ function ChapterList({
 
   return (
     <div className="flex flex-col gap-7 w-full">
-      <div
-        className="flex items-center gap-3 cursor-pointer"
-        onClick={() => setCurrentBook(null)}
-      >
-        <LeftArrow />
-        <h3 className="h3 font-bold">{book}</h3>
-      </div>
+      <Link href={`/projects/${project?.code}`}>
+        <a className="flex items-center gap-3 cursor-pointer">
+          <LeftArrow />
+          <h3 className="h3 font-bold">{book}</h3>
+        </a>
+      </Link>
       <div className="flex flex-col gap-3 h4">
         <div className="flex px-5 py-3 rounded-xl">
           <div className="w-1/6">{t('Chapter')}</div>
@@ -216,45 +241,45 @@ function ChapterList({
           </div>
           <div className="w-3/6">{`${t('Download')} / ${t('Open')}`}</div>
         </div>
-        {chapters &&
-          chapters.map((chapter) => {
-            const { id, started_at, finished_at, num } = chapter
+        <div className="overflow-y-scroll flex flex-col gap-3 max-h-[80vh] pr-4">
+          {chapters &&
+            chapters.map((chapter) => {
+              const { id, started_at, finished_at, num } = chapter
 
-            return (
-              createdChapters?.includes(id) && (
-                <Link href={`/projects/${project?.code}/books/${book}/${num}`}>
-                  <div
-                    key={id}
-                    className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer"
-                  >
-                    <div className="w-1/6">{num}</div>
-                    <div className="w-2/6">
-                      {started_at && readableDate(started_at, locale)}
-                      {finished_at && readableDate(finished_at, locale)}
+              return (
+                createdChapters?.includes(id) && (
+                  <Link key={id} href={`/projects/${project?.code}/books/${book}/${num}`}>
+                    <div className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer">
+                      <div className="w-1/6">{num}</div>
+                      <div className="w-2/6">
+                        {started_at && readableDate(started_at, locale)}
+                        {finished_at && readableDate(finished_at, locale)}
+                      </div>
+                      <div className="w-3/6">{t('Download')}</div>
                     </div>
-                    <div className="w-3/6">{t('Download')}</div>
-                  </div>
-                </Link>
+                  </Link>
+                )
               )
-            )
-          })}
-        {nextChapter && isCoordinatorAccess && (
-          <div
-            className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer hover:bg-blue-250"
-            onClick={() =>
-              handleAddChapter({ chapter_id: nextChapter.id, num: nextChapter.num })
-            }
-          >
-            <div className="w-1/6"></div>
-            <div className="w-2/6"></div>
-            <div className="w-3/6 flex items-center gap-2">
-              <div className="w-6">
-                <Plus />
+            })}
+
+          {nextChapter && isCoordinatorAccess && (
+            <div
+              className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer hover:bg-blue-250 mr-4"
+              onClick={() =>
+                handleAddChapter({ chapter_id: nextChapter.id, num: nextChapter.num })
+              }
+            >
+              <div className="w-1/6"></div>
+              <div className="w-2/6"></div>
+              <div className="w-3/6 flex items-center gap-2">
+                <div className="w-6">
+                  <Plus />
+                </div>
+                <p>{t('AddChapter')}</p>
               </div>
-              <p>{t('AddChapter')}</p>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
     </div>
   )
