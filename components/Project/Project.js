@@ -22,7 +22,7 @@ function Project({ code }) {
           <ProjectInfo project={project} access={isCoordinatorAccess} />
           <ParticipantInfo project={project} user={user} access={isModeratorAccess} />
         </div>
-        <div className="flex w-1/2 xl:w-full">
+        <div className="w-1/2 xl:w-full">
           <ResumeInfo project={project} user={user} />
         </div>
       </div>
