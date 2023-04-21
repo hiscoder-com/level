@@ -26,6 +26,7 @@ import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
+import Parameters from 'public/parameters.svg'
 
 const defaultColor = [
   { border: 'border-yellow-400', bg: 'bg-yellow-400', text: 'text-yellow-400' },
@@ -40,9 +41,9 @@ const defaultColor = [
 ]
 
 const slateColor = {
-  border: 'border-slate-300',
-  bg: 'bg-slate-300',
-  text: 'text-slate-300',
+  border: 'border-slate-900',
+  bg: 'bg-white',
+  text: 'text-slate-900',
 }
 
 function ChapterVersesPage() {
@@ -184,7 +185,7 @@ function ChapterVersesPage() {
             </Link>
           </div>
           <div className="card text-slate-900">
-            <div className="font-bold">
+            <div className="font-bold mb-7">
               <span className="text-3xl">{t(`books:${book?.code}`)}</span>
               <span className="text-xl ml-7">
                 {t('Chapter')} {chapter?.num}
@@ -201,18 +202,16 @@ function ChapterVersesPage() {
                 .map((verse, index) => {
                   return (
                     <div
-                      onMouseDown={() => {
+                      onMouseUp={() => {
                         if (currentTranslator !== null) {
-                          console.log('onMouseDown')
                           coloring(index)
                         }
                       }}
-                      // onMouseOver={() => {
-                      //   if (isHighlight && currentTranslator !== null) {
-                      //     console.log('onMouseOver')
-                      //     coloring(index)
-                      //   }
-                      // }}
+                      onMouseLeave={() => {
+                        if (isHighlight && currentTranslator !== null) {
+                          coloring(index)
+                        }
+                      }}
                       // onClick={() => {
                       //   if (currentTranslator === null) {
                       //     return
@@ -220,15 +219,15 @@ function ChapterVersesPage() {
                       //   console.log('onClick')
                       //   coloring(index)
                       // }}
-                      className={`${
-                        verse?.color.bg ?? 'bg-slate-300'
-                      } border-slate-200 border-2 truncate rounded-2xl cursor-pointer aspect-1 ${
-                        currentTranslator ? 'verse-block' : ''
+                      className={`truncate aspect-1 ${
+                        currentTranslator ? 'verse-block cursor-pointer' : ''
                       }`}
                       key={index}
                     >
                       <div
-                        className={`${
+                        className={`${verse?.color.bg ?? 'bg-white'} ${
+                          verse?.color.border ?? 'border-slate-900'
+                        } border-2 truncate rounded-2xl ${
                           currentTranslator ? '' : 'flex'
                         } w-full h-full flex-col p-1 justify-between`}
                       >
@@ -246,7 +245,7 @@ function ChapterVersesPage() {
                       <div
                         className={`${
                           currentTranslator ? '' : 'hidden'
-                        } w-full h-full justify-center p-1 items-center`}
+                        } w-full h-full rounded-2xl justify-center p-1 items-center`}
                         style={{
                           background: verse.translator_name
                             ? 'linear-gradient(90deg, #2E4057 1%, #596B84 98%)'
@@ -269,6 +268,15 @@ function ChapterVersesPage() {
         </div>
         <div className="flex flex-col gap-7 w-1/3">
           <div className="card flex flex-col gap-3">
+            <div className="flex flex-row justify-between items-center text-slate-900">
+              <h3 className="text-2xl font-bold">Назначение участников</h3>
+              <Parameters
+                className="h-10 w-10 p-2 cursor-pointer"
+                onClick={() => {
+                  alert('Settings')
+                }}
+              />
+            </div>
             {colorTranslators?.map((translator, index) => (
               <div key={index} className="flex">
                 <div
@@ -306,22 +314,6 @@ function ChapterVersesPage() {
                 </div>
               </div>
             ))}
-            {/* <button
-              onClick={() =>
-                setCurrentTranslator((prev) => {
-                  return { ...prev, users: { login: '' }, color: { bg: ' bg-slate-300' } }
-                })
-              }
-              className={`border-slate-500 text-slate-500 border-2 cursor-pointer p-2 w-full items-center rounded-2xl flex flex-row font-semibold text-xl`}
-            >
-              <div className="avatar-block w-10 flex-grow-0"></div>
-              <div className="text-block ml-2 flex-auto text-left">{t('Clearing')}</div>
-              <div className="icon-block flex-grow-0">
-                <div className="border-slate-500 border-2 rounded-full p-2">
-                  <Trash className="w-5 h-5" />
-                </div>
-              </div>
-            </button> */}
             <hr className="border-gray-500" />
             <button
               onClick={verseDividing}
