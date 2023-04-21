@@ -20,6 +20,7 @@ function Testament({
   project,
   access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess },
   setCurrentBook,
+  setDownloadingBook,
 }) {
   const { t } = useTranslation(['books'])
   const { push } = useRouter()
@@ -67,7 +68,7 @@ function Testament({
       setCurrentBook(book)
       push({
         pathname: `/projects/${project?.code}`,
-        query: { book: book },
+        query: { book },
         shallow: true,
       })
     }
@@ -117,7 +118,21 @@ function Testament({
                       onClick={() => handleCreate(el)}
                     />
                   )}
-                  {isModeratorAccess && isBookCreated && <Download className="w-6" />}
+                  {isModeratorAccess && isBookCreated && (
+                    <Download
+                      className="w-6"
+                      onClick={() =>
+                        push({
+                          pathname: `/projects/${project?.code}`,
+                          query: {
+                            book: el,
+                            download: 'book',
+                          },
+                          shallow: true,
+                        })
+                      }
+                    />
+                  )}
                   <Reader className="w-6" />
                 </div>
               </div>

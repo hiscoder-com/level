@@ -4,10 +4,10 @@ import JSZip from 'jszip'
 
 import { saveAs } from 'file-saver'
 
-import Modal from 'components/Modal'
-
 import { usfmFileNames } from 'utils/config'
 import { compileChapter, downloadFile, downloadPdf } from 'utils/helper'
+import { useTranslation } from 'next-i18next'
+import BreadCrumb from 'components/ProjectEdit/BreadCrumb'
 
 const downloadSettingsChapter = {
   withImages: true,
@@ -20,16 +20,16 @@ const downloadSettingsBook = {
 }
 
 function Download({
-  openDownloading,
-  setOpenDownloading,
   compileBook,
   downloadingBook,
   project,
-  t,
   getBookJson,
   isBook = false,
-  currentChapter,
+  chapter,
+  bookCode,
 }) {
+  const { t } = useTranslation()
+
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
   )
@@ -72,47 +72,58 @@ function Download({
       saveAs(blob, `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`)
     })
   }
-
+  const links = [
+    { title: project?.title, href: '/projects/' + project?.code },
+    {
+      title: t('books:' + bookCode),
+      href: '/projects/' + project?.code + '?book=' + bookCode,
+    },
+  ]
   return (
-    <Modal isOpen={openDownloading} closeHandle={() => setOpenDownloading(false)}>
-      <div className="mb-4 text-center">{t('Download')}</div>
-      <div className="pb-2 border-b-2">
-        {isBook ? (
-          <BookDownloadPdf
-            downloadingBook={downloadingBook}
-            downloadSettings={downloadSettings}
-            project={project}
-            t={t}
-            compileBook={compileBook}
-          />
-        ) : (
-          <ChapterDownloadPdf
-            selectedBook={downloadingBook}
-            currentChapter={currentChapter}
-            project={project}
-            downloadSettings={downloadSettings}
-            t={t}
-          />
-        )}
-        {Object.keys(downloadSettings)
-          .filter((key) => project?.type === 'obs' || key === 'withFront')
-          .map((key, index) => {
-            return (
-              <div key={index}>
-                <input
-                  className="h-[17px] w-[17px] mt-4 cursor-pointer accent-cyan-600"
-                  type="checkbox"
-                  checked={downloadSettings[key]}
-                  onChange={() =>
-                    setDownloadSettings((prev) => {
-                      return { ...prev, [key]: !downloadSettings[key] }
-                    })
-                  }
-                />
-                <span className="ml-2">{t(key)}</span>
-              </div>
-            )
-          })}
+    <div className="w-full">
+      <BreadCrumb
+        links={isBook ? links.filter((el) => isBook && !el.href.includes('book')) : links}
+      />
+      <div className="flex h4 m-4 ">{t('Download')}</div>
+      <div className="flex">
+        <div className="pb-2 border-b-2">
+          {isBook ? (
+            <BookDownloadPdf
+              downloadingBook={downloadingBook}
+              downloadSettings={downloadSettings}
+              project={project}
+              t={t}
+              compileBook={compileBook}
+            />
+          ) : (
+            <ChapterDownloadPdf
+              selectedBook={downloadingBook}
+              chapter={chapter}
+              project={project}
+              downloadSettings={downloadSettings}
+              t={t}
+            />
+          )}
+          {Object.keys(downloadSettings)
+            .filter((key) => project?.type === 'obs' || key === 'withFront')
+            .map((key, index) => {
+              return (
+                <div key={index}>
+                  <input
+                    className="h-[17px] w-[17px] mt-4 cursor-pointer accent-cyan-600"
+                    type="checkbox"
+                    checked={downloadSettings[key]}
+                    onChange={() =>
+                      setDownloadSettings((prev) => {
+                        return { ...prev, [key]: !downloadSettings[key] }
+                      })
+                    }
+                  />
+                  <span className="ml-2">{t(key)}</span>
+                </div>
+              )
+            })}
+        </div>
       </div>
       {isBook ? (
         <BookDownloadUsfmZip
@@ -126,22 +137,12 @@ function Download({
       ) : (
         <ChapterDownloadTxtMd
           project={project}
-          currentChapter={currentChapter}
+          chapter={chapter}
           selectedBook={downloadingBook}
           t={t}
         />
       )}
-      <div className="flex justify-end">
-        <button
-          className="btn-cyan mt-2"
-          onClick={() => {
-            setOpenDownloading(false)
-          }}
-        >
-          {t('Close')}
-        </button>
-      </div>
-    </Modal>
+    </div>
   )
 }
 
@@ -211,13 +212,7 @@ function BookDownloadUsfmZip({
   )
 }
 
-function ChapterDownloadPdf({
-  selectedBook,
-  currentChapter,
-  project,
-  downloadSettings,
-  t,
-}) {
+function ChapterDownloadPdf({ selectedBook, chapter, project, downloadSettings, t }) {
   return (
     <div
       className="btn p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
@@ -225,8 +220,8 @@ function ChapterDownloadPdf({
         downloadPdf({
           htmlContent: await compileChapter(
             {
-              json: currentChapter?.text,
-              chapterNum: currentChapter?.num,
+              json: chapter?.text,
+              chapterNum: chapter?.num,
               project: {
                 title: project.title,
               },
@@ -252,7 +247,7 @@ function ChapterDownloadPdf({
   )
 }
 
-function ChapterDownloadTxtMd({ project, currentChapter, selectedBook, t }) {
+function ChapterDownloadTxtMd({ project, chapter, selectedBook, t }) {
   return (
     <div
       className="btn p-2 mt-4 hover:bg-gray-200 cursor-pointer"
@@ -261,8 +256,8 @@ function ChapterDownloadTxtMd({ project, currentChapter, selectedBook, t }) {
           ? downloadFile({
               text: await compileChapter(
                 {
-                  json: currentChapter?.text,
-                  chapterNum: currentChapter?.num,
+                  json: chapter?.text,
+                  chapterNum: chapter?.num,
                 },
                 'markdown'
               ),

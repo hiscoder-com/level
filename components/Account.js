@@ -26,7 +26,7 @@ function Account() {
     <div className="container">
       {user?.id && (
         <div className="divide-y divide-darkBlue">
-          <div className="grid grid-cols-3 gap-7 md:grid-cols-4 xl:grid-cols-5 lg:mt-15 mt-12 h5 lg:text-xl font-bold text-center">
+          <div className="grid grid-cols-3 gap-7 md:grid-cols-4 xl:grid-cols-6 lg:mt-15 mt-12 h5 lg:text-lg font-bold text-center">
             {[
               { type: 'account', label: 'Account', class: 'tab' },
               {

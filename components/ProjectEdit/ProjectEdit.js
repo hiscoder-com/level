@@ -24,7 +24,7 @@ function ProjectEdit() {
   })
   return (
     <div className="container flex flex-col gap-7">
-      <BreadCrumb link={'/projects/' + code} title={project?.title} full />
+      <BreadCrumb links={[{ title: project?.title, href: '/projects/' + code }]} full />
       {isModeratorAccess && (
         <div id="participants">
           <Participants

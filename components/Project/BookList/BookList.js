@@ -8,10 +8,12 @@ import { oldTestamentList, newTestamentList } from 'utils/config'
 
 import Testament from './Testament'
 import ChapterList from './ChapterList'
+import Download from './Download'
 
 function BookList({ user, project, access }) {
   const { query } = useRouter()
   const [currentBook, setCurrentBook] = useState(null)
+  const [downloadingBook, setDownloadingBook] = useState(null)
 
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
     token: user?.access_token,
@@ -35,18 +37,26 @@ function BookList({ user, project, access }) {
     code: project?.code,
   })
   useEffect(() => {
-    if (query?.book && books?.length) {
-      const book = books?.find((book) => book.code === query?.book)
-      if (book) {
-        setCurrentBook(book.code)
-      }
+    console.log('first')
+    if (query?.download === 'book') {
+      setDownloadingBook(query?.book)
+      setCurrentBook(null)
+    }
+    if (query?.download === 'chapter') {
+      // setDownloadingBook(query?.book)
+      // setCurrentBook(null)
+    }
+    if (query?.book) {
+      setCurrentBook(query?.book)
     } else {
+      setDownloadingBook(null)
       setCurrentBook(null)
     }
   }, [query, books, setCurrentBook])
   return (
     <div className="card flex h-full">
-      {currentBook ? (
+      {downloadingBook && <Download isBook project={project} />}
+      {currentBook && !downloadingBook && (
         <ChapterList
           chapters={chapters}
           book={currentBook}
@@ -56,7 +66,8 @@ function BookList({ user, project, access }) {
           access={access}
           project={project}
         />
-      ) : (
+      )}
+      {!currentBook && !downloadingBook && (
         <>
           {testaments?.[project?.type]?.map((testament) => (
             <div
@@ -72,6 +83,7 @@ function BookList({ user, project, access }) {
                 project={project}
                 access={access}
                 setCurrentBook={setCurrentBook}
+                setDownloadingBook={setDownloadingBook}
               />
             </div>
           ))}
