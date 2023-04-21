@@ -4,23 +4,25 @@ import toast, { Toaster } from 'react-hot-toast'
 
 import Modal from 'components/Modal'
 import Property from './Property'
+import { useTranslation } from 'next-i18next'
+import BreadCrumb from 'components/ProjectEdit/BreadCrumb'
 
 function BookProperties({
   bookCode,
   openDownloading,
   setOpenDownloading,
-  t,
   type,
   user,
   mutateBooks,
   books,
+  project,
 }) {
+  const { t } = useTranslation()
   const book = useMemo(() => books?.find((el) => el.code === bookCode), [bookCode, books])
   const [properties, setProperties] = useState()
   useEffect(() => {
     setProperties(book?.properties)
   }, [book?.properties])
-
   const updateProperty = (text, property) => {
     setProperties((prev) => {
       if (type !== 'obs') {
@@ -68,20 +70,16 @@ function BookProperties({
         console.log(err)
       })
   }
-
   return (
-    <Modal isOpen={openDownloading} closeHandle={() => setOpenDownloading(false)}>
-      {renderProperties}
-      <div className="flex justify-end">
-        <button className="btn-cyan mr-2" onClick={handleSave}>
-          {t('Save')}
-        </button>
-        <button className="btn-cyan" onClick={() => setOpenDownloading(false)}>
-          {t('Close')}
-        </button>
-      </div>
+    <div>
+      <BreadCrumb
+        links={[{ title: project?.title, href: '/projects/' + project?.code }]}
+      />
+
+      <div className="flex flex-wrap">{renderProperties}</div>
+
       <Toaster />
-    </Modal>
+    </div>
   )
 }
 export default BookProperties

@@ -100,12 +100,16 @@ function Testament({
                       {isBookCreated && (
                         <>
                           <Gear
-                            className="w-6"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              setOpenProperties(true)
-                              setSelectedBookProperties(el)
-                            }}
+                            className="w-6 cursor-pointer"
+                            onClick={() =>
+                              push({
+                                pathname: `/projects/${project?.code}`,
+                                query: {
+                                  properties: el,
+                                },
+                                shallow: true,
+                              })
+                            }
                           />
                           {/* <Pencil className="w-6" /> */}
                         </>
@@ -120,7 +124,7 @@ function Testament({
                   )}
                   {isModeratorAccess && isBookCreated && (
                     <Download
-                      className="w-6"
+                      className="w-6 cursor-pointer"
                       onClick={() =>
                         push({
                           pathname: `/projects/${project?.code}`,
@@ -140,17 +144,6 @@ function Testament({
           })}
         </div>
       </div>
-      <PropertiesOfBook
-        project={project}
-        user={user}
-        bookCode={selectedBookProperties}
-        openDownloading={openProperties}
-        setOpenDownloading={setOpenProperties}
-        type={project?.type}
-        t={t}
-        mutateBooks={mutateBooks}
-        books={books}
-      />
     </>
   )
 }

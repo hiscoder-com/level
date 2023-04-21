@@ -113,9 +113,9 @@ function ProjectPersonalCard({ project, token, user }) {
                       <div className="flex gap-1 flex-wrap items-center">
                         <div className="h3 font-bold">{t(`books:${book}`)}</div>
                         <div className="h5 pt-1">{`(${
-                          countChaptersVerses?.[book].countChapters
+                          countChaptersVerses?.[book]?.countChapters
                         } ${t('common:Chapters')} ${
-                          countChaptersVerses?.[book].countVerses
+                          countChaptersVerses?.[book]?.countVerses
                         } ${t('common:Verses')})`}</div>
                       </div>
                       <div className="flex flex-col gap-5">
@@ -156,7 +156,7 @@ function ProjectPersonalCard({ project, token, user }) {
                             </span>
                             <span>|</span>
                             <span>
-                              {countChaptersVerses?.[book].chapters[step.chapter]}{' '}
+                              {countChaptersVerses?.[book]?.chapters[step.chapter]}{' '}
                               {t('common:Ver').toLowerCase()}
                             </span>{' '}
                             <span>|</span>

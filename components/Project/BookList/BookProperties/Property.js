@@ -25,7 +25,7 @@ function Property({ t, property, content, type, updateProperty }) {
       )}
 
       <ReactTextareaAutosize
-        maxRows="5"
+        maxRows="7"
         className="input"
         placeholder={t(
           `book-properties:${property}_placeholder${type === 'obs' ? '_obs' : ''}`

@@ -9,11 +9,13 @@ import { oldTestamentList, newTestamentList } from 'utils/config'
 import Testament from './Testament'
 import ChapterList from './ChapterList'
 import Download from './Download'
+import BookProperties from './BookProperties/BookProperties'
 
 function BookList({ user, project, access }) {
   const { query } = useRouter()
   const [currentBook, setCurrentBook] = useState(null)
   const [downloadingBook, setDownloadingBook] = useState(null)
+  const [propertiesBook, setPropertiesBook] = useState(null)
 
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
     token: user?.access_token,
@@ -37,25 +39,28 @@ function BookList({ user, project, access }) {
     code: project?.code,
   })
   useEffect(() => {
-    console.log('first')
     if (query?.download === 'book') {
       setDownloadingBook(query?.book)
       setCurrentBook(null)
     }
-    if (query?.download === 'chapter') {
-      // setDownloadingBook(query?.book)
-      // setCurrentBook(null)
+    if (query?.properties) {
+      setPropertiesBook(query?.properties)
+      setCurrentBook(null)
+      return
     }
     if (query?.book) {
       setCurrentBook(query?.book)
     } else {
+      setPropertiesBook(null)
       setDownloadingBook(null)
       setCurrentBook(null)
     }
   }, [query, books, setCurrentBook])
   return (
     <div className="card flex h-full">
-      {downloadingBook && <Download isBook project={project} />}
+      {downloadingBook && (
+        <Download isBook project={project} bookCode={downloadingBook} books={books} />
+      )}
       {currentBook && !downloadingBook && (
         <ChapterList
           chapters={chapters}
@@ -67,7 +72,7 @@ function BookList({ user, project, access }) {
           project={project}
         />
       )}
-      {!currentBook && !downloadingBook && (
+      {!currentBook && !downloadingBook && !propertiesBook && (
         <>
           {testaments?.[project?.type]?.map((testament) => (
             <div
@@ -88,6 +93,19 @@ function BookList({ user, project, access }) {
             </div>
           ))}
         </>
+      )}
+      {!currentBook && !downloadingBook && propertiesBook && (
+        <BookProperties
+          project={project}
+          user={user}
+          bookCode={propertiesBook}
+          // openDownloading={openProperties}
+          // setOpenDownloading={setOpenProperties}
+          type={project?.type}
+          // t={t}
+          mutateBooks={mutateBooks}
+          books={books}
+        />
       )}
     </div>
   )
