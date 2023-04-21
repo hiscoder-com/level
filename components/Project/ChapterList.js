@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 import toast, { Toaster } from 'react-hot-toast'
 
 import Modal from 'components/Modal'
-import Download from './Download'
+import Download from './BookList/Download'
 
 import { supabase } from 'utils/supabaseClient'
 

@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
-import Checking from '../../public/checking.svg'
+import Checking from '/public/checking.svg'
 
 function ChecksIcon({ book, user, project }) {
   const [chapters] = useGetChapters({

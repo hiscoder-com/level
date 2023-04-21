@@ -1,7 +1,7 @@
 import ProjectInfo from './ProjectInfo'
 import ParticipantInfo from './ParticipantInfo'
 import ResumeInfo from './ResumeInfo'
-import BookListNew from './BookListNew'
+import BookList from './BookList/BookList'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useAccess, useProject } from 'utils/hooks'
@@ -27,7 +27,7 @@ function Project({ code }) {
         </div>
       </div>
       <div className="xl:w-2/3">
-        <BookListNew
+        <BookList
           user={user}
           project={project}
           access={{ isCoordinatorAccess, isModeratorAccess }}
