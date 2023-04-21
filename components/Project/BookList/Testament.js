@@ -1,6 +1,6 @@
 import PropertiesOfBook from './BookProperties/BookProperties'
 import Gear from '/public/gear.svg'
-import Book from '/public/dictionary.svg'
+import Reader from '/public/dictionary.svg'
 import Pencil from '/public/editor-pencil.svg'
 import Download from '/public/download.svg'
 import Play from '/public/play.svg'
@@ -18,7 +18,7 @@ function Testament({
   title,
   user,
   project,
-  access: { isCoordinatorAccess, isModeratorAccess },
+  access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess },
   setCurrentBook,
 }) {
   const { t } = useTranslation(['books'])
@@ -76,7 +76,7 @@ function Testament({
   return (
     <>
       <div className="flex flex-col gap-7 px-3">
-        <h3 className="h3 font-bold">{title}</h3>
+        <h3 className="h3 font-bold">{t('common:' + title)}</h3>
         <div className="flex flex-col gap-4 overflow-y-scroll pr-4 max-h-[100vh]">
           {bookList.map((el) => {
             const isBookCreated = createdBooks?.includes(el)
@@ -106,19 +106,19 @@ function Testament({
                               setSelectedBookProperties(el)
                             }}
                           />
-                          <Pencil className="w-6" />
+                          {/* <Pencil className="w-6" /> */}
                         </>
-                      )}
-                      {!isBookCreated && (
-                        <Play
-                          className="w-6 cursor-pointer"
-                          onClick={() => handleCreate(el)}
-                        />
                       )}
                     </>
                   )}
+                  {!isBookCreated && isAdminAccess && (
+                    <Play
+                      className="w-6 cursor-pointer"
+                      onClick={() => handleCreate(el)}
+                    />
+                  )}
                   {isModeratorAccess && isBookCreated && <Download className="w-6" />}
-                  <Book className="w-6" />
+                  <Reader className="w-6" />
                 </div>
               </div>
             )

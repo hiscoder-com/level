@@ -9,7 +9,7 @@ import { useAccess, useProject } from 'utils/hooks'
 function Project({ code }) {
   const { user } = useCurrentUser()
   const [project] = useProject({ token: user?.access_token, code })
-  const [{ isCoordinatorAccess, isModeratorAccess }] = useAccess({
+  const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }] = useAccess({
     token: user?.access_token,
     user_id: user?.id,
     code: project?.code,
@@ -30,7 +30,7 @@ function Project({ code }) {
         <BookList
           user={user}
           project={project}
-          access={{ isCoordinatorAccess, isModeratorAccess }}
+          access={{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }}
         />
       </div>
     </div>

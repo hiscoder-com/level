@@ -23,10 +23,13 @@ function BookList({ user, project, access }) {
     code: project?.code,
     chapters: chapters?.map((el) => el.id),
   })
-  const testaments = [
-    { title: 'OldTestament', books: oldTestamentList },
-    { title: 'NewTestament', books: newTestamentList },
-  ]
+  const testaments = {
+    bible: [
+      { title: 'OldTestament', books: oldTestamentList },
+      { title: 'NewTestament', books: newTestamentList },
+    ],
+    obs: [{ title: 'OpenBibleStories', books: ['obs'] }],
+  }
   const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
@@ -41,7 +44,6 @@ function BookList({ user, project, access }) {
       setCurrentBook(null)
     }
   }, [query, books, setCurrentBook])
-
   return (
     <div className="card flex h-full">
       {currentBook ? (
@@ -56,8 +58,13 @@ function BookList({ user, project, access }) {
         />
       ) : (
         <>
-          {testaments.map((testament) => (
-            <div key={testament.title} className="w-1/2">
+          {testaments?.[project?.type]?.map((testament) => (
+            <div
+              key={testament.title}
+              className={`${
+                testaments?.[project?.type]?.length === '2' ? 'w-1/2' : 'w-full'
+              }`}
+            >
               <Testament
                 bookList={testament.books}
                 title={testament.title}
