@@ -8,6 +8,9 @@ module.exports = {
           350: '#AECCDF',
           450: '#0EA5E9',
         },
+        gray: {
+          350: '#BCBCBC',
+        },
       },
     },
   },

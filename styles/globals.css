@@ -236,7 +236,18 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .logo:hover path:nth-child(1) {
 	fill:#00A6FB;
-} 
+}
 .logo:hover path:nth-child(2) {
 	fill:#003554;
-} 
+}
+
+.card {
+  @apply bg-white rounded-2xl border border-gray-350 p-7 shadow-md;
+}
+
+.verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2){
+  @apply flex;
+}
+.verse-block:hover>div:nth-child(1), .verse-block>div:nth-child(2){
+  @apply hidden;
+}
