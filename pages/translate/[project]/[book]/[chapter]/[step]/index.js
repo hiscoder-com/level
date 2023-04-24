@@ -15,6 +15,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseServer'
 import { supabase } from 'utils/supabaseClient'
 import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
+import Modal from 'components/Modal'
 
 export default function ProgressPage({ last_step }) {
   const { user } = useCurrentUser()
@@ -28,6 +29,7 @@ export default function ProgressPage({ last_step }) {
   const setProjectId = useSetRecoilState(projectIdState)
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
+  const [isOpenModal, setIsOpenModal] = useState(false)
 
   useEffect(() => {
     if (user?.login) {
@@ -127,9 +129,26 @@ export default function ProgressPage({ last_step }) {
       <Footer
         textButton={t('Next')}
         textCheckbox={t('Done')}
-        handleClick={handleNextStep}
+        handleClick={() => setIsOpenModal(true)}
         loading={loading}
       />
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
+        <div className="flex flex-col justify-center items-center min-h-[15vh]">
+          <div className="flex flex-row gap-2 mb-4 text-2xl">
+            <p>{t('AreYouSureGoToNextStep')}</p>{' '}
+          </div>
+
+          <div className="flex flex-row gap-2 h4">
+            <button className={`btn-link-full  mx-2`} onClick={() => handleNextStep()}>
+              {t('Yes')}
+            </button>
+
+            <button className="btn-link-full mx-2" onClick={() => setIsOpenModal(false)}>
+              {t('No')}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
