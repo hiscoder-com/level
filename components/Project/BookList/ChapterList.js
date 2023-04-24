@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import { readableDate } from 'utils/helper'
-import { supabase } from 'utils/supabaseClient'
 import Plus from '/public/plus.svg'
-import { toast } from 'react-hot-toast'
 
 import { useTranslation } from 'next-i18next'
 import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import Download from './Download'
 import BreadCrumb from 'components/ProjectEdit/BreadCrumb'
+import ChapterCreate from './ChapterCreate'
+
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
 function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
@@ -16,6 +16,7 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
   const { t } = useTranslation()
   const [openDownloading, setOpenDownloading] = useState(false)
   const [downloadingChapter, setDownloadingChapter] = useState(null)
+  const [creatingChapter, setCreatingChapter] = useState(false)
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
     token: user?.access_token,
     code: project?.code,
@@ -34,18 +35,6 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
     return chapters?.find((chapter) => chapter.num === num)
   }, [chapters, createdChapters?.length])
 
-  const handleAddChapter = async ({ chapter_id, num }) => {
-    try {
-      const res = await supabase.rpc('create_verses', { chapter_id })
-      if (res.data) {
-        mutateChapters()
-        mutateCreatedChapters()
-        push('/projects/' + code + '/books/' + selectedBook.code + '/' + num)
-      }
-    } catch (error) {
-      toast.error(t('CreateFailed'))
-    }
-  }
   useEffect(() => {
     if (query?.download && query?.code) {
       setOpenDownloading(true)
@@ -91,7 +80,6 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                             className="w-3/6"
                             onClick={(e) => {
                               e.stopPropagation()
-                              console.log(chapter)
                               setDownloadingChapter(chapter)
                               push({
                                 pathname: `/projects/${project?.code}`,
@@ -114,21 +102,29 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                 })}
 
               {nextChapter && isCoordinatorAccess && (
-                <div
-                  className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer hover:bg-blue-250 mr-4"
-                  onClick={() =>
-                    handleAddChapter({ chapter_id: nextChapter.id, num: nextChapter.num })
-                  }
-                >
-                  <div className="w-1/6"></div>
-                  <div className="w-2/6"></div>
-                  <div className="w-3/6 flex items-center gap-2">
-                    <div className="w-6">
-                      <Plus />
+                <>
+                  <div
+                    className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer hover:bg-blue-250 mr-4"
+                    onClick={() => {
+                      setCreatingChapter(nextChapter)
+                    }}
+                  >
+                    <div className="w-1/6"></div>
+                    <div className="w-2/6"></div>
+                    <div className="w-3/6 flex items-center gap-2">
+                      <div className="w-6">
+                        <Plus />
+                      </div>
+                      <p>{t('AddChapter')}</p>
                     </div>
-                    <p>{t('AddChapter')}</p>
                   </div>
-                </div>
+                  <ChapterCreate
+                    setCreatingChapter={setCreatingChapter}
+                    creatingChapter={creatingChapter}
+                    mutate={{ mutateChapters, mutateCreatedChapters }}
+                    project={project}
+                  />
+                </>
               )}
             </div>
           </div>
