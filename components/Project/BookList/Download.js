@@ -27,16 +27,7 @@ const downloadSettingsBook = {
   withBack: true,
 }
 
-function Download({
-  // compileBook,
-  project,
-  // getBookJson,
-  isBook = false,
-  chapter,
-  bookCode,
-  books,
-}) {
-  console.log(chapter)
+function Download({ project, isBook = false, chapter, bookCode, books }) {
   const { t } = useTranslation()
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
@@ -45,7 +36,6 @@ function Download({
 
   const compileBook = async (book, type = 'txt', downloadSettings) => {
     const chapters = await getBookJson(book?.id)
-    console.log(book?.id)
     if (chapters?.length === 0) {
       return
     }
@@ -173,68 +163,78 @@ function Download({
     },
   ]
   return (
-    <div className="w-full">
+    <div className="flex flex-col gap-7">
       <BreadCrumb
-        links={isBook ? links.filter((el) => isBook && !el.href.includes('book')) : links}
+        links={
+          isBook ? links.filter((link) => isBook && !link.href.includes('book')) : links
+        }
       />
-      <div className="flex h4 m-4 ">{t('Download')}</div>
-      <div className="flex">
-        <div className="pb-2 border-b-2">
-          {isBook ? (
-            <BookDownloadPdf
-              downloadingBook={book}
-              downloadSettings={downloadSettings}
-              project={project}
-              t={t}
-              compileBook={compileBook}
-            />
-          ) : (
-            <ChapterDownloadPdf
-              selectedBook={book}
-              chapter={chapter}
-              project={project}
-              downloadSettings={downloadSettings}
-              t={t}
-            />
-          )}
-          {Object.keys(downloadSettings)
-            .filter((key) => project?.type === 'obs' || key === 'withFront')
-            .map((key, index) => {
-              return (
-                <div key={index}>
-                  <input
-                    className="h-[17px] w-[17px] mt-4 cursor-pointer accent-cyan-600"
-                    type="checkbox"
-                    checked={downloadSettings[key]}
-                    onChange={() =>
-                      setDownloadSettings((prev) => {
-                        return { ...prev, [key]: !downloadSettings[key] }
-                      })
-                    }
-                  />
-                  <span className="ml-2">{t(key)}</span>
-                </div>
-              )
-            })}
+      <div className="flex flex-col gap-4">
+        <div className="h3 font-bold">
+          {isBook ? t(`books:${bookCode}`) : t('Chapter') + ' ' + chapter?.num}
+        </div>
+        <div className="flex gap-7 items-end">
+          <div className="flex flex-col gap-4">
+            <div>
+              {Object.keys(downloadSettings)
+                .filter((key) => project?.type === 'obs' || key === 'withFront')
+                .map((key, index) => {
+                  return (
+                    <div key={index} className="flex gap-2 items-center">
+                      <input
+                        className="h-[17px] w-[17px] cursor-pointer accent-cyan-600"
+                        type="checkbox"
+                        checked={downloadSettings[key]}
+                        onChange={() =>
+                          setDownloadSettings((prev) => {
+                            return { ...prev, [key]: !downloadSettings[key] }
+                          })
+                        }
+                      />
+                      <p>{t(key)}</p>
+                    </div>
+                  )
+                })}
+            </div>
+            {isBook ? (
+              <BookDownloadPdf
+                downloadingBook={book}
+                downloadSettings={downloadSettings}
+                project={project}
+                t={t}
+                compileBook={compileBook}
+              />
+            ) : (
+              <ChapterDownloadPdf
+                selectedBook={book}
+                chapter={chapter}
+                project={project}
+                downloadSettings={downloadSettings}
+                t={t}
+              />
+            )}
+          </div>
+          <div>
+            {isBook ? (
+              <BookDownloadUsfmZip
+                downloadZip={downloadZip}
+                downloadingBook={book}
+                downloadSettings={downloadSettings}
+                t={t}
+                compileBook={compileBook}
+                project={project}
+              />
+            ) : (
+              <ChapterDownloadTxtMd
+                project={project}
+                chapter={chapter}
+                selectedBook={book}
+                t={t}
+              />
+            )}
+          </div>
         </div>
       </div>
-      {isBook ? (
-        <BookDownloadUsfmZip
-          downloadZip={downloadZip}
-          downloadingBook={book}
-          downloadSettings={downloadSettings}
-          t={t}
-          compileBook={compileBook}
-          project={project}
-        />
-      ) : (
-        <ChapterDownloadTxtMd
-          project={project}
-          chapter={chapter}
-          selectedBook={book}
-          t={t}
-        />
-      )}
     </div>
   )
 }
@@ -244,7 +244,7 @@ export default Download
 function BookDownloadPdf({ downloadingBook, downloadSettings, project, t, compileBook }) {
   return (
     <div
-      className="btn p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
+      className="btn-link-full"
       onClick={async (e) => {
         e.stopPropagation()
         downloadPdf({
@@ -281,15 +281,12 @@ function BookDownloadUsfmZip({
   return (
     <>
       {project?.type === 'obs' ? (
-        <div
-          onClick={() => downloadZip(downloadingBook)}
-          className="btn p-2 mt-4 hover:bg-gray-200 cursor-pointer"
-        >
+        <div onClick={() => downloadZip(downloadingBook)} className="btn-link-full">
           {t('ExportToZip')}
         </div>
       ) : (
         <div
-          className="btn p-2 mt-4 hover:bg-gray-200 cursor-pointer"
+          className="btn-link-full"
           onClick={async (e) => {
             e.stopPropagation()
             downloadFile({
@@ -308,7 +305,7 @@ function BookDownloadUsfmZip({
 function ChapterDownloadPdf({ selectedBook, chapter, project, downloadSettings, t }) {
   return (
     <div
-      className="btn p-2 hover:bg-gray-200 border-y-2 cursor-pointer"
+      className="btn-link-full"
       onClick={async (e) => {
         downloadPdf({
           htmlContent: await compileChapter(
@@ -343,7 +340,7 @@ function ChapterDownloadPdf({ selectedBook, chapter, project, downloadSettings, 
 function ChapterDownloadTxtMd({ project, chapter, selectedBook, t }) {
   return (
     <div
-      className="btn p-2 mt-4 hover:bg-gray-200 cursor-pointer"
+      className="btn-link-full"
       onClick={async (e) => {
         project?.type === 'obs'
           ? downloadFile({
