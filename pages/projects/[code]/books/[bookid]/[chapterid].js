@@ -19,6 +19,8 @@ import {
 } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
+import Button from 'components/Button'
+
 import LeftArrow from 'public/left.svg'
 import Spinner from 'public/spinner.svg'
 import Sparkles from 'public/sparkles.svg'
@@ -129,7 +131,6 @@ function ChapterVersesPage() {
         return {
           ...verse,
           color: translator ? translator.color : defaultColor,
-
           translator_name: translator ? translator.users.login : '',
         }
       })
@@ -159,16 +160,14 @@ function ChapterVersesPage() {
 
   const verseDividing = async () => {
     //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
-    let { data, error } = await supabase.rpc('divide_verses', {
+    let { error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,
       project_id: project?.id,
     })
 
     if (error) {
-      console.error(error)
       toast.error(t('SaveFailed'))
     } else {
-      console.log('Success', data)
       toast.success(t('SaveSuccess'))
     }
   }
@@ -316,126 +315,86 @@ function ChapterVersesPage() {
                 </div>
               ))}
               <hr className="border-gray-500" />
-              <button
+              <Button
                 onClick={verseDividing}
-                className={`border-green-500 text-green-500 border-2 cursor-pointer p-2 w-full items-center rounded-2xl flex flex-row font-semibold text-xl`}
-              >
-                <div className="avatar-block w-10 flex-grow-0"></div>
-                <div className="text-block ml-2 flex-auto text-left">{t('Save')}</div>
-                <div className="icon-block flex-grow-0">
-                  <div className="border-green-500 border-2 rounded-full p-2">
-                    <Check className="w-5 h-5" />
-                  </div>
-                </div>
-              </button>
-              <button
+                text={t('Save')}
+                color="green"
+                icon={<Check className="w-5 h-5" />}
+              />
+              <Button
                 onClick={() =>
                   setVersesDivided(
                     verses?.map((verse) => ({
                       ...verse,
-                      color: 'bg-slate-300',
+                      color: defaultColor,
                       translator_name: '',
                       project_translator_id: null,
                     }))
                   )
                 }
-                className={`border-red-500 text-red-500 border-2 cursor-pointer p-2 w-full items-center rounded-2xl flex flex-row font-semibold text-xl`}
-              >
-                <div className="avatar-block w-10 flex-grow-0"></div>
-                <div className="text-block ml-2 flex-auto text-left">{t('Reset')}</div>
-                <div className="icon-block flex-grow-0">
-                  <div className="border-red-500 border-2 rounded-full p-2">
-                    <Trash className="w-5 h-5" />
-                  </div>
-                </div>
-              </button>
+                text={t('Reset')}
+                color="red"
+                icon={<Trash className="w-5 h-5" />}
+              />
             </div>
             <div className="card flex flex-col gap-4">
-              {!chapter?.finished_at && (
-                <button
-                  className={`${
-                    !chapter?.started_at
-                      ? 'border-green-500 text-green-500'
-                      : 'border-red-500 text-red-500'
-                  } border-2 cursor-pointer p-2 w-full items-center rounded-2xl flex flex-row font-semibold text-xl`}
-                  onClick={changeStartChapter}
-                  disabled={chapter?.finished_at || isValidating}
-                >
-                  <div className="avatar-block w-10 flex-grow-0">
-                    {isValidating || isLoading ? (
-                      <Spinner className="animate-spin h-5 w-5 text-gray-400" />
-                    ) : (
-                      ''
-                    )}
-                  </div>
-                  {!chapter?.started_at ? (
-                    <>
-                      <div className="text-block ml-2 flex-auto text-left">
-                        {t('chapters:StartChapter')}
-                      </div>
-                      <div className="icon-block flex-grow-0">
-                        <div className=" border-2 border-green-500 rounded-full p-2">
-                          <Check className="w-5 h-5" />
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    <>
-                      <div className="text-block ml-2 flex-auto text-left">
-                        {t('chapters:CancelStartChapter')}
-                      </div>
-                      <div className="icon-block flex-grow-0">
-                        <div className="border-2 border-red-500 rounded-full p-2">
-                          <Trash className="w-5 h-5" />
-                        </div>
-                      </div>
-                    </>
-                  )}
-                </button>
-              )}
-              {!isValidating && chapter?.started_at && (
-                <>
-                  <button
-                    className={`${
-                      !chapter?.finished_at
-                        ? 'border-amber-500 text-amber-500'
-                        : 'border-red-500 text-red-500'
-                    } border-2 cursor-pointer p-2 w-full items-center rounded-2xl flex flex-row font-semibold text-xl`}
-                    onClick={changeFinishChapter}
-                    disabled={isValidating}
-                  >
-                    <div className="avatar-block w-10 flex-grow-0">
-                      {isValidating || isLoading ? (
+              {!chapter?.finished_at &&
+                (!chapter?.started_at ? (
+                  <Button
+                    onClick={changeStartChapter}
+                    text={t('chapters:StartChapter')}
+                    color={'green'}
+                    icon={<Check className="w-5 h-5" />}
+                    disabled={chapter?.finished_at || isValidating}
+                    avatar={
+                      isValidating || isLoading ? (
                         <Spinner className="animate-spin h-5 w-5 text-gray-400" />
                       ) : (
                         ''
-                      )}
-                    </div>
-                    {!chapter?.finished_at ? (
-                      <>
-                        <div className="text-block ml-2 flex-auto text-left">
-                          {t('chapters:FinishedChapter')}
-                        </div>
-                        <div className="icon-block flex-grow-0">
-                          <div className=" border-2 border-amber-500 rounded-full p-2">
-                            <Sparkles className="w-5 h-5" />
-                          </div>
-                        </div>
-                      </>
+                      )
+                    }
+                  />
+                ) : (
+                  <Button
+                    onClick={changeStartChapter}
+                    text={t('chapters:CancelStartChapter')}
+                    color={'red'}
+                    icon={<Trash className="w-5 h-5" />}
+                    disabled={chapter?.finished_at || isValidating}
+                    avatar={
+                      isValidating || isLoading ? (
+                        <Spinner className="animate-spin h-5 w-5 text-gray-400" />
+                      ) : (
+                        ''
+                      )
+                    }
+                  />
+                ))}
+              {chapter?.started_at && (
+                <Button
+                  onClick={changeFinishChapter}
+                  text={
+                    !chapter?.finished_at
+                      ? t('chapters:FinishedChapter')
+                      : t('chapters:CancelFinishedChapter')
+                  }
+                  color={!chapter?.finished_at ? 'amber' : 'red'}
+                  icon={
+                    !chapter?.finished_at ? (
+                      <Sparkles className="w-5 h-5" />
                     ) : (
-                      <>
-                        <div className="text-block ml-2 flex-auto text-left">
-                          {t('chapters:CancelFinishedChapter')}
-                        </div>
-                        <div className="icon-block flex-grow-0">
-                          <div className="border-2 border-red-500 rounded-full p-2">
-                            <Trash className="w-5 h-5" />
-                          </div>
-                        </div>
-                      </>
-                    )}
-                  </button>
-                </>
+                      <Trash className="w-5 h-5" />
+                    )
+                  }
+                  disabled={isValidating}
+                  avatar={
+                    isValidating || isLoading ? (
+                      <Spinner className="animate-spin h-5 w-5 text-gray-400" />
+                    ) : (
+                      ''
+                    )
+                  }
+                />
               )}
             </div>
           </div>
