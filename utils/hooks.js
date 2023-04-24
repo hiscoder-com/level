@@ -202,7 +202,7 @@ export function useRedirect({ user, startLink }) {
 export function useGetResource({ config, url }) {
   const {
     verses,
-    reference: { book, chapter, step },
+    reference: { book, chapter },
     resource: { owner, repo, commit, bookPath },
   } = config
   const params = { owner, repo, commit, bookPath, book, chapter, verses }

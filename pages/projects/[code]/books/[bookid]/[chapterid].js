@@ -28,19 +28,18 @@ import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
 import Parameters from 'public/parameters.svg'
 
-const defaultColor = [
-  { border: 'border-yellow-400', bg: 'bg-yellow-400', text: 'text-yellow-400' },
-  { border: 'border-red-400', bg: 'bg-red-400', text: 'text-red-400' },
-  { border: 'border-blue-400', bg: 'bg-blue-400', text: 'text-blue-400' },
-  { border: 'border-pink-400', bg: 'bg-pink-400', text: 'text-pink-400' },
-  { border: 'border-violet-400', bg: 'bg-violet-400', text: 'text-violet-400' },
-  { border: 'border-orange-400', bg: 'bg-orange-400', text: 'text-orange-400' },
-  { border: 'border-cyan-400', bg: 'bg-cyan-400', text: 'text-cyan-400' },
-  { border: 'border-fuchsia-400', bg: 'bg-fuchsia-400', text: 'text-fuchsia-400' },
-  { border: 'border-teal-400', bg: 'bg-teal-400', text: 'text-teal-400' },
+const translatorColors = [
+  { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
+  { border: 'border-teal-500', bg: 'bg-teal-500', text: 'text-teal-500' },
+  { border: 'border-cyan-500', bg: 'bg-cyan-500', text: 'text-cyan-500' },
+  { border: 'border-sky-500', bg: 'bg-sky-500', text: 'text-sky-500' },
+  { border: 'border-emerald-700', bg: 'bg-emerald-700', text: 'text-emerald-700' },
+  { border: 'border-teal-700', bg: 'bg-teal-700', text: 'text-teal-700' },
+  { border: 'border-cyan-700', bg: 'bg-cyan-700', text: 'text-cyan-700' },
+  { border: 'border-sky-700', bg: 'bg-sky-700', text: 'text-sky-700' },
 ]
 
-const slateColor = {
+const defaultColor = {
   border: 'border-slate-900',
   bg: 'bg-white',
   text: 'text-slate-900',
@@ -61,7 +60,7 @@ function ChapterVersesPage() {
     book_code: bookid,
     chapter_id: chapterid,
   })
-  const [_, { mutate: mutateChapters }] = useGetChapters({
+  const [, { mutate: mutateChapters }] = useGetChapters({
     token: user?.access_token,
     code,
     book_code: bookid,
@@ -96,43 +95,47 @@ function ChapterVersesPage() {
         mutateChapter()
         mutateChapters()
       })
+      .catch(console.log)
   }
 
   const [currentTranslator, setCurrentTranslator] = useState(null)
-  const [colorTranslators, setColorTranslators] = useState([])
+  const [translators, setTranslators] = useState([])
   const [versesDivided, setVersesDivided] = useState([])
   const [isHighlight, setIsHighlight] = useState(false)
 
-  const [translators] = useTranslators({
+  const [_translators] = useTranslators({
     token: user?.access_token,
     code,
   })
 
   useEffect(() => {
-    const colorTranslators = translators?.map((translator, index) => ({
-      ...translator,
-      color: defaultColor[index],
-    }))
-    setColorTranslators(colorTranslators)
-  }, [translators])
+    if (_translators) {
+      const translators = _translators?.map((translator, index) => ({
+        ...translator,
+        color: translatorColors[index % translatorColors.length],
+      }))
+      setTranslators(translators)
+      setCurrentTranslator(translators[0])
+    }
+  }, [_translators])
 
   useEffect(() => {
-    if (colorTranslators?.length > 0) {
+    if (verses) {
       const extVerses = verses?.map((verse) => {
-        const translator = colorTranslators.find(
+        const translator = translators.find(
           (element) => element.id === verse.project_translator_id
         )
 
         return {
           ...verse,
-          color: translator ? translator.color : slateColor,
+          color: translator ? translator.color : defaultColor,
 
           translator_name: translator ? translator.users.login : '',
         }
       })
       setVersesDivided(extVerses)
     }
-  }, [verses, colorTranslators])
+  }, [verses, translators])
 
   const coloring = (index) => {
     const newArr = [...versesDivided]
@@ -141,7 +144,7 @@ function ChapterVersesPage() {
         ...newArr[index],
         translator_name: '',
         project_translator_id: null,
-        color: slateColor,
+        color: defaultColor,
       }
     } else {
       newArr[index] = {
@@ -183,6 +186,10 @@ function ChapterVersesPage() {
             <Link href={'/projects/' + code + '?book=' + bookid}>
               <a className="hover:underline">{t(`books:${book?.code}`)}</a>
             </Link>
+            <span>/</span>
+            <span>
+              {t('Chapter')} {chapter?.num}
+            </span>
           </div>
           <div className="card text-slate-900">
             <div className="font-bold mb-7">
@@ -212,22 +219,15 @@ function ChapterVersesPage() {
                           coloring(index)
                         }
                       }}
-                      // onClick={() => {
-                      //   if (currentTranslator === null) {
-                      //     return
-                      //   }
-                      //   console.log('onClick')
-                      //   coloring(index)
-                      // }}
                       className={`truncate aspect-1 ${
                         currentTranslator ? 'verse-block cursor-pointer' : ''
                       }`}
                       key={index}
                     >
                       <div
-                        className={`${verse?.color.bg ?? 'bg-white'} ${
-                          verse?.color.border ?? 'border-slate-900'
-                        } border-2 truncate rounded-2xl ${
+                        className={`${verse.color.bg} ${
+                          verse.color.bg === 'bg-white' ? '' : 'text-white'
+                        } ${verse.color.border} border-2 truncate rounded-2xl ${
                           currentTranslator ? '' : 'flex'
                         } w-full h-full flex-col p-1 justify-between`}
                       >
@@ -278,7 +278,7 @@ function ChapterVersesPage() {
                   }}
                 />
               </div>
-              {colorTranslators?.map((translator, index) => (
+              {translators?.map((translator, index) => (
                 <div key={index} className="flex">
                   <div
                     onClick={() => setCurrentTranslator(translator)}
