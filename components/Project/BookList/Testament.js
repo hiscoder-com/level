@@ -1,17 +1,20 @@
-import PropertiesOfBook from './BookProperties/BookProperties'
-import Gear from '/public/gear.svg'
-import Reader from '/public/dictionary.svg'
-import Pencil from '/public/editor-pencil.svg'
-import Download from '/public/download.svg'
-import Play from '/public/play.svg'
+import { useMemo, useState } from 'react'
+
+import { useRouter } from 'next/router'
+
+import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 
 import ChecksIcon from './ChecksIcon'
-import { useTranslation } from 'next-i18next'
-import { useRouter } from 'next/router'
+import Modal from 'components/Modal'
 import { useGetBooks } from 'utils/hooks'
-import { useMemo, useState } from 'react'
+
+import Gear from '/public/gear.svg'
+import Reader from '/public/dictionary.svg'
+import Download from '/public/download.svg'
+import Play from '/public/play.svg'
+import BookCreate from './BookCreate'
 
 function Testament({
   bookList,
@@ -20,47 +23,16 @@ function Testament({
   project,
   access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess },
   setCurrentBook,
-  setDownloadingBook,
 }) {
   const { t } = useTranslation(['books'])
   const { push } = useRouter()
+
+  const [bookCodeCreating, setBookCodeCreating] = useState(null)
   const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
   })
-  const [openProperties, setOpenProperties] = useState(false)
-  const [selectedBookProperties, setSelectedBookProperties] = useState(null)
-  const handleCreate = async (book_code) => {
-    const book = project?.base_manifest?.books.find((el) => el.name === book_code)
-    if (!book && !project.id) {
-      return
-    }
-    axios.defaults.headers.common['token'] = user?.access_token
-    try {
-      await axios
-        .post('/api/create_chapters', {
-          project_id: project.id,
-          link: book.link,
-          book_code,
-        })
-        .then((res) => {
-          if (res.status == 201) {
-            push(
-              {
-                pathname: `/projects/${project?.code}`,
-                query: { book: book_code },
-              },
-              undefined,
-              { shallow: true }
-            )
-          }
-        })
-    } catch (error) {
-      console.log(error)
-    } finally {
-      mutateBooks()
-    }
-  }
+
   const createdBooks = useMemo(() => books?.map((el) => el.code), [books])
 
   const handleOpenBook = (book, isBookCreated) => {
@@ -111,16 +83,20 @@ function Testament({
                               })
                             }
                           />
-                          {/* <Pencil className="w-6" /> */}
                         </>
                       )}
                     </>
                   )}
                   {!isBookCreated && isAdminAccess && (
-                    <Play
-                      className="w-6 cursor-pointer"
-                      onClick={() => handleCreate(el)}
-                    />
+                    <>
+                      <Play
+                        className="w-6 cursor-pointer"
+                        onClick={() => {
+                          setBookCodeCreating(el)
+                          // setIsBookCreating(true)
+                        }}
+                      />
+                    </>
                   )}
                   {isModeratorAccess && isBookCreated && (
                     <Download
@@ -144,6 +120,13 @@ function Testament({
           })}
         </div>
       </div>
+      <BookCreate
+        setBookCodeCreating={setBookCodeCreating}
+        bookCode={bookCodeCreating}
+        project={project}
+        user={user}
+        mutateBooks={mutateBooks}
+      />
     </>
   )
 }
