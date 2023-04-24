@@ -9,19 +9,25 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import Download from './Download'
 import BreadCrumb from 'components/ProjectEdit/BreadCrumb'
+import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
-function ChapterList({
-  chapters,
-  book,
-  createdChapters,
-  mutate: { mutateCreatedChapters, mutateChapters },
-  access: { isCoordinatorAccess },
-  project,
-}) {
+function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
   const { query, push, isReady } = useRouter()
   const { t } = useTranslation()
   const [openDownloading, setOpenDownloading] = useState(false)
   const [downloadingChapter, setDownloadingChapter] = useState(null)
+  const [chapters, { mutate: mutateChapters }] = useGetChapters({
+    token: user?.access_token,
+    code: project?.code,
+    book_code: book,
+  }) //TODO когда создаю новую книгу, то происходит редирект и chapters  - пустой массив до перезагрузки страницы
+
+  const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({
+    token: user?.access_token,
+    code: project?.code,
+    chapters: chapters?.map((el) => el.id),
+  })
+
   const nextChapter = useMemo(() => {
     const num =
       chapters?.length - createdChapters?.length > 0 && createdChapters?.length + 1

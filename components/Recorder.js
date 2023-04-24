@@ -110,7 +110,7 @@ export default function Recorder() {
     </div>
   )
 }
-
+//TODO У нас есть уже Modal  -исправить
 function Modal({ showModal, setShowModal }) {
   const { t } = useTranslation(['audio', 'common'])
   return (

@@ -63,11 +63,9 @@ function BookList({ user, project, access }) {
       )}
       {currentBook && !downloadingBook && (
         <ChapterList
-          chapters={chapters}
+          user={user}
           book={currentBook}
           setCurrentBook={setCurrentBook}
-          createdChapters={createdChapters}
-          mutate={{ mutateCreatedChapters, mutateChapters }}
           access={access}
           project={project}
         />
