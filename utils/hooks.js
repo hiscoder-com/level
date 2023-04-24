@@ -489,13 +489,12 @@ export function useGetInfo({ config, url }) {
 }
 
 /**
- *hook returns information about specific book of specific project from table 'books'
+ *hook returns information about access
  * @param {string} code code of project
  * @param {string} token token of current session of authenticated user
- * @param {string} book_code code of book
+ * @param {string} user_id id of user
  * @returns {object}
  */
-//TODO переделать описание
 export function useAccess({ token, user_id, code }) {
   const {
     data: level,

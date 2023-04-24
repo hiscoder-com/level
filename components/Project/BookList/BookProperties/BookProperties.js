@@ -1,22 +1,15 @@
 import { useEffect, useMemo, useState } from 'react'
+
 import axios from 'axios'
+
+import { useTranslation } from 'next-i18next'
+
 import toast, { Toaster } from 'react-hot-toast'
 
-import Modal from 'components/Modal'
 import Property from './Property'
-import { useTranslation } from 'next-i18next'
-import BreadCrumb from 'components/ProjectEdit/BreadCrumb'
+import BreadCrumb from 'components/BreadCrumb'
 
-function BookProperties({
-  bookCode,
-  openDownloading,
-  setOpenDownloading,
-  type,
-  user,
-  mutateBooks,
-  books,
-  project,
-}) {
+function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { t } = useTranslation()
   const book = useMemo(() => books?.find((el) => el.code === bookCode), [bookCode, books])
   const [properties, setProperties] = useState()
@@ -57,7 +50,7 @@ function BookProperties({
     axios
       .put(`/api/book_properties/${book.id}`, {
         properties,
-        project_id: projectId,
+        project_id: project?.id,
         user_id: user?.id,
       })
 
@@ -77,7 +70,9 @@ function BookProperties({
       />
 
       <div className="flex flex-wrap">{renderProperties}</div>
-
+      <button className="btn-link-full mr-2 mt-7" onClick={handleSave}>
+        {t('Save')}
+      </button>
       <Toaster />
     </div>
   )

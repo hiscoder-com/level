@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import BookCreate from './BookCreate'
 import ChecksIcon from './ChecksIcon'
 import { useGetBooks } from 'utils/hooks'
 
@@ -11,7 +12,6 @@ import Gear from '/public/gear.svg'
 import Reader from '/public/dictionary.svg'
 import Download from '/public/download.svg'
 import Play from '/public/play.svg'
-import BookCreate from './BookCreate'
 
 function Testament({
   bookList,

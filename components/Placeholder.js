@@ -1,23 +1,12 @@
 export default function Placeholder() {
   return (
-    <div
-      role="status"
-      className=" p-4 border border-gray-200 h-full shadow animate-pulse md:p-6 bg-white rounded-xl"
-    >
-      <div className="h-2.5 w-1/4 bg-gray-200 rounded-full mb-4"></div>
+    <div className="p-4 md:p-6 h-full border border-gray-200 bg-white shadow rounded-xl animate-pulse">
+      <div className="mb-4 h-2.5 w-1/4 bg-gray-200 rounded-full"></div>
       {[...Array(6).keys()].map((el) => (
         <div key={el}>
-          <div className="h-2 bg-gray-200 rounded-full mb-4"></div>
+          <div className="h-2 mb-4 bg-gray-200 rounded-full"></div>
         </div>
       ))}
-      <div className="h-2 bg-gray-200 rounded-full"></div>
-      <div className="flex items-center mt-4 space-x-3">
-        {[...Array(3).keys()].map((el) => (
-          <div key={el}>
-            <div className="h-8 btn w-1/3 mb-2"></div>
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

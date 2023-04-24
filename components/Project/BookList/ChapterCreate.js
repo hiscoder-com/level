@@ -8,13 +8,12 @@ import Modal from 'components/Modal'
 import { supabase } from 'utils/supabaseClient'
 
 function ChapterCreate({
-  creatingChapter,
-  project,
-  mutate: { mutateChapters, mutateCreatedChapters },
   setCreatingChapter,
+  creatingChapter,
+  mutate: { mutateChapters, mutateCreatedChapters },
+  project,
 }) {
   const { push, query } = useRouter()
-
   const { t } = useTranslation()
   const [isCreated, setIsCreated] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -57,7 +56,6 @@ function ChapterCreate({
       setTextModal(t('ChapterCreatingError'))
       setTimeout(() => {
         reset()
-        setCreatingChapter(false)
       }, 2000)
       console.log(error)
     }
@@ -78,7 +76,7 @@ function ChapterCreate({
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 h4">
               <button
-                className={`btn-link-full  mx-2`}
+                className={`btn-link-full mx-2`}
                 onClick={() => {
                   handleAddChapter({
                     chapter_id: creatingChapter.id,

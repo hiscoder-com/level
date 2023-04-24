@@ -12,7 +12,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
   const { t } = useTranslation()
   const [isCreated, setIsCreated] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
-  const [textModal, setTextModal] = useState(t('AreYouSureCreateBook'))
+  const [textModal, setTextModal] = useState(t('DoYouWantCreateBook'))
 
   const handleCreate = async (book_code) => {
     const book = project?.base_manifest?.books.find((el) => el.name === book_code)
@@ -34,13 +34,12 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           if (res.status == 201) {
             setIsCreated(true)
             mutateBooks()
-
             setTextModal(t('BookIsCreated'))
             setTimeout(() => {
               push(
                 {
                   pathname: `/projects/${project?.code}`,
-                  query: { book: bookCode },
+                  query: { book: book_code },
                 },
                 undefined,
                 { shallow: true }
@@ -50,10 +49,9 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
         })
     } catch (error) {
       setIsCreated(true)
-      setTextModal(t('BookIsCreatingError'))
+      setTextModal(t('BookCreationError'))
       setTimeout(() => {
         reset()
-        setBookCodeCreating(null)
       }, 2000)
       console.log(error)
     } finally {
@@ -64,7 +62,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
   const reset = () => {
     setBookCodeCreating(null)
     setTimeout(() => {
-      setTextModal(t('AreYouSureCreateBook'))
+      setTextModal(t('DoYouWantCreateBook'))
       setIsCreated(false)
       setIsCreating(false)
     }, 500)
@@ -76,7 +74,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
         closeHandle={() => {
           reset()
         }}
-        className={isCreated ? 'final' : 'active'}
+        className={isCreated ? 'secondary' : 'primary'}
       >
         <div className="flex flex-col justify-center items-center min-h-[15vh]">
           <div className="flex flex-row gap-2 mb-4 text-2xl">
@@ -85,7 +83,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 h4">
               <button
-                className={`btn-link-full  mx-2`}
+                className={`btn-link-full mx-2`}
                 onClick={() => {
                   handleCreate(bookCode)
                 }}

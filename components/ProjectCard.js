@@ -25,7 +25,7 @@ function ProjectCard({ project, token, user }) {
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`}>
-          <div className="card flex justify-between items-start h-full cursor-pointer ">
+          <div className="card flex justify-between items-start h-full cursor-pointer">
             <div className="flex flex-col gap-9">
               <div className="h3 font-bold">{project.title}</div>
               <div className="flex flex-col gap-5">

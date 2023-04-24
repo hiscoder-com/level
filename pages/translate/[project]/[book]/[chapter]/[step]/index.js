@@ -139,7 +139,7 @@ export default function ProgressPage({ last_step }) {
           </div>
 
           <div className="flex flex-row gap-2 h4">
-            <button className={`btn-link-full  mx-2`} onClick={() => handleNextStep()}>
+            <button className={`btn-link-full mx-2`} onClick={() => handleNextStep()}>
               {t('Yes')}
             </button>
 

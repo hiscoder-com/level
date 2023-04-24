@@ -10,7 +10,7 @@ import Modal from 'components/Modal'
 import TranslatorsList from './TranslatorsList'
 import CoordinatorsList from './CoordinatorsList'
 import RemoveParticipant from './RemoveParticipant'
-import AssignParticipant from './AssignPartisipant'
+import AssignParticipant from './AssignPartiсipant'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'

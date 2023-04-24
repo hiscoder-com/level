@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useGetBooks, useGetChapters, useGetCreatedChapters } from 'utils/hooks'
-
-import { oldTestamentList, newTestamentList } from 'utils/config'
-
 import Testament from './Testament'
 import ChapterList from './ChapterList'
 import Download from './Download'
 import BookProperties from './BookProperties/BookProperties'
+
+import { useGetBooks } from 'utils/hooks'
+
+import { oldTestamentList, newTestamentList } from 'utils/config'
 
 function BookList({ user, project, access }) {
   const { query } = useRouter()
@@ -17,16 +17,6 @@ function BookList({ user, project, access }) {
   const [downloadingBook, setDownloadingBook] = useState(null)
   const [propertiesBook, setPropertiesBook] = useState(null)
 
-  const [chapters, { mutate: mutateChapters }] = useGetChapters({
-    token: user?.access_token,
-    code: project?.code,
-    book_code: currentBook,
-  })
-  const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({
-    token: user?.access_token,
-    code: project?.code,
-    chapters: chapters?.map((el) => el.id),
-  })
   const testaments = {
     bible: [
       { title: 'OldTestament', books: oldTestamentList },
@@ -62,13 +52,7 @@ function BookList({ user, project, access }) {
         <Download isBook project={project} bookCode={downloadingBook} books={books} />
       )}
       {currentBook && !downloadingBook && (
-        <ChapterList
-          user={user}
-          book={currentBook}
-          setCurrentBook={setCurrentBook}
-          access={access}
-          project={project}
-        />
+        <ChapterList book={currentBook} access={access} project={project} user={user} />
       )}
       {!currentBook && !downloadingBook && !propertiesBook && (
         <>
@@ -86,7 +70,6 @@ function BookList({ user, project, access }) {
                 project={project}
                 access={access}
                 setCurrentBook={setCurrentBook}
-                setDownloadingBook={setDownloadingBook}
               />
             </div>
           ))}
@@ -97,10 +80,7 @@ function BookList({ user, project, access }) {
           project={project}
           user={user}
           bookCode={propertiesBook}
-          // openDownloading={openProperties}
-          // setOpenDownloading={setOpenProperties}
           type={project?.type}
-          // t={t}
           mutateBooks={mutateBooks}
           books={books}
         />

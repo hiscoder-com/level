@@ -19,9 +19,9 @@ function AssignParticipant({
         setSelectedUser('')
       }}
     >
-      <div className="text-center">
+      <div className="flex flex-col gap-7 min-h-[15vh]">
         <select
-          className="input m-2"
+          className="input"
           value={selectedUser}
           onChange={(e) => setSelectedUser(e.target.value)}
         >
@@ -31,19 +31,20 @@ function AssignParticipant({
             </option>
           ))}
         </select>
-        <button
-          onClick={() => {
-            assign(role)
-            setSelectedUser(listOfAssigned?.[0]?.id)
-          }}
-          disabled={!selectedUser}
-          className="btn-cyan mx-2"
-        >
-          {t('Added')}
-        </button>
-        <div className="mt-4">
+        <div className="flex flex-row justify-center gap-7">
           <button
-            className="btn-cyan w-24"
+            onClick={() => {
+              assign(role)
+              setSelectedUser(listOfAssigned?.[0]?.id)
+            }}
+            disabled={!selectedUser}
+            className="btn-link-full"
+          >
+            {t('Added')}
+          </button>
+
+          <button
+            className="btn-link-full"
             onClick={() => {
               setOpenModalAssign(false)
               setSelectedUser('')

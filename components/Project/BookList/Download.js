@@ -14,7 +14,7 @@ import {
   downloadPdf,
 } from 'utils/helper'
 import { useTranslation } from 'next-i18next'
-import BreadCrumb from 'components/ProjectEdit/BreadCrumb'
+import BreadCrumb from 'components/BreadCrumb'
 import Showdown from 'showdown'
 
 const downloadSettingsChapter = {

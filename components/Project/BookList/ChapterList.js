@@ -1,20 +1,23 @@
+import { useEffect, useMemo, useState } from 'react'
+
+import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { readableDate } from 'utils/helper'
-import Plus from '/public/plus.svg'
 
 import { useTranslation } from 'next-i18next'
-import { useEffect, useMemo, useState } from 'react'
-import { useRouter } from 'next/router'
-import Download from './Download'
-import BreadCrumb from 'components/ProjectEdit/BreadCrumb'
-import ChapterCreate from './ChapterCreate'
 
+import ChapterCreate from './ChapterCreate'
+import Download from './Download'
+import BreadCrumb from 'components/BreadCrumb'
+
+import { readableDate } from 'utils/helper'
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
+
+import Plus from '/public/plus.svg'
 
 function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
   const { query, push, isReady } = useRouter()
   const { t } = useTranslation()
-  const [openDownloading, setOpenDownloading] = useState(false)
+  const [isOpenDownloading, setIsOpenDownloading] = useState(false)
   const [downloadingChapter, setDownloadingChapter] = useState(null)
   const [creatingChapter, setCreatingChapter] = useState(false)
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
@@ -37,14 +40,14 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
 
   useEffect(() => {
     if (query?.download && query?.code) {
-      setOpenDownloading(true)
+      setIsOpenDownloading(true)
     } else {
-      setOpenDownloading(false)
+      setIsOpenDownloading(false)
     }
   }, [isReady, query])
   return (
     <>
-      {openDownloading ? (
+      {isOpenDownloading ? (
         <Download chapter={downloadingChapter} project={project} bookCode={book} />
       ) : (
         <div className="flex flex-col gap-7 w-full">
@@ -53,11 +56,11 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
           />
           <div className="flex flex-col gap-3 h4">
             <div className="flex px-5 py-3 rounded-xl">
-              <div className="w-1/6">{t('Chapter')}</div>
-              <div className="w-2/6">
-                {t('chapters:StartedAt')}/{t('chapters:FinishedAt')}
+              <div className="basis-1/6">{t('Chapter')}</div>
+              <div className="basis-2/6">
+                {t('chapters:StartedAt')} / {t('chapters:FinishedAt')}
               </div>
-              <div className="w-3/6">{`${t('Download')} / ${t('Open')}`}</div>
+              <div className="basis-3/6">{`${t('Download')} / ${t('Open')}`}</div>
             </div>
             <div className="overflow-y-scroll flex flex-col gap-3 max-h-[80vh] pr-4">
               {chapters &&
@@ -70,14 +73,14 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                         key={id}
                         href={`/projects/${project?.code}/books/${book}/${num}`}
                       >
-                        <div className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer">
-                          <div className="w-1/6">{num}</div>
-                          <div className="w-2/6">
+                        <div className="flex px-5 py-3 bg-blue-150 rounded-xl cursor-pointer">
+                          <div className="basis-1/6">{num}</div>
+                          <div className="basis-2/6">
                             {started_at && readableDate(started_at, query.locale)}
                             {finished_at && readableDate(finished_at, query.locale)}
                           </div>
                           <div
-                            className="w-3/6"
+                            className="basis-3/6"
                             onClick={(e) => {
                               e.stopPropagation()
                               setDownloadingChapter(chapter)
@@ -90,7 +93,6 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                                 },
                                 shallow: true,
                               })
-                              // setOpenDownloading(true)
                             }}
                           >
                             {t('Download')}
@@ -104,14 +106,14 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
               {nextChapter && isCoordinatorAccess && (
                 <>
                   <div
-                    className="flex bg-blue-150 px-5 py-3 rounded-xl cursor-pointer hover:bg-blue-250 mr-4"
+                    className="flex px-5 py-3 mr-4 bg-blue-150  hover:bg-blue-250 rounded-xl cursor-pointer"
                     onClick={() => {
                       setCreatingChapter(nextChapter)
                     }}
                   >
-                    <div className="w-1/6"></div>
-                    <div className="w-2/6"></div>
-                    <div className="w-3/6 flex items-center gap-2">
+                    <div className="basis-1/6"></div>
+                    <div className="basis-2/6"></div>
+                    <div className="basis-3/6 flex items-center gap-2">
                       <div className="w-6">
                         <Plus />
                       </div>

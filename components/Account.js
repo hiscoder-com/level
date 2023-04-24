@@ -40,7 +40,7 @@ function Account() {
         <div className="divide-y divide-darkBlue">
           <div className="grid grid-cols-3 gap-7 md:grid-cols-4 xl:grid-cols-6 lg:mt-15 mt-12 h5 lg:text-lg font-bold text-center">
             {tabs
-              .filter((tab) => (user?.is_admin ? tab : tab.type !== 'create'))
+              .filter((tab) => (user.is_admin ? tab : tab.type !== 'create'))
               .map((tab) => (
                 <button
                   key={tab.type}

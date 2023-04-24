@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
-import Link from 'next/link'
+
 import Brief from './Brief/Brief'
-import ResourceSettings from 'components/ProjectEdit/ResourceSettings'
+import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
-import BreadCrumb from './BreadCrumb'
+import BreadCrumb from '../BreadCrumb'
 
 import { useAccess, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'

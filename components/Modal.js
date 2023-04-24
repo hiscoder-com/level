@@ -2,10 +2,10 @@ import { Fragment } from 'react'
 
 import { Transition, Dialog } from '@headlessui/react'
 
-function Modal({ title, children, isOpen, closeHandle, className = 'active' }) {
+function Modal({ title, children, isOpen, closeHandle, className = 'primary' }) {
   const classes = {
-    active: 'bg-gradient-to-r from-darkBlue to-[#596B84] text-blue-250',
-    final: 'bg-[#14B8A6] text-white',
+    primary: 'bg-gradient-to-r from-darkBlue to-[#596B84] text-blue-250',
+    secondary: 'bg-[#14B8A6] text-white',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>

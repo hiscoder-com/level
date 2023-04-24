@@ -1,5 +1,5 @@
-import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import Link from 'next/link'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 function Property({ t, property, content, type, updateProperty }) {
