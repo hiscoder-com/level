@@ -4,10 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import axios from 'axios'
-
 import ChecksIcon from './ChecksIcon'
-import Modal from 'components/Modal'
 import { useGetBooks } from 'utils/hooks'
 
 import Gear from '/public/gear.svg'
