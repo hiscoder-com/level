@@ -49,9 +49,9 @@ function ProjectSettings() {
       const _resources = {}
 
       for (const [key, value] of Object.entries(resources)) {
-        _resources[
-          key
-        ] = `https://git.door43.org/${value.owner}/${value.repo}/src/commit/${value.commit}`
+        _resources[key] = `${NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'}/${
+          value.owner
+        }/${value.repo}/src/commit/${value.commit}`
       }
       setResourcesUrl(_resources)
     }

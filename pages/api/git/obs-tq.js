@@ -73,9 +73,9 @@ export default async function obsTQHandler(req, res) {
   if (typeof verses === 'string') {
     verses = verses.split(',').map((el) => el.trim())
   }
-  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
-    1
-  )}`
+  const url = `${
+    NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+  }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)

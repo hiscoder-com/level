@@ -92,8 +92,12 @@ function Property({ t, property, content, type, updateProperty }) {
     setPropertyContent(content)
   }, [content])
   const additionalLinks = {
-    intro: 'https://git.door43.org/ru_gl/ru_obs/raw/branch/master/content/front/intro.md',
-    back: 'https://git.door43.org/ru_gl/ru_obs/raw/branch/master/content/back/intro.md',
+    intro: `${
+      NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/ru_gl/ru_obs/raw/branch/master/content/front/intro.md`,
+    back: `${
+      NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/ru_gl/ru_obs/raw/branch/master/content/back/intro.md`,
   }
   return (
     <>

@@ -75,11 +75,13 @@ export default async function tnHandler(req, res) {
   }
   let url = ''
   if (bookPath.slice(0, 2) === './') {
-    url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
-      1
-    )}`
+    url = `${
+      NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
   } else {
-    url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
+    url = `${
+      NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
   }
   try {
     const _data = await axios.get(url)
