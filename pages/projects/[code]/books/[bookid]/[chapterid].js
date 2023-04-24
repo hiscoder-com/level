@@ -176,8 +176,8 @@ function ChapterVersesPage() {
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
         <div className="flex flex-col gap-7 w-2/3">
-          <div className="card flex flex-row gap-3 text-xl text-slate-900 font-medium items-center">
-            <LeftArrow className="h-5 w-5" />
+          <div className="card flex flex-row gap-3 text-xl overflow-x-auto whitespace-nowrap text-slate-900 font-medium items-center">
+            <LeftArrow className="h-5 w-5 min-w-[1.25rem]" />
             <Link href={'/projects/' + code}>
               <a className="hover:underline">{project?.title}</a>
             </Link>
@@ -201,7 +201,7 @@ function ChapterVersesPage() {
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
               onMouseLeave={() => setIsHighlight(false)}
-              className="select-none lg:grid-cols-6 grid-cols-4 grid gap-3 w-full"
+              className="select-none grid gap-3 w-full grid-cols-1 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2"
             >
               {versesDivided
                 ?.sort((a, b) => a.num > b.num)
@@ -228,16 +228,20 @@ function ChapterVersesPage() {
                           verse.color.bg === 'bg-white' ? '' : 'text-white'
                         } ${verse.color.border} border-2 truncate rounded-2xl ${
                           currentTranslator ? '' : 'flex'
-                        } w-full h-full flex-col p-1 justify-between`}
+                        } w-full h-full flex-col p-4 justify-between`}
                       >
-                        <div className="ml-2 text-2xl font-bold">
+                        <div
+                          className={`${
+                            [0, 200].includes(verse.num) ? 'text-xl' : 'text-2xl'
+                          } font-bold text-ellipsis overflow-hidden`}
+                        >
                           {verse.num === 0
                             ? t('Title')
                             : verse.num === 200
                             ? t('Reference')
                             : verse.num}
                         </div>
-                        <div className="text-center text-ellipsis overflow-hidden">
+                        <div className="text-ellipsis overflow-hidden">
                           {verse.translator_name}
                         </div>
                       </div>
@@ -296,7 +300,7 @@ function ChapterVersesPage() {
                         {translator.users.login.slice(0, 1)}
                       </div>
                     </div>
-                    <div className="text-block ml-2 text-base font-normal flex-auto text-left">
+                    <div className="text-block ml-2 text-base font-normal flex-auto text-left text-ellipsis overflow-hidden">
                       {translator.users.login} <br />
                       {translator.users.email}
                     </div>
