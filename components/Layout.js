@@ -11,7 +11,7 @@ function Layout({ backgroundColor, children }) {
       <AppBar setIsOpen={setIsOpen} />
       <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
       <main>
-        <div className="pt-10 lg:pt-10 px-5 lg:px-8">{children}</div>
+        <div className="pt-10 px-5 lg:px-8">{children}</div>
       </main>
     </div>
   )

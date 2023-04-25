@@ -21,7 +21,7 @@ function Testament({
   access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess },
   setCurrentBook,
 }) {
-  const { t } = useTranslation(['books'])
+  const { t } = useTranslation('books')
   const { push } = useRouter()
 
   const [bookCodeCreating, setBookCodeCreating] = useState(null)
@@ -30,7 +30,7 @@ function Testament({
     code: project?.code,
   })
 
-  const createdBooks = useMemo(() => books?.map((el) => el.code), [books])
+  const createdBooks = useMemo(() => books?.map((book) => book.code), [books])
 
   const handleOpenBook = (book, isBookCreated) => {
     if (isBookCreated && book) {
@@ -46,21 +46,21 @@ function Testament({
   return (
     <>
       <div className="flex flex-col gap-7 px-3">
-        <h3 className="h3 font-bold">{t('common:' + title)}</h3>
+        <h3 className="text-2xl font-bold">{t('common:' + title)}</h3>
         <div className="flex flex-col gap-4 pr-4">
-          {bookList.map((el) => {
-            const isBookCreated = createdBooks?.includes(el)
+          {bookList.map((book) => {
+            const isBookCreated = createdBooks?.includes(book)
             return (
-              <div key={el} className="flex justify-between items-center gap-2">
-                <div className="flex items-center gap-5 h5">
-                  <ChecksIcon book={el} user={user} project={project} />
+              <div key={book} className="flex justify-between items-center gap-2">
+                <div className="flex items-center gap-5">
+                  <ChecksIcon book={book} user={user} project={project} />
                   <div
                     className={
                       isBookCreated ? 'text-teal-500 cursor-pointer' : 'text-gray-400'
                     }
-                    onClick={() => handleOpenBook(el, isBookCreated)}
+                    onClick={() => handleOpenBook(book, isBookCreated)}
                   >
-                    {t(`books:${el}`)}
+                    {t(`books:${book}`)}
                   </div>
                 </div>
                 <div className="flex gap-2 text-darkBlue">
@@ -69,12 +69,12 @@ function Testament({
                       {isBookCreated && (
                         <>
                           <Gear
-                            className="w-6 cursor-pointer"
+                            className="w-6 min-w-[1.5rem] cursor-pointer"
                             onClick={() =>
                               push({
                                 pathname: `/projects/${project?.code}`,
                                 query: {
-                                  properties: el,
+                                  properties: book,
                                 },
                                 shallow: true,
                               })
@@ -87,22 +87,19 @@ function Testament({
                   {!isBookCreated && isAdminAccess && (
                     <>
                       <Play
-                        className="w-6 cursor-pointer"
-                        onClick={() => {
-                          setBookCodeCreating(el)
-                          // setIsBookCreating(true)
-                        }}
+                        className="w-6 min-w-[1.5rem] cursor-pointer"
+                        onClick={() => setBookCodeCreating(book)}
                       />
                     </>
                   )}
                   {isModeratorAccess && isBookCreated && (
                     <Download
-                      className="w-6 cursor-pointer"
+                      className="w-6 min-w-[1.5rem] cursor-pointer"
                       onClick={() =>
                         push({
                           pathname: `/projects/${project?.code}`,
                           query: {
-                            book: el,
+                            book: book,
                             download: 'book',
                           },
                           shallow: true,
@@ -110,7 +107,7 @@ function Testament({
                       }
                     />
                   )}
-                  <Reader className="w-6" />
+                  <Reader className="w-6 min-w-[1.5rem]" />
                 </div>
               </div>
             )

@@ -16,8 +16,8 @@ function Project({ code }) {
   })
 
   return (
-    <div className="container flex flex-col-reverse xl:flex-row gap-7 pb-10">
-      <div className="flex flex-row xl:flex-col gap-7 xl:w-1/3">
+    <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
+      <div className="flex flex-row xl:flex-col gap-7 w-full xl:w-1/3">
         <div className="flex flex-col gap-7 w-1/2 xl:w-full">
           <ProjectInfo project={project} access={isCoordinatorAccess} />
           <ParticipantInfo project={project} user={user} access={isModeratorAccess} />
@@ -26,7 +26,7 @@ function Project({ code }) {
           <ResumeInfo project={project} user={user} />
         </div>
       </div>
-      <div className="xl:w-2/3">
+      <div className="w-full xl:w-2/3">
         <BookList
           user={user}
           project={project}

@@ -8,10 +8,10 @@ import { useTranslation } from 'next-i18next'
 import ChapterCreate from './ChapterCreate'
 import Download from './Download'
 import BreadCrumb from 'components/BreadCrumb'
-import DownloadIcon from '/public/download.svg'
 
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
+import DownloadIcon from '/public/download.svg'
 import Plus from '/public/plus.svg'
 
 function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
@@ -64,7 +64,7 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
             ]}
           />
           <div className="flex flex-col gap-3 h4">
-            <div className="select-none grid gap-3 w-full grid-cols-1 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
+            <div className="select-none grid gap-3 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {chapters &&
                 chapters?.map((chapter) => {
                   const { id, num } = chapter
@@ -75,9 +75,8 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                         key={id}
                         href={`/projects/${project?.code}/books/${book}/${num}`}
                       >
-                        <div className="flex items-center justify-between px-5 py-3 bg-blue-150 hover:bg-blue-250 rounded-xl cursor-pointer">
+                        <div className="flex items-center justify-between px-5 py-3 bg-blue-150 rounded-xl cursor-pointer hover:bg-blue-250">
                           <div className="basis-1/6">{num}</div>
-
                           <div
                             className="basis-3/6"
                             onClick={(e) => {
@@ -108,15 +107,12 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
               {nextChapter && isCoordinatorAccess && (
                 <>
                   <div
-                    className="flex justify-center px-5 py-3 bg-blue-150 hover:bg-blue-250 rounded-xl cursor-pointer"
-                    onClick={() => {
-                      setCreatingChapter(nextChapter)
-                    }}
+                    className="flex justify-center px-5 py-3 bg-blue-150 rounded-xl cursor-pointer hover:bg-blue-250"
+                    onClick={() => setCreatingChapter(nextChapter)}
                   >
                     <div className="w-6">
                       <Plus />
                     </div>
-                    {/* <p>{t('AddChapter')}</p> */}
                   </div>
 
                   <ChapterCreate

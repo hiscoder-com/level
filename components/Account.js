@@ -35,12 +35,15 @@ function Account() {
     },
   ]
   return (
-    <div className="container">
+    <div
+      className="mx-auto max-w-7xl
+    "
+    >
       {user?.id && (
         <div className="divide-y divide-darkBlue">
-          <div className="grid grid-cols-3 gap-7 md:grid-cols-4 xl:grid-cols-6 lg:mt-15 mt-12 h5 lg:text-lg font-bold text-center">
+          <div className="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-7 mt-12 lg:mt-15 lg:text-lg font-bold text-center">
             {tabs
-              .filter((tab) => (user.is_admin ? tab : tab.type !== 'create'))
+              .filter((tab) => (user.is_admin ? true : tab.type !== 'create'))
               .map((tab) => (
                 <button
                   key={tab.type}

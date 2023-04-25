@@ -28,7 +28,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
         const isPrimary = customResources[resource]
         listOfResources.push(
           <div className="flex gap-7 items-center" key={resource}>
-            <div className={`${isPrimary ? 'font-bold' : ''} w-1/6`}>{resource}:</div>
+            <div className={isPrimary ? 'font-bold w-1/6' : 'w-1/6'}>{resource}:</div>
             <input
               className="input-blue w-5/6"
               value={resourcesUrl?.[resource] ?? ''}
@@ -44,7 +44,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customResources, resourcesUrl])
 
-  return <div className="flex flex-col gap-2 h4-5">{setResources}</div>
+  return <div className="flex flex-col gap-2 text-lg">{setResources}</div>
 }
 
 export default CommitsList

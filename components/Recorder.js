@@ -24,7 +24,7 @@ export default function Recorder() {
     <RecorderButton className="stroke-cyan-700 stroke-2" />
   )
   const [buttonPlay, setButtonPlay] = useState(
-    <PlayButton className={'stroke-gray-300 stroke-2'} />
+    <PlayButton className="stroke-gray-300 stroke-2" />
   )
   const audioRef = useRef(null)
 
@@ -61,13 +61,13 @@ export default function Recorder() {
 
   useEffect(() => {
     if (voice.length > 0) {
-      setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
+      setButtonPlay(<PlayButton className="stroke-cyan-700 stroke-2" />)
       const blobUrl = window.URL.createObjectURL(
         new Blob(voice, { type: 'audio/webm;codecs=opus' })
       )
       audioRef.current.src = blobUrl
     } else if (audioRef.current) {
-      setButtonPlay(<PlayButton className={'stroke-gray-300 stroke-2'} />)
+      setButtonPlay(<PlayButton className="stroke-gray-300 stroke-2" />)
       audioRef.current.src = ''
     }
     audioRef.current.onended = () => {
@@ -78,10 +78,10 @@ export default function Recorder() {
   const playPause = () => {
     if (audioRef.current.paused) {
       audioRef.current.play()
-      setButtonPlay(<PauseButton className={'stroke-cyan-700 stroke-2'} />)
+      setButtonPlay(<PauseButton className="stroke-cyan-700 stroke-2" />)
     } else {
       audioRef.current.pause()
-      setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
+      setButtonPlay(<PlayButton className="stroke-cyan-700 stroke-2" />)
     }
   }
 
@@ -109,9 +109,7 @@ export default function Recorder() {
       <Modal isOpen={showModal} closeHandle={setShowModal}>
         <div className="flex flex-col gap-7">
           <div className="text-2xl text-center">{t('MicrophoneAccess')}</div>
-          <div className="">
-            <p>{t('TurnMicrophone')}</p>
-          </div>
+          <p>{t('TurnMicrophone')}</p>
           <div className="flex justify-end">
             <button className="btn-link-full" onClick={() => setShowModal(false)}>
               {t('common:Ok')}

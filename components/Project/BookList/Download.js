@@ -3,8 +3,15 @@ import { useRouter } from 'next/router'
 
 import JSZip from 'jszip'
 
+import { useTranslation } from 'next-i18next'
+
 import { saveAs } from 'file-saver'
+
 import { supabase } from 'utils/supabaseClient'
+
+import Showdown from 'showdown'
+
+import BreadCrumb from 'components/BreadCrumb'
 
 import { usfmFileNames } from 'utils/config'
 import {
@@ -14,9 +21,6 @@ import {
   downloadFile,
   downloadPdf,
 } from 'utils/helper'
-import { useTranslation } from 'next-i18next'
-import BreadCrumb from 'components/BreadCrumb'
-import Showdown from 'showdown'
 import { useGetChapters } from 'utils/hooks'
 
 const downloadSettingsChapter = {
@@ -190,7 +194,7 @@ function Download({ project, isBook = false, bookCode, books, user }) {
         }
       />
       <div className="flex flex-col gap-4">
-        <div className="h3 font-bold">
+        <div className="text-2xl font-bold">
           {isBook ? t(`books:${bookCode}`) : t('Chapter') + ' ' + chapter?.num}
         </div>
         <div className="flex gap-7 items-end">
@@ -202,7 +206,7 @@ function Download({ project, isBook = false, bookCode, books, user }) {
                   return (
                     <div key={index} className="flex gap-2 items-center">
                       <input
-                        className="h-[17px] w-[17px] cursor-pointer accent-cyan-600"
+                        className="h-4 w-4 cursor-pointer accent-cyan-600"
                         type="checkbox"
                         checked={downloadSettings[key]}
                         onChange={() =>
