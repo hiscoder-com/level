@@ -15,7 +15,7 @@ import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 import Plus from '/public/plus.svg'
 
 function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
-  const { query, push, isReady } = useRouter()
+  const { query, push } = useRouter()
   const { t } = useTranslation()
   const [isOpenDownloading, setIsOpenDownloading] = useState(false)
   const [creatingChapter, setCreatingChapter] = useState(false)
@@ -23,7 +23,7 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
     token: user?.access_token,
     code: project?.code,
     book_code: book,
-  }) //TODO когда создаю новую книгу, то происходит редирект и chapters  - пустой массив до перезагрузки страницы
+  })
 
   const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({
     token: user?.access_token,
@@ -38,12 +38,19 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
   }, [chapters, createdChapters?.length])
 
   useEffect(() => {
+    if (!chapters?.length) {
+      mutateChapters()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapters])
+
+  useEffect(() => {
     if (query?.download && query?.code) {
       setIsOpenDownloading(true)
     } else {
       setIsOpenDownloading(false)
     }
-  }, [isReady, query])
+  }, [query])
   return (
     <>
       {isOpenDownloading ? (
@@ -59,7 +66,7 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
           <div className="flex flex-col gap-3 h4">
             <div className="select-none grid gap-3 w-full grid-cols-1 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
               {chapters &&
-                chapters.map((chapter) => {
+                chapters?.map((chapter) => {
                   const { id, num } = chapter
 
                   return (
