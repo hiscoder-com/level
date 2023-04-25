@@ -7,11 +7,9 @@ import { useTranslation } from 'next-i18next'
 
 import ChapterCreate from './ChapterCreate'
 import Download from './Download'
+import BreadCrumb from 'components/BreadCrumb'
 import DownloadIcon from '/public/download.svg'
 
-import BreadCrumb from 'components/BreadCrumb'
-
-import { readableDate } from 'utils/helper'
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
 import Plus from '/public/plus.svg'
@@ -20,7 +18,6 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
   const { query, push, isReady } = useRouter()
   const { t } = useTranslation()
   const [isOpenDownloading, setIsOpenDownloading] = useState(false)
-  const [downloadingChapter, setDownloadingChapter] = useState(null)
   const [creatingChapter, setCreatingChapter] = useState(false)
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
     token: user?.access_token,
@@ -50,17 +47,20 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
   return (
     <>
       {isOpenDownloading ? (
-        <Download chapter={downloadingChapter} project={project} bookCode={book} />
+        <Download user={user} project={project} bookCode={book} />
       ) : (
         <div className="flex flex-col gap-7 w-full">
           <BreadCrumb
-            links={[{ href: '/projects/' + project?.code, title: t('books:' + book) }]}
+            links={[
+              { title: project?.title, href: '/projects/' + project?.code },
+              { title: t('books:' + book) },
+            ]}
           />
           <div className="flex flex-col gap-3 h4">
             <div className="select-none grid gap-3 w-full grid-cols-1 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
               {chapters &&
                 chapters.map((chapter) => {
-                  const { id, started_at, finished_at, num } = chapter
+                  const { id, num } = chapter
 
                   return (
                     createdChapters?.includes(id) && (
@@ -75,13 +75,12 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                             className="basis-3/6"
                             onClick={(e) => {
                               e.stopPropagation()
-                              setDownloadingChapter(chapter)
                               push({
                                 pathname: `/projects/${project?.code}`,
                                 query: {
                                   book,
                                   download: 'chapter',
-                                  code: chapter?.num,
+                                  chapter: chapter?.num,
                                 },
                                 shallow: true,
                               })

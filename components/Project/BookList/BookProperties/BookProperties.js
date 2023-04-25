@@ -66,7 +66,10 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   return (
     <div>
       <BreadCrumb
-        links={[{ title: project?.title, href: '/projects/' + project?.code }]}
+        links={[
+          { title: project?.title, href: '/projects/' + project?.code },
+          { title: t('books:' + book?.code) },
+        ]}
       />
 
       <div className="flex flex-wrap">{renderProperties}</div>

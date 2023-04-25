@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { useRouter } from 'next/router'
 
 import JSZip from 'jszip'
 
@@ -16,6 +17,7 @@ import {
 import { useTranslation } from 'next-i18next'
 import BreadCrumb from 'components/BreadCrumb'
 import Showdown from 'showdown'
+import { useGetChapters } from 'utils/hooks'
 
 const downloadSettingsChapter = {
   withImages: true,
@@ -27,13 +29,26 @@ const downloadSettingsBook = {
   withBack: true,
 }
 
-function Download({ project, isBook = false, chapter, bookCode, books }) {
+function Download({ project, isBook = false, bookCode, books, user }) {
   const { t } = useTranslation()
+  const { query } = useRouter()
+  const [chapters] = useGetChapters({
+    token: user?.access_token,
+    code: project?.code,
+    book_code: bookCode,
+  })
+
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
   )
-  const book = useMemo(() => books?.find((el) => el.code === bookCode), [bookCode, books])
-
+  const book = useMemo(
+    () => books?.find((book) => book.code === bookCode),
+    [bookCode, books]
+  )
+  const chapter = useMemo(
+    () => chapters?.find((chapter) => chapter.num.toString() === query.chapter),
+    [chapters, query.chapter]
+  )
   const compileBook = async (book, type = 'txt', downloadSettings) => {
     const chapters = await getBookJson(book?.id)
     if (chapters?.length === 0) {
@@ -161,12 +176,17 @@ function Download({ project, isBook = false, chapter, bookCode, books }) {
       title: t('books:' + bookCode),
       href: '/projects/' + project?.code + '?book=' + bookCode,
     },
+    {
+      title: !isBook
+        ? t('Chapter') + ' ' + (chapter?.num || '...')
+        : t('books:' + bookCode),
+    },
   ]
   return (
     <div className="flex flex-col gap-7">
       <BreadCrumb
         links={
-          isBook ? links.filter((link) => isBook && !link.href.includes('book')) : links
+          isBook ? links.filter((link) => isBook && !link?.href?.includes('book')) : links
         }
       />
       <div className="flex flex-col gap-4">

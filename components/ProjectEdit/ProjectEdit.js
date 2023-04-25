@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+
 import Brief from './Brief/Brief'
 import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
@@ -12,6 +14,8 @@ function ProjectEdit() {
   const {
     query: { code },
   } = useRouter()
+  const { t } = useTranslation()
+
   const { user } = useCurrentUser()
 
   const [users] = useUsers(user?.access_token)
@@ -24,7 +28,13 @@ function ProjectEdit() {
   })
   return (
     <div className="container flex flex-col gap-7">
-      <BreadCrumb links={[{ title: project?.title, href: '/projects/' + code }]} full />
+      <BreadCrumb
+        links={[
+          { title: project?.title, href: '/projects/' + code },
+          { title: t('Settings') },
+        ]}
+        full
+      />
       {isModeratorAccess && (
         <div id="participants">
           <Participants
