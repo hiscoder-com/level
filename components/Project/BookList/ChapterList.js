@@ -7,6 +7,8 @@ import { useTranslation } from 'next-i18next'
 
 import ChapterCreate from './ChapterCreate'
 import Download from './Download'
+import DownloadIcon from '/public/download.svg'
+
 import BreadCrumb from 'components/BreadCrumb'
 
 import { readableDate } from 'utils/helper'
@@ -55,14 +57,7 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
             links={[{ href: '/projects/' + project?.code, title: t('books:' + book) }]}
           />
           <div className="flex flex-col gap-3 h4">
-            <div className="flex px-5 py-3 rounded-xl">
-              <div className="basis-1/6">{t('Chapter')}</div>
-              <div className="basis-2/6">
-                {t('chapters:StartedAt')} / {t('chapters:FinishedAt')}
-              </div>
-              <div className="basis-3/6">{`${t('Download')} / ${t('Open')}`}</div>
-            </div>
-            <div className="overflow-y-scroll flex flex-col gap-3 max-h-[80vh] pr-4">
+            <div className="select-none grid gap-3 w-full grid-cols-1 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2">
               {chapters &&
                 chapters.map((chapter) => {
                   const { id, started_at, finished_at, num } = chapter
@@ -73,12 +68,9 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                         key={id}
                         href={`/projects/${project?.code}/books/${book}/${num}`}
                       >
-                        <div className="flex px-5 py-3 bg-blue-150 rounded-xl cursor-pointer">
+                        <div className="flex items-center justify-between px-5 py-3 bg-blue-150 hover:bg-blue-250 rounded-xl cursor-pointer">
                           <div className="basis-1/6">{num}</div>
-                          <div className="basis-2/6">
-                            {started_at && readableDate(started_at, query.locale)}
-                            {finished_at && readableDate(finished_at, query.locale)}
-                          </div>
+
                           <div
                             className="basis-3/6"
                             onClick={(e) => {
@@ -95,7 +87,11 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                               })
                             }}
                           >
-                            {t('Download')}
+                            <p className="block xl:hidden">{t('Download')}</p>
+
+                            <div className="hidden xl:block w-6 h-6 min-h-6">
+                              <DownloadIcon />
+                            </div>
                           </div>
                         </div>
                       </Link>
@@ -106,20 +102,17 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
               {nextChapter && isCoordinatorAccess && (
                 <>
                   <div
-                    className="flex px-5 py-3 mr-4 bg-blue-150  hover:bg-blue-250 rounded-xl cursor-pointer"
+                    className="flex justify-center px-5 py-3 bg-blue-150 hover:bg-blue-250 rounded-xl cursor-pointer"
                     onClick={() => {
                       setCreatingChapter(nextChapter)
                     }}
                   >
-                    <div className="basis-1/6"></div>
-                    <div className="basis-2/6"></div>
-                    <div className="basis-3/6 flex items-center gap-2">
-                      <div className="w-6">
-                        <Plus />
-                      </div>
-                      <p>{t('AddChapter')}</p>
+                    <div className="w-6">
+                      <Plus />
                     </div>
+                    {/* <p>{t('AddChapter')}</p> */}
                   </div>
+
                   <ChapterCreate
                     setCreatingChapter={setCreatingChapter}
                     creatingChapter={creatingChapter}

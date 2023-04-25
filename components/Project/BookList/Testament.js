@@ -47,7 +47,7 @@ function Testament({
     <>
       <div className="flex flex-col gap-7 px-3">
         <h3 className="h3 font-bold">{t('common:' + title)}</h3>
-        <div className="flex flex-col gap-4 overflow-y-scroll pr-4 max-h-[100vh]">
+        <div className="flex flex-col gap-4 pr-4">
           {bookList.map((el) => {
             const isBookCreated = createdBooks?.includes(el)
             return (
