@@ -22,7 +22,24 @@ function ParticipantInfo({ project, user, access }) {
       return translators.filter((translator) => translator.is_moderator)
     }
   }, [translators])
+  const participants = useMemo(() => {
+    if (coordinators && translators) {
+      translators?.sort((a, b) => b.is_moderator - a.is_moderator)
+      const _translators = translators.filter(
+        (el) =>
+          !coordinators.map((coordinator) => coordinator.users.id).includes(el.users.id)
+      )
+      const _coordinators = coordinators.map((coordinator) => ({
+        ...coordinator,
+        is_coordinator: true,
+        is_moderator: moderators
+          ?.map((el) => el.users.id)
+          .includes(coordinator?.users.id),
+      }))
 
+      return [..._coordinators, ..._translators]
+    }
+  }, [coordinators, moderators, translators])
   return (
     <Card
       title={t('Participants')}
@@ -32,40 +49,22 @@ function ParticipantInfo({ project, user, access }) {
     >
       {project && (
         <div className="flex flex-col gap-4">
-          {[
-            {
-              label: translators?.length > 1 ? 'Translators' : 'Translator',
-              value: translators,
-            },
-            {
-              label: moderators?.length > 1 ? 'Moderators' : 'Moderator',
-              value: moderators,
-            },
-            {
-              label: translators?.length > 1 ? 'Coordinators' : 'Coordinator',
-              value: coordinators,
-            },
-          ].map(
-            (role) =>
-              role?.value?.length > 0 && (
-                <div key={role?.label} className="flex gap-2 text-sm h4-5 lg:text-lg">
-                  <p className="w-1/2">
-                    {t(role?.label)}
-                    {':'}
-                  </p>
-                  <div className="flex flex-col w-1/2 gap-4">
-                    {role?.value?.map((translator) => (
-                      <div key={translator?.id} className="flex gap-2">
-                        <div className="w-8">
-                          <TranslatorImage item={translator} />
-                        </div>
-                        <p>{translator?.users?.login}</p>
-                      </div>
-                    ))}
+          {participants?.map((participant, index) => (
+            <div key={index}>
+              <div className="flex gap-2">
+                <div className="w-8">
+                  <TranslatorImage item={participant} />
+                </div>
+                <div>
+                  <p className="h4-5">{participant?.users?.login}</p>
+                  <div className="h6">
+                    {participant.is_coordinator && <p>{t('Coordinator')}</p>}
+                    {participant.is_moderator && <p>{t('Moderator')}</p>}
                   </div>
                 </div>
-              )
-          )}
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </Card>
