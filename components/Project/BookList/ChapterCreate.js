@@ -17,12 +17,12 @@ function ChapterCreate({
   const { t } = useTranslation()
   const [isCreated, setIsCreated] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
-  const [textModal, setTextModal] = useState(t('AreYouSureCreateChapter'))
+  const [textModal, setTextModal] = useState(t('DoYouWantCreateChapter'))
 
   const reset = () => {
     setCreatingChapter(false)
     setTimeout(() => {
-      setTextModal(t('AreYouSureCreateChapter'))
+      setTextModal(t('DoYouWantCreateChapter'))
       setIsCreated(false)
       setIsCreating(false)
     }, 500)
@@ -67,11 +67,12 @@ function ChapterCreate({
         closeHandle={() => {
           reset()
         }}
-        className={isCreated ? 'final' : 'active'}
+        className={!isCreated ? 'primary' : 'secondary'}
       >
         <div className="flex flex-col justify-center items-center min-h-[15vh]">
           <div className="flex flex-row gap-2 mb-4 text-2xl">
-            <p>{textModal}</p> {isCreating && <p className="animate-pulse">...</p>}
+            <p>{textModal}</p>
+            {isCreating && !isCreated && <p className="animate-pulse">...</p>}
           </div>
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 h4">

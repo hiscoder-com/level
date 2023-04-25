@@ -36,7 +36,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           if (res.status == 201) {
             setIsCreated(true)
             mutateBooks()
-            setTextModal(t('BookIsCreated'))
+            setTextModal(t('BookCreated'))
             setTimeout(() => {
               push(
                 {
@@ -80,7 +80,8 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
       >
         <div className="flex flex-col justify-center items-center min-h-[15vh]">
           <div className="flex flex-row gap-2 mb-4 text-2xl">
-            <p>{textModal}</p> {isCreating && <p className="animate-pulse">...</p>}
+            <p>{textModal}</p>
+            {isCreating && !isCreated && <p className="animate-pulse">...</p>}
           </div>
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 h4">
