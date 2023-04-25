@@ -44,7 +44,7 @@ function Brief({ access }) {
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
-      .then(mutate)
+      .then()
       .catch((err) => {
         toast.error(t('SaveFailed'))
         console.log(err)
