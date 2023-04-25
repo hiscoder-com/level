@@ -20,7 +20,7 @@ import Modal from 'components/Modal'
 export default function ProgressPage({ last_step }) {
   const { user } = useCurrentUser()
   const setStepConfigData = useSetRecoilState(stepConfigState)
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation('common')
   const {
     query: { project, book, chapter, step },
     replace,
@@ -135,11 +135,11 @@ export default function ProgressPage({ last_step }) {
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col justify-center items-center min-h-[15vh]">
           <div className="flex flex-row gap-2 mb-4 text-2xl">
-            <p>{t('AreYouSureGoToNextStep')}</p>{' '}
+            <p>{t('AreYouSureGoToNextStep')}</p>
           </div>
 
-          <div className="flex flex-row gap-2 h4">
-            <button className={`btn-link-full mx-2`} onClick={() => handleNextStep()}>
+          <div className="flex flex-row gap-2 text-xl">
+            <button className="btn-link-full mx-2" onClick={handleNextStep}>
               {t('Yes')}
             </button>
 

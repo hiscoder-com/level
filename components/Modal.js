@@ -36,7 +36,10 @@ function Modal({ title, children, isOpen, closeHandle, className = 'primary' }) 
               <Dialog.Panel
                 className={`${classes[className]} w-full max-w-md transform overflow-hidden p-6 align-middle rounded-3xl shadow-xl transition-all`}
               >
-                <Dialog.Title as="h3" className="h3 font-medium leading-6 text-center">
+                <Dialog.Title
+                  as="h3"
+                  className="text-2xl font-medium leading-6 text-center"
+                >
                   {title}
                 </Dialog.Title>
                 {children}

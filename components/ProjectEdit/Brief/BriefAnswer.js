@@ -20,16 +20,14 @@ function BriefAnswer({
   return (
     <ReactTextareaAutosize
       value={answer}
-      onChange={(e) => {
-        setAnswer(e.target.value)
-      }}
+      onChange={(e) => setAnswer(e.target.value)}
       onBlur={() => {
         updateObjQA(answer.trim(), briefItem, blockIndex, objQA, index)
-        setTimeout(() => saveToDatabase(), 1000)
+        setTimeout(saveToDatabase, 1000)
       }}
-      readOnly={access ? false : true}
-      placeholder={access ? t('project-edit:enterText') : ''}
-      className="outline-none pr-2 w-full h5 resize-none"
+      readOnly={!access}
+      placeholder={access && t('project-edit:enterText')}
+      className="outline-none pr-2 w-full resize-none"
     />
   )
 }

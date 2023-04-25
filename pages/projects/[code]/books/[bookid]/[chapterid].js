@@ -73,17 +73,17 @@ function ChapterVersesPage() {
 
   return (
     <>
-      <h3 className="h3 mb-4">
+      <h3 className="mb-4 text-2xl">
         <Link href={'/projects/' + code}>
           <a className="underline text-blue-700">« {project?.title}</a>
         </Link>
       </h3>
-      <h4 className="h4 mb-3">
+      <h4 className="text-xl mb-3">
         <Link href={'/projects/' + code + '?book=' + bookid}>
           <a className="underline text-blue-700">« {t(`books:${book?.code}`)}</a>
         </Link>
       </h4>
-      <h3 className="h4 mb-3">
+      <h3 className="text-xl mb-3">
         {t('Chapter')}: {chapter?.num}
       </h3>
       <VerseDivider verses={verses} />

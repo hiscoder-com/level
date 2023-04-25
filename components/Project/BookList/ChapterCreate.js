@@ -61,46 +61,37 @@ function ChapterCreate({
     }
   }
   return (
-    <div>
-      <Modal
-        isOpen={typeof creatingChapter === 'object'}
-        closeHandle={() => {
-          reset()
-        }}
-        className={!isCreated ? 'primary' : 'secondary'}
-      >
-        <div className="flex flex-col justify-center items-center min-h-[15vh]">
-          <div className="flex flex-row gap-2 mb-4 text-2xl">
-            <p>{textModal}</p>
-            {isCreating && !isCreated && <p className="animate-pulse">...</p>}
-          </div>
-          {!isCreating && !isCreated && (
-            <div className="flex flex-row gap-2 h4">
-              <button
-                className={`btn-link-full mx-2`}
-                onClick={() => {
-                  handleAddChapter({
-                    chapter_id: creatingChapter.id,
-                    num: creatingChapter.num,
-                  })
-                }}
-              >
-                {t('Yes')}
-              </button>
-
-              <button
-                className="btn-link-full mx-2"
-                onClick={() => {
-                  reset()
-                }}
-              >
-                {isCreated ? t('Ok') : t('No')}
-              </button>
-            </div>
-          )}
+    <Modal
+      isOpen={typeof creatingChapter === 'object'}
+      closeHandle={reset}
+      className={!isCreated ? 'primary' : 'secondary'}
+    >
+      <div className="flex flex-col justify-center items-center min-h-[15vh]">
+        <div className="flex flex-row gap-2 mb-4 text-2xl">
+          <p>{textModal}</p>
+          {isCreating && !isCreated && <p className="animate-pulse">...</p>}
         </div>
-      </Modal>
-    </div>
+        {!isCreating && !isCreated && (
+          <div className="flex flex-row gap-2 text-xl">
+            <button
+              className="btn-link-full mx-2"
+              onClick={() =>
+                handleAddChapter({
+                  chapter_id: creatingChapter.id,
+                  num: creatingChapter.num,
+                })
+              }
+            >
+              {t('Yes')}
+            </button>
+
+            <button className="btn-link-full mx-2" onClick={reset}>
+              {isCreated ? t('Ok') : t('No')}
+            </button>
+          </div>
+        )}
+      </div>
+    </Modal>
   )
 }
 

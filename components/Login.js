@@ -98,7 +98,7 @@ function Login() {
       ) : (
         <div className="flex flex-col p-5 lg:py-10 xl:px-8">
           <div className="flex justify-between mb-6">
-            <h1 className="text-2xl xl:text-4xl lg:text-3xl font-bold">{t('SignIn')}</h1>
+            <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold">{t('SignIn')}</h1>
             <SwitchLocalization />
           </div>
           <div className="flex flex-col lg:flex-row text-sm lg:text-base">

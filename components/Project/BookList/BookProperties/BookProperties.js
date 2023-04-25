@@ -13,8 +13,11 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { t } = useTranslation()
   const book = useMemo(() => books?.find((el) => el.code === bookCode), [bookCode, books])
   const [properties, setProperties] = useState()
+
   useEffect(() => {
-    setProperties(book?.properties)
+    if (book?.properties) {
+      setProperties(book?.properties)
+    }
   }, [book?.properties])
   const updateProperty = (text, property) => {
     setProperties((prev) => {

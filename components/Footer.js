@@ -39,7 +39,7 @@ export default function Footer({
     <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-blue-150 md:flex-row-reverse lg:px-0">
       <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
-          <div className="space-x-1.5 items-center h5">
+          <div className="space-x-1.5 items-center">
             <label className="cursor-pointer p-3">
               <input
                 className="h-[17px] w-[17px] cursor-pointer accent-cyan-600"
@@ -79,7 +79,7 @@ export default function Footer({
               currentStep={stepConfig.current_step}
             />
           </div>
-          <div className="flex gap-2.5 h5 items-center pb-3 md:pb-0">
+          <div className="flex gap-2.5 items-center pb-3 md:pb-0">
             <div>{t('Fulfilled')}:</div>
             <Translators
               projectCode={stepConfig.project_code}

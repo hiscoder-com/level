@@ -56,8 +56,8 @@ function ParticipantInfo({ project, user, access }) {
                   <TranslatorImage item={participant} />
                 </div>
                 <div>
-                  <p className="h4-5">{participant?.users?.login}</p>
-                  <div className="h6">
+                  <p className="text-lg">{participant?.users?.login}</p>
+                  <div className="text-sm">
                     {participant.is_coordinator && <p>{t('Coordinator')}</p>}
                     {participant.is_moderator && <p>{t('Moderator')}</p>}
                   </div>

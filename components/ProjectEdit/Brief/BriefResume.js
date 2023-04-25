@@ -11,16 +11,14 @@ function BriefResume({ access, saveToDatabase, updateBrief, objResume, index, t 
   return (
     <ReactTextareaAutosize
       value={resume}
-      onChange={(e) => {
-        setResume(e.target.value)
-      }}
-      className="outline-none pr-2 w-full h5 resize-none"
+      onChange={(e) => setResume(e.target.value)}
+      className="outline-none pr-2 w-full resize-none"
       onBlur={() => {
         updateBrief(resume.trim(), index)
-        setTimeout(() => saveToDatabase(), 1000)
+        setTimeout(saveToDatabase, 1000)
       }}
-      readOnly={access ? false : true}
-      placeholder={access ? t('project-edit:enterText') : ''}
+      readOnly={!access}
+      placeholder={access && t('project-edit:enterText')}
     />
   )
 }

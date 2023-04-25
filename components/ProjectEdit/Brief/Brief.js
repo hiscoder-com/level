@@ -101,7 +101,7 @@ function Brief({ access }) {
     <div className="card">
       <div className="flex flex-col gap-7">
         <div className="flex justify-between">
-          <h3 className="h3 font-bold">{t('project-edit:EditBriefTitle')}</h3>
+          <h3 className="text-2xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
           <div>
             {access && (
               <div className="flex">
@@ -127,11 +127,10 @@ function Brief({ access }) {
           </div>
         </div>
         {briefDataCollection && (
-          <div className="flex flex-col md:flex-row w-full gap-4 mb-4 ">
-            <div className="md:w-1/3">
-              <p className="mb-4 h4 font-bold">{t('Questions')}</p>
-              <div className="h-3 rounded-t-lg bg-white"></div>
-              <div className="h-[61vh] text-sm overflow-auto bg-white">
+          <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
+            <div className="w-full md:w-1/3">
+              <p className="mb-4 text-xl font-bold">{t('Questions')}</p>
+              <div className="text-sm bg-white">
                 {briefDataCollection.map((briefItem, index) => {
                   const questionTitle = `${briefItem.id}. ${briefItem.title}`
                   return (
@@ -143,8 +142,8 @@ function Brief({ access }) {
                           : 'border-b-2 mb-2 pb-2 mr-2 leading-6'
                       }`}
                     >
-                      <p className="h4-5 font-bold">{questionTitle}</p>
-                      <ul className="list-disc px-4 h5">
+                      <p className="text-lg font-bold">{questionTitle}</p>
+                      <ul className="list-disc px-4">
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           return (
                             <li key={blockIndex}>{questionAndAnswerPair.question}</li>
@@ -155,12 +154,10 @@ function Brief({ access }) {
                   )
                 })}
               </div>
-              <div className="h-3 rounded-b-lg bg-white"></div>
             </div>
-            <div className="md:w-1/3">
-              <p className="mb-4 h4 font-bold">{t('project-edit:Answers')}</p>
-              <div className="h-3 rounded-t-lg bg-white"></div>
-              <div className="h-[61vh] text-sm overflow-auto bg-white">
+            <div className="w-full md:w-1/3">
+              <p className="mb-4 text-xl font-bold">{t('project-edit:Answers')}</p>
+              <div className="text-sm bg-white">
                 {briefDataCollection.map((briefItem, index) => {
                   const questionTitle = `${briefItem.id}. ${briefItem.title}`
                   return (
@@ -172,8 +169,8 @@ function Brief({ access }) {
                           : 'border-b-2 mb-2 pb-2 mr-2'
                       }`}
                     >
-                      <p className="h4-5 font-bold">{questionTitle}</p>
-                      <ul className="list-disc px-4 h5">
+                      <p className="text-lg font-bold">{questionTitle}</p>
+                      <ul className="list-disc px-4">
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           return (
                             <li className="flex flex-nowrap leading-6" key={blockIndex}>
@@ -195,12 +192,10 @@ function Brief({ access }) {
                   )
                 })}
               </div>
-              <div className="h-3 rounded-b-lg bg-white"></div>
             </div>
-            <div className="md:w-1/3">
-              <p className="mb-4 h4 font-bold">{t('TranslationGoal')}</p>
-              <div className="h-3 rounded-t-lg bg-white"></div>
-              <div className="h-[61vh] text-sm text-gray-500 overflow-auto bg-white">
+            <div className="w-full md:w-1/3">
+              <p className="mb-4 text-xl font-bold">{t('TranslationGoal')}</p>
+              <div className="text-sm text-gray-500 bg-white">
                 {briefDataCollection.map((briefItem, index) => {
                   return (
                     <div className="flex flex-nowrap leading-6 py-2" key={index}>
@@ -217,7 +212,6 @@ function Brief({ access }) {
                   )
                 })}
               </div>
-              <div className="h-3 rounded-b-lg bg-white"></div>
             </div>
           </div>
         )}

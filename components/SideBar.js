@@ -30,7 +30,7 @@ function SideBar({ isOpen, setIsOpen }) {
             />
           </div>
         </div>
-        <div className="flex items-center h3 py-4 sidebar-hr">
+        <div className="flex items-center text-2xl py-4 sidebar-hr">
           <Link href="/account">
             <a onClick={() => setIsOpen(false)} className="sidebar-link-a">
               <span className="tracking-wide truncate">{t('Account')}</span>

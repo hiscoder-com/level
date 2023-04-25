@@ -8,7 +8,7 @@ import Placeholder from './Placeholder'
 import { useBriefState, useAccess } from 'utils/hooks'
 
 function ProjectCard({ project, token, user }) {
-  const { t } = useTranslation(['projects', 'common', 'books'])
+  const { t } = useTranslation(['projects', 'common'])
   const [{ isCoordinatorAccess }] = useAccess({
     token: user?.access_token,
     user_id: user?.id,
@@ -27,14 +27,14 @@ function ProjectCard({ project, token, user }) {
         <Link href={`/projects/${project.code}`}>
           <div className="card flex justify-between items-start h-full cursor-pointer">
             <div className="flex flex-col gap-9">
-              <div className="h3 font-bold">{project.title}</div>
+              <div className="text-2xl font-bold">{project.title}</div>
               <div className="flex flex-col gap-5">
                 <div className="flex gap-3">
-                  <p className="h4-5">{t('Language')}:</p>
+                  <p className="text-lg">{t('Language')}:</p>
                   <p className="text-lg text-teal-500">{project.languages.orig_name}</p>
                 </div>
                 <div className="flex gap-3">
-                  <p className="h4-5">{t('Translators')}:</p>
+                  <p className="text-lg">{t('Translators')}:</p>
                   <Translators projectCode={project.code} size="25px" />
                 </div>
               </div>

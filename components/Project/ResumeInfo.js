@@ -10,19 +10,17 @@ function ResumeInfo({ project, user }) {
   })
 
   return (
-    <>
-      <Card
-        title={`${t('TranslationGoal')} / ${t('Resume')}`}
-        link={`${project?.code}/edit#brief`}
-        access
-      >
-        <ul className="pl-5 list-decimal h4-5 xl:max-h-[10vh] overflow-y-scroll">
-          {brief?.data_collection?.map(
-            (el) => el?.resume && <li key={el.id}>{el?.resume}</li>
-          )}
-        </ul>
-      </Card>
-    </>
+    <Card
+      title={`${t('TranslationGoal')} / ${t('Resume')}`}
+      link={`${project?.code}/edit#brief`}
+      access
+    >
+      <ul className="pl-6 text-lg list-decimal">
+        {brief?.data_collection?.map(
+          (el) => el?.resume && <li key={el.id}>{el?.resume}</li>
+        )}
+      </ul>
+    </Card>
   )
 }
 

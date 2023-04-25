@@ -44,14 +44,14 @@ function ProjectPersonalCard({ project, token, user }) {
     })
     return _chapters
   }, [currentSteps])
-  const localStorSteps = useMemo(
+  const localStorageSteps = useMemo(
     () => JSON.parse(localStorage.getItem('viewedIntroSteps')),
     []
   )
 
-  const searchLocalStorage = (step, localStorSteps) => {
+  const searchLocalStorage = (step, localStorageSteps) => {
     const { project, book, chapter, step: numStep } = step
-    const isRepeatIntro = localStorSteps?.find(
+    const isRepeatIntro = localStorageSteps?.find(
       (el) =>
         JSON.stringify(el) ===
         JSON.stringify({
@@ -107,12 +107,12 @@ function ProjectPersonalCard({ project, token, user }) {
                 return (
                   <div
                     key={i}
-                    className="card flex flex-col gap-7 sm:flex-row p-7 h-full"
+                    className="card flex flex-col sm:flex-row gap-7 p-7 h-full"
                   >
-                    <div className="flex flex-col gap-7 lg:w-1/3 w-1/2">
+                    <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
-                        <div className="h3 font-bold">{t(`books:${book}`)}</div>
-                        <div className="h5 pt-1">{`(${
+                        <div className="text-2xl font-bold">{t(`books:${book}`)}</div>
+                        <div className="pt-1">{`(${
                           countChaptersVerses?.[book]?.countChapters
                         } ${t('common:Chapters')} ${
                           countChaptersVerses?.[book]?.countVerses
@@ -120,19 +120,17 @@ function ProjectPersonalCard({ project, token, user }) {
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
-                          <p className="h4-5">{t('Project')}:</p>
+                          <p className="text-lg">{t('Project')}:</p>
                           <Link href={`/projects/${project.code}`}>
-                            <a>
-                              <p className="text-lg text-teal-500">{project?.title}</p>
-                            </a>
+                            <a className="text-lg text-teal-500">{project?.title}</a>
                           </Link>
                         </div>
                         <div className="flex gap-3">
-                          <p className="h4-5">{t('Translators')}:</p>
+                          <p className="text-lg">{t('Translators')}:</p>
                           <Translators projectCode={project.code} size="25px" />
                         </div>
                         <div className="flex gap-3">
-                          <p className="h4-5">
+                          <p className="text-lg">
                             {t('Begin')}:{' '}
                             {chapters &&
                               readableDate(
@@ -147,7 +145,7 @@ function ProjectPersonalCard({ project, token, user }) {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-3 content-start lg:w-2/3 w-1/2 h6">
+                    <div className="flex flex-wrap gap-3 content-start w-1/2 lg:w-2/3 text-sm">
                       {chapters[book].map((step, index) => {
                         const stepLink = (
                           <>
@@ -158,7 +156,7 @@ function ProjectPersonalCard({ project, token, user }) {
                             <span>
                               {countChaptersVerses?.[book]?.chapters[step.chapter]}{' '}
                               {t('common:Ver').toLowerCase()}
-                            </span>{' '}
+                            </span>
                             <span>|</span>
                             <span>
                               {step.step} {t('common:Step').toLowerCase()}
@@ -172,7 +170,7 @@ function ProjectPersonalCard({ project, token, user }) {
                             href={`/translate/${step.project}/${step.book}/${
                               step.chapter
                             }/${step.step}${
-                              typeof searchLocalStorage(step, localStorSteps) ===
+                              typeof searchLocalStorage(step, localStorageSteps) ===
                               'undefined'
                                 ? '/intro'
                                 : ''

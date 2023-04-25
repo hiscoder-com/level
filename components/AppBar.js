@@ -68,11 +68,7 @@ export default function AppBar({ setIsOpen }) {
         </div>
         {isStepPage && (
           <>
-            <div
-              className={`text-center h3 pt-2 lg:text-2xl md:flex ${
-                showFullAppbar ? '' : 'hidden'
-              }`}
-            >
+            <div className={`pt-2 md:flex text-center ${showFullAppbar ? '' : 'hidden'}`}>
               {stepConfig.title}
             </div>
             <div

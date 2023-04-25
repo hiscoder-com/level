@@ -11,7 +11,7 @@ import Modal from 'components/Modal'
 function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating }) {
   const { push } = useRouter()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('common')
   const [isCreated, setIsCreated] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
   const [textModal, setTextModal] = useState(t('DoYouWantCreateBook'))
@@ -52,9 +52,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
     } catch (error) {
       setIsCreated(true)
       setTextModal(t('BookCreationError'))
-      setTimeout(() => {
-        reset()
-      }, 2000)
+      setTimeout(reset, 2000)
       console.log(error)
     } finally {
       setIsCreating(false)
@@ -73,9 +71,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
     <div>
       <Modal
         isOpen={typeof bookCode === 'string'}
-        closeHandle={() => {
-          reset()
-        }}
+        closeHandle={reset}
         className={isCreated ? 'secondary' : 'primary'}
       >
         <div className="flex flex-col justify-center items-center min-h-[15vh]">
@@ -84,22 +80,15 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
             {isCreating && !isCreated && <p className="animate-pulse">...</p>}
           </div>
           {!isCreating && !isCreated && (
-            <div className="flex flex-row gap-2 h4">
+            <div className="flex flex-row gap-2 text-xl">
               <button
                 className={`btn-link-full mx-2`}
-                onClick={() => {
-                  handleCreate(bookCode)
-                }}
+                onClick={() => handleCreate(bookCode)}
               >
                 {t('Yes')}
               </button>
 
-              <button
-                className="btn-link-full mx-2"
-                onClick={() => {
-                  reset()
-                }}
-              >
+              <button className="btn-link-full mx-2" onClick={reset}>
                 {isCreated ? t('Ok') : t('No')}
               </button>
             </div>
