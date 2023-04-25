@@ -8,12 +8,11 @@ function Card({ children, title, link = '/', access }) {
         <h3 className="h3 font-bold truncate">{title}</h3>
         {access && (
           <Link href={link}>
-            <a className="w-6 text-darkBlue">
+            <a className="w-6 min-w-[1.5rem]">
               <Gear />
             </a>
           </Link>
         )}
-        {/* //TODO - когда длинный заголовок - то уменьшается иконка  */}
       </div>
       <div>{children}</div>
     </div>
