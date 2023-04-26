@@ -14,7 +14,7 @@ function TranslatorsList({
     <div className="flex flex-col gap-4">
       <div className="flex md:text-lg">
         <div className="w-1/3">{t('users:Login')}</div>
-        <div className="hidden md:block w-1/3">{t('users:Email')}</div>
+        <div className="hidden md:block md:w-1/3">{t('users:Email')}</div>
         <div className="w-1/3 md:w-1/6">{t('Moderator')}</div>
         <div className="w-1/3 md:w-1/6"></div>
       </div>
@@ -27,7 +27,7 @@ function TranslatorsList({
               </div>
               <div>{el.users.login}</div>
             </div>
-            <div className="hidden md:block w-1/3">{el.users.email}</div>
+            <div className="hidden md:block md:w-1/3">{el.users.email}</div>
             <div className="flex items-center w-1/3 md:w-1/6">
               {access && (
                 <Switch

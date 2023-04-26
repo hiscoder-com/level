@@ -59,9 +59,7 @@ function BookList({ user, project, access }) {
           {testaments?.[project?.type]?.map((testament) => (
             <div
               key={testament.title}
-              className={`w-${
-                testaments?.[project?.type]?.length === '2' ? '1/2' : 'full'
-              }`}
+              className={testaments?.[project?.type]?.length === 2 ? 'w-1/2' : 'w-full'}
             >
               <Testament
                 bookList={testament.books}
