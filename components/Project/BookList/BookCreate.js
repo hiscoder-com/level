@@ -21,6 +21,11 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
     if (!book && !project.id) {
       return
     }
+    const unsuccessfulCreate = () => {
+      setIsCreated(true)
+      setTextModal(t('BookCreationError'))
+      setTimeout(reset, 2000)
+    }
     axios.defaults.headers.common['token'] = user?.access_token
     try {
       setIsCreating(true)
@@ -33,7 +38,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           book_code,
         })
         .then((res) => {
-          if (res.status == 201) {
+          if (res.status === '201') {
             setIsCreated(true)
             mutateBooks()
             setTextModal(t('BookCreated'))
@@ -47,12 +52,13 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
                 { shallow: true }
               )
             }, 2000)
+          } else {
+            unsuccessfulCreate()
+            console.log(res)
           }
         })
     } catch (error) {
-      setIsCreated(true)
-      setTextModal(t('BookCreationError'))
-      setTimeout(reset, 2000)
+      unsuccessfulCreate()
       console.log(error)
     } finally {
       setIsCreating(false)
@@ -62,9 +68,9 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
   const reset = () => {
     setBookCodeCreating(null)
     setTimeout(() => {
-      setTextModal(t('DoYouWantCreateBook'))
       setIsCreated(false)
       setIsCreating(false)
+      setTextModal(t('DoYouWantCreateBook'))
     }, 500)
   }
   return (
@@ -82,12 +88,11 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 text-xl">
               <button
-                className={`btn-link-full mx-2`}
+                className="btn-link-full mx-2"
                 onClick={() => handleCreate(bookCode)}
               >
                 {t('Yes')}
               </button>
-
               <button className="btn-link-full mx-2" onClick={reset}>
                 {isCreated ? t('Ok') : t('No')}
               </button>

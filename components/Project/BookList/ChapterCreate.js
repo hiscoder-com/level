@@ -22,42 +22,41 @@ function ChapterCreate({
   const reset = () => {
     setCreatingChapter(false)
     setTimeout(() => {
-      setTextModal(t('DoYouWantCreateChapter'))
       setIsCreated(false)
       setIsCreating(false)
+      setTextModal(t('DoYouWantCreateChapter'))
     }, 500)
   }
   const handleAddChapter = async ({ chapter_id, num }) => {
-    try {
-      setIsCreating(true)
-      setTextModal(t('ChapterIsCreating'))
-
-      const res = await supabase.rpc('create_verses', { chapter_id })
-      if (res.data) {
-        setTimeout(() => {
-          setIsCreated(true)
-          mutateChapters()
-          mutateCreatedChapters()
-          setTextModal(t('ChapterCreated'))
-          setTimeout(() => {
-            push(
-              '/projects/' +
-                project.code +
-                '/books/' +
-                query.book +
-                '/' +
-                creatingChapter.num
-            )
-          }, 2000)
-        }, 1000)
-      }
-    } catch (error) {
+    const unsuccessful = () => {
       setIsCreated(true)
       setTextModal(t('ChapterCreatingError'))
-      setTimeout(() => {
-        reset()
-      }, 2000)
-      console.log(error)
+      setTimeout(reset, 2000)
+    }
+    if (chapter_id && num) {
+      try {
+        setIsCreating(true)
+        setTextModal(t('ChapterIsCreating'))
+
+        const res = await supabase.rpc('create_verses', { chapter_id })
+        if (res.data) {
+          setTimeout(() => {
+            setIsCreated(true)
+            mutateChapters()
+            mutateCreatedChapters()
+            setTextModal(t('ChapterCreated'))
+            setTimeout(() => {
+              push('/projects/' + project.code + '/books/' + query.book + '/' + num)
+            }, 2000)
+          }, 1000)
+        } else {
+          unsuccessful()
+          console.log(res)
+        }
+      } catch (error) {
+        unsuccessful()
+        console.log(error)
+      }
     }
   }
   return (
