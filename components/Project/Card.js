@@ -30,7 +30,7 @@ function Card({ children, title, link = '/', access }) {
             </Disclosure.Panel>
             <Disclosure.Button className="">
               <div className="flex gap-4 justify-center w-full border-t border-darkBlue">
-                <span>{t('Hide')}</span>
+                <span>{t(open ? 'Hide' : 'Open')}</span>
                 <Down
                   className={`w-6 max-w-[1.5rem] ${open ? 'rotate-180 transform' : ''}`}
                 />
