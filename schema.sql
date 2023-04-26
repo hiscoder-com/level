@@ -1403,7 +1403,7 @@
       data JSON DEFAULT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       changed_at TIMESTAMP DEFAULT NOW(),
-      deleted_at timestamp DEFAULT NULL
+      deleted_at TIMESTAMP DEFAULT NULL
     );
     ALTER TABLE
       PUBLIC.dictionaries enable ROW LEVEL security;
