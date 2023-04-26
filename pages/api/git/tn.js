@@ -76,11 +76,11 @@ export default async function tnHandler(req, res) {
   let url = ''
   if (bookPath.slice(0, 2) === './') {
     url = `${
-      NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+      process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
     }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
   } else {
     url = `${
-      NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+      process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
     }/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
   }
   try {

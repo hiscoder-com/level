@@ -21,7 +21,7 @@ export default function UsersPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="container">
+      <div className="mx-auto max-w-7xl">
         <div>{t('Users')}</div>
         <UsersList access_token={user?.access_token} />
         <Link href={'/users/create'}>

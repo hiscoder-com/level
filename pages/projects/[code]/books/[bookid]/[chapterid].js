@@ -170,7 +170,6 @@ function ChapterVersesPage() {
       toast.success(t('SaveSuccess'))
     }
   }
-
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
@@ -179,7 +178,9 @@ function ChapterVersesPage() {
             {project && book && chapter ? (
               <>
                 <Link href={'/projects/' + code + '?book=' + bookid}>
-                  <LeftArrow className="h-5 w-5 min-w-[1.25rem] hover:cursor-pointer" />
+                  <a>
+                    <LeftArrow className="h-5 w-5 min-w-[1.25rem] hover:cursor-pointer" />
+                  </a>
                 </Link>
                 <Link href={'/projects/' + code}>
                   <a className="hover:underline">{project?.title}</a>

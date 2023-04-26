@@ -29,7 +29,6 @@ export default function AppBar({ setIsOpen }) {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
-
   useEffect(() => {
     const hasAccess = async () => {
       try {
@@ -52,12 +51,12 @@ export default function AppBar({ setIsOpen }) {
           {access && (
             <Burger
               onClick={() => setIsOpen((prev) => !prev)}
-              className="h-6 text-[#1D1D1D] stroke-2"
+              className="h-10 text-darkBlue stroke-1.5"
             />
           )}
           <Link href="/account">
             <a>
-              <VCANA_logo className="h-5" />
+              <VCANA_logo className="h-6" />
             </a>
           </Link>
           {isStepPage && (
@@ -69,11 +68,7 @@ export default function AppBar({ setIsOpen }) {
         </div>
         {isStepPage && (
           <>
-            <div
-              className={`text-center h3 pt-2 lg:text-2xl md:flex ${
-                showFullAppbar ? '' : 'hidden'
-              }`}
-            >
+            <div className={`pt-2 md:flex text-center ${showFullAppbar ? '' : 'hidden'}`}>
               {stepConfig.title}
             </div>
             <div

@@ -312,7 +312,6 @@ function Dictionary() {
       )}
 
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        {' '}
         <div className="text-center">
           <div className="mb-4">
             {t('AreYouSureDelete') + ' ' + t(wordToDel?.title) + '?'}

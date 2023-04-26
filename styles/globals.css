@@ -6,6 +6,9 @@
 	html {
 		font-family: "Roboto", system-ui, sans-serif;
 	}
+	body {
+		@apply text-darkBlue
+	}
 }
 
 .appbar {
@@ -109,7 +112,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .confession-text {
-	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] h4 bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none;
+	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] text-xl bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none;
 }
 
 .eye {
@@ -120,33 +123,18 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	min-height: calc(100vh - 11.5rem);
 }
 
-.h1 {
-	@apply text-4xl text-gray-800;
-}
-.h2 {
-	@apply text-3xl text-gray-800;
-}
-.h3 {
-	@apply text-2xl text-gray-800;
-}
-.h4 {
-	@apply text-xl text-gray-800;
-}
-.h5 {
-	@apply text-base text-gray-800;
-}
-.h6 {
-	@apply text-sm text-gray-800;
-}
-
 .input-base {
-	@apply w-full text-sm rounded-md py-2 pl-2 border-2
+	@apply w-full text-sm rounded-md py-2 pl-2 border
 	focus:outline-none;
 }
 
 .input {
 	@apply input-base text-gray-600 placeholder-gray-400 border-gray-200 bg-gray-100
  focus:border-gray-300;
+}
+.input-blue {
+	@apply input-base text-blue-250 placeholder-gray-400 border-blue-250 bg-white
+	focus:border-blue-450;
 }
 
 .input-invalid {
@@ -241,13 +229,46 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	fill:#003554;
 }
 
-.card {
-  @apply bg-white rounded-2xl border border-gray-350 p-7 shadow-md;
-}
-
 .verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2){
   @apply flex;
 }
 .verse-block:hover>div:nth-child(1), .verse-block>div:nth-child(2){
   @apply hidden;
+}
+
+.tab {
+	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl cursor-pointer
+}
+.tab-active {
+	@apply tab text-white bg-darkBlue cursor-default
+}
+
+.card {
+  @apply p-7 bg-white rounded-2xl border border-gray-350 shadow-md;
+}
+
+.btn-link-base {
+  @apply flex gap-2 pt-[9px] pb-[11px] px-6 h-min border rounded-3xl cursor-pointer;
+}
+.btn-link {
+  @apply btn-link-base text-darkBlue border-darkBlue hover:bg-blue-250;
+}
+.btn-link-full {
+  @apply btn-link-base text-darkBlue hover:bg-white bg-blue-150;
+}
+.btn-link-disabled {
+  @apply btn-link-base text-gray-300 cursor-not-allowed;
+}
+.btn-link-red {
+  @apply btn-link-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
+}
+
+.first-check path:nth-child(1){
+	@apply fill-emerald-500
+}
+.second-check path:nth-child(2){
+	@apply fill-teal-500
+}
+.third-check path:nth-child(3){
+	@apply fill-cyan-700
 }

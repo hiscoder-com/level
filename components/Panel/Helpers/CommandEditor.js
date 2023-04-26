@@ -129,8 +129,8 @@ function CommandEditor({ config }) {
                   ? ['user', 'translator'].includes(level)
                   : !verseObject.editable
               )
-                ? 'text-blue-600'
-                : 'font-bold'
+                ? 'font-bold'
+                : 'text-blue-600'
             }
           >
             {obsCheckAdditionalVerses(verseObject.num)}
