@@ -28,6 +28,7 @@ import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
+import Breadcrumbs from 'components/Breadcrumbs'
 
 const translatorColors = [
   { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
@@ -174,12 +175,23 @@ function ChapterVersesPage() {
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
         <div className="flex flex-col gap-7 w-2/3">
+          <Breadcrumbs
+            full
+            links={[
+              { title: project?.title, href: '/projects/' + code },
+              {
+                title: t(`books:${book?.code}`),
+                href: '/projects/' + code + '?book=' + bookid,
+              },
+              { title: `${t('Chapter')} ${chapter?.num}` },
+            ]}
+          />
           <div className="card flex flex-row gap-3 text-xl overflow-x-auto whitespace-nowrap text-slate-900 font-medium items-center">
             {project && book && chapter ? (
               <>
                 <Link href={'/projects/' + code + '?book=' + bookid}>
                   <a>
-                    <LeftArrow className="h-5 w-5 min-w-[1.25rem] hover:cursor-pointer" />
+                    <LeftArrow className="h-5 w-5 min-w-[1.25rem]" />
                   </a>
                 </Link>
                 <Link href={'/projects/' + code}>
