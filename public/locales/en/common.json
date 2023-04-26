@@ -103,6 +103,8 @@
   "ShowAll": "Show all",
   "Start": "Start",
   "Step": "Step",
+  "Step_one": "step {{count}}",
+  "Step_other": "step {{count}}",
   "teamNotes": "Team notes",
   "TextDescriptionWord": "Write the meaning of the word",
   "TextNewNote": "Text new note",

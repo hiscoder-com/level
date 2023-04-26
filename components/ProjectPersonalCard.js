@@ -154,16 +154,16 @@ function ProjectPersonalCard({ project, token, user }) {
                         const stepLink = (
                           <>
                             <span>
-                              {step.chapter} {t('common:Ch').toLowerCase()}
+                              {step.chapter} {t('Ch').toLowerCase()}
                             </span>
                             <span>|</span>
                             <span>
                               {countChaptersVerses?.[book]?.chapters[step.chapter]}{' '}
-                              {t('common:Ver').toLowerCase()}
+                              {t('Ver').toLowerCase()}
                             </span>
                             <span>|</span>
                             <span>
-                              {step.step} {t('common:Step').toLowerCase()}
+                              {t('Step', { count: parseInt(step?.step) }).toLowerCase()}
                             </span>
                           </>
                         )
@@ -191,9 +191,7 @@ function ProjectPersonalCard({ project, token, user }) {
                       {briefResume === '' && (
                         <Link href={`/projects/${project?.code}/edit/brief`}>
                           <a className="btn-link">
-                            {t(
-                              `common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`
-                            )}
+                            {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                           </a>
                         </Link>
                       )}
