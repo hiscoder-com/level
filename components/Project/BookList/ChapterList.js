@@ -13,6 +13,7 @@ import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
 import DownloadIcon from '/public/download.svg'
 import Plus from '/public/plus.svg'
+import { readableDate } from 'utils/helper'
 
 function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
   const { query, push } = useRouter()
@@ -63,11 +64,11 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
               { title: t('books:' + book) },
             ]}
           />
-          <div className="flex flex-col gap-3 h4">
+          <div className="flex flex-col gap-3 text-xl">
             <div className="select-none grid gap-3 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {chapters &&
                 chapters?.map((chapter) => {
-                  const { id, num } = chapter
+                  const { id, num, started_at } = chapter
 
                   return (
                     createdChapters?.includes(id) && (
@@ -75,27 +76,29 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                         key={id}
                         href={`/projects/${project?.code}/books/${book}/${num}`}
                       >
-                        <div className="flex items-center justify-between px-5 py-3 bg-blue-150 rounded-xl cursor-pointer hover:bg-blue-250">
+                        <div className="flex items-center justify-between px-5 py-3 min-h-[5rem] bg-blue-150 rounded-xl cursor-pointer hover:bg-blue-250">
                           <div className="basis-1/6">{num}</div>
-                          <div
-                            className="basis-3/6"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              push({
-                                pathname: `/projects/${project?.code}`,
-                                query: {
-                                  book,
-                                  download: 'chapter',
-                                  chapter: chapter?.num,
-                                },
-                                shallow: true,
-                              })
-                            }}
-                          >
-                            <p className="block xl:hidden">{t('Download')}</p>
-
-                            <div className="hidden xl:block w-6 h-6 min-h-6">
-                              <DownloadIcon />
+                          <div>
+                            {started_at && <div>{readableDate(started_at)}</div>}
+                            <div
+                              className="basis-3/6"
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                push({
+                                  pathname: `/projects/${project?.code}`,
+                                  query: {
+                                    book,
+                                    download: 'chapter',
+                                    chapter: chapter?.num,
+                                  },
+                                  shallow: true,
+                                })
+                              }}
+                            >
+                              <p className="block xl:hidden">{t('Download')}</p>
+                              <div className="hidden xl:block w-6 h-6 min-h-[1.5rem]">
+                                <DownloadIcon />
+                              </div>
                             </div>
                           </div>
                         </div>
