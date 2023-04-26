@@ -176,27 +176,50 @@ function ChapterVersesPage() {
       <div className="flex flex-row gap-7">
         <div className="flex flex-col gap-7 w-2/3">
           <div className="card flex flex-row gap-3 text-xl overflow-x-auto whitespace-nowrap text-slate-900 font-medium items-center">
-            <Link href={'/projects/' + code + '?book=' + bookid}>
-              <LeftArrow className="h-5 w-5 min-w-[1.25rem] hover:cursor-pointer" />
-            </Link>
-            <Link href={'/projects/' + code}>
-              <a className="hover:underline">{project?.title}</a>
-            </Link>
-            <span>/</span>
-            <Link href={'/projects/' + code + '?book=' + bookid}>
-              <a className="hover:underline">{t(`books:${book?.code}`)}</a>
-            </Link>
-            <span>/</span>
-            <span>
-              {t('Chapter')} {chapter?.num}
-            </span>
+            {project && book && chapter ? (
+              <>
+                <Link href={'/projects/' + code + '?book=' + bookid}>
+                  <LeftArrow className="h-5 w-5 min-w-[1.25rem] hover:cursor-pointer" />
+                </Link>
+                <Link href={'/projects/' + code}>
+                  <a className="hover:underline">{project?.title}</a>
+                </Link>
+                <span>/</span>
+                <Link href={'/projects/' + code + '?book=' + bookid}>
+                  <a className="hover:underline">{t(`books:${book?.code}`)}</a>
+                </Link>
+                <span>/</span>
+                <span>
+                  {t('Chapter')} {chapter?.num}
+                </span>
+              </>
+            ) : (
+              <div role="status" className="w-full animate-pulse">
+                <div className="flex flex-row">
+                  <div className="h-7 bg-gray-200 rounded-full w-1/12 mr-4"></div>
+                  <div className="h-7 bg-gray-200 rounded-full w-5/12 mr-4"></div>
+                  <div className="h-7 bg-gray-200 rounded-full w-3/12 mr-4"></div>
+                </div>
+              </div>
+            )}
           </div>
           <div className="card text-slate-900">
             <div className="font-bold mb-7">
-              <span className="text-3xl">{t(`books:${book?.code}`)}</span>
-              <span className="text-xl ml-7">
-                {t('Chapter')} {chapter?.num}
-              </span>
+              {book && chapter ? (
+                <>
+                  <span className="text-3xl">{t(`books:${book?.code}`)}</span>
+                  <span className="text-xl ml-7">
+                    {t('Chapter')} {chapter?.num}
+                  </span>
+                </>
+              ) : (
+                <div role="status" className="w-full animate-pulse">
+                  <div className="flex flex-row items-end">
+                    <div className="h-9 bg-gray-200 rounded-full w-5/12 mr-4"></div>
+                    <div className="h-6 bg-gray-200 rounded-full w-3/12 mr-4"></div>
+                  </div>
+                </div>
+              )}
             </div>
             <div
               onMouseDown={() => setIsHighlight(true)}
@@ -204,69 +227,79 @@ function ChapterVersesPage() {
               onMouseLeave={() => setIsHighlight(false)}
               className="select-none grid gap-3 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             >
-              {versesDivided
-                ?.sort((a, b) => a.num > b.num)
-                .map((verse, index) => {
-                  return (
-                    <div
-                      onMouseUp={() => {
-                        if (currentTranslator !== null) {
-                          coloring(index)
-                        }
-                      }}
-                      onMouseLeave={() => {
-                        if (isHighlight && currentTranslator !== null) {
-                          coloring(index)
-                        }
-                      }}
-                      className={`truncate h-24 ${
-                        currentTranslator ? 'verse-block cursor-pointer' : ''
-                      }`}
-                      key={index}
-                    >
+              {versesDivided.length > 0 ? (
+                versesDivided
+                  ?.sort((a, b) => a.num > b.num)
+                  .map((verse, index) => {
+                    return (
                       <div
-                        className={`${verse.color.bg} ${
-                          verse.color.bg === 'bg-white' ? '' : 'text-white'
-                        } ${verse.color.border} border-2 truncate rounded-2xl ${
-                          currentTranslator ? '' : 'flex'
-                        } w-full h-full flex-col p-4 justify-between`}
+                        onMouseUp={() => {
+                          if (currentTranslator !== null) {
+                            coloring(index)
+                          }
+                        }}
+                        onMouseLeave={() => {
+                          if (isHighlight && currentTranslator !== null) {
+                            coloring(index)
+                          }
+                        }}
+                        className={`truncate h-24 ${
+                          currentTranslator ? 'verse-block cursor-pointer' : ''
+                        }`}
+                        key={index}
                       >
                         <div
-                          className={`${
-                            [0, 200].includes(verse.num) ? 'text-xl' : 'text-2xl'
-                          } font-bold text-ellipsis overflow-hidden`}
+                          className={`${verse.color.bg} ${
+                            verse.color.bg === 'bg-white' ? '' : 'text-white'
+                          } ${verse.color.border} border-2 truncate rounded-2xl ${
+                            currentTranslator ? '' : 'flex'
+                          } w-full h-full flex-col p-4 justify-between`}
                         >
-                          {verse.num === 0
-                            ? t('Title')
-                            : verse.num === 200
-                            ? t('Reference')
-                            : verse.num}
+                          <div
+                            className={`${
+                              [0, 200].includes(verse.num) ? 'text-xl' : 'text-2xl'
+                            } font-bold text-ellipsis overflow-hidden`}
+                          >
+                            {verse.num === 0
+                              ? t('Title')
+                              : verse.num === 200
+                              ? t('Reference')
+                              : verse.num}
+                          </div>
+                          <div className="text-ellipsis overflow-hidden">
+                            {verse.translator_name}
+                          </div>
                         </div>
-                        <div className="text-ellipsis overflow-hidden">
-                          {verse.translator_name}
+                        <div
+                          className={`${
+                            currentTranslator ? '' : 'hidden'
+                          } w-full h-full rounded-2xl justify-center p-1 items-center`}
+                          style={{
+                            background: verse.translator_name
+                              ? 'linear-gradient(90deg, #2E4057 1%, #596B84 98%)'
+                              : 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
+                          }}
+                        >
+                          <div className="w-10 h-10 p-2 shadow-md text-slate-900 bg-white border-white border-2 rounded-full">
+                            {verse.translator_name ? (
+                              <Minus className="w-5 h-5" />
+                            ) : (
+                              <Plus className="w-5 h-5" />
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <div
-                        className={`${
-                          currentTranslator ? '' : 'hidden'
-                        } w-full h-full rounded-2xl justify-center p-1 items-center`}
-                        style={{
-                          background: verse.translator_name
-                            ? 'linear-gradient(90deg, #2E4057 1%, #596B84 98%)'
-                            : 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
-                        }}
-                      >
-                        <div className="w-10 h-10 p-2 shadow-md text-slate-900 bg-white border-white border-2 rounded-full">
-                          {verse.translator_name ? (
-                            <Minus className="w-5 h-5" />
-                          ) : (
-                            <Plus className="w-5 h-5" />
-                          )}
-                        </div>
-                      </div>
+                    )
+                  })
+              ) : (
+                <>
+                  {[...Array(21).keys()].map((el) => (
+                    <div role="status" className="h-24 animate-pulse" key={el}>
+                      <div className="h-full bg-gray-200 rounded-2xl w-full"></div>
                     </div>
-                  )
-                })}
+                  ))}
+                </>
+              )}
             </div>
           </div>
         </div>
@@ -274,45 +307,55 @@ function ChapterVersesPage() {
           <div className="sticky top-7 flex flex-col gap-7">
             <div className="card flex flex-col gap-3">
               <div className="flex flex-row justify-between items-center text-slate-900">
-                <h3 className="text-2xl font-bold">Распределение стихов</h3>
+                <h3 className="text-2xl font-bold">{t('chapters:Assignment')}</h3>
               </div>
-              {translators?.map((translator, index) => (
-                <div key={index} className="flex">
-                  <div
-                    onClick={() => setCurrentTranslator(translator)}
-                    className={`${
-                      currentTranslator?.users?.login === translator.users.login
-                        ? `${translator.color.bg} text-white shadow-md`
-                        : `${translator.color.text} text-slate-900`
-                    } ${
-                      translator.color.border
-                    } flex flex-row w-full items-center p-2 border-2 cursor-pointer rounded-2xl font-semibold text-xl`}
-                  >
-                    <div className="avatar-block w-10 flex-grow-0">
-                      <div
-                        className={`${translator.color.bg} flex items-center justify-center w-10 h-10 border-2 border-white rounded-full uppercase text-white`}
-                      >
-                        {translator.users.login.slice(0, 1)}
+              {translators.length > 0 ? (
+                translators?.map((translator, index) => (
+                  <div key={index} className="flex">
+                    <div
+                      onClick={() => setCurrentTranslator(translator)}
+                      className={`${
+                        currentTranslator?.users?.login === translator.users.login
+                          ? `${translator.color.bg} text-white shadow-md`
+                          : `${translator.color.text} text-slate-900`
+                      } ${
+                        translator.color.border
+                      } flex flex-row w-full items-center p-2 border-2 cursor-pointer rounded-2xl font-semibold text-xl`}
+                    >
+                      <div className="avatar-block w-10 flex-grow-0">
+                        <div
+                          className={`${translator.color.bg} flex items-center justify-center w-10 h-10 border-2 border-white rounded-full uppercase text-white`}
+                        >
+                          {translator.users.login.slice(0, 1)}
+                        </div>
                       </div>
-                    </div>
-                    <div className="text-block ml-2 text-base font-normal flex-auto text-left text-ellipsis overflow-hidden">
-                      {translator.users.login} <br />
-                      {translator.users.email}
-                    </div>
-                    <div className="icon-block flex-grow-0">
-                      <div
-                        className={`${
-                          currentTranslator?.users?.login === translator.users.login
-                            ? `border-white shadow-md`
-                            : `${translator.color.border}`
-                        } ${translator.color.text} p-2 bg-white border-2 rounded-full`}
-                      >
-                        <Plus className="w-5 h-5" />
+                      <div className="text-block ml-2 text-base font-normal flex-auto text-left text-ellipsis overflow-hidden">
+                        {translator.users.login} <br />
+                        {translator.users.email}
+                      </div>
+                      <div className="icon-block flex-grow-0">
+                        <div
+                          className={`${
+                            currentTranslator?.users?.login === translator.users.login
+                              ? `border-white shadow-md`
+                              : `${translator.color.border}`
+                          } ${translator.color.text} p-2 bg-white border-2 rounded-full`}
+                        >
+                          <Plus className="w-5 h-5" />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <>
+                  {[...Array(4).keys()].map((el) => (
+                    <div role="status" className="w-full animate-pulse" key={el}>
+                      <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                    </div>
+                  ))}
+                </>
+              )}
               <hr className="border-gray-500" />
               <Button
                 onClick={verseDividing}
