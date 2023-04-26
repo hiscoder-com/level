@@ -204,23 +204,6 @@ function ChapterVersesPage() {
             )}
           </div>
           <div className="card text-slate-900">
-            <div className="font-bold mb-7">
-              {book && chapter ? (
-                <>
-                  <span className="text-3xl">{t(`books:${book?.code}`)}</span>
-                  <span className="text-xl ml-7">
-                    {t('Chapter')} {chapter?.num}
-                  </span>
-                </>
-              ) : (
-                <div role="status" className="w-full animate-pulse">
-                  <div className="flex flex-row items-end">
-                    <div className="h-9 bg-gray-200 rounded-full w-5/12 mr-4"></div>
-                    <div className="h-6 bg-gray-200 rounded-full w-3/12 mr-4"></div>
-                  </div>
-                </div>
-              )}
-            </div>
             <div
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
