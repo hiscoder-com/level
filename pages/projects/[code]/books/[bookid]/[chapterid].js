@@ -28,7 +28,6 @@ import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
-import Parameters from 'public/parameters.svg'
 
 const translatorColors = [
   { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
@@ -177,7 +176,9 @@ function ChapterVersesPage() {
       <div className="flex flex-row gap-7">
         <div className="flex flex-col gap-7 w-2/3">
           <div className="card flex flex-row gap-3 text-xl overflow-x-auto whitespace-nowrap text-slate-900 font-medium items-center">
-            <LeftArrow className="h-5 w-5 min-w-[1.25rem]" />
+            <Link href={'/projects/' + code + '?book=' + bookid}>
+              <LeftArrow className="h-5 w-5 min-w-[1.25rem] hover:cursor-pointer" />
+            </Link>
             <Link href={'/projects/' + code}>
               <a className="hover:underline">{project?.title}</a>
             </Link>
@@ -201,7 +202,7 @@ function ChapterVersesPage() {
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
               onMouseLeave={() => setIsHighlight(false)}
-              className="select-none grid gap-3 w-full grid-cols-1 xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2"
+              className="select-none grid gap-3 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
             >
               {versesDivided
                 ?.sort((a, b) => a.num > b.num)
@@ -218,7 +219,7 @@ function ChapterVersesPage() {
                           coloring(index)
                         }
                       }}
-                      className={`truncate aspect-1 ${
+                      className={`truncate h-24 ${
                         currentTranslator ? 'verse-block cursor-pointer' : ''
                       }`}
                       key={index}
@@ -255,7 +256,7 @@ function ChapterVersesPage() {
                             : 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
                         }}
                       >
-                        <div className="border-white shadow-md text-slate-900 w-10 h-10 bg-white border-2 rounded-full p-2">
+                        <div className="w-10 h-10 p-2 shadow-md text-slate-900 bg-white border-white border-2 rounded-full">
                           {verse.translator_name ? (
                             <Minus className="w-5 h-5" />
                           ) : (
@@ -273,13 +274,7 @@ function ChapterVersesPage() {
           <div className="sticky top-7 flex flex-col gap-7">
             <div className="card flex flex-col gap-3">
               <div className="flex flex-row justify-between items-center text-slate-900">
-                <h3 className="text-2xl font-bold">Назначение участников</h3>
-                <Parameters
-                  className="h-10 w-10 p-2 cursor-pointer"
-                  onClick={() => {
-                    alert('Settings')
-                  }}
-                />
+                <h3 className="text-2xl font-bold">Распределение стихов</h3>
               </div>
               {translators?.map((translator, index) => (
                 <div key={index} className="flex">
@@ -291,11 +286,11 @@ function ChapterVersesPage() {
                         : `${translator.color.text} text-slate-900`
                     } ${
                       translator.color.border
-                    }  border-2 cursor-pointer p-2 w-full items-center rounded-2xl flex flex-row font-semibold text-xl`}
+                    } flex flex-row w-full items-center p-2 border-2 cursor-pointer rounded-2xl font-semibold text-xl`}
                   >
                     <div className="avatar-block w-10 flex-grow-0">
                       <div
-                        className={`${translator.color.bg} border-white uppercase text-white border-2 rounded-full w-10 h-10 flex items-center justify-center`}
+                        className={`${translator.color.bg} flex items-center justify-center w-10 h-10 border-2 border-white rounded-full uppercase text-white`}
                       >
                         {translator.users.login.slice(0, 1)}
                       </div>
@@ -310,7 +305,7 @@ function ChapterVersesPage() {
                           currentTranslator?.users?.login === translator.users.login
                             ? `border-white shadow-md`
                             : `${translator.color.border}`
-                        } ${translator.color.text} bg-white border-2 rounded-full p-2`}
+                        } ${translator.color.text} p-2 bg-white border-2 rounded-full`}
                       >
                         <Plus className="w-5 h-5" />
                       </div>

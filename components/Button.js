@@ -23,15 +23,15 @@ function Button({ onClick, text, color, icon, disabled = false, avatar = '' }) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`group ${colors[color].border} ${colors[color].text} border-2 cursor-pointer p-2 w-full items-center rounded-2xl flex flex-row font-semibold text-xl hover:shadow-md active:text-white ${colors[color].active}`}
+      className={`group w-full p-2 flex flex-row items-center cursor-pointer ${colors[color].border} border-2 rounded-2xl font-semibold text-xl ${colors[color].text} hover:shadow-md active:text-white ${colors[color].active}`}
     >
-      <div className="avatar-block w-0 flex-grow-0 md:w-10">{avatar}</div>
-      <div className="text-block ml-2 flex-auto text-left text-ellipsis overflow-hidden">
+      <div className="avatar-block w-0 md:w-10 flex-grow-0">{avatar}</div>
+      <div className="text-block flex-auto ml-2 text-left text-ellipsis overflow-hidden">
         {text}
       </div>
       <div className="icon-block flex-grow-0">
         <div
-          className={`${colors[color].border} border-2 rounded-full p-2 ${colors[color].hover} group-hover:text-white group-active:border-white`}
+          className={`p-2 ${colors[color].border} border-2 rounded-full ${colors[color].hover} group-hover:text-white group-active:border-white`}
         >
           {icon}
         </div>
