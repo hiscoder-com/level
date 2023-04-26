@@ -27,10 +27,7 @@ function ProjectEdit() {
     code: project?.code,
   })
   return (
-    <div
-      className="mx-auto max-w-7xl
-    flex flex-col gap-7"
-    >
+    <div className="flex flex-col gap-7 mx-auto max-w-7xl">
       <BreadCrumb
         links={[
           { title: project?.title, href: '/projects/' + code },

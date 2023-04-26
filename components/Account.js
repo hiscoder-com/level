@@ -35,10 +35,7 @@ function Account() {
     },
   ]
   return (
-    <div
-      className="mx-auto max-w-7xl
-    "
-    >
+    <div className="mx-auto max-w-7xl">
       {user?.id && (
         <div className="divide-y divide-darkBlue">
           <div className="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-7 mt-12 lg:mt-15 lg:text-lg font-bold text-center">
