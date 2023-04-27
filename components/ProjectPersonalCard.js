@@ -104,8 +104,6 @@ function ProjectPersonalCard({ project, token, user }) {
           {Object.keys(chapters).length > 0 && (
             <div className="flex flex-col gap-7">
               {Object.keys(chapters).map((book, i) => {
-                const countVerses = countChaptersVerses?.[book]?.countVerses
-                const countChapters = countChaptersVerses?.[book]?.countChapters
                 return (
                   <div
                     key={i}
@@ -115,11 +113,9 @@ function ProjectPersonalCard({ project, token, user }) {
                       <div className="flex gap-1 flex-wrap items-center">
                         <div className="text-2xl font-bold">{t(`books:${book}`)}</div>
                         <div className="pt-1">{`(${t('Chapter', {
-                          count: countChapters,
-                          context: countChapters,
+                          count: countChaptersVerses?.[book]?.countChapters,
                         })} ${t('Verse', {
-                          count: countVerses,
-                          context: countVerses,
+                          count: countChaptersVerses?.[book]?.countVerses,
                         })})`}</div>
                       </div>
                       <div className="flex flex-col gap-5">
