@@ -7,5 +7,6 @@
   "EnableBrief": "Enable brief",
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
-  "RemovingTranslator": "Removing a translator"
+  "RemovingTranslator": "Removing a translator",
+  "Summary": "Summary"
 }
