@@ -176,7 +176,7 @@ function BriefBlock({ access }) {
                     </div>
                     <div className="mb-7">
                       <p className={hidden ? 'hidden' : 'text-lg font-bold mb-7'}>
-                        {t('Обобщение')}
+                        {t('project-edit:Summary')}
                       </p>
                       <BriefResume
                         access={access}
