@@ -22,16 +22,14 @@ function Account() {
     }
   }, [router, user, loading])
   const tabs = [
-    { type: 'account', label: 'Account', class: 'tab' },
+    { type: 'account', label: 'Account' },
     {
       type: 'projects',
       label: 'projects:Projects',
-      class: 'tab',
     },
     {
       type: 'create',
       label: 'projects:CreateProject',
-      class: 'tab bg-white',
     },
   ]
   return (
@@ -46,7 +44,7 @@ function Account() {
                   key={tab.type}
                   disabled={type === tab.type}
                   onClick={() => setType(tab.type)}
-                  className={type === tab.type ? 'tab-active' : tab.class}
+                  className={type === tab.type ? 'tab-active' : 'tab'}
                 >
                   {t(tab.label)}
                 </button>

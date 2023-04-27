@@ -11,7 +11,6 @@ import Breadcrumbs from 'components/Breadcrumbs'
 
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
-import DownloadIcon from '/public/download.svg'
 import Plus from '/public/plus.svg'
 import { readableDate } from 'utils/helper'
 
@@ -31,12 +30,6 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
     code: project?.code,
     chapters: chapters?.map((el) => el.id),
   })
-
-  const nextChapter = useMemo(() => {
-    const num =
-      chapters?.length - createdChapters?.length > 0 && createdChapters?.length + 1
-    return chapters?.find((chapter) => chapter.num === num)
-  }, [chapters, createdChapters?.length])
 
   useEffect(() => {
     if (!chapters?.length) {
@@ -65,59 +58,85 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
             ]}
           />
           <div className="flex flex-col gap-3 text-xl">
-            <div className="select-none grid gap-3 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+            <div className="w-full grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {chapters &&
                 chapters?.map((chapter) => {
-                  const { id, num, started_at } = chapter
-
+                  const { id, num, started_at, finished_at } = chapter
+                  const isCreated = createdChapters?.includes(id)
                   return (
-                    createdChapters?.includes(id) && (
-                      <Link
-                        key={id}
-                        href={`/projects/${project?.code}/books/${book}/${num}`}
+                    <div
+                      key={id}
+                      className={`${
+                        !isCreated && isCoordinatorAccess ? 'verse-block ' : ''
+                      } `}
+                      onClick={() =>
+                        isCreated &&
+                        push({
+                          pathname: `/projects/${project?.code}/books/${book}/${num}`,
+                        })
+                      }
+                    >
+                      <div
+                        className={`flex flex-col justify-between px-5 py-3 h-24 rounded-2xl cursor-pointer ${
+                          finished_at
+                            ? 'bg-yellow-400'
+                            : isCreated
+                            ? 'text-white bg-darkBlue border-2 border-slate-900'
+                            : 'bg-white border-2 border-slate-900'
+                        }`}
                       >
-                        <div className="flex items-center justify-between px-5 py-3 min-h-[5rem] bg-blue-150 rounded-xl cursor-pointer hover:bg-blue-250">
-                          <div className="basis-1/6">{num}</div>
-                          <div>
-                            {started_at && <div>{readableDate(started_at)}</div>}
+                        <div className="flex items-end gap-4">
+                          <div className="text-2xl font-bold">{num}</div>
+                          {started_at && (
                             <div
-                              className="basis-3/6"
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                push({
-                                  pathname: `/projects/${project?.code}`,
-                                  query: {
-                                    book,
-                                    download: 'chapter',
-                                    chapter: chapter?.num,
-                                  },
-                                  shallow: true,
-                                })
-                              }}
+                              className={`text-sm ${
+                                !finished_at ? 'text-slate-400' : ''
+                              }`}
                             >
-                              <p className="block xl:hidden">{t('Download')}</p>
-                              <div className="hidden xl:block w-6 h-6 min-h-[1.5rem]">
-                                <DownloadIcon />
-                              </div>
+                              {readableDate(started_at)}
                             </div>
-                          </div>
+                          )}
                         </div>
-                      </Link>
-                    )
+                        <div className="text-sm"></div>
+                        {finished_at && (
+                          <div
+                            className="text-xl"
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              push({
+                                pathname: `/projects/${project?.code}`,
+                                query: {
+                                  book,
+                                  download: 'chapter',
+                                  chapter: chapter?.num,
+                                },
+                                shallow: true,
+                              })
+                            }}
+                          >
+                            <p className="text-sm xl:text-xl">{t('Download')}</p>
+                          </div>
+                        )}
+                      </div>
+                      <div
+                        className={`${
+                          isCreated ? 'hidden' : ''
+                        } flex w-full h-full rounded-2xl justify-center p-1 items-center border-0`}
+                        style={{
+                          background: 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
+                        }}
+                        onClick={() => setCreatingChapter(chapter)}
+                      >
+                        <div className="w-10 h-10 p-2 shadow-md text-slate-900 bg-white border-white border-2 rounded-full">
+                          <Plus className="w-5 h-5" />
+                        </div>
+                      </div>
+                    </div>
                   )
                 })}
 
-              {nextChapter && isCoordinatorAccess && (
+              {isCoordinatorAccess && (
                 <>
-                  <div
-                    className="flex justify-center px-5 py-3 bg-blue-150 rounded-xl cursor-pointer hover:bg-blue-250"
-                    onClick={() => setCreatingChapter(nextChapter)}
-                  >
-                    <div className="w-6">
-                      <Plus />
-                    </div>
-                  </div>
-
                   <ChapterCreate
                     setCreatingChapter={setCreatingChapter}
                     creatingChapter={creatingChapter}
