@@ -186,36 +186,6 @@ function ChapterVersesPage() {
               { title: `${t('Chapter')} ${chapter?.num}` },
             ]}
           />
-          <div className="card flex flex-row gap-3 text-xl overflow-x-auto whitespace-nowrap text-slate-900 font-medium items-center">
-            {project && book && chapter ? (
-              <>
-                <Link href={'/projects/' + code + '?book=' + bookid}>
-                  <a>
-                    <LeftArrow className="h-5 w-5 min-w-[1.25rem]" />
-                  </a>
-                </Link>
-                <Link href={'/projects/' + code}>
-                  <a className="hover:underline">{project?.title}</a>
-                </Link>
-                <span>/</span>
-                <Link href={'/projects/' + code + '?book=' + bookid}>
-                  <a className="hover:underline">{t(`books:${book?.code}`)}</a>
-                </Link>
-                <span>/</span>
-                <span>
-                  {t('Chapter')} {chapter?.num}
-                </span>
-              </>
-            ) : (
-              <div role="status" className="w-full animate-pulse">
-                <div className="flex flex-row">
-                  <div className="h-7 bg-gray-200 rounded-full w-1/12 mr-4"></div>
-                  <div className="h-7 bg-gray-200 rounded-full w-5/12 mr-4"></div>
-                  <div className="h-7 bg-gray-200 rounded-full w-3/12 mr-4"></div>
-                </div>
-              </div>
-            )}
-          </div>
           <div className="card text-slate-900">
             <div
               onMouseDown={() => setIsHighlight(true)}
