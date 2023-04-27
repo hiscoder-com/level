@@ -13,6 +13,7 @@ function ResumeInfo({ project, user }) {
     <Card
       title={`${t('TranslationGoal')} / ${t('Resume')}`}
       link={`${project?.code}/edit#brief`}
+      isOpen={false}
       access
     >
       <ul className="pl-6 text-lg list-decimal">

@@ -45,8 +45,8 @@ function ParticipantInfo({ project, user, access }) {
       title={t('Participants')}
       link={`${project?.code}/edit/#participants`}
       // TODO warning когда обновляю страницу, а в url - # якорь
-      access={access}
       isOpen={false}
+      access={access}
     >
       {project && (
         <div className="flex flex-col gap-4">
