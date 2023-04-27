@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 
 import ChapterCreate from './ChapterCreate'
 import Download from './Download'
-import BreadCrumb from 'components/BreadCrumb'
+import Breadcrumbs from 'components/Breadcrumbs'
 
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
@@ -58,7 +58,7 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
         <Download user={user} project={project} bookCode={book} />
       ) : (
         <div className="flex flex-col gap-7 w-full">
-          <BreadCrumb
+          <Breadcrumbs
             links={[
               { title: project?.title, href: '/projects/' + project?.code },
               { title: t('books:' + book) },

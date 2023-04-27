@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next'
 import Brief from './Brief/Brief'
 import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
-import BreadCrumb from '../BreadCrumb'
+import Breadcrumbs from '../Breadcrumbs'
 
 import { useAccess, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -28,7 +28,7 @@ function ProjectEdit() {
   })
   return (
     <div className="flex flex-col gap-7 mx-auto max-w-7xl">
-      <BreadCrumb
+      <Breadcrumbs
         links={[
           { title: project?.title, href: '/projects/' + code },
           { title: t('Settings') },

@@ -11,7 +11,7 @@ import { supabase } from 'utils/supabaseClient'
 
 import Showdown from 'showdown'
 
-import BreadCrumb from 'components/BreadCrumb'
+import Breadcrumbs from 'components/Breadcrumbs'
 
 import { usfmFileNames } from 'utils/config'
 import {
@@ -188,7 +188,7 @@ function Download({ project, isBook = false, bookCode, books, user }) {
   ]
   return (
     <div className="flex flex-col gap-7">
-      <BreadCrumb
+      <Breadcrumbs
         links={
           isBook ? links.filter((link) => isBook && !link?.href?.includes('book')) : links
         }

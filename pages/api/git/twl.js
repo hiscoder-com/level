@@ -75,9 +75,9 @@ export default async function twlHandler(req, res) {
   if (typeof verses === 'string') {
     verses = verses.split(',').map((el) => el.trim())
   }
-  const url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
-    1
-  )}`
+  const url = `${
+    process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+  }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
@@ -94,10 +94,11 @@ export default async function twlHandler(req, res) {
           })
 
     const promises = data.map(async (wordObject) => {
-      const url = `https://git.door43.org/${owner}/${repo.slice(
-        0,
-        -1
-      )}/raw/branch/master/${wordObject.TWLink.split('/').slice(-3).join('/')}.md`
+      const url = `${
+        process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+      }/${owner}/${repo.slice(0, -1)}/raw/branch/master/${wordObject.TWLink.split('/')
+        .slice(-3)
+        .join('/')}.md`
       let markdown
       try {
         markdown = await axios.get(url)

@@ -221,16 +221,23 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .logo:hover path:nth-child(1) {
 	fill:#00A6FB;
-} 
+}
 .logo:hover path:nth-child(2) {
 	fill:#003554;
-} 
+}
+
+.verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2){
+  @apply flex;
+}
+.verse-block:hover>div:nth-child(1), .verse-block>div:nth-child(2){
+  @apply hidden;
+}
 
 .tab {
-	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl cursor-pointer 
+	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl cursor-pointer
 }
 .tab-active {
-	@apply tab text-white bg-darkBlue cursor-default  
+	@apply tab text-white bg-darkBlue cursor-default
 }
 
 .card {

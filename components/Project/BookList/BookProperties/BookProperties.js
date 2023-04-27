@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 import toast, { Toaster } from 'react-hot-toast'
 
 import Property from './Property'
-import BreadCrumb from 'components/BreadCrumb'
+import Breadcrumbs from 'components/Breadcrumbs'
 
 function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { t } = useTranslation()
@@ -68,7 +68,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   }
   return (
     <div>
-      <BreadCrumb
+      <Breadcrumbs
         links={[
           { title: project?.title, href: '/projects/' + project?.code },
           { title: t('books:' + book?.code) },

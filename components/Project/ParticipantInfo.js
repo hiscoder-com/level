@@ -46,6 +46,7 @@ function ParticipantInfo({ project, user, access }) {
       link={`${project?.code}/edit/#participants`}
       // TODO warning когда обновляю страницу, а в url - # якорь
       access={access}
+      isOpen={false}
     >
       {project && (
         <div className="flex flex-col gap-4">
