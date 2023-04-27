@@ -7,11 +7,11 @@ import { Disclosure } from '@headlessui/react'
 import Gear from '/public/gear.svg'
 import Down from '/public/arrow-down.svg'
 
-function Card({ children, title, link = '/', access }) {
+function Card({ children, title, access, link = '/', isOpen = true }) {
   const { t } = useTranslation('common')
 
   return (
-    <div className="card flex flex-col gap-7">
+    <div className="card !pb-4 flex flex-col gap-7">
       <div className="flex justify-between items-start gap-7">
         <h3 className="text-2xl font-bold truncate">{title}</h3>
         {access && (
@@ -22,14 +22,12 @@ function Card({ children, title, link = '/', access }) {
           </Link>
         )}
       </div>
-      <Disclosure defaultOpen={true}>
+      <Disclosure defaultOpen={isOpen}>
         {({ open }) => (
           <>
-            <Disclosure.Panel>
-              <div>{children}</div>
-            </Disclosure.Panel>
-            <Disclosure.Button className="">
-              <div className="flex gap-4 justify-center w-full border-t border-darkBlue">
+            <Disclosure.Panel>{children}</Disclosure.Panel>
+            <Disclosure.Button>
+              <div className="flex gap-1 justify-center w-full border-t border-gray-350 text-gray-350 pt-3">
                 <span>{t(open ? 'Hide' : 'Open')}</span>
                 <Down
                   className={`w-6 max-w-[1.5rem] ${open ? 'rotate-180 transform' : ''}`}
