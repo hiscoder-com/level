@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import Brief from './Brief/Brief'
+import Brief from './Brief/BriefBlock'
 import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
