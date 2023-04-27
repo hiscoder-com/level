@@ -11,7 +11,6 @@ import Breadcrumbs from 'components/Breadcrumbs'
 
 import { useGetChapters, useGetCreatedChapters } from 'utils/hooks'
 
-import DownloadIcon from '/public/download.svg'
 import Plus from '/public/plus.svg'
 import { readableDate } from 'utils/helper'
 
@@ -82,7 +81,7 @@ function ChapterList({ book, access: { isCoordinatorAccess }, project, user }) {
                           finished_at
                             ? 'bg-yellow-400'
                             : isCreated
-                            ? 'text-white bg-darkBlue border-2 border-slate-900 '
+                            ? 'text-white bg-darkBlue border-2 border-slate-900'
                             : 'bg-white border-2 border-slate-900'
                         }`}
                       >
