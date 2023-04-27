@@ -35,9 +35,6 @@ function ProjectEdit() {
         ]}
         full
       />
-      <div id="brief">
-        <Brief access={isCoordinatorAccess} />
-      </div>
       {isModeratorAccess && (
         <div id="participants">
           <Participants
@@ -52,6 +49,9 @@ function ProjectEdit() {
           <ResourceSettings />
         </div>
       )}
+      <div id="brief">
+        <Brief access={isCoordinatorAccess} />
+      </div>
     </div>
   )
 }

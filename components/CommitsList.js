@@ -30,7 +30,9 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
           <div className="flex gap-7 items-center" key={resource}>
             <div className={isPrimary ? 'font-bold w-1/6' : 'w-1/6'}>{resource}:</div>
             <input
-              className="input-blue w-5/6"
+              className={`w-5/6 p-2 rounded-lg bg-white text-slate-900 border ${
+                resourcesUrl?.[resource] ? 'border-slate-900' : 'border-blue-200'
+              } placeholder-blue-200 focus:border-slate-900 focus:outline-none`}
               value={resourcesUrl?.[resource] ?? ''}
               onChange={(e) =>
                 setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))

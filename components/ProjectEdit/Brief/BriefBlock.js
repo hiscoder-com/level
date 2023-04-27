@@ -34,10 +34,10 @@ function BriefBlock({ access }) {
   })
 
   useEffect(() => {
-    if (brief?.data_collection) {
+    if (briefDataCollection.length == 0 && brief?.data_collection) {
       setBriefDataCollection(brief.data_collection)
     }
-  }, [brief])
+  }, [brief, briefDataCollection])
 
   const saveToDatabase = () => {
     axios.defaults.headers.common['token'] = user?.access_token
@@ -155,7 +155,7 @@ function BriefBlock({ access }) {
                 return (
                   <div key={index}>
                     <p className="text-lg font-bold mb-7">{questionTitle}</p>
-                    <div className={hidden && 'hidden'}>
+                    <div className={hidden ? 'hidden' : ''}>
                       {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                         return (
                           <div key={blockIndex} className="mb-7">

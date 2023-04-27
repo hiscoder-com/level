@@ -20,7 +20,7 @@ function BriefResume({ access, saveToDatabase, updateBrief, objResume, index, t 
         setTimeout(saveToDatabase, 1000)
       }}
       readOnly={!access}
-      placeholder={access && t('project-edit:enterText')}
+      placeholder={access ? t('project-edit:enterText') : ''}
     />
   )
 }
