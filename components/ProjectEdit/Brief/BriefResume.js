@@ -12,7 +12,9 @@ function BriefResume({ access, saveToDatabase, updateBrief, objResume, index, t 
     <ReactTextareaAutosize
       value={resume}
       onChange={(e) => setResume(e.target.value)}
-      className="outline-none pr-2 w-full resize-none"
+      className={`w-full p-2 rounded-lg bg-white text-slate-900 border ${
+        resume ? 'border-slate-900' : 'border-blue-200'
+      } placeholder-blue-200 focus:border-slate-900 focus:outline-none`}
       onBlur={() => {
         updateBrief(resume.trim(), index)
         setTimeout(saveToDatabase, 1000)
