@@ -162,7 +162,7 @@ function ChapterVersesPage() {
 
   const verseDividing = async () => {
     //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
-    let { error } = await supabase.rpc('divide_verses', {
+    const { error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,
       project_id: project?.id,
     })
