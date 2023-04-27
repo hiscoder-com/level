@@ -11,7 +11,7 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
   const { t } = useTranslation('common')
 
   return (
-    <div className="card !pb-4 flex flex-col gap-7">
+    <div className="card flex flex-col gap-7 !pb-4">
       <div className="flex justify-between items-start gap-7">
         <h3 className="text-2xl font-bold truncate">{title}</h3>
         {access && (
@@ -27,7 +27,7 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
           <>
             <Disclosure.Panel>{children}</Disclosure.Panel>
             <Disclosure.Button>
-              <div className="flex gap-1 justify-center w-full border-t border-gray-350 text-gray-350 pt-3">
+              <div className="flex gap-1 justify-center w-full pt-3 border-t border-gray-350 text-gray-350">
                 <span>{t(open ? 'Hide' : 'Open')}</span>
                 <Down
                   className={`w-6 max-w-[1.5rem] ${open ? 'rotate-180 transform' : ''}`}

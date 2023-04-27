@@ -1,6 +1,8 @@
-import Link from 'next/link'
-import LeftArrow from 'public/left.svg'
 import { Fragment, useEffect, useState } from 'react'
+
+import Link from 'next/link'
+
+import LeftArrow from 'public/left.svg'
 
 function Breadcrumbs({ links = [], full }) {
   const [arrowLink, setArrowLink] = useState('')
@@ -18,14 +20,14 @@ function Breadcrumbs({ links = [], full }) {
     }
   }, [links])
   return (
-    <div className={`${full ? 'card' : ''}`}>
-      <div className="flex flex-row overflow-x-auto whitespace-nowrap items-center gap-2 text-lg font-bold">
+    <div className={full ? 'card' : ''}>
+      <div className="flex flex-row items-center gap-2 overflow-x-auto whitespace-nowrap text-lg font-bold">
         {isLoading ? (
           <div role="status" className="w-full animate-pulse">
             <div className="flex flex-row">
-              <div className="h-7 bg-gray-200 rounded-full w-1/12 mr-4"></div>
-              <div className="h-7 bg-gray-200 rounded-full w-5/12 mr-4"></div>
-              <div className="h-7 bg-gray-200 rounded-full w-3/12 mr-4"></div>
+              <div className="h-7 w-1/12 mr-4 bg-gray-200 rounded-full"></div>
+              <div className="h-7 w-5/12 mr-4 bg-gray-200 rounded-full"></div>
+              <div className="h-7 w-3/12 mr-4 bg-gray-200 rounded-full"></div>
             </div>
           </div>
         ) : (

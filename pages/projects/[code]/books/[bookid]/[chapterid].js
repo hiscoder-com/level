@@ -68,7 +68,8 @@ function ChapterVersesPage() {
     code,
     book_code: bookid,
   })
-  const [verses] = useGetVerses({
+
+  const [verses, { mutate: mutateVerses }] = useGetVerses({
     token: user?.access_token,
     code,
     book_code: bookid,
@@ -169,6 +170,7 @@ function ChapterVersesPage() {
     if (error) {
       toast.error(t('SaveFailed'))
     } else {
+      mutateVerses()
       toast.success(t('SaveSuccess'))
     }
   }
@@ -192,7 +194,7 @@ function ChapterVersesPage() {
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
               onMouseLeave={() => setIsHighlight(false)}
-              className="select-none grid gap-3 w-full grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+              className="w-full grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 select-none"
             >
               {versesDivided.length > 0 ? (
                 versesDivided
@@ -279,34 +281,30 @@ function ChapterVersesPage() {
                     <div key={index} className="flex">
                       <div
                         onClick={() => setCurrentTranslator(translator)}
-                        className={`${
+                        className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
                           currentTranslator?.users?.login === translator.users.login
                             ? `${translator.color.bg} text-white shadow-md`
                             : `${translator.color.text} text-slate-900`
-                        } ${
-                          translator.color.border
-                        } flex flex-row w-full items-center p-2 border-2 cursor-pointer rounded-2xl font-semibold text-xl`}
+                        } ${translator.color.border} border-2 cursor-pointer rounded-2xl`}
                       >
                         <div className="avatar-block w-10 flex-grow-0">
                           <div
-                            className={`${translator.color.bg} flex items-center justify-center w-10 h-10 border-2 border-white rounded-full uppercase text-white`}
+                            className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
                           >
                             {translator.users.login.slice(0, 1)}
                           </div>
                         </div>
-                        <div className="text-block ml-2 text-base font-normal flex-auto text-left text-ellipsis overflow-hidden">
+                        <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
                           {translator.users.login} <br />
                           {translator.users.email}
                         </div>
                         <div className="icon-block flex-grow-0">
                           <div
-                            className={`${
+                            className={`p-2 bg-white rounded-full border-2 ${
                               currentTranslator?.users?.login === translator.users.login
                                 ? `border-white shadow-md`
                                 : `${translator.color.border}`
-                            } ${
-                              translator.color.text
-                            } p-2 bg-white border-2 rounded-full`}
+                            } ${translator.color.text}`}
                           >
                             <Plus className="w-5 h-5" />
                           </div>
@@ -358,7 +356,7 @@ function ChapterVersesPage() {
                     disabled={chapter?.finished_at || isValidating}
                     avatar={
                       isValidating || isLoading ? (
-                        <Spinner className="animate-spin h-5 w-5 text-gray-400" />
+                        <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
                       ) : (
                         ''
                       )
@@ -373,7 +371,7 @@ function ChapterVersesPage() {
                     disabled={chapter?.finished_at || isValidating}
                     avatar={
                       isValidating || isLoading ? (
-                        <Spinner className="animate-spin h-5 w-5 text-gray-400" />
+                        <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
                       ) : (
                         ''
                       )
@@ -399,7 +397,7 @@ function ChapterVersesPage() {
                   disabled={isValidating}
                   avatar={
                     isValidating || isLoading ? (
-                      <Spinner className="animate-spin h-5 w-5 text-gray-400" />
+                      <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
                     ) : (
                       ''
                     )
