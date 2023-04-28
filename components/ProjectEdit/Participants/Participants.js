@@ -137,7 +137,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
               }}
               className="btn-link"
             >
-              {t('projects:AddTranslator')}
+              {t('project-edit:AddTranslator')}
             </button>
           </div>
           <TranslatorsList
@@ -151,31 +151,32 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
             isOpen={selectedModerator ? Object.keys(selectedModerator).length > 0 : false}
             closeHandle={() => setSelectedModerator(false)}
           >
-            <div className="text-center">
-              <div className="mb-2">
+            <div className="flex flex-col gap-7 min-h-[15vh]">
+              <div className="text-2xl text-center">
                 {moderatorIds?.includes(selectedModerator?.id)
                   ? t('project-edit:RemovingModerator')
                   : t('project-edit:AssigningModerator')}
               </div>
 
-              <button
-                onClick={() =>
-                  changeModerator(
-                    moderatorIds?.includes(selectedModerator.id)
-                      ? 'remove_moderator'
-                      : 'assign_moderator'
-                  )
-                }
-                disabled={!selectedModerator}
-                className="btn-cyan mx-2"
-              >
-                {moderatorIds?.includes(selectedModerator?.id)
-                  ? t('Remove')
-                  : t('Assign')}
-              </button>
-              <div className="mt-4">
+              <div className="flex flex-row justify-center gap-7 text-center">
                 <button
-                  className="btn-cyan w-24"
+                  className="btn-link-full"
+                  onClick={() =>
+                    changeModerator(
+                      moderatorIds?.includes(selectedModerator.id)
+                        ? 'remove_moderator'
+                        : 'assign_moderator'
+                    )
+                  }
+                  disabled={!selectedModerator}
+                >
+                  {moderatorIds?.includes(selectedModerator?.id)
+                    ? t('Remove')
+                    : t('Assign')}
+                </button>
+
+                <button
+                  className="btn-link-full"
                   onClick={() => setSelectedModerator(false)}
                 >
                   {t('Close')}
@@ -189,12 +190,14 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
                 openModalAssign: openModalAssignCoordinator,
                 setOpenModalAssign: setOpenModalAssignCoordinator,
                 listOfAssigned: listOfCoordinators,
+                label: 'project-edit:AddingCoordinator',
                 role: 'coordinators',
               },
               {
                 openModalAssign: openModalAssignTranslator,
                 setOpenModalAssign: setOpenModalAssignTranslator,
                 listOfAssigned: listOfTranslators,
+                label: 'project-edit:AddingTranslator',
                 role: 'translators',
               },
             ].map((user) => (
@@ -206,6 +209,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
                 selectedUser={selectedUser}
                 listOfAssigned={user.listOfAssigned}
                 assign={assign}
+                label={user.label}
                 role={user.role}
               />
             ))}
