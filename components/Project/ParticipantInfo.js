@@ -17,51 +17,50 @@ function ParticipantInfo({ project, user, access }) {
     token: user?.access_token,
     code: project?.code,
   })
-  const moderators = useMemo(() => {
-    if (translators) {
-      return translators.filter((translator) => translator.is_moderator)
-    }
-  }, [translators])
+
   const participants = useMemo(() => {
     if (coordinators && translators) {
-      translators?.sort((a, b) => b.is_moderator - a.is_moderator)
       const _translators = translators.filter(
-        (el) =>
-          !coordinators.map((coordinator) => coordinator.users.id).includes(el.users.id)
+        (translator) =>
+          !coordinators
+            .map((coordinator) => coordinator.users.id)
+            .includes(translator.users.id)
       )
       const _coordinators = coordinators.map((coordinator) => ({
         ...coordinator,
         is_coordinator: true,
-        is_moderator: moderators
-          ?.map((el) => el.users.id)
-          .includes(coordinator?.users.id),
       }))
 
       return [..._coordinators, ..._translators]
     }
-  }, [coordinators, moderators, translators])
+  }, [coordinators, translators])
   return (
     <Card
       title={t('Participants')}
       link={`${project?.code}/edit/#participants`}
-      // TODO warning когда обновляю страницу, а в url - # якорь
       isOpen={false}
       access={access}
     >
       {project && (
-        <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 auto-rows-fr gap-2">
           {participants?.map((participant, index) => (
-            <div key={index}>
-              <div className="flex gap-2">
-                <div className="w-8">
-                  <TranslatorImage item={participant} />
-                </div>
-                <div>
-                  <p className="text-lg">{participant?.users?.login}</p>
-                  <div className="text-sm">
-                    {participant.is_coordinator && <p>{t('Coordinator')}</p>}
-                    {participant.is_moderator && <p>{t('Moderator')}</p>}
-                  </div>
+            <div
+              key={index}
+              className="flex items-center gap-4 px-4 py-1 border border-gray-350 rounded-3xl"
+            >
+              <div className="w-8 h-8 min-h-[2rem]">
+                <TranslatorImage item={participant} />
+              </div>
+              <div>
+                <p className="text-lg">{participant?.users?.login}</p>
+                <div className="text-sm">
+                  {participant.is_coordinator ? (
+                    <p>{t('Coordinator')}</p>
+                  ) : participant.is_moderator ? (
+                    <p>{t('Moderator')}</p>
+                  ) : (
+                    <p>{t('Translator')}</p>
+                  )}
                 </div>
               </div>
             </div>
