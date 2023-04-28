@@ -97,107 +97,96 @@ function ProjectPersonalCard({ project, token, user }) {
 
   return (
     <>
-      {!project?.code || !chapters || !currentSteps || isLoading || !user?.id ? (
-        <Placeholder />
-      ) : (
-        <>
-          {Object.keys(chapters).length > 0 && (
-            <div className="flex flex-col gap-7">
-              {Object.keys(chapters).map((book, i) => {
-                return (
-                  <div
-                    key={i}
-                    className="card flex flex-col sm:flex-row gap-7 p-7 h-full"
-                  >
-                    <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
-                      <div className="flex gap-1 flex-wrap items-center">
-                        <div className="text-2xl font-bold">{t(`books:${book}`)}</div>
-                        <div className="pt-1">{`(${t('Chapter', {
-                          count: countChaptersVerses?.[book]?.countChapters,
-                        })} ${t('Verse', {
-                          count: countChaptersVerses?.[book]?.countVerses,
-                        })})`}</div>
-                      </div>
-                      <div className="flex flex-col gap-5">
-                        <div className="flex gap-3">
-                          <p className="text-lg">{t('Project')}:</p>
-                          <Link href={`/projects/${project.code}`}>
-                            <a className="text-lg text-teal-500">{project?.title}</a>
-                          </Link>
-                        </div>
-                        <div className="flex gap-3">
-                          <p className="text-lg">{t('Translators')}:</p>
-                          <Translators projectCode={project.code} size="25px" />
-                        </div>
-                        <div className="flex gap-3">
-                          <p className="text-lg">
-                            {t('Begin')}:{' '}
-                            {chapters &&
-                              readableDate(
-                                Math.min(
-                                  ...chapters?.[book].map((el) =>
-                                    Date.parse(el.started_at)
-                                  )
-                                ),
-                                locale
-                              )}
-                          </p>
-                        </div>
-                      </div>
+      {Object.keys(chapters).length > 0 && (
+        <div className="flex flex-col gap-7">
+          {Object.keys(chapters).map((book, i) => {
+            return (
+              <div key={i} className="card flex flex-col sm:flex-row gap-7 p-7 h-full">
+                <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
+                  <div className="flex gap-1 flex-wrap items-center">
+                    <div className="text-2xl font-bold">{t(`books:${book}`)}</div>
+                    <div className="pt-1">{`(${t('Chapter', {
+                      count: countChaptersVerses?.[book]?.countChapters,
+                    })} ${t('Verse', {
+                      count: countChaptersVerses?.[book]?.countVerses,
+                    })})`}</div>
+                  </div>
+                  <div className="flex flex-col gap-5">
+                    <div className="flex gap-3">
+                      <p className="text-lg">{t('Project')}:</p>
+                      <Link href={`/projects/${project.code}`}>
+                        <a className="text-lg text-teal-500">{project?.title}</a>
+                      </Link>
                     </div>
-                    <div className="flex flex-wrap gap-3 content-start w-1/2 lg:w-2/3 text-sm">
-                      {chapters[book].map((step, index) => {
-                        const stepLink = (
-                          <>
-                            <span>
-                              {step.chapter} {t('Ch').toLowerCase()}
-                            </span>
-                            <span>|</span>
-                            <span>
-                              {countChaptersVerses?.[book]?.chapters[step.chapter]}{' '}
-                              {t('Ver').toLowerCase()}
-                            </span>
-                            <span>|</span>
-                            <span>
-                              {t('Step', { count: parseInt(step?.step) }).toLowerCase()}
-                            </span>
-                          </>
-                        )
-
-                        return !isBrief || briefResume ? (
-                          <Link
-                            key={index}
-                            href={`/translate/${step.project}/${step.book}/${
-                              step.chapter
-                            }/${step.step}${
-                              typeof searchLocalStorage(step, localStorageSteps) ===
-                              'undefined'
-                                ? '/intro'
-                                : ''
-                            }`}
-                          >
-                            <a className="btn-link">{stepLink}</a>
-                          </Link>
-                        ) : (
-                          <div key={index} className="btn-link-disabled">
-                            {stepLink}
-                          </div>
-                        )
-                      })}
-                      {briefResume === '' && (
-                        <Link href={`/projects/${project?.code}/edit/brief`}>
-                          <a className="btn-link">
-                            {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
-                          </a>
-                        </Link>
-                      )}
+                    <div className="flex gap-3">
+                      <p className="text-lg">{t('Translators')}:</p>
+                      <Translators projectCode={project.code} size="25px" />
+                    </div>
+                    <div className="flex gap-3">
+                      <p className="text-lg">
+                        {t('Begin')}:{' '}
+                        {chapters &&
+                          readableDate(
+                            Math.min(
+                              ...chapters?.[book].map((el) => Date.parse(el.started_at))
+                            ),
+                            locale
+                          )}
+                      </p>
                     </div>
                   </div>
-                )
-              })}
-            </div>
-          )}
-        </>
+                </div>
+                <div className="flex flex-wrap gap-3 content-start w-1/2 lg:w-2/3 text-sm">
+                  {chapters[book].map((step, index) => {
+                    const stepLink = (
+                      <>
+                        <span>
+                          {step.chapter} {t('Ch').toLowerCase()}
+                        </span>
+                        <span>|</span>
+                        <span>
+                          {countChaptersVerses?.[book]?.chapters[step.chapter]}{' '}
+                          {t('Ver').toLowerCase()}
+                        </span>
+                        <span>|</span>
+                        <span>
+                          {t('Step', { count: parseInt(step?.step) }).toLowerCase()}
+                        </span>
+                      </>
+                    )
+
+                    return !isBrief || briefResume ? (
+                      <Link
+                        key={index}
+                        href={`/translate/${step.project}/${step.book}/${step.chapter}/${
+                          step.step
+                        }${
+                          typeof searchLocalStorage(step, localStorageSteps) ===
+                          'undefined'
+                            ? '/intro'
+                            : ''
+                        }`}
+                      >
+                        <a className="btn-link">{stepLink}</a>
+                      </Link>
+                    ) : (
+                      <div key={index} className="btn-link-disabled">
+                        {stepLink}
+                      </div>
+                    )
+                  })}
+                  {briefResume === '' && (
+                    <Link href={`/projects/${project?.code}/edit/brief`}>
+                      <a className="btn-link">
+                        {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                      </a>
+                    </Link>
+                  )}
+                </div>
+              </div>
+            )
+          })}
+        </div>
       )}
     </>
   )
