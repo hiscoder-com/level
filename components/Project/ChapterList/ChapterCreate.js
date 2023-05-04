@@ -13,7 +13,10 @@ function ChapterCreate({
   mutate: { mutateChapters, mutateCreatedChapters },
   project,
 }) {
-  const { push, query } = useRouter()
+  const {
+    push,
+    query: { bookid },
+  } = useRouter()
   const { t } = useTranslation()
   const [isCreated, setIsCreated] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -46,7 +49,7 @@ function ChapterCreate({
             mutateCreatedChapters()
             setTextModal(t('ChapterCreated'))
             setTimeout(() => {
-              push('/projects/' + project.code + '/books/' + query.book + '/' + num)
+              push('/projects/' + project.code + '/books/' + bookid + '/' + num)
             }, 2000)
           }, 1000)
         } else {

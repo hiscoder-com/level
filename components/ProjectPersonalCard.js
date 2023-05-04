@@ -6,7 +6,6 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
-import Placeholder from './Placeholder'
 
 import { supabase } from 'utils/supabaseClient'
 import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
@@ -19,7 +18,7 @@ function ProjectPersonalCard({ project, token, user }) {
 
   const { t } = useTranslation(['common', 'books'])
 
-  const { briefResume, isBrief, isLoading } = useBriefState({
+  const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
   })

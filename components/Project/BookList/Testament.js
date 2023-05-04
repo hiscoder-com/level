@@ -36,9 +36,7 @@ function Testament({
     if (isBookCreated && book) {
       setCurrentBook(book)
       push({
-        pathname: `/projects/${project?.code}`,
-        query: { book },
-        shallow: true,
+        pathname: `/projects/${project?.code}/books/${book}`,
       })
     }
   }

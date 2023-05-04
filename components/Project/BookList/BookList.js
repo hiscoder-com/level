@@ -3,8 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import Testament from './Testament'
-import ChapterList from './ChapterList'
-import Download from './Download'
+import Download from '../Download'
 import BookProperties from './BookProperties/BookProperties'
 
 import { useGetBooks } from 'utils/hooks'
@@ -51,10 +50,8 @@ function BookList({ user, project, access }) {
       {downloadingBook && (
         <Download isBook project={project} bookCode={downloadingBook} books={books} />
       )}
-      {currentBook && !downloadingBook && (
-        <ChapterList book={currentBook} access={access} project={project} user={user} />
-      )}
-      {!currentBook && !downloadingBook && !propertiesBook && (
+
+      {!downloadingBook && !propertiesBook && (
         <>
           {testaments?.[project?.type]?.map((testament) => (
             <div

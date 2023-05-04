@@ -38,19 +38,14 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           book_code,
         })
         .then((res) => {
-          if (res.status === '201') {
+          if (res.status.toString() === '201') {
             setIsCreated(true)
             mutateBooks()
             setTextModal(t('BookCreated'))
             setTimeout(() => {
-              push(
-                {
-                  pathname: `/projects/${project?.code}`,
-                  query: { book: book_code },
-                },
-                undefined,
-                { shallow: true }
-              )
+              push({
+                pathname: `/projects/${project?.code}/books/${book_code}`,
+              })
             }, 2000)
           } else {
             unsuccessfulCreate()
