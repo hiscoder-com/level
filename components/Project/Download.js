@@ -318,36 +318,34 @@ function Download({
           }
         />
       )}
-      <div className="flex flex-col gap-4">
-        <div className="text-2xl font-bold">{t('Download')}</div>
+      <div className="flex flex-col gap-7 text-white">
+        <div className="text-xl font-bold">{t('Download')}</div>
         <ListBox
           options={options}
           setSelectedOption={setDownloadType}
           selectedOption={downloadType}
         />
         <div className="flex gap-7 items-end">
-          <div className="flex flex-col gap-4">
-            <div>
-              {Object.keys(downloadSettings)
-                .filter((key) => project?.type === 'obs' || key === 'withFront')
-                .map((key, index) => {
-                  return (
-                    <div key={index} className="flex items-center gap-2">
-                      <input
-                        className="h-4 w-4 cursor-pointer accent-cyan-600"
-                        type="checkbox"
-                        checked={downloadSettings[key]}
-                        onChange={() =>
-                          setDownloadSettings((prev) => {
-                            return { ...prev, [key]: !downloadSettings[key] }
-                          })
-                        }
-                      />
-                      <p>{t(key)}</p>
-                    </div>
-                  )
-                })}
-            </div>
+          <div className="flex flex-col gap-6 w-full">
+            {Object.keys(downloadSettings)
+              .filter((key) => project?.type === 'obs' || key === 'withFront')
+              .map((key, index) => {
+                return (
+                  <div key={index} className="flex justify-between items-center gap-2">
+                    <p>{t(key)}</p>
+                    <input
+                      className="h-7 w-7 cursor-pointer accent-teal-600"
+                      type="checkbox"
+                      checked={downloadSettings[key]}
+                      onChange={() =>
+                        setDownloadSettings((prev) => {
+                          return { ...prev, [key]: !downloadSettings[key] }
+                        })
+                      }
+                    />
+                  </div>
+                )
+              })}
           </div>
         </div>
         <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
