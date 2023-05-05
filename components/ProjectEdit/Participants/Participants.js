@@ -160,7 +160,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
 
               <div className="flex flex-row justify-center gap-7 text-center">
                 <button
-                  className="btn-link-full"
+                  className="btn-primary"
                   onClick={() =>
                     changeModerator(
                       moderatorIds?.includes(selectedModerator.id)
@@ -176,7 +176,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
                 </button>
 
                 <button
-                  className="btn-link-full"
+                  className="btn-primary"
                   onClick={() => setSelectedModerator(false)}
                 >
                   {t('Close')}

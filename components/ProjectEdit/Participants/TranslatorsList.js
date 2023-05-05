@@ -14,7 +14,7 @@ function TranslatorsList({
     <div className="flex flex-col gap-4">
       <div className="flex md:text-lg">
         <div className="w-1/3">{t('users:Login')}</div>
-        <div className="hidden md:block md:w-1/3">{t('users:Email')}</div>
+        <div className="hidden md:block w-full md:w-1/3">{t('users:Email')}</div>
         <div className="w-1/3 md:w-1/6">{t('Moderator')}</div>
         <div className="w-1/3 md:w-1/6"></div>
       </div>
@@ -22,12 +22,12 @@ function TranslatorsList({
         return (
           <div key={el.users.id} className="flex items-center">
             <div className="flex gap-2 items-center w-1/3 truncate">
-              <div className="w-8">
+              <div className="w-8 h-8">
                 <TranslatorImage item={el} />
               </div>
               <div>{el.users.login}</div>
             </div>
-            <div className="hidden md:block md:w-1/3">{el.users.email}</div>
+            <div className="hidden md:block w-full md:w-1/3">{el.users.email}</div>
             <div className="flex items-center w-1/3 md:w-1/6">
               {access && (
                 <Switch
@@ -51,7 +51,7 @@ function TranslatorsList({
             <div className="flex justify-end w-1/3 md:w-1/6">
               <button
                 onClick={() => setSelectedTranslator(el.users)}
-                className="btn-link-red md:text-xl"
+                className="btn-secondary md:text-xl"
               >
                 {t('Remove')}
               </button>

@@ -10,12 +10,12 @@ import { useSetRecoilState } from 'recoil'
 
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
+import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseServer'
 import { supabase } from 'utils/supabaseClient'
 import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
-import Modal from 'components/Modal'
 
 export default function ProgressPage({ last_step }) {
   const { user } = useCurrentUser()
@@ -133,17 +133,17 @@ export default function ProgressPage({ last_step }) {
         loading={loading}
       />
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        <div className="flex flex-col justify-center items-center min-h-[15vh]">
-          <div className="flex flex-row gap-2 mb-4 text-2xl">
+        <div className="flex flex-col gap-7 justify-center items-center">
+          <div className="flex flex-row gap-2 text-2xl text-center">
             <p>{t('AreYouSureGoToNextStep')}</p>
           </div>
 
-          <div className="flex flex-row gap-2 text-xl">
-            <button className="btn-link-full mx-2" onClick={handleNextStep}>
+          <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
+            <button className="btn-primary mx-2" onClick={handleNextStep}>
               {t('Yes')}
             </button>
 
-            <button className="btn-link-full mx-2" onClick={() => setIsOpenModal(false)}>
+            <button className="btn-primary mx-2" onClick={() => setIsOpenModal(false)}>
               {t('No')}
             </button>
           </div>

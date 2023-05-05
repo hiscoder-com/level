@@ -6,11 +6,14 @@ import { useTranslation } from 'next-i18next'
 
 import BookCreate from './BookCreate'
 import ChecksIcon from './ChecksIcon'
+import Modal from 'components/Modal'
+import Download from '../Download'
+
 import { useGetBooks } from 'utils/hooks'
 
 import Gear from '/public/gear.svg'
 import Reader from '/public/dictionary.svg'
-import Download from '/public/download.svg'
+import DownloadIcon from '/public/download.svg'
 import Play from '/public/play.svg'
 
 function Testament({
@@ -25,6 +28,8 @@ function Testament({
   const { push } = useRouter()
 
   const [bookCodeCreating, setBookCodeCreating] = useState(null)
+  const [isOpenDownloading, setIsOpenDownloading] = useState(false)
+  const [downloadingBook, setDownloadingBook] = useState(null)
   const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
@@ -91,18 +96,12 @@ function Testament({
                     </>
                   )}
                   {isModeratorAccess && isBookCreated && (
-                    <Download
+                    <DownloadIcon
                       className="w-6 min-w-[1.5rem] cursor-pointer"
-                      onClick={() =>
-                        push({
-                          pathname: `/projects/${project?.code}`,
-                          query: {
-                            book: book,
-                            download: 'book',
-                          },
-                          shallow: true,
-                        })
-                      }
+                      onClick={() => {
+                        setIsOpenDownloading(true)
+                        setDownloadingBook(book)
+                      }}
                     />
                   )}
                   <Reader className="w-6 min-w-[1.5rem]" />
@@ -119,6 +118,21 @@ function Testament({
         user={user}
         mutateBooks={mutateBooks}
       />
+
+      <Modal
+        isOpen={isOpenDownloading}
+        closeHandle={setIsOpenDownloading}
+        additionalClasses="overflow-y-visible"
+      >
+        <Download
+          isBook
+          user={user}
+          project={project}
+          bookCode={downloadingBook}
+          books={books}
+          setIsOpenDownloading={setIsOpenDownloading}
+        />
+      </Modal>
     </>
   )
 }

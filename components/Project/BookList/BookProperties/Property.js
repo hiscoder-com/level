@@ -13,20 +13,26 @@ function Property({ t, property, content, type, updateProperty }) {
   }
   return (
     <>
-      <div className="inline-block mr-2">
-        {t(`book-properties:${property}${type === 'obs' ? '_obs' : ''}`)}
+      <div className="flex gap-2">
+        <div className="font-bold">
+          {t(`book-properties:${property}${type === 'obs' ? '_obs' : ''}`)}
+        </div>
+        {additionalLinks[property] && (
+          <Link href={additionalLinks[property]}>
+            <a
+              title={additionalLinks[property]}
+              target="_blank"
+              className="text-blue-450"
+            >
+              ?
+            </a>
+          </Link>
+        )}
       </div>
-      {additionalLinks[property] && (
-        <Link href={additionalLinks[property]}>
-          <a title={additionalLinks[property]} target="_blank" className="text-blue-450">
-            ?
-          </a>
-        </Link>
-      )}
 
       <ReactTextareaAutosize
         maxRows="7"
-        className="input"
+        className="p-2 text-slate-900 border border-slate-900 rounded-xl"
         placeholder={t(
           `book-properties:${property}_placeholder${type === 'obs' ? '_obs' : ''}`
         )}

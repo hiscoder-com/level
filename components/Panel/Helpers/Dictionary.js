@@ -215,10 +215,10 @@ function Dictionary() {
             />
           </div>
           {editable && (
-            <div className="">
-              <div className="absolute top-0 right-0 ">
+            <>
+              <div className="absolute top-0 right-0">
                 <button
-                  className="btn-cyan text-xl font-bold mb-4 right-0"
+                  className="mb-4 right-0 btn-cyan text-xl font-bold"
                   onClick={addNote}
                 >
                   +
@@ -231,7 +231,7 @@ function Dictionary() {
               >
                 {errorText}
               </div>
-            </div>
+            </>
           )}
           {words?.data.length ? (
             <div className="mt-2">
@@ -243,7 +243,7 @@ function Dictionary() {
                 }}
                 setNoteId={setWordId}
                 classes={{
-                  item: 'rounded-lg cursor-pointer flex justify-between items-start group hover:bg-gray-200',
+                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-gray-200',
                   title: 'font-bold p-2 mr-4',
                   text: 'px-2 h-10 overflow-hidden',
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
@@ -252,7 +252,7 @@ function Dictionary() {
                 delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
               />
               {totalPageCount > 1 && (
-                <div className="bottom-0 left-0 flex justify-around">
+                <div className="flex justify-around bottom-0 left-0">
                   <button
                     className="arrow"
                     disabled={currentPageWords === 0}
@@ -299,9 +299,9 @@ function Dictionary() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md mr-12',
+              title: 'bg-cyan-50 p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
               redactor:
-                'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+                'p-4 px-4 my-4 pb-20 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeWord}
             setActiveNote={setActiveWord}
@@ -312,31 +312,33 @@ function Dictionary() {
       )}
 
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        <div className="text-center">
-          <div className="mb-4">
+        <div className="flex flex-col gap-7 items-center">
+          <div className="text-center text-2xl">
             {t('AreYouSureDelete') + ' ' + t(wordToDel?.title) + '?'}
           </div>
-          <button
-            className="btn-cyan mx-2"
-            onClick={() => {
-              setIsOpenModal(false)
-              if (wordToDel) {
-                removeNote(wordToDel.id)
+          <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
+            <button
+              className="btn-primary"
+              onClick={() => {
+                setIsOpenModal(false)
+                if (wordToDel) {
+                  removeNote(wordToDel.id)
+                  setWordToDel(null)
+                }
+              }}
+            >
+              {t('Yes')}
+            </button>
+            <button
+              className="btn-primary"
+              onClick={() => {
                 setWordToDel(null)
-              }
-            }}
-          >
-            {t('Yes')}
-          </button>
-          <button
-            className="btn-cyan mx-2"
-            onClick={() => {
-              setWordToDel(null)
-              setIsOpenModal(false)
-            }}
-          >
-            {t('No')}
-          </button>
+                setIsOpenModal(false)
+              }}
+            >
+              {t('No')}
+            </button>
+          </div>
         </div>
       </Modal>
       <Toaster />

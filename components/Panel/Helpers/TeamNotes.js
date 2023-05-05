@@ -123,7 +123,7 @@ function TeamNotes() {
           {editable && (
             <div className="flex justify-end">
               <button
-                className="btn-cyan text-xl font-bold mb-4 right-0"
+                className="btn-cyan mb-4 right-0 text-xl font-bold"
                 onClick={addNote}
               >
                 +
@@ -138,8 +138,8 @@ function TeamNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group',
-              title: 'font-bold p-2 mr-4',
+              item: 'flex justify-between items-start group my-3 bg-cyan-50 rounded-lg cursor-pointer shadow-md',
+              title: 'p-2 mr-4 font-bold',
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
@@ -162,9 +162,9 @@ function TeamNotes() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md mr-12',
+              title: 'p-2 my-4 mr-12 font-bold bg-cyan-50 rounded-lg shadow-md',
               redactor:
-                'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+                'pb-20 pt-4 px-4 my-4 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
@@ -174,32 +174,35 @@ function TeamNotes() {
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        {' '}
-        <div className="text-center">
-          <div className="mb-4">
+        <div className="flex flex-col gap-7 items-center">
+          <div className="text-center text-2xl">
             {t('AreYouSureDelete') + ' ' + t(noteToDel?.title) + '?'}
           </div>
-          <button
-            className="btn-cyan mx-2"
-            onClick={() => {
-              setIsOpenModal(false)
-              if (noteToDel) {
-                removeNote(noteToDel.id)
-                setNoteToDel(null)
-              }
-            }}
-          >
-            {t('Yes')}
-          </button>
-          <button
-            className="btn-cyan mx-2"
-            onClick={() => {
-              setNoteToDel(null)
-              setIsOpenModal(false)
-            }}
-          >
-            {t('No')}
-          </button>
+          <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
+            <button
+              className="btn-primary"
+              onClick={() => {
+                setIsOpenModal(false)
+                if (noteToDel) {
+                  removeNote(noteToDel.id)
+                  setNoteToDel(null)
+                }
+              }}
+            >
+              {t('Yes')}
+            </button>
+            <button
+              className="btn-primary"
+              onClick={() => {
+                setIsOpenModal(false)
+                setTimeout(() => {
+                  setNoteToDel(null)
+                }, 1000)
+              }}
+            >
+              {t('No')}
+            </button>
+          </div>
         </div>
       </Modal>
       <Toaster />

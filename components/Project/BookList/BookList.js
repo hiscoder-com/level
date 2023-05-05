@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import Testament from './Testament'
-import Download from '../Download'
 import BookProperties from './BookProperties/BookProperties'
 
 import { useGetBooks } from 'utils/hooks'
@@ -28,29 +27,15 @@ function BookList({ user, project, access }) {
     code: project?.code,
   })
   useEffect(() => {
-    if (query?.download === 'book') {
-      setDownloadingBook(query?.book)
-      setCurrentBook(null)
-    }
     if (query?.properties) {
       setPropertiesBook(query?.properties)
-      setCurrentBook(null)
-      return
-    }
-    if (query?.book) {
-      setCurrentBook(query?.book)
     } else {
       setPropertiesBook(null)
-      setDownloadingBook(null)
       setCurrentBook(null)
     }
   }, [query, books, setCurrentBook])
   return (
     <div className="card flex h-full">
-      {downloadingBook && (
-        <Download isBook project={project} bookCode={downloadingBook} books={books} />
-      )}
-
       {!downloadingBook && !propertiesBook && (
         <>
           {testaments?.[project?.type]?.map((testament) => (

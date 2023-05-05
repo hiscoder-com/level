@@ -15,12 +15,12 @@ function RemoveParticipant({ selected, setSelected, remove, label, role }) {
           <button
             onClick={() => remove(selected.id, role)}
             disabled={!selected}
-            className="btn-link-full"
+            className="btn-primary"
           >
             {t('Remove')}
           </button>
 
-          <button className="btn-link-full" onClick={() => setSelected(false)}>
+          <button className="btn-primary" onClick={() => setSelected(false)}>
             {t('Close')}
           </button>
         </div>

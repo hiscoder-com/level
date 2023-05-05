@@ -12,6 +12,7 @@ import { supabase } from 'utils/supabaseClient'
 import Showdown from 'showdown'
 
 import Breadcrumbs from 'components/Breadcrumbs'
+import ListBox from 'components/ListBox'
 
 import { usfmFileNames } from 'utils/config'
 import {
@@ -21,7 +22,7 @@ import {
   downloadFile,
   downloadPdf,
 } from 'utils/helper'
-import { useGetChapters } from 'utils/hooks'
+import { useGetBook, useGetChapters } from 'utils/hooks'
 
 const downloadSettingsChapter = {
   withImages: true,
@@ -33,25 +34,61 @@ const downloadSettingsBook = {
   withBack: true,
 }
 
-function Download({ project, isBook = false, bookCode, books, user }) {
+function Download({
+  project,
+  isBook = false,
+  user,
+  breadcrumbs = false,
+  chapterNum,
+  setIsOpenDownloading,
+  bookCode,
+}) {
   const { t } = useTranslation()
-  const { query } = useRouter()
+  const {
+    query: { code },
+  } = useRouter()
+  const [book] = useGetBook({ token: user?.access_token, code, book_code: bookCode })
+
+  const options = useMemo(() => {
+    const options = [{ label: 'PDF', value: 'pdf' }]
+    let extraOptions = []
+
+    switch (project?.type) {
+      case 'obs':
+        if (isBook) {
+          extraOptions = [{ label: 'ZIP', value: 'zip' }]
+        } else {
+          extraOptions = [{ label: 'Markdown', value: 'markdown' }]
+        }
+        break
+      default:
+        if (isBook) {
+          extraOptions = [{ label: 'USFM', value: 'usfm' }]
+        } else {
+          extraOptions = [{ label: 'TXT', value: 'txt' }]
+        }
+        break
+    }
+
+    return [...options, ...extraOptions]
+  }, [project, isBook])
+
   const [chapters] = useGetChapters({
     token: user?.access_token,
-    code: project?.code,
+    code,
     book_code: bookCode,
   })
 
+  const [downloadType, setDownloadType] = useState('pdf')
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
   )
-  const book = useMemo(
-    () => books?.find((book) => book.code === bookCode),
-    [bookCode, books]
-  )
+
   const chapter = useMemo(
-    () => chapters?.find((chapter) => chapter.num.toString() === query.chapter),
-    [chapters, query.chapter]
+    () =>
+      chapterNum &&
+      chapters?.find((chapter) => chapter.num.toString() === chapterNum.toString()),
+    [chapters, chapterNum]
   )
   const compileBook = async (book, type = 'txt', downloadSettings) => {
     const chapters = await getBookJson(book?.id)
@@ -186,17 +223,108 @@ function Download({ project, isBook = false, bookCode, books, user }) {
         : t('books:' + bookCode),
     },
   ]
+  const handleSave = async () => {
+    switch (downloadType) {
+      case 'txt':
+        downloadFile({
+          text: await compileChapter(
+            {
+              json: chapter?.text,
+              title: `${project?.title}\n${book?.properties.scripture.toc1}\n${book?.properties.scripture.chapter_label} ${chapterNum}`,
+              subtitle: `${t(`books:${book?.code}`)} ${t('Chapter')} ${chapterNum}`,
+              chapterNum,
+            },
+            'txt'
+          ),
+          title: `${project?.title}_${book?.properties.scripture.toc1}_chapter_${chapterNum}.txt`,
+        })
+        break
+      case 'pdf':
+        isBook
+          ? downloadPdf({
+              htmlContent: await compileBook(
+                book,
+                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
+                downloadSettings
+              ),
+              projectLanguage: {
+                code: project.languages.code,
+                title: project.languages.orig_name,
+              },
+              fileName: `${project.title}_${
+                project?.type !== 'obs'
+                  ? book?.properties?.scripture?.toc1 ?? t('Book')
+                  : book?.properties?.obs?.title ?? t('OpenBibleStories')
+              }`,
+            })
+          : downloadPdf({
+              htmlContent: await compileChapter(
+                {
+                  json: chapter?.text,
+                  chapterNum,
+                  project: {
+                    title: project.title,
+                  },
+                  book,
+                },
+                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
+                downloadSettings
+              ),
+              projectLanguage: {
+                code: project.languages.code,
+                title: project.languages.orig_name,
+              },
+              fileName: `${project.title}_${
+                project?.type !== 'obs'
+                  ? book?.properties?.scripture?.toc1 ?? t('Book')
+                  : book?.properties?.obs?.title ?? t('OpenBibleStories')
+              }`,
+            })
+        break
+      case 'markdown':
+        downloadFile({
+          text: await compileChapter(
+            {
+              json: chapter?.text,
+              chapterNum: chapter?.num,
+            },
+            'markdown'
+          ),
+          title: `${String(chapter?.num).padStart(2, '0')}.md`,
+          type: 'markdown/plain',
+        })
+        break
+      case 'zip':
+        downloadZip(book)
+        break
+      case 'usfm':
+        downloadFile({
+          text: await compileBook(book, 'txt', downloadSettings),
+          title: usfmFileNames[book?.code],
+        })
+        break
+      default:
+        break
+    }
+  }
   return (
     <div className="flex flex-col gap-7">
-      <Breadcrumbs
-        links={
-          isBook ? links.filter((link) => isBook && !link?.href?.includes('book')) : links
-        }
-      />
+      {breadcrumbs && (
+        <Breadcrumbs
+          links={
+            isBook
+              ? links.filter((link) => isBook && !link?.href?.includes('book'))
+              : links
+          }
+        />
+      )}
       <div className="flex flex-col gap-4">
-        <div className="text-2xl font-bold">
-          {isBook ? t(`books:${bookCode}`) : t('Chapter') + ' ' + chapter?.num}
-        </div>
+        <div className="text-2xl font-bold">{t('Download')}</div>
+        <ListBox
+          options={options}
+          setSelectedOption={setDownloadType}
+          selectedOption={downloadType}
+        />
         <div className="flex gap-7 items-end">
           <div className="flex flex-col gap-4">
             <div>
@@ -204,7 +332,7 @@ function Download({ project, isBook = false, bookCode, books, user }) {
                 .filter((key) => project?.type === 'obs' || key === 'withFront')
                 .map((key, index) => {
                   return (
-                    <div key={index} className="flex gap-2 items-center">
+                    <div key={index} className="flex items-center gap-2">
                       <input
                         className="h-4 w-4 cursor-pointer accent-cyan-600"
                         type="checkbox"
@@ -220,43 +348,16 @@ function Download({ project, isBook = false, bookCode, books, user }) {
                   )
                 })}
             </div>
-            {isBook ? (
-              <BookDownloadPdf
-                downloadingBook={book}
-                downloadSettings={downloadSettings}
-                project={project}
-                t={t}
-                compileBook={compileBook}
-              />
-            ) : (
-              <ChapterDownloadPdf
-                selectedBook={book}
-                chapter={chapter}
-                project={project}
-                downloadSettings={downloadSettings}
-                t={t}
-              />
-            )}
           </div>
-          <div>
-            {isBook ? (
-              <BookDownloadUsfmZip
-                downloadZip={downloadZip}
-                downloadingBook={book}
-                downloadSettings={downloadSettings}
-                t={t}
-                compileBook={compileBook}
-                project={project}
-              />
-            ) : (
-              <ChapterDownloadTxtMd
-                project={project}
-                chapter={chapter}
-                selectedBook={book}
-                t={t}
-              />
-            )}
-          </div>
+        </div>
+        <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
+          <button onClick={handleSave} className="btn-primary">
+            {t('Save')}
+          </button>
+
+          <button className="btn-primary" onClick={() => setIsOpenDownloading(false)}>
+            {t('Close')}
+          </button>
         </div>
       </div>
     </div>
@@ -264,137 +365,3 @@ function Download({ project, isBook = false, bookCode, books, user }) {
 }
 
 export default Download
-
-function BookDownloadPdf({ downloadingBook, downloadSettings, project, t, compileBook }) {
-  return (
-    <div
-      className="btn-link-full"
-      onClick={async (e) => {
-        e.stopPropagation()
-        downloadPdf({
-          htmlContent: await compileBook(
-            downloadingBook,
-            project?.type === 'obs' ? 'pdf-obs' : 'pdf',
-            downloadSettings
-          ),
-          projectLanguage: {
-            code: project.languages.code,
-            title: project.languages.orig_name,
-          },
-          fileName: `${project.title}_${
-            project?.type !== 'obs'
-              ? downloadingBook?.properties?.scripture?.toc1 ?? t('Book')
-              : downloadingBook?.properties?.obs?.title ?? t('OpenBibleStories')
-          }`,
-        })
-      }}
-    >
-      {t('ExportToPdf')}
-    </div>
-  )
-}
-
-function BookDownloadUsfmZip({
-  downloadZip,
-  downloadingBook,
-  downloadSettings,
-  t,
-  compileBook,
-  project,
-}) {
-  return (
-    <>
-      {project?.type === 'obs' ? (
-        <div onClick={() => downloadZip(downloadingBook)} className="btn-link-full">
-          {t('ExportToZip')}
-        </div>
-      ) : (
-        <div
-          className="btn-link-full"
-          onClick={async (e) => {
-            e.stopPropagation()
-            downloadFile({
-              text: await compileBook(downloadingBook, 'txt', downloadSettings),
-              title: usfmFileNames[downloadingBook?.code],
-            })
-          }}
-        >
-          {t('ExportToUsfm')}
-        </div>
-      )}
-    </>
-  )
-}
-
-function ChapterDownloadPdf({ selectedBook, chapter, project, downloadSettings, t }) {
-  return (
-    <div
-      className="btn-link-full"
-      onClick={async (e) => {
-        downloadPdf({
-          htmlContent: await compileChapter(
-            {
-              json: chapter?.text,
-              chapterNum: chapter?.num,
-              project: {
-                title: project.title,
-              },
-              book: selectedBook,
-            },
-            project?.type === 'obs' ? 'pdf-obs' : 'pdf',
-            downloadSettings
-          ),
-          projectLanguage: {
-            code: project.languages.code,
-            title: project.languages.orig_name,
-          },
-          fileName: `${project.title}_${
-            project?.type !== 'obs'
-              ? selectedBook?.properties?.scripture?.toc1 ?? t('Book')
-              : selectedBook?.properties?.obs?.title ?? t('OpenBibleStories')
-          }`,
-        })
-      }}
-    >
-      {t('ExportToPdf')}
-    </div>
-  )
-}
-
-function ChapterDownloadTxtMd({ project, chapter, selectedBook, t }) {
-  return (
-    <div
-      className="btn-link-full"
-      onClick={async (e) => {
-        project?.type === 'obs'
-          ? downloadFile({
-              text: await compileChapter(
-                {
-                  json: chapter?.text,
-                  chapterNum: chapter?.num,
-                },
-                'markdown'
-              ),
-              title: `${String(chapter?.num).padStart(2, '0')}.md`,
-              type: 'markdown/plain',
-            })
-          : downloadFile({
-              text: await compileChapter(
-                {
-                  json: chapter?.text,
-                  title: `${project?.title}\n${selectedBook?.properties.scripture.toc1}\n${selectedBook?.properties.scripture.chapter_label} ${chapter?.num}`,
-                  subtitle: `${t(`books:${selectedBook?.code}`)} ${t('Chapter')} ${
-                    chapter?.num
-                  }`,
-                  chapterNum: chapter?.num,
-                },
-                'txt'
-              ),
-              title: `${project?.title}_${selectedBook?.properties.scripture.toc1}_chapter_${chapter?.num}.txt`,
-            })
-      }}
-    >
-      {project?.type === 'obs' ? t('ExportToMd') : t('ExportToTxt')}
-    </div>
-  )
-}

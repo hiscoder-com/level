@@ -67,18 +67,20 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
       })
   }
   return (
-    <div>
+    <div className="flex flex-col gap-7 w-full">
       <Breadcrumbs
         links={[
           { title: project?.title, href: '/projects/' + project?.code },
           { title: t('books:' + book?.code) },
         ]}
       />
+      <div className="flex flex-col py-7">
+        <div className="flex flex-col gap-4">{renderProperties}</div>
+        <button className="btn-primary mt-7 w-fit" onClick={handleSave}>
+          {t('Save')}
+        </button>
+      </div>
 
-      <div className="flex flex-wrap">{renderProperties}</div>
-      <button className="btn-link-full mr-2 mt-7" onClick={handleSave}>
-        {t('Save')}
-      </button>
       <Toaster />
     </div>
   )

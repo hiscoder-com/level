@@ -75,20 +75,17 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
         closeHandle={reset}
         className={isCreated ? 'secondary' : 'primary'}
       >
-        <div className="flex flex-col justify-center items-center min-h-[15vh]">
+        <div className="flex flex-col justify-center items-center">
           <div className="flex flex-row gap-2 mb-4 text-2xl">
             <p>{textModal}</p>
             {isCreating && !isCreated && <p className="animate-pulse">...</p>}
           </div>
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 text-xl">
-              <button
-                className="btn-link-full mx-2"
-                onClick={() => handleCreate(bookCode)}
-              >
+              <button className="btn-primary" onClick={() => handleCreate(bookCode)}>
                 {t('Yes')}
               </button>
-              <button className="btn-link-full mx-2" onClick={reset}>
+              <button className="btn-primary" onClick={reset}>
                 {isCreated ? t('Ok') : t('No')}
               </button>
             </div>

@@ -245,19 +245,22 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-link-base {
-  @apply flex gap-2 py-3 px-6 h-min border rounded-3xl cursor-pointer text-center;
+  @apply px-6 border rounded-3xl cursor-pointer text-center;
 }
+
 .btn-link {
-  @apply btn-link-base text-darkBlue border-darkBlue hover:bg-blue-250 hover:border-blue-250;
+  @apply flex gap-2 btn-link-base py-3 text-slate-900 border-darkBlue hover:bg-blue-250 hover:border-blue-250;
 }
-.btn-link-full {
-  @apply btn-link-base text-darkBlue bg-blue-150 hover:bg-white;
+
+.btn-primary {
+  @apply btn-link-base py-2 text-xl text-slate-900 bg-blue-150 hover:bg-white;
 }
+
 .btn-link-disabled {
   @apply btn-link-base text-gray-300 cursor-not-allowed;
 }
-.btn-link-red {
-  @apply btn-link-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
+.btn-secondary {
+  @apply btn-link-base py-2 text-xl text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
 }
 
 .first-check path:nth-child(1){
