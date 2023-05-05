@@ -37,7 +37,7 @@ function ParticipantInfo({ project, user, access }) {
   return (
     <Card
       title={t('Participants')}
-      link={`${project?.code}/edit/#participants`}
+      link={`${project?.code}/edit?setting=participants`}
       isOpen={false}
       access={access}
     >

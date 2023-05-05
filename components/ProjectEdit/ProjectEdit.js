@@ -1,6 +1,10 @@
+import { useMemo } from 'react'
+
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
+
+import { Tab } from '@headlessui/react'
 
 import Brief from './Brief/BriefBlock'
 import ResourceSettings from './ResourceSettings'
@@ -12,7 +16,9 @@ import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectEdit() {
   const {
-    query: { code },
+    replace,
+    query,
+    query: { code, setting },
   } = useRouter()
   const { t } = useTranslation()
 
@@ -26,8 +32,25 @@ function ProjectEdit() {
     user_id: user?.id,
     code: project?.code,
   })
+
+  const tabs = useMemo(
+    () =>
+      [
+        { id: 'brief', access: true, label: 'project-edit:EditBriefTitle' },
+
+        { id: 'participants', access: isModeratorAccess, label: 'Participants' },
+        {
+          id: 'resources',
+          access: isAdminAccess,
+          label: 'ListResources',
+        },
+      ].filter((el) => el.access),
+    [isAdminAccess, isModeratorAccess]
+  )
+  const idTabs = tabs.map((tab) => tab.id)
+
   return (
-    <div className="flex flex-col gap-7 mx-auto max-w-7xl">
+    <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
       <Breadcrumbs
         links={[
           { title: project?.title, href: '/projects/' + code },
@@ -35,22 +58,46 @@ function ProjectEdit() {
         ]}
         full
       />
-      {isModeratorAccess && (
-        <div id="participants">
-          <Participants
-            user={user}
-            users={users}
-            access={{ isCoordinatorAccess, isAdminAccess }}
-          />
-        </div>
-      )}
-      {isAdminAccess && (
-        <div id="resources">
-          <ResourceSettings />
-        </div>
-      )}
-      <div id="brief">
-        <Brief access={isCoordinatorAccess} />
+
+      <div className="flex flex-col gap-7">
+        {user?.id && (
+          <Tab.Group defaultIndex={idTabs.indexOf(setting)}>
+            <Tab.List className="grid grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-7 mt-2 lg:text-lg font-bold text-center border-b border-darkBlue">
+              {tabs.map((tab) => (
+                <Tab
+                  key={tab.label}
+                  className={({ selected }) => (selected ? 'tab-active' : 'tab')}
+                  onClick={() =>
+                    replace(
+                      {
+                        query: { ...query, setting: tab.id },
+                      },
+                      undefined,
+                      { shallow: true }
+                    )
+                  }
+                >
+                  {t(tab.label)}
+                </Tab>
+              ))}
+            </Tab.List>
+            <Tab.Panels>
+              <Tab.Panel>
+                <Brief access={isCoordinatorAccess} />
+              </Tab.Panel>
+              <Tab.Panel>
+                <Participants
+                  user={user}
+                  users={users}
+                  access={{ isCoordinatorAccess, isAdminAccess }}
+                />
+              </Tab.Panel>
+              <Tab.Panel>
+                <ResourceSettings />
+              </Tab.Panel>
+            </Tab.Panels>
+          </Tab.Group>
+        )}
       </div>
     </div>
   )

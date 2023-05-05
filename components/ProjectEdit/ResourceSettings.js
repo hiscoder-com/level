@@ -68,7 +68,6 @@ function ResourceSettings() {
       })
       .finally(() => setIsSaving(false))
   }
-
   return (
     <div className="card flex flex-col gap-7">
       <h3 className="text-2xl font-bold">{t('ListResources')}</h3>
@@ -80,7 +79,7 @@ function ResourceSettings() {
       {isErrorCommit && <div className="mt-3">{t('WrongResource')}</div>}
 
       <button
-        className="btn-link-full w-fit text-xl"
+        className="btn-primary w-fit text-xl"
         onClick={handleSaveCommits}
         disabled={isSaving}
       >

@@ -237,7 +237,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl cursor-pointer
 }
 .tab-active {
-	@apply tab text-white bg-darkBlue cursor-default
+	@apply tab text-white bg-darkBlue cursor-default focus:outline-none
 }
 
 .card {
