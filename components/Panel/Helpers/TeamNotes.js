@@ -15,7 +15,6 @@ import { useCurrentUser } from 'lib/UserContext'
 import Modal from 'components/Modal'
 
 import { useTeamNotes, useProject } from 'utils/hooks'
-import { supabase } from 'utils/supabaseClient'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
@@ -37,7 +36,6 @@ const ListOfNotes = dynamic(
 
 function TeamNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
-  const [editable, setEditable] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [noteToDel, setNoteToDel] = useState(null)
@@ -51,7 +49,11 @@ function TeamNotes() {
     token: user?.access_token,
     project_id: project?.id,
   })
-
+  const [{ isModeratorAccess }] = useAccess({
+    token: user?.access_token,
+    user_id: user?.id,
+    code,
+  })
   const saveNote = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
@@ -65,18 +67,6 @@ function TeamNotes() {
         console.log(err)
       })
   }
-  useEffect(() => {
-    const getLevel = async () => {
-      const level = await supabase.rpc('authorize', {
-        user_id: user.id,
-        project_id: project.id,
-      })
-      setEditable(['admin', 'coordinator', 'moderator'].includes(level.data))
-    }
-    if ((user?.id, project?.id)) {
-      getLevel()
-    }
-  }, [user?.id, project?.id])
 
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
@@ -104,7 +94,7 @@ function TeamNotes() {
       .catch(console.log)
   }
   useEffect(() => {
-    if (!activeNote || !editable) {
+    if (!activeNote || !isModeratorAccess) {
       return
     }
     const timer = setTimeout(() => {
@@ -114,13 +104,13 @@ function TeamNotes() {
       clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNote, editable])
+  }, [activeNote, isModeratorAccess])
 
   return (
     <div className="relative">
       {!activeNote ? (
         <div>
-          {editable && (
+          {isModeratorAccess && (
             <div className="flex justify-end">
               <button
                 className="btn-cyan mb-4 right-0 text-xl font-bold"
@@ -143,7 +133,7 @@ function TeamNotes() {
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
-            isShowDelBtn={editable}
+            isShowDelBtn={isModeratorAccess}
             delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
           />
         </div>
@@ -168,8 +158,8 @@ function TeamNotes() {
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            readOnly={!editable}
-            placeholder={editable ? t('TextNewNote') : ''}
+            readOnly={!isModeratorAccess}
+            placeholder={isModeratorAccess ? t('TextNewNote') : ''}
           />
         </>
       )}

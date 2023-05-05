@@ -12,7 +12,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
-import { useProject } from 'utils/hooks'
+import { useAccess, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
 
@@ -42,7 +42,6 @@ function Dictionary() {
   const [searchQuery, setSearchQuery] = useState('')
   const [errorText, setErrorText] = useState(false)
   const [wordToDel, setWordToDel] = useState(null)
-  const [editable, setEditable] = useState(false)
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
@@ -63,7 +62,11 @@ function Dictionary() {
     token: user?.access_token,
     code,
   })
-
+  const [{ isModeratorAccess }] = useAccess({
+    token: user?.access_token,
+    user_id: user?.id,
+    code,
+  })
   const getAll = () => {
     setCurrentPageWords(0)
     setSearchQuery('')
@@ -103,19 +106,6 @@ function Dictionary() {
   }, [searchQuery])
 
   useEffect(() => {
-    const getLevel = async () => {
-      const level = await supabase.rpc('authorize', {
-        user_id: user.id,
-        project_id: project.id,
-      })
-      setEditable(['admin', 'coordinator', 'moderator'].includes(level.data))
-    }
-    if ((user?.id, project?.id)) {
-      getLevel()
-    }
-  }, [user?.id, project?.id])
-
-  useEffect(() => {
     if (!words?.data) {
       return
     }
@@ -148,7 +138,7 @@ function Dictionary() {
   }
 
   const saveWord = async () => {
-    if (!editable) {
+    if (!isModeratorAccess) {
       return
     }
     axios.defaults.headers.common['token'] = user?.access_token
@@ -181,7 +171,7 @@ function Dictionary() {
   }
 
   useEffect(() => {
-    if (!activeWord || !editable) {
+    if (!activeWord || !isModeratorAccess) {
       return
     }
     const timer = setTimeout(() => {
@@ -191,7 +181,7 @@ function Dictionary() {
       clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeWord, editable])
+  }, [activeWord, isModeratorAccess])
 
   return (
     <div className="relative">
@@ -214,7 +204,7 @@ function Dictionary() {
               }}
             />
           </div>
-          {editable && (
+          {isModeratorAccess && (
             <>
               <div className="absolute top-0 right-0">
                 <button
@@ -248,7 +238,7 @@ function Dictionary() {
                   text: 'px-2 h-10 overflow-hidden',
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
                 }}
-                isShowDelBtn={editable}
+                isShowDelBtn={isModeratorAccess}
                 delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
               />
               {totalPageCount > 1 && (
@@ -305,8 +295,8 @@ function Dictionary() {
             }}
             activeNote={activeWord}
             setActiveNote={setActiveWord}
-            readOnly={!editable}
-            placeholder={editable ? t('TextDescriptionWord') : ''}
+            readOnly={!isModeratorAccess}
+            placeholder={isModeratorAccess ? t('TextDescriptionWord') : ''}
           />
         </>
       )}
