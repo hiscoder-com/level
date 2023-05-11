@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { useRecoilValue } from 'recoil'
 
 import Dropdown from './Dropdown'
+import SideBar from './SideBar'
+
 import Timer from 'components/Timer'
 
 import { supabase } from 'utils/supabaseClient'
@@ -16,7 +18,7 @@ import Burger from 'public/burger.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
-export default function AppBar({ setIsOpen }) {
+export default function AppBar({ setIsOpen, isOpen }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -45,15 +47,10 @@ export default function AppBar({ setIsOpen }) {
   }, [user])
 
   return (
-    <div className="bg-white">
+    <div className={`bg-white ${isOpen ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar">
         <div className="flex items-center gap-7 cursor-pointer">
-          {access && (
-            <Burger
-              onClick={() => setIsOpen((prev) => !prev)}
-              className="h-10 text-darkBlue stroke-1.5"
-            />
-          )}
+          <SideBar setIsOpen={setIsOpen} access={access} />
           <Link href="/account">
             <a>
               <VCANA_logo className="h-6" />

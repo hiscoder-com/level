@@ -22,7 +22,7 @@
     "release:patch": "standard-version --release-as patch"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.3",
+    "@headlessui/react": "^1.7.14",
     "@supabase/supabase-js": "^1.35.6",
     "@texttree/notepad-rcl": "^0.3.0",
     "axios": "^0.27.2",
