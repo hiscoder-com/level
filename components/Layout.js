@@ -14,12 +14,14 @@ function Layout({ backgroundColor, children }) {
       <AppBar setIsOpen={setIsOpen} isOpen={isOpen} />
       <div
         className={
-          isOpen ? 'absolute top-16 left-0 bottom-0 right-0 backdrop-blur-xl z-10' : ''
+          isOpen
+            ? 'absolute top-16 left-0 bottom-0 right-0 backdrop-blur-xl z-10  overflow-y-hidden'
+            : ''
         }
         onClick={() => setIsOpen(false)}
       ></div>
       <main>
-        <div className="pt-5 px-5 lg:px-8">{children}</div>
+        <div className="pt-5 px-5 lg:px-8 ">{children}</div>
       </main>
     </div>
   )

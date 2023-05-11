@@ -48,9 +48,16 @@ export default function AppBar({ setIsOpen, isOpen }) {
 
   return (
     <div className={`bg-white ${isOpen ? 'sticky top-0 z-30' : ''}`}>
-      <div className="appbar">
+      <div
+        className="appbar "
+        onClick={() => {
+          if (isOpen) {
+            setIsOpen(false)
+          }
+        }}
+      >
         <div className="flex items-center gap-7 cursor-pointer">
-          <SideBar setIsOpen={setIsOpen} access={access} />
+          <SideBar isOpen={isOpen} setIsOpen={setIsOpen} access={access} />
           <Link href="/account">
             <a>
               <VCANA_logo className="h-6" />
