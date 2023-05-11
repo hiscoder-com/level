@@ -4,7 +4,7 @@
 // https://github.com/vercel/next.js/blob/canary/examples/with-next-i18next/README.md
 module.exports = {
   i18n: {
-    locales: ['ru', 'en'],
-    defaultLocale: 'ru',
+    locales: ['en', 'ru', 'es'],
+    defaultLocale: 'en',
   },
 }
