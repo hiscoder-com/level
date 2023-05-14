@@ -175,7 +175,7 @@ function ProjectPersonalCard({ project, token, user }) {
                     )
                   })}
                   {briefResume === '' && (
-                    <Link href={`/projects/${project?.code}/edit/brief`}>
+                    <Link href={`/projects/${project?.code}/edit?setting=brief`}>
                       <a className="btn-link">
                         {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                       </a>
