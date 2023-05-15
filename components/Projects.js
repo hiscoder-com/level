@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'react-i18next'
 
@@ -19,6 +19,15 @@ export default function Projects({ type }) {
     token: user?.access_token,
   })
   const [languages] = useLanguages(user?.access_token)
+  useEffect(() => {
+    if (languages) {
+      const checked = {}
+      languages.forEach((language) => {
+        checked[language.code] = true
+      })
+      setLanguagesChecked(checked)
+    }
+  }, [languages])
 
   const handleCheck = (event) => {
     setLanguagesChecked((prev) => ({
@@ -45,13 +54,16 @@ export default function Projects({ type }) {
     <>
       {type === 'projects' && user?.is_admin && (
         <Disclosure>
-          <Disclosure.Button className="w-full">
+          <Disclosure.Button
+            className="w-full"
+            onClick={() => setIsFiltered((prev) => !prev)}
+          >
             <div className="card mt-10 w-full font-bold">{t('Filters')}</div>
           </Disclosure.Button>
           <Disclosure.Panel className="card flex flex-col items-center justify-center mt-10 gap-7">
             <div className="flex flex-col gap-7 w-3/4">
-              <div>{t('ByLanguages')}</div>
-              <div className="grid grid-cols-2 gap-4">
+              <div>{t('ByLanguage')}</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {languages?.map((language) => (
                   <div key={language.id} className="flex justify-between">
                     <div>{language.orig_name}</div>
@@ -66,12 +78,6 @@ export default function Projects({ type }) {
                 ))}
               </div>
             </div>
-            <button className="btn-primary self-end" onClick={() => setIsFiltered(true)}>
-              {t('ApplyFilters')}
-            </button>
-            <button className="btn-primary self-end" onClick={() => setIsFiltered(false)}>
-              {t('DropFilters')}
-            </button>
           </Disclosure.Panel>
         </Disclosure>
       )}
