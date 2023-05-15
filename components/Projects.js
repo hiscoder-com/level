@@ -48,18 +48,19 @@ export default function Projects({ type }) {
           <Disclosure.Button className="w-full">
             <div className="card mt-10 w-full font-bold">{t('Filters')}</div>
           </Disclosure.Button>
-          <Disclosure.Panel className="card flex flex-col items-center justify-center mt-10 gap-7 text-gray-500 ">
+          <Disclosure.Panel className="card flex flex-col items-center justify-center mt-10 gap-7">
             <div className="flex flex-col gap-7 w-3/4">
               <div>{t('ByLanguages')}</div>
-              <div className="flex flex-wrap gap-4">
+              <div className="grid grid-cols-2 gap-4">
                 {languages?.map((language) => (
-                  <div key={language.id} className="flex gap-2">
+                  <div key={language.id} className="flex justify-between">
                     <div>{language.orig_name}</div>
                     <input
                       type={'checkbox'}
                       name={language.code}
-                      checked={languagesChecked[language.orig]}
+                      checked={languagesChecked[language.code]}
                       onChange={handleCheck}
+                      className="h-7 w-7 cursor-pointer accent-teal-600"
                     />
                   </div>
                 ))}
