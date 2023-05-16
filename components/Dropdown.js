@@ -135,7 +135,7 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
         </p>
       </div>
       <div className="text-center">
-        <button className="btn-primary" onClick={closeModal}>
+        <button className="btn-secondary" onClick={closeModal}>
           {t('Close')}
         </button>
       </div>
@@ -170,7 +170,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
           ))}
         </div>
         <div className="text-center">
-          <button className="btn-primary" onClick={closeModal}>
+          <button className="btn-secondary" onClick={closeModal}>
             {t('Close')}
           </button>
         </div>

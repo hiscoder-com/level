@@ -32,12 +32,12 @@ function ChapterList() {
     query: { code, bookid },
     push,
   } = useRouter()
-  const [{ isCoordinatorAccess }] = useAccess({
+  const [{ isCoordinatorAccess, isModeratorAccess }] = useAccess({
     token: user?.access_token,
     user_id: user?.id,
     code,
   })
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'books'])
   const [isOpenDownloading, setIsOpenDownloading] = useState(false)
   const [creatingChapter, setCreatingChapter] = useState(false)
   const [downloadingChapter, setDownloadingChapter] = useState(null)
@@ -84,13 +84,12 @@ function ChapterList() {
         <>
           {!(!isBrief || briefResume) ? (
             <Link href={`/projects/${project?.code}/edit/brief`}>
-              <a onClick={(e) => e.stopPropagation()} className="">
+              <a onClick={(e) => e.stopPropagation()}>
                 {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
               </a>
             </Link>
           ) : (
             <Link
-              key={index}
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
             >
               <a onClick={(e) => e.stopPropagation()} className="text-sm xl:text-xl">
@@ -123,16 +122,19 @@ function ChapterList() {
                       key={id}
                       className={`h-24 ${
                         !isCreated && isCoordinatorAccess ? 'verse-block' : ''
-                      } `}
+                      }`}
                       onClick={() =>
                         isCreated &&
+                        isCoordinatorAccess &&
                         push({
                           pathname: `/projects/${project?.code}/books/${bookid}/${num}`,
                         })
                       }
                     >
                       <div
-                        className={`flex flex-col justify-between px-5 py-3  rounded-2xl cursor-pointer h-24 ${
+                        className={`flex flex-col justify-between px-5 py-3 h-24 rounded-2xl ${
+                          isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
+                        } ${
                           finished_at
                             ? 'bg-yellow-400'
                             : isCreated
@@ -163,14 +165,15 @@ function ChapterList() {
                             )}
                           </div>
                         </div>
-                        <div className="text-sm"></div>
                         {finished_at ? (
                           <div
                             className="text-xl"
                             onClick={(e) => {
                               e.stopPropagation()
-                              setIsOpenDownloading(true)
-                              setDownloadingChapter(chapter.num)
+                              if (isModeratorAccess) {
+                                setIsOpenDownloading(true)
+                                setDownloadingChapter(chapter.num)
+                              }
                             }}
                           >
                             <p className="text-sm xl:text-xl">{t('Download')}</p>
@@ -181,8 +184,8 @@ function ChapterList() {
                       </div>
                       <div
                         className={`${
-                          isCreated ? 'hidden' : ''
-                        }  justify-center items-center p-1 w-full h-full rounded-2xl border-0`}
+                          isCreated ? 'hidden' : 'hidden hover:block'
+                        } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer`}
                         style={{
                           background: 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
                         }}

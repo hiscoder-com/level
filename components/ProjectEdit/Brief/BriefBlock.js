@@ -102,7 +102,7 @@ function BriefBlock({ access }) {
   return (
     <div className="card">
       <div className="flex flex-col gap-7">
-        <div className="flex justify-between">
+        <div className="flex flex-col sm:flex-row justify-between gap-7">
           <h3 className="text-2xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
           <div>
             {access && (
@@ -129,7 +129,7 @@ function BriefBlock({ access }) {
           </div>
         </div>
         <div className="flex">
-          <span className="mr-3">{t(`Подробно`)}</span>
+          <span className="mr-3">{t('Detailed')}</span>
 
           <Switch
             checked={!hidden}
@@ -213,7 +213,7 @@ function BriefBlock({ access }) {
         {access && (
           <div>
             <button
-              className="btn-link-full text-xl"
+              className="btn-primary text-xl"
               onClick={() => {
                 saveToDatabase()
                 toast.success(t('SaveSuccess'))

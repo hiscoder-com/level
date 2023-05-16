@@ -27,7 +27,7 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, access }) {
               {access && (
                 <button
                   onClick={() => setSelectedCoordinator(el.users)}
-                  className="btn-secondary md:text-xl"
+                  className="btn-red md:text-xl"
                 >
                   {t('Remove')}
                 </button>

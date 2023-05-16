@@ -277,7 +277,7 @@ function Dictionary() {
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute top-0 right-0 pr-3 w-10 cursor-pointer"
             onClick={() => {
               saveWord()
               setActiveWord(null)
@@ -291,7 +291,7 @@ function Dictionary() {
               wrapper: '',
               title: 'bg-cyan-50 p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
               redactor:
-                'p-4 px-4 my-4 pb-20 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
+                'p-4 my-4 pb-20 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeWord}
             setActiveNote={setActiveWord}
@@ -308,7 +308,7 @@ function Dictionary() {
           </div>
           <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
             <button
-              className="btn-primary"
+              className="btn-secondary"
               onClick={() => {
                 setIsOpenModal(false)
                 if (wordToDel) {
@@ -320,7 +320,7 @@ function Dictionary() {
               {t('Yes')}
             </button>
             <button
-              className="btn-primary"
+              className="btn-secondary"
               onClick={() => {
                 setWordToDel(null)
                 setIsOpenModal(false)

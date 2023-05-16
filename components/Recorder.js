@@ -110,7 +110,7 @@ export default function Recorder() {
           <div className="text-2xl text-center">{t('MicrophoneAccess')}</div>
           <p>{t('TurnMicrophone')}</p>
           <div className="flex justify-end">
-            <button className="btn-primary" onClick={() => setShowModal(false)}>
+            <button className="btn-secondary" onClick={() => setShowModal(false)}>
               {t('common:Ok')}
             </button>
           </div>

@@ -7,12 +7,12 @@ function Modal({
   children,
   isOpen,
   closeHandle,
-  className = 'primary',
   additionalClasses,
+  className = 'primary',
 }) {
   const classes = {
     primary: 'bg-gradient-to-r from-darkBlue to-[#596B84] text-blue-250',
-    secondary: 'bg-[#14B8A6] text-white',
+    secondary: 'bg-teal-500 text-white',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>

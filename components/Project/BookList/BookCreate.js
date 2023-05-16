@@ -38,7 +38,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           book_code,
         })
         .then((res) => {
-          if (res.status.toString() === '201') {
+          if (res.status === 201) {
             setIsCreated(true)
             mutateBooks()
             setTextModal(t('BookCreated'))
@@ -53,7 +53,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           }
         })
     } catch (error) {
-      unsuccessfulCreate()
+      unsuccessfulCreate() //TODO быстро закрывается
       console.log(error)
     } finally {
       setIsCreating(false)
@@ -82,10 +82,10 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           </div>
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 text-xl">
-              <button className="btn-primary" onClick={() => handleCreate(bookCode)}>
+              <button className="btn-secondary" onClick={() => handleCreate(bookCode)}>
                 {t('Yes')}
               </button>
-              <button className="btn-primary" onClick={reset}>
+              <button className="btn-secondary" onClick={reset}>
                 {isCreated ? t('Ok') : t('No')}
               </button>
             </div>

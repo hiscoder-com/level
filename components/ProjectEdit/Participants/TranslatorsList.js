@@ -51,7 +51,7 @@ function TranslatorsList({
             <div className="flex justify-end w-1/3 md:w-1/6">
               <button
                 onClick={() => setSelectedTranslator(el.users)}
-                className="btn-secondary md:text-xl"
+                className="btn-red md:text-xl"
               >
                 {t('Remove')}
               </button>

@@ -139,11 +139,11 @@ export default function ProgressPage({ last_step }) {
           </div>
 
           <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
-            <button className="btn-primary mx-2" onClick={handleNextStep}>
+            <button className="btn-secondary mx-2" onClick={handleNextStep}>
               {t('Yes')}
             </button>
 
-            <button className="btn-primary mx-2" onClick={() => setIsOpenModal(false)}>
+            <button className="btn-secondary mx-2" onClick={() => setIsOpenModal(false)}>
               {t('No')}
             </button>
           </div>

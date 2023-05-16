@@ -113,7 +113,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
                   setOpenModalAssignCoordinator(true)
                   setSelectedUser(listOfCoordinators?.[0]?.id)
                 }}
-                className="btn-link truncate"
+                className="btn-primary truncate"
               >
                 {t('project-edit:AddCoordinator')}
               </button>
@@ -135,7 +135,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
                 setOpenModalAssignTranslator(true)
                 setSelectedUser(listOfTranslators?.[0]?.id)
               }}
-              className="btn-link"
+              className="btn-primary"
             >
               {t('project-edit:AddTranslator')}
             </button>

@@ -38,13 +38,13 @@ function AssignParticipant({
               setSelectedUser(listOfAssigned?.[0]?.id)
             }}
             disabled={!selectedUser}
-            className="btn-primary"
+            className="btn-secondary"
           >
             {t('Added')}
           </button>
 
           <button
-            className="btn-primary"
+            className="btn-secondary"
             onClick={() => {
               setOpenModalAssign(false)
               setSelectedUser('')

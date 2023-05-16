@@ -18,7 +18,7 @@ import Burger from 'public/burger.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
-export default function AppBar({ setIsOpen, isOpen }) {
+export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -47,17 +47,10 @@ export default function AppBar({ setIsOpen, isOpen }) {
   }, [user])
 
   return (
-    <div className={`bg-white ${isOpen ? 'sticky top-0 z-30' : ''}`}>
-      <div
-        className="appbar "
-        onClick={() => {
-          if (isOpen) {
-            setIsOpen(false)
-          }
-        }}
-      >
+    <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
+      <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="flex items-center gap-7 cursor-pointer">
-          <SideBar isOpen={isOpen} setIsOpen={setIsOpen} access={access} />
+          <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <Link href="/account">
             <a>
               <VCANA_logo className="h-6" />

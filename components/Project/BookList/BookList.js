@@ -12,7 +12,6 @@ import { oldTestamentList, newTestamentList } from 'utils/config'
 function BookList({ user, project, access }) {
   const { query } = useRouter()
   const [currentBook, setCurrentBook] = useState(null)
-  const [downloadingBook, setDownloadingBook] = useState(null)
   const [propertiesBook, setPropertiesBook] = useState(null)
 
   const testaments = {
@@ -35,27 +34,43 @@ function BookList({ user, project, access }) {
     }
   }, [query, books, setCurrentBook])
   return (
-    <div className="card flex h-full">
-      {!downloadingBook && !propertiesBook && (
+    <div className="card flex flex-col sm:flex-row gap-7 h-full">
+      {user && project ? (
+        !propertiesBook && (
+          <>
+            {testaments?.[project?.type]?.map((testament) => (
+              <div
+                key={testament.title}
+                className={
+                  testaments?.[project?.type]?.length === 2 ? 'w-full sm:w-1/2' : 'w-full'
+                }
+              >
+                <Testament
+                  bookList={testament.books}
+                  title={testament.title}
+                  user={user}
+                  project={project}
+                  access={access}
+                  setCurrentBook={setCurrentBook}
+                />
+              </div>
+            ))}
+          </>
+        )
+      ) : (
         <>
-          {testaments?.[project?.type]?.map((testament) => (
-            <div
-              key={testament.title}
-              className={testaments?.[project?.type]?.length === 2 ? 'w-1/2' : 'w-full'}
-            >
-              <Testament
-                bookList={testament.books}
-                title={testament.title}
-                user={user}
-                project={project}
-                access={access}
-                setCurrentBook={setCurrentBook}
-              />
+          {[...Array(2).keys()].map((testament) => (
+            <div key={testament} className="flex flex-col gap-4 w-full">
+              {[...Array(33).keys()].map((book) => (
+                <div className="h-4 animate-pulse" key={book}>
+                  <div className="h-full w-full bg-gray-200 rounded-2xl"></div>
+                </div>
+              ))}
             </div>
           ))}
         </>
       )}
-      {!currentBook && !downloadingBook && propertiesBook && (
+      {!currentBook && propertiesBook && (
         <BookProperties
           project={project}
           user={user}

@@ -76,7 +76,7 @@ function ChapterCreate({
         {!isCreating && !isCreated && (
           <div className="flex flex-row gap-2 text-xl">
             <button
-              className="btn-primary"
+              className="btn-secondary"
               onClick={() =>
                 handleAddChapter({
                   chapter_id: creatingChapter.id,
@@ -87,7 +87,7 @@ function ChapterCreate({
               {t('Yes')}
             </button>
 
-            <button className="btn-primary" onClick={reset}>
+            <button className="btn-secondary" onClick={reset}>
               {isCreated ? t('Ok') : t('No')}
             </button>
           </div>

@@ -160,7 +160,7 @@ function PersonalNotes() {
             classes={{
               title: 'p-2 my-4 mr-12 bg-cyan-50 font-bold rounded-lg shadow-md',
               redactor:
-                'pb-20 py-4 pt-4 my-4 bg-cyan-50 overflow-hidden break-wordsrounded-lg shadow-md',
+                'pb-20 pt-4 my-4 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
@@ -178,7 +178,7 @@ function PersonalNotes() {
           </div>
           <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
             <button
-              className="btn-primary"
+              className="btn-secondary"
               onClick={() => {
                 setIsOpenModal(false)
                 if (noteToDel) {
@@ -192,7 +192,7 @@ function PersonalNotes() {
               {t('Yes')}
             </button>
             <button
-              className="btn-primary"
+              className="btn-secondary"
               onClick={() => {
                 setIsOpenModal(false)
                 setTimeout(() => {

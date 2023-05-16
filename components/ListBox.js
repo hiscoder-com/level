@@ -14,10 +14,10 @@ function ListBox({ options, selectedOption, setSelectedOption }) {
               <Down className="w-6 h-6 min-w-[1.5rem]" />
             </Listbox.Button>
             <div className={`-mt-2 pt-5 ${open ? 'bg-white' : ''}`}>
-              <Listbox.Options className="absolute w-full max-h-[40vh] bg-white rounded-b-lg overflow-y-scroll ">
+              <Listbox.Options className="absolute w-full max-h-[40vh] bg-white rounded-b-lg overflow-y-scroll">
                 {options.map((el) => (
                   <Listbox.Option
-                    className="relative px-5 py-1 bg-white cursor-pointer hover:bg-teal-200 last:rounded-b-lg last:pb-3"
+                    className="relative px-5 py-1 bg-white cursor-pointer last:pb-3 hover:bg-teal-200"
                     key={el.value}
                     value={el.value}
                   >

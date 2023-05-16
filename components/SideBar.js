@@ -1,15 +1,17 @@
-import Localization from 'public/localization.svg'
 import { useTranslation } from 'react-i18next'
+
 import { Menu } from '@headlessui/react'
+
 import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
 
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
+import Localization from 'public/localization.svg'
 
 import { useCurrentUser } from 'lib/UserContext'
-function SideBar({ setIsOpen, access }) {
+function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation('users')
 
@@ -18,7 +20,7 @@ function SideBar({ setIsOpen, access }) {
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button onClick={() => setIsOpen((prev) => !prev)}>
+            <Menu.Button onClick={() => setIsOpenSideBar((prev) => !prev)}>
               {access &&
                 (!open ? (
                   <Burger className="h-10 stroke-darkBlue" />
@@ -53,7 +55,7 @@ function SideBar({ setIsOpen, access }) {
                   >
                     <div className="flex gap-4 items-center">
                       <div className="px-4 py-2 rounded-[23rem] bg-teal-100">
-                        <Localization className="w-5 h-5  min-w-[1.5rem] stroke-teal-400" />
+                        <Localization className="w-5 h-5 min-w-[1.5rem] stroke-teal-400" />
                       </div>
                       <span>{t('Language')} </span>
                     </div>

@@ -36,12 +36,12 @@ const downloadSettingsBook = {
 
 function Download({
   project,
-  isBook = false,
   user,
-  breadcrumbs = false,
   chapterNum,
   setIsOpenDownloading,
   bookCode,
+  isBook = false,
+  breadcrumbs = false,
 }) {
   const { t } = useTranslation()
   const {
@@ -114,7 +114,7 @@ function Download({
         const frontPdf = downloadSettings?.withFront
           ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
           : ''
-        const main = ''
+        let main = ''
         for (const el of chapters) {
           const chapter = await compileChapter(
             { json: el.text, chapterNum: el.num, book },
@@ -332,8 +332,9 @@ function Download({
               .map((key, index) => {
                 return (
                   <div key={index} className="flex justify-between items-center gap-2">
-                    <p>{t(key)}</p>
+                    <label htmlFor={t(key)}>{t(key)}</label>
                     <input
+                      id={t(key)}
                       className="h-7 w-7 cursor-pointer accent-teal-600"
                       type="checkbox"
                       checked={downloadSettings[key]}
@@ -349,12 +350,11 @@ function Download({
           </div>
         </div>
         <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
-          <button onClick={handleSave} className="btn-primary">
-            {t('Save')}
-          </button>
-
-          <button className="btn-primary" onClick={() => setIsOpenDownloading(false)}>
+          <button className="btn-secondary" onClick={() => setIsOpenDownloading(false)}>
             {t('Close')}
+          </button>
+          <button onClick={handleSave} className="btn-secondary">
+            {t('Save')}
           </button>
         </div>
       </div>

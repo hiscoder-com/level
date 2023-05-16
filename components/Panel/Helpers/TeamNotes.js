@@ -14,7 +14,7 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import Modal from 'components/Modal'
 
-import { useTeamNotes, useProject } from 'utils/hooks'
+import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
@@ -170,7 +170,7 @@ function TeamNotes() {
           </div>
           <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
             <button
-              className="btn-primary"
+              className="btn-secondary"
               onClick={() => {
                 setIsOpenModal(false)
                 if (noteToDel) {
@@ -182,7 +182,7 @@ function TeamNotes() {
               {t('Yes')}
             </button>
             <button
-              className="btn-primary"
+              className="btn-secondary"
               onClick={() => {
                 setIsOpenModal(false)
                 setTimeout(() => {

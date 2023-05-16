@@ -21,7 +21,7 @@ function Testament({
   title,
   user,
   project,
-  access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess },
+  access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess, isLoading },
   setCurrentBook,
 }) {
   const { t } = useTranslation('books')
@@ -66,46 +66,52 @@ function Testament({
                     {t(`books:${book}`)}
                   </div>
                 </div>
-                <div className="flex gap-2 text-darkBlue">
-                  {isCoordinatorAccess && (
-                    <>
-                      {isBookCreated && (
-                        <>
-                          <Gear
-                            className="w-6 min-w-[1.5rem] cursor-pointer"
-                            onClick={() =>
-                              push({
-                                pathname: `/projects/${project?.code}`,
-                                query: {
-                                  properties: book,
-                                },
-                                shallow: true,
-                              })
-                            }
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
-                  {!isBookCreated && isAdminAccess && (
-                    <>
-                      <Play
+                {!isLoading ? (
+                  <div className="flex gap-2 text-darkBlue">
+                    {isCoordinatorAccess && (
+                      <>
+                        {isBookCreated && (
+                          <>
+                            <Gear
+                              className="w-6 min-w-[1.5rem] cursor-pointer"
+                              onClick={() =>
+                                push({
+                                  pathname: `/projects/${project?.code}`,
+                                  query: {
+                                    properties: book,
+                                  },
+                                  shallow: true,
+                                })
+                              }
+                            />
+                          </>
+                        )}
+                      </>
+                    )}
+                    {!isBookCreated && isAdminAccess && (
+                      <>
+                        <Play
+                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          onClick={() => setBookCodeCreating(book)}
+                        />
+                      </>
+                    )}
+                    {isModeratorAccess && isBookCreated && (
+                      <DownloadIcon
                         className="w-6 min-w-[1.5rem] cursor-pointer"
-                        onClick={() => setBookCodeCreating(book)}
+                        onClick={() => {
+                          setIsOpenDownloading(true)
+                          setDownloadingBook(book)
+                        }}
                       />
-                    </>
-                  )}
-                  {isModeratorAccess && isBookCreated && (
-                    <DownloadIcon
-                      className="w-6 min-w-[1.5rem] cursor-pointer"
-                      onClick={() => {
-                        setIsOpenDownloading(true)
-                        setDownloadingBook(book)
-                      }}
-                    />
-                  )}
-                  <Reader className="w-6 min-w-[1.5rem]" />
-                </div>
+                    )}
+                    <Reader className="w-6 min-w-[1.5rem]" />
+                  </div>
+                ) : (
+                  <div role="status" className="h-4 w-1/4 animate-pulse">
+                    <div className="h-full bg-gray-200 rounded-2xl w-full"></div>
+                  </div>
+                )}
               </div>
             )
           })}
