@@ -1,6 +1,5 @@
 {
   "Add": "Add",
-  "AddTranslator": "Add a translator",
   "Begin": "Begin",
   "Brief": "Brief",
   "Cancel": "Cancel",
@@ -19,6 +18,5 @@
   "SaveProject": "Save the project",
   "Title": "Project name",
   "Translator": "translator",
-  "Translators": "Translators",
   "V-CANAProjects": "V-CANA projects"
 }

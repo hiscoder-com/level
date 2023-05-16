@@ -1,17 +1,27 @@
 import { useState } from 'react'
 
 import AppBar from 'components/AppBar'
-import SideBar from 'components/SideBar'
 
 function Layout({ backgroundColor, children }) {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenSideBar, setIsOpenSideBar] = useState(false)
 
   return (
-    <div className={`mx-auto min-h-screen ${backgroundColor}`}>
-      <AppBar setIsOpen={setIsOpen} />
-      <SideBar isOpen={isOpen} setIsOpen={setIsOpen} />
+    <div
+      className={`mx-auto min-h-screen ${backgroundColor} ${
+        isOpenSideBar ? 'backdrop-blur-xl overflow-y-hidden h-[100vh]' : ''
+      } `}
+    >
+      <AppBar setIsOpenSideBar={setIsOpenSideBar} isOpenSideBar={isOpenSideBar} />
+      <div
+        className={
+          isOpenSideBar
+            ? 'absolute top-16 left-0 bottom-0 right-0 backdrop-blur-xl z-10 overflow-y-hidden'
+            : ''
+        }
+        onClick={() => setIsOpenSideBar(false)}
+      ></div>
       <main>
-        <div className="pt-10 px-5 lg:px-8">{children}</div>
+        <div className="pt-5 px-5 lg:px-8">{children}</div>
       </main>
     </div>
   )

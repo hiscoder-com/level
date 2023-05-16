@@ -9,12 +9,12 @@ import { useAccess, useProject } from 'utils/hooks'
 function Project({ code }) {
   const { user } = useCurrentUser()
   const [project] = useProject({ token: user?.access_token, code })
-  const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }] = useAccess({
-    token: user?.access_token,
-    user_id: user?.id,
-    code: project?.code,
-  })
-
+  const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }, { isLoading }] =
+    useAccess({
+      token: user?.access_token,
+      user_id: user?.id,
+      code: project?.code,
+    })
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
       <div className="static xl:sticky top-7 flex flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
@@ -30,7 +30,7 @@ function Project({ code }) {
         <BookList
           user={user}
           project={project}
-          access={{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }}
+          access={{ isCoordinatorAccess, isModeratorAccess, isAdminAccess, isLoading }}
         />
       </div>
     </div>

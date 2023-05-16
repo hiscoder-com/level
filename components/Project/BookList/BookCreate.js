@@ -38,19 +38,14 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           book_code,
         })
         .then((res) => {
-          if (res.status === '201') {
+          if (res.status === 201) {
             setIsCreated(true)
             mutateBooks()
             setTextModal(t('BookCreated'))
             setTimeout(() => {
-              push(
-                {
-                  pathname: `/projects/${project?.code}`,
-                  query: { book: book_code },
-                },
-                undefined,
-                { shallow: true }
-              )
+              push({
+                pathname: `/projects/${project?.code}/books/${book_code}`,
+              })
             }, 2000)
           } else {
             unsuccessfulCreate()
@@ -58,7 +53,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
           }
         })
     } catch (error) {
-      unsuccessfulCreate()
+      unsuccessfulCreate() //TODO быстро закрывается
       console.log(error)
     } finally {
       setIsCreating(false)
@@ -80,20 +75,17 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
         closeHandle={reset}
         className={isCreated ? 'secondary' : 'primary'}
       >
-        <div className="flex flex-col justify-center items-center min-h-[15vh]">
+        <div className="flex flex-col justify-center items-center min-h-[10rem]">
           <div className="flex flex-row gap-2 mb-4 text-2xl">
             <p>{textModal}</p>
             {isCreating && !isCreated && <p className="animate-pulse">...</p>}
           </div>
           {!isCreating && !isCreated && (
             <div className="flex flex-row gap-2 text-xl">
-              <button
-                className="btn-link-full mx-2"
-                onClick={() => handleCreate(bookCode)}
-              >
+              <button className="btn-secondary" onClick={() => handleCreate(bookCode)}>
                 {t('Yes')}
               </button>
-              <button className="btn-link-full mx-2" onClick={reset}>
+              <button className="btn-secondary" onClick={reset}>
                 {isCreated ? t('Ok') : t('No')}
               </button>
             </div>

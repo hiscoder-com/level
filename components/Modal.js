@@ -2,10 +2,17 @@ import { Fragment } from 'react'
 
 import { Transition, Dialog } from '@headlessui/react'
 
-function Modal({ title, children, isOpen, closeHandle, className = 'primary' }) {
+function Modal({
+  title,
+  children,
+  isOpen,
+  closeHandle,
+  additionalClasses,
+  className = 'primary',
+}) {
   const classes = {
     primary: 'bg-gradient-to-r from-darkBlue to-[#596B84] text-blue-250',
-    secondary: 'bg-[#14B8A6] text-white',
+    secondary: 'bg-teal-500 text-white',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -28,13 +35,13 @@ function Modal({ title, children, isOpen, closeHandle, className = 'primary' }) 
               as={Fragment}
               leaveFrom="opacity-100 scale-100"
               enterTo="opacity-100 scale-100"
-              enterFrom="opacity-0 scale-95"
+              enterFrom="opacity-100 scale-95"
               enter="ease-out duration-300"
               leaveTo="opacity-0 scale-95"
               leave="ease-in duration-200"
             >
               <Dialog.Panel
-                className={`${classes[className]} w-full max-w-md transform overflow-hidden p-6 align-middle rounded-3xl shadow-xl transition-all`}
+                className={`${classes[className]} w-full max-w-md transform overflow-y-auto ${additionalClasses} p-6 align-middle rounded-3xl shadow-xl transition-all`}
               >
                 <Dialog.Title
                   as="h3"

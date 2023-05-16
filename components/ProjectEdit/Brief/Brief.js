@@ -219,7 +219,7 @@ function Brief({ access }) {
         {access && (
           <div>
             <button
-              className="btn-link-full text-xl"
+              className="btn-primary text-xl"
               onClick={() => {
                 saveToDatabase()
                 toast.success(t('SaveSuccess'))

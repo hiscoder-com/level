@@ -6,7 +6,6 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
-import Placeholder from './Placeholder'
 
 import { supabase } from 'utils/supabaseClient'
 import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
@@ -19,11 +18,11 @@ function ProjectPersonalCard({ project, token, user }) {
 
   const { t } = useTranslation(['common', 'books'])
 
-  const { briefResume, isBrief, isLoading } = useBriefState({
+  const { briefResume, isBrief } = useBriefState({
     token,
     project_id: project?.id,
   })
-  const [{ isCoordinatorAccess }] = useAccess({
+  const [{ isCoordinatorAccess }, { isLoading }] = useAccess({
     token: user?.access_token,
     user_id: user?.id,
     code: project?.code,
@@ -97,18 +96,13 @@ function ProjectPersonalCard({ project, token, user }) {
 
   return (
     <>
-      {!project?.code || !chapters || !currentSteps || isLoading || !user?.id ? (
-        <Placeholder />
-      ) : (
-        <>
-          {Object.keys(chapters).length > 0 && (
-            <div className="flex flex-col gap-7">
-              {Object.keys(chapters).map((book, i) => {
-                return (
-                  <div
-                    key={i}
-                    className="card flex flex-col sm:flex-row gap-7 p-7 h-full"
-                  >
+      {Object.keys(chapters).length > 0 && (
+        <div className="flex flex-col gap-7">
+          {Object.keys(chapters).map((book, i) => {
+            return (
+              <div key={i} className="card flex flex-col sm:flex-row gap-7 p-7 h-full">
+                {!isLoading && currentSteps && project ? (
+                  <>
                     <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <div className="text-2xl font-bold">{t(`books:${book}`)}</div>
@@ -127,7 +121,7 @@ function ProjectPersonalCard({ project, token, user }) {
                         </div>
                         <div className="flex gap-3">
                           <p className="text-lg">{t('Translators')}:</p>
-                          <Translators projectCode={project.code} size="25px" />
+                          <Translators projectCode={project?.code} size="25px" />
                         </div>
                         <div className="flex gap-3">
                           <p className="text-lg">
@@ -176,28 +170,39 @@ function ProjectPersonalCard({ project, token, user }) {
                                 : ''
                             }`}
                           >
-                            <a className="btn-link">{stepLink}</a>
+                            <a className="btn-primary flex gap-2">{stepLink}</a>
                           </Link>
                         ) : (
-                          <div key={index} className="btn-link-disabled">
+                          <button key={index} className="btn-primary flex gap-2" disabled>
                             {stepLink}
-                          </div>
+                          </button>
                         )
                       })}
                       {briefResume === '' && (
-                        <Link href={`/projects/${project?.code}/edit/brief`}>
-                          <a className="btn-link">
+                        <Link href={`/projects/${project?.code}/edit?setting=brief`}>
+                          <a className="btn-primary flex gap-2">
                             {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                           </a>
                         </Link>
                       )}
                     </div>
+                  </>
+                ) : (
+                  <div
+                    role="status"
+                    className="flex flex-col gap-4 h-full w-full animate-pulse"
+                  >
+                    <div className="h-3 bg-gray-200 rounded-2xl w-1/4" />
+                    <div className="h-3 bg-gray-200 rounded-2xl w-1/2" />
+                    <div className="h-3 bg-gray-200 rounded-2xl w-full" />
+                    <div className="h-3 bg-gray-200 rounded-2xl w-full" />
+                    <div className="h-3 bg-gray-200 rounded-2xl w-full" />
                   </div>
-                )
-              })}
-            </div>
-          )}
-        </>
+                )}
+              </div>
+            )
+          })}
+        </div>
       )}
     </>
   )

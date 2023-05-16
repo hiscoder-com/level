@@ -1,5 +1,7 @@
 import { useTranslation } from 'next-i18next'
+
 import Modal from 'components/Modal'
+import ListBox from 'components/ListBox'
 
 function AssignParticipant({
   openModalAssign,
@@ -8,6 +10,7 @@ function AssignParticipant({
   selectedUser,
   listOfAssigned,
   assign,
+  label,
   role,
 }) {
   const { t } = useTranslation()
@@ -18,33 +21,30 @@ function AssignParticipant({
         setOpenModalAssign(false)
         setSelectedUser('')
       }}
+      additionalClasses="overflow-y-visible"
     >
-      <div className="flex flex-col gap-7 min-h-[15vh]">
-        <select
-          className="input"
-          value={selectedUser}
-          onChange={(e) => setSelectedUser(e.target.value)}
-        >
-          {listOfAssigned?.map((el) => (
-            <option value={el.id} key={el.id}>
-              {el.login}
-            </option>
-          ))}
-        </select>
-        <div className="flex flex-row justify-center gap-7">
+      <div className="flex flex-col min-h-[15vh] gap-7">
+        <div className="text-2xl text-center">{t(label)}</div>
+        <ListBox
+          options={listOfAssigned?.map((el) => ({ label: el.login, value: el.id }))}
+          selectedOption={selectedUser}
+          setSelectedOption={setSelectedUser}
+        />
+
+        <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
           <button
             onClick={() => {
               assign(role)
               setSelectedUser(listOfAssigned?.[0]?.id)
             }}
             disabled={!selectedUser}
-            className="btn-link-full"
+            className="btn-secondary"
           >
             {t('Added')}
           </button>
 
           <button
-            className="btn-link-full"
+            className="btn-secondary"
             onClick={() => {
               setOpenModalAssign(false)
               setSelectedUser('')

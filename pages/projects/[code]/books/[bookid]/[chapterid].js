@@ -184,7 +184,7 @@ function ChapterVersesPage() {
               { title: project?.title, href: '/projects/' + code },
               {
                 title: t(`books:${book?.code}`),
-                href: '/projects/' + code + '?book=' + bookid,
+                href: '/projects/' + code + '/books/' + bookid,
               },
               { title: `${t('Chapter')} ${chapter?.num}` },
             ]}

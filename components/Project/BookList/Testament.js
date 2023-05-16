@@ -6,11 +6,14 @@ import { useTranslation } from 'next-i18next'
 
 import BookCreate from './BookCreate'
 import ChecksIcon from './ChecksIcon'
+import Modal from 'components/Modal'
+import Download from '../Download'
+
 import { useGetBooks } from 'utils/hooks'
 
 import Gear from '/public/gear.svg'
 import Reader from '/public/dictionary.svg'
-import Download from '/public/download.svg'
+import DownloadIcon from '/public/download.svg'
 import Play from '/public/play.svg'
 
 function Testament({
@@ -18,13 +21,15 @@ function Testament({
   title,
   user,
   project,
-  access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess },
+  access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess, isLoading },
   setCurrentBook,
 }) {
   const { t } = useTranslation('books')
   const { push } = useRouter()
 
   const [bookCodeCreating, setBookCodeCreating] = useState(null)
+  const [isOpenDownloading, setIsOpenDownloading] = useState(false)
+  const [downloadingBook, setDownloadingBook] = useState(null)
   const [books, { mutate: mutateBooks }] = useGetBooks({
     token: user?.access_token,
     code: project?.code,
@@ -36,9 +41,7 @@ function Testament({
     if (isBookCreated && book) {
       setCurrentBook(book)
       push({
-        pathname: `/projects/${project?.code}`,
-        query: { book },
-        shallow: true,
+        pathname: `/projects/${project?.code}/books/${book}`,
       })
     }
   }
@@ -63,52 +66,52 @@ function Testament({
                     {t(`books:${book}`)}
                   </div>
                 </div>
-                <div className="flex gap-2 text-darkBlue">
-                  {isCoordinatorAccess && (
-                    <>
-                      {isBookCreated && (
-                        <>
-                          <Gear
-                            className="w-6 min-w-[1.5rem] cursor-pointer"
-                            onClick={() =>
-                              push({
-                                pathname: `/projects/${project?.code}`,
-                                query: {
-                                  properties: book,
-                                },
-                                shallow: true,
-                              })
-                            }
-                          />
-                        </>
-                      )}
-                    </>
-                  )}
-                  {!isBookCreated && isAdminAccess && (
-                    <>
-                      <Play
+                {!isLoading ? (
+                  <div className="flex gap-2 text-darkBlue">
+                    {isCoordinatorAccess && (
+                      <>
+                        {isBookCreated && (
+                          <>
+                            <Gear
+                              className="w-6 min-w-[1.5rem] cursor-pointer"
+                              onClick={() =>
+                                push({
+                                  pathname: `/projects/${project?.code}`,
+                                  query: {
+                                    properties: book,
+                                  },
+                                  shallow: true,
+                                })
+                              }
+                            />
+                          </>
+                        )}
+                      </>
+                    )}
+                    {!isBookCreated && isAdminAccess && (
+                      <>
+                        <Play
+                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          onClick={() => setBookCodeCreating(book)}
+                        />
+                      </>
+                    )}
+                    {isModeratorAccess && isBookCreated && (
+                      <DownloadIcon
                         className="w-6 min-w-[1.5rem] cursor-pointer"
-                        onClick={() => setBookCodeCreating(book)}
+                        onClick={() => {
+                          setIsOpenDownloading(true)
+                          setDownloadingBook(book)
+                        }}
                       />
-                    </>
-                  )}
-                  {isModeratorAccess && isBookCreated && (
-                    <Download
-                      className="w-6 min-w-[1.5rem] cursor-pointer"
-                      onClick={() =>
-                        push({
-                          pathname: `/projects/${project?.code}`,
-                          query: {
-                            book: book,
-                            download: 'book',
-                          },
-                          shallow: true,
-                        })
-                      }
-                    />
-                  )}
-                  <Reader className="w-6 min-w-[1.5rem]" />
-                </div>
+                    )}
+                    <Reader className="w-6 min-w-[1.5rem]" />
+                  </div>
+                ) : (
+                  <div role="status" className="h-4 w-1/4 animate-pulse">
+                    <div className="h-full bg-gray-200 rounded-2xl w-full"></div>
+                  </div>
+                )}
               </div>
             )
           })}
@@ -121,6 +124,21 @@ function Testament({
         user={user}
         mutateBooks={mutateBooks}
       />
+
+      <Modal
+        isOpen={isOpenDownloading}
+        closeHandle={setIsOpenDownloading}
+        additionalClasses="overflow-y-visible"
+      >
+        <Download
+          isBook
+          user={user}
+          project={project}
+          bookCode={downloadingBook}
+          books={books}
+          setIsOpenDownloading={setIsOpenDownloading}
+        />
+      </Modal>
     </>
   )
 }

@@ -74,7 +74,6 @@ export default function Recorder() {
       setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
     }
   }, [voice])
-
   const playPause = () => {
     if (audioRef.current.paused) {
       audioRef.current.play()
@@ -86,18 +85,18 @@ export default function Recorder() {
   }
 
   return (
-    <div className="flex items-center">
-      <button className="border-0 w-6 h-6 mr-8" onClick={startStop}>
+    <div className="flex flex-row items-center gap-7">
+      <button className="w-6 h-6" onClick={startStop}>
         {buttonRecord}
       </button>
       <audio ref={audioRef}></audio>
-      <button className="border-0 w-6 h-6 mr-8" onClick={playPause}>
+      <button className="w-6 h-6" disabled={!voice?.length} onClick={playPause}>
         {buttonPlay}
       </button>
-      <br />
+
       <button
         disabled={voice.length === 0}
-        className="border-0 w-6 h-6"
+        className="w-6 h-6"
         onClick={() => setVoice([])}
       >
         <TrashButton
@@ -111,7 +110,7 @@ export default function Recorder() {
           <div className="text-2xl text-center">{t('MicrophoneAccess')}</div>
           <p>{t('TurnMicrophone')}</p>
           <div className="flex justify-end">
-            <button className="btn-link-full" onClick={() => setShowModal(false)}>
+            <button className="btn-secondary" onClick={() => setShowModal(false)}>
               {t('common:Ok')}
             </button>
           </div>

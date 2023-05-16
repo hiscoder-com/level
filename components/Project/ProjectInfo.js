@@ -10,7 +10,11 @@ function ProjectInfo({ project, access }) {
     { label: 'Language', value: project?.languages?.orig_name },
   ]
   return (
-    <Card title={t('Information')} link={`${project?.code}/edit`} access={access}>
+    <Card
+      title={t('Information')}
+      link={`${project?.code}/edit?setting=resources`}
+      access={access}
+    >
       {project && (
         <div className="flex flex-col gap-4">
           <h4 className="text-xl font-bold">{project?.title}</h4>

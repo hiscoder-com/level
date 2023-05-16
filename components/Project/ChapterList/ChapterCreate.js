@@ -13,7 +13,10 @@ function ChapterCreate({
   mutate: { mutateChapters, mutateCreatedChapters },
   project,
 }) {
-  const { push, query } = useRouter()
+  const {
+    push,
+    query: { bookid },
+  } = useRouter()
   const { t } = useTranslation()
   const [isCreated, setIsCreated] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -46,7 +49,7 @@ function ChapterCreate({
             mutateCreatedChapters()
             setTextModal(t('ChapterCreated'))
             setTimeout(() => {
-              push('/projects/' + project.code + '/books/' + query.book + '/' + num)
+              push('/projects/' + project.code + '/books/' + bookid + '/' + num)
             }, 2000)
           }, 1000)
         } else {
@@ -73,7 +76,7 @@ function ChapterCreate({
         {!isCreating && !isCreated && (
           <div className="flex flex-row gap-2 text-xl">
             <button
-              className="btn-link-full mx-2"
+              className="btn-secondary"
               onClick={() =>
                 handleAddChapter({
                   chapter_id: creatingChapter.id,
@@ -84,7 +87,7 @@ function ChapterCreate({
               {t('Yes')}
             </button>
 
-            <button className="btn-link-full mx-2" onClick={reset}>
+            <button className="btn-secondary" onClick={reset}>
               {isCreated ? t('Ok') : t('No')}
             </button>
           </div>

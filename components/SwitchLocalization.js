@@ -1,22 +1,42 @@
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 import i18nextConfig from 'next-i18next.config'
 
+import { Menu } from '@headlessui/react'
+
 function SwitchLocalization() {
-  const { locale, pathname, query, asPath } = useRouter()
+  const { locale, asPath, push } = useRouter()
   const { t } = useTranslation('common')
   const supportedLngs = i18nextConfig.i18n.locales
   return (
-    <div className="text-xs lg:text-base font-bold">
-      {supportedLngs.map((loc) => (
-        <Link key={loc} href={{ pathname, query }} as={asPath} locale={loc}>
-          <a className={`text-black p-2 ${locale === loc ? 'opacity-50' : ''}`}>
-            {t(loc.toUpperCase())}
-          </a>
-        </Link>
-      ))}
+    <div className="text-xs lg:text-sm font-bold relative">
+      <Menu>
+        <Menu.Button
+          className="px-4 py-2 text-teal-400 text-sm bg-teal-100 rounded-[9rem]"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {t(locale.toUpperCase())}
+        </Menu.Button>
+        <Menu.Items className="absolute flex top-0 right-0 text-sm bg-teal-100 rounded-2xl">
+          <div className="flex flex-col">
+            {supportedLngs.map((loc) => (
+              <Menu.Item
+                key={loc}
+                as="div"
+                onClick={(e) => {
+                  push(asPath, undefined, { locale: loc })
+                }}
+                className="cursor-pointer px-4 py-2 hover:bg-teal-200 last:rounded-b-2xl first:rounded-t-2xl"
+              >
+                <div className={`${locale === loc ? 'text-teal-400' : ''}`}>
+                  {t(loc.toUpperCase())}
+                </div>
+              </Menu.Item>
+            ))}
+          </div>
+        </Menu.Items>
+      </Menu>
     </div>
   )
 }

@@ -97,9 +97,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply btn btn-blue-base;
 }
 
-.btn-red {
-	@apply btn btn-red-base;
-}
 .btn-gray-red {
 	@apply btn btn-gray-red-base;
 }
@@ -237,27 +234,29 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply p-3 border-x border-t border-darkBlue rounded-t-2xl cursor-pointer
 }
 .tab-active {
-	@apply tab text-white bg-darkBlue cursor-default
+	@apply tab text-white bg-darkBlue cursor-default focus:outline-none
 }
 
 .card {
   @apply p-7 bg-white rounded-2xl border border-gray-350 shadow-md;
 }
 
-.btn-link-base {
-  @apply flex gap-2 pt-2 pb-3 px-6 h-min border rounded-3xl cursor-pointer;
+.btn-base {
+  @apply px-6 border rounded-3xl cursor-pointer text-center;
 }
-.btn-link {
-  @apply btn-link-base text-darkBlue border-darkBlue hover:bg-blue-250;
+
+.btn-primary {
+  @apply btn-base py-3 text-slate-900 border-darkBlue hover:bg-blue-250 hover:border-blue-250 disabled:bg-white disabled:border-gray-300
+	disabled:text-gray-400 disabled:cursor-default;
 }
-.btn-link-full {
-  @apply btn-link-base text-darkBlue bg-blue-150 hover:bg-white;
+
+.btn-secondary {
+  @apply btn-base py-2 text-xl text-slate-900 bg-blue-150 hover:bg-white;
 }
-.btn-link-disabled {
-  @apply btn-link-base text-gray-300 cursor-not-allowed;
-}
-.btn-link-red {
-  @apply btn-link-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
+
+
+.btn-red {
+  @apply btn-base py-2 text-xl text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
 }
 
 .first-check path:nth-child(1){

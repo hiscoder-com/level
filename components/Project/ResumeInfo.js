@@ -12,7 +12,7 @@ function ResumeInfo({ project, user }) {
   return (
     <Card
       title={`${t('TranslationGoal')} / ${t('Resume')}`}
-      link={`${project?.code}/edit#brief`}
+      link={`${project?.code}/edit?setting=brief`}
       isOpen={false}
       access
     >

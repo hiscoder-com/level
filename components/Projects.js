@@ -9,6 +9,7 @@ export default function Projects({ type }) {
   const [projects] = useProjects({
     token: user?.access_token,
   })
+
   let CurrentCard
   let className
   switch (type) {
