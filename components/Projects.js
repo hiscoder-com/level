@@ -1,40 +1,14 @@
-import { useEffect, useState } from 'react'
-
-import { useTranslation } from 'react-i18next'
-
-import { Disclosure } from '@headlessui/react'
-
 import ProjectCard from './ProjectCard'
 import ProjectPersonalCard from './ProjectPersonalCard'
 
-import { useLanguages, useProjects } from 'utils/hooks'
+import { useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
 export default function Projects({ type }) {
-  const { t } = useTranslation()
-  const [languagesChecked, setLanguagesChecked] = useState({})
-  const [isFiltered, setIsFiltered] = useState(false)
   const { user } = useCurrentUser()
   const [projects] = useProjects({
     token: user?.access_token,
   })
-  const [languages] = useLanguages(user?.access_token)
-  useEffect(() => {
-    if (languages) {
-      const checked = {}
-      languages.forEach((language) => {
-        checked[language.code] = true
-      })
-      setLanguagesChecked(checked)
-    }
-  }, [languages])
-
-  const handleCheck = (event) => {
-    setLanguagesChecked((prev) => ({
-      ...prev,
-      [event.target.name]: event.target.checked,
-    }))
-  }
 
   let CurrentCard
   let className
@@ -52,59 +26,19 @@ export default function Projects({ type }) {
   }
   return (
     <>
-      {type === 'projects' && user?.is_admin && (
-        <Disclosure>
-          <Disclosure.Button
-            className="w-full"
-            onClick={() => setIsFiltered((prev) => !prev)}
-          >
-            <div className="card mt-10 w-full font-bold">{t('Filters')}</div>
-          </Disclosure.Button>
-          <Disclosure.Panel className="card flex flex-col items-center justify-center mt-10 gap-7">
-            <div className="flex flex-col gap-7 w-3/4">
-              <div>{t('ByLanguage')}</div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {languages?.map((language) => (
-                  <div key={language.id} className="flex justify-between">
-                    <div>{language.orig_name}</div>
-                    <input
-                      type={'checkbox'}
-                      name={language.code}
-                      checked={languagesChecked[language.code]}
-                      onChange={handleCheck}
-                      className="h-7 w-7 cursor-pointer accent-teal-600"
-                    />
-                  </div>
-                ))}
-              </div>
-            </div>
-          </Disclosure.Panel>
-        </Disclosure>
-      )}
-
       <div className={className}>
         {projects &&
-          projects
-            .filter(
-              (project) =>
-                !isFiltered ||
-                (isFiltered &&
-                  languagesChecked &&
-                  Object.keys(languagesChecked)
-                    .filter((key) => languagesChecked[key])
-                    .includes(project?.languages.code))
-            )
-            .map(
-              (project) =>
-                project && (
-                  <CurrentCard
-                    key={project.id}
-                    project={project}
-                    token={user?.access_token}
-                    user={user}
-                  />
-                )
-            )}
+          projects.map(
+            (project) =>
+              project && (
+                <CurrentCard
+                  key={project.id}
+                  project={project}
+                  token={user?.access_token}
+                  user={user}
+                />
+              )
+          )}
       </div>
     </>
   )
