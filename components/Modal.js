@@ -35,7 +35,7 @@ function Modal({
               as={Fragment}
               leaveFrom="opacity-100 scale-100"
               enterTo="opacity-100 scale-100"
-              enterFrom="opacity-0 scale-95"
+              enterFrom="opacity-100 scale-95"
               enter="ease-out duration-300"
               leaveTo="opacity-0 scale-95"
               leave="ease-in duration-200"

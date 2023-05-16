@@ -75,7 +75,7 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
         closeHandle={reset}
         className={isCreated ? 'secondary' : 'primary'}
       >
-        <div className="flex flex-col justify-center items-center">
+        <div className="flex flex-col justify-center items-center min-h-[10rem]">
           <div className="flex flex-row gap-2 mb-4 text-2xl">
             <p>{textModal}</p>
             {isCreating && !isCreated && <p className="animate-pulse">...</p>}
