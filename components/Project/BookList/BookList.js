@@ -34,7 +34,11 @@ function BookList({ user, project, access }) {
     }
   }, [query, books, setCurrentBook])
   return (
-    <div className="card flex flex-col sm:flex-row gap-7 h-full">
+    <div
+      className={`flex flex-col sm:flex-row gap-7 h-full ${
+        !currentBook && propertiesBook ? '' : 'card'
+      }`}
+    >
       {user && project ? (
         !propertiesBook && (
           <>
