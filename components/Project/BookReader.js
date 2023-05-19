@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import { Disclosure, Tab } from '@headlessui/react'
+import { Disclosure, Listbox, Tab } from '@headlessui/react'
 
 import ResumeInfo from './ResumeInfo'
 import ChecksIcon from './BookList/ChecksIcon'
@@ -15,6 +15,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { useAccess, useGetBooks, useGetResource, useProject } from 'utils/hooks'
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
 import Down from '/public/arrow-down.svg'
+import Left from '/public/left.svg'
 
 function BookReader() {
   const { user } = useCurrentUser()
@@ -53,22 +54,68 @@ function BookReader() {
     }
   }, [bookid, books])
   const [project] = useProject({ token: user?.access_token, code })
+
+  const createdNewTestamentBooks = useMemo(
+    () =>
+      books
+        ? books
+            .filter((book) =>
+              Object.keys(newTestamentList).some((nt) => nt === book.code && book?.checks)
+            )
+            .sort((a, b) => {
+              return (
+                Object.keys(newTestamentList).indexOf(a.code) -
+                Object.keys(newTestamentList).indexOf(b.code)
+              )
+            })
+        : [],
+    [books]
+  )
+  const createdOldTestamentBooks = useMemo(
+    () =>
+      books
+        ? books
+            .filter((book) =>
+              Object.keys(oldTestamentList).some((nt) => nt === book.code && book?.checks)
+            )
+            .sort((a, b) => {
+              return (
+                Object.keys(oldTestamentList).indexOf(a.code) -
+                Object.keys(oldTestamentList).indexOf(b.code)
+              )
+            })
+        : [],
+    [books]
+  )
+  //TODO в брифе неработает ссылка
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
       <div className="static xl:sticky top-7 flex flex-col md:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
-        <div className="w-full md:w-1/2 xl:w-full">
+        <div className="hidden xl:block md:w-1/2 xl:w-full">
           <BookListReader
-            books={books}
+            books={[createdOldTestamentBooks, createdNewTestamentBooks]}
             setReference={setReference}
             reference={reference}
           />
         </div>
-        <div className="w-full md:w-1/2 xl:w-full">
+        <div className="w-full">
           <ResumeInfo project={project} user={user} />
         </div>
       </div>
       <div className="w-full xl:w-2/3">
-        <div className="card">
+        <div className="card flex flex-col gap-7">
+          <div className="flex items-center gap-12 xl:hidden">
+            <Link href={'/projects/' + project?.code}>
+              <a>
+                <Left className="w-5 h-5" />
+              </a>
+            </Link>
+            <Navigation
+              books={[...createdOldTestamentBooks, ...createdNewTestamentBooks]}
+              reference={reference}
+              setReference={setReference}
+            />
+          </div>
           <Verses
             verseObjects={verseObjects}
             user={user}
@@ -94,16 +141,22 @@ function Verses({ verseObjects, user, reference, isLoading }) {
   })
   const [project] = useProject({ token: user?.access_token, code })
   const { t } = useTranslation()
+
   return (
-    <div className="flex flex-col gap-7">
-      <Breadcrumbs
-        links={
-          reference && [
-            { title: project?.title, href: '/projects/' + project?.code },
-            { title: t('books:' + bookid) + ' ' + reference?.chapter },
-          ]
-        }
-      />
+    <div className="flex flex-col gap-5">
+      <div className="hidden xl:block">
+        <Breadcrumbs
+          links={
+            reference && [
+              { title: project?.title, href: '/projects/' + project?.code },
+              { title: t('Reader') },
+            ]
+          }
+        />
+      </div>
+      <div className="text-xl font-bold">{`${t('books:' + bookid)} ${
+        reference?.chapter
+      }`}</div>
       <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
         {!isLoading ? (
           verseObjects ? (
@@ -144,8 +197,101 @@ function Verses({ verseObjects, user, reference, isLoading }) {
     </div>
   )
 }
+function Navigation({ books, reference, setReference }) {
+  const { query, replace } = useRouter()
+  const [selectedBook, setSelectedBook] = useState([])
+  const { t } = useTranslation()
+  useEffect(() => {
+    if (books?.length) {
+      setSelectedBook(books.find((book) => book.code === query.bookid))
+    }
+  }, [books, query.bookid])
+
+  const prevChapter = useMemo(() => reference?.chapter - 1, [reference])
+  const nextChapter = useMemo(() => reference?.chapter + 1, [reference])
+
+  return (
+    <div className="flex gap-3">
+      <div
+        className={`flex justify-between items-center gap-1 px-7 py-3 bg-slate-200 rounded-3xl ${
+          !prevChapter ? 'opacity-0 cursor-default' : 'opacity-100 cursor-pointer'
+        }
+        }`}
+        onClick={() =>
+          prevChapter && setReference((prev) => ({ ...prev, chapter: prev.chapter - 1 }))
+        }
+      >
+        <Down className="w-5 h-5 rotate-90" />
+        <span>{`${prevChapter} ${t('Chapter')}`}</span>
+      </div>
+
+      <Listbox value={selectedBook} onChange={setSelectedBook}>
+        {({ open }) => (
+          <div className="relative">
+            <Listbox.Button>
+              <div
+                className={`flex justify-between px-7 py-3 min-w-[15rem] bg-slate-200 ${
+                  open ? 'rounded-t-2xl' : 'rounded-2xl '
+                }`}
+              >
+                <span>{t('books:' + selectedBook?.code)}</span>
+                <Down className="w-5 h-5 min-w-[1.5rem]" />
+              </div>
+            </Listbox.Button>
+            <div className="flex justify-center ">
+              <Listbox.Options className="absolute bg-slate-200 w-full">
+                {books?.map((book) => (
+                  <Listbox.Option
+                    key={book?.id}
+                    value={book}
+                    onClick={() =>
+                      replace(
+                        {
+                          query: { ...query, bookid: book.code },
+                        },
+                        undefined,
+                        { shallow: true }
+                      )
+                    }
+                  >
+                    {({ selected }) => (
+                      <div
+                        className={`${
+                          selected ? 'bg-slate-100' : 'bg-slate-200'
+                        } w-full px-3 py-1  hover:bg-slate-100 cursor-pointer`}
+                      >
+                        {t('books:' + book?.code)}
+                      </div>
+                    )}
+                  </Listbox.Option>
+                ))}
+              </Listbox.Options>
+            </div>
+          </div>
+        )}
+      </Listbox>
+
+      <div
+        className={`flex justify-around items-center gap-1 px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
+          nextChapter > Object?.keys(selectedBook?.chapters || {}).length
+            ? 'opacity-0 cursor-default'
+            : 'opacity-100 cursor-pointer'
+        }
+        }`}
+        onClick={() =>
+          nextChapter !== Object.keys(selectedBook).length &&
+          setReference((prev) => ({ ...prev, chapter: prev.chapter + 1 }))
+        }
+      >
+        <span>{`${nextChapter} ${t('Chapter')}`}</span>
+        <Down className="w-5 h-5 -rotate-90" />
+      </div>
+    </div>
+  )
+}
 
 function BookListReader({ books, setReference, reference }) {
+  const [createdOldTestamentBooks, createdNewTestamentBooks] = books
   const { query, replace } = useRouter()
   const { t } = useTranslation('books')
   const refs = useRef([])
@@ -157,36 +303,6 @@ function BookListReader({ books, setReference, reference }) {
     })
   }
 
-  const createdNewTestamentBooks = useMemo(
-    () =>
-      books
-        ?.filter((book) =>
-          Object.keys(newTestamentList).some((nt) => nt === book.code && book?.checks)
-        )
-        .sort((a, b) => {
-          return (
-            Object.keys(newTestamentList).indexOf(a.code) -
-            Object.keys(newTestamentList).indexOf(b.code)
-          )
-        })
-        .map((book) => ({ ...book, chapterCount: newTestamentList[book.code] })),
-    [books]
-  )
-  const createdOldTestamentBooks = useMemo(
-    () =>
-      books
-        ?.filter((book) =>
-          Object.keys(oldTestamentList).some((nt) => nt === book.code && book?.checks)
-        )
-        .sort((a, b) => {
-          return (
-            Object.keys(oldTestamentList).indexOf(a.code) -
-            Object.keys(oldTestamentList).indexOf(b.code)
-          )
-        })
-        .map((book) => ({ ...book, chapterCount: oldTestamentList[book.code] })),
-    [books]
-  )
   const defaultIndex = useMemo(
     () =>
       [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex((list) =>
@@ -241,7 +357,7 @@ function BookListReader({ books, setReference, reference }) {
                         </Disclosure.Button>
                         <Disclosure.Panel>
                           <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-gray-400">
-                            {[...Array(book.chapterCount).keys()]
+                            {[...Array(Object.keys(book.chapters).length).keys()]
                               .map((el) => el + 1)
                               .map((index) => (
                                 <div
