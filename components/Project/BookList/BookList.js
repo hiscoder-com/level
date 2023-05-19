@@ -16,8 +16,8 @@ function BookList({ user, project, access }) {
 
   const testaments = {
     bible: [
-      { title: 'OldTestament', books: oldTestamentList },
-      { title: 'NewTestament', books: newTestamentList },
+      { title: 'OldTestament', books: Object.keys(oldTestamentList) },
+      { title: 'NewTestament', books: Object.keys(newTestamentList) },
     ],
     obs: [{ title: 'OpenBibleStories', books: ['obs'] }],
   }
@@ -40,7 +40,7 @@ function BookList({ user, project, access }) {
       }`}
     >
       {user && project ? (
-        !propertiesBook && (
+        !propertiesBook ? (
           <>
             {testaments?.[project?.type]?.map((testament) => (
               <div
@@ -60,10 +60,19 @@ function BookList({ user, project, access }) {
               </div>
             ))}
           </>
+        ) : (
+          <BookProperties
+            project={project}
+            user={user}
+            bookCode={propertiesBook}
+            type={project?.type}
+            mutateBooks={mutateBooks}
+            books={books}
+          />
         )
       ) : (
         <>
-          {[...Array(2).keys()].map((testament) => (
+          {/* {[...Array(2).keys()].map((testament) => (
             <div key={testament} className="flex flex-col gap-4 w-full">
               {[...Array(33).keys()].map((book) => (
                 <div className="h-4 animate-pulse" key={book}>
@@ -71,10 +80,10 @@ function BookList({ user, project, access }) {
                 </div>
               ))}
             </div>
-          ))}
+          ))} */}
         </>
       )}
-      {!currentBook && propertiesBook && (
+      {/* {!currentBook && propertiesBook && (
         <BookProperties
           project={project}
           user={user}
@@ -83,7 +92,7 @@ function BookList({ user, project, access }) {
           mutateBooks={mutateBooks}
           books={books}
         />
-      )}
+      )} */}
     </div>
   )
 }
