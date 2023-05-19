@@ -223,15 +223,15 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	fill:#003554;
 }
 
-.verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2){
+.verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2) {
   @apply flex;
 }
-.verse-block:hover>div:nth-child(1), .verse-block>div:nth-child(2){
+.verse-block:hover>div:nth-child(1), .verse-block>div:nth-child(2) {
   @apply hidden;
 }
 
 .tab {
-	@apply py-2 px-1 text-sm border-x border-t border-darkBlue rounded-t-2xl cursor-pointer
+	@apply py-2 px-2 text-sm border-x border-t border-darkBlue rounded-t-2xl cursor-pointer
 }
 .tab-active {
 	@apply tab text-white bg-darkBlue cursor-default focus:outline-none
@@ -259,12 +259,12 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
   @apply btn-base py-2 text-xl text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
 }
 
-.first-check path:nth-child(1){
+.first-check path:nth-child(1) {
 	@apply fill-emerald-500
 }
-.second-check path:nth-child(2){
+.second-check path:nth-child(2) {
 	@apply fill-teal-500
 }
-.third-check path:nth-child(3){
+.third-check path:nth-child(3) {
 	@apply fill-cyan-700
 }
