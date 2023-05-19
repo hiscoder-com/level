@@ -34,9 +34,17 @@ function Testament({
     token: user?.access_token,
     code: project?.code,
   })
+  const levelChecks = useMemo(() => {
+    if (books) {
+      const _books = {}
+      books.forEach((book) => {
+        _books[book.code] = book.checks
+      })
+      return _books
+    }
+  }, [books])
 
   const createdBooks = useMemo(() => books?.map((book) => book.code), [books])
-
   const handleOpenBook = (book, isBookCreated) => {
     if (isBookCreated && book) {
       setCurrentBook(book)
@@ -53,10 +61,16 @@ function Testament({
         <div className="flex flex-col gap-4 pr-4">
           {bookList.map((book) => {
             const isBookCreated = createdBooks?.includes(book)
+
             return (
               <div key={book} className="flex justify-between items-center gap-2">
                 <div className="flex items-center gap-5">
-                  <ChecksIcon book={book} user={user} project={project} />
+                  <ChecksIcon
+                    book={book}
+                    user={user}
+                    project={project}
+                    levelCheck={levelChecks?.[book]}
+                  />
                   <div
                     className={
                       isBookCreated ? 'text-teal-500 cursor-pointer' : 'text-gray-400'
@@ -105,7 +119,20 @@ function Testament({
                         }}
                       />
                     )}
-                    <Reader className="w-6 min-w-[1.5rem]" />
+                    {levelChecks?.[book] && (
+                      <Reader
+                        className="w-6 min-w-[1.5rem] cursor-pointer"
+                        onClick={() =>
+                          push({
+                            pathname: `/projects/${project?.code}/books/read`,
+                            query: {
+                              bookid: book,
+                            },
+                            shallow: true,
+                          })
+                        }
+                      />
+                    )}
                   </div>
                 ) : (
                   <div role="status" className="h-4 w-1/4 animate-pulse">
