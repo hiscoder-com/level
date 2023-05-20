@@ -7,10 +7,11 @@ import { useTranslation } from 'next-i18next'
 import toast, { Toaster } from 'react-hot-toast'
 import Property from './Property'
 import Breadcrumbs from 'components/Breadcrumbs'
-import { Combobox, Switch, Tab } from '@headlessui/react'
+import { Combobox, Listbox, Switch, Tab } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import Reader from '/public/dictionary.svg'
 import Spinner from '/public/spinner.svg'
+import Down from '/public/arrow-down.svg'
 
 function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { query } = useRouter()
@@ -53,7 +54,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         />
       )
     )
-  const handleSave = () => {
+  const handleSaveProperties = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/book_properties/${book.id}`, {
@@ -95,13 +96,19 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
           <Tab.Panel>
             <div className="card flex flex-col py-7">
               <div className="flex flex-col gap-4">{renderProperties}</div>
-              <button className="btn-primary mt-7 w-fit" onClick={handleSave}>
+              <button className="btn-primary mt-7 w-fit" onClick={handleSaveProperties}>
                 {t('Save')}
               </button>
             </div>
           </Tab.Panel>
           <Tab.Panel>
-            <LevelChecks t={t} book={book} />
+            <LevelChecks
+              t={t}
+              book={book}
+              user={user}
+              project={project}
+              mutateBooks={mutateBooks}
+            />
           </Tab.Panel>
           <Tab.Panel></Tab.Panel>
         </Tab.Panels>
@@ -113,19 +120,41 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
 }
 export default BookProperties
 
-function LevelChecks({ t, book }) {
+function LevelChecks({ t, book, user, project, mutateBooks }) {
   const [orgRepos, setOrgRepos] = useState([])
   const [translationLink, setTranslationLink] = useState()
-  const { push } = useRouter()
+  const {
+    push,
+    query: { properties, code },
+  } = useRouter()
   const [isHandleAddingLink, setIsHandleAddingLink] = useState(true)
   const classInput =
     'p-2 w-full rounded-lg bg-white text-slate-900 border border-cyan-600  focus:border-slate-900 focus:outline-none disabled:border-gray-300 disabled:placeholder-gray-300'
-  const handleSaveLink = () => {}
+  const handleSaveLevelChecks = () => {
+    if (translationLink) {
+      axios.defaults.headers.common['token'] = user?.access_token
+      axios
+        .put(`/api/projects/${code}/books/${properties}/level_checks`, {
+          level_checks: translationLink,
+          project_id: project?.id,
+          user_id: user?.id,
+        })
+
+        .then(() => {
+          toast.success(t('SaveSuccess'))
+          mutateBooks()
+        })
+        .catch((err) => {
+          toast.error(t('SaveFailed'))
+          console.log(err)
+        })
+    }
+  }
   const [owner, setOwner] = useState('')
 
   useEffect(() => {
-    if (book?.checks) {
-      setTranslationLink(book?.checks)
+    if (book?.level_checks) {
+      setTranslationLink(book?.level_checks)
     }
   }, [book])
 
@@ -163,9 +192,7 @@ function LevelChecks({ t, book }) {
         .finally((isLoading = false))
     }
   }
-  console.log(branches)
   const handleSearchBranches = () => {
-    console.log(query)
     if (selectedRepo) {
       isLoading = true
       axios
@@ -207,12 +234,9 @@ function LevelChecks({ t, book }) {
     [branches, queryBranches]
   )
   const urlCommit = useMemo(
-    () => branches.find((branch) => branch.name === selectedBranch),
+    () => branches.find((branch) => branch.name === selectedBranch.name),
     [branches, selectedBranch]
   )
-  console.log(urlCommit)
-  console.log(branches, selectedBranch)
-  console.log(selectedBranch, queryBranches)
   return (
     <div className="card flex flex-col gap-4 py-7">
       <div className="flex gap-2 self-end">
@@ -245,7 +269,7 @@ placeholder-blue-200 focus:border-slate-900 focus:outline-none "
                 setTranslationLink((prev) => ({ ...prev, url: e.target.value }))
               }
             />
-            {book?.checks && (
+            {book?.level_checks && (
               <Reader
                 className="w-6 min-w-[1.5rem] cursor-pointer"
                 onClick={() =>
@@ -280,7 +304,7 @@ placeholder-blue-200 focus:border-slate-900 focus:outline-none "
                   </div>
                 ))}
             </div>
-            <button className="btn-primary" onClick={handleSaveLink}>
+            <button className="btn-primary" onClick={handleSaveLevelChecks}>
               {t('Save')}
             </button>
           </div>
@@ -294,11 +318,7 @@ placeholder-blue-200 focus:border-slate-900 focus:outline-none "
           <div className="flex gap-4">
             <span className="w-1/4">Repos</span>
 
-            <Combobox
-              value={query}
-              onChange={setQuery}
-              // disabled={!orgRepos?.length}
-            >
+            <Combobox value={query} onChange={setQuery} disabled={!owner}>
               <div className="w-full relative">
                 <Combobox.Input
                   onChange={(event) => {
@@ -336,61 +356,88 @@ placeholder-blue-200 focus:border-slate-900 focus:outline-none "
             </Combobox>
 
             {
-              <button className="btn-primary" onClick={handleSearch}>
+              <button
+                className="btn-primary"
+                disabled={!owner || !query}
+                onClick={handleSearch}
+              >
                 {t('Search')}
               </button>
             }
           </div>
           <div className="flex gap-4">
             <span className="w-1/4">Branches</span>{' '}
-            <Combobox
-              value={queryBranches}
-              onChange={setQueryBranches}
-              // disabled={!orgRepos?.length}
+            <Listbox value={selectedBranch} onChange={setSelectedBranch}>
+              {({ open }) => (
+                <div className="relative">
+                  <Listbox.Button>
+                    <div
+                      className={`flex justify-between px-7 py-3 min-w-[15rem] ${classInput} ${
+                        !selectedRepo ? 'border-gray-300' : ''
+                      }  ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
+                    >
+                      <span>{selectedBranch?.name}</span>
+                      <Down
+                        className={`w-5 h-5 min-w-[1.5rem] ${
+                          !selectedRepo ? 'stroke-gray-300' : ''
+                        }`}
+                      />
+                    </div>
+                  </Listbox.Button>
+                  <div className="flex justify-center ">
+                    <Listbox.Options className="absolute w-full border border-cyan-600">
+                      {branches?.map((branch) => (
+                        <Listbox.Option key={branch?.id} value={branch}>
+                          {({ selected }) => (
+                            <div
+                              className={`bg-white w-full px-3 py-1  hover:bg-slate-100 cursor-pointer`}
+                            >
+                              {branch.name}
+                            </div>
+                          )}
+                        </Listbox.Option>
+                      ))}
+                    </Listbox.Options>
+                  </div>
+                </div>
+              )}
+            </Listbox>
+            <button
+              className="btn-primary"
+              disabled={!selectedRepo}
+              onClick={handleSearchBranches}
             >
-              <div className="w-full relative">
-                <Combobox.Input
-                  onChange={(event) => {
-                    setStaticOptionsBranches(false)
-                    setQueryBranches(event.target.value)
-                  }}
-                  className={`${classInput} `}
-                  onBlur={() => setStaticOptionsBranches(false)}
-                />
-                <Spinner
-                  className={` animate-spin my-0 mx-auto h-5 w-5 -mt-8 text-cyan-600 ${
-                    isLoading ? 'block' : 'hidden'
-                  }`}
-                />
-                {filteredBranches.length > 0 && (
-                  <Combobox.Options
-                    static={staticOptionsBranches}
-                    className={`absolute w-full bg-white rounded-b-lg overflow-y-scroll max-h-[40vh] ${classInput}`}
-                  >
-                    {filteredBranches?.map((branch) => (
-                      <Combobox.Option
-                        key={branch}
-                        value={branch}
-                        onClick={(e) => {
-                          setStaticOptionsBranches(false)
-                          setSelectedBranch(query)
-                        }}
-                      >
-                        {branch}
-                      </Combobox.Option>
-                    ))}
-                  </Combobox.Options>
-                )}
-              </div>
-            </Combobox>
-            <button className="btn-primary" onClick={handleSearchBranches}>
               {t('Search')}
             </button>
           </div>
           <div className="flex gap-4">
             <span className="w-1/4">URl of commits</span>
-            <input className={classInput} value={urlCommit?.commit?.url} />
-            <button className="btn-primary">{t('Save')}</button>
+            <div>{urlCommit?.commit?.url} </div>{' '}
+            <div className="flex gap-5">
+              {urlCommit?.commit?.url &&
+                [...Array(3).keys()]
+                  .map((i) => i + 1)
+                  .map((el) => (
+                    <div className="flex gap-2" key={el}>
+                      <input
+                        id={el}
+                        type="checkbox"
+                        className="w-6 h-6 accent-cyan-600"
+                        checked={translationLink?.level === el || false}
+                        onChange={() =>
+                          setTranslationLink((prev) => ({ ...prev, level: el }))
+                        }
+                      />
+                      <label htmlFor={el}>{el}</label>
+                    </div>
+                  ))}
+            </div>
+            <button
+              className="btn-primary"
+              onClick={() => navigator.clipboard.writeText(urlCommit?.commit?.url)}
+            >
+              {t('Copy')}
+            </button>
           </div>
         </div>
       )}
