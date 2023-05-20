@@ -84,7 +84,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
       />
 
       <Tab.Group defaultIndex={query?.levels ? 1 : 0}>
-        <Tab.List className="grid grid-cols-2 md:grid-cols-5 xl:grid-cols-4 gap-4 mt-2 font-bold text-center border-b border-slate-600">
+        <Tab.List className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 mt-2 font-bold text-center border-b border-slate-600">
           <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
             {t('Properties')}
           </Tab>
@@ -185,7 +185,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           )}
         </div>
 
-        <div className="flex justify-between items-end">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-7 sm:gap-0">
           <div className="flex flex-col gap-4">
             <div className="font-bold">{t('LevelChecks')}</div>
             <div className="flex gap-5">
@@ -207,7 +207,10 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                 ))}
             </div>
           </div>
-          <button className="btn-primary" onClick={handleSaveLevelChecks}>
+          <button
+            className="btn-primary w-1/2 sm:w-auto self-end sm:self-auto"
+            onClick={handleSaveLevelChecks}
+          >
             {t('Save')}
           </button>
         </div>
