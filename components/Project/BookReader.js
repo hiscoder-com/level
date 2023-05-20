@@ -50,7 +50,7 @@ function BookReader() {
   useEffect(() => {
     if (bookid && books) {
       const book = books.find((book) => book.code === bookid)
-      setReference((prev) => ({ ...prev, chapter: 1, bookid, checks: book.checks }))
+      setReference((prev) => ({ ...prev, chapter: 1, bookid, checks: book.level_checks }))
     }
   }, [bookid, books])
   const [project] = useProject({ token: user?.access_token, code })
@@ -60,7 +60,9 @@ function BookReader() {
       books
         ? books
             .filter((book) =>
-              Object.keys(newTestamentList).some((nt) => nt === book.code && book?.checks)
+              Object.keys(newTestamentList).some(
+                (nt) => nt === book.code && book?.level_checks
+              )
             )
             .sort((a, b) => {
               return (
@@ -76,7 +78,9 @@ function BookReader() {
       books
         ? books
             .filter((book) =>
-              Object.keys(oldTestamentList).some((nt) => nt === book.code && book?.checks)
+              Object.keys(oldTestamentList).some(
+                (nt) => nt === book.code && book?.level_checks
+              )
             )
             .sort((a, b) => {
               return (
@@ -346,7 +350,7 @@ function BookListReader({ books, setReference, reference }) {
                           }`}
                         >
                           <div className="flex items-center gap-4">
-                            <ChecksIcon levelCheck={book?.checks} />
+                            <ChecksIcon levelCheck={book?.level_checks} />
                             <div>{t('books:' + book.code)}</div>
                           </div>
                           <Down

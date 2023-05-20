@@ -38,7 +38,7 @@ function Testament({
     if (books) {
       const _books = {}
       books.forEach((book) => {
-        _books[book.code] = book.checks
+        _books[book.code] = book.level_checks
       })
       return _books
     }
