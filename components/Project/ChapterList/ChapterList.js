@@ -138,8 +138,8 @@ function ChapterList() {
                           finished_at
                             ? 'bg-yellow-400'
                             : isCreated
-                            ? 'text-white bg-darkBlue border-2 border-slate-900'
-                            : 'bg-white border-2 border-slate-900'
+                            ? 'text-white bg-slate-600 border-2 border-slate-600'
+                            : 'bg-white border-2 border-slate-600'
                         }`}
                       >
                         <div className="flex justify-between">

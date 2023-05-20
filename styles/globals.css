@@ -231,10 +231,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .tab {
-	@apply py-2 px-2 text-sm border-x border-t border-darkBlue rounded-t-2xl cursor-pointer
+	@apply py-2 px-2 text-sm border-x border-t border-slate-600 rounded-t-2xl cursor-pointer
 }
 .tab-active {
-	@apply tab text-white bg-darkBlue cursor-default focus:outline-none
+	@apply tab text-white bg-slate-600 cursor-default focus:outline-none
 }
 
 .card {
@@ -242,11 +242,11 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-base {
-  @apply px-6 border rounded-3xl cursor-pointer text-center;
+  @apply px-5 border rounded-3xl cursor-pointer text-center;
 }
 
 .btn-primary {
-  @apply btn-base py-3 text-slate-900 border-darkBlue hover:bg-blue-250 hover:border-blue-250 disabled:bg-white disabled:border-gray-300
+  @apply btn-base py-2 text-slate-900 border-slate-600 hover:bg-teal-200 hover:border-teal-200 disabled:bg-white disabled:border-gray-300
 	disabled:text-gray-400 disabled:cursor-default;
 }
 
@@ -267,4 +267,8 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 .third-check path:nth-child(3) {
 	@apply fill-cyan-700
+}
+
+.input-primary {
+	@apply p-2 w-full rounded-lg bg-white text-slate-900 border border-slate-900 empty:border-cyan-300 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 disabled:placeholder-gray-300
 }

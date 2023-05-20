@@ -21,7 +21,7 @@ function ProjectInfo({ project, access }) {
           {info.map((infoItem) => (
             <div
               key={infoItem.label}
-              className="flex gap-2 text-sm lg:text-lg text-darkBlue"
+              className="flex gap-2 text-sm lg:text-lg text-slate-900"
             >
               <p className="w-1/2">
                 {t(infoItem.label)}

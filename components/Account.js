@@ -27,7 +27,7 @@ function Account() {
     <div className="mx-auto max-w-7xl">
       {user?.id && (
         <Tab.Group>
-          <Tab.List className="grid grid-cols-3 md:grid-cols-8 xl:grid-cols-9 gap-4 mt-2 text-center font-bold border-b border-darkBlue">
+          <Tab.List className="grid grid-cols-3 md:grid-cols-8 xl:grid-cols-9 gap-4 mt-2 text-center font-bold border-b border-slate-600">
             {tabs.map(
               (tab) =>
                 ((user?.is_admin && tab === 'projects:CreateProject') ||

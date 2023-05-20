@@ -11,7 +11,7 @@ function Modal({
   className = 'primary',
 }) {
   const classes = {
-    primary: 'bg-gradient-to-r from-darkBlue to-[#596B84] text-blue-250',
+    primary: 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
     secondary: 'bg-teal-500 text-white',
   }
   return (

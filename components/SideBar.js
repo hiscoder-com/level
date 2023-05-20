@@ -23,9 +23,9 @@ function SideBar({ setIsOpenSideBar, access }) {
             <Menu.Button onClick={() => setIsOpenSideBar((prev) => !prev)}>
               {access &&
                 (!open ? (
-                  <Burger className="h-10 stroke-darkBlue" />
+                  <Burger className="h-10 stroke-slate-600" />
                 ) : (
-                  <Close className="h-10 stroke-darkBlue" />
+                  <Close className="h-10 stroke-slate-600" />
                 ))}
             </Menu.Button>
 

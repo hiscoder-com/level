@@ -62,7 +62,7 @@ function ProjectEdit() {
       <div className="flex flex-col gap-7">
         {user?.id && (
           <Tab.Group defaultIndex={idTabs.indexOf(setting)}>
-            <Tab.List className="grid grid-cols-3 md:grid-cols-8 xl:grid-cols-9 gap-4 mt-2 lg:text-lg font-bold text-center border-b border-darkBlue">
+            <Tab.List className="grid grid-cols-3 md:grid-cols-8 xl:grid-cols-9 gap-4 mt-2 lg:text-lg font-bold text-center border-b border-slate-600">
               {tabs.map((tab) => (
                 <Tab
                   key={tab.label}

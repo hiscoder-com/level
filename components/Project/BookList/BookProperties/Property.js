@@ -22,7 +22,7 @@ function Property({ t, property, content, type, updateProperty }) {
             <a
               title={additionalLinks[property]}
               target="_blank"
-              className="text-blue-450"
+              className="text-teal-500"
             >
               ?
             </a>
@@ -32,7 +32,7 @@ function Property({ t, property, content, type, updateProperty }) {
 
       <ReactTextareaAutosize
         maxRows="7"
-        className="p-2 text-slate-900 border border-slate-900 rounded-xl"
+        className="input-primary"
         placeholder={t(
           `book-properties:${property}_placeholder${type === 'obs' ? '_obs' : ''}`
         )}

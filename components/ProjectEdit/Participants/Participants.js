@@ -101,7 +101,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
       .catch(console.log)
   }
   return (
-    <div className="card text-darkBlue">
+    <div className="card text-slate-600">
       <h3 className="mb-5 text-2xl font-bold">{t('Participants')}</h3>
       <div className="divide-y divide-black">
         <div className="flex flex-col gap-7 pb-5">

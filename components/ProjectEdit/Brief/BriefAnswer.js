@@ -27,9 +27,7 @@ function BriefAnswer({
       }}
       readOnly={!access}
       placeholder={access ? t('project-edit:Answer') : ''}
-      className={`w-full p-2 rounded-lg bg-white text-slate-900 border ${
-        answer ? 'border-slate-900' : 'border-blue-200'
-      } placeholder-blue-200 focus:border-slate-900 focus:outline-none`}
+      className="input-primary"
     />
   )
 }

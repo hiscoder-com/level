@@ -81,7 +81,7 @@ function Testament({
                   </div>
                 </div>
                 {!isLoading ? (
-                  <div className="flex gap-2 text-darkBlue">
+                  <div className="flex gap-2">
                     {isCoordinatorAccess && (
                       <>
                         {isBookCreated && (
