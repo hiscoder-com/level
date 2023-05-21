@@ -139,7 +139,7 @@ function ProjectPersonalCard({ project, token, user }) {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-3 content-start w-1/2 lg:w-2/3 text-sm">
+                    <div className="sm:flex sm:flex-wrap gap-1 sm:gap-3 grid grid-cols-1 content-start w-3/4 sm:w-1/2 lg:w-2/3 text-sm">
                       {chapters[book].map((step, index) => {
                         const stepLink = (
                           <>
@@ -170,17 +170,23 @@ function ProjectPersonalCard({ project, token, user }) {
                                 : ''
                             }`}
                           >
-                            <a className="btn-primary flex gap-2">{stepLink}</a>
+                            <a className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base">
+                              {stepLink}
+                            </a>
                           </Link>
                         ) : (
-                          <button key={index} className="btn-primary flex gap-2" disabled>
+                          <button
+                            key={index}
+                            className="btn-primary flex justify-center gap-1 sm:gap-2"
+                            disabled
+                          >
                             {stepLink}
                           </button>
                         )
                       })}
                       {briefResume === '' && (
                         <Link href={`/projects/${project?.code}/edit?setting=brief`}>
-                          <a className="btn-primary flex gap-2">
+                          <a className="btn-primary flex gap-1 sm:gap-2">
                             {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                           </a>
                         </Link>

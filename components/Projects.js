@@ -15,7 +15,7 @@ export default function Projects({ type }) {
   switch (type) {
     case 'projects':
       CurrentCard = ProjectCard
-      className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7 py-5 md:py-10'
+      className = 'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-7 py-10 md:py-10'
       break
     case 'account':
       CurrentCard = ProjectPersonalCard
