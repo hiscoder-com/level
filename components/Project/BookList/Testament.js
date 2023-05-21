@@ -57,11 +57,10 @@ function Testament({
   return (
     <>
       <div className="flex flex-col gap-7 px-3">
-        <h3 className="text-2xl font-bold">{t('common:' + title)}</h3>
+        <h3 className="hidden sm:block text-2xl font-bold">{t('common:' + title)}</h3>
         <div className="flex flex-col gap-4 pr-4">
           {bookList.map((book) => {
             const isBookCreated = createdBooks?.includes(book)
-
             return (
               <div key={book} className="flex justify-between items-center gap-2">
                 <div className="flex items-center gap-5">

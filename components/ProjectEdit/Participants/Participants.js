@@ -105,7 +105,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
       <h3 className="mb-5 text-2xl font-bold">{t('Participants')}</h3>
       <div className="divide-y divide-black">
         <div className="flex flex-col gap-7 pb-5">
-          <div className="flex justify-between items-center gap-2 text-xl font-bold">
+          <div className="flex justify-between items-center gap-2">
             <div>{t('Coordinator', { count: 0 })}</div>
             {isAdminAccess && (
               <button
@@ -128,7 +128,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
         </div>
 
         <div className="flex flex-col gap-7 pt-5">
-          <div className="flex justify-between items-center text-xl font-bold">
+          <div className="flex justify-between items-center">
             <div>{t('projects:Translators')}</div>
             <button
               onClick={() => {
