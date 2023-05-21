@@ -28,6 +28,7 @@ function BookReader() {
     token: user?.access_token,
     code,
   })
+  const [project] = useProject({ token: user?.access_token, code })
 
   const resource = useMemo(() => {
     if (reference?.checks) {
@@ -36,16 +37,17 @@ function BookReader() {
         owner: resource[3],
         repo: resource[4],
         commit: resource[6],
-        bookPath: '//' + usfmFileNames[reference?.bookid],
+        bookPath:
+          project?.type === 'obs' ? './content' : './' + usfmFileNames[reference?.bookid],
       }
     }
-  }, [reference?.bookid, reference?.checks])
+  }, [project?.type, reference?.bookid, reference?.checks])
   const { isLoading, data: verseObjects } = useGetResource({
     config: {
       reference: { book: reference?.bookid, chapter: reference?.chapter },
       resource: resource || { owner: '', repo: '', commit: '', bookPath: '' },
     },
-    url: '/api/git/bible',
+    url: `/api/git/${project?.type}`,
   })
   useEffect(() => {
     if (bookid && books) {
@@ -53,8 +55,6 @@ function BookReader() {
       setReference((prev) => ({ ...prev, chapter: 1, bookid, checks: book.level_checks }))
     }
   }, [bookid, books])
-  const [project] = useProject({ token: user?.access_token, code })
-
   const createdNewTestamentBooks = useMemo(
     () =>
       books
@@ -100,6 +100,7 @@ function BookReader() {
             books={[createdOldTestamentBooks, createdNewTestamentBooks]}
             setReference={setReference}
             reference={reference}
+            project={project}
           />
         </div>
         <div className="w-full">
@@ -294,7 +295,7 @@ function Navigation({ books, reference, setReference }) {
   )
 }
 
-function BookListReader({ books, setReference, reference }) {
+function BookListReader({ books, setReference, reference, project }) {
   const [createdOldTestamentBooks, createdNewTestamentBooks] = books
   const { query, replace } = useRouter()
   const { t } = useTranslation('books')
@@ -317,7 +318,11 @@ function BookListReader({ books, setReference, reference }) {
   return (
     <div className="card flex flex-col gap-7">
       <Tab.Group defaultIndex={defaultIndex}>
-        <Tab.List className="flex gap-3 w-full font-bold border-b border-slate-900">
+        <Tab.List
+          className={`gap-3 w-full font-bold border-b border-slate-900 ${
+            project?.type === 'obs' ? 'hidden' : 'flex'
+          }`}
+        >
           <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
             New Testament
           </Tab>
