@@ -135,7 +135,6 @@ export const newTestamentList = {
   '3jn': 1,
   jud: 1,
   rev: 22,
-  obs: 50,
 }
 export const obsStoryVerses = {
   '01': 16,

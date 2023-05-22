@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -20,7 +20,6 @@ import Left from '/public/left.svg'
 function BookReader() {
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
-
   const {
     query: { code, bookid },
   } = useRouter()
@@ -216,7 +215,7 @@ function Navigation({ books, reference, setReference }) {
   const nextChapter = useMemo(() => reference?.chapter + 1, [reference])
 
   return (
-    <div className="flex gap-3">
+    <div className="flex gap-3 z-10">
       <div
         className={`flex justify-between items-center gap-1 px-7 py-3 bg-slate-200 rounded-3xl ${
           !prevChapter ? 'opacity-0 cursor-default' : 'opacity-100 cursor-pointer'
@@ -297,15 +296,37 @@ function Navigation({ books, reference, setReference }) {
 
 function BookListReader({ books, setReference, reference, project }) {
   const [createdOldTestamentBooks, createdNewTestamentBooks] = books
+  const [currentBook, setCurrentBook] = useState(null)
+
   const { query, replace } = useRouter()
   const { t } = useTranslation('books')
   const refs = useRef([])
-  const handleClick = (index) => {
+  const scrollRefs = useRef({})
+  const handleClose = (index) => {
     refs.current.map((closeFunction, refIndex) => {
       if (refIndex !== index) {
         closeFunction()
       }
     })
+  }
+  const handleScroll = (bookid) => {
+    if (scrollRefs?.current && Object.keys(scrollRefs?.current).length) {
+      verseRef(scrollRefs.current[bookid])
+    }
+  }
+
+  const scrollTo = (currentBook, position) => {
+    let offset = 0
+    const top = currentBook.offsetTop - 95
+    switch (position) {
+      case 'center':
+        offset = currentBook.clientHeight / 2 - currentBook.parentNode.clientHeight / 2
+        break
+      case 'top':
+      default:
+        break
+    }
+    currentBook.parentNode.scrollTo({ left: 0, top: top + offset, behavior: 'smooth' })
   }
 
   const defaultIndex = useMemo(
@@ -315,6 +336,26 @@ function BookListReader({ books, setReference, reference, project }) {
       ),
     [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid]
   )
+
+  const verseRef = useCallback((node) => {
+    if (node !== null) {
+      setCurrentBook(node)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (currentBook) {
+      scrollTo(currentBook, 'top')
+    }
+  }, [currentBook])
+
+  useEffect(() => {
+    if (reference?.bookid) {
+      handleScroll(reference.bookid)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reference?.bookid])
+
   return (
     <div className="card flex flex-col gap-7">
       <Tab.Group defaultIndex={defaultIndex}>
@@ -332,16 +373,21 @@ function BookListReader({ books, setReference, reference, project }) {
         </Tab.List>
         <Tab.Panels className="text-sm font-bold">
           {[createdNewTestamentBooks, createdOldTestamentBooks].map((list, idx) => (
-            <Tab.Panel key={idx}>
+            <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
               {list?.map((book, index) => (
-                <Disclosure key={book.code} defaultOpen={query?.bookid === book.code}>
+                <Disclosure
+                  as={'div'}
+                  key={book.code}
+                  defaultOpen={query?.bookid === book.code}
+                  ref={(ref) => (scrollRefs.current[book.code] = ref)}
+                >
                   {({ open, close }) => {
                     return (
                       <>
                         <Disclosure.Button
-                          ref={(el) => (refs.current[index] = close)}
+                          ref={() => (refs.current[index] = close)}
                           onClick={() => {
-                            handleClick(index)
+                            handleClose(index)
                             replace(
                               {
                                 query: { ...query, bookid: book.code },
