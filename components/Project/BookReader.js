@@ -109,7 +109,7 @@ function BookReader() {
       </div>
       <div className="w-full xl:w-2/3">
         <div className="card flex flex-col gap-7">
-          <div className="flex items-center gap-12 xl:hidden">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code}>
               <a>
                 <Left className="w-5 h-5" />
@@ -188,7 +188,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                     })
                   }
                 >
-                  <span>{t('CheckLink')}</span>{' '}
+                  <span>{t('CheckLink')}</span>
                   <Gear className="w-6 min-w-[1.5rem] cursor-pointer" />
                 </div>
               )}
@@ -222,9 +222,9 @@ function Navigation({ books, reference, setReference }) {
   const nextChapter = useMemo(() => reference?.chapter + 1, [reference])
 
   return (
-    <div className="flex gap-3 z-10">
+    <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3 z-10">
       <div
-        className={`flex justify-between items-center gap-1 px-7 py-3 bg-slate-200 rounded-3xl ${
+        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
           !prevChapter ? 'opacity-0 cursor-default' : 'opacity-100 cursor-pointer'
         }
         }`}
@@ -233,15 +233,21 @@ function Navigation({ books, reference, setReference }) {
         }
       >
         <Down className="w-5 h-5 rotate-90" />
-        <span>{`${prevChapter} ${t('Chapter')}`}</span>
+        <span>{`${prevChapter}`}</span>
+        <span className="hidden sm:block">{`${t('Chapter')}`}</span>
       </div>
 
-      <Listbox value={selectedBook} onChange={setSelectedBook}>
+      <Listbox
+        as={'div'}
+        value={selectedBook}
+        onChange={setSelectedBook}
+        className="order-1 sm:order-none"
+      >
         {({ open }) => (
           <div className="relative">
             <Listbox.Button>
               <div
-                className={`flex justify-between px-7 py-3 min-w-[15rem] bg-slate-200 ${
+                className={`flex justify-between px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
                   open ? 'rounded-t-2xl' : 'rounded-2xl '
                 }`}
               >
@@ -249,8 +255,8 @@ function Navigation({ books, reference, setReference }) {
                 <Down className="w-5 h-5 min-w-[1.5rem]" />
               </div>
             </Listbox.Button>
-            <div className="flex justify-center ">
-              <Listbox.Options className="absolute bg-slate-200 w-full">
+            <div className="flex justify-center">
+              <Listbox.Options className="absolute w-full bg-slate-200">
                 {books?.map((book) => (
                   <Listbox.Option
                     key={book?.id}
@@ -269,7 +275,7 @@ function Navigation({ books, reference, setReference }) {
                       <div
                         className={`${
                           selected ? 'bg-slate-100' : 'bg-slate-200'
-                        } w-full px-3 py-1  hover:bg-slate-100 cursor-pointer`}
+                        } w-full px-3 py-1 hover:bg-slate-100 cursor-pointer`}
                       >
                         {t('books:' + book?.code)}
                       </div>
@@ -283,7 +289,7 @@ function Navigation({ books, reference, setReference }) {
       </Listbox>
 
       <div
-        className={`flex justify-around items-center gap-1 px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
+        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
           nextChapter > Object?.keys(selectedBook?.chapters || {}).length
             ? 'opacity-0 cursor-default'
             : 'opacity-100 cursor-pointer'
@@ -294,7 +300,8 @@ function Navigation({ books, reference, setReference }) {
           setReference((prev) => ({ ...prev, chapter: prev.chapter + 1 }))
         }
       >
-        <span>{`${nextChapter} ${t('Chapter')}`}</span>
+        <span>{`${nextChapter}`}</span>
+        <span className="hidden sm:block">{`${t('Chapter')}`}</span>
         <Down className="w-5 h-5 -rotate-90" />
       </div>
     </div>
@@ -351,6 +358,7 @@ function BookListReader({ books, setReference, reference, project }) {
   }, [])
 
   useEffect(() => {
+    console.log(currentBook)
     if (currentBook) {
       scrollTo(currentBook, 'top')
     }

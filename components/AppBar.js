@@ -14,7 +14,7 @@ import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
-import Burger from 'public/burger.svg'
+import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
@@ -48,7 +48,10 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
 
   return (
     <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
-      <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
+      <div
+        className={`appbar ${isStepPage ? 'items-center' : ''}`}
+        onClick={() => isOpenSideBar && setIsOpenSideBar(false)}
+      >
         <div className="flex items-center gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <Link href="/account">
@@ -59,7 +62,10 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
           {isStepPage && (
             <div className="flex gap-7 md:hidden">
               <Timer time={stepConfig.time} />
-              <Burger onClick={() => setShowFullAppbar(!showFullAppbar)} />
+              <Down
+                className="w-6 h-6"
+                onClick={() => setShowFullAppbar((prev) => !prev)}
+              />
             </div>
           )}
         </div>
