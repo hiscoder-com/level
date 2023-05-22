@@ -16,6 +16,7 @@ import { useAccess, useGetBooks, useGetResource, useProject } from 'utils/hooks'
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
+import Gear from '/public/gear.svg'
 
 function BookReader() {
   const { user } = useCurrentUser()
@@ -136,6 +137,7 @@ export default BookReader
 
 function Verses({ verseObjects, user, reference, isLoading }) {
   const {
+    push,
     query: { bookid, code },
   } = useRouter()
   const [{ isCoordinatorAccess }] = useAccess({
@@ -174,16 +176,21 @@ function Verses({ verseObjects, user, reference, isLoading }) {
             <>
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
-                <>
-                  <p>{t('CheckLink')}</p>{' '}
-                  <Link
-                    href={`/projects/${
-                      project?.code
-                    }?properties=${bookid}&levels=${true}`}
-                  >
-                    <a>ссылка</a>
-                  </Link>
-                </>
+                <div
+                  className="flex gap-2 hover:stroke-teal-500 hover:text-teal-500"
+                  onClick={() =>
+                    push({
+                      pathname: `/projects/${project?.code}`,
+                      query: {
+                        properties: bookid,
+                        levels: true,
+                      },
+                    })
+                  }
+                >
+                  <span>{t('CheckLink')}</span>{' '}
+                  <Gear className="w-6 min-w-[1.5rem] cursor-pointer" />
+                </div>
               )}
             </>
           )
