@@ -97,7 +97,7 @@ function ProjectPersonalCard({ project, token, user }) {
   return (
     <>
       {Object.keys(chapters).length > 0 && (
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col gap-3 sm:gap-7">
           {Object.keys(chapters).map((book, i) => {
             return (
               <div key={i} className="card flex flex-col sm:flex-row gap-7 p-7 h-full">

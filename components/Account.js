@@ -54,9 +54,9 @@ function Account() {
                   <div
                     className={`${
                       selected ? 'hidden' : 'fixed'
-                    } right-5 bottom-20 w-fit p-6 rounded-full bg-slate-600 text-3xl shadow-md`}
+                    } right-[5vh] bottom-[20vh] w-fit p-6 rounded-full bg-slate-600 shadow-md`}
                   >
-                    <Plus className="w-6 h-6 stroke-white" />
+                    Account <Plus className="w-6 h-6 stroke-white" />
                   </div>
                 )}
               </Tab>

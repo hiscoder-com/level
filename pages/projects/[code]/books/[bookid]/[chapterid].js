@@ -21,7 +21,7 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import Button from 'components/Button'
 
-import LeftArrow from 'public/left.svg'
+import Close from 'public/close.svg'
 import Spinner from 'public/spinner.svg'
 import Sparkles from 'public/sparkles.svg'
 import Plus from 'public/plus.svg'
@@ -174,10 +174,11 @@ function ChapterVersesPage() {
       toast.success(t('SaveSuccess'))
     }
   }
+  const [isOpenMenu, setIsOpenMenu] = useState(false)
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
-        <div className="flex flex-col gap-7 w-2/3">
+        <div className="flex flex-col gap-7 w-full sm:w-2/3">
           <Breadcrumbs
             full
             links={[
@@ -272,7 +273,16 @@ function ChapterVersesPage() {
             </div>
           </div>
         </div>
-        <div className="w-1/3">
+        <button
+          className="fixed sm:hidden top-[70vh] right-[5vh] p-7 bg-slate-600 rounded-full shadow-md"
+          onClick={() => {
+            document.body.style.overflow = 'hidden'
+            setIsOpenMenu(true)
+          }}
+        >
+          <Plus className="w-6 h-6 stroke-white" />
+        </button>
+        <div className="hidden sm:block w-1/3">
           <div className="sticky top-7 flex flex-col gap-7">
             <Card title={t('chapters:Assignment')}>
               <div className="flex flex-col gap-3">
@@ -407,6 +417,168 @@ function ChapterVersesPage() {
             </div>
           </div>
         </div>
+        {isOpenMenu && (
+          <div className="fixed inset-0 flex items-start justify-center z-50">
+            <div
+              className={isOpenMenu ? 'fixed inset-0 backdrop-blur-xl' : ''}
+              onClick={() => {
+                document.body.style.overflow = 'auto'
+                setIsOpenMenu(false)
+              }}
+            ></div>
+            <div className={`${isOpenMenu ? 'fixed' : 'sm:hidden'}`}>
+              <div className="sticky top-7 flex flex-col gap-2">
+                <Card title={t('chapters:Assignment')}>
+                  <div
+                    className="absolute top-3 right-3  p-2 rounded-full hover:bg-teal-500 hover:text-white"
+                    onClick={() => {
+                      document.body.style.overflow = 'auto'
+                      setIsOpenMenu(false)
+                    }}
+                  >
+                    <Close className="w-6 h-6" />
+                  </div>
+                  <div className="relative flex flex-col gap-3">
+                    <div className="flex flex-col gap-2 px-3 max-h-[27vh] overflow-y-scroll">
+                      {translators.length > 0 ? (
+                        translators?.map((translator, index) => (
+                          <div key={index} className="flex">
+                            <div
+                              onClick={() => setCurrentTranslator(translator)}
+                              className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
+                                currentTranslator?.users?.login === translator.users.login
+                                  ? `${translator.color.bg} text-white shadow-md`
+                                  : `${translator.color.text} text-slate-900`
+                              } ${
+                                translator.color.border
+                              } border-2 cursor-pointer rounded-2xl`}
+                            >
+                              <div className="avatar-block w-10 flex-grow-0">
+                                <div
+                                  className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
+                                >
+                                  {translator.users.login.slice(0, 1)}
+                                </div>
+                              </div>
+                              <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
+                                {translator.users.login} <br />
+                                {translator.users.email}
+                              </div>
+                              <div className="icon-block flex-grow-0">
+                                <div
+                                  className={`p-2 bg-white rounded-full border-2 ${
+                                    currentTranslator?.users?.login ===
+                                    translator.users.login
+                                      ? `border-white shadow-md`
+                                      : `${translator.color.border}`
+                                  } ${translator.color.text}`}
+                                >
+                                  <Plus className="w-5 h-5" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                          {[...Array(4).keys()].map((el) => (
+                            <div role="status" className="w-full animate-pulse" key={el}>
+                              <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                    </div>
+                    <hr className="border-gray-500" />
+                    <div className="flex flex-col gap-3">
+                      <Button
+                        onClick={verseDividing}
+                        text={t('Save')}
+                        color="green"
+                        icon={<Check className="w-5 h-5" />}
+                      />
+                      <Button
+                        onClick={() =>
+                          setVersesDivided(
+                            verses?.map((verse) => ({
+                              ...verse,
+                              color: defaultColor,
+                              translator_name: '',
+                              project_translator_id: null,
+                            }))
+                          )
+                        }
+                        text={t('Reset')}
+                        color="red"
+                        icon={<Trash className="w-5 h-5" />}
+                      />
+                    </div>
+                  </div>
+                </Card>
+                <div className="card flex flex-col gap-4">
+                  {!chapter?.finished_at &&
+                    (!chapter?.started_at ? (
+                      <Button
+                        onClick={changeStartChapter}
+                        text={t('chapters:StartChapter')}
+                        color={'green'}
+                        icon={<Check className="w-5 h-5" />}
+                        disabled={chapter?.finished_at || isValidating}
+                        avatar={
+                          isValidating || isLoading ? (
+                            <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                          ) : (
+                            ''
+                          )
+                        }
+                      />
+                    ) : (
+                      <Button
+                        onClick={changeStartChapter}
+                        text={t('chapters:CancelStartChapter')}
+                        color={'red'}
+                        icon={<Trash className="w-5 h-5" />}
+                        disabled={chapter?.finished_at || isValidating}
+                        avatar={
+                          isValidating || isLoading ? (
+                            <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                          ) : (
+                            ''
+                          )
+                        }
+                      />
+                    ))}
+                  {chapter?.started_at && (
+                    <Button
+                      onClick={changeFinishChapter}
+                      text={
+                        !chapter?.finished_at
+                          ? t('chapters:FinishedChapter')
+                          : t('chapters:CancelFinishedChapter')
+                      }
+                      color={!chapter?.finished_at ? 'amber' : 'red'}
+                      icon={
+                        !chapter?.finished_at ? (
+                          <Sparkles className="w-5 h-5" />
+                        ) : (
+                          <Trash className="w-5 h-5" />
+                        )
+                      }
+                      disabled={isValidating}
+                      avatar={
+                        isValidating || isLoading ? (
+                          <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                        ) : (
+                          ''
+                        )
+                      }
+                    />
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       <Toaster />
     </div>
