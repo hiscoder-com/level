@@ -250,6 +250,7 @@ function ProjectCreate() {
             rows="6"
             disabled={true}
             value={JSON.stringify(customResources, null, 2)}
+            className="w-full"
           />
           <br />
           {method?.type !== 'obs' ? (

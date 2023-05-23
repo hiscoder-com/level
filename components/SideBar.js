@@ -35,7 +35,7 @@ function SideBar({ setIsOpenSideBar, access }) {
             >
               <div>
                 <div className="cursor-default flex items-center pb-5 gap-2 border-b border-gray-300">
-                  <div className="w-12 h-12 min-h-[2rem] min-w-[2rem]">
+                  <div className="w-12 h-12 min-w-[3rem]">
                     <TranslatorImage item={{ users: user }} />
                   </div>
 
@@ -54,8 +54,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                     className="flex items-center gap-2 justify-between cursor-default"
                   >
                     <div className="flex gap-4 items-center">
-                      <div className="px-4 py-2 rounded-[23rem] bg-teal-100">
-                        <Localization className="w-5 h-5 min-w-[1.5rem] stroke-teal-400" />
+                      <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
+                        <Localization className="w-5 h-5 min-w-[1.5rem] stroke-slate-600" />
                       </div>
                       <span>{t('Language')} </span>
                     </div>

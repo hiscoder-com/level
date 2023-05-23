@@ -56,7 +56,7 @@ function Account() {
                       selected ? 'hidden' : 'fixed'
                     } right-[5vh] bottom-[20vh] w-fit p-6 rounded-full bg-slate-600 shadow-md`}
                   >
-                    Account <Plus className="w-6 h-6 stroke-white" />
+                    <Plus className="w-6 h-6 stroke-white" />
                   </div>
                 )}
               </Tab>

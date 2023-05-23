@@ -87,7 +87,7 @@ function Login() {
               {t('Email')} {user.email}
             </div>
             <Link href={href ?? '/'}>
-              <a className="text-blue-450">{t('GoToAccount')}</a>
+              <a className="text-cyan-500">{t('GoToAccount')}</a>
             </Link>
           </div>
 
@@ -109,7 +109,7 @@ function Login() {
                 // TODO сделать функционал отправки формы администратору
               }
             >
-              <a className="mb-6 lg:mb-14 text-blue-600">{t('WriteAdministrator')}</a>
+              <a className="mb-6 lg:mb-14 text-slate-600">{t('WriteAdministrator')}</a>
             </Link>
           </div>
 
@@ -179,7 +179,7 @@ function Login() {
                 disabled={loading}
                 onClick={handleLogin}
                 className={`${
-                  loading ? 'btn' : 'btn-blue'
+                  loading ? 'btn' : 'btn-cyan'
                 } w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
                 value={t('SignIn')}
               />

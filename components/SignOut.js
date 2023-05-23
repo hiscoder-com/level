@@ -28,7 +28,7 @@ export default function SignOut() {
     <button
       disabled={loading}
       onClick={handleLogout}
-      className=" bg-teal-100 w-full py-2 rounded-lg text-red-500 text-lg font-bold"
+      className="bg-gray-200 w-full py-2 rounded-lg text-slate-600 text-lg font-bold"
     >
       {t('SignOut')}
     </button>
