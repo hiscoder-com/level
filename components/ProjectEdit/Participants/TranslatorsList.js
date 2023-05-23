@@ -73,15 +73,19 @@ function TranslatorsList({
                   as="div"
                   className="absolute right-0 bg-teal-200 rounded-xl z-20"
                 >
-                  <Menu.Item as="div" className="hover:bg-teal-100 p-3 rounded-xl">
-                    <button onClick={() => setSelectedModerator(el.users)}>
-                      {t('Moderator')}
-                    </button>
+                  <Menu.Item
+                    as="div"
+                    className="hover:bg-teal-100 p-3 rounded-t-xl cursor-pointer"
+                    onClick={() => setSelectedModerator(el.users)}
+                  >
+                    {t('Moderator')}
                   </Menu.Item>
-                  <Menu.Item as="div" className="hover:bg-teal-100 p-3 rounded-xl">
-                    <button onClick={() => setSelectedTranslator(el.users)}>
-                      {t('Remove')}
-                    </button>
+                  <Menu.Item
+                    as="div"
+                    className="hover:bg-teal-100 p-3 rounded-b-xl cursor-pointer"
+                    onClick={() => setSelectedTranslator(el.users)}
+                  >
+                    {t('Remove')}
                   </Menu.Item>
                 </Menu.Items>
               </Menu>

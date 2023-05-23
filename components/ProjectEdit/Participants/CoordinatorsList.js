@@ -48,10 +48,12 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, access }) {
                       as="div"
                       className="absolute right-0 bg-teal-200 rounded-xl z-20"
                     >
-                      <Menu.Item as="div" className="hover:bg-teal-100 p-3 rounded-xl">
-                        <button onClick={() => setSelectedCoordinator(el.users)}>
-                          {t('Remove')}
-                        </button>
+                      <Menu.Item
+                        as="div"
+                        className="hover:bg-teal-100 p-3 rounded-xl cursor-pointer"
+                        onClick={() => setSelectedCoordinator(el.users)}
+                      >
+                        {t('Remove')}
                       </Menu.Item>
                     </Menu.Items>
                   </Menu>
