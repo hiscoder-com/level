@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -7,6 +7,7 @@ import { useSetRecoilState } from 'recoil'
 import { supabase } from 'utils/supabaseClient'
 
 import { checkedVersesBibleState } from '../state/atoms'
+import Modal from 'components/Modal'
 
 import { obsCheckAdditionalVerses } from 'utils/helper'
 import Pencil from 'public/pencil.svg'
@@ -18,7 +19,10 @@ function BlindEditor({ config }) {
   const [enabledInputs, setEnabledInputs] = useState([])
   const [enabledIcons, setEnabledIcons] = useState([])
   const [verseObjects, setVerseObjects] = useState([])
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [firstStepRef, setFirstStepRef] = useState({})
   const { t } = useTranslation(['common'])
+  const textAreaRef = useRef([])
 
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
 
@@ -76,100 +80,156 @@ function BlindEditor({ config }) {
       verse_id: verseObjects[index].verse_id,
     })
   }
+  const saveVerse = (ref) => {
+    const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
+    if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
+      if (textAreaRef?.current) {
+        textAreaRef?.current[index - 1].focus()
+      }
+      return
+    }
+
+    setEnabledIcons((prev) => {
+      return [
+        ...prev,
+        ...(index === 0 ? [currentNumVerse, nextNumVerse] : [nextNumVerse]),
+      ].filter((el) => el !== prevNumVerse)
+    })
+    setCheckedVersesBible((prev) => [...prev, currentNumVerse])
+
+    setEnabledInputs((prev) =>
+      [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
+    )
+    if (index === 0) {
+      return
+    }
+
+    sendToDb(index - 1)
+  }
+  const handleSaveVerse = (ref) => {
+    if (ref.index === 0) {
+      setIsOpenModal(true)
+      setFirstStepRef(ref)
+    } else {
+      saveVerse(ref)
+    }
+  }
 
   return (
-    <div>
-      {verseObjects.map((verseObject, index) => {
-        const currentNumVerse = verseObject.num.toString()
-        const nextNumVerse =
-          index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : ''
-        const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : ''
-        const disabledButton = !(
-          (index === 0 && !enabledIcons.length) ||
-          enabledIcons.includes(currentNumVerse)
-        )
-        const isTranslating = enabledInputs.includes(verseObject.num.toString())
-        const isTranslated = translatedVerses.includes(currentNumVerse)
-        return (
-          <div key={verseObject.verse_id} className="flex my-3 items-start">
-            <button
-              onClick={() => {
-                if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
-                  return
-                }
-                setEnabledIcons((prev) => {
-                  return [
-                    ...prev,
-                    ...(index === 0 ? [currentNumVerse, nextNumVerse] : [nextNumVerse]),
-                  ].filter((el) => el !== prevNumVerse)
-                })
-                setCheckedVersesBible((prev) => [...prev, currentNumVerse])
-
-                setEnabledInputs((prev) =>
-                  [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
-                )
-                if (index === 0) {
-                  return
-                }
-
-                sendToDb(index - 1)
-              }}
-              className={`${isTranslating ? 'btn-cyan' : 'btn-white'}`}
-              disabled={disabledButton}
-            >
-              {isTranslated ? (
-                <Check className="w-4 h-4 stroke-2" />
-              ) : (
-                <Pencil
-                  className={`w-5 h-5 stroke-2 ${
-                    disabledButton
-                      ? 'fill-gray-200'
-                      : !isTranslating
-                      ? 'fill-cyan-600'
-                      : 'fill-white'
-                  }`}
-                />
-              )}
-            </button>
-
-            <div className="mx-4">{obsCheckAdditionalVerses(verseObject.num)}</div>
-            {isTranslating ? (
-              <textarea
-                autoFocus
-                rows={1}
-                className="resize-none focus:outline-none focus:inline-none w-full"
-                onChange={(e) => {
-                  e.target.style.height = 'inherit'
-                  e.target.style.height = `${e.target.scrollHeight}px`
-                  updateVerse(
+    <>
+      <div>
+        {verseObjects.map((verseObject, index) => {
+          const currentNumVerse = verseObject.num.toString()
+          const nextNumVerse =
+            index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : ''
+          const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : ''
+          const disabledButton = !(
+            (index === 0 && !enabledIcons.length) ||
+            enabledIcons.includes(currentNumVerse)
+          )
+          const isTranslating = enabledInputs.includes(verseObject.num.toString())
+          const isTranslated = translatedVerses.includes(currentNumVerse)
+          return (
+            <div key={verseObject.verse_id} className="flex my-3 items-start">
+              <button
+                onClick={() =>
+                  handleSaveVerse({
                     index,
-                    e.target.value
-                      .replace(/  +/g, ' ')
-                      .replace(/ +([\.\,\)\!\?\;\:])/g, '$1')
-                      .trim()
-                  )
-                }}
-                defaultValue={verseObject.verse ?? ''}
-              />
-            ) : (
-              <div className="whitespace-pre-line">{verseObject.verse}</div>
-            )}
+                    currentNumVerse,
+                    nextNumVerse,
+                    prevNumVerse,
+                    isTranslating,
+                  })
+                }
+                className={`${isTranslating ? 'btn-cyan' : 'btn-white'}`}
+                disabled={disabledButton}
+              >
+                {isTranslated ? (
+                  <Check className="w-4 h-4 stroke-2" />
+                ) : (
+                  <Pencil
+                    className={`w-5 h-5 stroke-2 ${
+                      disabledButton
+                        ? 'fill-gray-200'
+                        : !isTranslating
+                        ? 'fill-cyan-600'
+                        : 'fill-white'
+                    }`}
+                  />
+                )}
+              </button>
+
+              <div className="mx-4">{obsCheckAdditionalVerses(verseObject.num)}</div>
+              {isTranslating ? (
+                <textarea
+                  ref={(el) => (textAreaRef.current[index] = el)}
+                  autoFocus
+                  rows={1}
+                  className="resize-none focus:outline-none focus:inline-none w-full"
+                  onChange={(e) => {
+                    e.target.style.height = 'inherit'
+                    e.target.style.height = `${e.target.scrollHeight}px`
+                    updateVerse(
+                      index,
+                      e.target.value
+                        .replace(/  +/g, ' ')
+                        .replace(/ +([\.\,\)\!\?\;\:])/g, '$1')
+                        .trim()
+                    )
+                  }}
+                  defaultValue={verseObject.verse ?? ''}
+                />
+              ) : (
+                <div className="whitespace-pre-line">{verseObject.verse}</div>
+              )}
+            </div>
+          )
+        })}
+        {isShowFinalButton && (
+          <button
+            onClick={() => {
+              setEnabledIcons(['201'])
+              setEnabledInputs([])
+              sendToDb(verseObjects.length - 1)
+            }}
+            className="btn-white"
+          >
+            {t('Save')}
+          </button>
+        )}
+      </div>
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
+        <div className="flex flex-col gap-7 items-center">
+          <div className="text-center text-2xl">
+            {t('AreYouSureWantStartBlind') + '?'}
           </div>
-        )
-      })}
-      {isShowFinalButton && (
-        <button
-          onClick={() => {
-            setEnabledIcons(['201'])
-            setEnabledInputs([])
-            sendToDb(verseObjects.length - 1)
-          }}
-          className="btn-white"
-        >
-          {t('Save')}
-        </button>
-      )}
-    </div>
+          <div className="flex gap-7 w-1/2">
+            <button
+              className="btn-secondary flex-1"
+              onClick={() => {
+                setIsOpenModal(false)
+                saveVerse(firstStepRef)
+                setTimeout(() => {
+                  if (textAreaRef?.current) {
+                    textAreaRef?.current[0].focus()
+                  }
+                }, 1000)
+              }}
+            >
+              {t('Yes')}
+            </button>
+            <button
+              className="btn-secondary flex-1"
+              onClick={() => {
+                setIsOpenModal(false)
+              }}
+            >
+              {t('No')}
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </>
   )
 }
 
