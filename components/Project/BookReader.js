@@ -117,7 +117,7 @@ function BookReader() {
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code}>
               <a>
-                <Left className="w-5 h-5 hover:text-teal-500" />
+                <Left className="w-5 h-5 hover:text-gray-500" />
               </a>
             </Link>
             <Navigation
@@ -200,7 +200,8 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
                 <div
-                  className="flex gap-2 hover:stroke-teal-500 hover:text-teal-500"
+                  className="flex gap-2 
+                  text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
                   onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
@@ -212,7 +213,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                   }
                 >
                   <span>{t('CheckLinkResource')}</span>
-                  <Gear className="w-6 min-w-[1.5rem] cursor-pointer" />
+                  <Gear className="w-6 min-w-[1.5rem]" />
                 </div>
               )}
             </>
@@ -468,7 +469,7 @@ function BookListReader({ books, setReference, reference, project }) {
                               { shallow: true }
                             )
                           }}
-                          className={`flex justify-between items-center pb-5 w-full ${
+                          className={`flex justify-between items-center py-2 w-full hover:text-gray-400 ${
                             !open ? 'border-b border-gray-400' : ''
                           }`}
                         >

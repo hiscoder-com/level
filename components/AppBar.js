@@ -48,14 +48,17 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
 
   return (
     <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
-      <div
-        className={`appbar ${isStepPage ? 'items-center' : ''}`}
-        onClick={() => isOpenSideBar && setIsOpenSideBar(false)}
-      >
-        <div className="flex items-center gap-7 cursor-pointer">
+      <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
+        <div className="relative md:static flex items-center justify-between md:justify-start gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <Link href="/account">
-            <a>
+            <a
+              className={
+                !isStepPage
+                  ? 'absolute  sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
+                  : ''
+              }
+            >
               <VCANA_logo className="h-6" />
             </a>
           </Link>
@@ -75,7 +78,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               {stepConfig.title}
             </div>
             <div
-              className={`items-center gap-4 md:flex ${
+              className={`items-center gap-4 md:flex justify-center md:justify-start ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >

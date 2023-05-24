@@ -17,7 +17,7 @@ function ListBox({ options, selectedOption, setSelectedOption }) {
               <Listbox.Options className="absolute w-full max-h-[40vh] bg-white rounded-b-lg overflow-y-scroll">
                 {options.map((el) => (
                   <Listbox.Option
-                    className="relative px-5 py-1 bg-white cursor-pointer last:pb-3 hover:bg-teal-200"
+                    className="relative px-5 py-1 bg-white cursor-pointer last:pb-3 hover:bg-gray-200"
                     key={el.value}
                     value={el.value}
                   >

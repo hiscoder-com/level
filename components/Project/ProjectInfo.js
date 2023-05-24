@@ -27,7 +27,7 @@ function ProjectInfo({ project, access }) {
                 {t(infoItem.label)}
                 {':'}
               </p>
-              <p className="w-1/2 text-teal-500">{t(infoItem.value)}</p>
+              <p className="w-1/2 text-gray-400">{t(infoItem.value)}</p>
             </div>
           ))}
         </div>

@@ -116,7 +116,9 @@ function ProjectPersonalCard({ project, token, user }) {
                         <div className="flex gap-3">
                           <p>{t('Project')}:</p>
                           <Link href={`/projects/${project.code}`}>
-                            <a className="text-teal-500">{project?.title}</a>
+                            <a className="text-cyan-700 hover:text-gray-500">
+                              {project?.title}
+                            </a>
                           </Link>
                         </div>
                         <div className="flex gap-3">

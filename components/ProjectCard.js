@@ -31,7 +31,7 @@ function ProjectCard({ project, token, user }) {
               <div className="flex flex-col gap-5">
                 <div className="flex gap-3">
                   <p>{t('Language')}:</p>
-                  <p className="text-teal-500">{project.languages.orig_name}</p>
+                  <p className="text-gray-400">{project.languages.orig_name}</p>
                 </div>
                 <div className="flex gap-3">
                   <p>{t('Translators')}:</p>

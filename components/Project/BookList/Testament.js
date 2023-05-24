@@ -48,11 +48,6 @@ function Testament({
   }, [books])
 
   const createdBooks = useMemo(() => books?.map((book) => book.code), [books])
-  const finishedBooks = useMemo(
-    () =>
-      books?.filter((book) => book?.level_checks?.level === 3).map((book) => book.code),
-    [books]
-  )
 
   const handleOpenBook = (book, isBookCreated) => {
     if (isBookCreated && book) {
@@ -70,7 +65,6 @@ function Testament({
         <div className="flex flex-col gap-4">
           {bookList.map((book) => {
             const isBookCreated = createdBooks?.includes(book)
-            const isBookFinished = finishedBooks?.includes(book)
             return (
               <div key={book} className="flex justify-between items-center gap-2">
                 <div className="flex items-center gap-5">
@@ -82,11 +76,7 @@ function Testament({
                   />
                   <div
                     className={
-                      isBookFinished
-                        ? 'text-slate-600 cursor-pointer'
-                        : isBookCreated
-                        ? 'text-teal-500 cursor-pointer'
-                        : 'text-gray-400'
+                      isBookCreated ? 'text-slate-900 cursor-pointer' : 'text-gray-400'
                     }
                     onClick={() => handleOpenBook(book, isBookCreated)}
                   >

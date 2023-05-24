@@ -71,18 +71,18 @@ function TranslatorsList({
                 </Menu.Button>
                 <Menu.Items
                   as="div"
-                  className="absolute right-0 bg-teal-200 rounded-xl z-20"
+                  className="absolute right-0 bg-gray-200 rounded-xl z-20"
                 >
                   <Menu.Item
                     as="div"
-                    className="hover:bg-teal-100 p-3 rounded-t-xl cursor-pointer"
+                    className="hover:bg-gray-100 p-3 rounded-t-xl cursor-pointer"
                     onClick={() => setSelectedModerator(el.users)}
                   >
                     {t('Moderator')}
                   </Menu.Item>
                   <Menu.Item
                     as="div"
-                    className="hover:bg-teal-100 p-3 rounded-b-xl cursor-pointer"
+                    className="hover:bg-gray-100 p-3 rounded-b-xl cursor-pointer"
                     onClick={() => setSelectedTranslator(el.users)}
                   >
                     {t('Remove')}
