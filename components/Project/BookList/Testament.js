@@ -1,10 +1,10 @@
-import { useMemo, useState } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { Menu } from '@headlessui/react'
+import { Menu, Transition } from '@headlessui/react'
 
 import BookCreate from './BookCreate'
 import ChecksIcon from './ChecksIcon'
@@ -67,7 +67,7 @@ function Testament({
             const isBookCreated = createdBooks?.includes(book)
             return (
               <div key={book} className="flex justify-between items-center gap-2">
-                <div className="flex items-center gap-5">
+                <div className="flex flex-1 items-center gap-5 truncate">
                   <ChecksIcon
                     book={book}
                     user={user}
@@ -76,80 +76,97 @@ function Testament({
                   />
                   <div
                     className={
-                      isBookCreated ? 'text-slate-900 cursor-pointer' : 'text-gray-400'
+                      isBookCreated
+                        ? 'text-slate-900 cursor-pointer truncate'
+                        : 'text-gray-400'
                     }
                     onClick={() => handleOpenBook(book, isBookCreated)}
                   >
                     {t(`books:${book}`)}
                   </div>
                 </div>
-                <Menu as="div" className="relative">
-                  <Menu.Button>
-                    <Elipsis className="block sm:hidden h-6 min-h-[1.5rem]" />
-                  </Menu.Button>
-                  <Menu.Items className="absolute right-5 top-0 bg-white z-20 border rounded-3xl">
-                    <div className="flex flex-col last:rounded-b-3xl">
-                      {isCoordinatorAccess && isBookCreated && (
-                        <Menu.Item>
-                          <button className="p-3 hover:bg-slate-200 first:rounded-t-3xl last:rounded-b-3xl">
-                            <Gear
-                              className="w-6 min-w-[1.5rem] cursor-pointer"
-                              onClick={() =>
-                                push({
-                                  pathname: `/projects/${project?.code}`,
-                                  query: {
-                                    properties: book,
-                                  },
-                                  shallow: true,
-                                })
-                              }
-                            />
-                          </button>
-                        </Menu.Item>
-                      )}
-                      {!isBookCreated && isAdminAccess && (
-                        <Menu.Item>
-                          <button className="p-3 hover:bg-slate-200 first:rounded-t-3xl last:rounded-b-3xl">
-                            <Play
-                              className="w-6 min-w-[1.5rem] cursor-pointer"
-                              onClick={() => setBookCodeCreating(book)}
-                            />
-                          </button>
-                        </Menu.Item>
-                      )}
-                      {isModeratorAccess && isBookCreated && (
-                        <Menu.Item>
-                          <button className="p-3 hover:bg-slate-200 first:rounded-t-3xl last:rounded-b-3xl">
-                            <DownloadIcon
-                              className="w-6 min-w-[1.5rem] cursor-pointer"
-                              onClick={() => {
-                                setIsOpenDownloading(true)
-                                setDownloadingBook(book)
-                              }}
-                            />
-                          </button>
-                        </Menu.Item>
-                      )}
-                      {levelChecks?.[book] && (
-                        <Menu.Item>
-                          <button className="p-3 hover:bg-slate-200 first:rounded-t-3xl last:rounded-b-3xl">
-                            <Reader
-                              className="w-6 min-w-[1.5rem] cursor-pointer"
-                              onClick={() =>
-                                push({
-                                  pathname: `/projects/${project?.code}/books/read`,
-                                  query: {
-                                    bookid: book,
-                                  },
-                                  shallow: true,
-                                })
-                              }
-                            />
-                          </button>
-                        </Menu.Item>
-                      )}
-                    </div>
-                  </Menu.Items>
+                <Menu as="div" className="relative flex overflow-hidden">
+                  {({ open }) => (
+                    <>
+                      <Menu.Button className={`relative flex   duration-200`}>
+                        <Elipsis className="block sm:hidden h-6 min-h-[1.5rem] transition" />
+                      </Menu.Button>
+                      <Transition
+                        as={Fragment}
+                        show={open}
+                        enter="transition-all duration-200 ease-in-out transform"
+                        enterFrom="translate-x-0"
+                        enterTo="translate-x-0"
+                        leave="transition-all duration-200 ease-in-out transform"
+                        leaveFrom="translate-x-0"
+                        leaveTo="translate-x-full"
+                      >
+                        <Menu.Items>
+                          <div className="flex gap-2">
+                            {isCoordinatorAccess && isBookCreated && (
+                              <Menu.Item>
+                                <button className="">
+                                  <Gear
+                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    onClick={() =>
+                                      push({
+                                        pathname: `/projects/${project?.code}`,
+                                        query: {
+                                          properties: book,
+                                        },
+                                        shallow: true,
+                                      })
+                                    }
+                                  />
+                                </button>
+                              </Menu.Item>
+                            )}
+                            {!isBookCreated && isAdminAccess && (
+                              <Menu.Item>
+                                <button className="">
+                                  <Play
+                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    onClick={() => setBookCodeCreating(book)}
+                                  />
+                                </button>
+                              </Menu.Item>
+                            )}
+                            {isModeratorAccess && isBookCreated && (
+                              <Menu.Item>
+                                <button className="">
+                                  <DownloadIcon
+                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    onClick={() => {
+                                      setIsOpenDownloading(true)
+                                      setDownloadingBook(book)
+                                    }}
+                                  />
+                                </button>
+                              </Menu.Item>
+                            )}
+                            {levelChecks?.[book] && (
+                              <Menu.Item>
+                                <button className="">
+                                  <Reader
+                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    onClick={() =>
+                                      push({
+                                        pathname: `/projects/${project?.code}/books/read`,
+                                        query: {
+                                          bookid: book,
+                                        },
+                                        shallow: true,
+                                      })
+                                    }
+                                  />
+                                </button>
+                              </Menu.Item>
+                            )}
+                          </div>
+                        </Menu.Items>
+                      </Transition>
+                    </>
+                  )}
                 </Menu>
                 {!isLoading ? (
                   <>
