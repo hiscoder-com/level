@@ -14,6 +14,7 @@ import Breadcrumbs from 'components/Breadcrumbs'
 import { useCurrentUser } from 'lib/UserContext'
 import { useAccess, useGetBooks, useGetResource, useProject } from 'utils/hooks'
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
+
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
 import Gear from '/public/gear.svg'
@@ -79,7 +80,7 @@ function BookReader() {
         ? books
             .filter((book) =>
               Object.keys(oldTestamentList).some(
-                (nt) => nt === book.code && book?.level_checks
+                (ot) => ot === book.code && book?.level_checks
               )
             )
             .sort((a, b) => {
@@ -97,7 +98,11 @@ function BookReader() {
       <div className="static xl:sticky top-7 flex flex-col md:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
         <div className="hidden xl:block md:w-1/2 xl:w-full">
           <BookListReader
-            books={[createdOldTestamentBooks, createdNewTestamentBooks]}
+            books={
+              project?.type === 'obs'
+                ? [books]
+                : [createdOldTestamentBooks, createdNewTestamentBooks]
+            }
             setReference={setReference}
             reference={reference}
             project={project}
@@ -109,14 +114,18 @@ function BookReader() {
       </div>
       <div className="w-full xl:w-2/3">
         <div className="card flex flex-col gap-7">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-12 xl:hidden">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code}>
               <a>
-                <Left className="w-5 h-5" />
+                <Left className="w-5 h-5 hover:text-teal-500" />
               </a>
             </Link>
             <Navigation
-              books={[...createdOldTestamentBooks, ...createdNewTestamentBooks]}
+              books={
+                project?.type === 'obs'
+                  ? books
+                  : [...createdOldTestamentBooks, ...createdNewTestamentBooks]
+              }
               reference={reference}
               setReference={setReference}
             />
@@ -160,16 +169,30 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           }
         />
       </div>
-      <div className="text-xl font-bold">{`${t('books:' + bookid)} ${
-        reference?.chapter
-      }`}</div>
+      {reference?.chapter && (
+        <div className="text-xl font-bold">{`${t('books:' + bookid)} ${
+          reference?.chapter
+        }`}</div>
+      )}
       <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
         {!isLoading ? (
           verseObjects ? (
             verseObjects.verseObjects?.map((verseObject) => (
               <div className="flex gap-2" key={verseObject.verse}>
-                <sup className="mt-2">{verseObject.verse}</sup>
-                <p>{verseObject.text}</p>
+                {verseObject.verse > 0 && verseObject.verse < 200 && (
+                  <sup className="mt-2">{verseObject.verse}</sup>
+                )}
+                <p
+                  className={
+                    verseObject.verse === '0'
+                      ? 'font-bold'
+                      : '' || verseObject.verse === '200'
+                      ? 'italic'
+                      : ''
+                  }
+                >
+                  {verseObject.text}
+                </p>
               </div>
             ))
           ) : (
@@ -188,7 +211,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                     })
                   }
                 >
-                  <span>{t('CheckLink')}</span>
+                  <span>{t('CheckLinkResource')}</span>
                   <Gear className="w-6 min-w-[1.5rem] cursor-pointer" />
                 </div>
               )}
@@ -210,7 +233,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
 }
 function Navigation({ books, reference, setReference }) {
   const { query, replace } = useRouter()
-  const [selectedBook, setSelectedBook] = useState([])
+  const [selectedBook, setSelectedBook] = useState()
   const { t } = useTranslation()
   useEffect(() => {
     if (books?.length) {
@@ -218,45 +241,68 @@ function Navigation({ books, reference, setReference }) {
     }
   }, [books, query.bookid])
 
-  const prevChapter = useMemo(() => reference?.chapter - 1, [reference])
-  const nextChapter = useMemo(() => reference?.chapter + 1, [reference])
+  const prevChapter = useMemo(
+    () => (reference?.chapter ? reference?.chapter - 1 : 0),
+    [reference]
+  )
+  const nextChapter = useMemo(
+    () => (reference?.chapter ? reference?.chapter + 1 : 2),
+    [reference]
+  )
 
+  const isNextChapter = useMemo(
+    () =>
+      selectedBook?.chapters &&
+      nextChapter <= Object.keys(selectedBook?.chapters || {}).length,
+    [nextChapter, selectedBook?.chapters]
+  )
   return (
     <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3 z-10">
-      <div
+      <button
         className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
-          !prevChapter ? 'opacity-0 cursor-default' : 'opacity-100 cursor-pointer'
+          !prevChapter ? 'bg-gray-100 cursor-default' : 'bg-slate-200 cursor-pointer'
         }
         }`}
         onClick={() =>
           prevChapter && setReference((prev) => ({ ...prev, chapter: prev.chapter - 1 }))
         }
       >
-        <Down className="w-5 h-5 rotate-90" />
-        <span>{`${prevChapter}`}</span>
-        <span className="hidden sm:block">{`${t('Chapter')}`}</span>
-      </div>
+        <Down className={`w-5 h-5 rotate-90 ${prevChapter ? '' : 'stroke-gray-400'}`} />
+        <span className={`${prevChapter ? 'opacity-100' : 'opacity-0'}`}>
+          {prevChapter}
+        </span>
+        <span
+          className={`hidden sm:block ${prevChapter ? 'opacity-100' : 'opacity-0'}`}
+        >{`${t('Chapter')}`}</span>
+      </button>
 
       <Listbox
         as={'div'}
         value={selectedBook}
         onChange={setSelectedBook}
         className="order-1 sm:order-none"
+        disabled={books?.length === 1}
       >
         {({ open }) => (
           <div className="relative">
             <Listbox.Button>
               <div
-                className={`flex justify-between px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
-                  open ? 'rounded-t-2xl' : 'rounded-2xl '
-                }`}
+                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
+                  !selectedBook ? 'animate-pulse' : ''
+                } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
               >
-                <span>{t('books:' + selectedBook?.code)}</span>
-                <Down className="w-5 h-5 min-w-[1.5rem]" />
+                <div
+                  className={`flex ${
+                    books?.length > 1 ? 'justify-between' : 'justify-center'
+                  } ${!selectedBook ? 'opacity-0' : 'opacity-auto'}`}
+                >
+                  <span>{t('books:' + selectedBook?.code)}</span>
+                  {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
+                </div>
               </div>
             </Listbox.Button>
             <div className="flex justify-center">
-              <Listbox.Options className="absolute w-full bg-slate-200">
+              <Listbox.Options className="absolute w-full max-h-[50vh] bg-slate-200 overflow-y-scroll rounded-b-2xl">
                 {books?.map((book) => (
                   <Listbox.Option
                     key={book?.id}
@@ -289,20 +335,30 @@ function Navigation({ books, reference, setReference }) {
       </Listbox>
 
       <div
-        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
-          nextChapter > Object?.keys(selectedBook?.chapters || {}).length
-            ? 'opacity-0 cursor-default'
-            : 'opacity-100 cursor-pointer'
+        className={`w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
+          !isNextChapter ? 'cursor-default bg-gray-100' : 'cursor-pointer'
         }
         }`}
         onClick={() =>
-          nextChapter !== Object.keys(selectedBook).length &&
+          isNextChapter &&
           setReference((prev) => ({ ...prev, chapter: prev.chapter + 1 }))
         }
       >
-        <span>{`${nextChapter}`}</span>
-        <span className="hidden sm:block">{`${t('Chapter')}`}</span>
-        <Down className="w-5 h-5 -rotate-90" />
+        <div
+          className={`flex justify-around gap-1 ${
+            !selectedBook ? 'opacity-0' : 'opacity-auto'
+          }`}
+        >
+          <span
+            className={`${isNextChapter ? 'opacity-100' : 'opacity-0'}`}
+          >{`${nextChapter}`}</span>
+          <span
+            className={`hidden sm:block ${isNextChapter ? 'opacity-100' : 'opacity-0'}`}
+          >{`${t('Chapter')}`}</span>
+          <Down
+            className={`w-5 h-5 -rotate-90 ${isNextChapter ? '' : 'stroke-gray-400'}`}
+          />
+        </div>
       </div>
     </div>
   )
@@ -313,7 +369,7 @@ function BookListReader({ books, setReference, reference, project }) {
   const [currentBook, setCurrentBook] = useState(null)
 
   const { query, replace } = useRouter()
-  const { t } = useTranslation('books')
+  const { t } = useTranslation(['common', 'books'])
   const refs = useRef([])
   const scrollRefs = useRef({})
   const handleClose = (index) => {
@@ -340,6 +396,7 @@ function BookListReader({ books, setReference, reference, project }) {
       default:
         break
     }
+
     currentBook.parentNode.scrollTo({ left: 0, top: top + offset, behavior: 'smooth' })
   }
 
@@ -358,7 +415,6 @@ function BookListReader({ books, setReference, reference, project }) {
   }, [])
 
   useEffect(() => {
-    console.log(currentBook)
     if (currentBook) {
       scrollTo(currentBook, 'top')
     }
@@ -370,20 +426,21 @@ function BookListReader({ books, setReference, reference, project }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reference?.bookid])
-
+  //TODO надо сделать скролл при нажатии на таб Ветхий завет или новый
   return (
     <div className="card flex flex-col gap-7">
       <Tab.Group defaultIndex={defaultIndex}>
         <Tab.List
-          className={`gap-3 w-full font-bold border-b border-slate-900 ${
+          as={'div'}
+          className={`grid grid-cols-2 gap-3 w-full font-bold border-b border-slate-900 ${
             project?.type === 'obs' ? 'hidden' : 'flex'
           }`}
         >
           <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
-            New Testament
+            {t('NewTestament')}
           </Tab>
           <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
-            Old Testament
+            {t('OldTestament')}
           </Tab>
         </Tab.List>
         <Tab.Panels className="text-sm font-bold">

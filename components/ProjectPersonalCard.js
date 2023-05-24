@@ -105,7 +105,7 @@ function ProjectPersonalCard({ project, token, user }) {
                   <>
                     <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
-                        <div className="text-2xl font-bold">{t(`books:${book}`)}</div>
+                        <div className="text-xl font-bold">{t(`books:${book}`)}</div>
                         <div className="pt-1">{`(${t('Chapter', {
                           count: countChaptersVerses?.[book]?.countChapters,
                         })} ${t('Verse', {
@@ -114,17 +114,17 @@ function ProjectPersonalCard({ project, token, user }) {
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
-                          <p className="text-lg">{t('Project')}:</p>
+                          <p>{t('Project')}:</p>
                           <Link href={`/projects/${project.code}`}>
-                            <a className="text-lg text-teal-500">{project?.title}</a>
+                            <a className="text-teal-500">{project?.title}</a>
                           </Link>
                         </div>
                         <div className="flex gap-3">
-                          <p className="text-lg">{t('Translators')}:</p>
+                          <p>{t('Translators')}:</p>
                           <Translators projectCode={project?.code} size="25px" />
                         </div>
                         <div className="flex gap-3">
-                          <p className="text-lg">
+                          <p>
                             {t('Begin')}:{' '}
                             {chapters &&
                               readableDate(

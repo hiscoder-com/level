@@ -9,18 +9,18 @@ function RemoveParticipant({ selected, setSelected, remove, label, role }) {
       isOpen={selected ? Object.keys(selected).length > 0 : false}
       closeHandle={() => setSelected(false)}
     >
-      <div className="flex flex-col gap-7 min-h-[15vh]">
+      <div className="flex flex-col justify-center gap-16 min-h-[15vh]">
         <div className="text-2xl text-center">{t(label)}</div>
-        <div className="flex flex-row justify-center gap-7">
+        <div className="flex justify-center self-center gap-7 w-2/3">
           <button
             onClick={() => remove(selected.id, role)}
             disabled={!selected}
-            className="btn-secondary"
+            className="btn-secondary flex-1"
           >
             {t('Remove')}
           </button>
 
-          <button className="btn-secondary" onClick={() => setSelected(false)}>
+          <button className="btn-secondary flex-1" onClick={() => setSelected(false)}>
             {t('Close')}
           </button>
         </div>

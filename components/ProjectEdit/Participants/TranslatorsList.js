@@ -14,7 +14,7 @@ function TranslatorsList({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex md:text-lg">
+      <div className="flex">
         <div className="hidden sm:block w-1/3">{t('users:Login')}</div>
         <div className="hidden md:block w-full md:w-1/3">{t('users:Email')}</div>
         <div className="hidden sm:block w-1/3 md:w-1/6">{t('Moderator')}</div>

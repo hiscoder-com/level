@@ -349,11 +349,14 @@ function Download({
               })}
           </div>
         </div>
-        <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
-          <button className="btn-secondary" onClick={() => setIsOpenDownloading(false)}>
+        <div className="flex self-center gap-7 w-3/4">
+          <button
+            className="btn-secondary flex-1"
+            onClick={() => setIsOpenDownloading(false)}
+          >
             {t('Close')}
           </button>
-          <button onClick={handleSave} className="btn-secondary">
+          <button onClick={handleSave} className="btn-secondary flex-1">
             {t('Save')}
           </button>
         </div>

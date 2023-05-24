@@ -47,7 +47,7 @@ function BookList({ user, project, access }) {
             (!propertiesBook ? (
               <>
                 <Tab.List className="flex p-1 w-full bg-white rounded-3xl shadow">
-                  {testaments?.[project.type].map((testament) => (
+                  {testaments[project?.type]?.map((testament) => (
                     <Tab
                       as={Fragment}
                       key={testament.title}

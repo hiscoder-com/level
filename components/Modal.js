@@ -26,10 +26,10 @@ function Modal({
           enterTo="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className="fixed top-14 inset-0 bg-gray-300 bg-opacity-25" />
         </Transition.Child>
 
-        <div className="fixed inset-0 overflow-y-auto backdrop-blur-lg">
+        <div className="fixed top-14 inset-0 overflow-y-auto backdrop-blur-lg">
           <div className="flex items-center justify-center p-4 min-h-full">
             <Transition.Child
               as={Fragment}

@@ -149,16 +149,16 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
             isOpen={selectedModerator ? Object.keys(selectedModerator).length > 0 : false}
             closeHandle={() => setSelectedModerator(false)}
           >
-            <div className="flex flex-col gap-7 min-h-[15vh]">
+            <div className="flex flex-col justify-center gap-7 min-h-[15vh]">
               <div className="text-2xl text-center">
                 {moderatorIds?.includes(selectedModerator?.id)
                   ? t('project-edit:RemovingModerator')
                   : t('project-edit:AssigningModerator')}
               </div>
 
-              <div className="flex flex-row justify-center gap-7 text-center">
+              <div className="flex justify-center self-center gap-7 w-2/3 text-center">
                 <button
-                  className="btn-secondary"
+                  className="btn-secondary flex-1"
                   onClick={() =>
                     changeModerator(
                       moderatorIds?.includes(selectedModerator.id)
@@ -174,7 +174,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
                 </button>
 
                 <button
-                  className="btn-secondary"
+                  className="btn-secondary flex-1"
                   onClick={() => setSelectedModerator(false)}
                 >
                   {t('Close')}
