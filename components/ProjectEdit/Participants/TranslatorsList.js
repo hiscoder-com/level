@@ -1,5 +1,7 @@
+import { Fragment } from 'react'
+
 import { useTranslation } from 'next-i18next'
-import { Menu, Switch } from '@headlessui/react'
+import { Menu, Switch, Transition } from '@headlessui/react'
 import TranslatorImage from 'components/TranslatorImage'
 import Elipsis from 'public/elipsis.svg'
 import Security from 'public/security.svg'
@@ -23,14 +25,14 @@ function TranslatorsList({
       {translators?.map((el) => {
         return (
           <div key={el.users.id} className="flex items-center  justify-between">
-            <div className="flex gap-2 items-center w-1/3">
+            <div className="flex flex-1 sm:flex-auto gap-2 items-center w-auto sm:w-1/3 truncate">
               <div className="w-8 h-8 min-w-[2rem]">
                 <TranslatorImage item={el} />
               </div>
               <div className="hidden sm:block">{el.users.login}</div>
-              <div className="block sm:hidden w-1/3">
-                <div>{el.users.login}</div>
-                <div>{el.users.email}</div>
+              <div className="block sm:hidden w-auto sm:w-1/3 truncate">
+                <div className="truncate">{el.users.login}</div>
+                <div className="truncate">{el.users.email}</div>
               </div>
             </div>
 
@@ -55,7 +57,7 @@ function TranslatorsList({
                 <span className="h-5 w-5 rounded-full bg-cyan-600" />
               )}
             </div>
-            <div className="flex justify-end w-1/3 md:w-1/6">
+            <div className="flex justify-end w-auto sm:w-1/3 md:w-1/6">
               <button
                 onClick={() => setSelectedTranslator(el.users)}
                 className="hidden sm:block btn-red"
@@ -65,31 +67,57 @@ function TranslatorsList({
               {el.is_moderator && (
                 <Security className="block sm:hidden w-6 h-6 min-h-[1.5rem]" />
               )}
-              <Menu as="div" className="relative">
-                <Menu.Button>
-                  <Elipsis className="block sm:hidden w-6 h-6" />
-                </Menu.Button>
-                <Menu.Items
-                  as="div"
-                  className="absolute right-0 bg-gray-200 rounded-xl z-20"
-                >
-                  <Menu.Item
-                    as="div"
-                    className="hover:bg-gray-100 p-3 rounded-t-xl cursor-pointer"
-                    onClick={() => setSelectedModerator(el.users)}
-                  >
-                    {t('Moderator')}
-                  </Menu.Item>
-                  <Menu.Item
-                    as="div"
-                    className="hover:bg-gray-100 p-3 rounded-b-xl cursor-pointer"
-                    onClick={() => setSelectedTranslator(el.users)}
-                  >
-                    {t('Remove')}
-                  </Menu.Item>
-                </Menu.Items>
-              </Menu>
             </div>
+            <Menu as="div" className="relative flex items-center overflow-hidden">
+              {({ open }) => (
+                <>
+                  <Menu.Button>
+                    <Elipsis className="block sm:hidden w-6 h-6 min-w-[1.5rem]" />
+                  </Menu.Button>
+                  <Transition
+                    as={Fragment}
+                    show={open}
+                    enter="transition-all duration-200 ease-in-out transform"
+                    enterFrom="translate-x-0"
+                    enterTo="translate-x-0"
+                    leave="transition-all duration-200 ease-in-out transform"
+                    leaveFrom="translate-x-0"
+                    leaveTo="translate-x-full"
+                  >
+                    <Menu.Items as="div" className="flex gap-2 items-center">
+                      <Menu.Item
+                        as="div"
+                        className="cursor-pointer"
+                        onClick={() => setSelectedModerator(el.users)}
+                      >
+                        {access && (
+                          <Switch
+                            checked={el.is_moderator}
+                            onChange={() => setSelectedModerator(el.users)}
+                            className={`relative inline-flex items-center h-6 w-12 rounded-full ${
+                              el.is_moderator ? 'bg-cyan-600' : 'bg-gray-200'
+                            }`}
+                          >
+                            <span
+                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                                el.is_moderator ? 'translate-x-6' : 'translate-x-1'
+                              }`}
+                            />
+                          </Switch>
+                        )}
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        className="btn-red cursor-pointer"
+                        onClick={() => setSelectedTranslator(el.users)}
+                      >
+                        {t('Remove')}
+                      </Menu.Item>
+                    </Menu.Items>
+                  </Transition>
+                </>
+              )}
+            </Menu>
           </div>
         )
       })}

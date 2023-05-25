@@ -130,7 +130,7 @@ function ProjectCreate() {
   ]
 
   return (
-    <div className="py-10">
+    <div className="py-0 sm:py-10">
       <div className="card">
         <form onSubmit={handleSubmit(onSubmit)}>
           <p>

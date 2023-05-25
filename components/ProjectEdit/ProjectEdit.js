@@ -36,13 +36,13 @@ function ProjectEdit() {
   const tabs = useMemo(
     () =>
       [
-        { id: 'brief', access: true, label: 'project-edit:EditBriefTitle' },
+        { id: 'brief', access: true, label: 'project-edit:Brief' },
 
         { id: 'participants', access: isModeratorAccess, label: 'Participants' },
         {
           id: 'resources',
           access: isAdminAccess,
-          label: 'ListResources',
+          label: 'Resources',
         },
       ].filter((el) => el.access),
     [isAdminAccess, isModeratorAccess]
@@ -59,7 +59,7 @@ function ProjectEdit() {
         full
       />
 
-      <div className="flex flex-col gap-7">
+      <div className="hidden sm:flex flex-col gap-7">
         {user?.id && (
           <Tab.Group defaultIndex={idTabs.indexOf(setting)}>
             <Tab.List className="grid grid-cols-3 md:grid-cols-6 xl:grid-cols-9 gap-4 mt-2 lg:text-lg font-bold text-center border-b border-slate-600">
@@ -99,6 +99,15 @@ function ProjectEdit() {
             </Tab.Panels>
           </Tab.Group>
         )}
+      </div>
+      <div className="flex sm:hidden flex-col gap-7">
+        <Brief access={isCoordinatorAccess} />
+        <Participants
+          user={user}
+          users={users}
+          access={{ isCoordinatorAccess, isAdminAccess }}
+        />
+        <ResourceSettings />
       </div>
     </div>
   )

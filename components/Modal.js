@@ -12,7 +12,7 @@ function Modal({
 }) {
   const classes = {
     primary: 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
-    secondary: 'bg-gray-500 text-white',
+    secondary: 'bg-gray-400 text-white',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>
