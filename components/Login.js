@@ -74,7 +74,7 @@ function Login() {
     }
   }
   const handlereset = async () => {
-    const { data, error } = await supabase.auth.resetPasswordForEmail('alexzed@bk.ru')
+    const { data, error } = await supabase.auth.api.resetPasswordForEmail('alexzed@bk.ru')
     console.log({ data, error })
   }
   return (
