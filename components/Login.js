@@ -17,12 +17,15 @@ import { useCurrentUser } from 'lib/UserContext'
 import Report from 'public/error-outline.svg'
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
+import Modal from './Modal'
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
   const [login, setLogin] = useState('')
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [restoreEmail, setRestoreEmail] = useState('')
 
   const { user, loading } = useCurrentUser()
   const { t } = useTranslation('users')
@@ -70,7 +73,10 @@ function Login() {
       setError(true)
     }
   }
-
+  const handlereset = async () => {
+    const { data, error } = await supabase.auth.resetPasswordForEmail('alexzed@bk.ru')
+    console.log({ data, error })
+  }
   return (
     <>
       {user?.id ? (
@@ -161,15 +167,9 @@ function Login() {
                   <p className="flex text-xs text-red-600">
                     <Report className="w-4 h-4" /> {t('WrongLoginPassword')}
                   </p>
-                  <a
-                    href={
-                      '#'
-                      // TODO сделать восстановление пароля
-                    }
-                    className="font-medium underline text-sky-500 hover:text-sky-600"
-                  >
+                  <button className="font-medium underline text-sky-500 hover:text-sky-600">
                     {t('ForgotPassword')}?
-                  </a>
+                  </button>
                 </>
               )}
             </div>
@@ -183,18 +183,18 @@ function Login() {
                 } w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
                 value={t('SignIn')}
               />
-              <Link
-                href={
-                  '/'
-                  // TODO сделать восстановление пароля
-                }
-              >
-                <a className="text-sm lg:text-base">{t('RestoreAccess')}</a>
-              </Link>
             </div>
           </form>
+          <button onClick={() => setIsOpenModal(true)} className="text-sm lg:text-base">
+            {t('RestoreAccess')}
+          </button>
         </div>
       )}
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
+        <div>Напишите адрес</div>
+        <input value={restoreEmail} onChange={(e) => setRestoreEmail(e.target.value)} />
+        <button onClick={handlereset}>отправить</button>
+      </Modal>
     </>
   )
 }
