@@ -86,7 +86,7 @@ export default function ConfessionSteps() {
 
   return (
     <div className="layout-appbar">
-      <h1 className="h1 text-center">{t('users:Confession')}:</h1>
+      <h1 className="text-4xl text-center">{t('users:Confession')}:</h1>
       <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
@@ -105,7 +105,7 @@ export default function ConfessionSteps() {
           page === 5 ? '' : 'hidden sm:flex sm:invisible'
         }`}
       >
-        <div className="space-x-1.5 items-center h4">
+        <div className="space-x-1.5 items-center text-xl">
           <input
             id="cb"
             type="checkbox"

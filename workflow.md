@@ -245,7 +245,7 @@ import VcanaLogo from '../public/vcana-logo.svg'
  Например
 
 ```javascript
-className="flex pt-0 w-1/3 text-xl text-slate-100 bg-orange-500 border-r-2 border-stone-800 shadow-md cursor-pointer"
+className="custom-class group absolute flex justify-center pt-0 w-1/4 sm:w-1/3 md:w-1/2 text-xl text-slate-100 bg-orange-500 border-r-2 border-stone-800 shadow-md cursor-pointer hover:text-gray-100 hover:bg-blue-500"
 ```
 
 <br>

@@ -10,6 +10,7 @@ import { useSetRecoilState } from 'recoil'
 
 import Footer from 'components/Footer'
 import Workspace from 'components/Workspace'
+import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseServer'
@@ -19,7 +20,7 @@ import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
 export default function ProgressPage({ last_step }) {
   const { user } = useCurrentUser()
   const setStepConfigData = useSetRecoilState(stepConfigState)
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation('common')
   const {
     query: { project, book, chapter, step },
     replace,
@@ -28,6 +29,7 @@ export default function ProgressPage({ last_step }) {
   const setProjectId = useSetRecoilState(projectIdState)
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
+  const [isOpenModal, setIsOpenModal] = useState(false)
 
   useEffect(() => {
     if (user?.login) {
@@ -127,9 +129,26 @@ export default function ProgressPage({ last_step }) {
       <Footer
         textButton={t('Next')}
         textCheckbox={t('Done')}
-        handleClick={handleNextStep}
+        handleClick={() => setIsOpenModal(true)}
         loading={loading}
       />
+      <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
+        <div className="flex flex-col gap-7 justify-center items-center">
+          <div className="flex flex-row gap-2 text-2xl text-center">
+            <p>{t('AreYouSureGoToNextStep')}</p>
+          </div>
+
+          <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
+            <button className="btn-secondary mx-2" onClick={handleNextStep}>
+              {t('Yes')}
+            </button>
+
+            <button className="btn-secondary mx-2" onClick={() => setIsOpenModal(false)}>
+              {t('No')}
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }

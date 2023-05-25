@@ -35,20 +35,20 @@
       created_at TIMESTAMP DEFAULT NOW(),
       log JSONB
     );
-    
+
   ALTER TABLE
-      PUBLIC.logs enable ROW LEVEL SECURITY; 
+      PUBLIC.logs enable ROW LEVEL SECURITY;
 
   DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
 
   CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
       LANGUAGE plpgsql SECURITY DEFINER AS $$
-      DECLARE chapters_old JSON; 
+      DECLARE chapters_old JSON;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
         END IF;
         SELECT json_build_object('chapters', chapters) FROM PUBLIC.books WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id INTO chapters_old;
-        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old)); 
+        INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));
         UPDATE PUBLIC.books SET chapters = update_chapters_in_books.chapters_new WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id;
         RETURN TRUE;
       END;
@@ -67,12 +67,12 @@
             DO NOTHING;
         RETURN TRUE;
       END;
-    $$; 
+    $$;
 
   DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
 
   CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
-      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE chapter JSON;
               verses_old JSON;
       BEGIN
@@ -89,7 +89,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
 
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE step_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -98,8 +98,8 @@
           RETURN false;
         END IF;
         SELECT id FROM steps WHERE steps.project_id = insert_additional_verses.project_id AND sorting = 1 INTO step_id;
-        INSERT INTO PUBLIC.logs (log) VALUES ( json_build_object('function', 'insert_additional_verses', 'start_verse', start_verse, 'step_id', id, 'finish_verse', finish_verse, 'chapter_id', chapter_id, 'project_id', project_id)); 
-        
+        INSERT INTO PUBLIC.logs (log) VALUES ( json_build_object('function', 'insert_additional_verses', 'start_verse', start_verse, 'step_id', id, 'finish_verse', finish_verse, 'chapter_id', chapter_id, 'project_id', project_id));
+
         FOR i IN start_verse..finish_verse LOOP
           INSERT INTO
             PUBLIC.verses (num, chapter_id, current_step, project_id)
@@ -110,12 +110,12 @@
         END LOOP;
         RETURN TRUE;
       END;
-  $$; 
+  $$;
 
   DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
 
   CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY DEFINER AS $$ 
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE old_values JSON;
       BEGIN
         IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
@@ -125,7 +125,7 @@
         UPDATE PUBLIC.projects SET resources = update_resources_in_projects.resources_new, base_manifest = update_resources_in_projects.base_manifest_new WHERE id = project_id;
         RETURN TRUE;
       END;
-    $$; 
+    $$;
 
 --10.02.23
     -- Update method CANA OBS
@@ -897,7 +897,7 @@
           }
         ]
       }
-    ]' WHERE title = 'CANA Bible crash test'; 
+    ]' WHERE title = 'CANA Bible crash test';
 
     INSERT INTO
         PUBLIC.methods (title, resources, steps, "type")
@@ -1407,7 +1407,7 @@
           }
         ]'
       WHERE sorting = '8' AND (SELECT method FROM public.projects WHERE id = project_id) = 'CANA Bible crash test';
- 
+
 --31.01.23
   DROP TRIGGER IF EXISTS on_public_project_created ON PUBLIC.projects;
 
@@ -1554,22 +1554,22 @@
   -- creating a new brief for the project
   CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) RETURNS BOOLEAN
       LANGUAGE plpgsql SECURITY DEFINER AS $$
-      DECLARE 
+      DECLARE
         brief_JSON JSON;
       BEGIN
         IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
           RETURN false;
         END IF;
-        SELECT brief FROM PUBLIC.methods 
-          JOIN PUBLIC.projects ON (projects.method = methods.title) 
+        SELECT brief FROM PUBLIC.methods
+          JOIN PUBLIC.projects ON (projects.method = methods.title)
           WHERE projects.id = project_id INTO brief_JSON;
           INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);
         RETURN true;
       END;
   $$;
-  
+
 --21.02.23
-  ALTER publication supabase_realtime 
+  ALTER publication supabase_realtime
     ADD
       TABLE PUBLIC.briefs;
 
@@ -1597,14 +1597,14 @@
         INTO chapter;
 
       IF authorize(auth.uid(), chapter.project_id) NOT IN ('admin', 'coordinator')
-      THEN 
+      THEN
         RETURN FALSE;
       END IF;
       method_type = (SELECT type FROM projects WHERE id = chapter.project_id);
       IF method_type = 'obs'
       THEN
         start_verse = 0;
-      ELSE 
+      ELSE
         start_verse = 1;
       END IF;
       FOR i IN start_verse..chapter.verses LOOP
@@ -1619,7 +1619,7 @@
           PUBLIC.verses (num, chapter_id, current_step, project_id)
         VALUES
           (200 , chapter.id, chapter.step_id, chapter.project_id);
-      ELSE 
+      ELSE
         RETURN true;
       END IF;
       RETURN true;
@@ -1639,14 +1639,14 @@
 
 --28.02.23
   ALTER TABLE PUBLIC.dictionaries
-        ADD deleted_at timestamp DEFAULT NULL;
+        ADD deleted_at TIMESTAMP DEFAULT NULL;
   ALTER TABLE PUBLIC.personal_notes
-        ADD deleted_at timestamp DEFAULT NULL;
+        ADD deleted_at TIMESTAMP DEFAULT NULL;
   ALTER TABLE PUBLIC.team_notes
-        ADD deleted_at timestamp DEFAULT NULL;
+        ADD deleted_at TIMESTAMP DEFAULT NULL;
   ALTER TABLE dictionaries
         DROP CONSTRAINT dictionaries_project_id_title_key;
-  CREATE UNIQUE INDEX dictionaries_project_id_title_indx ON dictionaries (project_id, title) WHERE deleted_at IS NULL;      
+  CREATE UNIQUE INDEX dictionaries_project_id_title_indx ON dictionaries (project_id, title) WHERE deleted_at IS NULL;
 
 --10.03.23
   DROP FUNCTION IF EXISTS PUBLIC.start_chapter;

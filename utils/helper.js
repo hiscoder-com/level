@@ -37,7 +37,11 @@ export const checkLSVal = (el, val, type = 'string', ext = false) => {
 }
 
 export const readableDate = (date, locale = 'ru') => {
-  return new Date(date).toLocaleString(locale, {})
+  return new Intl.DateTimeFormat(locale, {
+    year: '2-digit',
+    month: 'numeric',
+    day: 'numeric',
+  }).format(new Date(date))
 }
 
 const compileMarkdown = async (ref) => {

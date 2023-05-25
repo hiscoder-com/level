@@ -107,7 +107,7 @@ function TranslatorPage({ last_step }) {
         t('Loading')
       )}
 
-      <div className="mx-auto w-full max-w-7xl bg-blue-150 flex justify-end px-6 lg:px-0">
+      <div className="flex justify-end px-6 lg:px-0 mx-auto w-full max-w-7xl bg-blue-150">
         <Link href={`/translate/${project}/${book}/${chapter}/${step}`}>
           <button className="my-4 btn-cyan !px-6">{t('BackTo')}</button>
         </Link>

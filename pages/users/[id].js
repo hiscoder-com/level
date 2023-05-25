@@ -40,7 +40,7 @@ export default function UserPage() {
       {router.isFallback ? (
         <div></div>
       ) : (
-        <div className="container">
+        <div className="mx-auto max-w-7xl">
           <h1>{t('UserPage')}</h1>
           <div>
             {t('Login')}: {user?.login}

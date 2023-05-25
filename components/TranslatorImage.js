@@ -17,10 +17,10 @@ function TranslatorImage({ item, size, clickable }) {
 
   return (
     <div
-      title={`${item.users ? `${item.users?.login}` : ''}`}
+      title={`${item?.users ? `${item.users?.login}` : ''}`}
       onClick={() => {
         if (canClick) {
-          push(`/translate/${project}/${book}/${chapter}/${step}/${item.users.login}`)
+          push(`/translate/${project}/${book}/${chapter}/${step}/${item?.users?.login}`)
         }
       }}
       className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
@@ -47,7 +47,7 @@ function TranslatorImage({ item, size, clickable }) {
             cx="84"
             cy="84"
             r="84"
-            fill={defaultColor[item.users.login.length % 6]}
+            fill={defaultColor[item?.users?.login.length % 6]}
           />
           <text
             x="84"
@@ -55,13 +55,13 @@ function TranslatorImage({ item, size, clickable }) {
             textAnchor="middle"
             className="text-7xl text-white font-bold"
           >
-            {item.users.login.toUpperCase().slice(0, 2)}
+            {item?.users?.login.toUpperCase().slice(0, 2)}
           </text>
         </svg>
       )}
       <span
         className={`absolute w-[17.68%] h-[17.68%] right-[1px] top-[1px] rounded-full ${
-          item.status ? 'bg-green-500' : 'bg-red-500'
+          item?.status ? 'bg-green-500' : 'bg-red-500'
         }`}
       ></span>
     </div>
