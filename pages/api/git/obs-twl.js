@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-import { tsvToJson } from 'utils/tsvHelper'
-import { uniqueFilterInBook, getListWordsReference } from 'utils/helper'
+import { tsvToJson, markRepeatedWords } from '@texttree/translation-words-helpers'
 
 /**
  *  @swagger
@@ -80,19 +79,20 @@ export default async function twlHandler(req, res) {
   try {
     const _data = await axios.get(url)
     const jsonData = tsvToJson(_data.data)
-    const uniqueWordsBook = getListWordsReference(jsonData)
-    const jsonDataFiltered =
+    const markedWords = markRepeatedWords(jsonData, 'all')
+
+    const data =
       verses && verses.length > 0
-        ? jsonData.filter((wordObject) => {
+        ? markedWords.filter((wordObject) => {
             const [_chapter, _verse] = wordObject.Reference.split(':')
             return _chapter === chapter && verses.includes(_verse)
           })
-        : jsonData.filter((wordObject) => {
+        : markedWords.filter((wordObject) => {
             const [_chapter] = wordObject.Reference.split(':')
             return _chapter === chapter
           })
 
-    const promises = jsonDataFiltered.map(async (wordObject) => {
+    const promises = data.map(async (wordObject) => {
       const url = `${
         process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
       }/${owner}/${repo
@@ -100,43 +100,47 @@ export default async function twlHandler(req, res) {
         .replace('obs-', '')}/raw/branch/master/${wordObject.TWLink.split('/')
         .slice(-3)
         .join('/')}.md`
-      const res = await axios.get(url)
-      const splitter = res.data.search('\n')
+      let markdown
+      try {
+        markdown = await axios.get(url)
+      } catch (error) {}
+      const splitter = markdown.data.search('\n')
       return {
-        id: wordObject.ID,
-        reference: wordObject.Reference,
-        title: res.data.slice(0, splitter),
-        text: res.data.slice(splitter),
-        url: wordObject.TWLink,
+        ...wordObject,
+        title: markdown.data.slice(0, splitter),
+        text: markdown.data.slice(splitter),
       }
     })
     const words = await Promise.all(promises)
     const finalData = {}
-    let verseUnique = {}
 
     words?.forEach((word) => {
-      let repeatedInVerse = word.url in verseUnique
-      if (!repeatedInVerse) {
-        verseUnique[word.url] = word.title
-      }
-
+      const {
+        ID,
+        Reference,
+        TWLink,
+        isRepeatedInBook,
+        isRepeatedInChapter,
+        isRepeatedInVerse,
+        text,
+        title,
+      } = word
       const wordObject = {
-        id: word.id,
-        title: word.title,
-        text: word.text,
-        url: word.url,
+        id: ID,
+        title,
+        text,
+        url: TWLink,
+        isRepeatedInBook,
+        isRepeatedInChapter,
+        isRepeatedInVerse,
       }
-      const repeatedInBook = uniqueFilterInBook(uniqueWordsBook, word, wordObject)
 
-      const verse = word.reference.split(':').slice(-1)[0]
+      const [_, verse] = Reference.split(':')
 
       if (!finalData[verse]) {
-        verseUnique = {}
-        repeatedInVerse = false
-        verseUnique[word.url] = word.title
-        finalData[verse] = [{ ...wordObject, repeatedInVerse, repeatedInBook }]
+        finalData[verse] = [wordObject]
       } else {
-        finalData[verse].push({ ...wordObject, repeatedInVerse, repeatedInBook })
+        finalData[verse].push(wordObject)
       }
     })
 
