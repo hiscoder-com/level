@@ -84,18 +84,11 @@ function Login() {
   const handlereset = async () => {
     const { data, error } = await supabase.auth.api.resetPasswordForEmail(
       'alexzed@bk.ru',
-      { redirectTo: 'https://deploy-preview-363--v-cana.netlify.app/?password=reset' }
+      { redirectTo: 'https://deploy-preview-363--v-cana.netlify.app/password-reset' }
     )
     console.log({ data, error })
   }
-  const handleUpdatePassword = async () => {
-    if (newPassword) {
-    }
-    const { data, error } = await supabase.auth.update({
-      password: newPassword,
-    })
-    console.log({ data, error })
-  }
+
   return (
     <>
       {isPasswordReset ? (
