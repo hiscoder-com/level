@@ -26,6 +26,8 @@ function Login() {
   const [login, setLogin] = useState('')
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [restoreEmail, setRestoreEmail] = useState('')
+  const [isPasswordReset, setIsPasswordReset] = useState(false)
+  const [newPassword, setNewPassword] = useState('')
 
   const { user, loading } = useCurrentUser()
   const { t } = useTranslation('users')
@@ -44,6 +46,12 @@ function Login() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showPassword])
+
+  useEffect(() => {
+    if (router.query?.password === 'reset') {
+      setIsPasswordReset(true)
+    }
+  }, [router.query?.password])
 
   useEffect(() => {
     if (loginRef?.current) {
@@ -74,12 +82,39 @@ function Login() {
     }
   }
   const handlereset = async () => {
-    const { data, error } = await supabase.auth.api.resetPasswordForEmail('alexzed@bk.ru')
+    const { data, error } = await supabase.auth.api.resetPasswordForEmail(
+      'alexzed@bk.ru',
+      { redirectTo: 'https://deploy-preview-363--v-cana.netlify.app/?password=reset' }
+    )
+    console.log({ data, error })
+  }
+  const handleUpdatePassword = async () => {
+    if (newPassword) {
+    }
+    const { data, error } = await supabase.auth.update({
+      password: newPassword,
+    })
     console.log({ data, error })
   }
   return (
     <>
-      {user?.id ? (
+      {isPasswordReset ? (
+        <div className="flex flex-col p-5 lg:py-10 xl:px-8">
+          <div className="flex justify-end mb-6">
+            <SwitchLocalization />
+          </div>
+          <form className="space-y-6 xl:space-y-10">
+            <div>Восстановление пароля</div>
+            <div>Введите новый пароль</div>
+            <input
+              className="input-primary"
+              value={newPassword}
+              onChange={(el) => setNewPassword(el.target.value)}
+            />
+            <input type="submit" onClick={handleUpdatePassword} className="btn-cyan" />
+          </form>
+        </div>
+      ) : user?.id ? (
         <div className="flex flex-col p-5 lg:py-10 xl:px-8">
           <div className="flex justify-end mb-6">
             <SwitchLocalization />
@@ -190,6 +225,7 @@ function Login() {
           </button>
         </div>
       )}
+
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div>Напишите адрес</div>
         <input value={restoreEmail} onChange={(e) => setRestoreEmail(e.target.value)} />
