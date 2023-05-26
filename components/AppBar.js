@@ -55,7 +55,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             <a
               className={
                 !isStepPage
-                  ? 'absolute  sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
+                  ? 'absolute sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
                   : ''
               }
             >

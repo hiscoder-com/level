@@ -58,7 +58,7 @@ function Dropdown({ description, user }) {
         <>
           <div
             ref={dropdownMenu}
-            className="absolute flex flex-col  justify-center right-5 xl:right-0 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40"
+            className="absolute flex flex-col justify-center right-5 xl:right-0 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40"
           >
             <button
               className="px-4 py-2 rounded-t-lg	hover:bg-cyan-50

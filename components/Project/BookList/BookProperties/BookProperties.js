@@ -5,13 +5,13 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
 import toast, { Toaster } from 'react-hot-toast'
+
+import { Tab } from '@headlessui/react'
+
 import Property from './Property'
 import Breadcrumbs from 'components/Breadcrumbs'
-import { Combobox, Listbox, Switch, Tab } from '@headlessui/react'
 import { useRouter } from 'next/router'
 import Reader from '/public/dictionary.svg'
-import Spinner from '/public/spinner.svg'
-import Down from '/public/arrow-down.svg'
 
 function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { query } = useRouter()
@@ -165,7 +165,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           <div className="font-bold">{t('TranslationLink')}</div>
 
           <input
-            className="input-primary "
+            className="input-primary"
             value={translationLink?.url || ''}
             onChange={(e) =>
               setTranslationLink((prev) => ({ ...prev, url: e.target.value }))
@@ -206,7 +206,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                         <input
                           id={el}
                           type="checkbox"
-                          className={`w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-slate-600 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:bg-cyan-500 before:opacity-0 before:transition-opacity  hover:before:opacity-10 ${levelColor[index]}`}
+                          className={`w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-slate-600 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:bg-cyan-500 before:opacity-0 before:transition-opacity hover:before:opacity-10 ${levelColor[index]}`}
                           checked={translationLink?.level === el || false}
                           onChange={() =>
                             setTranslationLink((prev) => ({ ...prev, level: el }))

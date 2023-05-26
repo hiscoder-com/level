@@ -88,7 +88,7 @@ function Testament({
                 <Menu as="div" className="relative flex overflow-hidden">
                   {({ open }) => (
                     <>
-                      <Menu.Button className={`relative flex   duration-200`}>
+                      <Menu.Button className="relative flex duration-200">
                         <Elipsis className="block sm:hidden h-6 min-h-[1.5rem] transition" />
                       </Menu.Button>
                       <Transition
@@ -123,7 +123,7 @@ function Testament({
                             )}
                             {!isBookCreated && isAdminAccess && (
                               <Menu.Item>
-                                <button className="">
+                                <button>
                                   <Play
                                     className="w-6 min-w-[1.5rem] cursor-pointer"
                                     onClick={() => setBookCodeCreating(book)}
@@ -133,7 +133,7 @@ function Testament({
                             )}
                             {isModeratorAccess && isBookCreated && (
                               <Menu.Item>
-                                <button className="">
+                                <button>
                                   <DownloadIcon
                                     className="w-6 min-w-[1.5rem] cursor-pointer"
                                     onClick={() => {
@@ -146,7 +146,7 @@ function Testament({
                             )}
                             {levelChecks?.[book] && (
                               <Menu.Item>
-                                <button className="">
+                                <button>
                                   <Reader
                                     className="w-6 min-w-[1.5rem] cursor-pointer"
                                     onClick={() =>

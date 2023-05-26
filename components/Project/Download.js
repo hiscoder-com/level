@@ -342,7 +342,7 @@ function Download({
                       <input
                         id={key}
                         type="checkbox"
-                        className={`w-7 h-7 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-cyan-700 bg-white checked:bg-cyan-700 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity  hover:before:opacity-10`}
+                        className="w-7 h-7 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-cyan-700 bg-white checked:bg-cyan-700 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
                         checked={downloadSettings[key]}
                         onChange={() =>
                           setDownloadSettings((prev) => {

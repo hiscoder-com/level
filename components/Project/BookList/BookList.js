@@ -74,11 +74,9 @@ function BookList({ user, project, access }) {
                   {testaments?.[project?.type]?.map((testament) => (
                     <Tab.Panel
                       key={testament.title}
-                      className={
-                        testaments?.[project?.type]?.length === 2
-                          ? 'w-full sm:w-1/2'
-                          : 'w-full'
-                      }
+                      className={`w-full ${
+                        testaments?.[project?.type]?.length === 2 ? 'sm:w-1/2' : ''
+                      }`}
                     >
                       <Testament
                         bookList={testament.books}

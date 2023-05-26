@@ -24,7 +24,7 @@ function TranslatorsList({
       </div>
       {translators?.map((el) => {
         return (
-          <div key={el.users.id} className="flex items-center  justify-between">
+          <div key={el.users.id} className="flex items-center justify-between">
             <div className="flex flex-1 sm:flex-auto gap-2 items-center w-auto sm:w-1/3 truncate">
               <div className="w-8 h-8 min-w-[2rem]">
                 <TranslatorImage item={el} />

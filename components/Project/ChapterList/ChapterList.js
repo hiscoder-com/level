@@ -136,11 +136,11 @@ function ChapterList() {
                           isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
                         } ${
                           finished_at
-                            ? 'bg-yellow-400'
+                            ? 'bg-yellow-400 border-yellow-400'
                             : isCreated
-                            ? 'text-white bg-slate-600 border-2 border-slate-600'
-                            : 'bg-white border-2 border-slate-600'
-                        }`}
+                            ? 'text-white bg-slate-600 border-slate-600'
+                            : 'bg-white border-slate-600'
+                        } border-2`}
                       >
                         <div className="flex justify-between">
                           <div className="text-2xl font-bold">{num}</div>
