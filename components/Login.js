@@ -111,7 +111,9 @@ function Login() {
               value={newPassword}
               onChange={(el) => setNewPassword(el.target.value)}
             />
-            <input type="submit" onClick={handleUpdatePassword} className="btn-cyan" />
+            <button onClick={handleUpdatePassword} className="btn-cyan">
+              поменять
+            </button>
           </form>
         </div>
       ) : user?.id ? (
