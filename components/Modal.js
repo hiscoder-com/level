@@ -11,8 +11,8 @@ function Modal({
   className = 'primary',
 }) {
   const classes = {
-    primary: 'bg-gradient-to-r from-darkBlue to-[#596B84] text-blue-250',
-    secondary: 'bg-teal-500 text-white',
+    primary: 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
+    secondary: 'bg-gray-400 text-white',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -26,7 +26,7 @@ function Modal({
           enterTo="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
+          <div className="fixed inset-0 bg-gray-300 bg-opacity-25" />
         </Transition.Child>
 
         <div className="fixed inset-0 overflow-y-auto backdrop-blur-lg">

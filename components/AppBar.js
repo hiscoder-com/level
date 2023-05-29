@@ -14,7 +14,7 @@ import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
-import Burger from 'public/burger.svg'
+import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
@@ -49,17 +49,26 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   return (
     <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
-        <div className="flex items-center gap-7 cursor-pointer">
+        <div className="relative md:static flex items-center justify-between md:justify-start gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <Link href="/account">
-            <a>
+            <a
+              className={
+                !isStepPage
+                  ? 'absolute sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
+                  : ''
+              }
+            >
               <VCANA_logo className="h-6" />
             </a>
           </Link>
           {isStepPage && (
             <div className="flex gap-7 md:hidden">
               <Timer time={stepConfig.time} />
-              <Burger onClick={() => setShowFullAppbar(!showFullAppbar)} />
+              <Down
+                className="w-6 h-6"
+                onClick={() => setShowFullAppbar((prev) => !prev)}
+              />
             </div>
           )}
         </div>
@@ -69,7 +78,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               {stepConfig.title}
             </div>
             <div
-              className={`items-center gap-4 md:flex ${
+              className={`items-center gap-4 md:flex justify-center md:justify-start ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >

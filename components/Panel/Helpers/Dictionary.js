@@ -304,11 +304,11 @@ function Dictionary() {
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('AreYouSureDelete') + ' ' + t(wordToDel?.title) + '?'}
+            {t('AreYouSureDelete') + ' ' + t(wordToDel?.title).toLowerCase() + '?'}
           </div>
-          <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
+          <div className="flex w-1/2 gap-7">
             <button
-              className="btn-secondary"
+              className="btn-secondary flex-1"
               onClick={() => {
                 setIsOpenModal(false)
                 if (wordToDel) {
@@ -320,7 +320,7 @@ function Dictionary() {
               {t('Yes')}
             </button>
             <button
-              className="btn-secondary"
+              className="btn-secondary flex-1"
               onClick={() => {
                 setWordToDel(null)
                 setIsOpenModal(false)

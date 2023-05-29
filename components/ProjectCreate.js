@@ -130,7 +130,7 @@ function ProjectCreate() {
   ]
 
   return (
-    <div className="py-10">
+    <div className="py-0 sm:py-10">
       <div className="card">
         <form onSubmit={handleSubmit(onSubmit)}>
           <p>
@@ -185,6 +185,7 @@ function ProjectCreate() {
             rows="30"
             onChange={(e) => setCustomBriefs(e.target.value)}
             value={customBriefs}
+            className="w-full"
           />
           <div>
             <span className="mr-3">
@@ -211,7 +212,7 @@ function ProjectCreate() {
             массив из шагов. Может для одного шага сделать компонент. У шага есть такие
             параметры.
           </p>
-          <pre>
+          <pre className="whitespace-pre-wrap break-words">
             {`"title": Название шага, даем юзеру возможность перевода этого поля
 "description": Описание шага, возможность редактировать
 "time": время, сколько минут длится шаг
@@ -230,6 +231,7 @@ function ProjectCreate() {
             rows="30"
             onChange={(e) => setCustomSteps(e.target.value)}
             value={customSteps}
+            className="w-full"
           />
           <br />
           <p>
@@ -248,10 +250,11 @@ function ProjectCreate() {
             rows="6"
             disabled={true}
             value={JSON.stringify(customResources, null, 2)}
+            className="w-full"
           />
           <br />
           {method?.type !== 'obs' ? (
-            <pre>
+            <pre className="whitespace-pre-wrap break-words">
               {`literal
 https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
 simplified
@@ -265,7 +268,7 @@ https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c8
 `}
             </pre>
           ) : (
-            <pre>
+            <pre className="whitespace-pre-wrap break-words">
               {`obs
 https://git.door43.org/ru_gl/ru_obs/src/commit/e562a415f60c5262382ba936928f32479056310e
 obs-tn
@@ -290,7 +293,7 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             колонку Ресурсы. <br />
             Создаем вот такой объект
           </p>
-          <pre>
+          <pre className="whitespace-pre-wrap break-words">
             {`"тут идентификатор который в шагах у нас": {
 "owner": "unfoldingword",
 "repo": "en_ult",
@@ -302,7 +305,7 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             2. Особенно мы обработаем основной ресурс, с которого будет идти перевод.
             Возьмем его манифест и сделаем такую структуру{' '}
           </p>
-          <pre>
+          <pre className="whitespace-pre-wrap break-words">
             {`{
 "resource": "тут идентификатор этого основного ресурса",
 "books": [ // массив из списка книг
@@ -320,7 +323,7 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             для первой версии мы можем создать проект в ручную, и отложить разработку на
             время после запуска
           </p>
-          <input className="btn-cyan btn-filled" type="submit" title={t('SaveProject')} />
+          <input className="btn-cyan btn-filled" type="submit" value={t('SaveProject')} />
         </form>
       </div>
     </div>

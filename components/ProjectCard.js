@@ -27,14 +27,14 @@ function ProjectCard({ project, token, user }) {
         <Link href={`/projects/${project.code}`}>
           <div className="card flex justify-between items-start h-full cursor-pointer">
             <div className="flex flex-col gap-9">
-              <div className="text-2xl font-bold">{project.title}</div>
+              <div className="text-xl font-bold">{project.title}</div>
               <div className="flex flex-col gap-5">
                 <div className="flex gap-3">
-                  <p className="text-lg">{t('Language')}:</p>
-                  <p className="text-lg text-teal-500">{project.languages.orig_name}</p>
+                  <p>{t('Language')}:</p>
+                  <p className="text-gray-400">{project.languages.orig_name}</p>
                 </div>
                 <div className="flex gap-3">
-                  <p className="text-lg">{t('Translators')}:</p>
+                  <p>{t('Translators')}:</p>
                   <Translators projectCode={project.code} size="25px" />
                 </div>
               </div>

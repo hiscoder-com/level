@@ -68,15 +68,15 @@ function ChapterCreate({
       closeHandle={reset}
       className={!isCreated ? 'primary' : 'secondary'}
     >
-      <div className="flex flex-col justify-center items-center min-h-[15vh]">
+      <div className="flex flex-col justify-center items-center gap-7 min-h-[15vh]">
         <div className="flex flex-row gap-2 mb-4 text-2xl">
           <p>{textModal}</p>
           {isCreating && !isCreated && <p className="animate-pulse">...</p>}
         </div>
         {!isCreating && !isCreated && (
-          <div className="flex flex-row gap-2 text-xl">
+          <div className="flex justify-center gap-4 w-1/2 text-xl">
             <button
-              className="btn-secondary"
+              className="btn-secondary flex-1"
               onClick={() =>
                 handleAddChapter({
                   chapter_id: creatingChapter.id,
@@ -87,7 +87,7 @@ function ChapterCreate({
               {t('Yes')}
             </button>
 
-            <button className="btn-secondary" onClick={reset}>
+            <button className="btn-secondary flex-1" onClick={reset}>
               {isCreated ? t('Ok') : t('No')}
             </button>
           </div>

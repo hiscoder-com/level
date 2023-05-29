@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
 import toast, { Toaster } from 'react-hot-toast'
+
+import { Menu, Transition } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -20,8 +22,9 @@ import {
 import { useCurrentUser } from 'lib/UserContext'
 
 import Button from 'components/Button'
+import Card from 'components/Project/Card'
 
-import LeftArrow from 'public/left.svg'
+import Gear from 'public/gear.svg'
 import Spinner from 'public/spinner.svg'
 import Sparkles from 'public/sparkles.svg'
 import Plus from 'public/plus.svg'
@@ -29,7 +32,6 @@ import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
 import Breadcrumbs from 'components/Breadcrumbs'
-import Card from 'components/Project/Card'
 
 const translatorColors = [
   { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
@@ -174,10 +176,11 @@ function ChapterVersesPage() {
       toast.success(t('SaveSuccess'))
     }
   }
+  const [isOpenMenu, setIsOpenMenu] = useState(false)
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
-        <div className="flex flex-col gap-7 w-2/3">
+        <div className="flex flex-col gap-7 w-full sm:w-2/3">
           <Breadcrumbs
             full
             links={[
@@ -226,7 +229,7 @@ function ChapterVersesPage() {
                         >
                           <div
                             className={`${
-                              [0, 200].includes(verse.num) ? 'text-xl' : 'text-2xl'
+                              [0, 200].includes(verse.num) ? 'text-xl' : 'text-xl'
                             } font-bold text-ellipsis overflow-hidden`}
                           >
                             {verse.num === 0
@@ -272,7 +275,8 @@ function ChapterVersesPage() {
             </div>
           </div>
         </div>
-        <div className="w-1/3">
+
+        <div className="hidden sm:block w-1/3">
           <div className="sticky top-7 flex flex-col gap-7">
             <Card title={t('chapters:Assignment')}>
               <div className="flex flex-col gap-3">
@@ -408,6 +412,190 @@ function ChapterVersesPage() {
           </div>
         </div>
       </div>
+      <Menu>
+        {({ open }) => (
+          <>
+            <div
+              className={`inset-0 bg-black opacity-50 backdrop-filter ${
+                open ? 'fixed' : 'hidden'
+              } `}
+            ></div>
+            <Menu.Button
+              className={`fixed sm:hidden p-4 translate-y-1/2 
+               bottom-[60vh] 
+               right-10 z-50 rounded-full bg-slate-600 text-white transition-all duration-700 shadow-2xl`}
+            >
+              <Plus
+                className={`w-7 h-7 transition-all duration-700 ${
+                  open ? 'rotate-45' : 'rotate-0'
+                } `}
+              />
+            </Menu.Button>
+            <Transition
+              as={Fragment}
+              show={open}
+              enter="transition-all duration-700 ease-in-out transform"
+              enterFrom="translate-y-full"
+              enterTo="translate-y-0"
+              leave="transition-all duration-700 ease-in-out transform"
+              leaveFrom="translate-y-0"
+              leaveTo="translate-y-full"
+            >
+              <div
+                className={`fixed bottom-0 left-0 w-full min-h-[60vh] overflow-y-auto rounded-t-2xl shadow-md bg-white`}
+              >
+                {open && (
+                  <Menu.Items>
+                    <div className="flex gap-2 items-center">
+                      <div className="p-4 text-xl font-bold">{t('Participants')}</div>
+                      <Link href={`/projects/${project?.code}/edit?setting=participants`}>
+                        <a>
+                          <Gear className="w-6 h-6 min-w-[1.5rem]" />
+                        </a>
+                      </Link>
+                    </div>
+
+                    <Menu.Item
+                      as="div"
+                      className="px-4 h-full"
+                      onClick={(e) => e.preventDefault()}
+                    >
+                      <div className="flex flex-col gap-3 h-full">
+                        <div className="grid grid-cols-2 gap-3 max-h-[30vh] overflow-y-scroll px-2">
+                          {translators.length > 0 ? (
+                            translators?.map((translator, index) => (
+                              <div key={index} className="flex">
+                                <div
+                                  onClick={() => setCurrentTranslator(translator)}
+                                  className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
+                                    currentTranslator?.users?.login ===
+                                    translator.users.login
+                                      ? `${translator.color.bg} text-white shadow-md`
+                                      : `${translator.color.text} text-slate-900`
+                                  } ${
+                                    translator.color.border
+                                  } border-2 cursor-pointer rounded-2xl`}
+                                >
+                                  <div className="avatar-block w-10 flex-grow-0">
+                                    <div
+                                      className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
+                                    >
+                                      {translator.users.login.slice(0, 1)}
+                                    </div>
+                                  </div>
+                                  <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
+                                    {translator.users.login} <br />
+                                    {translator.users.email}
+                                  </div>
+                                  <div className="icon-block flex-grow-0"></div>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <>
+                              {[...Array(4).keys()].map((el) => (
+                                <div
+                                  role="status"
+                                  className="w-full animate-pulse"
+                                  key={el}
+                                >
+                                  <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                                </div>
+                              ))}
+                            </>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3 pt-2border-t border-gray-400">
+                          <Button
+                            onClick={verseDividing}
+                            text={t('Save')}
+                            color="green"
+                            icon={<Check className="w-5 h-5" />}
+                          />
+                          <Button
+                            onClick={() =>
+                              setVersesDivided(
+                                verses?.map((verse) => ({
+                                  ...verse,
+                                  color: defaultColor,
+                                  translator_name: '',
+                                  project_translator_id: null,
+                                }))
+                              )
+                            }
+                            text={t('Reset')}
+                            color="red"
+                            icon={<Trash className="w-5 h-5" />}
+                          />
+                          {!chapter?.finished_at &&
+                            (!chapter?.started_at ? (
+                              <Button
+                                onClick={changeStartChapter}
+                                text={t('chapters:StartChapter')}
+                                color={'green'}
+                                icon={<Check className="w-5 h-5" />}
+                                disabled={chapter?.finished_at || isValidating}
+                                avatar={
+                                  isValidating || isLoading ? (
+                                    <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                                  ) : (
+                                    ''
+                                  )
+                                }
+                              />
+                            ) : (
+                              <Button
+                                onClick={changeStartChapter}
+                                text={t('chapters:CancelStartChapter')}
+                                color={'red'}
+                                icon={<Trash className="w-5 h-5" />}
+                                disabled={chapter?.finished_at || isValidating}
+                                avatar={
+                                  isValidating || isLoading ? (
+                                    <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                                  ) : (
+                                    ''
+                                  )
+                                }
+                              />
+                            ))}
+                          {chapter?.started_at && (
+                            <Button
+                              onClick={changeFinishChapter}
+                              text={
+                                !chapter?.finished_at
+                                  ? t('chapters:FinishedChapter')
+                                  : t('chapters:CancelFinishedChapter')
+                              }
+                              color={!chapter?.finished_at ? 'amber' : 'red'}
+                              icon={
+                                !chapter?.finished_at ? (
+                                  <Sparkles className="w-5 h-5" />
+                                ) : (
+                                  <Trash className="w-5 h-5" />
+                                )
+                              }
+                              disabled={isValidating}
+                              avatar={
+                                isValidating || isLoading ? (
+                                  <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                                ) : (
+                                  ''
+                                )
+                              }
+                            />
+                          )}
+                        </div>
+                      </div>
+                    </Menu.Item>
+                  </Menu.Items>
+                )}
+              </div>
+            </Transition>
+          </>
+        )}
+      </Menu>
       <Toaster />
     </div>
   )

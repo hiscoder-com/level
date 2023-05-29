@@ -138,12 +138,15 @@ export default function ProgressPage({ last_step }) {
             <p>{t('AreYouSureGoToNextStep')}</p>
           </div>
 
-          <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
-            <button className="btn-secondary mx-2" onClick={handleNextStep}>
+          <div className="flex justify-center self-center gap-7 w-1/2">
+            <button className="btn-secondary flex-1" onClick={handleNextStep}>
               {t('Yes')}
             </button>
 
-            <button className="btn-secondary mx-2" onClick={() => setIsOpenModal(false)}>
+            <button
+              className="btn-secondary flex-1"
+              onClick={() => setIsOpenModal(false)}
+            >
               {t('No')}
             </button>
           </div>

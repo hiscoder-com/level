@@ -963,6 +963,7 @@
     CREATE TABLE PUBLIC.projects (
       id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       title TEXT NOT NULL,
+      orig_title TEXT NOT NULL,
       code TEXT NOT NULL,
       language_id BIGINT REFERENCES PUBLIC.languages ON
       DELETE
@@ -1169,6 +1170,7 @@
         CASCADE NOT NULL,
       "text" TEXT DEFAULT NULL,
       chapters JSON,
+      level_checks JSON,
       properties JSON DEFAULT NULL,
       UNIQUE (project_id, code)
     );

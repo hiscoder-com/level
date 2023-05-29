@@ -97,7 +97,7 @@ function ProjectPersonalCard({ project, token, user }) {
   return (
     <>
       {Object.keys(chapters).length > 0 && (
-        <div className="flex flex-col gap-7">
+        <div className="flex flex-col gap-3 sm:gap-7">
           {Object.keys(chapters).map((book, i) => {
             return (
               <div key={i} className="card flex flex-col sm:flex-row gap-7 p-7 h-full">
@@ -105,7 +105,7 @@ function ProjectPersonalCard({ project, token, user }) {
                   <>
                     <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
-                        <div className="text-2xl font-bold">{t(`books:${book}`)}</div>
+                        <div className="text-xl font-bold">{t(`books:${book}`)}</div>
                         <div className="pt-1">{`(${t('Chapter', {
                           count: countChaptersVerses?.[book]?.countChapters,
                         })} ${t('Verse', {
@@ -114,17 +114,19 @@ function ProjectPersonalCard({ project, token, user }) {
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
-                          <p className="text-lg">{t('Project')}:</p>
+                          <p>{t('Project')}:</p>
                           <Link href={`/projects/${project.code}`}>
-                            <a className="text-lg text-teal-500">{project?.title}</a>
+                            <a className="text-cyan-700 hover:text-gray-500">
+                              {project?.title}
+                            </a>
                           </Link>
                         </div>
                         <div className="flex gap-3">
-                          <p className="text-lg">{t('Translators')}:</p>
+                          <p>{t('Translators')}:</p>
                           <Translators projectCode={project?.code} size="25px" />
                         </div>
                         <div className="flex gap-3">
-                          <p className="text-lg">
+                          <p>
                             {t('Begin')}:{' '}
                             {chapters &&
                               readableDate(
@@ -139,7 +141,7 @@ function ProjectPersonalCard({ project, token, user }) {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap gap-3 content-start w-1/2 lg:w-2/3 text-sm">
+                    <div className="sm:flex sm:flex-wrap gap-1 sm:gap-3 grid grid-cols-1 content-start w-3/4 sm:w-1/2 lg:w-2/3 text-sm">
                       {chapters[book].map((step, index) => {
                         const stepLink = (
                           <>
@@ -170,17 +172,23 @@ function ProjectPersonalCard({ project, token, user }) {
                                 : ''
                             }`}
                           >
-                            <a className="btn-primary flex gap-2">{stepLink}</a>
+                            <a className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base">
+                              {stepLink}
+                            </a>
                           </Link>
                         ) : (
-                          <button key={index} className="btn-primary flex gap-2" disabled>
+                          <button
+                            key={index}
+                            className="btn-primary flex justify-center gap-1 sm:gap-2"
+                            disabled
+                          >
                             {stepLink}
                           </button>
                         )
                       })}
                       {briefResume === '' && (
                         <Link href={`/projects/${project?.code}/edit?setting=brief`}>
-                          <a className="btn-primary flex gap-2">
+                          <a className="btn-primary flex gap-1 sm:gap-2">
                             {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                           </a>
                         </Link>

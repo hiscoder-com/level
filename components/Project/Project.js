@@ -17,12 +17,12 @@ function Project({ code }) {
     })
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
-      <div className="static xl:sticky top-7 flex flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
-        <div className="flex flex-col gap-7 w-1/2 xl:w-full">
+      <div className="static xl:sticky top-7 flex flex-col sm:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
+        <div className="flex flex-col gap-7 w-full sm:w-1/2 xl:w-full">
           <ProjectInfo project={project} access={isCoordinatorAccess} />
           <ParticipantInfo project={project} user={user} access={isModeratorAccess} />
         </div>
-        <div className="w-1/2 xl:w-full">
+        <div className="w-full sm:w-1/2 xl:w-full">
           <ResumeInfo project={project} user={user} />
         </div>
       </div>

@@ -15,13 +15,13 @@ function Layout({ backgroundColor, children }) {
       <div
         className={
           isOpenSideBar
-            ? 'absolute top-16 left-0 bottom-0 right-0 backdrop-blur-xl z-10 overflow-y-hidden'
+            ? 'absolute top-14 left-0 bottom-0 right-0 backdrop-blur-xl z-10 overflow-y-hidden'
             : ''
         }
         onClick={() => setIsOpenSideBar(false)}
       ></div>
       <main>
-        <div className="pt-5 px-5 lg:px-8">{children}</div>
+        <div className="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto">{children}</div>
       </main>
     </div>
   )

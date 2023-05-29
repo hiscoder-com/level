@@ -326,34 +326,60 @@ function Download({
           selectedOption={downloadType}
         />
         <div className="flex gap-7 items-end">
-          <div className="flex flex-col gap-6 w-full">
+          <div className="flex flex-col w-full">
             {Object.keys(downloadSettings)
               .filter((key) => project?.type === 'obs' || key === 'withFront')
               .map((key, index) => {
                 return (
-                  <div key={index} className="flex justify-between items-center gap-2">
-                    <label htmlFor={t(key)}>{t(key)}</label>
-                    <input
-                      id={t(key)}
-                      className="h-7 w-7 cursor-pointer accent-teal-600"
-                      type="checkbox"
-                      checked={downloadSettings[key]}
-                      onChange={() =>
-                        setDownloadSettings((prev) => {
-                          return { ...prev, [key]: !downloadSettings[key] }
-                        })
-                      }
-                    />
+                  <div className="inline-flex justify-between items-center" key={key}>
+                    <label htmlFor={key}>{t(key)}</label>
+
+                    <label
+                      className="relative flex cursor-pointer items-center rounded-full p-3"
+                      htmlFor={key}
+                      data-ripple-dark="true"
+                    >
+                      <input
+                        id={key}
+                        type="checkbox"
+                        className="w-7 h-7 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-cyan-700 bg-white checked:bg-cyan-700 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
+                        checked={downloadSettings[key]}
+                        onChange={() =>
+                          setDownloadSettings((prev) => {
+                            return { ...prev, [key]: !downloadSettings[key] }
+                          })
+                        }
+                      />
+                      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
+                        <svg
+                          width="15"
+                          height="11"
+                          viewBox="0 0 15 11"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            clipRule="evenodd"
+                            d="M14.1449 0.762586C14.4429 1.06062 14.4429 1.54382 14.1449 1.84185L5.75017 10.2366C5.45214 10.5346 4.96894 10.5346 4.67091 10.2366L0.855116 6.4208C0.557084 6.12277 0.557084 5.63957 0.855116 5.34153C1.15315 5.0435 1.63635 5.0435 1.93438 5.34153L5.21054 8.61769L13.0656 0.762586C13.3637 0.464555 13.8469 0.464555 14.1449 0.762586Z"
+                            fill="white"
+                          />
+                        </svg>
+                      </div>
+                    </label>
                   </div>
                 )
               })}
           </div>
         </div>
-        <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
-          <button className="btn-secondary" onClick={() => setIsOpenDownloading(false)}>
+        <div className="flex self-center gap-7 w-3/4">
+          <button
+            className="btn-secondary flex-1"
+            onClick={() => setIsOpenDownloading(false)}
+          >
             {t('Close')}
           </button>
-          <button onClick={handleSave} className="btn-secondary">
+          <button onClick={handleSave} className="btn-secondary flex-1">
             {t('Save')}
           </button>
         </div>

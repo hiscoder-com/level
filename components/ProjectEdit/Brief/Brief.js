@@ -113,7 +113,7 @@ function Brief({ access }) {
                   checked={brief?.is_enable}
                   onChange={handleSwitch}
                   className={`${
-                    brief?.is_enable ? 'bg-blue-600' : 'bg-gray-200'
+                    brief?.is_enable ? 'bg-cyan-600' : 'bg-gray-200'
                   } relative inline-flex h-7 w-12 items-center rounded-full`}
                 >
                   <span

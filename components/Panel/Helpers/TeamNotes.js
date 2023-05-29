@@ -168,9 +168,9 @@ function TeamNotes() {
           <div className="text-center text-2xl">
             {t('AreYouSureDelete') + ' ' + t(noteToDel?.title) + '?'}
           </div>
-          <div className="grid grid-cols-2 auto-cols-fr justify-center self-center gap-7">
+          <div className="flex gap-7 w-1/2">
             <button
-              className="btn-secondary"
+              className="btn-secondary flex-1"
               onClick={() => {
                 setIsOpenModal(false)
                 if (noteToDel) {
@@ -182,7 +182,7 @@ function TeamNotes() {
               {t('Yes')}
             </button>
             <button
-              className="btn-secondary"
+              className="btn-secondary flex-1"
               onClick={() => {
                 setIsOpenModal(false)
                 setTimeout(() => {

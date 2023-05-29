@@ -101,11 +101,11 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
       .catch(console.log)
   }
   return (
-    <div className="card text-darkBlue">
-      <h3 className="mb-5 text-2xl font-bold">{t('Participants')}</h3>
-      <div className="divide-y divide-black">
+    <div className="card text-slate-900">
+      <h3 className="hidden sm:block mb-5 text-2xl font-bold">{t('Participants')}</h3>
+      <div className="hidden sm:block divide-y divide-black">
         <div className="flex flex-col gap-7 pb-5">
-          <div className="flex justify-between items-center gap-2 text-xl font-bold">
+          <div className="flex justify-between items-center gap-2">
             <div>{t('Coordinator', { count: 0 })}</div>
             {isAdminAccess && (
               <button
@@ -119,16 +119,14 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
               </button>
             )}
           </div>
-
           <CoordinatorsList
             coordinators={coordinators}
             setSelectedCoordinator={setSelectedCoordinator}
             access={isAdminAccess}
           />
         </div>
-
-        <div className="flex flex-col gap-7 pt-5">
-          <div className="flex justify-between items-center text-xl font-bold">
+        <div className="flex-col gap-7 pt-5">
+          <div className="flex justify-between items-center">
             <div>{t('projects:Translators')}</div>
             <button
               onClick={() => {
@@ -151,16 +149,16 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
             isOpen={selectedModerator ? Object.keys(selectedModerator).length > 0 : false}
             closeHandle={() => setSelectedModerator(false)}
           >
-            <div className="flex flex-col gap-7 min-h-[15vh]">
+            <div className="flex flex-col justify-center gap-7 min-h-[15vh]">
               <div className="text-2xl text-center">
                 {moderatorIds?.includes(selectedModerator?.id)
                   ? t('project-edit:RemovingModerator')
                   : t('project-edit:AssigningModerator')}
               </div>
 
-              <div className="flex flex-row justify-center gap-7 text-center">
+              <div className="flex justify-center self-center gap-7 w-2/3 text-center">
                 <button
-                  className="btn-primary"
+                  className="btn-secondary flex-1"
                   onClick={() =>
                     changeModerator(
                       moderatorIds?.includes(selectedModerator.id)
@@ -176,7 +174,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
                 </button>
 
                 <button
-                  className="btn-primary"
+                  className="btn-secondary flex-1"
                   onClick={() => setSelectedModerator(false)}
                 >
                   {t('Close')}
@@ -184,6 +182,50 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
               </div>
             </div>
           </Modal>
+        </div>
+      </div>
+      <div className="block sm:hidden divide-y divide-black">
+        <div className="flex flex-col gap-3 pb-5">
+          <div className="flex justify-between items-center gap-2">
+            <div>{t('Coordinator', { count: 0 })}</div>
+          </div>
+          <CoordinatorsList
+            coordinators={coordinators}
+            setSelectedCoordinator={setSelectedCoordinator}
+            access={isAdminAccess}
+          />
+          {isAdminAccess && (
+            <button
+              onClick={() => {
+                setOpenModalAssignCoordinator(true)
+                setSelectedUser(listOfCoordinators?.[0]?.id)
+              }}
+              className="btn-primary truncate"
+            >
+              {t('project-edit:AddCoordinator')}
+            </button>
+          )}
+        </div>
+        <div className="flex flex-col gap-3 sm:gap-7 pt-5">
+          <div className="flex justify-between items-center">
+            <div>{t('projects:Translators')}</div>
+          </div>
+          <TranslatorsList
+            translators={translators}
+            setSelectedModerator={setSelectedModerator}
+            setSelectedTranslator={setSelectedTranslator}
+            access={isCoordinatorAccess}
+          />
+          <button
+            onClick={() => {
+              setOpenModalAssignTranslator(true)
+              setSelectedUser(listOfTranslators?.[0]?.id)
+            }}
+            className="btn-primary"
+          >
+            {t('project-edit:AddTranslator')}
+          </button>
+
           <div>
             {[
               {
