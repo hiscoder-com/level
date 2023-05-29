@@ -323,7 +323,7 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             для первой версии мы можем создать проект в ручную, и отложить разработку на
             время после запуска
           </p>
-          <input className="btn-cyan btn-filled" type="submit" title={t('SaveProject')} />
+          <input className="btn-cyan btn-filled" type="submit" value={t('SaveProject')} />
         </form>
       </div>
     </div>

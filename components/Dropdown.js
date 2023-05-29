@@ -34,7 +34,6 @@ function Dropdown({ description, user }) {
         !toolsButton?.current?.contains(e.target) &&
         !dropdownMenu?.current?.contains(e.target)
       ) {
-        // если дропдаун открыт, клик не по иконке Tools и не внутри меню, то закрываем дропдаун
         setIsOpen(false)
       }
     }
@@ -129,7 +128,7 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
 
   return (
     <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal')}>
-      <div className="my-6 py-3 max-h-[50vh] overflow-auto">
+      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-scroll">
         <p className="text-sm text-white whitespace-pre-line">
           {description.replaceAll('\n\n', '\n')}
         </p>
@@ -164,7 +163,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
         closeHandle={closeModal}
         title={t('TranslationGoal')}
       >
-        <div className="my-6 py-3 max-h-[50vh] text-sm text-white overflow-auto">
+        <div className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-white overflow-y-scroll">
           {briefResume?.map((resumeItem, index) => (
             <li key={index}>{resumeItem}</li>
           ))}

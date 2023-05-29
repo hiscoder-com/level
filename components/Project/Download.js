@@ -326,7 +326,7 @@ function Download({
           selectedOption={downloadType}
         />
         <div className="flex gap-7 items-end">
-          <div className="flex flex-col gap-6 w-full">
+          <div className="flex flex-col w-full">
             {Object.keys(downloadSettings)
               .filter((key) => project?.type === 'obs' || key === 'withFront')
               .map((key, index) => {
