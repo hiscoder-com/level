@@ -7,5 +7,6 @@
   "EnableBrief": "Включить бриф",
   "RemovingCoordinator": "Удаление координатора",
   "RemovingModerator": "Удаление модератора",
-  "RemovingTranslator": "Удаление переводчика"
+  "RemovingTranslator": "Удаление переводчика",
+  "Summary": "Обобщение"
 }
