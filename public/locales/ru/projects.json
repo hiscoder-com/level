@@ -6,12 +6,14 @@
   "Code": "Код проекта",
   "CodeMessage": "Используйте код языка и код проекта, разделенные нижним подчеркиванием",
   "Coordinator": "координатора",
+  "Coordinators": "Координаторы",
   "CreateProject": "Создать проект",
   "Delete": "Удалить",
   "Information": "Информация",
   "Language": "Язык",
   "Method": "Метод",
   "MyProjects": "Мои Проекты",
+  "OrigTitle": "Название на целевом языке",
   "ProjectBooks": "Книги проекта",
   "ProjectCode": "Код проекта",
   "ProjectEditing": "Редактирование проекта",
@@ -21,5 +23,6 @@
   "SaveProject": "Сохранить проект",
   "Title": "Название проекта",
   "Translator": "переводчика",
+  "Translators": "Переводчики",
   "V-CANAProjects": "Проекты V-CANA"
 }
