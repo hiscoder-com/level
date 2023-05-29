@@ -13,7 +13,7 @@ import Localization from 'public/localization.svg'
 import { useCurrentUser } from 'lib/UserContext'
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
-  const { t } = useTranslation('users')
+  const { t } = useTranslation('projects')
 
   return (
     <>

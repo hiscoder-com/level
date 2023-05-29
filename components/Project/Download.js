@@ -372,7 +372,7 @@ function Download({
               })}
           </div>
         </div>
-        <div className="flex self-center gap-7 w-3/4">
+        <div className="flex self-center gap-7 w-auto sm:w-3/4">
           <button
             className="btn-secondary flex-1"
             onClick={() => setIsOpenDownloading(false)}

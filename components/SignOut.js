@@ -8,7 +8,7 @@ import { supabase } from 'utils/supabaseClient'
 
 export default function SignOut() {
   const [loading, setLoading] = useState(false)
-  const { t } = useTranslation(['users'])
+  const { t } = useTranslation('users')
   const router = useRouter()
 
   const handleLogout = async () => {
@@ -30,7 +30,7 @@ export default function SignOut() {
       onClick={handleLogout}
       className="bg-gray-200 w-full py-2 rounded-lg text-slate-600 text-lg font-bold"
     >
-      {t('SignOut')}
+      {t('users:SignOut')}
     </button>
   )
 }

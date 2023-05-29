@@ -69,7 +69,7 @@ function ChapterCreate({
       className={!isCreated ? 'primary' : 'secondary'}
     >
       <div className="flex flex-col justify-center items-center gap-7 min-h-[15vh]">
-        <div className="flex flex-row gap-2 mb-4 text-2xl">
+        <div className="flex flex-row gap-2 mb-4 text-xl text-center">
           <p>{textModal}</p>
           {isCreating && !isCreated && <p className="animate-pulse">...</p>}
         </div>
