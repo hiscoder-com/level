@@ -102,11 +102,11 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
   }
   return (
     <div className="card text-slate-900">
-      <h3 className="hidden sm:block mb-5 text-2xl font-bold">{t('Participants')}</h3>
+      <h3 className="hidden sm:block mb-5 text-xl font-bold">{t('Participants')}</h3>
       <div className="hidden sm:block divide-y divide-black">
         <div className="flex flex-col gap-7 pb-5">
           <div className="flex justify-between items-center gap-2">
-            <div>{t('Coordinator', { count: 0 })}</div>
+            <div>{t('projects:Coordinators')}</div>
             {isAdminAccess && (
               <button
                 onClick={() => {
@@ -125,7 +125,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
             access={isAdminAccess}
           />
         </div>
-        <div className="flex-col gap-7 pt-5">
+        <div className="flex flex-col gap-7 pt-5">
           <div className="flex justify-between items-center">
             <div>{t('projects:Translators')}</div>
             <button
