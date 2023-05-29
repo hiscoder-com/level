@@ -34,7 +34,6 @@ function Dropdown({ description, user }) {
         !toolsButton?.current?.contains(e.target) &&
         !dropdownMenu?.current?.contains(e.target)
       ) {
-        // если дропдаун открыт, клик не по иконке Tools и не внутри меню, то закрываем дропдаун
         setIsOpen(false)
       }
     }
@@ -47,7 +46,7 @@ function Dropdown({ description, user }) {
   return (
     <div>
       <div
-        className="relative hidden px-3 py-4 rounded-md whitespace-nowrap cursor-pointer md:flex"
+        className="relative hidden md:flex px-3 py-4 rounded-md whitespace-nowrap cursor-pointer"
         onClick={toggle}
         ref={toolsButton}
       >
@@ -58,7 +57,7 @@ function Dropdown({ description, user }) {
         <>
           <div
             ref={dropdownMenu}
-            className="absolute flex flex-col right-5 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40 xl:right-0"
+            className="absolute flex flex-col justify-center right-5 xl:right-0 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40"
           >
             <button
               className="px-4 py-2 rounded-t-lg	hover:bg-cyan-50
@@ -97,7 +96,7 @@ function Dropdown({ description, user }) {
         closeModal={closeModal}
       />
 
-      <div className="py-1 whitespace-nowrap text-xs font-bold border-2 border-cyan-600 rounded-md divide-x divide-solid md:hidden">
+      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold border-2 border-cyan-600 rounded-md divide-x divide-solid md:hidden">
         <button
           className="px-2 rounded-l-lg active:bg-cyan-50"
           onClick={(e) => {
@@ -129,13 +128,13 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
 
   return (
     <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal')}>
-      <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
-        <p className="text-sm text-gray-500 whitespace-pre-line">
+      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-scroll">
+        <p className="text-sm text-white whitespace-pre-line">
           {description.replaceAll('\n\n', '\n')}
         </p>
       </div>
       <div className="text-center">
-        <button className="btn-cyan" onClick={closeModal}>
+        <button className="btn-secondary" onClick={closeModal}>
           {t('Close')}
         </button>
       </div>
@@ -164,15 +163,13 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
         closeHandle={closeModal}
         title={t('TranslationGoal')}
       >
-        <div className="my-6 py-3 overflow-auto" style={{ maxHeight: '50vh' }}>
+        <div className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-white overflow-y-scroll">
           {briefResume?.map((resumeItem, index) => (
-            <li key={index} className="text-sm text-gray-500">
-              {resumeItem}
-            </li>
+            <li key={index}>{resumeItem}</li>
           ))}
         </div>
         <div className="text-center">
-          <button className="btn-cyan" onClick={closeModal}>
+          <button className="btn-secondary" onClick={closeModal}>
             {t('Close')}
           </button>
         </div>

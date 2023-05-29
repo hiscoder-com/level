@@ -25,12 +25,12 @@ export default function SignOut() {
   }
 
   return (
-    <div className="flex justify-center flex-col text-xl my-5">
-      <div>
-        <button disabled={loading} onClick={handleLogout} className="btn-blue">
-          {t('SignOut')}
-        </button>
-      </div>
-    </div>
+    <button
+      disabled={loading}
+      onClick={handleLogout}
+      className="bg-gray-200 w-full py-2 rounded-lg text-slate-600 text-lg font-bold"
+    >
+      {t('SignOut')}
+    </button>
   )
 }

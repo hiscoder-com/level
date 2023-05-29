@@ -68,7 +68,7 @@ function VersesExtended({ verseObjects, handleSave, scrollId }) {
           <div
             key={verseObject.verse}
             onClick={() => handleSave(verseObject.verse)}
-            className={`my-3 flex items-start ${
+            className={`my-3 flex items-start select-none ${
               scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''
             }`}
           >

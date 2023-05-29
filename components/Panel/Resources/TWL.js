@@ -63,10 +63,10 @@ function TWLList({ setItem, data, toolName }) {
                       itemFilter = false
                       break
                     case 'verse':
-                      itemFilter = item.repeatedInVerse
+                      itemFilter = item.isRepeatedInVerse
                       break
                     case 'book':
-                      itemFilter = item.repeatedInBook
+                      itemFilter = item.isRepeatedInBook
                       break
 
                     default:

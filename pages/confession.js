@@ -7,16 +7,16 @@ export default function Confession() {
   const { t } = useTranslation('common', 'users')
   return (
     <div className="layout-appbar">
-      <div className="text-center mx-5 max-w-lg whitespace-pre-line">
-        <h1 className="h1 mb-6">{t('users:Confession')}:</h1>
+      <div className="mx-5 max-w-lg text-center whitespace-pre-line">
+        <h1 className="mb-6 text-4xl">{t('users:Confession')}:</h1>
 
         <p
           dangerouslySetInnerHTML={{
             __html: t('DescriptionConfession', { interpolation: { escapeValue: false } }),
           }}
-          className="h5 mb-2"
+          className="mb-2"
         />
-        <p className="h6 font-light">
+        <p className="text-sm font-light">
           {t('OfficialVersion')}
           <a
             href="https://texttree.org/"

@@ -11,9 +11,9 @@ export default async function info(req, res) {
           .select('id, project_id, config, sorting, projects(resources)')
         if (error) throw error
 
-        for (const step of steps) {
-          let url = 'https://git.door43.org/'
+        const host = process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
 
+        for (const step of steps) {
           if (!step.projects.resources?.tnotes) {
             continue
           }
@@ -34,7 +34,7 @@ export default async function info(req, res) {
 
           const { owner, repo } = step.projects.resources.tnotes
 
-          url = url + owner + '/' + repo
+          const url = host + '/' + owner + '/' + repo
 
           const info = { name: 'info', config: { repo: url } }
 
