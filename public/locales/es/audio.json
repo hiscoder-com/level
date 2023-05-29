@@ -1,13 +1,13 @@
 {
-  "Finished": "Закончить пересказ",
-  "InOriginalLanguage": "На исходном языке",
-  "InTargetLanguage": "На целевом языке",
-  "MicrophoneAccess": "Доступ к микрофону",
-  "OriginalRecording": "Пересказ на исходном языке:",
-  "RetellPartner": "Пересказать напарнику",
-  "RetellYourself": "Пересказать себе",
-  "StartRetelling": "Начать пересказ напарнику:",
-  "TargetRecording": "Пересказ на целевом языке:",
-  "Title": "Нет возможности пересказать напарнику?",
-  "TurnMicrophone": "Приложению V-Cana нужен доступ к микрофону. Нажмите на значок заблокированной камеры(микрофона) в адресной строке. Разрешите доступ и перезагрузите страницу."
+  "Finished": "Terminar la narración",
+  "InOriginalLanguage": "En la lengua original",
+  "InTargetLanguage": "En la lengua meta",
+  "MicrophoneAccess": "Acceso al micrófono",
+  "OriginalRecording": "Volver a contar en la lengua original:",
+  "RetellPartner": "Contar a su compañero",
+  "RetellYourself": "Contar para sí mismo",
+  "StartRetelling": "Volver a contar a un compañero",
+  "TargetRecording": "Volver a contar en la lengua de llegada:",
+  "Title": "¿No hay forma de decírselo a tu compañero?",
+  "TurnMicrophone": "La aplicación V-Cana necesita acceso al micrófono. Haz clic en el icono de la cámara bloqueada (micrófono) en la barra de direcciones. Permita el acceso y vuelva a cargar la página."
 }

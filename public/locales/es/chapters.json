@@ -1,9 +1,10 @@
 {
-  "CancelFinishedChapter": "Отменить 'Закончить главу'",
-  "CancelStartChapter": "Отменить 'Начать главу'",
-  "Created": "Создано",
-  "FinishedAt": "Закончена",
-  "FinishedChapter": "Закончить главу",
-  "StartChapter": "Начать главу",
-  "StartedAt": "Начата"
+  "Assignment": "Asignación de versículos",
+  "CancelFinishedChapter": "Cancel finished chapter",
+  "CancelStartChapter": "Cancel started chapter",
+  "Created": "Created",
+  "FinishedAt": "Finished at",
+  "FinishedChapter": "Finish the chapter",
+  "StartChapter": "Start the chapter",
+  "StartedAt": "Started at"
 }
