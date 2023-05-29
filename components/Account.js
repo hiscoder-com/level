@@ -96,7 +96,7 @@ function Account() {
         {({ open }) => (
           <>
             <div
-              className={`inset-0 bg-black opacity-50 backdrop-filter backdrop-blur ${
+              className={`inset-0 bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur ${
                 open ? 'fixed' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}
