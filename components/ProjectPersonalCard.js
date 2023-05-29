@@ -114,7 +114,7 @@ function ProjectPersonalCard({ project, token, user }) {
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
-                          <p>{t('Project')}:</p>
+                          <p>{t('projects:Project')}:</p>
                           <Link href={`/projects/${project.code}`}>
                             <a className="text-cyan-700 hover:text-gray-500">
                               {project?.title}
@@ -122,12 +122,12 @@ function ProjectPersonalCard({ project, token, user }) {
                           </Link>
                         </div>
                         <div className="flex gap-3">
-                          <p>{t('Translators')}:</p>
+                          <p>{t('Translator_other')}:</p>
                           <Translators projectCode={project?.code} size="25px" />
                         </div>
                         <div className="flex gap-3">
                           <p>
-                            {t('Begin')}:{' '}
+                            {t('projects:Begin')}:{' '}
                             {chapters &&
                               readableDate(
                                 Math.min(
@@ -155,7 +155,7 @@ function ProjectPersonalCard({ project, token, user }) {
                             </span>
                             <span>|</span>
                             <span>
-                              {t('Step', { count: parseInt(step?.step) }).toLowerCase()}
+                              {step?.step} {t('Step').toLowerCase()}
                             </span>
                           </>
                         )

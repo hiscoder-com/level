@@ -3,7 +3,7 @@ import { useTranslation } from 'next-i18next'
 import Card from './Card'
 
 function ProjectInfo({ project, access }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['projects', 'common'])
   const info = [
     { label: 'OrigTitle', value: project?.orig_title },
     { label: 'ProjectCode', value: project?.code },
