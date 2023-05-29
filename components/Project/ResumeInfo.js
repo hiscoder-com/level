@@ -3,7 +3,7 @@ import { useGetBrief } from 'utils/hooks'
 import Card from './Card'
 
 function ResumeInfo({ project, user }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'projects'])
   const [brief] = useGetBrief({
     token: user?.access_token,
     project_id: project?.id,
@@ -11,7 +11,7 @@ function ResumeInfo({ project, user }) {
 
   return (
     <Card
-      title={`${t('TranslationGoal')} / ${t('Resume')}`}
+      title={`${t('TranslationGoal')} / ${t('projects:Resume')}`}
       link={`/projects/${project?.code}/edit?setting=brief`}
       isOpen={false}
       access
