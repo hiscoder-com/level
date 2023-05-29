@@ -8,14 +8,16 @@ function Layout({ backgroundColor, children }) {
   return (
     <div
       className={`mx-auto min-h-screen ${backgroundColor} ${
-        isOpenSideBar ? 'backdrop-blur-xl overflow-y-hidden h-[100vh]' : ''
+        isOpenSideBar
+          ? 'backdrop-blur bg-gray-300 bg-opacity-25 overflow-y-hidden h-[100vh]'
+          : ''
       } `}
     >
       <AppBar setIsOpenSideBar={setIsOpenSideBar} isOpenSideBar={isOpenSideBar} />
       <div
         className={
           isOpenSideBar
-            ? 'absolute top-14 left-0 bottom-0 right-0 backdrop-blur-xl z-10 overflow-y-hidden'
+            ? 'absolute top-14 left-0 bottom-0 right-0 bg-gray-300 bg-opacity-25 backdrop-blur z-10 overflow-y-hidden'
             : ''
         }
         onClick={() => setIsOpenSideBar(false)}

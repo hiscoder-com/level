@@ -70,7 +70,7 @@ function ResourceSettings() {
   }
   return (
     <div className="card flex flex-col gap-7">
-      <h3 className="text-2xl font-bold">{t('ListResources')}</h3>
+      <h3 className="text-xl font-bold">{t('ListResources')}</h3>
       <CommitsList
         resourcesUrl={resourcesUrl}
         setResourcesUrl={setResourcesUrl}

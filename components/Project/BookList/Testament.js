@@ -94,10 +94,10 @@ function Testament({
                       <Transition
                         as={Fragment}
                         show={open}
-                        enter="transition-all duration-200 ease-in-out transform"
-                        enterFrom="translate-x-0"
+                        enter="transition-all duration-300 ease-in-out transform"
+                        enterFrom="translate-x-full"
                         enterTo="translate-x-0"
-                        leave="transition-all duration-200 ease-in-out transform"
+                        leave="transition-all duration-300 ease-in-out transform"
                         leaveFrom="translate-x-0"
                         leaveTo="translate-x-full"
                       >

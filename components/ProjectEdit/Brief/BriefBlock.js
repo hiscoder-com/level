@@ -103,7 +103,7 @@ function BriefBlock({ access }) {
     <div className="card">
       <div className="flex flex-col gap-7">
         <div className="flex flex-col sm:flex-row justify-between gap-7">
-          <h3 className="text-2xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
+          <h3 className="text-xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
           <div>
             {access && (
               <div className="flex">
