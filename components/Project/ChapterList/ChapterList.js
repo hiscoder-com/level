@@ -75,7 +75,7 @@ function ChapterList() {
     }
   }, [project?.id])
 
-  const getCurrentStep = (chapter, index) => {
+  const getCurrentStep = (chapter) => {
     const step = currentSteps
       ?.filter((step) => step.book === bookid)
       ?.find((step) => step.chapter === chapter.num)
@@ -92,7 +92,7 @@ function ChapterList() {
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
             >
-              <a onClick={(e) => e.stopPropagation()} className="text-sm xl:text-xl">
+              <a onClick={(e) => e.stopPropagation()} className="text-sm xl:text-lg">
                 {step.step} {t('Step').toLowerCase()}
               </a>
             </Link>
@@ -143,7 +143,7 @@ function ChapterList() {
                         } border-2`}
                       >
                         <div className="flex justify-between">
-                          <div className="text-2xl font-bold">{num}</div>
+                          <div className="text-xl font-bold">{num}</div>
                           <div>
                             {started_at && (
                               <div
@@ -165,9 +165,8 @@ function ChapterList() {
                             )}
                           </div>
                         </div>
-                        {finished_at ? (
+                        {finished_at && isModeratorAccess ? (
                           <div
-                            className="text-xl"
                             onClick={(e) => {
                               e.stopPropagation()
                               if (isModeratorAccess) {
@@ -176,7 +175,7 @@ function ChapterList() {
                               }
                             }}
                           >
-                            <p className="text-sm xl:text-xl">{t('Download')}</p>
+                            <p className="text-sm xl:text-lg">{t('Download')}</p>
                           </div>
                         ) : (
                           getCurrentStep(chapter)

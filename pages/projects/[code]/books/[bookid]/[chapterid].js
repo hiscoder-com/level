@@ -229,7 +229,7 @@ function ChapterVersesPage() {
                         >
                           <div
                             className={`${
-                              [0, 200].includes(verse.num) ? 'text-xl' : 'text-2xl'
+                              [0, 200].includes(verse.num) ? 'text-xl' : 'text-xl'
                             } font-bold text-ellipsis overflow-hidden`}
                           >
                             {verse.num === 0
