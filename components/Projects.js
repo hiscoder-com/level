@@ -1,46 +1,46 @@
-import Link from 'next/link'
-
-import { useTranslation } from 'next-i18next'
-
-import ProjectCard from 'components/ProjectCard'
+import ProjectCard from './ProjectCard'
+import ProjectPersonalCard from './ProjectPersonalCard'
 
 import { useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
-export default function Projects() {
+export default function Projects({ type }) {
   const { user } = useCurrentUser()
-  const { t } = useTranslation(['projects'])
-
   const [projects] = useProjects({
     token: user?.access_token,
   })
-  // здесь у нас придет массив проектов, разложенный по языкам
 
+  let CurrentCard
+  let className
+  switch (type) {
+    case 'projects':
+      CurrentCard = ProjectCard
+      className =
+        'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-7 py-10 md:py-10'
+      break
+    case 'account':
+      CurrentCard = ProjectPersonalCard
+      className = 'flex flex-col gap-3 sm:gap-7 py-10'
+      break
+    default:
+      break
+  }
   return (
     <>
-      <div className="h2 mt-4 mb-5">
-        {user?.is_admin ? t('Projects') : t('MyProjects')}
-      </div>
-      <div className="grid grid-cols-1 gap-7 my-3 sm:grid-cols-1 md:grid-cols-2 md:my-5 xl:grid-cols-3">
+      <div className={className}>
         {projects &&
-          projects.map((project) => {
-            return (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                token={user?.access_token}
-                userId={user?.id}
-              />
-            )
-          })}
+          projects.map(
+            (project) =>
+              project && (
+                <CurrentCard
+                  key={project.id}
+                  project={project}
+                  token={user?.access_token}
+                  user={user}
+                />
+              )
+          )}
       </div>
-      {user?.is_admin && (
-        <div className="mt-3 pb-5">
-          <Link href={'/projects/create'}>
-            <a className="btn-cyan">{t('AddNew')}</a>
-          </Link>
-        </div>
-      )}
     </>
   )
 }

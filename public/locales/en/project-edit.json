@@ -1,14 +1,16 @@
 {
-  "AddCoordinator": "Add coordinator",
-  "Answers": "Answers",
+  "AddCoordinator": "Add a coordinator",
+  "AddTranslator": "Add a translator",
+  "AddingCoordinator": "Adding a coordinator",
+  "AddingTranslator": "Adding a translator",
+  "Answer": "Answer",
   "AssigningModerator": "Moderator appointment",
-  "BriefSwitch": "Brief's switch",
   "DisableBrief": "Disable brief",
-  "EditBriefTitle": "BRIEF AND PURPOSE OF THE TRANSLATION",
+  "Brief": "Brief",
+  "EditBriefTitle": "Brief and purpose of the translation",
   "EnableBrief": "Enable brief",
-  "enterText": "Fill it out...",
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
   "RemovingTranslator": "Removing a translator",
-  "SummaryPlaceholder": "Describe the purpose of the translation..."
+  "Summary": "Summary"
 }

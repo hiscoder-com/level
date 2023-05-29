@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-import { useTranslation } from 'next-i18next'
 
 import { supabase } from 'utils/supabaseClient'
 
@@ -23,7 +22,6 @@ function CommandEditor({ config }) {
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
-  const { t } = useTranslation(['common'])
 
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
@@ -129,8 +127,8 @@ function CommandEditor({ config }) {
                   ? ['user', 'translator'].includes(level)
                   : !verseObject.editable
               )
-                ? 'text-blue-600'
-                : 'font-bold'
+                ? 'font-bold'
+                : 'text-blue-600'
             }
           >
             {obsCheckAdditionalVerses(verseObject.num)}

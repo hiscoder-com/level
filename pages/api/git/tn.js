@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-import { filterNotes, tsvToJson } from 'utils/tsvHelper'
+import { filterNotes } from 'utils/helper'
+import { tsvToJson } from '@texttree/translation-words-helpers'
 
 /**
  *  @swagger
@@ -75,11 +76,13 @@ export default async function tnHandler(req, res) {
   }
   let url = ''
   if (bookPath.slice(0, 2) === './') {
-    url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(
-      1
-    )}`
+    url = `${
+      process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
   } else {
-    url = `https://git.door43.org/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
+    url = `${
+      process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
   }
   try {
     const _data = await axios.get(url)

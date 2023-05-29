@@ -1,8 +1,6 @@
-import { useRef, useEffect, useState, Fragment } from 'react'
+import { useRef, useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
-
-import { Dialog, Transition } from '@headlessui/react'
 
 import { useRecoilState } from 'recoil'
 
@@ -14,8 +12,10 @@ import RecorderCrossedButton from 'public/error-outline.svg'
 import TrashButton from 'public/trash.svg'
 import PlayButton from 'public/play.svg'
 import PauseButton from 'public/pause.svg'
+import Modal from './Modal'
 
 export default function Recorder() {
+  const { t } = useTranslation(['audio', 'common'])
   const [, setInactive] = useRecoilState(inactiveState)
   const [showModal, setShowModal] = useState(false)
   const [mediaRec, setMediaRec] = useState()
@@ -24,7 +24,7 @@ export default function Recorder() {
     <RecorderButton className="stroke-cyan-700 stroke-2" />
   )
   const [buttonPlay, setButtonPlay] = useState(
-    <PlayButton className={'stroke-gray-300 stroke-2'} />
+    <PlayButton className="stroke-gray-300 stroke-2" />
   )
   const audioRef = useRef(null)
 
@@ -61,43 +61,42 @@ export default function Recorder() {
 
   useEffect(() => {
     if (voice.length > 0) {
-      setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
+      setButtonPlay(<PlayButton className="stroke-cyan-700 stroke-2" />)
       const blobUrl = window.URL.createObjectURL(
         new Blob(voice, { type: 'audio/webm;codecs=opus' })
       )
       audioRef.current.src = blobUrl
     } else if (audioRef.current) {
-      setButtonPlay(<PlayButton className={'stroke-gray-300 stroke-2'} />)
+      setButtonPlay(<PlayButton className="stroke-gray-300 stroke-2" />)
       audioRef.current.src = ''
     }
     audioRef.current.onended = () => {
       setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
     }
   }, [voice])
-
   const playPause = () => {
     if (audioRef.current.paused) {
       audioRef.current.play()
-      setButtonPlay(<PauseButton className={'stroke-cyan-700 stroke-2'} />)
+      setButtonPlay(<PauseButton className="stroke-cyan-700 stroke-2" />)
     } else {
       audioRef.current.pause()
-      setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
+      setButtonPlay(<PlayButton className="stroke-cyan-700 stroke-2" />)
     }
   }
 
   return (
-    <div className="flex items-center">
-      <button className="border-0 w-6 h-6 mr-8" onClick={startStop}>
+    <div className="flex flex-row items-center gap-7">
+      <button className="w-6 h-6" onClick={startStop}>
         {buttonRecord}
       </button>
       <audio ref={audioRef}></audio>
-      <button className="border-0 w-6 h-6 mr-8" onClick={playPause}>
+      <button className="w-6 h-6" disabled={!voice?.length} onClick={playPause}>
         {buttonPlay}
       </button>
-      <br />
+
       <button
         disabled={voice.length === 0}
-        className="border-0 w-6 h-6"
+        className="w-6 h-6"
         onClick={() => setVoice([])}
       >
         <TrashButton
@@ -106,63 +105,17 @@ export default function Recorder() {
           }`}
         />
       </button>
-      <Modal showModal={showModal} setShowModal={setShowModal} />
-    </div>
-  )
-}
-
-function Modal({ showModal, setShowModal }) {
-  const { t } = useTranslation(['audio', 'common'])
-  return (
-    <Transition appear show={showModal} as={Fragment}>
-      <Dialog
-        as="div"
-        className="relative z-10"
-        onClose={() => {
-          setShowModal(false)
-        }}
-      >
-        <Transition.Child
-          as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
-        >
-          <div className="fixed inset-0 bg-black bg-opacity-25" />
-        </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto">
-          <div className="flex items-center justify-center p-4 min-h-full text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <Dialog.Panel className="transform overflow-hidden p-6 w-full max-w-md align-middle bg-white rounded-2xl shadow-xl transition-all">
-                <Dialog.Title as="h3" className="h3 font-medium leading-6">
-                  {t('MicrophoneAccess')}
-                </Dialog.Title>
-                <div className="mt-2">
-                  <p className="text-sm text-gray-500">{t('TurnMicrophone')}</p>
-                </div>
-
-                <div className="mt-4">
-                  <button className="btn-cyan w-24" onClick={() => setShowModal(false)}>
-                    {t('common:Ok')}
-                  </button>
-                </div>
-              </Dialog.Panel>
-            </Transition.Child>
+      <Modal isOpen={showModal} closeHandle={setShowModal}>
+        <div className="flex flex-col gap-7">
+          <div className="text-2xl text-center">{t('MicrophoneAccess')}</div>
+          <p>{t('TurnMicrophone')}</p>
+          <div className="flex justify-end">
+            <button className="btn-secondary" onClick={() => setShowModal(false)}>
+              {t('common:Ok')}
+            </button>
           </div>
         </div>
-      </Dialog>
-    </Transition>
+      </Modal>
+    </div>
   )
 }

@@ -1,6 +1,6 @@
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import ProjectEdit from 'components/ProjectEdit'
+import ProjectEdit from 'components/ProjectEdit/ProjectEdit'
 
 function ProjectPageEdit() {
   return <ProjectEdit />

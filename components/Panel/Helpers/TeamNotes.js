@@ -14,8 +14,7 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import Modal from 'components/Modal'
 
-import { useTeamNotes, useProject } from 'utils/hooks'
-import { supabase } from 'utils/supabaseClient'
+import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
@@ -37,7 +36,6 @@ const ListOfNotes = dynamic(
 
 function TeamNotes() {
   const [noteId, setNoteId] = useState('test_noteId')
-  const [editable, setEditable] = useState(false)
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [noteToDel, setNoteToDel] = useState(null)
@@ -51,7 +49,11 @@ function TeamNotes() {
     token: user?.access_token,
     project_id: project?.id,
   })
-
+  const [{ isModeratorAccess }] = useAccess({
+    token: user?.access_token,
+    user_id: user?.id,
+    code,
+  })
   const saveNote = () => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
@@ -65,18 +67,6 @@ function TeamNotes() {
         console.log(err)
       })
   }
-  useEffect(() => {
-    const getLevel = async () => {
-      const level = await supabase.rpc('authorize', {
-        user_id: user.id,
-        project_id: project.id,
-      })
-      setEditable(['admin', 'coordinator', 'moderator'].includes(level.data))
-    }
-    if ((user?.id, project?.id)) {
-      getLevel()
-    }
-  }, [user?.id, project?.id])
 
   useEffect(() => {
     const currentNote = notes?.find((el) => el.id === noteId)
@@ -104,7 +94,7 @@ function TeamNotes() {
       .catch(console.log)
   }
   useEffect(() => {
-    if (!activeNote || !editable) {
+    if (!activeNote || !isModeratorAccess) {
       return
     }
     const timer = setTimeout(() => {
@@ -114,16 +104,16 @@ function TeamNotes() {
       clearTimeout(timer)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNote, editable])
+  }, [activeNote, isModeratorAccess])
 
   return (
     <div className="relative">
       {!activeNote ? (
         <div>
-          {editable && (
+          {isModeratorAccess && (
             <div className="flex justify-end">
               <button
-                className="btn-cyan text-xl font-bold mb-4 right-0"
+                className="btn-cyan mb-4 right-0 text-xl font-bold"
                 onClick={addNote}
               >
                 +
@@ -138,12 +128,12 @@ function TeamNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'bg-cyan-50 my-3 rounded-lg cursor-pointer shadow-md flex justify-between items-start group',
-              title: 'font-bold p-2 mr-4',
+              item: 'flex justify-between items-start group my-3 bg-cyan-50 rounded-lg cursor-pointer shadow-md',
+              title: 'p-2 mr-4 font-bold',
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
-            isShowDelBtn={editable}
+            isShowDelBtn={isModeratorAccess}
             delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
           />
         </div>
@@ -162,44 +152,47 @@ function TeamNotes() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-cyan-50 p-2 font-bold rounded-lg my-4 shadow-md mr-12',
+              title: 'p-2 my-4 mr-12 font-bold bg-cyan-50 rounded-lg shadow-md',
               redactor:
-                'bg-cyan-50 pb-20 overflow-hidden break-words p-4 px-4 rounded-lg my-4 shadow-md',
+                'pb-20 pt-4 px-4 my-4 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            readOnly={!editable}
-            placeholder={editable ? t('TextNewNote') : ''}
+            readOnly={!isModeratorAccess}
+            placeholder={isModeratorAccess ? t('TextNewNote') : ''}
           />
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        {' '}
-        <div className="text-center">
-          <div className="mb-4">
+        <div className="flex flex-col gap-7 items-center">
+          <div className="text-center text-2xl">
             {t('AreYouSureDelete') + ' ' + t(noteToDel?.title) + '?'}
           </div>
-          <button
-            className="btn-cyan mx-2"
-            onClick={() => {
-              setIsOpenModal(false)
-              if (noteToDel) {
-                removeNote(noteToDel.id)
-                setNoteToDel(null)
-              }
-            }}
-          >
-            {t('Yes')}
-          </button>
-          <button
-            className="btn-cyan mx-2"
-            onClick={() => {
-              setNoteToDel(null)
-              setIsOpenModal(false)
-            }}
-          >
-            {t('No')}
-          </button>
+          <div className="flex gap-7 w-1/2">
+            <button
+              className="btn-secondary flex-1"
+              onClick={() => {
+                setIsOpenModal(false)
+                if (noteToDel) {
+                  removeNote(noteToDel.id)
+                  setNoteToDel(null)
+                }
+              }}
+            >
+              {t('Yes')}
+            </button>
+            <button
+              className="btn-secondary flex-1"
+              onClick={() => {
+                setIsOpenModal(false)
+                setTimeout(() => {
+                  setNoteToDel(null)
+                }, 1000)
+              }}
+            >
+              {t('No')}
+            </button>
+          </div>
         </div>
       </Modal>
       <Toaster />

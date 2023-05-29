@@ -27,13 +27,14 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
       if (Object.hasOwnProperty.call(customResources, resource)) {
         const isPrimary = customResources[resource]
         listOfResources.push(
-          <div
-            className={`flex justify-between ${isPrimary ? 'bg-slate-400' : ''}`}
-            key={resource}
-          >
-            {resource}:{' '}
+          <div className="flex gap-7 items-center" key={resource}>
+            <div className={`w-1/2 sm:w-1/6 ${isPrimary ? 'font-bold' : ''}`}>
+              {resource}:
+            </div>
             <input
-              className="max-w-sm input"
+              className={`w-5/6 p-2 rounded-lg bg-white text-slate-900 border ${
+                resourcesUrl?.[resource] ? 'border-slate-900' : 'border-blue-200'
+              } placeholder-blue-200 focus:border-slate-900 focus:outline-none`}
               value={resourcesUrl?.[resource] ?? ''}
               onChange={(e) =>
                 setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))
@@ -47,7 +48,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customResources, resourcesUrl])
 
-  return <div className="max-w-xl">{setResources}</div>
+  return <div className="flex flex-col gap-2 text-lg">{setResources}</div>
 }
 
 export default CommitsList
