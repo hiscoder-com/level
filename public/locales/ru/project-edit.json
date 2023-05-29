@@ -1,12 +1,16 @@
 {
   "AddCoordinator": "Добавить координатора",
+  "AddTranslator": "Добавить переводчика",
+  "AddingCoordinator": "Добавление координатора",
+  "AddingTranslator": "Добавление переводчика",
   "Answer": "Ответ",
   "AssigningModerator": "Назначение модератора",
   "DisableBrief": "Отключить бриф",
-  "EditBriefTitle": "Бриф и цель перевода",
+  "Brief": "Бриф",
+  "EditBriefTitle": "БРИФ И ЦЕЛЬ ПЕРЕВОДА",
   "EnableBrief": "Включить бриф",
   "RemovingCoordinator": "Удаление координатора",
   "RemovingModerator": "Удаление модератора",
   "RemovingTranslator": "Удаление переводчика",
-  "Summary": "Обобщение"
+  "Summary": "Резюме"
 }
