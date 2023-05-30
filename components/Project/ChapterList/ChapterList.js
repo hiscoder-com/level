@@ -83,7 +83,7 @@ function ChapterList() {
       return (
         <>
           {!(!isBrief || briefResume) ? (
-            <Link href={`/projects/${project?.code}/edit/brief`}>
+            <Link href={`/projects/${project?.code}/edit?setting=brief`}>
               <a onClick={(e) => e.stopPropagation()}>
                 {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
               </a>
@@ -111,7 +111,7 @@ function ChapterList() {
               { title: t('books:' + bookid) },
             ]}
           />
-          <div className="flex flex-col gap-3 text-xl">
+          <div className="flex flex-col gap-3 text-base">
             <div className="w-full grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8">
               {chapters &&
                 chapters?.map((chapter) => {

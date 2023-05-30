@@ -200,9 +200,7 @@ function BlindEditor({ config }) {
       </div>
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
-          <div className="text-center text-2xl">
-            {t('AreYouSureWantStartBlind') + '?'}
-          </div>
+          <div className="text-center text-2xl">{t('AreYouSureWantStartBlind')}</div>
           <div className="flex gap-7 w-1/2">
             <button
               className="btn-secondary flex-1"
