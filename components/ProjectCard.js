@@ -40,7 +40,7 @@ function ProjectCard({ project, token, user }) {
               </div>
             </div>
             {briefResume === '' && (
-              <Link href={`/projects/${project?.code}/edit/brief`}>
+              <Link href={`/projects/${project?.code}/edit?setting=brief`}>
                 <a className="btn-primary w-fit">
                   {t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                 </a>
