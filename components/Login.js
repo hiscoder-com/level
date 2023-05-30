@@ -9,6 +9,7 @@ import { supabase } from 'utils/supabaseClient'
 
 import SwitchLocalization from './SwitchLocalization'
 import SignOut from './SignOut'
+import Modal from './Modal'
 
 import { useRedirect } from 'utils/hooks'
 
@@ -22,14 +23,17 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
+  const [messageSendEmail, setMessageSendEmail] = useState('')
+
   const [login, setLogin] = useState('')
+  const [isOpenModal, setIsOpenModal] = useState(false)
+  const [email, setEmail] = useState('')
 
   const { user, loading } = useCurrentUser()
   const { t } = useTranslation('users')
   const passwordRef = useRef(null)
   const loginRef = useRef(null)
   const router = useRouter()
-
   const { href } = useRedirect({
     user,
     startLink: '/agreements',
@@ -70,7 +74,37 @@ function Login() {
       setError(true)
     }
   }
-
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
+  }
+  const handleSend = async () => {
+    if (!email) {
+      setMessageSendEmail(t('InsertEmail'))
+      return
+    }
+    if (validateEmail(email)) {
+      const { data, error } = await supabase.auth.api.resetPasswordForEmail(email, {
+        redirectTo: 'https://v-cana.com/password-recovery',
+      })
+      if (error) {
+        setMessageSendEmail(t('IncorrectEmail'))
+        console.log(error)
+        return
+      }
+      if (data) {
+        setMessageSendEmail(t('PasswordHasSended'))
+        console.log(data)
+        return
+      }
+    } else {
+      setMessageSendEmail(t('WriteCorrectEmail'))
+      return
+    }
+  }
   return (
     <>
       {user?.id ? (
@@ -168,7 +202,7 @@ function Login() {
                       '#'
                       // TODO сделать восстановление пароля
                     }
-                    className="font-medium underline text-sky-500 hover:text-sky-600"
+                    className="font-medium underline text-cyan-700 hover:text-gray-400"
                   >
                     {t('ForgotPassword')}?
                   </a>
@@ -185,20 +219,42 @@ function Login() {
                 } w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
                 value={t('SignIn')}
               />
-              <Link
-                href={
-                  '/'
-                  // TODO сделать восстановление пароля
-                }
+
+              <button
+                type="button"
+                className="text-sm lg:text-base text-cyan-700 hover:text-gray-400"
+                onClick={() => setIsOpenModal(true)}
               >
-                <a className="text-sm lg:text-base text-cyan-700 hover:text-gray-400">
-                  {t('RestoreAccess')}
-                </a>
-              </Link>
+                {t('RestoreAccess')}
+              </button>
             </div>
           </form>
         </div>
       )}
+      <Modal
+        isOpen={isOpenModal}
+        closeHandle={() => setIsOpenModal(false)}
+        title={t('PasswordRecovery')}
+      >
+        <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
+        <div className="flex items-center gap-2 mt-7 w-full h-fit">
+          <input
+            className="input-primary"
+            onChange={(e) => {
+              setMessageSendEmail('')
+              setEmail(e.target.value)
+            }}
+          />
+          <button className="btn-secondary" onClick={handleSend}>
+            {t('Send')}
+          </button>
+        </div>
+        <div
+          className={`${messageSendEmail ? 'opacity-100' : 'opacity-0'} min-h-[1.5rem]`}
+        >
+          {messageSendEmail}
+        </div>
+      </Modal>
     </>
   )
 }
