@@ -88,7 +88,7 @@ function Login() {
     }
     if (validateEmail(email)) {
       const { data, error } = await supabase.auth.api.resetPasswordForEmail(email, {
-        redirectTo: 'https://v-cana.com/password-recovery',
+        redirectTo: 'https://deploy-preview-379--v-cana.netlify.app/password-recovery',
       })
       if (error) {
         setMessageSendEmail(t('IncorrectEmail'))
