@@ -20,6 +20,14 @@ function PasswordRecovery() {
   const [error, setError] = useState('')
   const [successResult, setSuccessResult] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
+  const signOut = async () => {
+    try {
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+    } catch (error) {
+      console.log(error)
+    }
+  }
   const handleRecovery = () => {
     if (!password) {
       setError(t('PasswordShouldBeLong'))
@@ -36,6 +44,7 @@ function PasswordRecovery() {
           .then((res) => {
             if (res) {
               setSuccessResult(t('PasswordChanged'))
+              signOut()
             }
           })
           .catch((error) => {
