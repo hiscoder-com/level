@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import axios from 'axios'
+
 import { supabase } from 'utils/supabaseClient'
 
 import SwitchLocalization from './SwitchLocalization'
@@ -23,9 +25,11 @@ function Login() {
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
-  const [messageSendEmail, setMessageSendEmail] = useState('')
+  const [errorMessageSendLink, setErrorMessageSendLink] = useState('')
+  const [successMessageSendLink, setSuccessMessageSendLink] = useState('')
 
   const [login, setLogin] = useState('')
+  const [isLoadingLogin, setIsLoadingLogin] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [email, setEmail] = useState('')
 
@@ -62,6 +66,7 @@ function Login() {
   }, [user])
 
   const handleLogin = async (e) => {
+    setIsLoadingLogin(true)
     e.preventDefault()
     try {
       const { error } = await supabase.auth.signIn({
@@ -72,8 +77,11 @@ function Login() {
       setError(false)
     } catch (error) {
       setError(true)
+    } finally {
+      setIsLoadingLogin(false)
     }
   }
+
   const validateEmail = (email) => {
     return String(email)
       .toLowerCase()
@@ -82,24 +90,36 @@ function Login() {
       )
   }
   const handleSend = async () => {
-    if (!email) {
-      setMessageSendEmail(t('InsertEmail'))
+    let urlOrigin
+    if (typeof window !== 'undefined') {
+      urlOrigin = window.location.origin
+    }
+    if (!urlOrigin) {
       return
     }
     if (validateEmail(email)) {
-      const { data, error } = await supabase.auth.api.resetPasswordForEmail(email)
-      if (error) {
-        setMessageSendEmail(t('IncorrectEmail'))
-        console.log(error)
-        return
-      }
-      if (data) {
-        setMessageSendEmail(t('PasswordHasSended'))
-        console.log(data)
-        return
-      }
+      axios.defaults.headers.common['token'] = user?.access_token
+      axios
+        .post('/api/users/send_recovery_link', {
+          email,
+          url: urlOrigin,
+        })
+        .then((res) => {
+          setSuccessMessageSendLink(t('LinkHasSendedToYourEmail'))
+          console.log(res)
+          setTimeout(() => {
+            setIsOpenModal(false)
+          }, 2000)
+          setTimeout(() => {
+            setSuccessMessageSendLink('')
+          }, 2500)
+        })
+        .catch((error) => {
+          setErrorMessageSendLink(t('ErrorSendingLink'))
+          console.log(error)
+        })
     } else {
-      setMessageSendEmail(t('WriteCorrectEmail'))
+      setErrorMessageSendLink(t('WriteCorrectEmail'))
       return
     }
   }
@@ -132,19 +152,6 @@ function Login() {
           <div className="flex justify-between mb-6">
             <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold">{t('SignIn')}</h1>
             <SwitchLocalization />
-          </div>
-          <div className="flex flex-col lg:flex-row text-sm lg:text-base">
-            <p className="lg:mr-1">{t('ForRegistrations')}</p>
-            <Link
-              href={
-                '/'
-                // TODO сделать функционал отправки формы администратору
-              }
-            >
-              <a className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400">
-                {t('WriteAdministrator')}
-              </a>
-            </Link>
           </div>
 
           <form className="space-y-6 xl:space-y-10">
@@ -195,22 +202,20 @@ function Login() {
                   <p className="flex text-xs text-red-600">
                     <Report className="w-4 h-4" /> {t('WrongLoginPassword')}
                   </p>
-                  <a
-                    href={
-                      '#'
-                      // TODO сделать восстановление пароля
-                    }
-                    className="font-medium underline text-cyan-700 hover:text-gray-400"
+                  <button
+                    type="button"
+                    className="underline text-cyan-700 hover:text-gray-400"
+                    onClick={() => setIsOpenModal(true)}
                   >
                     {t('ForgotPassword')}?
-                  </a>
+                  </button>
                 </>
               )}
             </div>
             <div className="flex flex-col lg:flex-row items-center lg:justify-around">
               <input
                 type="submit"
-                disabled={loading}
+                disabled={loading || isLoadingLogin}
                 onClick={handleLogin}
                 className={`${
                   loading ? 'btn' : 'btn-cyan'
@@ -234,23 +239,33 @@ function Login() {
         closeHandle={() => setIsOpenModal(false)}
         title={t('PasswordRecovery')}
       >
-        <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
-        <div className="flex items-center gap-2 mt-7 w-full h-fit">
-          <input
-            className="input-primary"
-            onChange={(e) => {
-              setMessageSendEmail('')
-              setEmail(e.target.value)
-            }}
-          />
-          <button className="btn-secondary" onClick={handleSend}>
-            {t('Send')}
-          </button>
-        </div>
+        {successMessageSendLink ? (
+          <div className="text-center mt-7">{successMessageSendLink}</div>
+        ) : (
+          <div className="flex flex-col gap-7 mb-7 w-full">
+            <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
+            <div className="flex gap-4">
+              <input
+                className={`input-primary ${
+                  errorMessageSendLink ? '!border-red-500' : ''
+                }`}
+                onChange={(e) => {
+                  setErrorMessageSendLink('')
+                  setEmail(e.target.value)
+                }}
+              />
+              <button className="btn-secondary" onClick={handleSend} disabled={!email}>
+                {t('Send')}
+              </button>
+            </div>
+          </div>
+        )}
         <div
-          className={`${messageSendEmail ? 'opacity-100' : 'opacity-0'} min-h-[1.5rem]`}
+          className={`${
+            errorMessageSendLink ? 'opacity-100' : 'opacity-0'
+          } min-h-[1.5rem]`}
         >
-          {messageSendEmail}
+          {errorMessageSendLink}
         </div>
       </Modal>
     </>
