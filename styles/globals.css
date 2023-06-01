@@ -242,18 +242,16 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-base {
-  @apply px-5 border rounded-3xl cursor-pointer text-center text-base;
+  @apply px-5 border rounded-3xl cursor-pointer text-center text-base disabled:text-gray-400 disabled:cursor-default;
 }
 
 .btn-primary {
-  @apply btn-base py-2 text-slate-900 border-slate-600 hover:bg-gray-200 hover:border-gray-200 disabled:bg-white disabled:border-gray-300
-	disabled:text-gray-400 disabled:cursor-default;
+  @apply btn-base py-2 text-slate-900 border-slate-600 hover:bg-gray-200 hover:border-gray-200 disabled:bg-white disabled:border-gray-300;
 }
 
 .btn-secondary {
-  @apply btn-base py-2 text-slate-900 bg-gray-200 hover:bg-white;
+  @apply btn-base py-2 text-slate-900 bg-gray-200 hover:bg-white disabled:hover:bg-gray-200;
 }
-
 
 .btn-red {
   @apply btn-base py-2 text-red-500 border-red-500 hover:bg-red-500 hover:text-white;

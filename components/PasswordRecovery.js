@@ -10,12 +10,16 @@ import SwitchLocalization from './SwitchLocalization'
 
 import { useCurrentUser } from 'lib/UserContext'
 
+import EyeIcon from 'public/eye-icon.svg'
+import EyeOffIcon from 'public/eye-off-icon.svg'
+
 function PasswordRecovery() {
   const { t } = useTranslation('users')
   const { user } = useCurrentUser()
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [successResult, setSuccessResult] = useState(null)
+  const [showPassword, setShowPassword] = useState(false)
   const handleRecovery = () => {
     if (!password) {
       setError(t('PasswordShouldBeLong'))
@@ -57,40 +61,45 @@ function PasswordRecovery() {
         </h1>
         <SwitchLocalization />
       </div>
-      <div className="flex flex-col lg:flex-row text-sm lg:text-base">
-        <p className="lg:mr-1">{t('ForRegistrations')}</p>
-        <Link
-          href={
-            '/'
-            // TODO сделать функционал отправки формы администратору
-          }
-        >
-          <a className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400">
-            {t('WriteAdministrator')}
-          </a>
-        </Link>
-      </div>
 
       {user && (
         <form className="space-y-6 xl:space-y-10">
-          <div className="flex flex-col items-center gap-7 lg:justify-around">
+          <div className="flex flex-col gap-5 lg:justify-around">
             {!successResult ? (
               <>
-                <input
-                  className={`${error ? '!border-red-500' : ''}  input-primary`}
-                  onChange={(e) => {
-                    setError('')
-                    setSuccessResult('')
-                    setPassword(e.target.value)
-                  }}
-                />
+                <p>{t('WriteNewPassword')}</p>
+                <div className="relative z-0 w-full">
+                  <input
+                    name="floating_password"
+                    id="floating_password"
+                    className={`input-primary ${error ? '!border-red-500' : ''}`}
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    placeholder=" "
+                    onChange={(e) => {
+                      setError('')
+                      setSuccessResult('')
+                      setPassword(e.target.value)
+                    }}
+                  />
+
+                  <span
+                    className="eye"
+                    onClick={() => {
+                      setShowPassword((prev) => !prev)
+                    }}
+                  >
+                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </span>
+                </div>
+
                 <div className={`${error ? 'opacity-100' : 'opacity-0'} min-h-[1.5rem]`}>
                   {error}
                 </div>
 
                 <button
                   type="button"
-                  className="btn-cyan text-sm lg:text-bas"
+                  className="btn-cyan self-center w-1/2 text-sm lg:text-base"
                   onClick={handleRecovery}
                 >
                   {t('UpdatePassword')}
