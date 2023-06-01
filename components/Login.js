@@ -31,6 +31,8 @@ function Login() {
   const [login, setLogin] = useState('')
   const [isLoadingLogin, setIsLoadingLogin] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
+  const [isSendingEmail, setIsSendingEmail] = useState(false)
+
   const [email, setEmail] = useState('')
 
   const { user, loading } = useCurrentUser()
@@ -98,6 +100,7 @@ function Login() {
       return
     }
     if (validateEmail(email)) {
+      setIsSendingEmail(true)
       axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post('/api/users/send_recovery_link', {
@@ -118,6 +121,7 @@ function Login() {
           setErrorMessageSendLink(t('ErrorSendingLink'))
           console.log(error)
         })
+        .finally(() => setIsSendingEmail(false))
     } else {
       setErrorMessageSendLink(t('WriteCorrectEmail'))
       return
@@ -254,7 +258,11 @@ function Login() {
                   setEmail(e.target.value)
                 }}
               />
-              <button className="btn-secondary" onClick={handleSend} disabled={!email}>
+              <button
+                className="btn-secondary"
+                onClick={handleSend}
+                disabled={!email || isSendingEmail}
+              >
                 {t('Send')}
               </button>
             </div>
