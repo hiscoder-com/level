@@ -8,6 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import SwitchLocalization from './SwitchLocalization'
 
+import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
 import EyeIcon from 'public/eye-icon.svg'
@@ -71,10 +72,10 @@ function PasswordRecovery() {
         <SwitchLocalization />
       </div>
 
-      {user && (
-        <form className="space-y-6 xl:space-y-10">
-          <div className="flex flex-col gap-5 lg:justify-around">
-            {!successResult ? (
+      <form className="space-y-6 xl:space-y-10">
+        <div className="flex flex-col gap-5 lg:justify-around">
+          {!successResult ? (
+            user && (
               <>
                 <p>{t('WriteNewPassword')}</p>
                 <div className="relative z-0 w-full">
@@ -114,19 +115,19 @@ function PasswordRecovery() {
                   {t('UpdatePassword')}
                 </button>
               </>
-            ) : (
-              <>
-                <div>{successResult}</div>
-                <Link href={'/'}>
-                  <a className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400">
-                    {t('GoToLogin')}
-                  </a>
-                </Link>
-              </>
-            )}
-          </div>
-        </form>
-      )}
+            )
+          ) : (
+            <>
+              <div>{successResult}</div>
+              <Link href={'/'}>
+                <a className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400">
+                  {t('GoToLogin')}
+                </a>
+              </Link>
+            </>
+          )}
+        </div>
+      </form>
     </div>
   )
 }
