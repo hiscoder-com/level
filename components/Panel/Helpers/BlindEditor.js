@@ -6,7 +6,7 @@ import { useSetRecoilState } from 'recoil'
 
 import { supabase } from 'utils/supabaseClient'
 
-import { toast, Toaster } from 'react-hot-toast'
+// import { toast, Toaster } from 'react-hot-toast'
 
 import { checkedVersesBibleState } from '../state/atoms'
 import Modal from 'components/Modal'
@@ -81,23 +81,23 @@ function BlindEditor({ config }) {
       new_verse: verseObjects[index].verse,
       verse_id: verseObjects[index].verse_id,
     })
-    if (res.error || !res) {
-      toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
-        duration: 8000,
-      })
-      console.log(res)
-    }
+    // if (res.error || !res) {
+    //   toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+    //     duration: 8000,
+    //   })
+    //   console.log(res)
+    // }
   }
   const saveVerse = (ref) => {
     const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
-    if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
-      if (textAreaRef?.current?.[index - 1]) {
-        textAreaRef?.current[index - 1].focus()
-      } else {
-        textAreaRef?.current[index].focus()
-      }
-      return
-    }
+    // if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
+    //   if (textAreaRef?.current?.[index - 1]) {
+    //     textAreaRef?.current[index - 1].focus()
+    //   } else {
+    //     textAreaRef?.current[index].focus()
+    //   }
+    //   return
+    // }
 
     setEnabledIcons((prev) => {
       return [
@@ -117,7 +117,7 @@ function BlindEditor({ config }) {
     sendToDb(index - 1)
   }
   const handleSaveVerse = (ref) => {
-    if (ref.index === 0 && !ref.isTranslating) {
+    if (ref.index === 0) {
       setIsOpenModal(true)
       setFirstStepRef(ref)
     } else {
@@ -207,7 +207,7 @@ function BlindEditor({ config }) {
             {t('Save')}
           </button>
         )}
-        <Toaster />
+        {/* <Toaster /> */}
       </div>
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">

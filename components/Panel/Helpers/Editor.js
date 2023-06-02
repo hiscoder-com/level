@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import { toast, Toaster } from 'react-hot-toast'
+// import { toast, Toaster } from 'react-hot-toast'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
@@ -25,12 +25,12 @@ function Editor({ config }) {
         const res = await supabase.rpc('save_verses', {
           verses: { [prev[id].verse_id]: text },
         })
-        if (res.error || !res) {
-          toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
-            duration: 8000,
-          })
-          console.log(res)
-        }
+        // if (res.error || !res) {
+        //   toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+        //     duration: 8000,
+        //   })
+        //   console.log(res)
+        // }
       }
       saveInDB()
       return [...prev]
@@ -50,7 +50,7 @@ function Editor({ config }) {
         </div>
       ))}
       <div className="select-none">ㅤ</div>
-      <Toaster />
+      {/* <Toaster /> */}
     </div>
   )
 }

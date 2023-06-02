@@ -4,9 +4,9 @@ import { useRouter } from 'next/router'
 
 import axios from 'axios'
 
-import { useTranslation } from 'react-i18next'
+// import { useTranslation } from 'react-i18next'
 
-import { toast, Toaster } from 'react-hot-toast'
+// import { toast, Toaster } from 'react-hot-toast'
 
 import { supabase } from 'utils/supabaseClient'
 
@@ -22,7 +22,7 @@ import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function CommandEditor({ config }) {
   const { user } = useCurrentUser()
-  const { t } = useTranslation(['common'])
+  // const { t } = useTranslation(['common'])
 
   const {
     query: { project, book, chapter: chapter_num },
@@ -113,11 +113,13 @@ function CommandEditor({ config }) {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/save_verse`, { id: prev[id].verse_id, text })
-        .then()
+        .then((res) => {
+          console.log('save_verse', res)
+        })
         .catch((error) => {
-          toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
-            duration: 8000,
-          })
+          // toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+          //   duration: 8000,
+          // })
           console.log(error)
         })
       return [...prev]
@@ -154,7 +156,7 @@ function CommandEditor({ config }) {
         </div>
       ))}
       <div className="select-none">ㅤ</div>
-      <Toaster />
+      {/* <Toaster /> */}
     </div>
   )
 }
