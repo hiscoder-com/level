@@ -85,8 +85,8 @@ function BlindEditor({ config }) {
       toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
         duration: 8000,
       })
+      console.log(res)
     }
-    console.log(res)
   }
   const saveVerse = (ref) => {
     const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
