@@ -79,6 +79,9 @@ function BlindEditor({ config }) {
       new_verse: verseObjects[index].verse,
       verse_id: verseObjects[index].verse_id,
     })
+    if (res?.error) {
+      console.log(res.error)
+    }
   }
   const saveVerse = (ref) => {
     const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
