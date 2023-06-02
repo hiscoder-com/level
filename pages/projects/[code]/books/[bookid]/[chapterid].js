@@ -23,6 +23,7 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import Button from 'components/Button'
 import Card from 'components/Project/Card'
+import Breadcrumbs from 'components/Breadcrumbs'
 
 import Gear from 'public/gear.svg'
 import Spinner from 'public/spinner.svg'
@@ -31,7 +32,6 @@ import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
-import Breadcrumbs from 'components/Breadcrumbs'
 
 const translatorColors = [
   { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
