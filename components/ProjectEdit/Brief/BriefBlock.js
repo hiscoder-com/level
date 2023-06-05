@@ -2,24 +2,27 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
+
 import { useTranslation } from 'next-i18next'
 
 import { Switch } from '@headlessui/react'
 
 import axios from 'axios'
 
+import BriefResume from './BriefResume'
+import BriefAnswer from './BriefAnswer'
+
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 
-import BriefResume from './BriefResume'
-import BriefAnswer from './BriefAnswer'
+import Spinner from 'public/spinner.svg'
 
 function BriefBlock({ access }) {
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [hidden, setHidden] = useState(true)
-
+  const [isSaving, setIsSaving] = useState(false)
   const {
     query: { code },
   } = useRouter()
@@ -40,6 +43,8 @@ function BriefBlock({ access }) {
   }, [brief, briefDataCollection])
 
   const saveToDatabase = () => {
+    let error = false
+    setIsSaving(true)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${project?.id}`, {
@@ -48,8 +53,11 @@ function BriefBlock({ access }) {
       .then()
       .catch((err) => {
         toast.error(t('SaveFailed'))
+        error = true
         console.log(err)
       })
+      .finally(setIsSaving(false))
+    return { error }
   }
 
   useEffect(() => {
@@ -215,11 +223,19 @@ function BriefBlock({ access }) {
             <button
               className="btn-primary text-xl"
               onClick={() => {
-                saveToDatabase()
-                toast.success(t('SaveSuccess'))
+                const { error } = saveToDatabase()
+                if (!error) {
+                  toast.success(t('SaveSuccess'))
+                } else {
+                  toast.error(t('SaveFailed'))
+                }
               }}
             >
-              {t('Save')}
+              {isSaving ? (
+                <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+              ) : (
+                t('Save')
+              )}
             </button>
           </div>
         )}

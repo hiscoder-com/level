@@ -20,6 +20,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import Report from 'public/error-outline.svg'
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
+import Spinner from 'public/spinner.svg'
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false)
@@ -217,15 +218,21 @@ function Login() {
               )}
             </div>
             <div className="flex flex-col lg:flex-row items-center lg:justify-around">
-              <input
-                type="submit"
+              <button
                 disabled={loading || isLoadingLogin}
                 onClick={handleLogin}
                 className={`${
-                  loading ? 'btn' : 'btn-cyan'
+                  loading || isLoadingLogin ? 'btn' : 'btn-cyan'
                 } w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
-                value={t('SignIn')}
-              />
+              >
+                <div className="flex justify-center">
+                  {loading || isLoadingLogin ? (
+                    <Spinner className="h-6 w- text-gray-400 animate-spin self-center" />
+                  ) : (
+                    t('SignIn')
+                  )}
+                </div>
+              </button>
 
               <button
                 type="button"
@@ -263,7 +270,11 @@ function Login() {
                 onClick={handleSend}
                 disabled={!email || isSendingEmail}
               >
-                {t('Send')}
+                {isSendingEmail ? (
+                  <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                ) : (
+                  t('Send')
+                )}
               </button>
             </div>
           </div>

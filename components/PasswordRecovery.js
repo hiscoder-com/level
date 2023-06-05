@@ -13,12 +13,14 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
+import Spinner from 'public/spinner.svg'
 
 function PasswordRecovery() {
   const { t } = useTranslation('users')
   const { user } = useCurrentUser()
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
+  const [isRecovering, setIsRecovering] = useState(false)
 
   const [error, setError] = useState('')
   const [successResult, setSuccessResult] = useState(null)
@@ -53,26 +55,23 @@ function PasswordRecovery() {
     }
 
     if (user) {
-      try {
-        axios.defaults.headers.common['token'] = user?.access_token
-        axios
-          .put('/api/users/update_password', {
-            password,
-          })
-          .then((res) => {
-            if (res) {
-              setSuccessResult(t('PasswordChanged'))
-              signOut()
-            }
-          })
-          .catch((error) => {
-            setError('ProblemWithRecovery')
-            console.log(error)
-          })
-      } catch (error) {
-        setError('ProblemWithRecovery')
-        console.log(error)
-      }
+      setIsRecovering(true)
+      axios.defaults.headers.common['token'] = user?.access_token
+      axios
+        .put('/api/users/update_password', {
+          password,
+        })
+        .then((res) => {
+          if (res) {
+            setSuccessResult(t('PasswordChanged'))
+            signOut()
+          }
+        })
+        .catch((error) => {
+          setError('ProblemWithRecovery')
+          console.log(error)
+        })
+        .finally(() => setIsRecovering(false))
     }
   }
 
@@ -150,7 +149,13 @@ function PasswordRecovery() {
                   className="btn-cyan self-center w-1/2 text-sm lg:text-base"
                   onClick={handleRecovery}
                 >
-                  {t('UpdatePassword')}
+                  <div className="flex justify-center">
+                    {isRecovering ? (
+                      <Spinner className="h-6 w- text-gray-400 animate-spin self-center" />
+                    ) : (
+                      t('UpdatePassword')
+                    )}
+                  </div>
                 </button>
               </>
             )

@@ -63,7 +63,7 @@ export default function Footer({
               disabled={!checked || loading}
             >
               {loading ? (
-                <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
+                <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-gray-400" />
               ) : (
                 textButton
               )}
