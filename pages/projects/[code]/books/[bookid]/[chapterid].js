@@ -596,7 +596,6 @@ function ChapterVersesPage() {
           </>
         )}
       </Menu>
-      <Toaster />
     </div>
   )
 }

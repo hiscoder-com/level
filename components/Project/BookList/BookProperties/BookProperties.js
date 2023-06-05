@@ -113,8 +113,6 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
           <Tab.Panel></Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
-
-      <Toaster />
     </div>
   )
 }

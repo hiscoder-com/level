@@ -3,6 +3,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
+
+import { toast } from 'react-hot-toast'
+
 import axios from 'axios'
 
 import CommitsList from '../CommitsList'
@@ -10,6 +13,8 @@ import CommitsList from '../CommitsList'
 import { useCurrentUser } from 'lib/UserContext'
 
 import { useProject, useMethod, useGetProjectResources } from 'utils/hooks'
+
+import Spinner from 'public/spinner.svg'
 
 function ResourceSettings() {
   const { user } = useCurrentUser()
@@ -61,7 +66,7 @@ function ResourceSettings() {
         current_method: currentMethod,
         project_id: project.id,
       })
-      .then()
+      .then(() => toast.success(t('ResourcesUpdated')))
       .catch((error) => {
         setIsErrorCommit(true)
         console.log(error)
@@ -84,26 +89,7 @@ function ResourceSettings() {
         disabled={isSaving}
       >
         {isSaving ? (
-          <svg
-            className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
+          <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
         ) : (
           t('Save')
         )}

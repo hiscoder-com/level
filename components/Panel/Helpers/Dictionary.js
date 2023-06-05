@@ -331,7 +331,6 @@ function Dictionary() {
           </div>
         </div>
       </Modal>
-      <Toaster />
     </div>
   )
 }

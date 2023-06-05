@@ -205,7 +205,6 @@ function PersonalNotes() {
           </div>
         </div>
       </Modal>
-      <Toaster />
     </div>
   )
 }

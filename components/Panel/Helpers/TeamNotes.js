@@ -195,7 +195,6 @@ function TeamNotes() {
           </div>
         </div>
       </Modal>
-      <Toaster />
     </div>
   )
 }

@@ -221,7 +221,6 @@ function BriefBlock({ access }) {
             >
               {t('Save')}
             </button>
-            <Toaster />
           </div>
         )}
       </div>

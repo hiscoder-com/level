@@ -196,7 +196,6 @@ function VerseDivider({ verses }) {
           {t('Save')}
         </button>
       </div>
-      <Toaster />
     </div>
   )
 }
