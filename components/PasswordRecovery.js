@@ -18,9 +18,13 @@ function PasswordRecovery() {
   const { t } = useTranslation('users')
   const { user } = useCurrentUser()
   const [password, setPassword] = useState('')
+  const [repeatPassword, setRepeatPassword] = useState('')
+
   const [error, setError] = useState('')
   const [successResult, setSuccessResult] = useState(null)
   const [showPassword, setShowPassword] = useState(false)
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false)
+
   const signOut = async () => {
     try {
       const { error } = await supabase.auth.signOut()
@@ -29,9 +33,22 @@ function PasswordRecovery() {
       console.log(error)
     }
   }
+  const comparePasswords = (passFirst, passSecond) => {
+    if (!passFirst || !passSecond) {
+      return { error: true, message: 'NotAllFieldsFilled' }
+    }
+    if (passFirst.length < 6) {
+      return { error: true, message: 'PasswordShouldBeLeastSix' }
+    }
+    if (passFirst !== passSecond) {
+      return { error: true, message: 'PasswordsDontMatch' }
+    }
+    return { error: false, message: 'Success' }
+  }
   const handleRecovery = () => {
-    if (!password) {
-      setError(t('PasswordShouldBeLong'))
+    const { error, message } = comparePasswords(password, repeatPassword)
+    if (error) {
+      setError(message)
       return
     }
 
@@ -49,15 +66,11 @@ function PasswordRecovery() {
             }
           })
           .catch((error) => {
-            if (error.response.status === 422) {
-              setError(t('PasswordShouldBeLong'))
-            } else {
-              setError(t('ProblemWithRecovery'))
-            }
+            setError('ProblemWithRecovery')
             console.log(error)
           })
       } catch (error) {
-        setError(t('ProblemWithRecovery'))
+        setError('ProblemWithRecovery')
         console.log(error)
       }
     }
@@ -89,7 +102,7 @@ function PasswordRecovery() {
                     onChange={(e) => {
                       setError('')
                       setSuccessResult('')
-                      setPassword(e.target.value)
+                      setPassword(e.target.value.trim())
                     }}
                   />
 
@@ -102,9 +115,34 @@ function PasswordRecovery() {
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </span>
                 </div>
+                <p>{t('RepeatNewPassword')}</p>
+                <div className="relative z-0 w-full">
+                  <input
+                    name="floating_password"
+                    id="floating_password"
+                    className={`input-primary ${error ? '!border-red-500' : ''}`}
+                    type={showRepeatPassword ? 'text' : 'password'}
+                    value={repeatPassword}
+                    placeholder=" "
+                    onChange={(e) => {
+                      setError('')
+                      setSuccessResult('')
+                      setRepeatPassword(e.target.value.trim())
+                    }}
+                  />
+
+                  <span
+                    className="eye"
+                    onClick={() => {
+                      setShowRepeatPassword((prev) => !prev)
+                    }}
+                  >
+                    {showRepeatPassword ? <EyeOffIcon /> : <EyeIcon />}
+                  </span>
+                </div>
 
                 <div className={`${error ? 'opacity-100' : 'opacity-0'} min-h-[1.5rem]`}>
-                  {error}
+                  {t(error)}
                 </div>
 
                 <button
