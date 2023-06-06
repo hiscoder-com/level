@@ -3,7 +3,10 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-import { useTranslation } from 'next-i18next'
+
+import { useTranslation } from 'react-i18next'
+
+import { toast, Toaster } from 'react-hot-toast'
 
 import { supabase } from 'utils/supabaseClient'
 
@@ -19,11 +22,11 @@ import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function CommandEditor({ config }) {
   const { user } = useCurrentUser()
+  const { t } = useTranslation(['common'])
 
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
-  const { t } = useTranslation(['common'])
 
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
@@ -110,10 +113,13 @@ function CommandEditor({ config }) {
       axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/save_verse`, { id: prev[id].verse_id, text })
-        .then((res) => {
-          console.log('save_verse', res)
+        .then()
+        .catch((error) => {
+          toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+            duration: 8000,
+          })
+          console.log(error)
         })
-        .catch(console.log)
       return [...prev]
     })
   }
@@ -129,8 +135,8 @@ function CommandEditor({ config }) {
                   ? ['user', 'translator'].includes(level)
                   : !verseObject.editable
               )
-                ? 'text-blue-600'
-                : 'font-bold'
+                ? 'font-bold'
+                : 'text-blue-600'
             }
           >
             {obsCheckAdditionalVerses(verseObject.num)}
@@ -148,6 +154,7 @@ function CommandEditor({ config }) {
         </div>
       ))}
       <div className="select-none">ㅤ</div>
+      <Toaster />
     </div>
   )
 }

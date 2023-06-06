@@ -6,17 +6,19 @@ import Link from 'next/link'
 import { useRecoilValue } from 'recoil'
 
 import Dropdown from './Dropdown'
+import SideBar from './SideBar'
+
 import Timer from 'components/Timer'
 
 import { supabase } from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
-import Burger from 'public/burger.svg'
+import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
-export default function AppBar({ setIsOpen }) {
+export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -29,7 +31,6 @@ export default function AppBar({ setIsOpen }) {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
-
   useEffect(() => {
     const hasAccess = async () => {
       try {
@@ -46,38 +47,38 @@ export default function AppBar({ setIsOpen }) {
   }, [user])
 
   return (
-    <div className="bg-white">
-      <div className="appbar">
-        <div className="flex items-center gap-7 cursor-pointer">
-          {access && (
-            <Burger
-              onClick={() => setIsOpen((prev) => !prev)}
-              className="h-6 text-[#1D1D1D] stroke-2"
-            />
-          )}
+    <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
+      <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
+        <div className="relative md:static flex items-center justify-between md:justify-start gap-7 cursor-pointer">
+          <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <Link href="/account">
-            <a>
-              <VCANA_logo className="h-5" />
+            <a
+              className={
+                !isStepPage
+                  ? 'absolute sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
+                  : ''
+              }
+            >
+              <VCANA_logo className="h-6" />
             </a>
           </Link>
           {isStepPage && (
             <div className="flex gap-7 md:hidden">
               <Timer time={stepConfig.time} />
-              <Burger onClick={() => setShowFullAppbar(!showFullAppbar)} />
+              <Down
+                className="w-6 h-6"
+                onClick={() => setShowFullAppbar((prev) => !prev)}
+              />
             </div>
           )}
         </div>
         {isStepPage && (
           <>
-            <div
-              className={`text-center h3 pt-2 lg:text-2xl md:flex ${
-                showFullAppbar ? '' : 'hidden'
-              }`}
-            >
+            <div className={`pt-2 md:flex text-center ${showFullAppbar ? '' : 'hidden'}`}>
               {stepConfig.title}
             </div>
             <div
-              className={`items-center gap-4 md:flex ${
+              className={`items-center gap-4 md:flex justify-center md:justify-start ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >

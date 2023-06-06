@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import axios from 'axios'
 import useSWR from 'swr'
@@ -202,7 +202,7 @@ export function useRedirect({ user, startLink }) {
 export function useGetResource({ config, url }) {
   const {
     verses,
-    reference: { book, chapter, step },
+    reference: { book, chapter },
     resource: { owner, repo, commit, bookPath },
   } = config
   const params = { owner, repo, commit, bookPath, book, chapter, verses }
@@ -466,7 +466,7 @@ export function useGetVerses({ token, code, book_code, chapter_id }) {
   )
   return [verses, { mutate, error, isLoading }]
 }
-
+//TODO сделать описание
 export function useGetInfo({ config, url }) {
   const {
     reference: { book, chapter },
@@ -486,4 +486,41 @@ export function useGetInfo({ config, url }) {
   )
 
   return { isLoading, data, error }
+}
+
+/**
+ *hook returns information about access
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ * @param {string} user_id id of user
+ * @returns {object}
+ */
+export function useAccess({ token, user_id, code }) {
+  const {
+    data: level,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    token && code && user_id ? [`/api/projects/${code}/${user_id}`, token] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  const isModeratorAccess = useMemo(
+    () => ['admin', 'coordinator', 'moderator'].includes(level),
+    [level]
+  )
+  const isCoordinatorAccess = useMemo(
+    () => ['admin', 'coordinator'].includes(level),
+    [level]
+  )
+  const isAdminAccess = useMemo(() => 'admin' === level, [level])
+
+  return [
+    { isModeratorAccess, isCoordinatorAccess, isAdminAccess },
+    { mutate, error, isLoading },
+  ]
 }

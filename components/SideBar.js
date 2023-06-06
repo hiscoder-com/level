@@ -1,51 +1,77 @@
-import Link from 'next/link'
+import { useTranslation } from 'react-i18next'
 
-import { useTranslation } from 'next-i18next'
+import { Menu } from '@headlessui/react'
 
 import SwitchLocalization from './SwitchLocalization'
+import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
 
+import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
+import Localization from 'public/localization.svg'
 
-function SideBar({ isOpen, setIsOpen }) {
-  const { t } = useTranslation('users')
-  const condition = `absolute font-medium bg-black/70 left-0 top-0 right-0 bottom-0 z-10 ${
-    isOpen ? '' : 'hidden'
-  }`
+import { useCurrentUser } from 'lib/UserContext'
+function SideBar({ setIsOpenSideBar, access }) {
+  const { user } = useCurrentUser()
+  const { t } = useTranslation('projects')
 
   return (
-    <div className={condition} onClick={() => setIsOpen(false)}>
-      <div
-        className="fixed top-0 left-0 w-full h-full text-lg bg-blue-150 sm:w-64"
-        onClick={(e) => {
-          e.preventDefault()
-          e.stopPropagation()
-        }}
-      >
-        <div className="sidebar-hr">
-          <div className="flex items-center justify-between px-4 py-3 text-[#3C3C41]">
-            <Close
-              onClick={() => setIsOpen(false)}
-              className="h-8 cursor-pointer stroke-2"
-            />
-          </div>
-        </div>
-        <div className="flex items-center h3 py-4 sidebar-hr">
-          <Link href="/account">
-            <a onClick={() => setIsOpen(false)} className="sidebar-link-a">
-              <span className="tracking-wide truncate">{t('Account')}</span>
-            </a>
-          </Link>
-        </div>
+    <>
+      <Menu>
+        {({ open }) => (
+          <>
+            <Menu.Button onClick={() => setIsOpenSideBar((prev) => !prev)}>
+              {access &&
+                (!open ? (
+                  <Burger className="h-10 stroke-slate-600" />
+                ) : (
+                  <Close className="h-10 stroke-slate-600" />
+                ))}
+            </Menu.Button>
 
-        <div className="ml-4 mt-4">
-          <SignOut />
-        </div>
-        <div className="ml-4 mt-4">
-          <SwitchLocalization />
-        </div>
-      </div>
-    </div>
+            <Menu.Items
+              className="card fixed flex flex-col gap-7 top-20 min-w-[20rem] z-20 cursor-default"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div>
+                <div className="cursor-default flex items-center pb-5 gap-2 border-b border-gray-300">
+                  <div className="w-12 h-12 min-w-[3rem]">
+                    <TranslatorImage item={{ users: user }} />
+                  </div>
+
+                  <div>
+                    <div className="text-2xl font-bold">{user?.login}</div>
+                    <div>{user?.email}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col min-h-[60vh] justify-between">
+                <div className="flex flex-col gap-7">
+                  <Menu.Item
+                    as="div"
+                    disabled
+                    className="flex items-center gap-2 justify-between cursor-default"
+                  >
+                    <div className="flex gap-4 items-center">
+                      <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
+                        <Localization className="w-5 h-5 min-w-[1.5rem] stroke-slate-600" />
+                      </div>
+                      <span>{t('Language')} </span>
+                    </div>
+                    <SwitchLocalization />
+                  </Menu.Item>
+                </div>
+
+                <div className="flex justify-center cursor-pointer">
+                  <SignOut />
+                </div>
+              </div>
+            </Menu.Items>
+          </>
+        )}
+      </Menu>
+    </>
   )
 }
 

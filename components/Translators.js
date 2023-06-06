@@ -11,12 +11,12 @@ function Translators({ projectCode, size, clickable = false }) {
   })
 
   return (
-    <div className="flex gap-1.5">
+    <div className="flex">
       {translators && translators.length > 0 && (
         <>
           {translators.map((item, key) => {
             return (
-              <div key={key}>
+              <div key={key} className="-mx-1">
                 <TranslatorImage clickable={clickable} item={item} size={size} />
               </div>
             )

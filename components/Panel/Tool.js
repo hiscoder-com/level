@@ -164,7 +164,7 @@ function Tool({ config, toolName, editable = false }) {
   }
   return (
     <>
-      <div className="h5 pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg truncate">
+      <div className="pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg truncate">
         {![
           'translate',
           'commandTranslate',
@@ -177,7 +177,7 @@ function Tool({ config, toolName, editable = false }) {
           `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
         {title}
       </div>
-      <div className="h5 adaptive-card">
+      <div className="adaptive-card">
         <div className="h-full p-4 overflow-x-hidden overflow-y-auto">
           <CurrentTool config={config} url={url} toolName={toolName} />
         </div>

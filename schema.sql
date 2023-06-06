@@ -34,6 +34,7 @@
   -- DROP FUNCTION
     DROP FUNCTION IF EXISTS PUBLIC.authorize;
     DROP FUNCTION IF EXISTS PUBLIC.has_access;
+    DROP FUNCTION IF EXISTS PUBLIC.create_brief;
     DROP FUNCTION IF EXISTS PUBLIC.get_current_steps;
     DROP FUNCTION IF EXISTS PUBLIC.assign_moderator;
     DROP FUNCTION IF EXISTS PUBLIC.remove_moderator;
@@ -291,20 +292,20 @@
       chap RECORD;
     BEGIN
       IF authorize(auth.uid(), change_start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
-      END IF;  
+      END IF;
 
       SELECT started_at,finished_at INTO chap FROM PUBLIC.chapters WHERE change_start_chapter.chapter_id = chapters.id AND change_start_chapter.project_id = chapters.project_id;
 
       IF chap.finished_at IS NOT NULL
       THEN RETURN FALSE;
       END IF;
-    
+
       IF chap.started_at  IS NULL THEN
         UPDATE PUBLIC.chapters SET started_at = NOW() WHERE change_start_chapter.chapter_id = chapters.id;
-      ELSE 
+      ELSE
         UPDATE PUBLIC.chapters SET started_at = NULL WHERE change_start_chapter.chapter_id = chapters.id;
       END IF;
-      
+
       RETURN true;
 
     END;
@@ -317,7 +318,7 @@
       chap RECORD;
     BEGIN
       IF authorize(auth.uid(), change_finish_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
-      END IF;  
+      END IF;
 
       SELECT finished_at,started_at INTO chap FROM PUBLIC.chapters WHERE change_finish_chapter.chapter_id = chapters.id AND change_finish_chapter.project_id = chapters.project_id;
 
@@ -327,10 +328,10 @@
 
       IF chap.finished_at  IS NULL THEN
         UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE change_finish_chapter.chapter_id = chapters.id;
-      ELSE 
+      ELSE
         UPDATE PUBLIC.chapters SET finished_at = NULL WHERE change_finish_chapter.chapter_id = chapters.id;
       END IF;
-      
+
       RETURN true;
 
     END;
@@ -536,35 +537,35 @@
   $$;
 
   CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$  
-    DECLARE chapters_old JSON;        
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE chapters_old JSON;
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
       END IF;
       SELECT json_build_object('chapters',chapters) FROM PUBLIC.books WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id INTO chapters_old;
-      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function','update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));   
+      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function','update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));
       UPDATE PUBLIC.books SET chapters = update_chapters_in_books.chapters_new WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id;
       RETURN TRUE;
     END;
   $$;
 
   CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$         
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-      END IF;      
-      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num',  num));  
+      END IF;
+      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num',  num));
       INSERT INTO PUBLIC.chapters (num, verses, book_id, project_id) VALUES (num, verses, book_id, project_id)
       ON CONFLICT ON CONSTRAINT chapters_book_id_num_key
             DO NOTHING;
       RETURN TRUE;
     END;
-  $$; 
+  $$;
 
   CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ 
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE chapter JSON;
-            verses_old JSON;        
+            verses_old JSON;
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
       END IF;
@@ -574,20 +575,20 @@
       SELECT json_build_object('id', id, 'started_at', started_at) FROM PUBLIC.chapters WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num INTO chapter;
       RETURN chapter;
     END;
-  $$; 
+  $$;
 
   CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ 
-    DECLARE step_id BIGINT;    
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE step_id BIGINT;
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-      END IF;      
+      END IF;
       IF finish_verse < start_verse THEN
         RETURN false;
-      END IF;    
+      END IF;
       SELECT id FROM steps WHERE steps.project_id = insert_additional_verses.project_id AND sorting = 1 INTO step_id;
-      INSERT INTO PUBLIC.logs (log) VALUES ( json_build_object('function', 'insert_additional_verses', 'start_verse', start_verse, 'step_id', id, 'finish_verse', finish_verse, 'chapter_id', chapter_id, 'project_id', project_id)); 
-      
+      INSERT INTO PUBLIC.logs (log) VALUES ( json_build_object('function', 'insert_additional_verses', 'start_verse', start_verse, 'step_id', id, 'finish_verse', finish_verse, 'chapter_id', chapter_id, 'project_id', project_id));
+
       FOR i IN start_verse..finish_verse LOOP
         INSERT INTO
           PUBLIC.verses (num, chapter_id, current_step, project_id)
@@ -595,23 +596,23 @@
           (i, chapter_id, step_id, project_id)
           ON CONFLICT ON CONSTRAINT verses_chapter_id_num_key
           DO NOTHING;
-      END LOOP;      
+      END LOOP;
       RETURN TRUE;
     END;
   $$;
 
   CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ 
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE old_values JSON;
     BEGIN
       IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
       END IF;
       SELECT json_build_object('resources', resources, 'base_manifest', base_manifest) FROM PUBLIC.projects WHERE id = update_resources_in_projects.project_id INTO old_values;
-      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects','resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));  
+      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects','resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));
       UPDATE PUBLIC.projects SET resources = update_resources_in_projects.resources_new, base_manifest = update_resources_in_projects.base_manifest_new WHERE id = project_id;
       RETURN TRUE;
     END;
-  $$; 
+  $$;
 
   -- create policy "политика с джойном"
   --   on teams
@@ -639,16 +640,16 @@
   -- creating a new brief for the project
   CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) RETURNS BOOLEAN
       LANGUAGE plpgsql SECURITY DEFINER AS $$
-      DECLARE 
+      DECLARE
         brief_JSON JSON;
       BEGIN
         IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
           RETURN false;
         END IF;
-        SELECT brief FROM PUBLIC.methods 
-          JOIN PUBLIC.projects ON (projects.method = methods.title) 
+        SELECT brief FROM PUBLIC.methods
+          JOIN PUBLIC.projects ON (projects.method = methods.title)
           WHERE projects.id = project_id INTO brief_JSON;
-          INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);    
+          INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);
         RETURN true;
       END;
   $$;
@@ -712,22 +713,22 @@
       SELECT dictionaries_alphabet INTO alphabet FROM PUBLIC.projects WHERE NEW.project_id = projects.id;
         IF (SELECT alphabet ? upper(NEW.title::VARCHAR(1))) THEN
           RETURN NEW;
-        ELSE  
+        ELSE
           UPDATE PUBLIC.projects SET dictionaries_alphabet = alphabet || to_jsonb( upper(NEW.title::VARCHAR(1))) WHERE projects.id = NEW.project_id;
-        END IF;      
+        END IF;
       RETURN NEW;
     END;
   $$;
 
   CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE      
+    DECLARE
       chapter JSONB;
     BEGIN
       IF (NEW.finished_at IS NOT NULL) THEN
         SELECT jsonb_object_agg(num, "text" ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
         NEW.text=chapter;
-      END IF;               
+      END IF;
       RETURN NEW;
     END;
   $$;
@@ -786,7 +787,7 @@
     END;
   $$;
 
-  
+
   -- create verses
   CREATE FUNCTION PUBLIC.create_verses(chapter_id BIGINT) RETURNS BOOLEAN
     LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -816,7 +817,7 @@
       IF method_type = 'obs'
       THEN
         start_verse = 0;
-      ELSE 
+      ELSE
         start_verse = 1;
       END IF;
       FOR i IN start_verse..chapter.verses LOOP
@@ -831,7 +832,7 @@
           PUBLIC.verses (num, chapter_id, current_step, project_id)
         VALUES
           (200 , chapter.id, chapter.step_id, chapter.project_id);
-      ELSE 
+      ELSE
         RETURN true;
       END IF;
       RETURN true;
@@ -962,6 +963,7 @@
     CREATE TABLE PUBLIC.projects (
       id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       title TEXT NOT NULL,
+      orig_title TEXT NOT NULL,
       code TEXT NOT NULL,
       language_id BIGINT REFERENCES PUBLIC.languages ON
       DELETE
@@ -1096,11 +1098,8 @@
       DELETE
         CASCADE NOT NULL UNIQUE,
       data_collection JSON DEFAULT NULL,
-      is_enable BOOLEAN DEFAULT true  
+      is_enable BOOLEAN DEFAULT true
     );
-
-    COMMENT ON COLUMN public.briefs.text
-        IS 'бриф пишем в формате маркдаун';
 
     ALTER TABLE
       PUBLIC.briefs enable ROW LEVEL SECURITY;
@@ -1171,6 +1170,7 @@
         CASCADE NOT NULL,
       "text" TEXT DEFAULT NULL,
       chapters JSON,
+      level_checks JSON,
       properties JSON DEFAULT NULL,
       UNIQUE (project_id, code)
     );
@@ -1196,7 +1196,7 @@
     CREATE POLICY "Добавлять можно только админу" ON PUBLIC.books FOR
     INSERT
       WITH CHECK (admin_only());
-   
+
   -- END RLS
 -- END BOOKS
 
@@ -1227,7 +1227,7 @@
     CREATE POLICY "Получают книги все кто на проекте" ON PUBLIC.chapters FOR
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
-      
+
   -- END RLS
 
 -- END CHAPTERS
@@ -1405,7 +1405,7 @@
       data JSON DEFAULT NULL,
       created_at TIMESTAMP DEFAULT NOW(),
       changed_at TIMESTAMP DEFAULT NOW(),
-      deleted_at timestamp DEFAULT NULL      
+      deleted_at TIMESTAMP DEFAULT NULL
     );
     ALTER TABLE
       PUBLIC.dictionaries enable ROW LEVEL security;
@@ -1447,7 +1447,7 @@
       created_at TIMESTAMP DEFAULT NOW(),
       log jsonb
     );
-    
+
     ALTER TABLE
       PUBLIC.logs enable ROW LEVEL SECURITY;
   -- END TABLE
@@ -1550,7 +1550,7 @@
       PUBLIC.methods;
 
     INSERT INTO
-      PUBLIC.methods (title, resources, steps, "type", brief)
+      PUBLIC.methods (title, resources, steps, "type")
     VALUES
       ('CANA Bible crash test', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
   {
