@@ -18,18 +18,12 @@ export default async function updatePasswordHandler(req, res) {
         data = user
         if (error) throw error
       } catch (error) {
-        if (error.status === 422) {
-          res.status(422).json({ error })
-          return
-        } else {
-          res.status(404).json({ error })
-          return
-        }
+        return res.status(404).json({ error })
       }
       res.status(201).json({ data })
       break
     default:
-      res.setHeader('Allow', ['GET', 'PUT'])
+      res.setHeader('Allow', ['PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

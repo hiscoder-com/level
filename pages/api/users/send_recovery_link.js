@@ -24,17 +24,15 @@ export default async function sendRecoveryHandler(req, res) {
         if (error) throw error
       } catch (error) {
         if (error.status) {
-          res.status(error.status).json({ error })
-          return
+          return res.status(error.status).json({ error })
         } else {
-          res.status(404).json({ error })
-          return
+          return res.status(404).json({ error })
         }
       }
       res.status(201).json({ data })
       break
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['POST'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

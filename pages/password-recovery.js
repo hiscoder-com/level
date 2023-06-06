@@ -6,7 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import StartPage from 'components/StartPage'
 import PasswordRecovery from 'components/PasswordRecovery'
 
-export default function Home() {
+export default function PasswordRecoveryPage() {
   const { t } = useTranslation('common')
   return (
     <main className="layout-empty bg-[#f4f4f4]">
@@ -21,8 +21,6 @@ export default function Home() {
     </main>
   )
 }
-
-Home.layoutType = 'empty'
 
 export async function getStaticProps({ locale }) {
   return {

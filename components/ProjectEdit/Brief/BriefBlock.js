@@ -52,11 +52,10 @@ function BriefBlock({ access }) {
       })
       .then()
       .catch((err) => {
-        toast.error(t('SaveFailed'))
         error = true
         console.log(err)
       })
-      .finally(setIsSaving(false))
+      .finally(() => setIsSaving(false))
     return { error }
   }
 
@@ -224,11 +223,7 @@ function BriefBlock({ access }) {
               className="btn-primary text-xl"
               onClick={() => {
                 const { error } = saveToDatabase()
-                if (!error) {
-                  toast.success(t('SaveSuccess'))
-                } else {
-                  toast.error(t('SaveFailed'))
-                }
+                !error ? toast.success(t('SaveSuccess')) : toast.error(t('SaveFailed'))
               }}
             >
               {isSaving ? (
