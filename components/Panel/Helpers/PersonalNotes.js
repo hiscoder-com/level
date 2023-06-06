@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic'
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
-import { toast, Toaster } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import { useCurrentUser } from 'lib/UserContext'
 

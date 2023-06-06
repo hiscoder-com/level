@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import { Menu, Transition } from '@headlessui/react'
 

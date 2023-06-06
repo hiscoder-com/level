@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import { supabase } from 'utils/supabaseClient'
 
