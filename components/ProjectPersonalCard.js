@@ -105,7 +105,11 @@ function ProjectPersonalCard({ project, token, user }) {
                   <>
                     <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
-                        <div className="text-xl font-bold">{t(`books:${book}`)}</div>
+                        <Link href={`/projects/${project.code}/books/${book}`}>
+                          <a className="text-xl font-bold hover:text-gray-500">
+                            {t(`books:${book}`)}
+                          </a>
+                        </Link>
                         <div className="pt-1">{`(${t('Chapter', {
                           count: countChaptersVerses?.[book]?.countChapters,
                         })} ${t('Verse', {
