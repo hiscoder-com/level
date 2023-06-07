@@ -17,7 +17,7 @@ import {
   TQ,
 } from './'
 
-function Tool({ config, toolName, editable = false }) {
+function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }) {
   const { t } = useTranslation(['common', 'books'])
   const {
     resource: {
@@ -83,6 +83,7 @@ function Tool({ config, toolName, editable = false }) {
         (el) => el.identifier === config.reference.book
       )?.path
 
+      config.targetResourceLink = targetResourceLink
       url = '/api/git/tn'
       break
 
@@ -156,6 +157,7 @@ function Tool({ config, toolName, editable = false }) {
     case 'info':
       CurrentTool = Info
       title = t('info')
+      config.tnLink = tnLink
 
       url = '/api/git/info'
       break

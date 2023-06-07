@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useTranslation } from 'next-i18next'
 
 import { Tab } from '@headlessui/react'
@@ -39,7 +41,17 @@ const icons = {
 
 function Workspace({ stepConfig, reference, editable = false }) {
   const inactive = useRecoilValue(inactiveState)
-
+  const [tnLink, setTnLink] = useState('')
+  useEffect(() => {
+    for (const resourceName in stepConfig.resources) {
+      if (Object.hasOwnProperty.call(stepConfig.resources, resourceName)) {
+        const res = stepConfig.resources[resourceName]
+        if (res.manifest.dublin_core.identifier === 'tn') {
+          setTnLink(`${res.owner}/${res.repo}/raw/commit/${res.commit}`)
+        }
+      }
+    }
+  }, [stepConfig])
   return (
     <div className="layout-step">
       {stepConfig.config.map((el, index) => {
@@ -54,6 +66,10 @@ function Workspace({ stepConfig, reference, editable = false }) {
               tools={el.tools}
               resources={stepConfig.resources}
               reference={reference}
+              targetResourceLink={`${
+                stepConfig.resources[stepConfig.base_manifest].owner
+              }/${stepConfig.resources[stepConfig.base_manifest].repo}`}
+              tnLink={tnLink}
               wholeChapter={stepConfig.whole_chapter}
               editable={editable}
             />
@@ -66,11 +82,20 @@ function Workspace({ stepConfig, reference, editable = false }) {
 
 export default Workspace
 
-function Panel({ tools, resources, reference, wholeChapter, editable = false }) {
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
+function Panel({
+  tools,
+  resources,
+  targetResourceLink,
+  tnLink,
+  reference,
+  wholeChapter,
+  editable = false,
+}) {
   const { t } = useTranslation('common')
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-  }
 
   return (
     <Tab.Group
@@ -122,6 +147,8 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
               <div className="flex flex-col bg-white rounded-lg h-full">
                 <Tool
                   editable={editable}
+                  targetResourceLink={targetResourceLink}
+                  tnLink={tnLink}
                   config={{
                     reference,
                     wholeChapter,

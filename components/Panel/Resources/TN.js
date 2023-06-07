@@ -18,7 +18,7 @@ function TN({ config, url, toolName }) {
   const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
     book: config.reference.book,
     tnotes: data,
-    usfm: { link: config.config.url || 'ru_gl/ru_rlob' },
+    usfm: { link: config.targetResourceLink },
   })
 
   useEffect(() => {

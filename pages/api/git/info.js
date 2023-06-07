@@ -43,7 +43,10 @@ import { tsvToJson } from '@texttree/translation-words-helpers'
 
 export default async function infoHandler(req, res) {
   const { repo, book, chapter } = req.query
-  const manifestUrl = repo + '/raw/branch/master/manifest.yaml'
+  if (!repo) {
+    return res.status(404).json({ error: 'empty repo' })
+  }
+  const manifestUrl = 'https://git.door43.org/' + repo + '/manifest.yaml'
 
   let bookPath
 
@@ -58,10 +61,11 @@ export default async function infoHandler(req, res) {
 
   let url = ''
   if (bookPath.slice(0, 2) === './') {
-    url = `${repo}/raw/master${bookPath.slice(1)}`
+    url = `https://git.door43.org/${repo}${bookPath.slice(1)}`
   } else {
-    url = `${repo}/raw/master/${bookPath}`
+    url = `https://git.door43.org/${repo}/${bookPath}`
   }
+
   let _data
   try {
     _data = await axios.get(url)
