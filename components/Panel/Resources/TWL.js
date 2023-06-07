@@ -8,10 +8,75 @@ import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
+import axios from 'axios'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const { isLoading, data } = useGetResource({ config, url })
+  const [wordObjects, setWordObjects] = useState([])
+  useEffect(() => {
+    const getWords = async () => {
+      const {
+        resource: { owner, repo, commit, bookPath },
+      } = config
+      const promises = data.map(async (wordObject) => {
+        const url = `${
+          process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+        }/${owner}/${repo.slice(0, -1)}/raw/branch/master/${wordObject.TWLink.split('/')
+          .slice(-3)
+          .join('/')}.md`
+        let markdown
+        try {
+          markdown = await axios.get(url)
+        } catch (error) {
+          console.log(error)
+        }
+        const splitter = markdown.data.search('\n')
+        return {
+          ...wordObject,
+          title: markdown.data.slice(0, splitter),
+          text: markdown.data.slice(splitter),
+        }
+      })
+      const words = await Promise.all(promises)
+      const finalData = {}
+
+      words?.forEach((word) => {
+        const {
+          ID,
+          Reference,
+          TWLink,
+          isRepeatedInBook,
+          isRepeatedInChapter,
+          isRepeatedInVerse,
+          text,
+          title,
+        } = word
+        const wordObject = {
+          id: ID,
+          title,
+          text,
+          url: TWLink,
+          isRepeatedInBook,
+          isRepeatedInChapter,
+          isRepeatedInVerse,
+        }
+
+        const [_, verse] = Reference.split(':')
+
+        if (!finalData[verse]) {
+          finalData[verse] = [wordObject]
+        } else {
+          finalData[verse].push(wordObject)
+        }
+      })
+      setWordObjects(finalData)
+    }
+    if (data && config) {
+      getWords()
+    }
+  }, [config, data])
+
   return (
     <>
       {isLoading ? (
@@ -19,7 +84,7 @@ function TWL({ config, url, toolName }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <TWLList setItem={setItem} data={data} toolName={toolName} />
+          <TWLList setItem={setItem} data={wordObjects} toolName={toolName} />
         </div>
       )}
     </>
