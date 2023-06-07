@@ -4,20 +4,36 @@ import ReactMarkdown from 'react-markdown'
 
 import { useTranslation } from 'next-i18next'
 
+import { setup } from 'axios-cache-adapter'
+
+import localforage from 'localforage'
+
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
-import axios from 'axios'
+
+const DEFAULT_MAX_AGE = 24
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const { isLoading, data } = useGetResource({ config, url })
   const [wordObjects, setWordObjects] = useState([])
+  const [isLoadingTW, setIsLoadingTW] = useState(false)
   useEffect(() => {
     const getWords = async () => {
+      const cacheStore = localforage.createInstance({
+        driver: [localforage.INDEXEDDB],
+        name: 'web-cache',
+      })
+      const api = setup({
+        cache: {
+          store: cacheStore,
+          maxAge: 60 * 60 * DEFAULT_MAX_AGE,
+        },
+      })
       const {
-        resource: { owner, repo, commit, bookPath },
+        resource: { owner, repo },
       } = config
       const promises = data.map(async (wordObject) => {
         const url = `${
@@ -27,10 +43,13 @@ function TWL({ config, url, toolName }) {
           .join('/')}.md`
         let markdown
         try {
-          markdown = await axios.get(url)
+          setIsLoadingTW(true)
+          markdown = await api.get(url)
         } catch (error) {
+          setIsLoadingTW(false)
           console.log(error)
         }
+
         const splitter = markdown.data.search('\n')
         return {
           ...wordObject,
@@ -70,6 +89,7 @@ function TWL({ config, url, toolName }) {
           finalData[verse].push(wordObject)
         }
       })
+      setIsLoadingTW(false)
       setWordObjects(finalData)
     }
     if (data && config) {
@@ -79,21 +99,22 @@ function TWL({ config, url, toolName }) {
 
   return (
     <>
-      {isLoading ? (
-        <Placeholder />
-      ) : (
-        <div className="relative h-full">
-          <TNTWLContent setItem={setItem} item={item} />
-          <TWLList setItem={setItem} data={wordObjects} toolName={toolName} />
-        </div>
-      )}
+      <div className="relative h-full">
+        <TNTWLContent setItem={setItem} item={item} />
+        <TWLList
+          setItem={setItem}
+          data={wordObjects}
+          toolName={toolName}
+          isLoading={isLoadingTW || isLoading}
+        />
+      </div>
     </>
   )
 }
 
 export default TWL
 
-function TWLList({ setItem, data, toolName }) {
+function TWLList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
@@ -111,56 +132,66 @@ function TWLList({ setItem, data, toolName }) {
   }, [data])
 
   return (
-    <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
+    <div
+      className={`divide-y divide-gray-800 divide-dashed h-full overflow-auto ${
+        isLoading ? 'px-4' : ''
+      }`}
+    >
       <div className="text-center">
         {<FilterRepeated filter={filter} setFilter={setFilter} />}
       </div>
-      {verses?.map((el, verseIndex) => {
-        return (
-          <div key={verseIndex} className="p-4 flex mx-4">
-            <div className="text-2xl">{el[0]}</div>
-            <div className="text-gray-700 pl-7 flex-1">
-              <ul>
-                {el[1]?.map((item, index) => {
-                  let itemFilter
-                  switch (filter) {
-                    case 'disabled':
-                      itemFilter = false
-                      break
-                    case 'verse':
-                      itemFilter = item.isRepeatedInVerse
-                      break
-                    case 'book':
-                      itemFilter = item.isRepeatedInBook
-                      break
+      {isLoading ? (
+        <div className="pt-4 pr-4">
+          <Placeholder />
+        </div>
+      ) : (
+        verses?.map((el, verseIndex) => {
+          return (
+            <div key={verseIndex} className="p-4 flex mx-4">
+              <div className="text-2xl">{el[0]}</div>
+              <div className="text-gray-700 pl-7 flex-1">
+                <ul>
+                  {el[1]?.map((item, index) => {
+                    let itemFilter
+                    switch (filter) {
+                      case 'disabled':
+                        itemFilter = false
+                        break
+                      case 'verse':
+                        itemFilter = item.isRepeatedInVerse
+                        break
+                      case 'book':
+                        itemFilter = item.isRepeatedInBook
+                        break
 
-                    default:
-                      break
-                  }
+                      default:
+                        break
+                    }
 
-                  return (
-                    <li
-                      key={index}
-                      id={'id' + item.id}
-                      className={`p-2 cursor-pointer ${
-                        itemFilter ? 'text-gray-400' : ''
-                      } hover:bg-gray-200
+                    return (
+                      <li
+                        key={index}
+                        id={'id' + item.id}
+                        className={`p-2 cursor-pointer ${
+                          itemFilter ? 'text-gray-400' : ''
+                        } hover:bg-gray-200
                       ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}
                       `}
-                      onClick={() => {
-                        handleSave(item.id)
-                        setItem({ text: item.text, title: item.title })
-                      }}
-                    >
-                      <ReactMarkdown>{item.title}</ReactMarkdown>
-                    </li>
-                  )
-                })}
-              </ul>
+                        onClick={() => {
+                          handleSave(item.id)
+                          setItem({ text: item.text, title: item.title })
+                        }}
+                      >
+                        <ReactMarkdown>{item.title}</ReactMarkdown>
+                      </li>
+                    )
+                  })}
+                </ul>
+              </div>
             </div>
-          </div>
-        )
-      })}
+          )
+        })
+      )}
     </div>
   )
 }
