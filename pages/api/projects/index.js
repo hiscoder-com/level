@@ -20,17 +20,18 @@ export default async function languageProjectsHandler(req, res) {
     },
     method,
   } = req
-  // TODO не работает если создавать ОБС
   switch (method) {
     case 'POST':
       try {
         // вот тут мы делаем валидацию и записываем в 2 таблицы. Какие входные данные - можно самому придумать. Или принять все поля формы, или json просто валидировать
         // сейчас тут не хватает валидации юрл
+
         const { data: current_method, error: methodError } = await supabase
           .from('methods')
           .select('*')
           .eq('id', method_id)
           .single()
+
         if (methodError) throw methodError
 
         /**
@@ -42,12 +43,17 @@ export default async function languageProjectsHandler(req, res) {
          * Я просто показываю примерно как все должно быть.
          * PS. Оказывается что транзакции не поддерживаются, по этому придется просто валидацию делать хорошо. Либо обрабатывать ошибки и удалять созданные записи
          */
+
         if (
           JSON.stringify(Object.keys(resources).sort()) !==
           JSON.stringify(Object.keys(current_method.resources).sort())
         ) {
+          console.log('methodError')
+
           throw 'Resources not an equal'
         }
+        console.log('methodError')
+
         const { baseResource, newResources } = await parseManifests({
           resources,
           current_method,
@@ -68,7 +74,6 @@ export default async function languageProjectsHandler(req, res) {
             },
           },
         ])
-
         if (error) throw error
 
         const { error: errorBrief } = await supabase.rpc('create_brief', {

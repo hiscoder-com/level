@@ -7,9 +7,10 @@ import { useForm, useWatch } from 'react-hook-form'
 
 import axios from 'axios'
 
-import { Switch } from '@headlessui/react'
+import { Disclosure, Switch } from '@headlessui/react'
 
 import CommitsList from './CommitsList'
+import Down from 'public/arrow-down.svg'
 
 import { useLanguages, useMethod, useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -17,12 +18,12 @@ import { useCurrentUser } from 'lib/UserContext'
 function ProjectCreate() {
   const [customResources, setCustomResources] = useState('')
   const [isBriefEnable, setIsBriefEnable] = useState(true)
-  const [customBriefs, setCustomBriefs] = useState('')
+  const [customBriefs, setCustomBriefs] = useState([])
   const [resourcesUrl, setResourcesUrl] = useState()
-  const [customSteps, setCustomSteps] = useState('')
+  const [customSteps, setCustomSteps] = useState([])
   const [method, setMethod] = useState()
 
-  const { t } = useTranslation(['projects', 'project-edit'])
+  const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const { user } = useCurrentUser()
   const router = useRouter()
 
@@ -47,12 +48,13 @@ function ProjectCreate() {
       )
       if (selectedMethod) {
         setMethod(selectedMethod)
-        setCustomSteps(JSON.stringify(selectedMethod.steps, null, 2))
-        setCustomBriefs(JSON.stringify(selectedMethod.brief, null, 2))
+        setCustomSteps(selectedMethod.steps)
+        setCustomBriefs(selectedMethod.brief)
         setCustomResources(selectedMethod.resources)
       }
     }
   }, [methodId, methods])
+  console.log(customSteps)
 
   useEffect(() => {
     if (methods) {
@@ -132,7 +134,7 @@ function ProjectCreate() {
           : '',
     },
   ]
-
+  console.log(customBriefs)
   return (
     <div className="py-0 sm:py-10">
       <div className="card">
@@ -180,13 +182,13 @@ function ProjectCreate() {
               })}
           </select>
           <div>{t('Brief')}</div>
-          <textarea
+          {/* <textarea
             cols="50"
             rows="30"
             onChange={(e) => setCustomBriefs(e.target.value)}
             value={customBriefs}
             className="w-full"
-          />
+          /> */}
           <div>
             <span className="mr-3">
               {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
@@ -195,7 +197,7 @@ function ProjectCreate() {
               checked={isBriefEnable}
               onChange={() => setIsBriefEnable((prev) => !prev)}
               className={`${
-                isBriefEnable ? 'bg-blue-600' : 'bg-gray-300'
+                isBriefEnable ? 'bg-cyan-600' : 'bg-gray-300'
               } relative inline-flex h-6 w-11 items-center rounded-full`}
             >
               <span
@@ -206,13 +208,85 @@ function ProjectCreate() {
             </Switch>
           </div>
           <br />
-          <p>
-            Тут самое сложное, так как это будет настройка шагов метода. Нужно как-то
-            аккуратно его разрешить исправлять, не давать чего-то лишнего исправить. Это
-            массив из шагов. Может для одного шага сделать компонент. У шага есть такие
-            параметры.
-          </p>
-          <pre className="whitespace-pre-wrap break-words">
+
+          <div className="flex flex-col gap-2 border-y border-slate-900 py-7">
+            <p className="text-xl font-bold mb-5">Шаги</p>
+            {customSteps?.map((el) => (
+              <Disclosure key={el.title}>
+                <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
+                  <span>{el.title}</span>
+                  <Down className="w-5 h-5" />
+                </Disclosure.Button>
+                <Disclosure.Panel className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1/6">Название</span>
+                    <input className="input-primary" value={el.title} />
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="w-1/6">Описание</span>
+                    <textarea className="input-primary" rows={5} value={el.description} />
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="w-1/6">Интро</span>
+                    <textarea className="input-primary" rows={5} value={el.intro} />
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="w-1/6">Интсрументы</span>
+                    {el.config[0].tools.map((item) => (
+                      <div key={item.name} className="bg-gray-200 p-2 rounded-md">
+                        {t('common:' + item.name)}
+                      </div>
+                    ))}
+                    /
+                    {el.config[1].tools.map((item) => (
+                      <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
+                        {t('common:' + item.name)}
+                      </div>
+                    ))}
+                    /
+                    {el.config[2]?.tools?.map((item) => (
+                      <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
+                        {t('common:' + item.name)}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="w-1/6">Количество переводчиков</span>
+                    <div>{el.count_of_users}</div>
+                  </div>
+                  <div className="flex items-center gap-2 w-full">
+                    <span className="w-1/6">Время выполнения</span>
+                    <div>{el.time}</div>
+                  </div>
+                </Disclosure.Panel>
+              </Disclosure>
+            ))}
+          </div>
+          <div className="flex flex-col gap-2 border-b border-slate-900 py-7">
+            <p className="text-xl font-bold mb-5">Бриф</p>
+            {customBriefs?.map((el) => (
+              <Disclosure key={el.title}>
+                <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
+                  <span>{el.title}</span>
+                  <Down className="w-5 h-5" />
+                </Disclosure.Button>
+                <Disclosure.Panel className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div>title</div> <input className="input-primary" value={el.title} />
+                  </div>
+                  <div>questions</div>
+                  {el.block.map((item) => (
+                    <input
+                      key={item.question}
+                      className="input-primary"
+                      value={item.question}
+                    />
+                  ))}
+                </Disclosure.Panel>
+              </Disclosure>
+            ))}
+          </div>
+          {/* <pre className="whitespace-pre-wrap break-words">
             {`"title": Название шага, даем юзеру возможность перевода этого поля
 "description": Описание шага, возможность редактировать
 "time": время, сколько минут длится шаг
@@ -225,15 +299,9 @@ function ProjectCreate() {
   "tools": [ массив объектов тулсов. Есть наши стандартные, и есть пользовательские
       "name": название тулсы, редактор, заметки, глава и т.д.
       "config": а тут конфиг этого компонента`}
-          </pre>
-          <textarea
-            cols="50"
-            rows="30"
-            onChange={(e) => setCustomSteps(e.target.value)}
-            value={customSteps}
-            className="w-full"
-          />
-          <br />
+          </pre> */}
+
+          {/* <br />
           <p>
             Нужно превратить в форму. Сейчас сюда приходит объект. Ключ - это
             идентификатор ресурса в шагах метода. Тут нет каких-то правил, можно называть
@@ -251,9 +319,8 @@ function ProjectCreate() {
             disabled={true}
             value={JSON.stringify(customResources, null, 2)}
             className="w-full"
-          />
-          <br />
-          {method?.type !== 'obs' ? (
+          /> */}
+          {/* {method?.type !== 'obs' ? (
             <pre className="whitespace-pre-wrap break-words">
               {`literal
 https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
@@ -279,14 +346,18 @@ obs-twl
 https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601faee4ecb1a0cad
 `}
             </pre>
-          )}
+          )} */}
           <br />
-          <CommitsList
-            methodId={methodId}
-            resourcesUrl={resourcesUrl}
-            setResourcesUrl={setResourcesUrl}
-          />
-          <br />
+          <div className=" border-b border-slate-900 pb-7 mb-7">
+            <p className="text-xl font-bold mb-5">Ссылки на материалы</p>
+
+            <CommitsList
+              methodId={methodId}
+              resourcesUrl={resourcesUrl}
+              setResourcesUrl={setResourcesUrl}
+            />
+          </div>
+          {/* <br />
           <p>
             После того как нажимают на кнопку сохранить, мы делаем следующее: <br />
             1. Получаем манифесты всех ресурсов чтобы записать в таблицу проектов, в
@@ -322,7 +393,7 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             Сейчас этого кода нет, нужно подумать на сколько это критично. Мне кажется что
             для первой версии мы можем создать проект в ручную, и отложить разработку на
             время после запуска
-          </p>
+          </p> */}
           <input
             className="btn-cyan btn-filled"
             type="submit"
