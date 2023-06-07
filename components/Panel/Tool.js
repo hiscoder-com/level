@@ -10,6 +10,7 @@ import {
   Reader,
   Audio,
   Bible,
+  OBSTN,
   Info,
   TWL,
   TN,
@@ -58,7 +59,7 @@ function Tool({ config, toolName, editable = false }) {
 
     case 'OBS Translation Notes':
     case 'TSV OBS Translation Notes':
-      CurrentTool = TN
+      CurrentTool = OBSTN
 
       config.resource.bookPath = config.resource.manifest.projects[0]?.path
 
