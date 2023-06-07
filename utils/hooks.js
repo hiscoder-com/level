@@ -470,7 +470,7 @@ export function useGetVerses({ token, code, book_code, chapter_id }) {
 export function useGetInfo({ config, url }) {
   const {
     reference: { book, chapter },
-    config: { repo },
+    config: { url: repo },
   } = config
 
   const params = { repo, book, chapter }
