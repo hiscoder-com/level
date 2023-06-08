@@ -11,7 +11,7 @@ import localforage from 'localforage'
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
-import { checkLSVal } from 'utils/helper'
+import { checkLSVal, filterNotes } from 'utils/helper'
 
 const DEFAULT_MAX_AGE = 24
 
@@ -50,11 +50,11 @@ function TWL({ config, url, toolName }) {
           console.log(error)
         }
 
-        const splitter = markdown.data.search('\n')
+        const splitter = markdown?.data?.search('\n')
         return {
           ...wordObject,
-          title: markdown.data.slice(0, splitter),
-          text: markdown.data.slice(splitter),
+          title: markdown?.data?.slice(0, splitter),
+          text: markdown?.data?.slice(splitter),
         }
       })
       const words = await Promise.all(promises)
@@ -81,13 +81,8 @@ function TWL({ config, url, toolName }) {
           isRepeatedInVerse,
         }
 
-        const [_, verse] = Reference.split(':')
-
-        if (!finalData[verse]) {
-          finalData[verse] = [wordObject]
-        } else {
-          finalData[verse].push(wordObject)
-        }
+        const [, verse] = Reference.split(':')
+        filterNotes(wordObject, verse, finalData)
       })
       setIsLoadingTW(false)
       setWordObjects(finalData)
