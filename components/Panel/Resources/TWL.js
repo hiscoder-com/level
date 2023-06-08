@@ -38,7 +38,9 @@ function TWL({ config, url, toolName }) {
       const promises = data.map(async (wordObject) => {
         const url = `${
           process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
-        }/${owner}/${repo.slice(0, -1)}/raw/branch/master/${wordObject.TWLink.split('/')
+        }/${owner}/${repo
+          .slice(0, -1)
+          .replace('obs-', '')}/raw/branch/master/${wordObject.TWLink.split('/')
           .slice(-3)
           .join('/')}.md`
         let markdown

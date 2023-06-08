@@ -92,59 +92,7 @@ export default async function twlHandler(req, res) {
             return _chapter === chapter
           })
 
-    const promises = data.map(async (wordObject) => {
-      const url = `${
-        process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
-      }/${owner}/${repo
-        .slice(0, -1)
-        .replace('obs-', '')}/raw/branch/master/${wordObject.TWLink.split('/')
-        .slice(-3)
-        .join('/')}.md`
-      let markdown
-      try {
-        markdown = await axios.get(url)
-      } catch (error) {}
-      const splitter = markdown.data.search('\n')
-      return {
-        ...wordObject,
-        title: markdown.data.slice(0, splitter),
-        text: markdown.data.slice(splitter),
-      }
-    })
-    const words = await Promise.all(promises)
-    const finalData = {}
-
-    words?.forEach((word) => {
-      const {
-        ID,
-        Reference,
-        TWLink,
-        isRepeatedInBook,
-        isRepeatedInChapter,
-        isRepeatedInVerse,
-        text,
-        title,
-      } = word
-      const wordObject = {
-        id: ID,
-        title,
-        text,
-        url: TWLink,
-        isRepeatedInBook,
-        isRepeatedInChapter,
-        isRepeatedInVerse,
-      }
-
-      const [_, verse] = Reference.split(':')
-
-      if (!finalData[verse]) {
-        finalData[verse] = [wordObject]
-      } else {
-        finalData[verse].push(wordObject)
-      }
-    })
-
-    res.status(200).json(finalData)
+    res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })
