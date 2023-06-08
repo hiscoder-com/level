@@ -42,20 +42,24 @@ function BriefBlock({ access }) {
     }
   }, [brief, briefDataCollection])
 
-  const saveToDatabase = () => {
-    let error = false
+  const saveToDatabase = async () => {
+    let error = true
     setIsSaving(true)
-    axios.defaults.headers.common['token'] = user?.access_token
-    axios
-      .put(`/api/briefs/${project?.id}`, {
+
+    try {
+      axios.defaults.headers.common['token'] = user?.access_token
+      const result = await axios.put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
-      .then()
-      .catch((err) => {
-        error = true
-        console.log(err)
-      })
-      .finally(() => setIsSaving(false))
+      if (result?.data) {
+        error = false
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      setIsSaving(false)
+    }
+
     return { error }
   }
 
@@ -221,8 +225,8 @@ function BriefBlock({ access }) {
           <div>
             <button
               className="btn-primary text-xl"
-              onClick={() => {
-                const { error } = saveToDatabase()
+              onClick={async () => {
+                const { error } = await saveToDatabase()
                 !error ? toast.success(t('SaveSuccess')) : toast.error(t('SaveFailed'))
               }}
             >
