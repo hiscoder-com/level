@@ -469,15 +469,15 @@ export function useGetVerses({ token, code, book_code, chapter_id }) {
 //TODO сделать описание
 export function useGetInfo({ config, url }) {
   const {
-    reference: { book, chapter },
-    tnLink: repo,
+    reference: { chapter },
+    tnLink: _url,
   } = config
 
-  const params = { repo, book, chapter }
+  const params = { url: _url, chapter }
 
   const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
   const { isLoading, data, error } = useSWR(
-    url && params ? [url, params] : null,
+    url && _url && chapter ? [url, params] : null,
     fetcher,
     {
       revalidateOnFocus: false,

@@ -47,11 +47,22 @@ function Workspace({ stepConfig, reference, editable = false }) {
       if (Object.hasOwnProperty.call(stepConfig.resources, resourceName)) {
         const res = stepConfig.resources[resourceName]
         if (res.manifest.dublin_core.identifier === 'tn') {
-          setTnLink(`${res.owner}/${res.repo}/raw/commit/${res.commit}`)
+          const repo = `${res.owner}/${res.repo}/raw/commit/${res.commit}`
+          const bookPath = res.manifest.projects.find(
+            (el) => el.identifier === reference.book
+          )?.path
+
+          let url = ''
+          if (bookPath.slice(0, 2) === './') {
+            url = `https://git.door43.org/${repo}${bookPath.slice(1)}`
+          } else {
+            url = `https://git.door43.org/${repo}/${bookPath}`
+          }
+          setTnLink(url)
         }
       }
     }
-  }, [stepConfig])
+  }, [reference.book, stepConfig])
   return (
     <div className="layout-step">
       {stepConfig.config.map((el, index) => {
