@@ -54,9 +54,13 @@ function Workspace({ stepConfig, reference, editable = false }) {
 
           let url = ''
           if (bookPath.slice(0, 2) === './') {
-            url = `https://git.door43.org/${repo}${bookPath.slice(1)}`
+            url = `${
+              process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+            }/${repo}${bookPath.slice(1)}`
           } else {
-            url = `https://git.door43.org/${repo}/${bookPath}`
+            url = `${
+              process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+            }/${repo}/${bookPath}`
           }
           setTnLink(url)
         }

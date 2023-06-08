@@ -18,7 +18,12 @@ function TN({ config, url, toolName }) {
   const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
     book: config.reference.book,
     tnotes: data,
-    usfm: { link: config.targetResourceLink },
+    usfm: {
+      link:
+        (process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org') +
+        '/' +
+        config.targetResourceLink,
+    },
   })
 
   useEffect(() => {
