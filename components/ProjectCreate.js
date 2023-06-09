@@ -14,7 +14,6 @@ import Down from 'public/arrow-down.svg'
 
 import { useLanguages, useMethod, useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-
 function ProjectCreate() {
   const [customResources, setCustomResources] = useState('')
   const [isBriefEnable, setIsBriefEnable] = useState(true)
@@ -22,7 +21,6 @@ function ProjectCreate() {
   const [resourcesUrl, setResourcesUrl] = useState()
   const [customSteps, setCustomSteps] = useState([])
   const [method, setMethod] = useState()
-
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const { user } = useCurrentUser()
   const router = useRouter()
@@ -134,7 +132,13 @@ function ProjectCreate() {
           : '',
     },
   ]
-  console.log(customBriefs)
+  const updateTitle = (title, index) => {
+    setCustomSteps((prev) => {
+      prev[index].title = title
+      return prev
+    })
+    localStorage.setItem('createProject', JSON.stringify(customSteps))
+  }
   return (
     <div className="py-0 sm:py-10">
       <div className="card">
@@ -182,13 +186,6 @@ function ProjectCreate() {
               })}
           </select>
           <div>{t('Brief')}</div>
-          {/* <textarea
-            cols="50"
-            rows="30"
-            onChange={(e) => setCustomBriefs(e.target.value)}
-            value={customBriefs}
-            className="w-full"
-          /> */}
           <div>
             <span className="mr-3">
               {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
@@ -211,7 +208,7 @@ function ProjectCreate() {
 
           <div className="flex flex-col gap-2 border-y border-slate-900 py-7">
             <p className="text-xl font-bold mb-5">Шаги</p>
-            {customSteps?.map((el) => (
+            {customSteps?.map((el, index) => (
               <Disclosure key={el.title}>
                 <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
                   <span>{el.title}</span>
@@ -220,7 +217,11 @@ function ProjectCreate() {
                 <Disclosure.Panel className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <span className="w-1/6">Название</span>
-                    <input className="input-primary" value={el.title} />
+                    <StepTitle
+                      stepTitle={el.title}
+                      updateTitle={updateTitle}
+                      index={index}
+                    />
                   </div>
                   <div className="flex items-center gap-2 w-full">
                     <span className="w-1/6">Описание</span>
@@ -406,3 +407,40 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 }
 
 export default ProjectCreate
+
+function StepTitle({ stepTitle, updateTitle, index }) {
+  const [title, setTitle] = useState(stepTitle)
+  useEffect(() => {
+    if (stepTitle) {
+      setTitle(stepTitle)
+    }
+  }, [stepTitle])
+
+  return (
+    <input
+      className="input-primary"
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      onBlur={() => {
+        updateTitle(title.trim(), index)
+      }}
+    />
+  )
+}
+
+function Description({ stepDesripsion, updateDesripsion, index }) {
+  const [description, setDescription] = useState('')
+  return (
+    <textarea
+      className="input-primary"
+      value={stepDesripsion}
+      onChange={(e) => setDescription(e.target.value)}
+      onBlur={() => {
+        updateDesripsion(description.trim(), index)
+      }}
+    />
+  )
+}
+function Intro() {
+  return <div>Intro</div>
+}
