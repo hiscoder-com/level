@@ -29,11 +29,7 @@ function Bible({ config, url, toolName }) {
       {isLoading ? (
         <Placeholder />
       ) : config?.config?.draft ? (
-        <VersesExtended
-          verseObjects={data?.verseObjects}
-          handleSave={handleSave}
-          scrollId={scrollId}
-        />
+        <VersesExtended verseObjects={data?.verseObjects} handleSave={handleSave} />
       ) : (
         <Verses
           verseObjects={data?.verseObjects}
@@ -72,7 +68,7 @@ function Verses({ verseObjects, handleSave, currentScrollVerse, setVerse }) {
   )
 }
 
-function VersesExtended({ verseObjects, handleSave, scrollId }) {
+function VersesExtended({ verseObjects, handleSave, currentScrollVerse }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
   return (
     <>
@@ -83,7 +79,7 @@ function VersesExtended({ verseObjects, handleSave, scrollId }) {
             key={verseObject.verse}
             onClick={() => handleSave(verseObject.verse)}
             className={`my-3 flex items-start select-none ${
-              scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''
+              'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
             }`}
           >
             <div id={'id' + verseObject.verse} className={`ml-2`}>

@@ -1,8 +1,14 @@
+import { useEffect } from 'react'
+
 import ReactMarkdown from 'react-markdown'
+
+import { useRecoilValue } from 'recoil'
 
 import { Disclosure } from '@headlessui/react'
 
 import { Placeholder } from '../UI'
+
+import { currentVerse } from '../state/atoms'
 
 import { useGetResource, useScroll } from 'utils/hooks'
 
@@ -17,6 +23,7 @@ function TQ({ config, url, toolName }) {
           data={data}
           viewAll={config?.resource?.viewAllQuestions}
           toolName={toolName}
+          isLoading={isLoading}
         />
       )}
     </>
@@ -25,7 +32,8 @@ function TQ({ config, url, toolName }) {
 
 export default TQ
 
-function QuestionList({ data, viewAll, toolName }) {
+function QuestionList({ data, viewAll, toolName, isLoading }) {
+  const verse = useRecoilValue(currentVerse)
   let uniqueVerses = new Set()
   const reduceQuestions = (title) => {
     uniqueVerses.add(title)
@@ -34,14 +42,22 @@ function QuestionList({ data, viewAll, toolName }) {
     }
   }
 
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { highlightId, handleSave, currentScrollVerse } = useScroll({ toolName })
+
+  useEffect(() => {
+    const id = 'idtq' + currentScrollVerse
+    setTimeout(() => {
+      document?.getElementById(id)?.scrollIntoView()
+    }, 100)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, verse])
 
   return (
     <div className="divide-y divide-dashed divide-gray-800">
       {data &&
         Object.keys(data)?.map((key) => {
           return (
-            <div key={key} className="flex mx-4 p-4">
+            <div key={key} className="flex mx-4 p-4" id={'idtq' + key}>
               <div className="text-2xl">{key}</div>
               <div className="pl-7 text-gray-700">
                 <ul>
@@ -50,14 +66,14 @@ function QuestionList({ data, viewAll, toolName }) {
                       <li
                         key={item.id}
                         id={'id' + item.id}
-                        onClick={() => handleSave(item.id)}
+                        onClick={() => handleSave(key, item.id)}
                         className="py-2"
                       >
                         <Answer
                           item={item}
                           reduceQuestions={() => reduceQuestions(item.title)}
                           viewAll={viewAll}
-                          scrollId={scrollId}
+                          highlightId={highlightId}
                         />
                       </li>
                     )
@@ -71,11 +87,13 @@ function QuestionList({ data, viewAll, toolName }) {
   )
 }
 
-function Answer({ item, reduceQuestions, viewAll, scrollId }) {
+function Answer({ item, reduceQuestions, viewAll, highlightId }) {
   return (
     <Disclosure>
       <Disclosure.Button
-        className={`w-fit text-left ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}`}
+        className={`w-fit text-left ${
+          highlightId === 'id' + item.id ? 'bg-gray-200' : ''
+        }`}
         onClick={() => {
           if (viewAll) {
             reduceQuestions()
