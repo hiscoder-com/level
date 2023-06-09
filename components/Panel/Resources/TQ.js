@@ -1,14 +1,8 @@
-import { useEffect } from 'react'
-
 import ReactMarkdown from 'react-markdown'
-
-import { useRecoilValue } from 'recoil'
 
 import { Disclosure } from '@headlessui/react'
 
 import { Placeholder } from '../UI'
-
-import { currentVerse } from '../state/atoms'
 
 import { useGetResource, useScroll } from 'utils/hooks'
 
@@ -33,7 +27,6 @@ function TQ({ config, url, toolName }) {
 export default TQ
 
 function QuestionList({ data, viewAll, toolName, isLoading }) {
-  const verse = useRecoilValue(currentVerse)
   let uniqueVerses = new Set()
   const reduceQuestions = (title) => {
     uniqueVerses.add(title)
@@ -42,15 +35,11 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
     }
   }
 
-  const { highlightId, handleSave, currentScrollVerse } = useScroll({ toolName })
-
-  useEffect(() => {
-    const id = 'idtq' + currentScrollVerse
-    setTimeout(() => {
-      document?.getElementById(id)?.scrollIntoView()
-    }, 100)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, verse])
+  const { highlightId, handleSave } = useScroll({
+    toolName,
+    isLoading,
+    idPrefix: 'idtq',
+  })
 
   return (
     <div className="divide-y divide-dashed divide-gray-800">
@@ -66,7 +55,7 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
                       <li
                         key={item.id}
                         id={'id' + item.id}
-                        onClick={() => handleSave(key, item.id)}
+                        onClick={() => handleSave(String(key), item.id)}
                         className="py-2"
                       >
                         <Answer

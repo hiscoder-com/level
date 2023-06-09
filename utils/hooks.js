@@ -268,12 +268,18 @@ export function useGetBrief({ token, project_id }) {
   return [brief, { mutate, error, isLoading }]
 }
 
-export function useScroll({ toolName }) {
+export function useScroll({ toolName, isLoading, idPrefix }) {
   const [currentScrollVerse, setCurrentScrollVerse] = useRecoilState(currentVerse)
-
   const [highlightIds, setHighlightIds] = useState(() => {
     return checkLSVal('highlightIds', {}, 'object')
   })
+
+  useEffect(() => {
+    setTimeout(() => {
+      document?.getElementById(idPrefix + currentScrollVerse)?.scrollIntoView()
+    }, 100)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentScrollVerse, isLoading])
 
   const handleSave = (verse, id) => {
     if (id) {
@@ -283,7 +289,7 @@ export function useScroll({ toolName }) {
       )
       setHighlightIds((prev) => ({ ...prev, [toolName]: 'id' + id }))
     }
-    localStorage.setItem('currentScrollVerse', verse)
+    localStorage.setItem('currentVerse', String(verse))
     setCurrentScrollVerse(verse)
   }
   return { highlightId: highlightIds[toolName], currentScrollVerse, handleSave }

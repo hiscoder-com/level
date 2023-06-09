@@ -7,9 +7,6 @@ import { useTranslation } from 'next-i18next'
 import { setup } from 'axios-cache-adapter'
 
 import localforage from 'localforage'
-import { useRecoilValue } from 'recoil'
-
-import { currentVerse } from '../state/atoms'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
@@ -116,12 +113,15 @@ export default TWL
 
 function TWLList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
-  const verse = useRecoilValue(currentVerse)
 
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
-  const { highlightId, handleSave, currentScrollVerse } = useScroll({ toolName })
+  const { highlightId, handleSave } = useScroll({
+    toolName,
+    isLoading,
+    idPrefix: 'idtwl',
+  })
 
   useEffect(() => {
     localStorage.setItem('filter_words', filter)
@@ -133,14 +133,6 @@ function TWLList({ setItem, data, toolName, isLoading }) {
     }
   }, [data])
 
-  useEffect(() => {
-    const id = 'idtwl' + currentScrollVerse
-    setTimeout(() => {
-      document?.getElementById(id)?.scrollIntoView()
-    }, 100)
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, verse])
   return (
     <div
       className={`divide-y divide-gray-800 divide-dashed h-full overflow-auto ${
@@ -188,7 +180,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                       ${highlightId === 'id' + item.id ? 'bg-gray-200' : ''}
                       `}
                         onClick={() => {
-                          handleSave(verseNumber, item.id)
+                          handleSave(String(verseNumber), item.id)
                           setItem({ text: item.text, title: item.title })
                         }}
                       >

@@ -1,8 +1,8 @@
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { useRecoilValue, useRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 
 import { Placeholder } from '../UI'
 
@@ -11,18 +11,15 @@ import { useGetResource, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Bible({ config, url, toolName }) {
-  const [verse, setVerse] = useRecoilState(currentVerse)
   const { isLoading, data } = useGetResource({
     config,
     url,
   })
-  const { handleSave, currentScrollVerse } = useScroll({ toolName })
-  useEffect(() => {
-    const id = 'id' + currentScrollVerse
-    document?.getElementById(id)?.scrollIntoView()
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, verse])
+  const { handleSave, currentScrollVerse } = useScroll({
+    toolName,
+    idPrefix: 'id',
+    isLoading,
+  })
 
   return (
     <>
@@ -35,7 +32,6 @@ function Bible({ config, url, toolName }) {
           verseObjects={data?.verseObjects}
           handleSave={handleSave}
           currentScrollVerse={currentScrollVerse}
-          setVerse={setVerse}
         />
       )}
     </>
@@ -44,7 +40,7 @@ function Bible({ config, url, toolName }) {
 
 export default Bible
 
-function Verses({ verseObjects, handleSave, currentScrollVerse, setVerse }) {
+function Verses({ verseObjects, handleSave, currentScrollVerse }) {
   return (
     <>
       {verseObjects?.map((verseObject) => (
@@ -55,8 +51,7 @@ function Verses({ verseObjects, handleSave, currentScrollVerse, setVerse }) {
             'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
           }`}
           onClick={() => {
-            handleSave(verseObject.verse)
-            setVerse(verseObject.verse)
+            handleSave(String(verseObject.verse))
           }}
         >
           <ReactMarkdown>

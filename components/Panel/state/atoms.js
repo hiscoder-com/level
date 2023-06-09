@@ -42,7 +42,6 @@ export const projectIdState = atom({
   key: 'projectIdState',
   default: null,
 })
-
 export const currentVerse = atom({
   key: 'currentVerse',
   default: '1',
