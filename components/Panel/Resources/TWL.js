@@ -117,7 +117,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
-  const { highlightId, handleSave } = useScroll({
+  const { highlightId, handleSaveScroll } = useScroll({
     toolName,
     isLoading,
     idPrefix: 'idtwl',
@@ -180,7 +180,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                       ${highlightId === 'id' + item.id ? 'bg-gray-200' : ''}
                       `}
                         onClick={() => {
-                          handleSave(String(verseNumber), item.id)
+                          handleSaveScroll(verseNumber, item.id)
                           setItem({ text: item.text, title: item.title })
                         }}
                       >

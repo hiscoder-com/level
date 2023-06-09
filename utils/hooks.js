@@ -281,7 +281,7 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScrollVerse, isLoading])
 
-  const handleSave = (verse, id) => {
+  const handleSaveScroll = (verse, id) => {
     if (id) {
       localStorage.setItem(
         'highlightIds',
@@ -289,10 +289,10 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
       )
       setHighlightIds((prev) => ({ ...prev, [toolName]: 'id' + id }))
     }
-    localStorage.setItem('currentVerse', String(verse))
+    localStorage.setItem('currentScrollVerse', verse)
     setCurrentScrollVerse(verse)
   }
-  return { highlightId: highlightIds[toolName], currentScrollVerse, handleSave }
+  return { highlightId: highlightIds[toolName], currentScrollVerse, handleSaveScroll }
 }
 
 export function useBriefState({ token, project_id }) {

@@ -35,7 +35,7 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
     }
   }
 
-  const { highlightId, handleSave } = useScroll({
+  const { highlightId, handleSaveScroll } = useScroll({
     toolName,
     isLoading,
     idPrefix: 'idtq',
@@ -55,7 +55,7 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
                       <li
                         key={item.id}
                         id={'id' + item.id}
-                        onClick={() => handleSave(String(key), item.id)}
+                        onClick={() => handleSaveScroll(key, item.id)}
                         className="py-2"
                       >
                         <Answer

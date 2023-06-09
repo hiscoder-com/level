@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil'
 
 import { Placeholder } from '../UI'
 
-import { checkedVersesBibleState, currentVerse } from '../state/atoms'
+import { checkedVersesBibleState } from '../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
@@ -15,7 +15,7 @@ function Bible({ config, url, toolName }) {
     config,
     url,
   })
-  const { handleSave, currentScrollVerse } = useScroll({
+  const { handleSaveScroll, currentScrollVerse } = useScroll({
     toolName,
     idPrefix: 'id',
     isLoading,
@@ -26,11 +26,14 @@ function Bible({ config, url, toolName }) {
       {isLoading ? (
         <Placeholder />
       ) : config?.config?.draft ? (
-        <VersesExtended verseObjects={data?.verseObjects} handleSave={handleSave} />
+        <VersesExtended
+          verseObjects={data?.verseObjects}
+          handleSaveScroll={handleSaveScroll}
+        />
       ) : (
         <Verses
           verseObjects={data?.verseObjects}
-          handleSave={handleSave}
+          handleSaveScroll={handleSaveScroll}
           currentScrollVerse={currentScrollVerse}
         />
       )}
@@ -40,7 +43,7 @@ function Bible({ config, url, toolName }) {
 
 export default Bible
 
-function Verses({ verseObjects, handleSave, currentScrollVerse }) {
+function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
   return (
     <>
       {verseObjects?.map((verseObject) => (
@@ -51,7 +54,7 @@ function Verses({ verseObjects, handleSave, currentScrollVerse }) {
             'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
           }`}
           onClick={() => {
-            handleSave(String(verseObject.verse))
+            handleSaveScroll(String(verseObject.verse))
           }}
         >
           <ReactMarkdown>
@@ -63,7 +66,7 @@ function Verses({ verseObjects, handleSave, currentScrollVerse }) {
   )
 }
 
-function VersesExtended({ verseObjects, handleSave, currentScrollVerse }) {
+function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
   return (
     <>
@@ -72,7 +75,7 @@ function VersesExtended({ verseObjects, handleSave, currentScrollVerse }) {
         return (
           <div
             key={verseObject.verse}
-            onClick={() => handleSave(verseObject.verse)}
+            onClick={() => handleSaveScroll(verseObject.verse)}
             className={`my-3 flex items-start select-none ${
               'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
             }`}

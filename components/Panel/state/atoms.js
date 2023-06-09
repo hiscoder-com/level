@@ -45,5 +45,5 @@ export const projectIdState = atom({
 export const currentVerse = atom({
   key: 'currentVerse',
   default: '1',
-  effects: [localStorageEffect('currentVerse')],
+  effects: [localStorageEffect('currentScrollVerse')],
 })

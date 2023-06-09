@@ -8,7 +8,7 @@ import { useGetResource, useScroll } from 'utils/hooks'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
-  const { isLoading, data, error } = useGetResource({ config, url })
+  const { isLoading, data } = useGetResource({ config, url })
 
   return (
     <>
@@ -34,7 +34,7 @@ export default TN
 function TNList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
 
-  const { highlightId, handleSave } = useScroll({
+  const { highlightId, handleSaveScroll } = useScroll({
     toolName,
     isLoading,
     idPrefix: 'idtn',
@@ -62,7 +62,7 @@ function TNList({ setItem, data, toolName, isLoading }) {
                           highlightId === 'id' + note.id ? 'bg-gray-200' : ''
                         }`}
                         onClick={() => {
-                          handleSave(String(verseNumber), note.id)
+                          handleSaveScroll(verseNumber, note.id)
                           setItem({ text: note.text, title: note.title })
                         }}
                       >
