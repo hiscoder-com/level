@@ -102,7 +102,8 @@ export default function ProgressPage({ last_step }) {
       chapter,
       current_step: step,
     })
-    localStorage.setItem('scrollIds', JSON.stringify({}))
+    localStorage.setItem('highlightIds', JSON.stringify({}))
+    localStorage.setItem('currentScrollVerse', '1')
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {

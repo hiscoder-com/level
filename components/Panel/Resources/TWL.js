@@ -7,6 +7,9 @@ import { useTranslation } from 'next-i18next'
 import { setup } from 'axios-cache-adapter'
 
 import localforage from 'localforage'
+import { useRecoilValue } from 'recoil'
+
+import { currentVerse } from '../state/atoms'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
@@ -113,10 +116,12 @@ export default TWL
 
 function TWLList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
+  const verse = useRecoilValue(currentVerse)
+
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { highlightId, handleSave, currentScrollVerse } = useScroll({ toolName })
 
   useEffect(() => {
     localStorage.setItem('filter_words', filter)
@@ -128,6 +133,14 @@ function TWLList({ setItem, data, toolName, isLoading }) {
     }
   }, [data])
 
+  useEffect(() => {
+    const id = 'idtwl' + currentScrollVerse
+    setTimeout(() => {
+      document?.getElementById(id)?.scrollIntoView()
+    }, 100)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, verse])
   return (
     <div
       className={`divide-y divide-gray-800 divide-dashed h-full overflow-auto ${
@@ -142,13 +155,13 @@ function TWLList({ setItem, data, toolName, isLoading }) {
           <Placeholder />
         </div>
       ) : (
-        verses?.map((el, verseIndex) => {
+        verses?.map(([verseNumber, words], verseIndex) => {
           return (
-            <div key={verseIndex} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0]}</div>
+            <div key={verseIndex} className="p-4 flex mx-4" id={'idtwl' + verseNumber}>
+              <div className="text-2xl">{verseNumber}</div>
               <div className="text-gray-700 pl-7 flex-1">
                 <ul>
-                  {el[1]?.map((item, index) => {
+                  {words?.map((item, index) => {
                     let itemFilter
                     switch (filter) {
                       case 'disabled':
@@ -172,10 +185,10 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                         className={`p-2 cursor-pointer ${
                           itemFilter ? 'text-gray-400' : ''
                         } hover:bg-gray-200
-                      ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}
+                      ${highlightId === 'id' + item.id ? 'bg-gray-200' : ''}
                       `}
                         onClick={() => {
-                          handleSave(item.id)
+                          handleSave(verseNumber, item.id)
                           setItem({ text: item.text, title: item.title })
                         }}
                       >

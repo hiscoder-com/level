@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
 
+import { useRecoilValue } from 'recoil'
+
+import { currentVerse } from '../state/atoms'
+
 import ReactMarkdown from 'react-markdown'
 
 import { Placeholder, TNTWLContent } from '../UI'
@@ -17,7 +21,12 @@ function TN({ config, url, toolName }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <TNList setItem={setItem} data={data} toolName={toolName} />
+          <TNList
+            setItem={setItem}
+            data={data}
+            toolName={toolName}
+            isLoading={isLoading}
+          />
         </div>
       )}
     </>
@@ -26,9 +35,20 @@ function TN({ config, url, toolName }) {
 
 export default TN
 
-function TNList({ setItem, data, toolName }) {
+function TNList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const verse = useRecoilValue(currentVerse)
+
+  const { highlightId, handleSave, currentScrollVerse } = useScroll({ toolName })
+
+  useEffect(() => {
+    const id = 'idtn' + currentScrollVerse
+    setTimeout(() => {
+      document?.getElementById(id)?.scrollIntoView()
+    }, 100)
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, verse])
 
   useEffect(() => {
     data && setVerses(Object.entries(data))
@@ -41,18 +61,18 @@ function TNList({ setItem, data, toolName }) {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1">
+              <div className="text-gray-700 pl-7 flex-1" id={'idtn' + verseNumber}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.id}
-                        id={'id' + note.id}
+                        id={'idtn' + note.id}
                         className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                          scrollId === 'id' + note.id ? 'bg-gray-200' : ''
+                          highlightId === 'id' + note.id ? 'bg-gray-200' : ''
                         }`}
                         onClick={() => {
-                          handleSave(note.id)
+                          handleSave(verseNumber, note.id)
                           setItem({ text: note.text, title: note.title })
                         }}
                       >

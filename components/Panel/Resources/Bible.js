@@ -1,21 +1,29 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
-import { useRecoilValue } from 'recoil'
+import { useRecoilValue, useRecoilState } from 'recoil'
 
 import { Placeholder } from '../UI'
 
-import { checkedVersesBibleState } from '../state/atoms'
+import { checkedVersesBibleState, currentVerse } from '../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Bible({ config, url, toolName }) {
+  const [verse, setVerse] = useRecoilState(currentVerse)
   const { isLoading, data } = useGetResource({
     config,
     url,
   })
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { handleSave, currentScrollVerse } = useScroll({ toolName })
+  useEffect(() => {
+    const id = 'id' + currentScrollVerse
+    document?.getElementById(id)?.scrollIntoView()
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, verse])
+
   return (
     <>
       {isLoading ? (
@@ -30,7 +38,8 @@ function Bible({ config, url, toolName }) {
         <Verses
           verseObjects={data?.verseObjects}
           handleSave={handleSave}
-          scrollId={scrollId}
+          currentScrollVerse={currentScrollVerse}
+          setVerse={setVerse}
         />
       )}
     </>
@@ -39,15 +48,20 @@ function Bible({ config, url, toolName }) {
 
 export default Bible
 
-function Verses({ verseObjects, handleSave, scrollId }) {
+function Verses({ verseObjects, handleSave, currentScrollVerse, setVerse }) {
   return (
     <>
       {verseObjects?.map((verseObject) => (
         <div
           key={verseObject.verse}
           id={'id' + verseObject.verse}
-          className={`p-2 ${scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''}`}
-          onClick={() => handleSave(verseObject.verse)}
+          className={`p-2 ${
+            'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
+          }`}
+          onClick={() => {
+            handleSave(verseObject.verse)
+            setVerse(verseObject.verse)
+          }}
         >
           <ReactMarkdown>
             {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
