@@ -31,7 +31,9 @@ function TNList({ setItem, data, toolName }) {
   const { scrollId, handleSave } = useScroll({ toolName })
 
   useEffect(() => {
-    data && setVerses(Object.entries(data))
+    if (data) {
+      setVerses(Object.entries(data))
+    }
   }, [data])
 
   return (
