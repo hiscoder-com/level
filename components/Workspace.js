@@ -113,17 +113,7 @@ function Panel({
   const { t } = useTranslation('common')
 
   return (
-    <Tab.Group
-      onChange={(index) => {
-        const scrollIds = JSON.parse(localStorage.getItem('scrollIds'))
-        const id = scrollIds?.[tools[index].name]
-        if (id) {
-          setTimeout(() => {
-            document?.getElementById(id)?.scrollIntoView()
-          }, 100)
-        }
-      }}
-    >
+    <Tab.Group>
       <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-7 flex overflow-auto">
         {tools?.map((tool) => (
           <Tab

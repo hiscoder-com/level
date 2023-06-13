@@ -49,7 +49,12 @@ function TN({ config, url, toolName }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <TNList setItem={setItem} data={tnotes} toolName={toolName} />
+          <TNList
+            setItem={setItem}
+            data={tnotes}
+            toolName={toolName}
+            isLoading={isLoading}
+          />
         </div>
       )}
     </>
@@ -58,9 +63,13 @@ function TN({ config, url, toolName }) {
 
 export default TN
 
-function TNList({ setItem, data, toolName }) {
+function TNList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { highlightId, handleSaveScroll } = useScroll({
+    toolName,
+    isLoading,
+    idPrefix: 'idtn',
+  })
   useEffect(() => {
     if (data) {
       setVerses(Object.entries(data))
@@ -74,18 +83,18 @@ function TNList({ setItem, data, toolName }) {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1">
+              <div className="text-gray-700 pl-7 flex-1" id={'idtn' + verseNumber}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.ID}
-                        id={'id' + note.ID}
+                        id={'idtn' + note.ID}
                         className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                          scrollId === 'id' + note.ID ? 'bg-gray-200' : ''
+                          highlightId === 'id' + note.ID ? 'bg-gray-200' : ''
                         }`}
                         onClick={() => {
-                          handleSave(note.ID)
+                          handleSaveScroll(verseNumber, note.ID)
                           setItem({ text: note.Note, title: note.Quote })
                         }}
                       >

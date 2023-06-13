@@ -113,10 +113,15 @@ export default TWL
 
 function TWLList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
+
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { highlightId, handleSaveScroll } = useScroll({
+    toolName,
+    isLoading,
+    idPrefix: 'idtwl',
+  })
 
   useEffect(() => {
     localStorage.setItem('filter_words', filter)
@@ -142,13 +147,13 @@ function TWLList({ setItem, data, toolName, isLoading }) {
           <Placeholder />
         </div>
       ) : (
-        verses?.map((el, verseIndex) => {
+        verses?.map(([verseNumber, words], verseIndex) => {
           return (
-            <div key={verseIndex} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0]}</div>
+            <div key={verseIndex} className="p-4 flex mx-4" id={'idtwl' + verseNumber}>
+              <div className="text-2xl">{verseNumber}</div>
               <div className="text-gray-700 pl-7 flex-1">
                 <ul>
-                  {el[1]?.map((item, index) => {
+                  {words?.map((item, index) => {
                     let itemFilter
                     switch (filter) {
                       case 'disabled':
@@ -172,10 +177,10 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                         className={`p-2 cursor-pointer ${
                           itemFilter ? 'text-gray-400' : ''
                         } hover:bg-gray-200
-                      ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}
+                      ${highlightId === 'id' + item.id ? 'bg-gray-200' : ''}
                       `}
                         onClick={() => {
-                          handleSave(item.id)
+                          handleSaveScroll(verseNumber, item.id)
                           setItem({ text: item.text, title: item.title })
                         }}
                       >
