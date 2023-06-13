@@ -149,14 +149,14 @@ export const downloadPdf = ({ htmlContent, projectLanguage, fileName }) => {
   new_window?.document.write(`<html lang="${projectLanguage?.code}">
   <head>
       <meta charset="UTF-8"/>
-      <title>${fileName}</title> 
+      <title>${fileName}</title>
       <style type="text/css">
         .break {
             page-break-after: always;
         }
-    </style>     
+    </style>
   </head>
-  <body onLoad="window.print()">      
+  <body onLoad="window.print()">
       ${htmlContent}
       </body>
       </html>`)
@@ -456,9 +456,19 @@ export const obsCheckAdditionalVerses = (numVerse) => {
 }
 
 export function filterNotes(newNote, verse, notes) {
-  if (!notes[verse]) {
-    notes[verse] = [newNote]
+  if (Array.isArray(verse)) {
+    verse.forEach((el) => {
+      if (!notes[el]) {
+        notes[el] = [newNote]
+      } else {
+        notes[el].push(newNote)
+      }
+    })
   } else {
-    notes[verse].push(newNote)
+    if (!notes[verse]) {
+      notes[verse] = [newNote]
+    } else {
+      notes[verse].push(newNote)
+    }
   }
 }

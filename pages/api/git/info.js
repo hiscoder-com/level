@@ -42,26 +42,11 @@ import { tsvToJson } from '@texttree/translation-words-helpers'
  */
 
 export default async function infoHandler(req, res) {
-  const { repo, book, chapter } = req.query
-  const manifestUrl = repo + '/raw/branch/master/manifest.yaml'
-
-  let bookPath
-
-  try {
-    const { data } = await axios.get(manifestUrl)
-    const manifest = jsyaml.load(data, { json: true })
-    bookPath = manifest.projects.find((el) => el.identifier === book)?.path
-  } catch (manifestUrlError) {
-    res.status(404).json({ manifestUrlError })
-    return
+  const { url, chapter } = req.query
+  if (!url) {
+    return res.status(404).json({ error: 'empty repo' })
   }
 
-  let url = ''
-  if (bookPath.slice(0, 2) === './') {
-    url = `${repo}/raw/master${bookPath.slice(1)}`
-  } else {
-    url = `${repo}/raw/master/${bookPath}`
-  }
   let _data
   try {
     _data = await axios.get(url)

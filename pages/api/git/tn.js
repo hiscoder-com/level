@@ -1,7 +1,6 @@
 import axios from 'axios'
 
-import { filterNotes } from 'utils/helper'
-import { tsvToJson } from '@texttree/translation-words-helpers'
+import { tsvToJSON } from '@texttree/tn-quote'
 
 /**
  *  @swagger
@@ -86,41 +85,32 @@ export default async function tnHandler(req, res) {
   }
   try {
     const _data = await axios.get(url)
-    const jsonData = tsvToJson(_data.data)
-    const wholeChapter = {}
-    const dividedChapter = {}
-
-    jsonData?.forEach((el) => {
-      const [chapterNote, verseNote] = el.Reference
-        ? el.Reference.split(':')
-        : [el.Chapter, el.Verse]
-      // пропускаем, если это не наша глава и не введение
-      if (chapterNote !== chapter || verseNote === 'intro') {
-        return
+    const jsonData = tsvToJSON(
+      _data.data,
+      ['Reference', 'Occurrence', 'Quote', 'ID', 'Note'],
+      true
+    )
+    const data = jsonData?.filter((el) => {
+      // пропускаем, если это не наша глава
+      if (el.chapter !== chapter) {
+        return false
+      }
+      if (el.verse.includes('intro')) {
+        return false
       }
 
-      // создаем экземпляр заметки
-      // Если это введение к главе - заголовок intro
-      // Если введение к книге - заголовок front
-      const newNote = {
-        id: el.ID,
-        text: el?.OccurrenceNote || el?.Note,
-        title: el?.GLQuote || el?.OrigQuote || el?.Quote,
-      }
-
-      // если надо получить определенные стихи то используем dividedChapter, иначе wholeChapter
-      // в каждый объект надо добавить так же введения
-      if (verses && verses.length > 0 && verses.includes(verseNote)) {
-        filterNotes(newNote, verseNote, dividedChapter)
+      if (verses && verses.length > 0) {
+        if (verses.some((r) => el.verse.indexOf(r) >= 0)) {
+          return true
+        } else {
+          return false
+        }
       } else {
-        filterNotes(newNote, verseNote, wholeChapter)
+        return true
       }
     })
-    const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
-    res.status(200).json(data)
-    return
+    return res.status(200).json(data)
   } catch (error) {
-    res.status(404).json({ error })
-    return
+    return res.status(404).json({ error })
   }
 }
