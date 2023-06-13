@@ -110,7 +110,6 @@ function Login() {
         })
         .then((res) => {
           setSuccessMessageSendLink(t('LinkHasSendedToYourEmail'))
-          console.log(res)
           setTimeout(() => {
             setIsOpenModal(false)
           }, 2000)

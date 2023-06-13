@@ -97,11 +97,10 @@ function PasswordRecovery() {
                     className={`input-primary ${error ? '!border-red-500' : ''}`}
                     type={showPassword ? 'text' : 'password'}
                     value={password}
-                    placeholder=" "
                     onChange={(e) => {
                       setError('')
                       setSuccessResult('')
-                      setPassword(e.target.value.trim())
+                      setPassword(e.target.value)
                     }}
                   />
 
@@ -122,7 +121,6 @@ function PasswordRecovery() {
                     className={`input-primary ${error ? '!border-red-500' : ''}`}
                     type={showRepeatPassword ? 'text' : 'password'}
                     value={repeatPassword}
-                    placeholder=" "
                     onChange={(e) => {
                       setError('')
                       setSuccessResult('')
