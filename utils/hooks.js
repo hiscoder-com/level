@@ -3,6 +3,9 @@ import { useEffect, useMemo, useState } from 'react'
 import axios from 'axios'
 import useSWR from 'swr'
 import { checkLSVal } from './helper'
+import { useRecoilState } from 'recoil'
+
+import { currentVerse } from '../components/Panel/state/atoms'
 
 const fetcher = async ([url, token]) => {
   const res = await fetch(url, {
@@ -265,19 +268,31 @@ export function useGetBrief({ token, project_id }) {
   return [brief, { mutate, error, isLoading }]
 }
 
-export function useScroll({ toolName }) {
-  const [scrollIds, setScrollIds] = useState(() => {
-    return checkLSVal('scrollIds', {}, 'object')
+export function useScroll({ toolName, isLoading, idPrefix }) {
+  const [currentScrollVerse, setCurrentScrollVerse] = useRecoilState(currentVerse)
+  const [highlightIds, setHighlightIds] = useState(() => {
+    return checkLSVal('highlightIds', {}, 'object')
   })
 
-  const handleSave = (id) => {
-    localStorage.setItem(
-      'scrollIds',
-      JSON.stringify({ ...scrollIds, [toolName]: 'id' + id })
-    )
-    setScrollIds((prev) => ({ ...prev, [toolName]: 'id' + id }))
+  useEffect(() => {
+    setTimeout(() => {
+      document?.getElementById(idPrefix + currentScrollVerse)?.scrollIntoView()
+    }, 100)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentScrollVerse, isLoading])
+
+  const handleSaveScroll = (verse, id) => {
+    if (id) {
+      localStorage.setItem(
+        'highlightIds',
+        JSON.stringify({ ...highlightIds, [toolName]: 'id' + id })
+      )
+      setHighlightIds((prev) => ({ ...prev, [toolName]: 'id' + id }))
+    }
+    localStorage.setItem('currentScrollVerse', verse)
+    setCurrentScrollVerse(verse)
   }
-  return { scrollId: scrollIds[toolName], handleSave }
+  return { highlightId: highlightIds[toolName], currentScrollVerse, handleSaveScroll }
 }
 
 export function useBriefState({ token, project_id }) {
@@ -469,15 +484,15 @@ export function useGetVerses({ token, code, book_code, chapter_id }) {
 //TODO сделать описание
 export function useGetInfo({ config, url }) {
   const {
-    reference: { book, chapter },
-    config: { repo },
+    reference: { chapter },
+    tnLink: _url,
   } = config
 
-  const params = { repo, book, chapter }
+  const params = { url: _url, chapter }
 
   const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
   const { isLoading, data, error } = useSWR(
-    url && params ? [url, params] : null,
+    url && _url && chapter ? [url, params] : null,
     fetcher,
     {
       revalidateOnFocus: false,
