@@ -29,7 +29,7 @@ function TWL({ config, url, toolName }) {
       const api = setup({
         cache: {
           store: cacheStore,
-          maxAge: 60 * 60 * DEFAULT_MAX_AGE,
+          maxAge: DEFAULT_MAX_AGE * 60 * 60 * 1000,
         },
       })
       const {
