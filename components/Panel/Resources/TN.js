@@ -53,7 +53,7 @@ function TN({ config, url, toolName }) {
             setItem={setItem}
             data={tnotes}
             toolName={toolName}
-            isLoading={isLoading}
+            isLoading={isLoading || tnotes}
           />
         </div>
       )}
