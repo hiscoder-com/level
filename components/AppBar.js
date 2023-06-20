@@ -22,7 +22,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
-
   const stepConfig = useRecoilValue(stepConfigState)
   const { user } = useCurrentUser()
   const router = useRouter()
@@ -53,11 +52,12 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <Link href="/account">
             <a
-              className={
-                !isStepPage
-                  ? 'absolute sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
-                  : ''
-              }
+              className={`
+                ${
+                  !isStepPage
+                    ? 'absolute sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
+                    : ''
+                }  ${!access ? 'pointer-events-none ' : ''}`}
             >
               <VCANA_logo className="h-6" />
             </a>

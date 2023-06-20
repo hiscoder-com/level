@@ -10,9 +10,9 @@ function StartPage({ children }) {
 
   return (
     <>
-      <div className="flex flex-col items-center sm:hidden">
+      <div className="flex flex-col items-center px-10 sm:hidden">
         <VcanaLogo className="my-[6vh] max-w-xs sm:max-w-md w-28" />
-        <div className="bg-white w-[90vw] mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
+        <div className="bg-white w-[80vw] mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
           {children}
         </div>
         <div className="text-[#909090] mb-4 text-center">{t('DevelopedBy')}</div>

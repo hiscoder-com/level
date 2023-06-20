@@ -22,6 +22,8 @@ export default function PasswordRecoveryPage() {
   )
 }
 
+PasswordRecoveryPage.layoutType = 'empty'
+
 export async function getStaticProps({ locale }) {
   return {
     props: {
