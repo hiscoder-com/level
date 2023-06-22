@@ -1,11 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import JSZip from 'jszip'
+import { MdToZip } from '@texttree/obs-format-convert-rcl'
 
 import { useTranslation } from 'next-i18next'
-
-import { saveAs } from 'file-saver'
 
 import { supabase } from 'utils/supabaseClient'
 
@@ -174,8 +172,10 @@ function Download({
   }
 
   const downloadZip = async (downloadingBook) => {
-    const zip = new JSZip()
-    const obs = await getBookJson(downloadingBook.id)
+    const obs = await getBookJson(downloadingBook.id);
+  
+    const fileData = { name: 'content', isFolder: true, content: [] };
+  
     for (const story of obs) {
       const text = await compileChapter(
         {
@@ -183,34 +183,60 @@ function Download({
           chapterNum: story?.num,
         },
         'markdown'
-      )
+      );
+  
       if (text) {
-        zip.folder('content').file(story?.num + '.md', text)
+        const chapterFile = {
+          name: `${story?.num}.md`,
+          content: text,
+        };
+        fileData.content.push(chapterFile);
       }
     }
+  
     if (downloadingBook?.properties?.obs?.back) {
-      zip
-        .folder('content')
-        .folder('back')
-        .file('intro.md', downloadingBook?.properties?.obs?.back)
+      const backFile = {
+        name: 'Endpaper.md',
+        content: downloadingBook?.properties?.obs?.back,
+      };
+      const backFolder = {
+        name: 'back',
+        isFolder: true,
+        content: [backFile],
+      };
+      fileData.content.push(backFolder);
     }
+  
     if (downloadingBook?.properties?.obs?.intro) {
-      zip
-        .folder('content')
-        .folder('front')
-        .file('intro.md', downloadingBook?.properties?.obs?.intro)
+      const introFile = {
+        name: 'intro.md',
+        content: downloadingBook?.properties?.obs?.intro,
+      };
+      const frontFolder = {
+        name: 'front',
+        isFolder: true,
+        content: [introFile],
+      };
+      fileData.content.push(frontFolder);
     }
+  
     if (downloadingBook?.properties?.obs?.title) {
-      zip
-        .folder('content')
-        .folder('front')
-        .file('title.md', downloadingBook?.properties?.obs?.title)
+      const titleFile = {
+        name: 'title.md',
+        content: downloadingBook?.properties?.obs?.title,
+      };
+      const frontFolder = {
+        name: 'front',
+        isFolder: true,
+        content: [titleFile],
+      };
+      fileData.content.push(frontFolder);
     }
+  
+    MdToZip({ fileData, fileName: `${downloadingBook?.properties?.obs?.title || 'obs'}.zip` });
+  };
+  
 
-    zip.generateAsync({ type: 'blob' }).then(function (blob) {
-      saveAs(blob, `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`)
-    })
-  }
   const links = [
     { title: project?.title, href: '/projects/' + project?.code },
     {
