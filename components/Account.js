@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import { Menu, Tab, Transition } from '@headlessui/react'
 
-import ProjectCreate from './ProjectCreate'
+import ProjectCreate from './ProjectCreate/ProjectCreate'
 import Projects from './Projects'
 
 import { useCurrentUser } from 'lib/UserContext'

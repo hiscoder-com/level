@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
@@ -9,11 +9,13 @@ import axios from 'axios'
 
 import { Disclosure, Switch } from '@headlessui/react'
 
-import CommitsList from './CommitsList'
+import CommitsList from '../CommitsList'
 import Down from 'public/arrow-down.svg'
 
 import { useLanguages, useMethod, useProjects } from 'utils/hooks'
+import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
+import Steps from './Steps'
 function ProjectCreate() {
   const [customResources, setCustomResources] = useState('')
   const [isBriefEnable, setIsBriefEnable] = useState(true)
@@ -26,7 +28,11 @@ function ProjectCreate() {
   const router = useRouter()
 
   const [languages] = useLanguages(user?.access_token)
-  const [methods] = useMethod(user?.access_token)
+  const [_methods] = useMethod(user?.access_token)
+  const [methods, setMethods] = useState(() => {
+    return checkLSVal('methods', _methods, 'object')
+  })
+
   const [projects, { mutate: mutateProjects }] = useProjects({
     token: user?.access_token,
   })
@@ -52,13 +58,23 @@ function ProjectCreate() {
       }
     }
   }, [methodId, methods])
-  console.log(customSteps)
 
   useEffect(() => {
     if (methods) {
       setValue('methodId', methods?.[0]?.id)
     }
   }, [methods, setValue])
+  useEffect(() => {
+    if (!methods) {
+      setMethods(_methods)
+    }
+  }, [_methods, methods])
+
+  useEffect(() => {
+    if (methods) {
+      localStorage.setItem('methods', JSON.stringify(methods))
+    }
+  }, [methods])
 
   useEffect(() => {
     if (languages) {
@@ -71,7 +87,8 @@ function ProjectCreate() {
     if (!title || !code || !languageId) {
       return
     }
-
+    console.log(method.steps)
+    return
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {
@@ -132,12 +149,23 @@ function ProjectCreate() {
           : '',
     },
   ]
-  const updateTitle = (title, index) => {
-    setCustomSteps((prev) => {
-      prev[index].title = title
-      return prev
+  const updateStep = ({ ref, index }) => {
+    const _steps = customSteps.map((obj, idx) => {
+      if (index === idx) {
+        console.log('fsdfds', { ...ref })
+        return { ...obj, ...ref }
+      }
+
+      return obj
     })
-    localStorage.setItem('createProject', JSON.stringify(customSteps))
+    const _methods = methods.map((el) => {
+      if (el.id === method.id) {
+        return { ...el, steps: _steps }
+      }
+      return el
+    })
+    localStorage.setItem('methods', JSON.stringify(_methods))
+    setCustomSteps(_steps)
   }
   return (
     <div className="py-0 sm:py-10">
@@ -208,60 +236,7 @@ function ProjectCreate() {
 
           <div className="flex flex-col gap-2 border-y border-slate-900 py-7">
             <p className="text-xl font-bold mb-5">Шаги</p>
-            {customSteps?.map((el, index) => (
-              <Disclosure key={el.title}>
-                <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
-                  <span>{el.title}</span>
-                  <Down className="w-5 h-5" />
-                </Disclosure.Button>
-                <Disclosure.Panel className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="w-1/6">Название</span>
-                    <StepTitle
-                      stepTitle={el.title}
-                      updateTitle={updateTitle}
-                      index={index}
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 w-full">
-                    <span className="w-1/6">Описание</span>
-                    <textarea className="input-primary" rows={5} value={el.description} />
-                  </div>
-                  <div className="flex items-center gap-2 w-full">
-                    <span className="w-1/6">Интро</span>
-                    <textarea className="input-primary" rows={5} value={el.intro} />
-                  </div>
-                  <div className="flex items-center gap-2 w-full">
-                    <span className="w-1/6">Интсрументы</span>
-                    {el.config[0].tools.map((item) => (
-                      <div key={item.name} className="bg-gray-200 p-2 rounded-md">
-                        {t('common:' + item.name)}
-                      </div>
-                    ))}
-                    /
-                    {el.config[1].tools.map((item) => (
-                      <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
-                        {t('common:' + item.name)}
-                      </div>
-                    ))}
-                    /
-                    {el.config[2]?.tools?.map((item) => (
-                      <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
-                        {t('common:' + item.name)}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-2 w-full">
-                    <span className="w-1/6">Количество переводчиков</span>
-                    <div>{el.count_of_users}</div>
-                  </div>
-                  <div className="flex items-center gap-2 w-full">
-                    <span className="w-1/6">Время выполнения</span>
-                    <div>{el.time}</div>
-                  </div>
-                </Disclosure.Panel>
-              </Disclosure>
-            ))}
+            <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
           </div>
           <div className="flex flex-col gap-2 border-b border-slate-900 py-7">
             <p className="text-xl font-bold mb-5">Бриф</p>
@@ -407,40 +382,3 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 }
 
 export default ProjectCreate
-
-function StepTitle({ stepTitle, updateTitle, index }) {
-  const [title, setTitle] = useState(stepTitle)
-  useEffect(() => {
-    if (stepTitle) {
-      setTitle(stepTitle)
-    }
-  }, [stepTitle])
-
-  return (
-    <input
-      className="input-primary"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-      onBlur={() => {
-        updateTitle(title.trim(), index)
-      }}
-    />
-  )
-}
-
-function Description({ stepDesripsion, updateDesripsion, index }) {
-  const [description, setDescription] = useState('')
-  return (
-    <textarea
-      className="input-primary"
-      value={stepDesripsion}
-      onChange={(e) => setDescription(e.target.value)}
-      onBlur={() => {
-        updateDesripsion(description.trim(), index)
-      }}
-    />
-  )
-}
-function Intro() {
-  return <div>Intro</div>
-}
