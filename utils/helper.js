@@ -1,6 +1,8 @@
 import axios from 'axios'
 import usfm from 'usfm-js'
 import jsyaml from 'js-yaml'
+import { JsonToMd } from '@texttree/obs-format-convert-rcl'
+
 import { obsStoryVerses } from './config'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
@@ -45,23 +47,24 @@ export const readableDate = (date, locale = 'ru') => {
 }
 
 const compileMarkdown = async (ref) => {
-  const title = ref.json[0] ? `# ${ref.json[0]}\n\n` : ''
-  const reference = ref.json[200] ? `_${ref.json[200]}_` : ''
-  const markdown = ''
-  for (const key in ref.json) {
-    if (Object.hasOwnProperty.call(ref.json, key)) {
-      if (ref.json[key] && !['0', '200'].includes(key)) {
-        const image = `![OBS Image](https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
-          ref.chapterNum
-        ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg)\n\n`
+  const objectToTransform = {
+    verseObjects: [],
+    title: ref.json[0] || '',
+    reference: ref.json[200] || '',
+  };
 
-        const verse = ref.json[key]
-        markdown += image + verse + '\n\n'
-      }
+  for (const [key, value] of Object.entries(ref.json)) {
+    if (key !== '0' && key !== '200') {
+      const verseObject = {
+        path: `obs-en-${String(ref.chapterNum).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg`,
+        text: value,
+      };
+      objectToTransform.verseObjects.push(verseObject);
     }
   }
-  return title + markdown + reference
-}
+
+  return JsonToMd(objectToTransform);
+};
 
 export const compilePdfObs = async (ref, downloadSettings) => {
   const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
@@ -134,6 +137,7 @@ export const downloadFile = ({ text, title, type = 'text/plain' }) => {
   if (!text || !title) {
     return
   }
+  console.log('text^^^^^', text)
   const element = document.createElement('a')
   const file = new Blob([text], { type })
   element.href = URL.createObjectURL(file)
