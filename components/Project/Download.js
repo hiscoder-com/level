@@ -5,19 +5,17 @@ import { useTranslation } from 'next-i18next'
 
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
-import { supabase } from 'utils/supabaseClient'
-
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
 
 import { usfmFileNames } from 'utils/config'
 import {
-  compileChapter,
-  compilePdfObs,
-  convertToUsfm,
   createObjectToTransform,
+  compileChapter,
+  convertToUsfm,
   downloadFile,
   downloadPdf,
+  getBookJson,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
 
@@ -122,58 +120,16 @@ function Download({
           }
         }
         return frontPdf + main
-      case 'pdf-obs':
-        const converter = new Showdown.Converter()
-        let obs = ''
-        for (const el of chapters) {
-          if (el?.text) {
-            const story = await compilePdfObs(
-              {
-                json: el?.text,
-                chapterNum: el.num,
-              },
-              downloadSettings
-            )
-            if (story) {
-              obs += `<div class="break">${story}</div>`
-            }
-          }
-        }
-        if (!book?.properties?.obs) {
-          return obs
-        }
-        const { title: _title, intro: _intro, back: _back } = book.properties.obs
-        const title = _title ? `<h1>${_title}</h1>` : ''
-        const front = downloadSettings?.withFront
-          ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1>${title}</div>`
-          : ''
-        const intro =
-          _intro && downloadSettings?.withIntro
-            ? `<div class="break" >${converter.makeHtml(_intro)}</div>`
-            : ''
-        const back =
-          _back && downloadSettings?.withBack
-            ? `<div>${converter.makeHtml(_back)}</div>`
-            : ''
-        return front + intro + obs + back
+
       default:
         break
     }
   }
 
-  const getBookJson = async (book_id) => {
-    const { data } = await supabase
-      .from('chapters')
-      .select('num,text')
-      .eq('book_id', book_id)
-      .order('num')
-    return data
-  }
-
   const downloadZip = async (downloadingBook) => {
     const obs = await getBookJson(downloadingBook.id)
     const fileData = { name: 'content', isFolder: true, content: [] }
-  
+
     for (const story of obs) {
       if (story.text === null) {
         continue
@@ -184,7 +140,7 @@ function Download({
           chapterNum: story?.num,
         })
       )
-  
+
       if (text) {
         const chapterFile = {
           name: `${story?.num}.md`,
@@ -193,7 +149,7 @@ function Download({
         fileData.content.push(chapterFile)
       }
     }
-  
+
     if (downloadingBook?.properties?.obs?.back) {
       const backFile = {
         name: 'Endpaper.md',
@@ -206,7 +162,7 @@ function Download({
       }
       fileData.content.push(backFolder)
     }
-  
+
     if (downloadingBook?.properties?.obs?.intro) {
       const introFile = {
         name: 'intro.md',
@@ -219,7 +175,7 @@ function Download({
       }
       fileData.content.push(frontFolder)
     }
-  
+
     if (downloadingBook?.properties?.obs?.title) {
       const titleFile = {
         name: 'title.md',
@@ -232,7 +188,7 @@ function Download({
       }
       fileData.content.push(frontFolder)
     }
-  
+
     MdToZip({
       fileData,
       fileName: `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`,
@@ -269,13 +225,14 @@ function Download({
         break
       case 'pdf':
         isBook
-          ? downloadPdf({
-              htmlContent: await compileBook(
-                book,
-                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
-                downloadSettings
-              ),
+          ? await downloadPdf({
+              htmlContent: await compileBook(book, 'pdf', downloadSettings),
+              book,
+              downloadSettings,
+              createBookPdf: true,
+              projectTitle: project.title,
               obs: project?.type === 'obs',
+              title: book?.properties?.obs?.title,
               projectLanguage: {
                 code: project.languages.code,
                 title: project.languages.orig_name,
@@ -286,7 +243,7 @@ function Download({
                   : book?.properties?.obs?.title ?? t('OpenBibleStories')
               }`,
             })
-          : downloadPdf({
+          : await downloadPdf({
               htmlContent: await compileChapter(
                 {
                   json: chapter?.text,

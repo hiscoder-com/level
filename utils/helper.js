@@ -3,6 +3,8 @@ import usfm from 'usfm-js'
 import jsyaml from 'js-yaml'
 import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
+import { supabase } from 'utils/supabaseClient'
+
 import { obsStoryVerses } from './config'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
@@ -46,6 +48,7 @@ export const readableDate = (date, locale = 'ru') => {
   }).format(new Date(date))
 }
 
+// change the structure of the JSON object for the correct operation of the "obs-format-convert-rcl" library
 export const createObjectToTransform = (ref) => {
   if (ref.json === null) {
     return
@@ -72,29 +75,6 @@ export const createObjectToTransform = (ref) => {
 
   return objectToTransform
 }
-
-// принимает JSON и возвращает строку HTML-кода, вместо него работает JsonToPdf!!!!
-// export const compilePdfObs = async (ref, downloadSettings) => {
-//   const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
-//   const reference = ref.json[200]
-//     ? `<p class="break"><em> ${ref.json[200]} </em></p>`
-//     : ''
-//   const frames = ''
-//   for (const key in ref.json) {
-//     if (Object.hasOwnProperty.call(ref.json, key)) {
-//       if (ref.json[key] && !['0', '200'].includes(key)) {
-//         const image = downloadSettings.withImages
-//           ? `<p><img alt="OBS Image"src="https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
-//               ref.chapterNum
-//             ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg"/></p>`
-//           : ''
-//         const verse = `<p>${ref.json[key]}</p>`
-//         frames += `<div>${image}${verse}</div>`
-//       }
-//     }
-//   }
-//   return title + frames + reference
-// }
 
 export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
   if (!ref?.json) {
@@ -135,26 +115,42 @@ export const downloadFile = ({ text, title, type = 'text/plain' }) => {
   element.click()
 }
 
-export const downloadPdf = ({
-  htmlContent,
-  projectLanguage,
-  fileName,
+export const getBookJson = async (book_id) => {
+  const { data } = await supabase
+    .from('chapters')
+    .select('num,text')
+    .eq('book_id', book_id)
+    .order('num')
+  return data
+}
+
+export const downloadPdf = async ({
   json,
-  chapterNum,
-  projectTitle,
+  book,
   title,
+  fileName,
+  chapterNum,
+  htmlContent,
+  projectTitle,
+  projectLanguage,
   downloadSettings,
+  createBookPdf = false,
   obs = false,
 }) => {
   if (obs) {
-    const objectToTransform = createObjectToTransform({ json, chapterNum })
+    let pdfOptions = {}
     const styles = {
       projectTitle: {
         fontSize: 24,
         bold: true,
         alignment: 'center',
       },
-      title: { fontSize: 24, bold: true, alignment: 'center', margin: [0, 250, 0, 0] },
+      title: {
+        fontSize: 24,
+        bold: true,
+        alignment: 'center',
+        margin: [0, 250, 0, 0],
+      },
       intro: { fontSize: 14 },
       image: {
         alignment: 'center',
@@ -174,25 +170,80 @@ export const downloadPdf = ({
         italics: true,
       },
     }
-    const pdfOptions = {
-      data: [objectToTransform],
-      styles,
-    }
 
-    if (downloadSettings?.withFront) {
-      pdfOptions.bookPropertiesObs = {
-        projectTitle,
-        title,
+    if (createBookPdf) {
+      const chapters = await getBookJson(book?.id)
+      const obs = []
+
+      for (const chapter of chapters) {
+        const { num, text } = chapter
+
+        if (text === null) {
+          continue
+        }
+
+        const transformedChapter = createObjectToTransform({
+          json: text,
+          chapterNum: num,
+        })
+        obs.push(transformedChapter)
       }
-    }
 
-    if (downloadSettings?.withImages === false) {
-      pdfOptions.showImages = false
-    }
+      pdfOptions = {
+        data: obs,
+        styles,
+      }
 
-    JsonToPdf(pdfOptions)
-      .then(() => console.log('PDF creation completed'))
-      .catch((error) => console.error('PDF creation failed:', error))
+      if (downloadSettings?.withFront) {
+        pdfOptions.bookPropertiesObs = {
+          projectTitle,
+          title,
+        }
+      }
+
+      if (downloadSettings?.withIntro) {
+        pdfOptions.bookPropertiesObs = {
+          ...pdfOptions.bookPropertiesObs,
+          intro: book.properties.obs.intro,
+        }
+      }
+
+      if (downloadSettings?.withBack) {
+        pdfOptions.bookPropertiesObs = {
+          ...pdfOptions.bookPropertiesObs,
+          back: book.properties.obs.back,
+        }
+      }
+
+      if (downloadSettings?.withImages === false) {
+        pdfOptions.showImages = false
+      }
+
+      JsonToPdf(pdfOptions)
+        .then(() => console.log('PDF creation completed'))
+        .catch((error) => console.error('PDF creation failed:', error))
+    } else {
+      const objectToTransform = createObjectToTransform({ json, chapterNum })
+      pdfOptions = {
+        data: [objectToTransform],
+        styles,
+      }
+
+      if (downloadSettings?.withFront) {
+        pdfOptions.bookPropertiesObs = {
+          projectTitle,
+          title,
+        }
+      }
+
+      if (downloadSettings?.withImages === false) {
+        pdfOptions.showImages = false
+      }
+
+      JsonToPdf(pdfOptions)
+        .then(() => console.log('PDF creation completed'))
+        .catch((error) => console.error('PDF creation failed:', error))
+    }
   } else {
     if (!htmlContent) {
       return
