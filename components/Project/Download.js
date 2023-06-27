@@ -7,8 +7,6 @@ import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
 import { supabase } from 'utils/supabaseClient'
 
-import Showdown from 'showdown'
-
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
 

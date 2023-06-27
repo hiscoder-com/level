@@ -49,7 +49,6 @@
     "recoil": "^0.7.7",
     "rehype-raw": "^6.1.1",
     "remark-gfm": "^3.0.1",
-    "showdown": "^2.1.0",
     "swagger-ui": "^4.19.0",
     "swr": "^2.1.5",
     "usfm-js": "^3.4.2"
