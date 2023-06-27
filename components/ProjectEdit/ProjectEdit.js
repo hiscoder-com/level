@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -13,6 +13,9 @@ import Breadcrumbs from '../Breadcrumbs'
 
 import { useAccess, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import BaseInformation from 'components/ProjectCreate/BaseInformation'
+import Steps from 'components/ProjectCreate/Steps'
+import { supabase } from 'utils/supabaseClient'
 
 function ProjectEdit() {
   const {
@@ -21,6 +24,7 @@ function ProjectEdit() {
     query: { code, setting },
   } = useRouter()
   const { t } = useTranslation()
+  const [customSteps, setCustomSteps] = useState([])
 
   const { user } = useCurrentUser()
 
@@ -36,18 +40,53 @@ function ProjectEdit() {
   const tabs = useMemo(
     () =>
       [
+        { id: 'general', access: isAdminAccess, label: 'project-edit:General' },
         { id: 'brief', access: true, label: 'project-edit:Brief' },
-
         { id: 'participants', access: isModeratorAccess, label: 'Participants' },
         {
           id: 'resources',
           access: isAdminAccess,
           label: 'Resources',
         },
+        {
+          id: 'steps',
+          access: isAdminAccess,
+          label: 'Steps',
+        },
+        {
+          id: 'briefLocale',
+          access: isAdminAccess,
+          label: 'BriefLocalization',
+        },
       ].filter((el) => el.access),
     [isAdminAccess, isModeratorAccess]
   )
   const idTabs = tabs.map((tab) => tab.id)
+  const updateStep = ({ ref, index }) => {
+    const _steps = customSteps.map((obj, idx) => {
+      if (index === idx) {
+        return { ...obj, ...ref }
+      }
+
+      return obj
+    })
+
+    // localStorage.setItem('methods', JSON.stringify(_methods))
+    setCustomSteps(_steps)
+  }
+
+  useEffect(() => {
+    const getSteps = async () => {
+      const { data, error } = await supabase
+        .from('steps')
+        .select('*')
+        .eq('project_id', project.id)
+      setCustomSteps(data)
+    }
+    if (project) {
+      getSteps()
+    }
+  }, [project])
 
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
@@ -84,6 +123,17 @@ function ProjectEdit() {
 
             <Tab.Panels>
               <Tab.Panel>
+                {/* <BaseInformation
+                  access={isCoordinatorAccess}
+                  t={t}
+                  errors={errors}
+                  register={register}
+                  setValue={setValue}
+                  user={user}
+                  methods={methods}
+                /> */}
+              </Tab.Panel>
+              <Tab.Panel>
                 <Brief access={isCoordinatorAccess} />
               </Tab.Panel>
               <Tab.Panel>
@@ -95,6 +145,12 @@ function ProjectEdit() {
               </Tab.Panel>
               <Tab.Panel>
                 <ResourceSettings />
+              </Tab.Panel>
+              <Tab.Panel>
+                <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
+                  <p className="text-xl font-bold mb-5">Шаги</p>
+                  <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
+                </div>
               </Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
