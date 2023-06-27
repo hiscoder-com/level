@@ -8,60 +8,118 @@ import { setup } from 'axios-cache-adapter'
 
 import localforage from 'localforage'
 
+import jszip from 'jszip'
+
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal, filterNotes } from 'utils/helper'
 
-const DEFAULT_MAX_AGE = 24
+const DEFAULT_MAX_AGE = 24 * 30 // cache 30 days
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const { isLoading, data } = useGetResource({ config, url })
   const [wordObjects, setWordObjects] = useState([])
   const [isLoadingTW, setIsLoadingTW] = useState(false)
-  useEffect(() => {
-    const getWords = async () => {
-      const cacheStore = localforage.createInstance({
-        driver: [localforage.INDEXEDDB],
-        name: 'web-cache',
-      })
-      const api = setup({
-        cache: {
-          store: cacheStore,
-          maxAge: DEFAULT_MAX_AGE * 60 * 60 * 1000,
-        },
-      })
-      const {
-        resource: { owner, repo },
-      } = config
-      const promises = data.map(async (wordObject) => {
-        const url = `${
-          process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
-        }/${owner}/${repo
-          .slice(0, -1)
-          .replace('obs-', '')}/raw/branch/master/${wordObject.TWLink.split('/')
-          .slice(-3)
-          .join('/')}.md`
-        let markdown
+
+  const zipStore = localforage.createInstance({
+    driver: [localforage.INDEXEDDB],
+    name: 'zip-store',
+  })
+
+  const fetchFileFromServer = async (uri) => {
+    const api = setup({
+      cache: {
+        store: zipStore,
+        maxAge: DEFAULT_MAX_AGE * 60 * 60 * 1000,
+      },
+    })
+    if (uri) {
+      const url = '/api/git/tw'
+      try {
+        const response = await api.get(url, {
+          responseType: 'arraybuffer',
+          params: {
+            owner: config.resource.owner,
+            repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
+          },
+        })
+        const zip = response.data
+        if (zip) {
+          zipStore.setItem(uri, zip)
+        }
+        return await jszip.loadAsync(zip)
+      } catch (error) {
+        return null
+      }
+    } else {
+      return null
+    }
+  }
+
+  const getFileFromZip = async (uri) => {
+    let file
+    const zipBlob = await zipStore.getItem(uri)
+    try {
+      if (zipBlob) {
+        const zip = await jszip.loadAsync(zipBlob)
+        file = zip
+      }
+    } catch (error) {
+      console.log(error)
+      file = null
+    }
+    return file
+  }
+
+  const getFile = async (uri) => {
+    let file
+    file = await getFileFromZip(uri)
+    if (!file) {
+      file = await fetchFileFromServer(uri)
+    }
+    return file
+  }
+
+  const getWords = async (zip, repo, wordObjects) => {
+    if (zip && repo && wordObjects) {
+      const promises = wordObjects.map(async (wordObject) => {
+        const uri =
+          repo.replace('obs-', '') +
+          '/' +
+          wordObject.TWLink.split('/').slice(-3).join('/') +
+          '.md'
         try {
-          setIsLoadingTW(true)
-          markdown = await api.get(url)
+          const markdown = await zip.files[uri].async('string')
+          const splitter = markdown?.search('\n')
+          return {
+            ...wordObject,
+            title: markdown?.slice(0, splitter),
+            text: markdown?.slice(splitter),
+          }
         } catch (error) {
           setIsLoadingTW(false)
-          console.log(error)
-        }
-
-        const splitter = markdown?.data?.search('\n')
-        return {
-          ...wordObject,
-          title: markdown?.data?.slice(0, splitter),
-          text: markdown?.data?.slice(splitter),
+          return null
         }
       })
       const words = await Promise.all(promises)
-      const finalData = {}
+      return words
+    } else {
+      return []
+    }
+  }
 
+  useEffect(() => {
+    const getData = async () => {
+      setIsLoadingTW(true)
+      const uri =
+        config.resource.owner +
+        '/' +
+        config.resource.repo.slice(0, -1).replace('obs-', '')
+      const zip = await getFile(uri)
+      const words = await getWords(zip, config.resource.repo.slice(0, -1), data)
+      const finalData = {}
       words?.forEach((word) => {
         const {
           ID,
@@ -89,10 +147,9 @@ function TWL({ config, url, toolName }) {
       setIsLoadingTW(false)
       setWordObjects(finalData)
     }
-    if (data && config) {
-      getWords()
-    }
-  }, [config, data])
+    getData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
   return (
     <>
