@@ -1,9 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
-import { MdToZip } from '@texttree/obs-format-convert-rcl'
-
 import { useTranslation } from 'next-i18next'
+
+import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
 import { supabase } from 'utils/supabaseClient'
 
@@ -17,6 +17,7 @@ import {
   compileChapter,
   compilePdfObs,
   convertToUsfm,
+  createObjectToTransform,
   downloadFile,
   downloadPdf,
 } from 'utils/helper'
@@ -172,25 +173,26 @@ function Download({
   }
 
   const downloadZip = async (downloadingBook) => {
-    const obs = await getBookJson(downloadingBook.id);
-  
-    const fileData = { name: 'content', isFolder: true, content: [] };
+    const obs = await getBookJson(downloadingBook.id)
+    const fileData = { name: 'content', isFolder: true, content: [] }
   
     for (const story of obs) {
-      const text = await compileChapter(
-        {
+      if (story.text === null) {
+        continue
+      }
+      const text = JsonToMd(
+        createObjectToTransform({
           json: story?.text,
           chapterNum: story?.num,
-        },
-        'markdown'
-      );
+        })
+      )
   
       if (text) {
         const chapterFile = {
           name: `${story?.num}.md`,
           content: text,
-        };
-        fileData.content.push(chapterFile);
+        }
+        fileData.content.push(chapterFile)
       }
     }
   
@@ -198,44 +200,46 @@ function Download({
       const backFile = {
         name: 'Endpaper.md',
         content: downloadingBook?.properties?.obs?.back,
-      };
+      }
       const backFolder = {
         name: 'back',
         isFolder: true,
         content: [backFile],
-      };
-      fileData.content.push(backFolder);
+      }
+      fileData.content.push(backFolder)
     }
   
     if (downloadingBook?.properties?.obs?.intro) {
       const introFile = {
         name: 'intro.md',
         content: downloadingBook?.properties?.obs?.intro,
-      };
+      }
       const frontFolder = {
         name: 'front',
         isFolder: true,
         content: [introFile],
-      };
-      fileData.content.push(frontFolder);
+      }
+      fileData.content.push(frontFolder)
     }
   
     if (downloadingBook?.properties?.obs?.title) {
       const titleFile = {
         name: 'title.md',
         content: downloadingBook?.properties?.obs?.title,
-      };
+      }
       const frontFolder = {
         name: 'front',
         isFolder: true,
         content: [titleFile],
-      };
-      fileData.content.push(frontFolder);
+      }
+      fileData.content.push(frontFolder)
     }
   
-    MdToZip({ fileData, fileName: `${downloadingBook?.properties?.obs?.title || 'obs'}.zip` });
-  };
-  
+    MdToZip({
+      fileData,
+      fileName: `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`,
+    })
+  }
 
   const links = [
     { title: project?.title, href: '/projects/' + project?.code },
@@ -273,6 +277,7 @@ function Download({
                 project?.type === 'obs' ? 'pdf-obs' : 'pdf',
                 downloadSettings
               ),
+              obs: project?.type === 'obs',
               projectLanguage: {
                 code: project.languages.code,
                 title: project.languages.orig_name,
@@ -293,9 +298,15 @@ function Download({
                   },
                   book,
                 },
-                project?.type === 'obs' ? 'pdf-obs' : 'pdf',
+                'pdf',
                 downloadSettings
               ),
+              obs: project?.type === 'obs',
+              json: chapter?.text,
+              chapterNum: chapter?.num,
+              projectTitle: project.title,
+              title: book?.properties?.obs?.title,
+              downloadSettings,
               projectLanguage: {
                 code: project.languages.code,
                 title: project.languages.orig_name,
@@ -309,12 +320,11 @@ function Download({
         break
       case 'markdown':
         downloadFile({
-          text: await compileChapter(
-            {
+          text: JsonToMd(
+            createObjectToTransform({
               json: chapter?.text,
               chapterNum: chapter?.num,
-            },
-            'markdown'
+            })
           ),
           title: `${String(chapter?.num).padStart(2, '0')}.md`,
           type: 'markdown/plain',

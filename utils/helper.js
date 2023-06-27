@@ -1,7 +1,7 @@
 import axios from 'axios'
 import usfm from 'usfm-js'
 import jsyaml from 'js-yaml'
-import { JsonToMd } from '@texttree/obs-format-convert-rcl'
+import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
 import { obsStoryVerses } from './config'
 
@@ -46,89 +46,80 @@ export const readableDate = (date, locale = 'ru') => {
   }).format(new Date(date))
 }
 
-const compileMarkdown = async (ref) => {
+export const createObjectToTransform = (ref) => {
+  if (ref.json === null) {
+    return
+  }
+
   const objectToTransform = {
     verseObjects: [],
     title: ref.json[0] || '',
     reference: ref.json[200] || '',
-  };
+  }
 
   for (const [key, value] of Object.entries(ref.json)) {
     if (key !== '0' && key !== '200') {
       const verseObject = {
-        path: `obs-en-${String(ref.chapterNum).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg`,
+        path: `obs-en-${String(ref.chapterNum).padStart(2, '0')}-${String(key).padStart(
+          2,
+          '0'
+        )}.jpg`,
         text: value,
-      };
-      objectToTransform.verseObjects.push(verseObject);
-    }
-  }
-
-  return JsonToMd(objectToTransform);
-};
-
-export const compilePdfObs = async (ref, downloadSettings) => {
-  const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
-  const reference = ref.json[200]
-    ? `<p class="break"><em> ${ref.json[200]} </em></p>`
-    : ''
-  const frames = ''
-  for (const key in ref.json) {
-    if (Object.hasOwnProperty.call(ref.json, key)) {
-      if (ref.json[key] && !['0', '200'].includes(key)) {
-        const image = downloadSettings.withImages
-          ? `<p><img alt="OBS Image"src="https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
-              ref.chapterNum
-            ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg"/></p>`
-          : ''
-        const verse = `<p>${ref.json[key]}</p>`
-        frames += `<div>${image}${verse}</div>`
       }
+      objectToTransform.verseObjects.push(verseObject)
     }
   }
 
-  return title + frames + reference
+  return objectToTransform
 }
+
+// принимает JSON и возвращает строку HTML-кода, вместо него работает JsonToPdf!!!!
+// export const compilePdfObs = async (ref, downloadSettings) => {
+//   const title = ref.json[0] ? `<h1>${ref.json[0]}</h1>` : ''
+//   const reference = ref.json[200]
+//     ? `<p class="break"><em> ${ref.json[200]} </em></p>`
+//     : ''
+//   const frames = ''
+//   for (const key in ref.json) {
+//     if (Object.hasOwnProperty.call(ref.json, key)) {
+//       if (ref.json[key] && !['0', '200'].includes(key)) {
+//         const image = downloadSettings.withImages
+//           ? `<p><img alt="OBS Image"src="https://cdn.door43.org/obs/jpg/360px/obs-en-${String(
+//               ref.chapterNum
+//             ).padStart(2, '0')}-${String(key).padStart(2, '0')}.jpg"/></p>`
+//           : ''
+//         const verse = `<p>${ref.json[key]}</p>`
+//         frames += `<div>${image}${verse}</div>`
+//       }
+//     }
+//   }
+//   return title + frames + reference
+// }
 
 export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
   if (!ref?.json) {
     return
   }
-  if (['markdown', 'pdf-obs'].includes(type)) {
-    switch (type) {
-      case 'markdown':
-        return await compileMarkdown(ref)
-      case 'pdf-obs':
-        if (downloadSettings?.withFront) {
-          const title = ref?.book?.properties?.obs?.title
-            ? `<h1>${ref?.book?.properties?.obs?.title}</h1>`
-            : ''
-          const front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1>${title}</div>`
-          return front + (await compilePdfObs(ref, downloadSettings))
-        } else {
-          return await compilePdfObs(ref, downloadSettings)
-        }
-      default:
-        break
-    }
-  }
+
   const front = ''
   if (downloadSettings?.withFront) {
     front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
   }
+
   if (Object.keys(ref.json).length > 0) {
     const text = Object.entries(ref.json).reduce(
-      (summary, verse) => {
-        if (type === 'txt') {
-          return summary + `${verse[0]}. ${verse[1] || ''}\n`
-        } else {
-          return summary + `<sup>${verse[0]}</sup> ${verse[1] || ''} `
-        }
+      (summary, [key, value]) => {
+        const verseText =
+          type === 'txt'
+            ? `${key}. ${value || ''}\n`
+            : `<sup>${key}</sup> ${value || ''} `
+        return summary + verseText
       },
       type === 'txt'
-        ? ref?.title + '\n'
-        : front +
-            `<h1>${ref?.book?.properties?.scripture?.chapter_label} ${ref.chapterNum}</h1>`
+        ? `${ref.title}\n`
+        : `${front}<h1>${ref.book.properties.scripture.chapter_label} ${ref.chapterNum}</h1>`
     )
+
     return text
   }
 }
@@ -137,7 +128,6 @@ export const downloadFile = ({ text, title, type = 'text/plain' }) => {
   if (!text || !title) {
     return
   }
-  console.log('text^^^^^', text)
   const element = document.createElement('a')
   const file = new Blob([text], { type })
   element.href = URL.createObjectURL(file)
@@ -145,26 +135,86 @@ export const downloadFile = ({ text, title, type = 'text/plain' }) => {
   element.click()
 }
 
-export const downloadPdf = ({ htmlContent, projectLanguage, fileName }) => {
-  if (!htmlContent) {
-    return
+export const downloadPdf = ({
+  htmlContent,
+  projectLanguage,
+  fileName,
+  json,
+  chapterNum,
+  projectTitle,
+  title,
+  downloadSettings,
+  obs = false,
+}) => {
+  if (obs) {
+    const objectToTransform = createObjectToTransform({ json, chapterNum })
+    const styles = {
+      projectTitle: {
+        fontSize: 24,
+        bold: true,
+        alignment: 'center',
+      },
+      title: { fontSize: 24, bold: true, alignment: 'center', margin: [0, 250, 0, 0] },
+      intro: { fontSize: 14 },
+      image: {
+        alignment: 'center',
+        margin: [0, 10],
+      },
+      verseNumber: {
+        sup: true,
+        bold: true,
+        opacity: 0.8,
+      },
+      text: {
+        alignment: 'justify',
+      },
+      back: { fontSize: 14, alignment: 'center' },
+      reference: {
+        margin: [0, 10, 0, 0],
+        italics: true,
+      },
+    }
+    const pdfOptions = {
+      data: [objectToTransform],
+      styles,
+    }
+
+    if (downloadSettings?.withFront) {
+      pdfOptions.bookPropertiesObs = {
+        projectTitle,
+        title,
+      }
+    }
+
+    if (downloadSettings?.withImages === false) {
+      pdfOptions.showImages = false
+    }
+
+    JsonToPdf(pdfOptions)
+      .then(() => console.log('PDF creation completed'))
+      .catch((error) => console.error('PDF creation failed:', error))
+  } else {
+    if (!htmlContent) {
+      return
+    }
+
+    let new_window = window.open()
+    new_window?.document.write(`<html lang="${projectLanguage?.code}">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>${fileName}</title>
+        <style type="text/css">
+          .break {
+              page-break-after: always;
+          }
+      </style>
+    </head>
+    <body onLoad="window.print()">
+        ${htmlContent}
+        </body>
+        </html>`)
+    new_window?.document.close()
   }
-  let new_window = window.open()
-  new_window?.document.write(`<html lang="${projectLanguage?.code}">
-  <head>
-      <meta charset="UTF-8"/>
-      <title>${fileName}</title>
-      <style type="text/css">
-        .break {
-            page-break-after: always;
-        }
-    </style>
-  </head>
-  <body onLoad="window.print()">
-      ${htmlContent}
-      </body>
-      </html>`)
-  new_window?.document.close()
 }
 
 export const convertToUsfm = ({ jsonChapters, book, project }) => {
