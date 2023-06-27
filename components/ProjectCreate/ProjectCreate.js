@@ -27,15 +27,11 @@ function ProjectCreate() {
   const { user } = useCurrentUser()
   const router = useRouter()
 
-  const [languages] = useLanguages(user?.access_token)
   const [_methods] = useMethod(user?.access_token)
   const [methods, setMethods] = useState(() => {
     return checkLSVal('methods', _methods, 'object')
   })
 
-  const [projects, { mutate: mutateProjects }] = useProjects({
-    token: user?.access_token,
-  })
   const {
     register,
     handleSubmit,
@@ -76,18 +72,12 @@ function ProjectCreate() {
     }
   }, [methods])
 
-  useEffect(() => {
-    if (languages) {
-      setValue('languageId', languages?.[0]?.id)
-    }
-  }, [languages, setValue])
-
   const onSubmit = async (data) => {
-    const { title, code, languageId } = data
+    const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
       return
     }
-    console.log(method.steps)
+
     return
     axios.defaults.headers.common['token'] = user?.access_token
     axios
@@ -114,45 +104,9 @@ function ProjectCreate() {
       .finally(mutateProjects)
   }
 
-  const inputs = [
-    {
-      id: 1,
-      title: t('Title'),
-      classname: errors?.title ? 'input-invalid' : 'input',
-      placeholder: '',
-      register: {
-        ...register('title', {
-          required: true,
-        }),
-      },
-      errorMessage: errors?.title ? errors?.title.message : '',
-    },
-    {
-      id: 2,
-      title: t('Code'),
-      classname: errors?.code ? 'input-invalid' : 'input',
-      placeholder: '',
-      register: {
-        ...register('code', {
-          required: true,
-          validate: {
-            wrongTypeCode: (value) => /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i.test(value),
-            notUniqueProject: (value) => !projects?.find((el) => el.code === value),
-          },
-        }),
-      },
-      errorMessage:
-        errors?.code?.type === 'wrongTypeCode'
-          ? t('CodeMessageErrorWrongType')
-          : errors?.code?.type === 'notUniqueProject'
-          ? t('CodeMessageErrorNotUniqueProject')
-          : '',
-    },
-  ]
   const updateStep = ({ ref, index }) => {
     const _steps = customSteps.map((obj, idx) => {
       if (index === idx) {
-        console.log('fsdfds', { ...ref })
         return { ...obj, ...ref }
       }
 
@@ -169,50 +123,24 @@ function ProjectCreate() {
   }
   return (
     <div className="py-0 sm:py-10">
-      <div className="card">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          {inputs.map((el) => (
-            <div key={el.title}>
-              <div>{el.title}</div>
-              <input
-                className={`${el.classname} max-w-sm`}
-                placeholder={el.placeholder}
-                {...el.register}
-              />
-              {el.errorMessage && <span>{' ' + el.errorMessage}</span>}
-            </div>
-          ))}
-          <div>{t('Language')}</div>
-          <select
-            className="input max-w-sm"
-            placeholder={t('Language')}
-            {...register('languageId')}
-          >
-            {languages &&
-              languages.map((el) => {
-                return (
-                  <option key={el.id} value={el.id}>
-                    {el.orig_name}
-                  </option>
-                )
-              })}
-          </select>
-          <div>{t('Method')}</div>
-          <select
-            placeholder={t('Method')}
-            {...register('methodId')}
-            className="input max-w-sm"
-            defaultValue={methods?.[0]?.id}
-          >
-            {methods &&
-              methods.map((el) => {
-                return (
-                  <option key={el.id} value={el.id}>
-                    {el.title} ({el.type})
-                  </option>
-                )
-              })}
-          </select>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
+          <p className="text-xl font-bold mb-5">Основная информация</p>
+          <BaseInformation
+            t={t}
+            errors={errors}
+            register={register}
+            setValue={setValue}
+            user={user}
+            methods={methods}
+          />
+        </div>
+        <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
+          <p className="text-xl font-bold mb-5">Шаги</p>
+          <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
+        </div>
+        <div className="card flex flex-col gap-2 border-b border-slate-900 py-7">
+          <p className="text-xl font-bold mb-5">Бриф</p>
           <div>{t('Brief')}</div>
           <div>
             <span className="mr-3">
@@ -232,37 +160,29 @@ function ProjectCreate() {
               />
             </Switch>
           </div>
-          <br />
-
-          <div className="flex flex-col gap-2 border-y border-slate-900 py-7">
-            <p className="text-xl font-bold mb-5">Шаги</p>
-            <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
-          </div>
-          <div className="flex flex-col gap-2 border-b border-slate-900 py-7">
-            <p className="text-xl font-bold mb-5">Бриф</p>
-            {customBriefs?.map((el) => (
-              <Disclosure key={el.title}>
-                <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
-                  <span>{el.title}</span>
-                  <Down className="w-5 h-5" />
-                </Disclosure.Button>
-                <Disclosure.Panel className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <div>title</div> <input className="input-primary" value={el.title} />
-                  </div>
-                  <div>questions</div>
-                  {el.block.map((item) => (
-                    <input
-                      key={item.question}
-                      className="input-primary"
-                      value={item.question}
-                    />
-                  ))}
-                </Disclosure.Panel>
-              </Disclosure>
-            ))}
-          </div>
-          {/* <pre className="whitespace-pre-wrap break-words">
+          {customBriefs?.map((el) => (
+            <Disclosure key={el.title}>
+              <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
+                <span>{el.title}</span>
+                <Down className="w-5 h-5" />
+              </Disclosure.Button>
+              <Disclosure.Panel className="flex flex-col gap-2">
+                <div className="flex items-center gap-2">
+                  <div>title</div> <input className="input-primary" value={el.title} />
+                </div>
+                <div>questions</div>
+                {el.block.map((item) => (
+                  <input
+                    key={item.question}
+                    className="input-primary"
+                    value={item.question}
+                  />
+                ))}
+              </Disclosure.Panel>
+            </Disclosure>
+          ))}
+        </div>
+        {/* <pre className="whitespace-pre-wrap break-words">
             {`"title": Название шага, даем юзеру возможность перевода этого поля
 "description": Описание шага, возможность редактировать
 "time": время, сколько минут длится шаг
@@ -277,7 +197,7 @@ function ProjectCreate() {
       "config": а тут конфиг этого компонента`}
           </pre> */}
 
-          {/* <br />
+        {/* <br />
           <p>
             Нужно превратить в форму. Сейчас сюда приходит объект. Ключ - это
             идентификатор ресурса в шагах метода. Тут нет каких-то правил, можно называть
@@ -296,7 +216,7 @@ function ProjectCreate() {
             value={JSON.stringify(customResources, null, 2)}
             className="w-full"
           /> */}
-          {/* {method?.type !== 'obs' ? (
+        {/* {method?.type !== 'obs' ? (
             <pre className="whitespace-pre-wrap break-words">
               {`literal
 https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
@@ -323,17 +243,23 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 `}
             </pre>
           )} */}
-          <br />
-          <div className=" border-b border-slate-900 pb-7 mb-7">
-            <p className="text-xl font-bold mb-5">Ссылки на материалы</p>
+        <div className="card flex flex-col gap-7 border-b border-slate-900 pb-7 mb-7">
+          <p className="text-xl font-bold mb-5">Ссылки на материалы</p>
 
-            <CommitsList
-              methodId={methodId}
-              resourcesUrl={resourcesUrl}
-              setResourcesUrl={setResourcesUrl}
+          <CommitsList
+            methodId={methodId}
+            resourcesUrl={resourcesUrl}
+            setResourcesUrl={setResourcesUrl}
+          />
+          <div>
+            <input
+              className="btn-secondary btn-filled"
+              type="submit"
+              value={t('CreateProject')}
             />
           </div>
-          {/* <br />
+        </div>
+        {/* <br />
           <p>
             После того как нажимают на кнопку сохранить, мы делаем следующее: <br />
             1. Получаем манифесты всех ресурсов чтобы записать в таблицу проектов, в
@@ -370,15 +296,127 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             для первой версии мы можем создать проект в ручную, и отложить разработку на
             время после запуска
           </p> */}
-          <input
-            className="btn-cyan btn-filled"
-            type="submit"
-            value={t('CreateProject')}
-          />
-        </form>
-      </div>
+        <div className="card"></div>
+      </form>
     </div>
   )
 }
 
 export default ProjectCreate
+
+function BaseInformation({ t, errors, register, setValue, user, methods }) {
+  const [projects, { mutate: mutateProjects }] = useProjects({
+    token: user?.access_token,
+  })
+  const [languages] = useLanguages(user?.access_token)
+  useEffect(() => {
+    if (languages) {
+      setValue('languageId', languages?.[0]?.id)
+    }
+  }, [languages, setValue])
+  const inputs = [
+    {
+      id: 1,
+      title: t('Title'),
+      classname: errors?.title ? 'input-invalid' : 'input-primary',
+      placeholder: '',
+      register: {
+        ...register('title', {
+          required: true,
+        }),
+      },
+      errorMessage: errors?.title ? errors?.title.message : '',
+    },
+    {
+      id: 2,
+      title: t('OrigTitle'),
+      classname: errors?.origtitle ? 'input-invalid' : 'input-primary',
+      placeholder: '',
+      register: {
+        ...register('origtitle', {
+          required: true,
+        }),
+      },
+      errorMessage: errors?.origtitle ? errors?.origtitle.message : '',
+    },
+    {
+      id: 3,
+      title: t('Code'),
+      classname: errors?.code ? 'input-invalid' : 'input-primary',
+      placeholder: '',
+      register: {
+        ...register('code', {
+          required: true,
+          validate: {
+            wrongTypeCode: (value) => /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i.test(value),
+            notUniqueProject: (value) => !projects?.find((el) => el.code === value),
+          },
+        }),
+      },
+      errorMessage:
+        errors?.code?.type === 'wrongTypeCode'
+          ? t('CodeMessageErrorWrongType')
+          : errors?.code?.type === 'notUniqueProject'
+          ? t('CodeMessageErrorNotUniqueProject')
+          : '',
+    },
+  ]
+  return (
+    <div className="flex flex-col gap-4">
+      {inputs.map((el) => (
+        <>
+          <div className="flex gap-2 items-center" key={el.title}>
+            <div className="w-1/4 font-bold">{el.title}</div>
+            <div className="flex flex-col gap-2 w-3/4">
+              <input
+                className={`${el.classname}`}
+                placeholder={el.placeholder}
+                {...el.register}
+              />
+              {el.errorMessage && <div>{' ' + el.errorMessage}</div>}
+            </div>
+          </div>
+        </>
+      ))}
+      <div className="flex gap-2 items-center">
+        <div className="w-1/4 font-bold">{t('Language')}</div>
+        <div className="w-3/4">
+          <select
+            className="input-primary"
+            placeholder={t('Language')}
+            {...register('languageId')}
+          >
+            {languages &&
+              languages.map((el) => {
+                return (
+                  <option key={el.id} value={el.id}>
+                    {el.orig_name}
+                  </option>
+                )
+              })}
+          </select>
+        </div>
+      </div>
+      <div className="flex gap-2 items-center">
+        <div className="w-1/4 font-bold">{t('Method')}</div>
+        <div className="w-3/4">
+          <select
+            placeholder={t('Method')}
+            {...register('methodId')}
+            className="input-primary w-3/4"
+            defaultValue={methods?.[0]?.id}
+          >
+            {methods &&
+              methods.map((el) => {
+                return (
+                  <option key={el.id} value={el.id}>
+                    {el.title} ({el.type})
+                  </option>
+                )
+              })}
+          </select>
+        </div>
+      </div>
+    </div>
+  )
+}

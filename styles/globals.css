@@ -134,11 +134,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	focus:border-blue-450;
 }
 
-.input-invalid {
-	@apply input-base text-red-600 border-red-500 bg-red-50
-	focus:border-red-700;
-}
-
 .layout-appbar {
 	@apply flex flex-col gap-7 items-center px-5 f-screen-appbar font-sans sm:justify-center;
 }
@@ -270,5 +265,8 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .input-primary {
-	@apply p-2 w-full rounded-lg bg-white text-slate-900 border border-slate-900 empty:border-cyan-300 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 disabled:placeholder-gray-300
+	@apply p-2 w-full rounded-lg bg-white text-slate-900 border border-slate-900 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300
+}
+.input-invalid {
+	@apply p-2 w-full rounded-lg bg-white text-red-600 border border-red-500 placeholder-cyan-200 focus:border-red-700 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300;
 }
