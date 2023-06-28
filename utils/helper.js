@@ -170,10 +170,16 @@ export const downloadPdf = async ({
       },
     }
 
+    if (!fileName.endsWith('.pdf')) {
+      fileName += '.pdf'
+    }
+
     let pdfOptions = {
       data: [],
       styles,
+      fileName,
     }
+
     if (downloadSettings?.withFront) {
       pdfOptions.bookPropertiesObs = {
         projectTitle,
