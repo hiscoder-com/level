@@ -319,7 +319,11 @@ function Download({
         <div className="flex gap-7 items-end">
           <div className="flex flex-col w-full">
             {Object.keys(downloadSettings)
-              .filter((key) => project?.type === 'obs' || key === 'withFront')
+              .filter(
+                (key) =>
+                  (project?.type === 'obs' || key === 'withFront') &&
+                  downloadType !== 'usfm'
+              )
               .map((key, index) => {
                 return (
                   <div className="inline-flex justify-between items-center" key={key}>
