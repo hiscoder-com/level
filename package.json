@@ -25,7 +25,7 @@
     "@headlessui/react": "^1.7.15",
     "@supabase/supabase-js": "^1.35.6",
     "@texttree/notepad-rcl": "^0.3.0",
-    "@texttree/tn-quote": "^0.2.1",
+    "@texttree/tn-quote": "^0.5.0",
     "@texttree/translation-words-helpers": "^0.1.4",
     "axios": "^0.27.2",
     "axios-cache-adapter": "^2.7.3",
