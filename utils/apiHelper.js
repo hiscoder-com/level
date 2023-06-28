@@ -1,5 +1,4 @@
 import { setup } from 'axios-cache-adapter'
-import Path from 'path'
 import localforage from 'localforage'
 import jszip from 'jszip'
 
@@ -31,7 +30,7 @@ export const fetchFileFromServer = async ({ owner, repo, commit = '', apiUrl }) 
     })
     const zip = response.data
     if (zip) {
-      const uriZip = Path.join(owner, repo, commit)
+      const uriZip = owner + '/' + repo + '/' + commit
       zipStore.setItem(uriZip, zip)
       return await jszip.loadAsync(zip)
     }
@@ -42,7 +41,7 @@ export const fetchFileFromServer = async ({ owner, repo, commit = '', apiUrl }) 
 
 export const getFileFromZip = async ({ owner, repo, commit = '' }) => {
   let file
-  const uriZip = Path.join(owner, repo, commit)
+  const uriZip = owner + '/' + repo + '/' + commit
   const zipBlob = await zipStore.getItem(uriZip)
   try {
     if (zipBlob) {

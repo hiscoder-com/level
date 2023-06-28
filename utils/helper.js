@@ -2,7 +2,6 @@ import axios from 'axios'
 import usfm from 'usfm-js'
 import jsyaml from 'js-yaml'
 import { obsStoryVerses } from './config'
-import Path from 'path'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
   let value
@@ -480,10 +479,8 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
   }
 
   const promises = wordObjects.map(async (wordObject) => {
-    const uriMd = Path.join(
-      repo,
-      wordObject.TWLink.split('/').slice(-3).join('/') + '.md'
-    )
+    const uriMd = repo + '/' + wordObject.TWLink.split('/').slice(-3).join('/') + '.md'
+
     try {
       const markdown = await zip.files[uriMd].async('string')
       const splitter = markdown?.search('\n')
