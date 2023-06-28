@@ -138,7 +138,6 @@ export const downloadPdf = async ({
   obs = false,
 }) => {
   if (obs) {
-    let pdfOptions = {}
     const styles = {
       projectTitle: {
         fontSize: 24,
@@ -171,35 +170,32 @@ export const downloadPdf = async ({
       },
     }
 
+    let pdfOptions = {
+      data: [],
+      styles,
+    }
+    if (downloadSettings?.withFront) {
+      pdfOptions.bookPropertiesObs = {
+        projectTitle,
+        title,
+      }
+    }
+
+    if (downloadSettings?.withImages === false) {
+      pdfOptions.showImages = false
+    }
+
     if (createBookPdf) {
       const chapters = await getBookJson(book?.id)
-      const obs = []
 
-      for (const chapter of chapters) {
-        const { num, text } = chapter
-
-        if (text === null) {
-          continue
-        }
-
-        const transformedChapter = createObjectToTransform({
-          json: text,
-          chapterNum: num,
-        })
-        obs.push(transformedChapter)
-      }
-
-      pdfOptions = {
-        data: obs,
-        styles,
-      }
-
-      if (downloadSettings?.withFront) {
-        pdfOptions.bookPropertiesObs = {
-          projectTitle,
-          title,
-        }
-      }
+      pdfOptions.data = chapters
+        .filter((chapter) => chapter.text !== null)
+        .map((chapter) =>
+          createObjectToTransform({
+            json: chapter.text,
+            chapterNum: chapter.num,
+          })
+        )
 
       if (downloadSettings?.withIntro) {
         pdfOptions.bookPropertiesObs = {
@@ -214,35 +210,16 @@ export const downloadPdf = async ({
           back: book.properties.obs.back,
         }
       }
-
-      if (downloadSettings?.withImages === false) {
-        pdfOptions.showImages = false
-      }
-
-      JsonToPdf(pdfOptions)
-        .then(() => console.log('PDF creation completed'))
-        .catch((error) => console.error('PDF creation failed:', error))
     } else {
       const objectToTransform = createObjectToTransform({ json, chapterNum })
-      pdfOptions = {
-        data: [objectToTransform],
-        styles,
-      }
+      pdfOptions.data = [objectToTransform]
+    }
 
-      if (downloadSettings?.withFront) {
-        pdfOptions.bookPropertiesObs = {
-          projectTitle,
-          title,
-        }
-      }
-
-      if (downloadSettings?.withImages === false) {
-        pdfOptions.showImages = false
-      }
-
-      JsonToPdf(pdfOptions)
-        .then(() => console.log('PDF creation completed'))
-        .catch((error) => console.error('PDF creation failed:', error))
+    try {
+      await JsonToPdf(pdfOptions)
+      console.log('PDF creation completed')
+    } catch (error) {
+      console.error('PDF creation failed:', error)
     }
   } else {
     if (!htmlContent) {
