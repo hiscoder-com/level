@@ -11,7 +11,7 @@ import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
 
-import { useAccess, useProject, useUsers } from 'utils/hooks'
+import { useAccess, useGetSteps, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import BaseInformation from 'components/ProjectCreate/BaseInformation'
 import Steps from 'components/ProjectCreate/Steps'
@@ -29,7 +29,7 @@ function ProjectEdit() {
   const { user } = useCurrentUser()
 
   const [users] = useUsers(user?.access_token)
-
+  const [steps] = useGetSteps({ token: user?.access_token, code })
   const [project] = useProject({ token: user?.access_token, code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }] = useAccess({
     token: user?.access_token,
@@ -70,23 +70,27 @@ function ProjectEdit() {
 
       return obj
     })
-
+    const updateDB = async () => {}
     // localStorage.setItem('methods', JSON.stringify(_methods))
     setCustomSteps(_steps)
   }
 
   useEffect(() => {
-    const getSteps = async () => {
-      const { data, error } = await supabase
-        .from('steps')
-        .select('*')
-        .eq('project_id', project.id)
-      setCustomSteps(data)
+    if (steps) {
+      console.log(steps)
+      setCustomSteps(steps)
     }
-    if (project) {
-      getSteps()
-    }
-  }, [project])
+    // const getSteps = async () => {
+    //   const { data, error } = await supabase
+    //     .from('steps')
+    //     .select('*')
+    //     .eq('project_id', project.id)
+    //   setCustomSteps(data)
+    // }
+    // if (project) {
+    //   getSteps()
+    // }
+  }, [steps])
 
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">

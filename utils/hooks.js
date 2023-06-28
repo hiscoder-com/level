@@ -524,3 +524,23 @@ export function useAccess({ token, user_id, code }) {
     { mutate, error, isLoading },
   ]
 }
+
+/**
+ *hook returns information about steps of current project
+ * @param {string} code code of project
+ * @param {string} token token of current session of authenticated user
+ *
+ * @returns {array}
+ */
+export function useGetSteps({ token, code }) {
+  const {
+    data: steps,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(token && code ? [`/api/projects/${code}/steps`, token] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [steps, { mutate, error, isLoading }]
+}

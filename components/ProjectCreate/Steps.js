@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { Disclosure } from '@headlessui/react'
+
 import Down from 'public/arrow-down.svg'
 
-function Steps({ customSteps, updateStep, t }) {
+function Steps({ customSteps = [], updateStep, t }) {
   const refs = useRef([])
   const [defaultOpen, setDefaultOpen] = useState(false)
 
@@ -58,19 +59,22 @@ function Steps({ customSteps, updateStep, t }) {
                     <Intro stepIntro={el.intro} updateStep={updateStep} index={index} />
                   </div>
                   <div className="flex items-center gap-2 w-full">
-                    <span className="w-1/6">Интсрументы</span>
+                    <span className="w-1/6">Инструменты</span>
                     {el.config[0].tools.map((item) => (
-                      <div key={item.name} className="bg-gray-200 p-2 rounded-md">
+                      <div
+                        key={item.name}
+                        className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto"
+                      >
                         {t('common:' + item.name)}
                       </div>
                     ))}
-                    /
+                    |
                     {el.config[1].tools.map((item) => (
                       <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
                         {t('common:' + item.name)}
                       </div>
                     ))}
-                    /
+                    |
                     {el.config[2]?.tools?.map((item) => (
                       <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
                         {t('common:' + item.name)}
