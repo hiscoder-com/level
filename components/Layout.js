@@ -3,7 +3,7 @@ import { useState } from 'react'
 import AppBar from 'components/AppBar'
 import { Toaster } from 'react-hot-toast'
 
-function Layout({ backgroundColor, children }) {
+function Layout({ backgroundColor, children, hideAppbar }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
 
   return (
@@ -15,7 +15,11 @@ function Layout({ backgroundColor, children }) {
             : ''
         } `}
       >
-        <AppBar setIsOpenSideBar={setIsOpenSideBar} isOpenSideBar={isOpenSideBar} />
+        <AppBar
+          hideAppbar={hideAppbar}
+          setIsOpenSideBar={setIsOpenSideBar}
+          isOpenSideBar={isOpenSideBar}
+        />
         <div
           className={
             isOpenSideBar
@@ -25,7 +29,9 @@ function Layout({ backgroundColor, children }) {
           onClick={() => setIsOpenSideBar(false)}
         ></div>
         <main>
-          <div className="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto">{children}</div>
+          <div className={`pt-5 px-5 lg:px-8 ${hideAppbar ? 'mt-0 ' : 'mt-14'} md:mt-14`}>
+            {children}
+          </div>
         </main>
       </div>
       <Toaster />

@@ -18,7 +18,7 @@ import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
-export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
+export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -46,7 +46,11 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   }, [user])
 
   return (
-    <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
+    <div
+      className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''} ${
+        hideAppbar ? 'hidden md:block' : 'block'
+      }`}
+    >
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center justify-between md:justify-start gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />

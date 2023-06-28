@@ -34,6 +34,8 @@ export default function Confession() {
     </div>
   )
 }
+
+Confession.hideAppbar = true
 Confession.backgroundColor = 'bg-white'
 
 export async function getStaticProps({ locale }) {

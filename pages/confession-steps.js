@@ -86,17 +86,17 @@ export default function ConfessionSteps() {
 
   return (
     <div className="layout-appbar">
-      <h1 className="text-4xl text-center">{t('users:Confession')}:</h1>
+      <h1 className="text-2xl md:text-4xl text-center">{t('users:Confession')}:</h1>
       <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
-          <button disabled={page < 1} onClick={prevPage} className="arrow">
-            <LeftArrow />
+          <button disabled={page < 1} onClick={prevPage} className={`arrow`}>
+            <LeftArrow className="w-6" />
           </button>
         </div>
         <div className="confession-text">{confessionSteps[page]}</div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
-            <RightArrow />
+            <LeftArrow className="w-6 rotate-180" />
           </button>
         </div>
       </div>
@@ -112,7 +112,9 @@ export default function ConfessionSteps() {
             checked={checked}
             onChange={() => setChecked((prev) => !prev)}
           />
-          <label htmlFor="cb">{t('users:Agree')}</label>
+          <label htmlFor="cb" className="text-base">
+            {t('users:Agree')}
+          </label>
         </div>
         <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
           {t('common:Next')}
@@ -121,6 +123,9 @@ export default function ConfessionSteps() {
     </div>
   )
 }
+
+ConfessionSteps.hideAppbar = true
+
 export async function getStaticProps({ locale }) {
   return {
     props: {
