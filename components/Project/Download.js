@@ -74,6 +74,7 @@ function Download({
     book_code: bookCode,
   })
 
+  const [isSaving, setIsSaving] = useState(false)
   const [downloadType, setDownloadType] = useState('pdf')
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
@@ -207,7 +208,9 @@ function Download({
         : t('books:' + bookCode),
     },
   ]
+
   const handleSave = async () => {
+    setIsSaving(true)
     switch (downloadType) {
       case 'txt':
         downloadFile({
@@ -297,7 +300,9 @@ function Download({
       default:
         break
     }
+    setIsSaving(false)
   }
+
   return (
     <div className="flex flex-col gap-7">
       {breadcrumbs && (
@@ -374,8 +379,12 @@ function Download({
           >
             {t('Close')}
           </button>
-          <button onClick={handleSave} className="btn-secondary flex-1">
-            {t('Save')}
+          <button
+            onClick={handleSave}
+            disabled={isSaving}
+            className="btn-secondary flex-1"
+          >
+            {isSaving ? t('Saving') : t('Save')}
           </button>
         </div>
       </div>
