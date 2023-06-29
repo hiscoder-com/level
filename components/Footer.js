@@ -51,7 +51,7 @@ export default function Footer({
             </label>
           </div>
           {href ? (
-            <Link href={href}>
+            <Link href={href} legacyBehavior>
               <button className="btn-cyan !px-6" disabled={!checked}>
                 {textButton}
               </button>

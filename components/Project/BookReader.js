@@ -116,9 +116,9 @@ function BookReader() {
         <div className="card flex flex-col gap-7">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code}>
-              <a>
-                <Left className="w-5 h-5 hover:text-gray-500" />
-              </a>
+
+              <Left className="w-5 h-5 hover:text-gray-500" />
+
             </Link>
             <Navigation
               books={
@@ -139,7 +139,7 @@ function BookReader() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export default BookReader

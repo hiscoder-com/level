@@ -47,7 +47,7 @@ export const readableDate = (date, locale = 'ru') => {
 const compileMarkdown = async (ref) => {
   const title = ref.json[0] ? `# ${ref.json[0]}\n\n` : ''
   const reference = ref.json[200] ? `_${ref.json[200]}_` : ''
-  const markdown = ''
+  let markdown = ''
   for (const key in ref.json) {
     if (Object.hasOwnProperty.call(ref.json, key)) {
       if (ref.json[key] && !['0', '200'].includes(key)) {
@@ -68,7 +68,7 @@ export const compilePdfObs = async (ref, downloadSettings) => {
   const reference = ref.json[200]
     ? `<p class="break"><em> ${ref.json[200]} </em></p>`
     : ''
-  const frames = ''
+  let frames = ''
   for (const key in ref.json) {
     if (Object.hasOwnProperty.call(ref.json, key)) {
       if (ref.json[key] && !['0', '200'].includes(key)) {
@@ -108,7 +108,7 @@ export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
         break
     }
   }
-  const front = ''
+  let front = ''
   if (downloadSettings?.withFront) {
     front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
   }

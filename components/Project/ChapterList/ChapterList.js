@@ -83,18 +83,19 @@ function ChapterList() {
       return (
         <>
           {!(!isBrief || briefResume) ? (
-            <Link href={`/projects/${project?.code}/edit?setting=brief`}>
-              <a onClick={(e) => e.stopPropagation()}>
-                {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
-              </a>
+            <Link
+              href={`/projects/${project?.code}/edit?setting=brief`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
             </Link>
           ) : (
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-sm xl:text-lg"
             >
-              <a onClick={(e) => e.stopPropagation()} className="text-sm xl:text-lg">
-                {step.step} {t('Step').toLowerCase()}
-              </a>
+              {step.step} {t('Step').toLowerCase()}
             </Link>
           )}
         </>
