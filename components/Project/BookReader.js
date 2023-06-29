@@ -116,9 +116,7 @@ function BookReader() {
         <div className="card flex flex-col gap-7">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code}>
-
               <Left className="w-5 h-5 hover:text-gray-500" />
-
             </Link>
             <Navigation
               books={
@@ -139,7 +137,7 @@ function BookReader() {
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 export default BookReader
@@ -200,7 +198,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
                 <div
-                  className="flex gap-2 
+                  className="flex gap-2
                   text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
                   onClick={() =>
                     push({
