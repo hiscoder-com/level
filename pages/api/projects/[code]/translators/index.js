@@ -4,21 +4,13 @@ export default async function languageProjectTranslatorsHandler(req, res) {
   if (!req?.headers?.token) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-  try {
-    supabase.auth.setAuth(req.headers.token)
-  } catch (error) {
-    return res.status(404).json({ error })
-  }
+  supabase.auth.setAuth(req.headers.token)
 
-  let body, method, code
-
-  try {
-    body = req.body
-    method = req.method
-    code = req.query.code
-  } catch (error) {
-    return res.status(404).json({ error })
-  }
+  const {
+    body,
+    method,
+    query: { code },
+  } = req
 
   let project_id = null
   switch (method) {
