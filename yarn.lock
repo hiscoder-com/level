@@ -1883,7 +1883,7 @@
     ufo "^1.0.0"
     unstorage "^1.0.0"
 
-"@netlify/plugin-nextjs@^4.36.1":
+"@netlify/plugin-nextjs@^4.38.1":
   version "4.38.1"
   resolved "https://registry.yarnpkg.com/@netlify/plugin-nextjs/-/plugin-nextjs-4.38.1.tgz#dfbca71ac57f8900d0cbfc1b20145b17edecfda8"
   integrity sha512-59iDg+zQzj9PZOVEGiEhCD84AdTXtWC6C8SQylBPfGMJ7xVYIVXdulNUpSy9F7NXhjDeM1y9IPyTKKan6D5QIA==
