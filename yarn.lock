@@ -2522,11 +2522,12 @@
     jszip "^3.10.1"
     pdfmake "^0.2.7"
 
-"@texttree/tn-quote@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@texttree/tn-quote/-/tn-quote-0.2.1.tgz#7ac72d1b35f3affb9c72349e4907b0dcddc056f0"
-  integrity sha512-B2Yx03ipEcTxvLZ343SCoqXQ6wVlMkP7UVT07oXLJGT973O5QikqKEBMTtFXn9xEGeNyXapDruaNbP91h3o40A==
+"@texttree/tn-quote@^0.5.0":
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/@texttree/tn-quote/-/tn-quote-0.5.0.tgz#f7886cae4311188e06836d8c85c6ad7e416dacd5"
+  integrity sha512-615eo+SnaVRkkOxmrsbi71OECl4TJlcLeSNMfs9Lr4MmMSjMxohg9jHNI2YLTFiDnXtK3UWVaggQJAO1Ti27Tw==
   dependencies:
+    axios "^1.4.0"
     js-yaml "^4.1.0"
     string-punctuation-tokenizer "^2.2.0"
     usfm-js "^3.4.2"
@@ -5566,6 +5567,7 @@ h3@^1.7.0:
   version "1.7.0"
   resolved "https://registry.yarnpkg.com/h3/-/h3-1.7.0.tgz#46aa4095feeb7d342a32f17fcc02a18dcb099529"
   integrity sha512-iJJz2Pn2rC0j8CB3rkFMs0K269W7hDVOC7eL3qne5Joy4JZX1W7id7PBFV593GboHDOx0PzgO6ocqsynrIvdxw==
+
   dependencies:
     cookie-es "^1.0.0"
     defu "^6.1.2"
@@ -5637,6 +5639,7 @@ has-tostringtag@^1.0.0:
     has-symbols "^1.0.2"
 
 has@^1.0.1, has@^1.0.3:
+
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/has/-/has-1.0.3.tgz#722d7cbfc1f6aa8241f16dd814e011e1f41e8796"
   integrity sha512-f2dvO0VU6Oej7RkWJGrehjbzMAjFp5/VKPp5tTpWIV4JHHZK1/BxbFRtf/siA2SWTe09caDmVtYYzWEIbBS4zw==
@@ -8348,6 +8351,7 @@ pdfmake@^0.2.7:
     iconv-lite "^0.6.3"
     xmldoc "^1.1.2"
 
+
 picocolors@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/picocolors/-/picocolors-1.0.0.tgz#cb5bdc74ff3f51892236eaf79d68bc44564ab81c"
@@ -8720,6 +8724,7 @@ react-hook-form@^7.44.3:
   resolved "https://registry.yarnpkg.com/react-hook-form/-/react-hook-form-7.45.0.tgz#df2bbc8cee598855a63ba446e0bb06f7c8120ccf"
   integrity sha512-AbHeZ4ad+0dEIknSW9dBgIwcvRDfZ1O97sgj75WaMdOX0eg8TBiUf9wxzVkIjZbk76BBIE9lmFOzyD4PN80ZQg==
 
+
 react-hot-toast@^2.4.1:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/react-hot-toast/-/react-hot-toast-2.4.1.tgz#df04295eda8a7b12c4f968e54a61c8d36f4c0994"
@@ -8893,6 +8898,7 @@ readable-stream@3, readable-stream@^3.0.0, readable-stream@^3.0.2, readable-stre
     util-deprecate "^1.0.1"
 
 readable-stream@^2.0.2, readable-stream@^2.2.2, readable-stream@~2.3.3, readable-stream@~2.3.6:
+
   version "2.3.8"
   resolved "https://registry.yarnpkg.com/readable-stream/-/readable-stream-2.3.8.tgz#91125e8042bba1b9887f49345f6277027ce8be9b"
   integrity sha512-8p0AUk4XODgIewSi0l8Epjs+EVnWiK7NoDIEGU0HhE7+ZyY8D1IMY7odu5lRrFXGg71L15KG8QrPmum45RTtdA==

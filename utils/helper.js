@@ -561,3 +561,26 @@ export function filterNotes(newNote, verse, notes) {
     }
   }
 }
+
+export const getWords = async ({ zip, repo, wordObjects }) => {
+  if (!zip || !repo || !wordObjects) {
+    return []
+  }
+
+  const promises = wordObjects.map(async (wordObject) => {
+    const uriMd = repo + '/' + wordObject.TWLink.split('/').slice(-3).join('/') + '.md'
+
+    try {
+      const markdown = await zip.files[uriMd].async('string')
+      const splitter = markdown?.search('\n')
+      return {
+        ...wordObject,
+        title: markdown?.slice(0, splitter),
+        text: markdown?.slice(splitter),
+      }
+    } catch (error) {
+      return null
+    }
+  })
+  return await Promise.all(promises)
+}

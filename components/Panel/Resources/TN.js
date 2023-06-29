@@ -16,6 +16,7 @@ function TN({ config, url, toolName }) {
   const { isLoading, data, error } = useGetResource({ config, url })
 
   const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
+    domain: process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org',
     book: config.reference.book,
     tnotes: data,
     usfm: {
