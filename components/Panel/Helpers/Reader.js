@@ -65,16 +65,24 @@ function Reader({ config }) {
     let mySubscription = null
     if (chapter?.id) {
       mySubscription = supabase
-        .from('verses:chapter_id=eq.' + chapter.id)
-        .on('UPDATE', (payload) => {
-          const { id, text } = payload.new
-          updateVerseObject(id, text)
-        })
+        .channel('public' + 'verses:chapter_id=eq.' + chapter.id)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'verses:chapter_id=eq.' + chapter.id,
+          },
+          (payload) => {
+            const { id, text } = payload.new
+            updateVerseObject(id, text)
+          }
+        )
         .subscribe()
     }
     return () => {
       if (mySubscription) {
-        supabase.removeSubscription(mySubscription)
+        supabase.removeChannel(mySubscription)
       }
     }
   }, [chapter?.id])
