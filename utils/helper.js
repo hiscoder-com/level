@@ -77,7 +77,7 @@ export const createObjectToTransform = (ref) => {
   return objectToTransform
 }
 
-export const compileChapter = (ref, type = 'txt', downloadSettings) => {
+export const compileChapter = (ref, downloadSettings, type = 'txt') => {
   if (!ref?.json) {
     return
   }

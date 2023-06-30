@@ -86,7 +86,7 @@ function Download({
       chapters?.find((chapter) => chapter.num.toString() === chapterNum.toString()),
     [chapters, chapterNum]
   )
-  const compileBook = async (book, type = 'txt', downloadSettings) => {
+  const compileBook = async (book, downloadSettings, type = 'txt') => {
     const chapters = await getBookJson(book?.id)
     if (chapters?.length === 0) {
       return
