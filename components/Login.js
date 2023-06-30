@@ -86,8 +86,8 @@ function Login() {
             <div>
               {t('Email')} {user.email}
             </div>
-            <Link href={href ?? '/'}>
-              <a className="text-cyan-500 hover:text-gray-400">{t('GoToAccount')}</a>
+            <Link href={href ?? '/'} className="text-cyan-500 hover:text-gray-400">
+              {t('GoToAccount')}
             </Link>
           </div>
 
@@ -108,10 +108,9 @@ function Login() {
                 '/'
                 // TODO сделать функционал отправки формы администратору
               }
+              className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400"
             >
-              <a className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400">
-                {t('WriteAdministrator')}
-              </a>
+              {t('WriteAdministrator')}
             </Link>
           </div>
 
@@ -190,10 +189,9 @@ function Login() {
                   '/'
                   // TODO сделать восстановление пароля
                 }
+                className="text-sm lg:text-base text-cyan-700 hover:text-gray-400"
               >
-                <a className="text-sm lg:text-base text-cyan-700 hover:text-gray-400">
-                  {t('RestoreAccess')}
-                </a>
+                {t('RestoreAccess')}
               </Link>
             </div>
           </form>

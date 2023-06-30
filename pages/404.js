@@ -14,10 +14,8 @@ const PageNotFound = () => {
         <h2>{t('PageNotFound')}</h2>
         <p>
           {t('GoTo')}
-          <Link href="/">
-            <a className="text-2xl uppercase text-red-400 hover:text-stone-500">
-              {t('Homepage')}
-            </a>
+          <Link href="/" className="text-2xl uppercase text-red-400 hover:text-stone-500">
+            {t('Homepage')}
           </Link>
         </p>
       </div>
