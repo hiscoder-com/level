@@ -153,7 +153,7 @@ function Download({
 
     if (downloadingBook?.properties?.obs?.back) {
       const backFile = {
-        name: 'Endpaper.md',
+        name: 'intro.md',
         content: downloadingBook?.properties?.obs?.back,
       }
       const backFolder = {

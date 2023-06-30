@@ -82,7 +82,7 @@ export const compileChapter = async (ref, type = 'txt', downloadSettings) => {
     return
   }
 
-  const front = ''
+  let front = ''
   if (downloadSettings?.withFront) {
     front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
   }
