@@ -11,12 +11,14 @@ import axios from 'axios'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 
 function Brief({ access }) {
+  const supabase = useSupabaseClient()
+
   const [briefDataCollection, setBriefDataCollection] = useState('')
 
   const {

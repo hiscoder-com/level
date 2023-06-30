@@ -5,8 +5,6 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from 'utils/supabaseClient'
-
 import SwitchLocalization from './SwitchLocalization'
 import SignOut from './SignOut'
 
@@ -17,8 +15,10 @@ import { useCurrentUser } from 'lib/UserContext'
 import Report from 'public/error-outline.svg'
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function Login() {
+  const supabase = useSupabaseClient()
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)

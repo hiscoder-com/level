@@ -6,10 +6,12 @@ import { toast, Toaster } from 'react-hot-toast'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Editor({ config }) {
+  const supabase = useSupabaseClient()
+
   const { t } = useTranslation(['common'])
 
   const [verseObjects, setVerseObjects] = useState([])

@@ -1,14 +1,13 @@
 import { countOfChaptersAndVerses, parseManifests } from 'utils/helper'
-import { supabaseClient } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default async function updateCommitsHandler(req, res) {
   if (!req?.headers?.token) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-  const supabase = supabaseClient(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
 
-  let data = {}
   const {
     method,
     body: { resources, current_method, project_id },

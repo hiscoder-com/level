@@ -10,7 +10,7 @@ import SideBar from './SideBar'
 
 import Timer from 'components/Timer'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
@@ -19,6 +19,7 @@ import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
 export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
+  const supabase = useSupabaseClient()
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)

@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import toast, { Toaster } from 'react-hot-toast'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import { useProject, useTranslators } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -25,6 +25,7 @@ const defaultColor = [
 ]
 
 function VerseDivider({ verses }) {
+  const supabase = useSupabaseClient()
   const [currentTranslator, setCurrentTranslator] = useState(null)
   const [colorTranslators, setColorTranslators] = useState([])
   const [versesDivided, setVersesDivided] = useState([])

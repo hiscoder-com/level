@@ -11,12 +11,14 @@ import axios from 'axios'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 
 function BriefBlock({ access }) {
+  const supabase = useSupabaseClient()
+
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [hidden, setHidden] = useState(true)
 
@@ -64,6 +66,7 @@ function BriefBlock({ access }) {
     return () => {
       supabase.removeChannel(briefUpdates)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const updateBrief = (text, index) => {

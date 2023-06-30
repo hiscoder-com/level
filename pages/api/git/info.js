@@ -1,5 +1,4 @@
 import axios from 'axios'
-import jsyaml from 'js-yaml'
 
 import { tsvToJson } from '@texttree/translation-words-helpers'
 

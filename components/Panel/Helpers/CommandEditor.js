@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 
 import { toast, Toaster } from 'react-hot-toast'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
@@ -21,6 +21,8 @@ import { obsCheckAdditionalVerses } from 'utils/helper'
 //              - FALSE видно все стихи, исправлять можно только свои
 
 function CommandEditor({ config }) {
+  const supabase = useSupabaseClient()
+
   const { user } = useCurrentUser()
   const { t } = useTranslation(['common'])
 
@@ -49,6 +51,7 @@ function CommandEditor({ config }) {
     if (currentProject?.id && user?.id) {
       getLevel(user.id, currentProject.id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentProject?.id, user?.id])
 
   useEffect(() => {
@@ -68,6 +71,7 @@ function CommandEditor({ config }) {
         }))
         setVerseObjects(result)
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter_num, config?.reference?.verses, project])
 
   const updateVerseObject = (id, text) => {
@@ -106,6 +110,7 @@ function CommandEditor({ config }) {
         supabase.removeChannel(mySubscription)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapter?.id])
 
   const updateVerse = (id, text) => {

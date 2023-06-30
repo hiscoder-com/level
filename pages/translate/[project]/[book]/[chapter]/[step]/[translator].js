@@ -13,7 +13,7 @@ import Workspace from 'components/Workspace'
 import { stepConfigState } from 'components/Panel/state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 /**
@@ -21,6 +21,7 @@ import { supabaseService } from 'utils/supabaseServer'
  * либо в компонентах для редактора надо проверять, чьи стихи
  */
 function TranslatorPage({ last_step }) {
+  const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const { query, replace } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)

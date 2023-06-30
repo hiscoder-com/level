@@ -1,15 +1,9 @@
-import { createClient } from '@supabase/supabase-js'
+import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
+import { useState } from 'react'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-export const supabaseClient = (access_token) => {
-  return createClient(supabaseUrl, supabaseAnonKey, {
-    global: {
-      headers: {
-        Authorization: `Bearer ${access_token}`,
-      },
-    },
-    auth: { persistSession: false },
-  })
+function useSupabaseClient() {
+  const [supabaseClient] = useState(() => createPagesBrowserClient())
+  return supabaseClient
 }
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+
+export default useSupabaseClient

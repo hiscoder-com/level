@@ -1,4 +1,4 @@
-import { supabaseClient } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 /**
  * @swagger
  * components:
@@ -76,7 +76,7 @@ export default async function languagesHandler(req, res) {
   if (!req?.headers?.token) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-  const supabase = supabaseClient(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
   let data = {}
   const {
     body: { eng, code, orig_name, is_gl },

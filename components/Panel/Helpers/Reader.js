@@ -6,12 +6,14 @@ import { useTranslation } from 'next-i18next'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useGetChapter } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Reader({ config }) {
+  const supabase = useSupabaseClient()
+
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
@@ -47,6 +49,7 @@ function Reader({ config }) {
           .filter((el) => config?.wholeChapter || verses.includes(el.verse_id.toString()))
         setVerseObjects(result)
       })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter_num, config?.reference?.verses, config?.wholeChapter, project])
 
   const updateVerseObject = (id, text) => {
@@ -85,6 +88,7 @@ function Reader({ config }) {
         supabase.removeChannel(mySubscription)
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chapter?.id])
 
   return (
