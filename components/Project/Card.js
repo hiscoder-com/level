@@ -15,10 +15,8 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
       <div className="flex justify-between items-start gap-7">
         <h3 className="text-lg sm:text-xl font-bold truncate">{title}</h3>
         {access && (
-          <Link href={link}>
-            <a className="w-6 min-w-[1.5rem]">
-              <Gear />
-            </a>
+          <Link href={link} className="w-6 min-w-[1.5rem]">
+            <Gear />
           </Link>
         )}
       </div>

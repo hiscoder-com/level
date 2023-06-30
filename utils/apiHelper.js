@@ -1,19 +1,10 @@
-import { setup } from 'axios-cache-adapter'
+import axios from 'axios'
 import localforage from 'localforage'
 import jszip from 'jszip'
-
-const DEFAULT_MAX_AGE = 24 * 30 // cache 30 days
 
 const zipStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
   name: 'zip-store',
-})
-
-export const api = setup({
-  cache: {
-    store: zipStore,
-    maxAge: DEFAULT_MAX_AGE * 60 * 60 * 1000,
-  },
 })
 
 export const fetchFileFromServer = async ({ owner, repo, commit = '', apiUrl }) => {
@@ -21,13 +12,14 @@ export const fetchFileFromServer = async ({ owner, repo, commit = '', apiUrl }) 
     return null
   }
   try {
-    const response = await api.get(apiUrl, {
+    const response = await axios.get(apiUrl, {
       responseType: 'arraybuffer',
       params: {
         owner,
         repo,
       },
     })
+
     const zip = response.data
     if (zip) {
       const uriZip = owner + '/' + repo + '/' + commit

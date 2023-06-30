@@ -212,7 +212,7 @@ export function useGetResource({ config, url }) {
 
   const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
   const { isLoading, data, error } = useSWR(
-    url && params ? [url, params] : null,
+    url && owner && repo && commit && bookPath ? [url, params] : null,
     fetcher,
     {
       revalidateOnFocus: false,
