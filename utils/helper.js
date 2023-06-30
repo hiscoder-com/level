@@ -57,7 +57,7 @@ export const createObjectToTransform = (ref) => {
 
   const objectToTransform = {
     verseObjects: [],
-    title: ref.json[0] || '',
+    title: `${ref.chapterNum}. ${ref.json[0] || ''}`,
     reference: ref.json[200] || '',
   }
 
