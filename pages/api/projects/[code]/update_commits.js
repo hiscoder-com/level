@@ -1,12 +1,12 @@
 import { countOfChaptersAndVerses, parseManifests } from 'utils/helper'
-import { supabase } from 'utils/supabaseClient'
+import { supabaseClient } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default async function updateCommitsHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = supabaseClient(req.headers.token)
 
   let data = {}
   const {
@@ -15,9 +15,12 @@ export default async function updateCommitsHandler(req, res) {
   } = req
 
   const sendLog = async (log) => {
-    const { data, error } = await supabaseService.from('logs').insert({
-      log,
-    })
+    const { data, error } = await supabaseService
+      .from('logs')
+      .insert({
+        log,
+      })
+      .select()
     return { data, error }
   }
 
@@ -232,13 +235,12 @@ export default async function updateCommitsHandler(req, res) {
           error: error,
         })
 
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json({ message: 'Success' })
-      break
+      return res.status(200).json({ message: 'Success' })
+
     default:
       res.setHeader('Allow', ['POST'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

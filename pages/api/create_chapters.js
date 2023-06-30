@@ -1,22 +1,24 @@
-import { supabase } from 'utils/supabaseClient'
+import { supabaseClient } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 import { countOfChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
-    return
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = supabaseClient(req.headers.token)
 
   const { method } = req
 
   switch (method) {
     case 'POST':
       const sendLog = async (log) => {
-        const { data, error } = await supabaseService.from('logs').insert({
-          log,
-        })
+        const { data, error } = await supabaseService
+          .from('logs')
+          .insert({
+            log,
+          })
+          .select()
         return { data, error }
       }
       const { link, book_code, project_id } = req.body
@@ -64,15 +66,14 @@ export default async function handler(req, res) {
           if (errorPost) throw errorPost
         }
 
-        res.status(201).json({})
+        return res.status(201).json({})
       } catch (error) {
         await sendLog({
           url: 'api/create_chapters',
           type: 'error',
           error: error,
         })
-        res.status(404).json(error)
-        return
+        return res.status(404).json(error)
       }
       break
     default:

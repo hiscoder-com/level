@@ -1,11 +1,11 @@
-import { supabase } from 'utils/supabaseClient'
+import { supabaseClient } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default async function handler(req, res) {
-  if (!req.headers.token) {
+  if (!req?.headers?.token) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = supabaseClient(req.headers.token)
   const { method } = req
   switch (method) {
     case 'GET':
@@ -14,7 +14,6 @@ export default async function handler(req, res) {
           .from('users')
           .select('id, login, email, blocked, agreement, confession, is_admin')
           .order('login', { ascending: true })
-
         if (errorGet) throw errorGet
         return res.status(200).json(users)
       } catch (error) {
@@ -25,7 +24,6 @@ export default async function handler(req, res) {
         case 'all':
           // validation disabled
           break
-
         case 'admin':
           try {
             const { data: users, error: errorUser } = await supabaseService

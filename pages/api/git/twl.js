@@ -92,7 +92,7 @@ export default async function twlHandler(req, res) {
             return _chapter === chapter
           })
 
-    res.status(200).json(data)
+    return res.status(200).json(data)
     return
   } catch (error) {
     res.status(404).json({ error })
