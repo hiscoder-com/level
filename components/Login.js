@@ -60,7 +60,7 @@ function Login() {
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const { error } = await supabase.auth.signIn({
+      const { error } = await supabase.auth.signInWithPassword({
         email: login,
         password,
       })
