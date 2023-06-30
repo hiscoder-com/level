@@ -7,7 +7,6 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
   const supabase = supabaseClient(req.headers.token)
 
   let data = {}
-  let project_id = null
 
   const {
     body,
@@ -30,6 +29,7 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
       return res.status(200).json(data)
     case 'POST':
       const { user_id } = body
+      let project_id = null
       try {
         const { data: project, error } = await supabase
           .from('projects')
@@ -48,17 +48,6 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
       }
 
       try {
-        // const { data: project, error: post_error } = await supabase
-        //   .from('projects')
-        //   .select('id, code')
-        //   .eq('code', code)
-        //   .limit(1)
-        //   .maybeSingle()
-        // if (post_error) throw post_error
-        // if (!project?.id) {
-        //   return
-        // }
-        //TODO почему второй раз берется project
         const { data: value, error } = await supabase
           .from('project_coordinators')
           .insert([{ project_id, user_id }])

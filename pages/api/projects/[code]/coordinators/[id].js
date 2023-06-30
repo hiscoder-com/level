@@ -30,18 +30,7 @@ export default async function languageProjectModeratorHandler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-      // if (!project_id) {
-      // }
-      // const { data: project, error } = await supabase
-      //   .from('projects')
-      //   .select('id, code')
-      //   .eq('code', code)
-      //   .limit(1)
-      //   .maybeSingle()
-      // if (error) throw error
-      // if (!project?.id) {
-      //   return
-      // } TODO - что это?
+
       try {
         const { data, error } = await supabase
           .from('project_coordinators')
