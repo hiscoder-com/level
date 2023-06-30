@@ -75,9 +75,9 @@ export default async function handler(req, res) {
         })
         return res.status(404).json(error)
       }
-      break
+
     default:
       res.setHeader('Allow', ['POST'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
