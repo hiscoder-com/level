@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@headlessui/react": "^1.7.15",
-    "@supabase/supabase-js": "^1.35.6",
+    "@supabase/supabase-js": "^2.26.0",
     "@texttree/notepad-rcl": "^0.5.1",
     "@texttree/tn-quote": "^0.5.0",
     "@texttree/translation-words-helpers": "^0.2.4",
