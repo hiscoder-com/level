@@ -112,7 +112,7 @@ function Download({
           : ''
         let main = ''
         for (const el of chapters) {
-          const chapter = await compileChapter(
+          const chapter = compileChapter(
             { json: el.text, chapterNum: el.num, book },
             'html'
           )
@@ -214,7 +214,7 @@ function Download({
     switch (downloadType) {
       case 'txt':
         downloadFile({
-          text: await compileChapter(
+          text: compileChapter(
             {
               json: chapter?.text,
               title: `${project?.title}\n${book?.properties.scripture.toc1}\n${book?.properties.scripture.chapter_label} ${chapterNum}`,
@@ -247,7 +247,7 @@ function Download({
               }`,
             })
           : await downloadPdf({
-              htmlContent: await compileChapter(
+              htmlContent: compileChapter(
                 {
                   json: chapter?.text,
                   chapterNum,
