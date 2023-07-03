@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 
 import { saveAs } from 'file-saver'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import Showdown from 'showdown'
 
@@ -43,6 +43,8 @@ function Download({
   isBook = false,
   breadcrumbs = false,
 }) {
+  const supabase = useSupabaseClient()
+
   const { t } = useTranslation()
   const {
     query: { code },

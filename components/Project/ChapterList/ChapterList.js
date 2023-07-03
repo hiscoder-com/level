@@ -17,7 +17,7 @@ import {
   useGetCreatedChapters,
   useProject,
 } from 'utils/hooks'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
@@ -26,6 +26,7 @@ import Plus from '/public/plus.svg'
 
 function ChapterList() {
   const { user } = useCurrentUser()
+  const supabase = useSupabaseClient()
 
   const {
     locale,
