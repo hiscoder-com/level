@@ -45,8 +45,7 @@ export default function IntroPage() {
             }
           })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter, project, step])
+  }, [book, chapter, project, replace, step, supabase])
   return (
     <div className="layout-appbar">
       <Head>

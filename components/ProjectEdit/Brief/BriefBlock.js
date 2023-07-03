@@ -66,8 +66,7 @@ function BriefBlock({ access }) {
     return () => {
       supabase.removeChannel(briefUpdates)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [supabase])
 
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {

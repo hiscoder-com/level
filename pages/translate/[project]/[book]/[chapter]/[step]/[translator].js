@@ -42,7 +42,7 @@ function TranslatorPage({ last_step }) {
           setVersesRange(res.data.filter((el) => el.translator === translator))
         })
     }
-  }, [book, chapter, project, translator, user?.login])
+  }, [book, chapter, project, supabase, translator, user?.login])
 
   useEffect(() => {
     supabase
@@ -89,8 +89,7 @@ function TranslatorPage({ last_step }) {
             setStepConfig(stepConfig)
           })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter, project, step])
+  }, [book, chapter, last_step, project, replace, setStepConfigData, step, supabase])
 
   return (
     <div>

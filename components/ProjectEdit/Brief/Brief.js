@@ -66,7 +66,7 @@ function Brief({ access }) {
     return () => {
       supabase.removeChannel(briefUpdates)
     }
-  }, [])
+  }, [supabase])
 
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {

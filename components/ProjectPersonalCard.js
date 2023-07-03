@@ -34,8 +34,7 @@ function ProjectPersonalCard({ project, token, user }) {
     supabase
       .rpc('get_current_steps', { project_id: project.id })
       .then((res) => setCurrentSteps(res.data))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [project?.id])
+  }, [project?.id, supabase])
 
   const chapters = useMemo(() => {
     const _chapters = {}

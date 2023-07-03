@@ -51,8 +51,7 @@ function CommandEditor({ config }) {
     if (currentProject?.id && user?.id) {
       getLevel(user.id, currentProject.id)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentProject?.id, user?.id])
+  }, [currentProject?.id, supabase, user?.id])
 
   useEffect(() => {
     supabase
@@ -71,8 +70,7 @@ function CommandEditor({ config }) {
         }))
         setVerseObjects(result)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter_num, config?.reference?.verses, project])
+  }, [book, chapter_num, config?.reference?.verses, project, supabase])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {
@@ -110,8 +108,7 @@ function CommandEditor({ config }) {
         supabase.removeChannel(mySubscription)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapter?.id])
+  }, [chapter?.id, supabase])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {

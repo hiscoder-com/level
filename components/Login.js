@@ -39,7 +39,6 @@ function Login() {
     if (passwordRef?.current) {
       passwordRef.current.focus()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showPassword])
 
   useEffect(() => {
@@ -54,8 +53,7 @@ function Login() {
       setError(false)
       router.push(agreement && confession ? `/account` : '/agreements')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [router, user])
 
   const handleLogin = async (e) => {
     e.preventDefault()

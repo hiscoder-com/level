@@ -49,8 +49,14 @@ function Reader({ config }) {
           .filter((el) => config?.wholeChapter || verses.includes(el.verse_id.toString()))
         setVerseObjects(result)
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter_num, config?.reference?.verses, config?.wholeChapter, project])
+  }, [
+    book,
+    chapter_num,
+    config?.reference?.verses,
+    config?.wholeChapter,
+    project,
+    supabase,
+  ])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {
@@ -88,8 +94,7 @@ function Reader({ config }) {
         supabase.removeChannel(mySubscription)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [chapter?.id])
+  }, [chapter?.id, supabase])
 
   return (
     <div>
