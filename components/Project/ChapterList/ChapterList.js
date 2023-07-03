@@ -74,7 +74,7 @@ function ChapterList() {
         .rpc('get_current_steps', { project_id: project.id })
         .then((res) => setCurrentSteps(res.data))
     }
-  }, [project?.id])
+  }, [project.id, supabase])
 
   const getCurrentStep = (chapter) => {
     const step = currentSteps
