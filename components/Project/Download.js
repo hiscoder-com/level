@@ -260,8 +260,7 @@ function Download({
                 'pdf'
               ),
               obs: project?.type === 'obs',
-              json: chapter?.text,
-              chapterNum: chapter?.num,
+              chapter: { json: chapter?.text, chapterNum: chapter?.num },
               projectTitle: project.title,
               title: book?.properties?.obs?.title,
               downloadSettings,

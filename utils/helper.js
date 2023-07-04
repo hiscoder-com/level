@@ -49,7 +49,6 @@ export const readableDate = (date, locale = 'ru') => {
   }).format(new Date(date))
 }
 
-// change the structure of the JSON object for the correct operation of the "obs-format-convert-rcl" library
 export const createObjectToTransform = (ref) => {
   if (ref.json === null) {
     return
@@ -125,11 +124,10 @@ export const getBookJson = async (book_id) => {
 }
 
 export const downloadPdf = async ({
-  json,
   book,
   title,
+  chapter,
   fileName,
-  chapterNum,
   htmlContent,
   projectTitle,
   projectLanguage,
@@ -217,7 +215,7 @@ export const downloadPdf = async ({
         }
       }
     } else {
-      const objectToTransform = createObjectToTransform({ json, chapterNum })
+      const objectToTransform = createObjectToTransform(chapter)
       pdfOptions.data = [objectToTransform]
     }
     try {
