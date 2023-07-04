@@ -4,8 +4,6 @@ import jsyaml from 'js-yaml'
 
 import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
-import { supabase } from 'utils/supabaseClient'
-
 import { obsStoryVerses } from './config'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
@@ -114,19 +112,11 @@ export const downloadFile = ({ text, title, type = 'text/plain' }) => {
   element.click()
 }
 
-export const getBookJson = async (book_id) => {
-  const { data } = await supabase
-    .from('chapters')
-    .select('num,text')
-    .eq('book_id', book_id)
-    .order('num')
-  return data
-}
-
 export const downloadPdf = async ({
   book,
   title,
   chapter,
+  chapters,
   fileName,
   htmlContent,
   projectTitle,
@@ -189,8 +179,6 @@ export const downloadPdf = async ({
     }
 
     if (book) {
-      const chapters = await getBookJson(book?.id)
-
       pdfOptions.data = chapters
         .filter((chapter) => chapter.text !== null)
         .map((chapter) =>
@@ -227,7 +215,6 @@ export const downloadPdf = async ({
     if (!htmlContent) {
       return
     }
-
     let new_window = window.open()
     new_window?.document.write(`<html lang="${projectLanguage?.code}">
     <head>

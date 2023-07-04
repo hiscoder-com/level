@@ -3,6 +3,8 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
+import { supabase } from 'utils/supabaseClient'
+
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
 import Breadcrumbs from 'components/Breadcrumbs'
@@ -15,7 +17,6 @@ import {
   convertToUsfm,
   downloadFile,
   downloadPdf,
-  getBookJson,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
 
@@ -127,6 +128,15 @@ function Download({
     }
   }
 
+  const getBookJson = async (book_id) => {
+    const { data } = await supabase
+      .from('chapters')
+      .select('num,text')
+      .eq('book_id', book_id)
+      .order('num')
+    return data
+  }
+
   const downloadZip = async (downloadingBook) => {
     const obs = await getBookJson(downloadingBook.id)
     const fileData = { name: 'content', isFolder: true, content: [] }
@@ -227,10 +237,16 @@ function Download({
         })
         break
       case 'pdf':
-        isBook
-          ? await downloadPdf({
-              htmlContent: await compileBook(book, downloadSettings.withFront, 'pdf'),
+        if (isBook) {
+          const chapters = await getBookJson(book?.id)
+          await downloadPdf({
+            htmlContent: await compileBook(
+              { ...book, chapters },
+              downloadSettings.withFront,
+              'pdf'
+            ),
               book,
+            chapters,
               downloadSettings,
               projectTitle: project.title,
               obs: project?.type === 'obs',
@@ -245,7 +261,8 @@ function Download({
                   : book?.properties?.obs?.title ?? t('OpenBibleStories')
               }`,
             })
-          : await downloadPdf({
+        } else {
+          await downloadPdf({
               htmlContent: compileChapter(
                 {
                   json: chapter?.text,
@@ -273,6 +290,8 @@ function Download({
                   : book?.properties?.obs?.title ?? t('OpenBibleStories')
               }`,
             })
+        }
+
         break
       case 'markdown':
         downloadFile({
