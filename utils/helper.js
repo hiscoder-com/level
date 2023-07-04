@@ -52,25 +52,38 @@ export const createObjectToTransform = (ref) => {
     return
   }
 
+  const { chapterNum, json } = ref
   const objectToTransform = {
     verseObjects: [],
-    title: `${ref.chapterNum}. ${ref.json[0] || ''}`,
-    reference: ref.json[200] || '',
+    title: `${chapterNum}.`,
+    reference: '',
   }
 
-  for (const [key, value] of Object.entries(ref.json)) {
-    if (key !== '0' && key !== '200') {
+  if (json[0] && json[200]) {
+    objectToTransform.title = `${chapterNum}. ${json[0]}`
+    objectToTransform.reference = json[200]
+
+    for (const [key, value] of Object.entries(json)) {
+      if (key !== '0' && key !== '200') {
+        const verseObject = {
+          path: `obs-en-${String(chapterNum).padStart(2, '0')}-${String(key).padStart(
+            2,
+            '0'
+          )}.jpg`,
+          text: value,
+        }
+        objectToTransform.verseObjects.push(verseObject)
+      }
+    }
+  } else {
+    for (const [key, value] of Object.entries(json)) {
       const verseObject = {
-        path: `obs-en-${String(ref.chapterNum).padStart(2, '0')}-${String(key).padStart(
-          2,
-          '0'
-        )}.jpg`,
         text: value,
+        verse: key,
       }
       objectToTransform.verseObjects.push(verseObject)
     }
   }
-
   return objectToTransform
 }
 
@@ -124,46 +137,44 @@ export const downloadPdf = async ({
   downloadSettings,
   obs = false,
 }) => {
+  const styles = {
+    projectTitle: {
+      fontSize: 24,
+      bold: true,
+      alignment: 'center',
+    },
+    title: {
+      fontSize: 24,
+      bold: true,
+      alignment: 'center',
+      margin: [0, 250, 0, 0],
+    },
+    text: {
+      alignment: 'justify',
+    },
+  }
   if (obs) {
-    const styles = {
-      projectTitle: {
-        fontSize: 24,
-        bold: true,
-        alignment: 'center',
-      },
-      title: {
-        fontSize: 24,
-        bold: true,
-        alignment: 'center',
-        margin: [0, 250, 0, 0],
-      },
+    if (!fileName.endsWith('.pdf')) {
+      fileName += '.pdf'
+    }
+
+    const stylesForObs = {
+      ...styles,
       intro: { fontSize: 14 },
       image: {
         alignment: 'center',
         margin: [0, 10],
       },
-      verseNumber: {
-        sup: true,
-        bold: true,
-        opacity: 0.8,
-      },
-      text: {
-        alignment: 'justify',
-      },
-      back: { fontSize: 14, alignment: 'center' },
       reference: {
         margin: [0, 10, 0, 0],
         italics: true,
       },
-    }
-
-    if (!fileName.endsWith('.pdf')) {
-      fileName += '.pdf'
+      back: { fontSize: 14, alignment: 'center' },
     }
 
     let pdfOptions = {
       data: [],
-      styles,
+      styles: stylesForObs,
       fileName,
     }
 
@@ -215,22 +226,37 @@ export const downloadPdf = async ({
     if (!htmlContent) {
       return
     }
-    let new_window = window.open()
-    new_window?.document.write(`<html lang="${projectLanguage?.code}">
-    <head>
-        <meta charset="UTF-8"/>
-        <title>${fileName}</title>
-        <style type="text/css">
-          .break {
-              page-break-after: always;
-          }
-      </style>
-    </head>
-    <body onLoad="window.print()">
-        ${htmlContent}
-        </body>
-        </html>`)
-    new_window?.document.close()
+
+    const data = [createObjectToTransform(chapter)]
+    const stylesForBible = {
+      ...styles,
+      verseNumber: {
+        sup: true,
+        bold: true,
+        opacity: 0.8,
+      },
+    }
+
+    const bookPropertiesObs = {
+      projectTitle,
+      title: fileName,
+      projectLanguage,
+    }
+    // console.log('bookPropertiesObs', bookPropertiesObs)
+    const options = {
+      data,
+      styles: stylesForBible,
+      bookPropertiesObs,
+      fileName,
+      showVerseNumber: true,
+      combineVerses: true,
+    }
+
+    try {
+      await JsonToPdf(options)
+    } catch (error) {
+      console.error('Error generating PDF:', error)
+    }
   }
 }
 
