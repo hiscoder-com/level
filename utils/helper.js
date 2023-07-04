@@ -132,7 +132,6 @@ export const downloadPdf = async ({
   projectTitle,
   projectLanguage,
   downloadSettings,
-  createBookPdf = false,
   obs = false,
 }) => {
   if (obs) {
@@ -189,7 +188,7 @@ export const downloadPdf = async ({
       pdfOptions.showImages = false
     }
 
-    if (createBookPdf) {
+    if (book) {
       const chapters = await getBookJson(book?.id)
 
       pdfOptions.data = chapters

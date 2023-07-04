@@ -86,7 +86,7 @@ function Download({
       chapters?.find((chapter) => chapter.num.toString() === chapterNum.toString()),
     [chapters, chapterNum]
   )
-  const compileBook = async (book, downloadSettings, type = 'txt') => {
+  const compileBook = async (book, withFront, type = 'txt') => {
     const chapters = await getBookJson(book?.id)
     if (chapters?.length === 0) {
       return
@@ -107,7 +107,7 @@ function Download({
           },
         })
       case 'pdf':
-        const frontPdf = downloadSettings?.withFront
+        const frontPdf = withFront
           ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
           : ''
         let main = ''
@@ -229,10 +229,9 @@ function Download({
       case 'pdf':
         isBook
           ? await downloadPdf({
-              htmlContent: await compileBook(book, 'pdf', downloadSettings),
+              htmlContent: await compileBook(book, downloadSettings.withFront, 'pdf'),
               book,
               downloadSettings,
-              createBookPdf: true,
               projectTitle: project.title,
               obs: project?.type === 'obs',
               title: book?.properties?.obs?.title,
@@ -292,7 +291,7 @@ function Download({
         break
       case 'usfm':
         downloadFile({
-          text: await compileBook(book, 'txt', downloadSettings),
+          text: await compileBook(book, downloadSettings, 'txt'),
           title: usfmFileNames[book?.code],
         })
         break
