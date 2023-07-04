@@ -79,7 +79,7 @@ export default async function languagesHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
   let data = {}
   const {
-    body: { eng, code, orig_name, is_gl },
+    body: { eng, code, origName: orig_name, isGl: is_gl },
     method,
   } = req
   switch (method) {
