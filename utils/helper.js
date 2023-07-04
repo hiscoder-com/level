@@ -77,13 +77,12 @@ export const createObjectToTransform = (ref) => {
   return objectToTransform
 }
 
-export const compileChapter = (ref, downloadSettings, type = 'txt') => {
+export const compileChapter = (ref, withFront, type = 'txt') => {
   if (!ref?.json) {
     return
   }
-
   let front = ''
-  if (downloadSettings?.withFront) {
+  if (withFront) {
     front = `<div class="break" style="text-align: center"><h1>${ref?.project?.title}</h1><h1>${ref?.book?.properties?.scripture?.toc1}</h1></div>`
   }
 
@@ -221,7 +220,6 @@ export const downloadPdf = async ({
       const objectToTransform = createObjectToTransform({ json, chapterNum })
       pdfOptions.data = [objectToTransform]
     }
-
     try {
       await JsonToPdf(pdfOptions)
       console.log('PDF creation completed')
