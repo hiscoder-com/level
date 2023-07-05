@@ -13,9 +13,10 @@ import Breadcrumbs from '../Breadcrumbs'
 
 import { useAccess, useGetSteps, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import BaseInformation from 'components/ProjectCreate/BaseInformation'
 import Steps from 'components/ProjectCreate/Steps'
 import { supabase } from 'utils/supabaseClient'
+import axios from 'axios'
+import { toast } from 'react-hot-toast'
 
 function ProjectEdit() {
   const {
@@ -36,7 +37,6 @@ function ProjectEdit() {
     user_id: user?.id,
     code: project?.code,
   })
-
   const tabs = useMemo(
     () =>
       [
@@ -62,6 +62,28 @@ function ProjectEdit() {
     [isAdminAccess, isModeratorAccess]
   )
   const idTabs = tabs.map((tab) => tab.id)
+  const updateDB = async ({ steps }) => {
+    const _steps = steps.map((el) => {
+      const { id, description, intro, title } = el
+      return { id, description, intro, title }
+    })
+    // console.log(_steps)
+    // return
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .put(`/api/projects/${code}/steps`, {
+        _steps,
+        project_id: project.id,
+      })
+      .then()
+      .catch((error) => {
+        toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+          duration: 8000,
+        })
+        console.log(error)
+      })
+  }
+
   const updateStep = ({ ref, index }) => {
     const _steps = customSteps.map((obj, idx) => {
       if (index === idx) {
@@ -70,14 +92,13 @@ function ProjectEdit() {
 
       return obj
     })
-    const updateDB = async () => {}
     // localStorage.setItem('methods', JSON.stringify(_methods))
     setCustomSteps(_steps)
   }
 
   useEffect(() => {
     if (steps) {
-      console.log(steps)
+      // console.log(steps)
       setCustomSteps(steps)
     }
     // const getSteps = async () => {
@@ -91,7 +112,8 @@ function ProjectEdit() {
     //   getSteps()
     // }
   }, [steps])
-
+  console.log({ customSteps })
+  console.log(steps)
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
       <Breadcrumbs
@@ -109,7 +131,9 @@ function ProjectEdit() {
               {tabs.map((tab) => (
                 <Tab
                   key={tab.label}
-                  className={({ selected }) => (selected ? 'tab-active' : 'tab')}
+                  className={({ selected }) =>
+                    selected ? 'tab-active truncate' : 'tab truncate'
+                  }
                   onClick={() =>
                     replace(
                       {
@@ -127,15 +151,10 @@ function ProjectEdit() {
 
             <Tab.Panels>
               <Tab.Panel>
-                {/* <BaseInformation
-                  access={isCoordinatorAccess}
-                  t={t}
-                  errors={errors}
-                  register={register}
-                  setValue={setValue}
-                  user={user}
-                  methods={methods}
-                /> */}
+                <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
+                  <p className="text-xl font-bold mb-5">Основная информация</p>
+                  <GeneralInformation project={project} />
+                </div>
               </Tab.Panel>
               <Tab.Panel>
                 <Brief access={isCoordinatorAccess} />
@@ -154,6 +173,12 @@ function ProjectEdit() {
                 <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
                   <p className="text-xl font-bold mb-5">Шаги</p>
                   <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
+                  <button
+                    className="w-fit btn-secondary btn-filled"
+                    onClick={() => updateDB({ steps: customSteps })}
+                  >
+                    Save
+                  </button>
                 </div>
               </Tab.Panel>
             </Tab.Panels>
@@ -174,3 +199,28 @@ function ProjectEdit() {
 }
 
 export default ProjectEdit
+
+function GeneralInformation({ project }) {
+  console.log(project)
+  // const inputs = [
+  //   { title: 'Название проекта', value: nameProject },
+  //   { title: 'Название на целевом языке', value: targetNameProject },
+  //   { title: 'Код проекта', value: codeProject },
+  //   { title: 'Язык проекта', value: languageProject },
+  // ]
+  return (
+    <>
+      {project &&
+        Object.keys(project)
+          .filter((key) => ['title', 'orig_title', 'code', 'languages'].includes(key))
+          .map((key) => (
+            <div className="flex gap-2 items-center" key={key}>
+              <div className="w-1/4 font-bold">{key}</div>
+              <div className="flex flex-col gap-2 w-3/4">
+                <input className="input-primary" value={project[key]} />
+              </div>
+            </div>
+          ))}
+    </>
+  )
+}

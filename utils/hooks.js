@@ -539,8 +539,8 @@ export function useGetSteps({ token, code }) {
     error,
     isLoading,
   } = useSWR(token && code ? [`/api/projects/${code}/steps`, token] : null, fetcher, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
+    revalidateOnFocus: true,
+    revalidateIfStale: true,
   })
   return [steps, { mutate, error, isLoading }]
 }

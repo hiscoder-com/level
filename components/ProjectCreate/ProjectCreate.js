@@ -12,16 +12,18 @@ import { Disclosure, Switch } from '@headlessui/react'
 import CommitsList from '../CommitsList'
 import Down from 'public/arrow-down.svg'
 
-import { useLanguages, useMethod, useProjects } from 'utils/hooks'
+import { useLanguages, useMethod } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 import Steps from './Steps'
 import BaseInformation from './BaseInformation'
+import LanguageCreate from './LanguageCreate'
 function ProjectCreate() {
+  const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
   const [customResources, setCustomResources] = useState('')
   const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [customBriefs, setCustomBriefs] = useState([])
-  const [resourcesUrl, setResourcesUrl] = useState()
+  const [resourcesUrl, setResourcesUrl] = useState({})
   const [customSteps, setCustomSteps] = useState([])
   const [method, setMethod] = useState()
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -32,7 +34,7 @@ function ProjectCreate() {
   const [methods, setMethods] = useState(() => {
     return checkLSVal('methods', _methods, 'object')
   })
-
+  const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
   const {
     register,
     handleSubmit,
@@ -41,7 +43,6 @@ function ProjectCreate() {
     formState: { errors },
   } = useForm({ mode: 'onChange' })
   const methodId = useWatch({ control, name: 'methodId' })
-
   useEffect(() => {
     if (methods && methodId) {
       const selectedMethod = methods.find(
@@ -72,37 +73,43 @@ function ProjectCreate() {
       localStorage.setItem('methods', JSON.stringify(methods))
     }
   }, [methods])
+  const resetMethods = () => {
+    console.log(_methods)
+    localStorage.setItem('methods', JSON.stringify(_methods))
+    setMethods(_methods)
+  }
 
   const onSubmit = async (data) => {
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
       return
     }
-
-    return
-    axios.defaults.headers.common['token'] = user?.access_token
-    axios
-      .post('/api/projects', {
-        isBriefEnable,
-        customBriefs,
-        title,
-        language_id: languageId,
-        code,
-        method_id: method.id,
-        steps: method.steps,
-        resources: resourcesUrl,
-      })
-      .then((result) => {
-        const {
-          status,
-          headers: { location },
-        } = result
-        if (status === 201) {
-          router.push(location)
-        }
-      })
-      .catch(console.log)
-      .finally(mutateProjects)
+    console.log({ resourcesUrl })
+    // return
+    // axios.defaults.headers.common['token'] = user?.access_token
+    // axios
+    //   .post('/api/projects', {
+    //     isBriefEnable,
+    //     customBriefs,
+    //     title,
+    //     language_id: languageId,
+    //     code,
+    //     method_id: method.id,
+    //     steps: method.steps,
+    //     resources: resourcesUrl,
+    //   })
+    //   .then((result) => {
+    resetMethods()
+    //   const {
+    //     status,
+    //     headers: { location },
+    //   } = result
+    //   if (status === 201) {
+    //     router.push(location)
+    //   }
+    // })
+    // .catch(console.log)
+    // .finally(mutateProjects)
   }
 
   const updateStep = ({ ref, index }) => {
@@ -123,67 +130,75 @@ function ProjectCreate() {
     setCustomSteps(_steps)
   }
   return (
-    <div className="py-0 sm:py-10">
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
-          <p className="text-xl font-bold mb-5">Основная информация</p>
-          <BaseInformation
-            t={t}
-            errors={errors}
-            register={register}
-            setValue={setValue}
-            user={user}
-            methods={methods}
-          />
-        </div>
-        <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
-          <p className="text-xl font-bold mb-5">Шаги</p>
-          <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
-        </div>
-        <div className="card flex flex-col gap-2 border-b border-slate-900 py-7">
-          <p className="text-xl font-bold mb-5">Бриф</p>
-          <div>{t('Brief')}</div>
-          <div>
-            <span className="mr-3">
-              {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
-            </span>
-            <Switch
-              checked={isBriefEnable}
-              onChange={() => setIsBriefEnable((prev) => !prev)}
-              className={`${
-                isBriefEnable ? 'bg-cyan-600' : 'bg-gray-300'
-              } relative inline-flex h-6 w-11 items-center rounded-full`}
-            >
-              <span
-                className={`${
-                  isBriefEnable ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-              />
-            </Switch>
+    <>
+      <div className="py-0 sm:py-10">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
+            <p className="text-xl font-bold mb-5">Основная информация</p>
+            <BaseInformation
+              t={t}
+              errors={errors}
+              register={register}
+              setValue={setValue}
+              user={user}
+              methods={methods}
+              setIsOpenLanguageCreate={setIsOpenLanguageCreate}
+              languages={languages}
+            />
           </div>
-          {customBriefs?.map((el) => (
-            <Disclosure key={el.title}>
-              <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
-                <span>{el.title}</span>
-                <Down className="w-5 h-5" />
-              </Disclosure.Button>
-              <Disclosure.Panel className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <div>title</div> <input className="input-primary" value={el.title} />
-                </div>
-                <div>questions</div>
-                {el.block.map((item) => (
-                  <input
-                    key={item.question}
-                    className="input-primary"
-                    value={item.question}
-                  />
-                ))}
-              </Disclosure.Panel>
-            </Disclosure>
-          ))}
-        </div>
-        {/* <pre className="whitespace-pre-wrap break-words">
+          <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
+            <p className="text-xl font-bold mb-5">Шаги</p>
+            <Steps
+              customSteps={customSteps}
+              updateStep={updateStep}
+              t={t}
+              method={method}
+            />
+          </div>
+          <div className="card flex flex-col gap-2 border-b border-slate-900 py-7">
+            <p className="text-xl font-bold mb-5">Бриф</p>
+            <div>{t('Brief')}</div>
+            <div>
+              <span className="mr-3">
+                {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
+              </span>
+              <Switch
+                checked={isBriefEnable}
+                onChange={() => setIsBriefEnable((prev) => !prev)}
+                className={`${
+                  isBriefEnable ? 'bg-cyan-600' : 'bg-gray-300'
+                } relative inline-flex h-6 w-11 items-center rounded-full`}
+              >
+                <span
+                  className={`${
+                    isBriefEnable ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                />
+              </Switch>
+            </div>
+            {customBriefs?.map((el) => (
+              <Disclosure key={el.title}>
+                <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
+                  <span>{el.title}</span>
+                  <Down className="w-5 h-5" />
+                </Disclosure.Button>
+                <Disclosure.Panel className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div>title</div> <input className="input-primary" value={el.title} />
+                  </div>
+                  <div>questions</div>
+                  {el.block.map((item) => (
+                    <input
+                      key={item.question}
+                      className="input-primary"
+                      value={item.question}
+                    />
+                  ))}
+                </Disclosure.Panel>
+              </Disclosure>
+            ))}
+          </div>
+          {/* <pre className="whitespace-pre-wrap break-words">
             {`"title": Название шага, даем юзеру возможность перевода этого поля
 "description": Описание шага, возможность редактировать
 "time": время, сколько минут длится шаг
@@ -198,7 +213,7 @@ function ProjectCreate() {
       "config": а тут конфиг этого компонента`}
           </pre> */}
 
-        {/* <br />
+          {/* <br />
           <p>
             Нужно превратить в форму. Сейчас сюда приходит объект. Ключ - это
             идентификатор ресурса в шагах метода. Тут нет каких-то правил, можно называть
@@ -217,7 +232,7 @@ function ProjectCreate() {
             value={JSON.stringify(customResources, null, 2)}
             className="w-full"
           /> */}
-        {/* {method?.type !== 'obs' ? (
+          {/* {method?.type !== 'obs' ? (
             <pre className="whitespace-pre-wrap break-words">
               {`literal
 https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
@@ -244,23 +259,23 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 `}
             </pre>
           )} */}
-        <div className="card flex flex-col gap-7 border-b border-slate-900 pb-7 mb-7">
-          <p className="text-xl font-bold mb-5">Ссылки на материалы</p>
+          <div className="card flex flex-col gap-7 border-b border-slate-900 pb-7 mb-7">
+            <p className="text-xl font-bold mb-5">Ссылки на материалы</p>
 
-          <CommitsList
-            methodId={methodId}
-            resourcesUrl={resourcesUrl}
-            setResourcesUrl={setResourcesUrl}
-          />
-          <div>
-            <input
-              className="btn-secondary btn-filled"
-              type="submit"
-              value={t('CreateProject')}
+            <CommitsList
+              methodId={methodId}
+              resourcesUrl={resourcesUrl}
+              setResourcesUrl={setResourcesUrl}
             />
+            <div>
+              <input
+                className="btn-secondary btn-filled"
+                type="submit"
+                value={t('CreateProject')}
+              />
+            </div>
           </div>
-        </div>
-        {/* <br />
+          {/* <br />
           <p>
             После того как нажимают на кнопку сохранить, мы делаем следующее: <br />
             1. Получаем манифесты всех ресурсов чтобы записать в таблицу проектов, в
@@ -297,9 +312,17 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             для первой версии мы можем создать проект в ручную, и отложить разработку на
             время после запуска
           </p> */}
-        <div className="card"></div>
-      </form>
-    </div>
+        </form>
+      </div>
+      <LanguageCreate
+        user={user}
+        t={t}
+        isOpen={isOpenLanguageCreate}
+        closeHandle={() => setIsOpenLanguageCreate(false)}
+        mutateLanguage={mutateLanguage}
+        languages={languages}
+      />
+    </>
   )
 }
 

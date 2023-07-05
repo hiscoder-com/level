@@ -4,17 +4,24 @@ import { Disclosure } from '@headlessui/react'
 
 import Down from 'public/arrow-down.svg'
 
-function Steps({ customSteps = [], updateStep, t }) {
+function Steps({ customSteps = [], updateStep, t, method }) {
   const refs = useRef([])
   const [defaultOpen, setDefaultOpen] = useState(false)
 
   const handleClose = (index) => {
     refs.current.map((closeFunction, refIndex) => {
+      console.log(refIndex, index)
       if (refIndex !== index) {
-        closeFunction()
+        closeFunction(refIndex)
       }
     })
   }
+  useEffect(() => {
+    setDefaultOpen(false)
+    // handleClose()
+  }, [method])
+
+  console.log(defaultOpen)
   return (
     <>
       {customSteps?.map((el, index) => (
@@ -60,34 +67,46 @@ function Steps({ customSteps = [], updateStep, t }) {
                   </div>
                   <div className="flex items-center gap-2 w-full">
                     <span className="w-1/6">Инструменты</span>
-                    {el.config[0].tools.map((item) => (
-                      <div
-                        key={item.name}
-                        className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto"
-                      >
-                        {t('common:' + item.name)}
-                      </div>
-                    ))}
-                    |
-                    {el.config[1].tools.map((item) => (
-                      <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
-                        {t('common:' + item.name)}
-                      </div>
-                    ))}
-                    |
-                    {el.config[2]?.tools?.map((item) => (
-                      <div key={item.name} className="bg-cyan-200 p-2 rounded-md">
-                        {t('common:' + item.name)}
-                      </div>
-                    ))}
+                    <div className="flex flex-wrap items-center gap-2">
+                      {el.config[0].tools.map((item) => (
+                        <div
+                          key={item.name}
+                          className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto"
+                        >
+                          {t('common:' + item.name)}
+                        </div>
+                      ))}
+                      |
+                      {el.config[1].tools.map((item) => (
+                        <div
+                          key={item.name}
+                          className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto"
+                        >
+                          {t('common:' + item.name)}
+                        </div>
+                      ))}
+                      |
+                      {el.config[2]?.tools?.map((item) => (
+                        <div
+                          key={item.name}
+                          className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto"
+                        >
+                          {t('common:' + item.name)}
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 w-full">
                     <span className="w-1/6">Количество переводчиков</span>
-                    <div>{el.count_of_users}</div>
+                    <div className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto">
+                      {el.count_of_users}
+                    </div>
                   </div>
                   <div className="flex items-center gap-2 w-full">
                     <span className="w-1/6">Время выполнения</span>
-                    <div>{el.time}</div>
+                    <div className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto">
+                      {el.time}
+                    </div>
                   </div>
                 </Disclosure.Panel>
               </>

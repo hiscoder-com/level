@@ -121,12 +121,17 @@ function LanguageCreate({ t, isOpen, closeHandle, user, mutateLanguage, language
               </div>
             </label>
           </div>
-
-          <div className="flex justify-center self-center gap-4 w-1/2 text-xl">
-            <button className="btn-secondary flex-1">{t('Save')}</button>
-            <button type="button" className="btn-secondary flex-1" onClick={closeHandle}>
-              {t('Close')}
-            </button>
+          <div className="flex justify-center">
+            <div className="flex gap-4 text-xl">
+              <button className="btn-secondary flex-1">{t('Save')}</button>
+              <button
+                type="button"
+                className="btn-secondary flex-1"
+                onClick={closeHandle}
+              >
+                {t('Close')}
+              </button>
+            </div>
           </div>
         </div>
       </form>
