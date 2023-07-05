@@ -1,10 +1,10 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function languageProjectTranslatorsHandler(req, res) {
   if (!req?.headers?.token) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
 
   const {
     body,
@@ -38,17 +38,18 @@ export default async function languageProjectTranslatorsHandler(req, res) {
         if (error) throw error
         if (project?.id) {
           project_id = project?.id
+        } else {
+          return res.status(404).json({ error: 'Missing id of project' })
         }
       } catch (error) {
         return res.status(404).json({ error })
       }
-      if (!project_id) {
-        return res.status(404).json({ error: 'Missing id of project' })
-      }
+
       try {
         const { data, error } = await supabase
           .from('project_translators')
           .insert([{ project_id, user_id }])
+          .select()
         if (error) throw error
         return res.status(200).json(data)
       } catch (error) {
@@ -56,6 +57,6 @@ export default async function languageProjectTranslatorsHandler(req, res) {
       }
     default:
       res.setHeader('Allow', ['GET', 'POST'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

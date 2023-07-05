@@ -1,11 +1,12 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 import { parseManifests } from 'utils/helper'
 
 export default async function languageProjectsHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+
+  const supabase = createPagesServerClient({ req, res })
 
   const {
     body: {
@@ -54,20 +55,23 @@ export default async function languageProjectsHandler(req, res) {
         })
 
         //TODO когда выбираешь obs, вводишь коммит, а потом выбираешь bible - то летит ключ obs тоже
-        const { data, error } = await supabase.from('projects').insert([
-          {
-            title,
-            code,
-            language_id,
-            type: current_method.type,
-            resources: newResources,
-            method: current_method.title,
-            base_manifest: {
-              resource: baseResource.name,
-              books: baseResource.books,
+        const { data, error } = await supabase
+          .from('projects')
+          .insert([
+            {
+              title,
+              code,
+              language_id,
+              type: current_method.type,
+              resources: newResources,
+              method: current_method.title,
+              base_manifest: {
+                resource: baseResource.name,
+                books: baseResource.books,
+              },
             },
-          },
-        ])
+          ])
+          .select()
 
         if (error) throw error
 
@@ -85,11 +89,10 @@ export default async function languageProjectsHandler(req, res) {
             .insert([{ ...step_el, sorting: sorting++, project_id: data[0].id }])
         }
         res.setHeader('Location', `/projects/${data[0].code}`)
-        res.status(201).json({})
+        return res.status(201).json({})
       } catch (error) {
         return res.status(404).json({ error })
       }
-      break
     case 'GET':
       try {
         const { data, error } = await supabase
@@ -103,6 +106,6 @@ export default async function languageProjectsHandler(req, res) {
       }
     default:
       res.setHeader('Allow', ['POST', 'GET'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

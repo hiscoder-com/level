@@ -7,11 +7,13 @@ import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
 
-import { supabase } from 'utils/supabaseClient'
 import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function ProjectPersonalCard({ project, token, user }) {
+  const supabase = useSupabaseClient()
+
   const { locale } = useRouter()
 
   const [currentSteps, setCurrentSteps] = useState(null)
@@ -32,7 +34,7 @@ function ProjectPersonalCard({ project, token, user }) {
     supabase
       .rpc('get_current_steps', { project_id: project.id })
       .then((res) => setCurrentSteps(res.data))
-  }, [project?.id])
+  }, [project?.id, supabase])
 
   const chapters = useMemo(() => {
     const _chapters = {}

@@ -1,13 +1,12 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function languageProjectCoordinatorsHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
 
   let data = {}
-  let project_id = null
 
   const {
     body,
@@ -25,13 +24,12 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json(data)
-      break
+      return res.status(200).json(data)
     case 'POST':
       const { user_id } = body
+      let project_id = null
       try {
         const { data: project, error } = await supabase
           .from('projects')
@@ -42,38 +40,27 @@ export default async function languageProjectCoordinatorsHandler(req, res) {
         if (error) throw error
         if (project?.id) {
           project_id = project?.id
+        } else {
+          return res.status(404).json({ error: 'Missing id of project' })
         }
       } catch (error) {
-        res.status(404).json({ error })
+        return res.status(404).json({ error })
       }
-      if (!project_id) {
-        res.status(404).json({ error: 'Missing id of project' })
-        return
-      }
+
       try {
-        const { data: project, error: post_error } = await supabase
-          .from('projects')
-          .select('id, code')
-          .eq('code', code)
-          .limit(1)
-          .maybeSingle()
-        if (post_error) throw post_error
-        if (!project?.id) {
-          return
-        }
         const { data: value, error } = await supabase
           .from('project_coordinators')
           .insert([{ project_id, user_id }])
+          .select()
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json(data)
-      break
+      return res.status(200).json(data)
+
     default:
       res.setHeader('Allow', ['GET', 'POST'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

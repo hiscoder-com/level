@@ -4,9 +4,11 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 export default function SignOut() {
+  const supabaseClient = useSupabaseClient()
+
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation('users')
   const router = useRouter()
@@ -14,7 +16,7 @@ export default function SignOut() {
   const handleLogout = async () => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signOut()
+      const { error } = await supabaseClient.auth.signOut()
       if (error) throw error
     } catch (error) {
       alert(error.error_description || error.message)

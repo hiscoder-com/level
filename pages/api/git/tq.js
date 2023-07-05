@@ -122,10 +122,8 @@ export default async function tqHandler(req, res) {
       }
     })
 
-    res.status(200).json(questions)
-    return
+    return res.status(200).json(questions)
   } catch (error) {
-    res.status(404).json({ error })
-    return
+    return res.status(404).json({ error })
   }
 }

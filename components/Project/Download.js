@@ -3,7 +3,13 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
+
 import { supabase } from 'utils/supabaseClient'
+
+import { saveAs } from 'file-saver'
+
+import useSupabaseClient from 'utils/supabaseClient'
+
 
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
@@ -39,6 +45,8 @@ function Download({
   isBook = false,
   breadcrumbs = false,
 }) {
+  const supabase = useSupabaseClient()
+
   const { t } = useTranslation()
   const {
     query: { code },

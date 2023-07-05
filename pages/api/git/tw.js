@@ -43,10 +43,8 @@ export default async function twHandler(req, res) {
     const zipBuffer = response.data
     res.setHeader('Content-Type', 'application/zip')
     res.setHeader('Content-Disposition', 'attachment; filename="archive.zip"')
-    res.status(200).send(zipBuffer)
-    return
+    return res.status(200).send(zipBuffer)
   } catch (error) {
-    res.status(404).json({ error })
-    return
+    return res.status(404).json({ error })
   }
 }

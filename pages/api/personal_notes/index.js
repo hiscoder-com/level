@@ -1,10 +1,10 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function notesHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
 
   const { body, method } = req
 
@@ -17,34 +17,33 @@ export default async function notesHandler(req, res) {
           .is('deleted_at', null)
           .order('changed_at', { ascending: false })
         if (error) throw error
-        res.status(200).json(data)
+        return res.status(200).json(data)
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      break
     case 'POST':
       try {
         const { id, user_id } = body
         // TODO валидацию
-        const { data, error } = await supabase.from('personal_notes').insert([
-          {
-            id,
-            user_id,
-            title: 'new note',
-            data: {
-              blocks: [],
-              version: '2.8.1',
+        const { data, error } = await supabase
+          .from('personal_notes')
+          .insert([
+            {
+              id,
+              user_id,
+              title: 'new note',
+              data: {
+                blocks: [],
+                version: '2.8.1',
+              },
             },
-          },
-        ])
+          ])
+          .select()
         if (error) throw error
-        res.status(200).json(data)
+        return res.status(200).json(data)
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      break
     case 'DELETE':
       const { user_id } = body
       try {
@@ -52,16 +51,16 @@ export default async function notesHandler(req, res) {
           .from('personal_notes')
           .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
           .match({ user_id })
+          .select()
 
         if (error) throw error
-        res.status(200).json(data)
+        return res.status(200).json(data)
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      break
+
     default:
       res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

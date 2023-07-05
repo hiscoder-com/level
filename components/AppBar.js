@@ -10,7 +10,7 @@ import SideBar from './SideBar'
 
 import Timer from 'components/Timer'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
@@ -19,6 +19,7 @@ import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
 export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
+  const supabase = useSupabaseClient()
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -29,7 +30,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
   useEffect(() => {
     const hasAccess = async () => {
@@ -44,7 +44,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
     if (user?.id) {
       hasAccess()
     }
-  }, [user])
+  }, [supabase, user])
 
   return (
     <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
