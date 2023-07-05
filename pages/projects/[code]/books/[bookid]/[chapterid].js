@@ -10,7 +10,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import {
   useGetBook,
   useGetChapter,
@@ -51,6 +51,7 @@ const defaultColor = {
 }
 
 function ChapterVersesPage() {
+  const supabase = useSupabaseClient()
   const {
     query: { code, bookid, chapterid },
   } = useRouter()

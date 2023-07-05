@@ -1,23 +1,25 @@
 import { supabaseService } from 'utils/supabaseServer'
 
 export default async function notesHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
 
   const { body, method } = req
   switch (method) {
     case 'POST':
       try {
-        const { data, error } = await supabaseService.from('logs').insert({
-          log: body,
-        })
+        const { data, error } = await supabaseService
+          .from('logs')
+          .insert({
+            log: body,
+          })
+          .select()
 
         if (error) throw error
-        res.status(200).json(data)
+        return res.status(200).json(data)
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
       break
     default:

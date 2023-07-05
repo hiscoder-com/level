@@ -1,5 +1,5 @@
 import { supabaseService } from 'utils/supabaseServer'
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 const validation = (properties) => {
   const error = null
@@ -40,8 +40,10 @@ const validation = (properties) => {
 }
 
 export default async function bookPropertiesHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  const supabase = createPagesServerClient({ req, res })
+
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
 
   const {
@@ -51,7 +53,7 @@ export default async function bookPropertiesHandler(req, res) {
   } = req
 
   if (!project_id || !user_id) {
-    res.status(401).json({ error: 'Access denied!' })
+    return res.status(401).json({ error: 'Access denied!' })
   }
   try {
     const level = await supabase.rpc('authorize', {
@@ -60,16 +62,15 @@ export default async function bookPropertiesHandler(req, res) {
     })
 
     if (!['admin', 'coordinator'].includes(level.data)) {
-      res.status(401).json({ error: 'Access denied!' })
+      return res.status(401).json({ error: 'Access denied!' })
     }
   } catch (error) {
-    res.status(404).json({ error })
+    return res.status(404).json({ error })
   }
 
   const { error: validationError } = validation(properties)
   if (validationError) {
-    res.status(404).json({ validationError })
-    return
+    return res.status(404).json({ validationError })
   }
   switch (method) {
     case 'PUT':
@@ -81,18 +82,16 @@ export default async function bookPropertiesHandler(req, res) {
               properties,
             },
           ])
+          .select()
           .match({ id, project_id })
         if (error) throw error
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json({ success: true })
-
-      break
+      return res.status(200).json({ success: true })
 
     default:
       res.setHeader('Allow', ['PUT'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

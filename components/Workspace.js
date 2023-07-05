@@ -66,7 +66,7 @@ function Workspace({ stepConfig, reference, editable = false }) {
         }
       }
     }
-  }, [reference.book, stepConfig])
+  }, [reference?.book, stepConfig])
   return (
     <div className="layout-step">
       {stepConfig.config.map((el, index) => {

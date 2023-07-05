@@ -12,10 +12,12 @@ import CoordinatorsList from './CoordinatorsList'
 import RemoveParticipant from './RemoveParticipant'
 import AssignParticipant from './AssignPartiсipant'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
 
 function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAccess } }) {
+  const supabase = useSupabaseClient()
+
   const { t } = useTranslation(['common', 'project-edit', 'projects'])
   const {
     query: { code },

@@ -1,11 +1,10 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function versesHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
-
+  const supabase = createPagesServerClient({ req, res })
   let data = {}
   const {
     query: { code, chapter_id },
@@ -20,17 +19,14 @@ export default async function versesHandler(req, res) {
             'id, projects!inner(code), num, text, current_step, project_translator_id'
           )
           .match({ 'projects.code': code, chapter_id })
-
         if (error) throw error
         data = verses
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json(data)
-      break
+      return res.status(200).json(data)
     default:
       res.setHeader('Allow', ['GET'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

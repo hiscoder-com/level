@@ -5,9 +5,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from 'components/Footer'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 export default function UserAgreement() {
+  const supabase = useSupabaseClient()
+
   const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common', 'users'])
   const handleClick = async () => {

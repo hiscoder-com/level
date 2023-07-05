@@ -5,20 +5,20 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from 'utils/supabaseClient'
-
 import SwitchLocalization from './SwitchLocalization'
 import SignOut from './SignOut'
 
 import { useRedirect } from 'utils/hooks'
 
 import { useCurrentUser } from 'lib/UserContext'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import Report from 'public/error-outline.svg'
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
 
 function Login() {
+  const supabase = useSupabaseClient()
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
   const [error, setError] = useState(false)
@@ -39,7 +39,6 @@ function Login() {
     if (passwordRef?.current) {
       passwordRef.current.focus()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showPassword])
 
   useEffect(() => {
@@ -54,13 +53,12 @@ function Login() {
       setError(false)
       router.push(agreement && confession ? `/account` : '/agreements')
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user])
+  }, [router, user])
 
   const handleLogin = async (e) => {
     e.preventDefault()
     try {
-      const { error } = await supabase.auth.signIn({
+      const { error } = await supabase.auth.signInWithPassword({
         email: login,
         password,
       })

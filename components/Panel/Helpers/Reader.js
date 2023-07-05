@@ -6,12 +6,14 @@ import { useTranslation } from 'next-i18next'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useGetChapter } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Reader({ config }) {
+  const supabase = useSupabaseClient()
+
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
@@ -47,7 +49,14 @@ function Reader({ config }) {
           .filter((el) => config?.wholeChapter || verses.includes(el.verse_id.toString()))
         setVerseObjects(result)
       })
-  }, [book, chapter_num, config?.reference?.verses, config?.wholeChapter, project])
+  }, [
+    book,
+    chapter_num,
+    config?.reference?.verses,
+    config?.wholeChapter,
+    project,
+    supabase,
+  ])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {
@@ -65,19 +74,27 @@ function Reader({ config }) {
     let mySubscription = null
     if (chapter?.id) {
       mySubscription = supabase
-        .from('verses:chapter_id=eq.' + chapter.id)
-        .on('UPDATE', (payload) => {
-          const { id, text } = payload.new
-          updateVerseObject(id, text)
-        })
+        .channel('public' + 'verses:chapter_id=eq.' + chapter.id)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'verses:chapter_id=eq.' + chapter.id,
+          },
+          (payload) => {
+            const { id, text } = payload.new
+            updateVerseObject(id, text)
+          }
+        )
         .subscribe()
     }
     return () => {
       if (mySubscription) {
-        supabase.removeSubscription(mySubscription)
+        supabase.removeChannel(mySubscription)
       }
     }
-  }, [chapter?.id])
+  }, [chapter?.id, supabase])
 
   return (
     <div>

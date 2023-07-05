@@ -5,14 +5,16 @@ import { RecoilRoot } from 'recoil'
 import Layout from 'components/Layout'
 
 import { UserContextProvider } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
 
 import 'styles/globals.css'
 
+import useSupabaseClient from 'utils/supabaseClient'
+
 function MyApp({ Component, pageProps }) {
+  const supabaseClient = useSupabaseClient()
   if (Component.layoutType == 'empty') {
     return (
-      <UserContextProvider supabaseClient={supabase}>
+      <UserContextProvider supabaseClient={supabaseClient}>
         <RecoilRoot>
           <Component {...pageProps} />
         </RecoilRoot>
@@ -21,7 +23,7 @@ function MyApp({ Component, pageProps }) {
   }
 
   return (
-    <UserContextProvider supabaseClient={supabase}>
+    <UserContextProvider supabaseClient={supabaseClient}>
       <RecoilRoot>
         <Layout backgroundColor={Component.backgroundColor ?? 'bg-blue-150'}>
           <Component {...pageProps} />
