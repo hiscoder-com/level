@@ -134,7 +134,7 @@ export const downloadPdf = async ({
   chapters,
   fileName,
   projectTitle,
-  projectLanguage,
+  projectLanguage, // пока не использую
   downloadSettings,
   obs = false,
 }) => {

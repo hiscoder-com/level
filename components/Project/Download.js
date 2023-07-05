@@ -87,33 +87,6 @@ function Download({
       chapters?.find((chapter) => chapter.num.toString() === chapterNum.toString()),
     [chapters, chapterNum]
   )
-  const compileBook = async (book, withFront, type = 'txt') => {
-    const chapters = await getBookJson(book?.id)
-
-    if (chapters?.length === 0) {
-      return
-    }
-
-    switch (type) {
-      case 'txt':
-        return convertToUsfm({
-          jsonChapters: chapters,
-          book,
-          project: {
-            code: project?.code,
-            title: project?.title,
-            language: {
-              code: project?.languages?.code,
-              orig_name: project?.languages?.orig_name,
-            },
-          },
-        })
-      case 'pdf':
-
-      default:
-        break
-    }
-  }
 
   const getBookJson = async (book_id) => {
     const { data } = await supabase
@@ -207,7 +180,9 @@ function Download({
   ]
 
   const handleSave = async () => {
+    const chapters = await getBookJson(book?.id)
     setIsSaving(true)
+
     switch (downloadType) {
       case 'txt':
         downloadFile({
@@ -224,43 +199,24 @@ function Download({
         })
         break
       case 'pdf':
-        if (isBook) {
-          const chapters = await getBookJson(book?.id)
-          await downloadPdf({
-            book,
-            chapters,
-            downloadSettings,
-            projectTitle: project.title,
-            obs: project?.type === 'obs',
-            title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
-            projectLanguage: {
-              code: project.languages.code,
-              title: project.languages.orig_name,
-            },
-            fileName: `${project.title}_${
-              project?.type !== 'obs'
-                ? book?.properties?.scripture?.toc1 ?? t('Book')
-                : book?.properties?.obs?.title ?? t('OpenBibleStories')
-            }`,
-          })
-        } else {
-          await downloadPdf({
-            obs: project?.type === 'obs',
-            chapter: { json: chapter?.text, chapterNum: chapter?.num },
-            projectTitle: project.title,
-            title: book?.properties?.obs?.title,
-            downloadSettings,
-            projectLanguage: {
-              code: project.languages.code,
-              title: project.languages.orig_name,
-            },
-            fileName: `${project.title}_${
-              project?.type !== 'obs'
-                ? book?.properties?.scripture?.toc1 ?? t('Book')
-                : book?.properties?.obs?.title ?? t('OpenBibleStories')
-            }`,
-          })
-        }
+        await downloadPdf({
+          ...(isBook ? { book } : {}),
+          ...(isBook ? { chapters } : {}),
+          downloadSettings,
+          projectTitle: project.title,
+          obs: project?.type === 'obs',
+          chapter: { json: chapter?.text, chapterNum: chapter?.num },
+          title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
+          projectLanguage: {
+            code: project.languages.code,
+            title: project.languages.orig_name,
+          },
+          fileName: `${project.title}_${
+            project?.type !== 'obs'
+              ? book?.properties?.scripture?.toc1 ?? t('Book')
+              : book?.properties?.obs?.title ?? t('OpenBibleStories')
+          }`,
+        })
 
         break
       case 'markdown':
@@ -280,7 +236,18 @@ function Download({
         break
       case 'usfm':
         downloadFile({
-          text: await compileBook(book, downloadSettings, 'txt'),
+          text: convertToUsfm({
+            jsonChapters: chapters,
+            book,
+            project: {
+              code: project?.code,
+              title: project?.title,
+              language: {
+                code: project?.languages?.code,
+                orig_name: project?.languages?.orig_name,
+              },
+            },
+          }),
           title: usfmFileNames[book?.code],
         })
         break
