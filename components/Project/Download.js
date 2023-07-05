@@ -109,21 +109,6 @@ function Download({
           },
         })
       case 'pdf':
-        const frontPdf = withFront
-          ? `<div class="break" style="text-align: center"><h1>${project?.title}</h1><h1>${book?.properties?.scripture?.toc1}</h1></div>`
-          : ''
-
-        let main = ''
-        for (const el of chapters) {
-          const chapter = compileChapter(
-            { json: el.text, chapterNum: el.num, book },
-            'html'
-          )
-          if (chapter) {
-            main += `<div>${chapter ?? ''}</div>`
-          }
-        }
-        return frontPdf + main
 
       default:
         break
@@ -242,17 +227,12 @@ function Download({
         if (isBook) {
           const chapters = await getBookJson(book?.id)
           await downloadPdf({
-            htmlContent: await compileBook(
-              { ...book, chapters },
-              downloadSettings.withFront,
-              'pdf'
-            ),
             book,
             chapters,
             downloadSettings,
             projectTitle: project.title,
             obs: project?.type === 'obs',
-            title: book?.properties?.obs?.title,
+            title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
             projectLanguage: {
               code: project.languages.code,
               title: project.languages.orig_name,
@@ -265,18 +245,6 @@ function Download({
           })
         } else {
           await downloadPdf({
-            htmlContent: compileChapter(
-              {
-                json: chapter?.text,
-                chapterNum,
-                project: {
-                  title: project.title,
-                },
-                book,
-              },
-              downloadSettings.withFront,
-              'pdf'
-            ),
             obs: project?.type === 'obs',
             chapter: { json: chapter?.text, chapterNum: chapter?.num },
             projectTitle: project.title,

@@ -133,7 +133,6 @@ export const downloadPdf = async ({
   chapter,
   chapters,
   fileName,
-  htmlContent,
   projectTitle,
   projectLanguage,
   downloadSettings,
@@ -184,6 +183,7 @@ export const downloadPdf = async ({
       pdfOptions.bookPropertiesObs = {
         projectTitle,
         title,
+        projectLanguage,
       }
     }
 
@@ -225,11 +225,6 @@ export const downloadPdf = async ({
       console.error('PDF creation failed:', error)
     }
   } else {
-    if (!htmlContent) {
-      return
-    }
-
-    const data = [createObjectToTransform(chapter)]
     const stylesForBible = {
       ...styles,
       chapterTitle: { fontSize: 32, bold: true },
@@ -240,27 +235,49 @@ export const downloadPdf = async ({
       },
     }
 
-    let bookPropertiesObs
-    if (downloadSettings?.withFront) {
-      bookPropertiesObs = {
-        projectTitle,
-        title: fileName,
-        projectLanguage,
-      }
-    }
-
-    const options = {
-      data,
+    let pdfOptions = {
+      data: [],
       styles: stylesForBible,
-      bookPropertiesObs,
       fileName,
       showVerseNumber: true,
       combineVerses: true,
       showTitlePage: false,
     }
 
+    if (downloadSettings?.withFront) {
+      pdfOptions.bookPropertiesObs = {
+        projectTitle,
+        title,
+        projectLanguage,
+      }
+    }
+    if (book) {
+      pdfOptions.data = chapters
+        .filter((chapter) => chapter.text !== null)
+        .map((chapter) =>
+          createObjectToTransform({
+            json: chapter.text,
+            chapterNum: chapter.num,
+          })
+        )
+    } else {
+      if (!chapter) {
+        return
+      }
+
+      pdfOptions.data = [createObjectToTransform(chapter)]
+
+      if (downloadSettings?.withFront) {
+        pdfOptions.bookPropertiesObs = {
+          projectTitle,
+          title: fileName,
+          projectLanguage,
+        }
+      }
+    }
+
     try {
-      await JsonToPdf(options)
+      await JsonToPdf(pdfOptions)
     } catch (error) {
       console.error('Error generating PDF:', error)
     }
