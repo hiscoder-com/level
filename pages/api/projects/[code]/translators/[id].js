@@ -23,7 +23,7 @@ export default async function languageProjectTranslatorHandler(req, res) {
         if (project?.id) {
           project_id = project?.id
         } else {
-          return res.status(404).json({ error: 'Missing id of project' })
+          throw { error: 'Missing id of project' }
         }
       } catch (error) {
         return res.status(404).json({ error })

@@ -153,7 +153,7 @@ export default async function languagesHandler(req, res) {
         return res.status(204).end()
       }
       return res.status(200).json(data?.code)
-      break
+
     default:
       res.setHeader('Allow', ['GET', 'PUT', 'DELETE'])
       return res.status(405).end(`Method ${method} Not Allowed`)

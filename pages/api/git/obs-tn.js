@@ -104,9 +104,7 @@ export default async function obsTnHandler(req, res) {
     const data = verses && verses.length > 0 ? dividedChapter : wholeChapter
 
     return res.status(200).json(data)
-    return
   } catch (error) {
-    res.status(404).json({ error })
-    return
+    return res.status(404).json({ error })
   }
 }

@@ -11,11 +11,11 @@ import SignOut from './SignOut'
 import { useRedirect } from 'utils/hooks'
 
 import { useCurrentUser } from 'lib/UserContext'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import Report from 'public/error-outline.svg'
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
-import useSupabaseClient from 'utils/supabaseClient'
 
 function Login() {
   const supabase = useSupabaseClient()
