@@ -76,6 +76,8 @@ export const createObjectToTransform = (ref) => {
       }
     }
   } else {
+    objectToTransform.title = `${chapterNum}`
+
     for (const [key, value] of Object.entries(json)) {
       const verseObject = {
         text: value,
@@ -143,7 +145,7 @@ export const downloadPdf = async ({
       bold: true,
       alignment: 'center',
     },
-    title: {
+    chapterTitle: {
       fontSize: 24,
       bold: true,
       alignment: 'center',
@@ -230,6 +232,7 @@ export const downloadPdf = async ({
     const data = [createObjectToTransform(chapter)]
     const stylesForBible = {
       ...styles,
+      chapterTitle: { fontSize: 32, bold: true },
       verseNumber: {
         sup: true,
         bold: true,
@@ -237,12 +240,15 @@ export const downloadPdf = async ({
       },
     }
 
-    const bookPropertiesObs = {
-      projectTitle,
-      title: fileName,
-      projectLanguage,
+    let bookPropertiesObs
+    if (downloadSettings?.withFront) {
+      bookPropertiesObs = {
+        projectTitle,
+        title: fileName,
+        projectLanguage,
+      }
     }
-    // console.log('bookPropertiesObs', bookPropertiesObs)
+
     const options = {
       data,
       styles: stylesForBible,
@@ -250,6 +256,7 @@ export const downloadPdf = async ({
       fileName,
       showVerseNumber: true,
       combineVerses: true,
+      showTitlePage: false,
     }
 
     try {

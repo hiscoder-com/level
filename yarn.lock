@@ -1284,12 +1284,12 @@
   dependencies:
     "@jridgewell/trace-mapping" "0.3.9"
 
-"@editorjs/editorjs@2.27.0":
-  version "2.27.0"
-  resolved "https://registry.yarnpkg.com/@editorjs/editorjs/-/editorjs-2.27.0.tgz#ec2d6e2f42d1aa84d13eaea6a9c48b4324972c59"
-  integrity sha512-XyPnvu61Ynk4k7R/1gVYUJjrtuf9Tf0A+CZuvp2suW4z5TNHqNjBa9vRdr3ngHzhNSoZvgstrOO3zCVqVTezPg==
+"@editorjs/editorjs@^2.27.2":
+  version "2.27.2"
+  resolved "https://registry.yarnpkg.com/@editorjs/editorjs/-/editorjs-2.27.2.tgz#b27ff83bccc7c443fd62f05740acaa8b8f0cb785"
+  integrity sha512-k4LavGJijAP0F1wATQ0fTo10xtBSny9z6yWaP3ANqqtyKr+pBMind5NQzckqYI0yPp31GObpcS/HsFGsFOGcug==
 
-"@editorjs/paragraph@2.9.0":
+"@editorjs/paragraph@^2.9.0":
   version "2.9.0"
   resolved "https://registry.yarnpkg.com/@editorjs/paragraph/-/paragraph-2.9.0.tgz#22f508b3771a4f98650e8bb37d628e230f0a378c"
   integrity sha512-lI6x1eiqFx2X3KmMak6gBlimFqXhG35fQpXMxzrjIphNLr4uPsXhVbyMPimPoLUnS9rM6Q00vptXmP2QNDd0zg==
@@ -2481,22 +2481,21 @@
     "@testing-library/dom" "^9.0.0"
     "@types/react-dom" "^18.0.0"
 
-"@texttree/notepad-rcl@1.0.1":
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/@texttree/notepad-rcl/-/notepad-rcl-1.0.1.tgz#373f7bf79a15c1509b4e7dc7554118283cab703b"
-  integrity sha512-esMLzIFYMwXaoWBwBnNYqFkugCi2WkAnkP2aSxAydUIM+Xr2oPpKKb+30Ts1cPQ8ngjmE7yc/SoWBVYAnPUgGg==
+"@texttree/notepad-rcl@^2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@texttree/notepad-rcl/-/notepad-rcl-2.0.1.tgz#78710808d9b1c2f6cc94075f1d75bec4c5abdf0f"
+  integrity sha512-56GEOPXWRSdduKC5PMuiQYPnUnZFnYpN4rvk37OHeh15vdVAjrQOmBKhW9OmM82K2LqMSMTbTvNwLI+K/Dj8Xw==
   dependencies:
-    "@editorjs/editorjs" "2.27.0"
-    "@editorjs/paragraph" "2.9.0"
-    editorjs-blocks-react-renderer "1.3.0"
-    localforage "1.10.0"
-    react-complex-tree "2.2.0"
-    react-editor-js "2.1.0"
+    "@editorjs/editorjs" "^2.27.2"
+    "@editorjs/paragraph" "^2.9.0"
+    editorjs-blocks-react-renderer "^1.3.0"
+    localforage "^1.10.0"
+    react-editor-js "^2.1.0"
 
-"@texttree/obs-format-convert-rcl@0.1.3":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@texttree/obs-format-convert-rcl/-/obs-format-convert-rcl-0.1.3.tgz#856895a49c13ef6e9d46d781ac6d8fb5c25a6020"
-  integrity sha512-LRdtD3W47tHImgZ7khaDjfGSLJGgypguk9Ed2Tp6OpIUCUi4aKfJiumfTzcyb17O2zu8pcTuOxcdX8sezHoaOw==
+"@texttree/obs-format-convert-rcl@^0.3.0":
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/@texttree/obs-format-convert-rcl/-/obs-format-convert-rcl-0.3.0.tgz#04aa0f9b040a930efa263adee02c4de095dae9b2"
+  integrity sha512-EvLIQgaw/YBmDo4WilyMhvymr91ciKvbeJOxDxtQX4BW8o7leWUXqOJ0R9I9V7qks/lEV2J7weT249OL51Ecbg==
   dependencies:
     file-saver "^2.0.5"
     jszip "^3.10.1"
@@ -4453,7 +4452,7 @@ duplexer2@~0.1.4:
   dependencies:
     readable-stream "^2.0.2"
 
-editorjs-blocks-react-renderer@1.3.0:
+editorjs-blocks-react-renderer@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/editorjs-blocks-react-renderer/-/editorjs-blocks-react-renderer-1.3.0.tgz#e244a8d248ca8e9e9ac51b7063be839e39988f32"
   integrity sha512-Qzl5mv/etRb5vQNHg0k7SsfG2gevSxHHzgwc0OY+UbKzhCCJw8xc0FRk2ZMB/Y/2+LTHVfgqRaDAZNt9xbuLWA==
@@ -6916,7 +6915,7 @@ load-json-file@^4.0.0:
     pify "^3.0.0"
     strip-bom "^3.0.0"
 
-localforage@1.10.0, localforage@^1.10.0:
+localforage@^1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.10.0.tgz#5c465dc5f62b2807c3a84c0c6a1b1b3212781dd4"
   integrity sha512-14/H1aX7hzBBmmh7sGPd+AOMkkIrHM3Z1PAyGgZigA1H1p5O5ANnMyWzvpAETtG68/dC4pC0ncy3+PPGzXZHPg==
@@ -8595,11 +8594,6 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
-react-complex-tree@2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/react-complex-tree/-/react-complex-tree-2.2.0.tgz#bb313a38b076cbd07d1509437457e22383202ee2"
-  integrity sha512-hcGPFKFtIZveUkJDGEmvS0EcXO8abmc86GyIVWF7jimczXhlPJ6DOjGl5XvECXK8m0welkiFJLnzk4TOEHXhAg==
-
 react-copy-to-clipboard@5.1.0:
   version "5.1.0"
   resolved "https://registry.yarnpkg.com/react-copy-to-clipboard/-/react-copy-to-clipboard-5.1.0.tgz#09aae5ec4c62750ccb2e6421a58725eabc41255c"
@@ -8624,7 +8618,7 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-react-editor-js@2.1.0:
+react-editor-js@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/react-editor-js/-/react-editor-js-2.1.0.tgz#3cd82ecbe4935e9cb7330a457c034f74c73c296f"
   integrity sha512-unI9D2pTH/2gBenc6LgCXJm8iqnrzB71CHgfjQmaB+lGR0Njx+ZXydgUQm1VofMmvF6vcCNVDE1Eb47zQbm14g==
