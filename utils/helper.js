@@ -138,7 +138,7 @@ export const downloadPdf = async ({
   downloadSettings,
   obs = false,
 }) => {
-  const styles = {
+  const commonStyles = {
     projectTitle: {
       fontSize: 24,
       bold: true,
@@ -154,28 +154,42 @@ export const downloadPdf = async ({
       alignment: 'justify',
     },
   }
-  if (obs) {
+
+  const obsStyles = {
+    intro: { fontSize: 14 },
+    image: {
+      alignment: 'center',
+      margin: [0, 10],
+    },
+    reference: {
+      margin: [0, 10, 0, 0],
+      italics: true,
+    },
+    back: { fontSize: 14, alignment: 'center' },
+  }
+
+  const bibleStyles = {
+    chapterTitle: { fontSize: 32, bold: true },
+    verseNumber: {
+      sup: true,
+      bold: true,
+      opacity: 0.8,
+    },
+  }
+  const styles = obs
+    ? { ...commonStyles, ...obsStyles }
+    : { ...commonStyles, ...bibleStyles }
+
+  let pdfOptions
+
+  const createPdfOptionsObs = (chapters, downloadSettings, book) => {
     if (!fileName.endsWith('.pdf')) {
       fileName += '.pdf'
     }
 
-    const stylesForObs = {
-      ...styles,
-      intro: { fontSize: 14 },
-      image: {
-        alignment: 'center',
-        margin: [0, 10],
-      },
-      reference: {
-        margin: [0, 10, 0, 0],
-        italics: true,
-      },
-      back: { fontSize: 14, alignment: 'center' },
-    }
-
-    let pdfOptions = {
+    pdfOptions = {
       data: [],
-      styles: stylesForObs,
+      styles,
       fileName,
     }
 
@@ -215,29 +229,16 @@ export const downloadPdf = async ({
         }
       }
     } else {
-      const objectToTransform = createObjectToTransform(chapter)
-      pdfOptions.data = [objectToTransform]
-    }
-    try {
-      await JsonToPdf(pdfOptions)
-      console.log('PDF creation completed')
-    } catch (error) {
-      console.error('PDF creation failed:', error)
-    }
-  } else {
-    const stylesForBible = {
-      ...styles,
-      chapterTitle: { fontSize: 32, bold: true },
-      verseNumber: {
-        sup: true,
-        bold: true,
-        opacity: 0.8,
-      },
+      pdfOptions.data = [createObjectToTransform(chapter)]
     }
 
-    let pdfOptions = {
+    return pdfOptions
+  }
+
+  const createPdfOptionsBible = (chapters, downloadSettings, book) => {
+    pdfOptions = {
       data: [],
-      styles: stylesForBible,
+      styles,
       fileName,
       showVerseNumber: true,
       combineVerses: true,
@@ -251,6 +252,7 @@ export const downloadPdf = async ({
         projectLanguage,
       }
     }
+
     if (book) {
       pdfOptions.data = chapters
         .filter((chapter) => chapter.text !== null)
@@ -276,11 +278,17 @@ export const downloadPdf = async ({
       }
     }
 
-    try {
-      await JsonToPdf(pdfOptions)
-    } catch (error) {
-      console.error('Error generating PDF:', error)
-    }
+    return pdfOptions
+  }
+
+  pdfOptions = obs
+    ? createPdfOptionsObs(chapters, downloadSettings, book)
+    : createPdfOptionsBible(chapters, downloadSettings, book)
+
+  try {
+    await JsonToPdf(pdfOptions)
+  } catch (error) {
+    console.error('Error generating PDF:', error)
   }
 }
 
