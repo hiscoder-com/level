@@ -10,6 +10,7 @@ import axios from 'axios'
 import { Disclosure, Switch } from '@headlessui/react'
 
 import CommitsList from '../CommitsList'
+
 import Down from 'public/arrow-down.svg'
 
 import { useLanguages, useMethod } from 'utils/hooks'
@@ -18,22 +19,25 @@ import { useCurrentUser } from 'lib/UserContext'
 import Steps from './Steps'
 import BaseInformation from './BaseInformation'
 import LanguageCreate from './LanguageCreate'
+import { toast } from 'react-hot-toast'
 function ProjectCreate() {
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
   const [customResources, setCustomResources] = useState('')
   const [isBriefEnable, setIsBriefEnable] = useState(true)
-  const [customBriefs, setCustomBriefs] = useState([])
+
   const [resourcesUrl, setResourcesUrl] = useState({})
   const [customSteps, setCustomSteps] = useState([])
-  const [method, setMethod] = useState()
+  const [method, setMethod] = useState({})
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const { user } = useCurrentUser()
   const router = useRouter()
 
   const [_methods] = useMethod(user?.access_token)
+
   const [methods, setMethods] = useState(() => {
     return checkLSVal('methods', _methods, 'object')
   })
+  const [customBriefs, setCustomBriefs] = useState(_methods?.briefCollection)
   const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
   const {
     register,
@@ -61,9 +65,10 @@ function ProjectCreate() {
     if (methods) {
       setValue('methodId', methods?.[0]?.id)
     }
-  }, [methods, setValue])
+  }, [methods?.[0]?.id])
+
   useEffect(() => {
-    if (!methods) {
+    if (!methods && _methods) {
       setMethods(_methods)
     }
   }, [_methods, methods])
@@ -73,8 +78,8 @@ function ProjectCreate() {
       localStorage.setItem('methods', JSON.stringify(methods))
     }
   }, [methods])
+
   const resetMethods = () => {
-    console.log(_methods)
     localStorage.setItem('methods', JSON.stringify(_methods))
     setMethods(_methods)
   }
@@ -84,31 +89,34 @@ function ProjectCreate() {
     if (!title || !code || !languageId) {
       return
     }
-    console.log({ resourcesUrl })
-    // return
-    // axios.defaults.headers.common['token'] = user?.access_token
-    // axios
-    //   .post('/api/projects', {
-    //     isBriefEnable,
-    //     customBriefs,
-    //     title,
-    //     language_id: languageId,
-    //     code,
-    //     method_id: method.id,
-    //     steps: method.steps,
-    //     resources: resourcesUrl,
-    //   })
-    //   .then((result) => {
     resetMethods()
-    //   const {
-    //     status,
-    //     headers: { location },
-    //   } = result
-    //   if (status === 201) {
-    //     router.push(location)
-    //   }
-    // })
-    // .catch(console.log)
+    // return
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .post('/api/projects', {
+        isBriefEnable,
+        customBriefs,
+        title,
+        origtitle,
+        language_id: languageId,
+        code,
+        method_id: method.id,
+        steps: method.steps,
+        resources: resourcesUrl,
+      })
+      .then((result) => {
+        resetMethods()
+        const {
+          status,
+          headers: { location },
+        } = result
+        if (status === 201) {
+          router.push(location)
+        }
+      })
+      .catch((err) => {
+        toast.error(t('SaveFailed'))
+      })
     // .finally(mutateProjects)
   }
 
@@ -127,8 +135,10 @@ function ProjectCreate() {
       return el
     })
     localStorage.setItem('methods', JSON.stringify(_methods))
+    setMethods(_methods)
     setCustomSteps(_steps)
   }
+
   return (
     <>
       <div className="py-0 sm:py-10">
@@ -156,8 +166,7 @@ function ProjectCreate() {
             />
           </div>
           <div className="card flex flex-col gap-2 border-b border-slate-900 py-7">
-            <p className="text-xl font-bold mb-5">Бриф</p>
-            <div>{t('Brief')}</div>
+            <p className="text-xl font-bold mb-5">{t('Brief')}</p>
             <div>
               <span className="mr-3">
                 {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
@@ -176,44 +185,14 @@ function ProjectCreate() {
                 />
               </Switch>
             </div>
-            {customBriefs?.map((el) => (
-              <Disclosure key={el.title}>
-                <Disclosure.Button className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md">
-                  <span>{el.title}</span>
-                  <Down className="w-5 h-5" />
-                </Disclosure.Button>
-                <Disclosure.Panel className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <div>title</div> <input className="input-primary" value={el.title} />
-                  </div>
-                  <div>questions</div>
-                  {el.block.map((item) => (
-                    <input
-                      key={item.question}
-                      className="input-primary"
-                      value={item.question}
-                    />
-                  ))}
-                </Disclosure.Panel>
-              </Disclosure>
-            ))}
+            {/* <BriefConstructor
+              customBriefs={customBriefs}
+              setCustomBriefs={setCustomBriefs}
+              method={method}
+              setMethods={setMethods}
+            /> */}
           </div>
-          {/* <pre className="whitespace-pre-wrap break-words">
-            {`"title": Название шага, даем юзеру возможность перевода этого поля
-"description": Описание шага, возможность редактировать
-"time": время, сколько минут длится шаг
-"count_of_users": сколько юзеров выполняют этот шаг
-"intro": введение в шаг в формате MD
-"config": [ массив объектов, в котором прописано какие карточки и ресурсы отображать тут
-Пока что редактировать не будем давать
-Пример объекта
-  "size": размер блока, ширина экрана - 6 единиц
-  "tools": [ массив объектов тулсов. Есть наши стандартные, и есть пользовательские
-      "name": название тулсы, редактор, заметки, глава и т.д.
-      "config": а тут конфиг этого компонента`}
-          </pre> */}
-
-          {/* <br />
+          {/*
           <p>
             Нужно превратить в форму. Сейчас сюда приходит объект. Ключ - это
             идентификатор ресурса в шагах метода. Тут нет каких-то правил, можно называть
@@ -225,13 +204,7 @@ function ProjectCreate() {
             вводит ссылку на гит. Ссылка должна быть определенного формата, там должен
             быть коммит обязательно.
           </p>
-          <textarea
-            cols="50"
-            rows="6"
-            disabled={true}
-            value={JSON.stringify(customResources, null, 2)}
-            className="w-full"
-          /> */}
+          */}
           {/* {method?.type !== 'obs' ? (
             <pre className="whitespace-pre-wrap break-words">
               {`literal
@@ -275,43 +248,6 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
               />
             </div>
           </div>
-          {/* <br />
-          <p>
-            После того как нажимают на кнопку сохранить, мы делаем следующее: <br />
-            1. Получаем манифесты всех ресурсов чтобы записать в таблицу проектов, в
-            колонку Ресурсы. <br />
-            Создаем вот такой объект
-          </p>
-          <pre className="whitespace-pre-wrap break-words">
-            {`"тут идентификатор который в шагах у нас": {
-"owner": "unfoldingword",
-"repo": "en_ult",
-"commit": "acf32a196",
-"manifest": "{}" // а здесь будет манифест в нужном формате
-},`}
-          </pre>
-          <p>
-            2. Особенно мы обработаем основной ресурс, с которого будет идти перевод.
-            Возьмем его манифест и сделаем такую структуру{' '}
-          </p>
-          <pre className="whitespace-pre-wrap break-words">
-            {`{
-"resource": "тут идентификатор этого основного ресурса",
-"books": [ // массив из списка книг
-  {
-    "name": "gen", // айди книги
-    "link": "unfoldingword/en_ult/raw/commit/a3c1876/01_GEN.usfm" // ссылка на нее
-  },
-]
-}`}
-          </pre>
-          <p>
-            3. Все шаги мы переносим в таблицу степс, и связываем с созданным проектом.
-            <br />
-            Сейчас этого кода нет, нужно подумать на сколько это критично. Мне кажется что
-            для первой версии мы можем создать проект в ручную, и отложить разработку на
-            время после запуска
-          </p> */}
         </form>
       </div>
       <LanguageCreate
@@ -327,3 +263,139 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 }
 
 export default ProjectCreate
+
+function BriefConstructor({ customBriefs, setCustomBriefs, method, setMethods }) {
+  const refs = useRef([])
+  const [defaultOpen, setDefaultOpen] = useState(false)
+
+  const handleClose = () => {
+    refs.current.map(({ open, close }) => {
+      close()
+    })
+  }
+  const updateBlockTitle = ({ blockTitle, index }) => {
+    const brief = customBriefs.map((obj, idx) => {
+      if (index === idx) {
+        return { ...obj, title: blockTitle }
+      }
+
+      return obj
+    })
+    const methods = JSON.parse(localStorage.getItem('methods')).map((el) => {
+      if (method.id === el.id) {
+        return { ...el, brief }
+      }
+      return el
+    })
+    localStorage.setItem('methods', JSON.stringify(methods))
+    setCustomBriefs(brief)
+  }
+  const updateBlockQuestion = ({ blockQuestion, indexBlock, indexQuestion }) => {
+    const brief = customBriefs.map((obj, idx) => {
+      if (indexBlock === idx) {
+        const block = obj.block.map((el, index) => {
+          if (index === indexQuestion) {
+            return { ...el, question: blockQuestion }
+          }
+          return el
+        })
+        return { ...obj, block }
+      }
+
+      return obj
+    })
+    const methods = JSON.parse(localStorage.getItem('methods')).map((el) => {
+      if (method.id === el.id) {
+        return { ...el, brief }
+      }
+      return el
+    })
+
+    localStorage.setItem('methods', JSON.stringify(methods))
+    setCustomBriefs(brief)
+  }
+
+  return (
+    <>
+      {customBriefs?.map((el, index) => (
+        <Disclosure key={el.title} defaultOpen={defaultOpen}>
+          {({ open, close }) => {
+            return (
+              <>
+                <Disclosure.Button
+                  className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md"
+                  ref={() => (refs.current[index] = { open, close })}
+                  onClick={() => {
+                    setDefaultOpen(true)
+                  }}
+                >
+                  <span>{el.title}</span>
+                  <Down className="w-5 h-5" />
+                </Disclosure.Button>
+                <Disclosure.Panel className="flex flex-col gap-2">
+                  <div className="flex items-center gap-2">
+                    <div>title</div>
+                    <BlockTitle
+                      blockTitle={el.title}
+                      updateBlockTitle={updateBlockTitle}
+                      index={index}
+                    />
+                  </div>
+                  <div>questions</div>
+                  {el.block.map((item, idx) => (
+                    <Question
+                      key={item.question}
+                      blockQuestion={item.question}
+                      updateBlockQuestion={updateBlockQuestion}
+                      indexBlock={index}
+                      indexQuestion={idx}
+                    />
+                  ))}
+                </Disclosure.Panel>
+              </>
+            )
+          }}
+        </Disclosure>
+      ))}
+    </>
+  )
+}
+
+function BlockTitle({ blockTitle, updateBlockTitle, index }) {
+  const [title, setTitle] = useState(blockTitle)
+  useEffect(() => {
+    if (blockTitle) {
+      setTitle(blockTitle)
+    }
+  }, [blockTitle])
+
+  return (
+    <input
+      className="input-primary"
+      value={title}
+      onChange={(e) => setTitle(e.target.value)}
+      onBlur={() => {
+        updateBlockTitle({ blockTitle: title, index })
+      }}
+    />
+  )
+}
+
+function Question({ blockQuestion, updateBlockQuestion, indexBlock, indexQuestion }) {
+  const [question, setQuestion] = useState(blockQuestion)
+  useEffect(() => {
+    if (blockQuestion) {
+      setQuestion(blockQuestion)
+    }
+  }, [blockQuestion])
+  return (
+    <input
+      className="input-primary"
+      value={question}
+      onChange={(e) => setQuestion(e.target.value)}
+      onBlur={() =>
+        updateBlockQuestion({ blockQuestion: question, indexBlock, indexQuestion })
+      }
+    />
+  )
+}
