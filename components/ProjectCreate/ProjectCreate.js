@@ -5,39 +5,40 @@ import { useTranslation } from 'next-i18next'
 
 import { useForm, useWatch } from 'react-hook-form'
 
+import { toast } from 'react-hot-toast'
+
 import axios from 'axios'
 
 import { Disclosure, Switch } from '@headlessui/react'
 
 import CommitsList from '../CommitsList'
-
-import Down from 'public/arrow-down.svg'
+import Steps from './Steps'
+import BasicInformation from './BasicInformation'
+import LanguageCreate from './LanguageCreate'
+import UpdateField from './UpdateField'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import Steps from './Steps'
-import BasicInformation from './BasicInformation'
-import LanguageCreate from './LanguageCreate'
-import { toast } from 'react-hot-toast'
-function ProjectCreate() {
-  const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
-  const [customResources, setCustomResources] = useState('')
-  const [isBriefEnable, setIsBriefEnable] = useState(true)
 
-  const [resourcesUrl, setResourcesUrl] = useState({})
-  const [customSteps, setCustomSteps] = useState([])
-  const [method, setMethod] = useState({})
+import Down from 'public/arrow-down.svg'
+
+function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const { user } = useCurrentUser()
-  const router = useRouter()
 
   const [_methods] = useMethod(user?.access_token)
-
+  const router = useRouter()
   const [methods, setMethods] = useState(() => {
     return checkLSVal('methods', _methods, 'object')
   })
-  const [customBriefs, setCustomBriefs] = useState(_methods?.briefCollection)
+  const [method, setMethod] = useState({})
+  const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
+  const [customResources, setCustomResources] = useState('')
+  const [isBriefEnable, setIsBriefEnable] = useState(true)
+  const [resourcesUrl, setResourcesUrl] = useState({})
+  const [customSteps, setCustomSteps] = useState([])
+  const [customBriefQuestions, setCustomBriefQuestions] = useState([])
   const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
   const {
     register,
@@ -55,7 +56,7 @@ function ProjectCreate() {
       if (selectedMethod) {
         setMethod(selectedMethod)
         setCustomSteps(selectedMethod.steps)
-        setCustomBriefs(selectedMethod.brief)
+        setCustomBriefQuestions(selectedMethod.brief)
         setCustomResources(selectedMethod.resources)
       }
     }
@@ -80,9 +81,9 @@ function ProjectCreate() {
     }
   }, [methods])
 
-  const resetMethods = () => {
-    localStorage.setItem('methods', JSON.stringify(_methods))
-    setMethods(_methods)
+  const resetMethods = (methods) => {
+    localStorage.setItem('methods', JSON.stringify(methods))
+    setMethods(methods)
   }
 
   const onSubmit = async (data) => {
@@ -96,7 +97,7 @@ function ProjectCreate() {
     axios
       .post('/api/projects', {
         isBriefEnable,
-        customBriefs,
+        customBriefQuestions,
         title,
         origtitle,
         language_id: languageId,
@@ -106,7 +107,7 @@ function ProjectCreate() {
         resources: resourcesUrl,
       })
       .then((result) => {
-        resetMethods()
+        resetMethods(_methods)
         const {
           status,
           headers: { location },
@@ -121,31 +122,52 @@ function ProjectCreate() {
     // .finally(mutateProjects)
   }
 
-  const updateStep = ({ ref, index }) => {
-    const _steps = customSteps.map((obj, idx) => {
+  const updateCollection = ({ ref, index, array, name, setter }) => {
+    const _array = array.map((obj, idx) => {
       if (index === idx) {
         return { ...obj, ...ref }
       }
-
       return obj
     })
     const _methods = methods.map((el) => {
       if (el.id === method.id) {
-        return { ...el, steps: _steps }
+        return { ...el, [name]: _array }
       }
       return el
     })
-    localStorage.setItem('methods', JSON.stringify(_methods))
-    setMethods(_methods)
-    setCustomSteps(_steps)
+    resetMethods(_methods)
+    setter(_array)
+  }
+
+  const updateBlockQuestion = ({ blockQuestion, indexBlock, indexQuestion }) => {
+    const brief = customBriefQuestions.map((obj, idx) => {
+      if (indexBlock === idx) {
+        const block = obj.block.map((el, index) => {
+          if (index === indexQuestion) {
+            return { ...el, question: blockQuestion }
+          }
+          return el
+        })
+        return { ...obj, block }
+      }
+      return obj
+    })
+    const _methods = methods.map((el) => {
+      if (method.id === el.id) {
+        return { ...el, brief }
+      }
+      return el
+    })
+    resetMethods(_methods)
+    setCustomBriefQuestions(brief)
   }
 
   return (
     <>
       <div className="py-0 sm:py-10">
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card flex flex-col gap-2 py-7">
-            <p className="text-xl font-bold mb-5">{t('project-edit:BasicInformation')}</p>
+          <div className="card space-y-7 py-7">
+            <p className="text-xl font-bold">{t('project-edit:BasicInformation')}</p>
             <BasicInformation
               t={t}
               errors={errors}
@@ -161,37 +183,40 @@ function ProjectCreate() {
             <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
             <Steps
               customSteps={customSteps}
-              updateStep={updateStep}
+              updateCollection={updateCollection}
               t={t}
               method={method}
+              setCustomSteps={setCustomSteps}
             />
           </div>
-          <div className="card flex flex-col gap-2 py-7">
-            <p className="text-xl font-bold mb-5">{t('Brief')}</p>
-            <div>
-              <span className="mr-3">
-                {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
-              </span>
-              <Switch
-                checked={isBriefEnable}
-                onChange={() => setIsBriefEnable((prev) => !prev)}
-                className={`${
-                  isBriefEnable ? 'bg-cyan-600' : 'bg-gray-300'
-                } relative inline-flex h-6 w-11 items-center rounded-full`}
-              >
-                <span
+          <div className="card flex flex-col gap-7 py-7">
+            <div className="flex justify-between">
+              <p className="text-xl font-bold">{t('Brief')}</p>
+              <div>
+                <span className="mr-3">
+                  {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
+                </span>
+                <Switch
+                  checked={isBriefEnable}
+                  onChange={() => setIsBriefEnable((prev) => !prev)}
                   className={`${
-                    isBriefEnable ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                />
-              </Switch>
+                    isBriefEnable ? 'bg-cyan-600' : 'bg-gray-300'
+                  } relative inline-flex h-6 w-11 items-center rounded-full`}
+                >
+                  <span
+                    className={`${
+                      isBriefEnable ? 'translate-x-6' : 'translate-x-1'
+                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+                  />
+                </Switch>
+              </div>
             </div>
-            {/* <BriefConstructor
-              customBriefs={customBriefs}
-              setCustomBriefs={setCustomBriefs}
-              method={method}
-              setMethods={setMethods}
-            /> */}
+            <BriefQuestions
+              customBriefQuestions={customBriefQuestions}
+              updateBlockQuestion={updateBlockQuestion}
+              updateCollection={updateCollection}
+              setCustomBriefQuestions={setCustomBriefQuestions}
+            />
           </div>
           {/*
           <p>
@@ -264,84 +289,42 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 
 export default ProjectCreate
 
-function BriefConstructor({ customBriefs, setCustomBriefs, method, setMethods }) {
-  const refs = useRef([])
-  const [defaultOpen, setDefaultOpen] = useState(false)
-
-  const handleClose = () => {
-    refs.current.map(({ open, close }) => {
-      close()
-    })
-  }
-  const updateBlockTitle = ({ blockTitle, index }) => {
-    const brief = customBriefs.map((obj, idx) => {
-      if (index === idx) {
-        return { ...obj, title: blockTitle }
-      }
-
-      return obj
-    })
-    const methods = JSON.parse(localStorage.getItem('methods')).map((el) => {
-      if (method.id === el.id) {
-        return { ...el, brief }
-      }
-      return el
-    })
-    localStorage.setItem('methods', JSON.stringify(methods))
-    setCustomBriefs(brief)
-  }
-  const updateBlockQuestion = ({ blockQuestion, indexBlock, indexQuestion }) => {
-    const brief = customBriefs.map((obj, idx) => {
-      if (indexBlock === idx) {
-        const block = obj.block.map((el, index) => {
-          if (index === indexQuestion) {
-            return { ...el, question: blockQuestion }
-          }
-          return el
-        })
-        return { ...obj, block }
-      }
-
-      return obj
-    })
-    const methods = JSON.parse(localStorage.getItem('methods')).map((el) => {
-      if (method.id === el.id) {
-        return { ...el, brief }
-      }
-      return el
-    })
-
-    localStorage.setItem('methods', JSON.stringify(methods))
-    setCustomBriefs(brief)
-  }
-
+function BriefQuestions({
+  customBriefQuestions = [],
+  updateBlockQuestion,
+  updateCollection,
+  setCustomBriefQuestions,
+}) {
+  const { t } = useTranslation(['projects', 'project-edit', 'common'])
   return (
     <>
-      {customBriefs?.map((el, index) => (
-        <Disclosure key={el.title} defaultOpen={defaultOpen}>
-          {({ open, close }) => {
+      {customBriefQuestions?.map((el, index) => (
+        <Disclosure key={index}>
+          {({ open }) => {
             return (
               <>
-                <Disclosure.Button
-                  className="flex justify-center gap-2 bg-gray-300 py-2 rounded-md"
-                  ref={() => (refs.current[index] = { open, close })}
-                  onClick={() => {
-                    setDefaultOpen(true)
-                  }}
-                >
+                <Disclosure.Button className="flex justify-between gap-2 py-2 px-4 bg-gray-300 rounded-md">
                   <span>{el.title}</span>
-                  <Down className="w-5 h-5" />
+                  <Down
+                    className={`w-5 h-5 transition-transform duration-200 ${
+                      open ? 'rotate-180' : 'rotate-0'
+                    } `}
+                  />
                 </Disclosure.Button>
                 <Disclosure.Panel className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
-                    <div>title</div>
-                    <BlockTitle
-                      blockTitle={el.title}
-                      updateBlockTitle={updateBlockTitle}
+                    <div>{t('common:Title')}</div>
+                    <UpdateField
+                      value={el.title}
+                      updateCollection={updateCollection}
                       index={index}
+                      type={'title'}
+                      collection={customBriefQuestions}
+                      name="brief"
+                      setter={setCustomBriefQuestions}
                     />
                   </div>
-                  <div>questions</div>
+                  <div>{t('common:Questions')}</div>
                   {el.block.map((item, idx) => (
                     <Question
                       key={item.question}
@@ -358,26 +341,6 @@ function BriefConstructor({ customBriefs, setCustomBriefs, method, setMethods })
         </Disclosure>
       ))}
     </>
-  )
-}
-
-function BlockTitle({ blockTitle, updateBlockTitle, index }) {
-  const [title, setTitle] = useState(blockTitle)
-  useEffect(() => {
-    if (blockTitle) {
-      setTitle(blockTitle)
-    }
-  }, [blockTitle])
-
-  return (
-    <input
-      className="input-primary"
-      value={title}
-      onChange={(e) => setTitle(e.target.value)}
-      onBlur={() => {
-        updateBlockTitle({ blockTitle: title, index })
-      }}
-    />
   )
 }
 

@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
-
 import { Disclosure } from '@headlessui/react'
 
 import Down from 'public/arrow-down.svg'
 import { useTranslation } from 'react-i18next'
+import UpdateField from './UpdateField'
 
-function Steps({ customSteps = [], updateStep }) {
+function Steps({ customSteps = [], updateCollection, setCustomSteps }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
 
   const fields = [
@@ -19,7 +18,7 @@ function Steps({ customSteps = [], updateStep }) {
         <Disclosure key={index}>
           {({ open }) => (
             <>
-              <Disclosure.Button className="flex justify-between gap-2 bg-gray-300 py-2 px-4 rounded-md">
+              <Disclosure.Button className="flex justify-between gap-2 py-2 px-4 bg-gray-300 rounded-md">
                 <span>{step.title}</span>
                 <Down
                   className={`w-5 h-5 transition-transform duration-200 ${
@@ -34,10 +33,13 @@ function Steps({ customSteps = [], updateStep }) {
                     <div className="w-5/6">
                       <UpdateField
                         value={step[field.type]}
-                        update={updateStep}
+                        updateCollection={updateCollection}
                         index={index}
                         type={field.type}
                         textarea={field.textarea}
+                        collection={customSteps}
+                        name="steps"
+                        setter={setCustomSteps}
                       />
                     </div>
                   </div>
@@ -45,7 +47,7 @@ function Steps({ customSteps = [], updateStep }) {
                 <div className="flex items-center w-full gap-2">
                   <div className="w-1/6">{t('Tools')}</div>
                   <div className="flex flex-wrap justify-start gap-2 w-5/6">
-                    {step.config.map((config, index) => (
+                    {step?.config?.map((config, index) => (
                       <div
                         key={index}
                         className="flex gap-2 pr-2 border-r border-slate-900 last:border-r-0"
@@ -65,7 +67,7 @@ function Steps({ customSteps = [], updateStep }) {
                 <div className="flex items-center gap-2 w-full">
                   <span className="w-1/6">{t('project-edit:TranslatorsCount')}</span>
                   <div className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto">
-                    {step.count_of_users}
+                    {step?.count_of_users}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full">
@@ -84,23 +86,3 @@ function Steps({ customSteps = [], updateStep }) {
 }
 
 export default Steps
-
-function UpdateField({ value, update, index, type, textarea = false, editable = true }) {
-  const [valueField, setValueField] = useState(value)
-  useEffect(() => {
-    if (value) {
-      setValueField(value)
-    }
-  }, [value])
-  const props = {
-    className: 'input-primary',
-    value: valueField,
-    onChange: (e) => setValueField(e.target.value),
-    onBlur: () => {
-      update({ ref: { [type]: valueField.trim() }, index })
-    },
-    disabled: !editable,
-    rows: 6,
-  }
-  return <>{textarea ? <textarea {...props} /> : <input {...props} />}</>
-}
