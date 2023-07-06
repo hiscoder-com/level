@@ -13,6 +13,7 @@ export default async function languageProjectsHandler(req, res) {
       method_id,
       code,
       title,
+      origtitle,
       resources,
       steps,
       customBriefs,
@@ -23,6 +24,10 @@ export default async function languageProjectsHandler(req, res) {
   switch (method) {
     case 'POST':
       try {
+        if (!Object?.keys(resources)?.length) {
+          console.log('object')
+          throw { message: 'There is no information about resources' }
+        }
         // вот тут мы делаем валидацию и записываем в 2 таблицы. Какие входные данные - можно самому придумать. Или принять все поля формы, или json просто валидировать
         // сейчас тут не хватает валидации юрл
 
@@ -48,11 +53,8 @@ export default async function languageProjectsHandler(req, res) {
           JSON.stringify(Object.keys(resources).sort()) !==
           JSON.stringify(Object.keys(current_method.resources).sort())
         ) {
-          console.log('methodError')
-
-          throw 'Resources not an equal'
+          throw { message: 'Resources not an equal' }
         }
-        console.log('methodError')
 
         const { baseResource, newResources } = await parseManifests({
           resources,
