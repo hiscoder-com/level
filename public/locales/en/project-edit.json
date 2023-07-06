@@ -1,16 +1,19 @@
 {
   "AddCoordinator": "Add a coordinator",
+  "AddLanguage": "Add a language",
   "AddTranslator": "Add a translator",
   "AddingCoordinator": "Adding a coordinator",
   "AddingTranslator": "Adding a translator",
   "Answer": "Answer",
   "AssigningModerator": "Moderator appointment",
+  "BasicInformation": "Basic information",
   "Brief": "Brief",
   "CodeLanguageNotUnique": "The name of the language is not unique",
   "CodeLanguageRequired": "The code of the language is required",
   "DisableBrief": "Disable brief",
   "EditBriefTitle": "Brief and purpose of the translation",
   "EnableBrief": "Enable brief",
+  "ExecutionTime": "Execution time",
   "LanguageCode": "Language code",
   "LanguageEngName": "Name of the language in English",
   "LanguageOrigName": "The name in the original language",
@@ -20,5 +23,8 @@
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
   "RemovingTranslator": "Removing a translator",
-  "Summary": "Summary"
+  "Steps": "Steps",
+  "Summary": "Summary",
+  "Tools": "Tools",
+  "TranslatorsCount": "Count of translators"
 }

@@ -1,14 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Disclosure } from '@headlessui/react'
 
 import Down from 'public/arrow-down.svg'
+import { useTranslation } from 'react-i18next'
 
-function Steps({ customSteps = [], updateStep, t }) {
+function Steps({ customSteps = [], updateStep }) {
+  const { t } = useTranslation(['projects', 'project-edit', 'common'])
+
   const fields = [
-    { name: t('StepTitle'), type: 'title', textarea: false },
-    { name: t('StepDescription'), type: 'description', textarea: true },
-    { name: t('StepIntro'), type: 'intro', textarea: true },
+    { name: t('common:Title'), type: 'title', textarea: false },
+    { name: t('common:Description'), type: 'description', textarea: true },
+    { name: t('common:Intro'), type: 'intro', textarea: true },
   ]
   return (
     <>
@@ -60,13 +63,13 @@ function Steps({ customSteps = [], updateStep, t }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <span className="w-1/6">{t('TranslatorsCount')}</span>
+                  <span className="w-1/6">{t('project-edit:TranslatorsCount')}</span>
                   <div className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto">
                     {step.count_of_users}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <span className="w-1/6">{t('ExecutionTime')}</span>
+                  <span className="w-1/6">{t('project-edit:ExecutionTime')}</span>
                   <div className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto">
                     {step.time}
                   </div>

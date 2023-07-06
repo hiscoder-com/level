@@ -17,7 +17,7 @@ import { useLanguages, useMethod } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 import Steps from './Steps'
-import BaseInformation from './BaseInformation'
+import BasicInformation from './BasicInformation'
 import LanguageCreate from './LanguageCreate'
 import { toast } from 'react-hot-toast'
 function ProjectCreate() {
@@ -65,6 +65,7 @@ function ProjectCreate() {
     if (methods) {
       setValue('methodId', methods?.[0]?.id)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [methods?.[0]?.id])
 
   useEffect(() => {
@@ -143,9 +144,9 @@ function ProjectCreate() {
     <>
       <div className="py-0 sm:py-10">
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
-            <p className="text-xl font-bold mb-5">Основная информация</p>
-            <BaseInformation
+          <div className="card flex flex-col gap-2 py-7">
+            <p className="text-xl font-bold mb-5">{t('project-edit:BasicInformation')}</p>
+            <BasicInformation
               t={t}
               errors={errors}
               register={register}
@@ -156,8 +157,8 @@ function ProjectCreate() {
               languages={languages}
             />
           </div>
-          <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
-            <p className="text-xl font-bold mb-5">Шаги</p>
+          <div className="card flex flex-col gap-7 py-7">
+            <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
             <Steps
               customSteps={customSteps}
               updateStep={updateStep}
@@ -165,7 +166,7 @@ function ProjectCreate() {
               method={method}
             />
           </div>
-          <div className="card flex flex-col gap-2 border-b border-slate-900 py-7">
+          <div className="card flex flex-col gap-2 py-7">
             <p className="text-xl font-bold mb-5">{t('Brief')}</p>
             <div>
               <span className="mr-3">
@@ -233,8 +234,7 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
             </pre>
           )} */}
           <div className="card flex flex-col gap-7 border-b border-slate-900 pb-7 mb-7">
-            <p className="text-xl font-bold mb-5">Ссылки на материалы</p>
-
+            <p className="text-xl font-bold">{t('common:ResourcesList')}</p>
             <CommitsList
               methodId={methodId}
               resourcesUrl={resourcesUrl}

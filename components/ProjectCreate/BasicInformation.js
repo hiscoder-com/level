@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useLanguages, useProjects } from 'utils/hooks'
-import LanguageCreate from './LanguageCreate'
 
 import Plus from '/public/plus.svg'
 
-function BaseInformation({
-  t,
+function BasicInformation({
   errors,
   register,
   setValue,
@@ -13,6 +12,7 @@ function BaseInformation({
   methods,
   setIsOpenLanguageCreate,
 }) {
+  const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const [projects, { mutate: mutateProjects }] = useProjects({
     token: user?.access_token,
   })
@@ -112,7 +112,7 @@ function BaseInformation({
                   <Plus className="w-5 " />
                 </div>
 
-                <span className="hidden lg:block">Добавить язык</span>
+                <span className="hidden lg:block">{t('AddLanguage')}</span>
               </button>
             </div>
           </div>
@@ -142,4 +142,4 @@ function BaseInformation({
   )
 }
 
-export default BaseInformation
+export default BasicInformation
