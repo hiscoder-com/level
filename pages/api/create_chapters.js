@@ -3,9 +3,7 @@ import { supabaseService } from 'utils/supabaseServer'
 import { countOfChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
-  }
+ 
   const supabase = createPagesServerClient({ req, res })
 
   const { method } = req

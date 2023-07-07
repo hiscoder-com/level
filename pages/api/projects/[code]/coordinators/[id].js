@@ -2,9 +2,7 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 /** Это пока что не работает */
 export default async function languageProjectModeratorHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
-  }
+ 
   const supabase = createPagesServerClient({ req, res })
   const {
     query: { code, id },

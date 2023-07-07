@@ -13,9 +13,7 @@ const sendLog = async (log) => {
 }
 
 export default async function notesDeleteHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
-  }
+ 
   const supabase = createPagesServerClient({ req, res })
   const {
     query: { id },
