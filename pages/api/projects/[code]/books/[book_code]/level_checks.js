@@ -27,7 +27,6 @@ const validation = (level_checks) => {
 }
 
 export default async function bookLevelChecksHandler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
 
   const {

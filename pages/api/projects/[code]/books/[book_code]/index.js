@@ -1,7 +1,6 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function bookHandler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
 
   let data = {}

@@ -13,7 +13,6 @@ const sendLog = async (log) => {
 }
 
 export default async function notesDeleteHandler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
   const {
     query: { id },

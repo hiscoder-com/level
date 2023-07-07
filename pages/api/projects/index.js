@@ -1,8 +1,7 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 import { parseManifests } from 'utils/helper'
 
-export default async function languageProjectsHandler(req, res) { 
-
+export default async function languageProjectsHandler(req, res) {
   const supabase = createPagesServerClient({ req, res })
 
   const {

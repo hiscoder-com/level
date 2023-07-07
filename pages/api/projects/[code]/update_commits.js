@@ -3,7 +3,6 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default async function updateCommitsHandler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
 
   const {

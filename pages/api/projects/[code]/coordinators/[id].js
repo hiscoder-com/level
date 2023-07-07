@@ -2,7 +2,6 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 /** Это пока что не работает */
 export default async function languageProjectModeratorHandler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
   const {
     query: { code, id },

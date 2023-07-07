@@ -1,7 +1,6 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function briefsToggleHandler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
   const {
     query: { id },

@@ -1,7 +1,6 @@
 import { supabaseService } from 'utils/supabaseServer'
 
-export default async function handler(req, res) { 
-
+export default async function handler(req, res) {
   const { method } = req
 
   switch (method) {

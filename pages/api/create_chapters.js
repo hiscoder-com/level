@@ -3,7 +3,6 @@ import { supabaseService } from 'utils/supabaseServer'
 import { countOfChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
 
   const { method } = req

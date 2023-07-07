@@ -1,7 +1,6 @@
 import { supabaseService } from 'utils/supabaseServer'
 
 export default async function notesHandler(req, res) {
-  
   const { body, method } = req
   switch (method) {
     case 'POST':

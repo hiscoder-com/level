@@ -98,7 +98,6 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
  */
 
 export default async function languagesHandler(req, res) {
- 
   const supabase = createPagesServerClient({ req, res })
   let data = {}
   const {
