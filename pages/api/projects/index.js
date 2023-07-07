@@ -1,6 +1,7 @@
 import { supabase } from 'utils/supabaseClient'
-import { parseManifests } from 'utils/helper'
+import { supabaseService } from 'utils/supabaseServer'
 
+import { parseManifests, validationBrief } from 'utils/helper'
 export default async function languageProjectsHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
@@ -16,20 +17,29 @@ export default async function languageProjectsHandler(req, res) {
       origtitle,
       resources,
       steps,
-      customBriefs,
+      customBriefQuestions,
       isBriefEnable,
     },
     method,
   } = req
+
   switch (method) {
     case 'POST':
       try {
         if (!Object?.keys(resources)?.length) {
-          console.log('object')
           throw { message: 'There is no information about resources' }
         }
-        // вот тут мы делаем валидацию и записываем в 2 таблицы. Какие входные данные - можно самому придумать. Или принять все поля формы, или json просто валидировать
-        // сейчас тут не хватает валидации юрл
+
+        if (
+          Object?.values(resources).filter((el) => el).length !==
+          Object?.keys(resources)?.length
+        ) {
+          throw { message: 'Not all resource fields are filled in' }
+        }
+
+        if (validationBrief(customBriefQuestions)?.error) {
+          throw { message: 'Brief template is not valid' }
+        }
 
         const { data: current_method, error: methodError } = await supabase
           .from('methods')
@@ -39,16 +49,6 @@ export default async function languageProjectsHandler(req, res) {
 
         if (methodError) throw methodError
 
-        /**
-         * Сверить что все методы из ресурса пришли с формы. Так же получаем, какой ресурс основной
-         * После этого получаем и парсим манифесты и записываем в базу.
-         * Выполнить все в одной транзакции, что-то не пройдет надо чтобы ничего не записалось
-         * Взять на пока что список шагов как есть, добавить только айди проекта и порядковый номер шага.
-         * Но надо не забыть, что потом надо брать от юзера измененные тексты с формы создания проекта.
-         * Я просто показываю примерно как все должно быть.
-         * PS. Оказывается что транзакции не поддерживаются, по этому придется просто валидацию делать хорошо. Либо обрабатывать ошибки и удалять созданные записи
-         */
-
         if (
           JSON.stringify(Object.keys(resources).sort()) !==
           JSON.stringify(Object.keys(current_method.resources).sort())
@@ -56,15 +56,20 @@ export default async function languageProjectsHandler(req, res) {
           throw { message: 'Resources not an equal' }
         }
 
-        const { baseResource, newResources } = await parseManifests({
+        const {
+          data: { baseResource, newResources },
+          error: errorManifest,
+        } = await parseManifests({
           resources,
           current_method,
         })
 
-        //TODO когда выбираешь obs, вводишь коммит, а потом выбираешь bible - то летит ключ obs тоже
-        const { data, error } = await supabase.from('projects').insert([
+        if (errorManifest) throw errorManifest
+        
+        const { data: project, error } = await supabase.from('projects').insert([
           {
             title,
+            orig_title: origtitle,
             code,
             language_id,
             type: current_method.type,
@@ -76,23 +81,26 @@ export default async function languageProjectsHandler(req, res) {
             },
           },
         ])
+        
         if (error) throw error
-
-        const { error: errorBrief } = await supabase.rpc('create_brief', {
-          project_id: data[0].id,
+        const { error: briefError } = await supabase.rpc('create_brief', {
+          project_id: project[0].id,
           is_enable: isBriefEnable,
+          data_collection: customBriefQuestions,
         })
-
-        if (errorBrief) throw errorBrief
-
+        if (briefError) {
+          await supabaseService.from('projects').delete().eq('id', project[0].id)
+          throw briefError
+        }
         let sorting = 1
-        for (const step_el of current_method.steps) {
+        for (const step_el of steps) {
           await supabase
             .from('steps')
-            .insert([{ ...step_el, sorting: sorting++, project_id: data[0].id }])
+            .insert([{ ...step_el, sorting: sorting++, project_id: project[0].id }])
         }
-        res.setHeader('Location', `/projects/${data[0].code}`)
+        res.setHeader('Location', `/projects/${project[0].code}`)
         res.status(201).json({})
+        res.status(200).json({})
       } catch (error) {
         return res.status(404).json({ error })
       }

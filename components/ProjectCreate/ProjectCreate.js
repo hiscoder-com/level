@@ -34,7 +34,7 @@ function ProjectCreate() {
   })
   const [method, setMethod] = useState({})
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
-  const [customResources, setCustomResources] = useState('')
+  const [customResources, setCustomResources] = useState({})
   const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [resourcesUrl, setResourcesUrl] = useState({})
   const [customSteps, setCustomSteps] = useState([])
@@ -85,14 +85,16 @@ function ProjectCreate() {
     localStorage.setItem('methods', JSON.stringify(methods))
     setMethods(methods)
   }
+  useEffect(() => {
+    setResourcesUrl({})
+  }, [methodId])
+  
 
   const onSubmit = async (data) => {
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
       return
     }
-    resetMethods()
-    // return
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {

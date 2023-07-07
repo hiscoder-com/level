@@ -246,39 +246,46 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
 
 export const parseManifests = async ({ resources, current_method }) => {
   let baseResource = {}
+  let error = null
   const promises = Object.keys(resources).map(async (el) => {
     const url = resources[el].replace('/src/', '/raw/') + '/manifest.yaml'
-    const { data } = await axios.get(url)
+    let manifest
+    try {
+      const { data } = await axios.get(url)
+      manifest = jsyaml.load(data, { json: true })
+      if (current_method.resources[el]) {
+        baseResource = { books: manifest.projects, name: el }
 
-    const manifest = jsyaml.load(data, { json: true })
-
-    if (current_method.resources[el]) {
-      baseResource = { books: manifest.projects, name: el }
+      }
+    } catch (err) {
+      return { error: err, data: null }
     }
-    return {
-      resource: el,
-      url: resources[el],
-      manifest,
-    }
+    
+    return { resource: el, url: resources[el], manifest  }
   })
-
   const manifests = await Promise.all(promises)
-
   let newResources = {}
-  manifests.forEach((el) => {
-    const url = el.url.split('://')[1].split('/')
-    newResources[el.resource] = {
+
+  for (const data of manifests) {
+    if (data.error) {
+      return { error: data.error }
+    }
+
+    const url = data.url.split('://')[1].split('/')
+
+    newResources[data.resource] = {
       owner: url[1],
       repo: url[2],
       commit: url[5],
-      manifest: el.manifest,
+      manifest: data.manifest,
     }
-  })
+  }
   baseResource.books = baseResource.books.map((el) => ({
     name: el.identifier,
     link: resources[baseResource.name].replace('/src/', '/raw/') + el.path.substring(1),
   }))
-  return { baseResource, newResources }
+
+  return { data: { baseResource, newResources }, error }
 }
 
 export const countOfChaptersAndVerses = async ({ link, book_code }) => {
@@ -461,4 +468,34 @@ export function filterNotes(newNote, verse, notes) {
   } else {
     notes[verse].push(newNote)
   }
+}
+
+export const validationBrief = (brief_data) => {
+  if (!brief_data) {
+    return { error: 'Properties is null or undefined' }
+  }
+  if (Array.isArray(brief_data)) {
+    const isValidKeys = brief_data.find((briefObj) => {
+      const isNotValid =
+        JSON.stringify(Object.keys(briefObj).sort()) !==
+        JSON.stringify(['block', 'id', 'resume', 'title'].sort())
+      if (isNotValid) {
+        return isNotValid
+      } else {
+        briefObj.block?.forEach((blockObj) => {
+          if (
+            JSON.stringify(Object.keys(blockObj).sort()) !==
+            JSON.stringify(['question', 'answer'].sort())
+          ) {
+            return { error: 'brief_data.block has different keys', blockObj }
+          }
+        })
+      }
+    })
+    if (isValidKeys) {
+      return { error: 'brief_data has different keys', isValidKeys }
+    }
+  }
+
+  return { error: null }
 }
