@@ -26,7 +26,6 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
       setTextModal(t('BookCreationError'))
       setTimeout(reset, 2000)
     }
-    axios.defaults.headers.common['token'] = user?.access_token
     try {
       setIsCreating(true)
       setTextModal(t('BookIsCreating'))

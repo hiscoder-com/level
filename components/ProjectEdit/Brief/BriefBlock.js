@@ -42,7 +42,6 @@ function BriefBlock({ access }) {
   }, [brief, briefDataCollection])
 
   const saveToDatabase = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
@@ -95,7 +94,6 @@ function BriefBlock({ access }) {
 
   const handleSwitch = () => {
     if (brief) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
         .then(mutate)

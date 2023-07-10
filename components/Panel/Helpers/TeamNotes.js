@@ -55,7 +55,6 @@ function TeamNotes() {
     code,
   })
   const saveNote = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/team_notes/${activeNote?.id}`, activeNote)
       .then(() => {
@@ -76,7 +75,6 @@ function TeamNotes() {
 
   const addNote = () => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/team_notes', { id, project_id: project?.id })
       .then(() => mutate())
@@ -84,7 +82,6 @@ function TeamNotes() {
   }
 
   const removeNote = (id) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/team_notes/${id}`)
       .then(() => {

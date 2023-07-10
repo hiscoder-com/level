@@ -383,7 +383,6 @@ export const saveCacheNote = (key, note, user) => {
   const cache = JSON.parse(localStorage.getItem(key))
   if (!note?.data?.blocks?.length) {
     if (cache?.[note.id]?.length) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post(`/api/logs`, {
           message: `${key} saved empty`,

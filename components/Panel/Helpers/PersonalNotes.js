@@ -48,7 +48,6 @@ function PersonalNotes() {
   }
 
   const saveNote = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/personal_notes/${noteId}`, activeNote)
       .then(() => {
@@ -68,7 +67,6 @@ function PersonalNotes() {
 
   const addNote = () => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/personal_notes', { id, user_id: user.id })
       .then(() => mutate())
@@ -76,7 +74,6 @@ function PersonalNotes() {
   }
 
   const removeNote = (id) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/personal_notes/${id}`)
       .then(() => {
@@ -98,7 +95,6 @@ function PersonalNotes() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNote])
   const removeAllNote = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/personal_notes`, { data: { user_id: user?.id } })
       .then(() => {

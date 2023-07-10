@@ -73,7 +73,6 @@ function ProjectCreate() {
       return
     }
 
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {
         isBriefEnable,

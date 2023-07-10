@@ -120,7 +120,6 @@ function CommandEditor({ config }) {
         return prev
       }
       prev[id].verse = text
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/save_verse`, { id: prev[id].verse_id, text })
         .then()
