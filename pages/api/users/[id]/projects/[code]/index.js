@@ -2,13 +2,11 @@ import supabaseApi from 'utils/supabaseServer'
 
 /** TODO тоже переделать */
 export default async function userProjectHandler(req, res) {
-  const supabase = supabaseApi({ req, res })
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-
-  if (!session) {
-    return res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
   const {
     query: { code, id },
