@@ -1,10 +1,6 @@
-import { supabaseService } from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 
 export default async function handler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
-  }
-
   const { method } = req
 
   switch (method) {

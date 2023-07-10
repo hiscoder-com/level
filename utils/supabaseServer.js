@@ -1,10 +1,13 @@
-import { createClient } from '@supabase/supabase-js'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY
+const supabaseApi = ({ req, res }) =>
+  createPagesServerClient(
+    { req, res },
+    {
+      cookieOptions: {
+        name: process.env.NEXT_PUBLIC_COOKIE_NAME ?? 'sb-vcana-cookies',
+      },
+    }
+  )
 
-export const supabaseService = createClient(supabaseUrl, supabaseServiceKey, {
-  auth: {
-    persistSession: false,
-  },
-})
+export default supabaseApi

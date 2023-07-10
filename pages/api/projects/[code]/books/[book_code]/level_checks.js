@@ -1,5 +1,5 @@
-import { supabaseService } from 'utils/supabaseServer'
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import { supabaseService } from 'utils/supabaseService'
+import supabaseApi from 'utils/supabaseServer'
 
 const validation = (level_checks) => {
   const error = null
@@ -27,11 +27,14 @@ const validation = (level_checks) => {
 }
 
 export default async function bookLevelChecksHandler(req, res) {
-  if (!req?.headers?.token) {
+  const supabase = supabaseApi({ req, res })
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-  const supabase = createPagesServerClient({ req, res })
-
   const {
     query: { book_code },
     body: { level_checks, project_id, user_id },

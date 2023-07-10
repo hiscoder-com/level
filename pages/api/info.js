@@ -1,4 +1,4 @@
-import { supabaseService } from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 
 export default async function info(req, res) {
   const { method } = req

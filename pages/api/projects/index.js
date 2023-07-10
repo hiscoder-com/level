@@ -1,13 +1,15 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import supabaseApi from 'utils/supabaseServer'
 import { parseManifests } from 'utils/helper'
 
 export default async function languageProjectsHandler(req, res) {
-  if (!req?.headers?.token) {
+  const supabase = supabaseApi({ req, res })
+  const {
+    data: { session },
+  } = await supabase.auth.getSession()
+
+  if (!session) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-
-  const supabase = createPagesServerClient({ req, res })
-
   const {
     body: {
       language_id,
