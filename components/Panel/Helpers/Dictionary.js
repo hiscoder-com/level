@@ -61,11 +61,9 @@ function Dictionary() {
   } = useRouter()
 
   const [project, { mutate }] = useProject({
-    token: user?.access_token,
     code,
   })
   const [{ isModeratorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code,
   })

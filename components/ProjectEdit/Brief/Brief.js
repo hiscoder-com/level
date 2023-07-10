@@ -10,7 +10,6 @@ import { Switch } from '@headlessui/react'
 import axios from 'axios'
 
 import { useGetBrief, useProject } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import BriefResume from './BriefResume'
@@ -24,13 +23,11 @@ function Brief({ access }) {
   const {
     query: { code },
   } = useRouter()
-  const { user } = useCurrentUser()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const { t } = useTranslation(['common', 'project-edit'])
 
   const [brief, { mutate }] = useGetBrief({
-    token: user?.access_token,
     project_id: project?.id,
   })
 

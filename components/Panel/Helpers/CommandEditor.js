@@ -33,9 +33,8 @@ function CommandEditor({ config }) {
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
 
-  const [currentProject] = useProject({ token: user?.access_token, code: project })
+  const [currentProject] = useProject({ code: project })
   const [chapter] = useGetChapter({
-    token: user?.access_token,
     code: project,
     book_code: book,
     chapter_id: chapter_num,

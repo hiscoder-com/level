@@ -24,10 +24,9 @@ function ResourceSettings() {
   const {
     query: { code },
   } = useRouter()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const [resources] = useGetProjectResources({
-    token: user?.access_token,
     code,
   })
 

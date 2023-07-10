@@ -28,9 +28,7 @@ function ProjectCreate() {
 
   const [languages] = useLanguages(user?.access_token)
   const [methods] = useMethod(user?.access_token)
-  const [_, { mutate: mutateProjects }] = useProjects({
-    token: user?.access_token,
-  })
+  const [, { mutate: mutateProjects }] = useProjects()
   const {
     register,
     handleSubmit,

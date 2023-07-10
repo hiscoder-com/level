@@ -44,13 +44,11 @@ function TeamNotes() {
   const {
     query: { project: code },
   } = useRouter()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
   const [notes, { mutate }] = useTeamNotes({
-    token: user?.access_token,
     project_id: project?.id,
   })
   const [{ isModeratorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code,
   })

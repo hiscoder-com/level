@@ -26,9 +26,8 @@ function ProjectEdit() {
 
   const [users] = useUsers(user?.access_token)
 
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code: project?.code,
   })

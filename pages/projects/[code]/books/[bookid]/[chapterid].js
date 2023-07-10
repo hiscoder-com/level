@@ -19,7 +19,6 @@ import {
   useProject,
   useTranslators,
 } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
 
 import Button from 'components/Button'
 import Card from 'components/Project/Card'
@@ -56,24 +55,20 @@ function ChapterVersesPage() {
     query: { code, bookid, chapterid },
   } = useRouter()
   const { t } = useTranslation(['common', 'chapters'])
-  const { user } = useCurrentUser()
 
-  const [project] = useProject({ token: user?.access_token, code })
-  const [book] = useGetBook({ token: user?.access_token, code, book_code: bookid })
+  const [project] = useProject({ code })
+  const [book] = useGetBook({ code, book_code: bookid })
   const [chapter, { isLoading, mutate: mutateChapter, isValidating }] = useGetChapter({
-    token: user?.access_token,
     code,
     book_code: bookid,
     chapter_id: chapterid,
   })
   const [, { mutate: mutateChapters }] = useGetChapters({
-    token: user?.access_token,
     code,
     book_code: bookid,
   })
 
   const [verses, { mutate: mutateVerses }] = useGetVerses({
-    token: user?.access_token,
     code,
     book_code: bookid,
     chapter_id: chapter?.id,
@@ -111,7 +106,6 @@ function ChapterVersesPage() {
   const [isHighlight, setIsHighlight] = useState(false)
 
   const [_translators] = useTranslators({
-    token: user?.access_token,
     code,
   })
 
