@@ -11,12 +11,15 @@ import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
 
-import { useAccess, useGetSteps, useProject, useUsers } from 'utils/hooks'
+import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import Steps from 'components/ProjectCreate/Steps'
 import { supabase } from 'utils/supabaseClient'
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
+import BasicInformation from 'components/ProjectCreate/BasicInformation'
+import { useForm } from 'react-hook-form'
+import LanguageCreate from 'components/ProjectCreate/LanguageCreate'
 
 function ProjectEdit() {
   const {
@@ -26,10 +29,13 @@ function ProjectEdit() {
   } = useRouter()
   const { t } = useTranslation()
   const [customSteps, setCustomSteps] = useState([])
+  const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
 
   const { user } = useCurrentUser()
 
   const [users] = useUsers(user?.access_token)
+  const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
+
   const [steps] = useGetSteps({ token: user?.access_token, code })
   const [project] = useProject({ token: user?.access_token, code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }] = useAccess({
@@ -37,38 +43,132 @@ function ProjectEdit() {
     user_id: user?.id,
     code: project?.code,
   })
+  const defaults = useMemo(
+    () => ({
+      title: project?.title,
+      origtitle: project?.orig_title,
+      code: project?.code,
+      languageId: project?.languages.id,
+    }),
+    [project?.title, project?.orig_title, project?.code, project?.languages.id]
+  )
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    mode: 'onChange',
+    defaultValues: defaults,
+  })
+  const onSubmit = async (data) => {
+    console.log(data)
+    const { title, code, languageId, origtitle } = data
+    if (!title || !code || !languageId) {
+      return
+    }
+  }
+  useEffect(() => {
+    reset(defaults)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [defaults])
+
+  const updateStep = ({ ref, index }) => {
+    const _steps = customSteps.map((obj, idx) => {
+      if (index === idx) {
+        return { ...obj, ...ref }
+      }
+
+      return obj
+    })
+    setCustomSteps(_steps)
+  }
   const tabs = useMemo(
     () =>
       [
-        { id: 'general', access: isAdminAccess, label: 'project-edit:General' },
-        { id: 'brief', access: true, label: 'project-edit:Brief' },
-        { id: 'participants', access: isModeratorAccess, label: 'Participants' },
+        {
+          id: 'general',
+          access: isAdminAccess,
+          label: 'project-edit:General',
+          panel: (
+            <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
+              <p className="text-xl font-bold mb-5">Основная информация</p>
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <BasicInformation
+                  register={register}
+                  errors={{}}
+                  user={user}
+                  setIsOpenLanguageCreate={setIsOpenLanguageCreate}
+                />
+                <input
+                  className="btn-secondary btn-filled"
+                  type="submit"
+                  value={t('Save')}
+                />
+              </form>
+            </div>
+          ),
+        },
+        {
+          id: 'brief',
+          access: true,
+          label: 'project-edit:Brief',
+          panel: <Brief access={isCoordinatorAccess} />,
+        },
+        {
+          id: 'participants',
+          access: isModeratorAccess,
+          label: 'Participants',
+          panel: (
+            <Participants
+              user={user}
+              users={users}
+              access={{ isCoordinatorAccess, isAdminAccess }}
+            />
+          ),
+        },
         {
           id: 'resources',
           access: isAdminAccess,
           label: 'Resources',
+          panel: <ResourceSettings />,
         },
         {
           id: 'steps',
           access: isAdminAccess,
           label: 'Steps',
+          panel: (
+            <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
+              <p className="text-xl font-bold mb-5">Шаги</p>
+              <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
+              <button
+                className="w-fit btn-secondary btn-filled"
+                onClick={() => updateDB({ steps: customSteps })}
+              >
+                Save
+              </button>
+            </div>
+          ),
         },
         {
           id: 'briefLocale',
           access: isAdminAccess,
           label: 'BriefLocalization',
+          panel: <></>,
         },
       ].filter((el) => el.access),
-    [isAdminAccess, isModeratorAccess]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [customSteps, isAdminAccess, isCoordinatorAccess, isModeratorAccess, user, users]
   )
-  const idTabs = tabs.map((tab) => tab.id)
+
+  const idTabs = useMemo(() => tabs.map((tab) => tab.id), [tabs])
+
   const updateDB = async ({ steps }) => {
     const _steps = steps.map((el) => {
       const { id, description, intro, title } = el
       return { id, description, intro, title }
     })
-    // console.log(_steps)
-    // return
+
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/projects/${code}/steps`, {
@@ -84,21 +184,8 @@ function ProjectEdit() {
       })
   }
 
-  const updateStep = ({ ref, index }) => {
-    const _steps = customSteps.map((obj, idx) => {
-      if (index === idx) {
-        return { ...obj, ...ref }
-      }
-
-      return obj
-    })
-    // localStorage.setItem('methods', JSON.stringify(_methods))
-    setCustomSteps(_steps)
-  }
-
   useEffect(() => {
     if (steps) {
-      // console.log(steps)
       setCustomSteps(steps)
     }
     // const getSteps = async () => {
@@ -112,8 +199,9 @@ function ProjectEdit() {
     //   getSteps()
     // }
   }, [steps])
-  console.log({ customSteps })
-  console.log(steps)
+
+  // console.log(project)
+
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
       <Breadcrumbs
@@ -150,37 +238,37 @@ function ProjectEdit() {
             </Tab.List>
 
             <Tab.Panels>
+              {tabs.map((tab, index) => (
+                <Tab.Panel key={index}>{tab.panel}</Tab.Panel>
+              ))}
               <Tab.Panel>
-                <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
+                {/* <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
                   <p className="text-xl font-bold mb-5">Основная информация</p>
-                  <GeneralInformation project={project} />
-                </div>
+                  <form onSubmit={handleSubmit(onSubmit)}>
+                    <BasicInformation
+                      register={register}
+                      errors={{}}
+                      user={user}
+                      setIsOpenLanguageCreate={setIsOpenLanguageCreate}
+                    />
+                    <input
+                      className="btn-secondary btn-filled"
+                      type="submit"
+                      value={t('Save')}
+                    />
+                  </form>
+                </div> */}
               </Tab.Panel>
+              <Tab.Panel>{/* <Brief access={isCoordinatorAccess} /> */}</Tab.Panel>
               <Tab.Panel>
-                <Brief access={isCoordinatorAccess} />
-              </Tab.Panel>
-              <Tab.Panel>
-                <Participants
+                {/* <Participants
                   user={user}
                   users={users}
                   access={{ isCoordinatorAccess, isAdminAccess }}
-                />
+                /> */}
               </Tab.Panel>
-              <Tab.Panel>
-                <ResourceSettings />
-              </Tab.Panel>
-              <Tab.Panel>
-                <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
-                  <p className="text-xl font-bold mb-5">Шаги</p>
-                  <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
-                  <button
-                    className="w-fit btn-secondary btn-filled"
-                    onClick={() => updateDB({ steps: customSteps })}
-                  >
-                    Save
-                  </button>
-                </div>
-              </Tab.Panel>
+              <Tab.Panel></Tab.Panel>
+              <Tab.Panel></Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         )}
@@ -194,33 +282,16 @@ function ProjectEdit() {
         />
         <ResourceSettings />
       </div>
+      <LanguageCreate
+        user={user}
+        t={t}
+        isOpen={isOpenLanguageCreate}
+        closeHandle={() => setIsOpenLanguageCreate(false)}
+        mutateLanguage={mutateLanguage}
+        languages={languages}
+      />
     </div>
   )
 }
 
 export default ProjectEdit
-
-function GeneralInformation({ project }) {
-  console.log(project)
-  // const inputs = [
-  //   { title: 'Название проекта', value: nameProject },
-  //   { title: 'Название на целевом языке', value: targetNameProject },
-  //   { title: 'Код проекта', value: codeProject },
-  //   { title: 'Язык проекта', value: languageProject },
-  // ]
-  return (
-    <>
-      {project &&
-        Object.keys(project)
-          .filter((key) => ['title', 'orig_title', 'code', 'languages'].includes(key))
-          .map((key) => (
-            <div className="flex gap-2 items-center" key={key}>
-              <div className="w-1/4 font-bold">{key}</div>
-              <div className="flex flex-col gap-2 w-3/4">
-                <input className="input-primary" value={project[key]} />
-              </div>
-            </div>
-          ))}
-    </>
-  )
-}

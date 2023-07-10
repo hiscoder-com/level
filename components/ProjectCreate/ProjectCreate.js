@@ -88,8 +88,6 @@ function ProjectCreate() {
   useEffect(() => {
     setResourcesUrl({})
   }, [methodId])
-  
-
   const onSubmit = async (data) => {
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
@@ -166,7 +164,7 @@ function ProjectCreate() {
 
   return (
     <>
-      <div className="py-0 sm:py-10">
+      <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <div className="card space-y-7 py-7">
             <p className="text-xl font-bold">{t('project-edit:BasicInformation')}</p>
@@ -178,7 +176,7 @@ function ProjectCreate() {
               user={user}
               methods={methods}
               setIsOpenLanguageCreate={setIsOpenLanguageCreate}
-              languages={languages}
+              uniqueCheck
             />
           </div>
           <div className="card flex flex-col gap-7 py-7">

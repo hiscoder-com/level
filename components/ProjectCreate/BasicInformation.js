@@ -7,21 +7,16 @@ import Plus from '/public/plus.svg'
 function BasicInformation({
   errors,
   register,
-  setValue,
   user,
   methods,
   setIsOpenLanguageCreate,
+  uniqueCheck = false,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const [projects, { mutate: mutateProjects }] = useProjects({
     token: user?.access_token,
   })
   const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
-  useEffect(() => {
-    if (languages) {
-      setValue('languageId', languages?.[0]?.id)
-    }
-  }, [languages, setValue])
   const inputs = [
     {
       id: 1,
@@ -57,7 +52,8 @@ function BasicInformation({
           required: true,
           validate: {
             wrongTypeCode: (value) => /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i.test(value),
-            notUniqueProject: (value) => !projects?.find((el) => el.code === value),
+            notUniqueProject: (value) =>
+              uniqueCheck ? !projects?.find((el) => el.code === value) : true,
           },
         }),
       },
@@ -117,26 +113,28 @@ function BasicInformation({
             </div>
           </div>
         </div>
-        <div className="flex gap-2 items-center">
-          <div className="w-1/5 font-bold">{t('Method')}</div>
-          <div className="w-4/5">
-            <select
-              placeholder={t('Method')}
-              {...register('methodId')}
-              className="input-primary w-3/4"
-              defaultValue={methods?.[0]?.id}
-            >
-              {methods &&
-                methods.map((el) => {
-                  return (
-                    <option key={el.id} value={el.id}>
-                      {el.title} ({el.type})
-                    </option>
-                  )
-                })}
-            </select>
+        {methods && (
+          <div className="flex gap-2 items-center">
+            <div className="w-1/5 font-bold">{t('Method')}</div>
+            <div className="w-4/5">
+              <select
+                placeholder={t('Method')}
+                {...register('methodId')}
+                className="input-primary w-3/4"
+                defaultValue={methods?.[0]?.id}
+              >
+                {methods &&
+                  methods.map((el) => {
+                    return (
+                      <option key={el.id} value={el.id}>
+                        {el.title} ({el.type})
+                      </option>
+                    )
+                  })}
+              </select>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </>
   )
