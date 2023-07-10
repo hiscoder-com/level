@@ -4,22 +4,22 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import axios from 'axios'
+import { toast } from 'react-hot-toast'
+import { useForm } from 'react-hook-form'
+
 import { Tab } from '@headlessui/react'
 
 import Brief from './Brief/BriefBlock'
 import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
+import Steps from 'components/ProjectCreate/Steps'
+import BasicInformation from 'components/ProjectCreate/BasicInformation'
+import LanguageCreate from 'components/ProjectCreate/LanguageCreate'
 
 import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import Steps from 'components/ProjectCreate/Steps'
-import { supabase } from 'utils/supabaseClient'
-import axios from 'axios'
-import { toast } from 'react-hot-toast'
-import BasicInformation from 'components/ProjectCreate/BasicInformation'
-import { useForm } from 'react-hook-form'
-import LanguageCreate from 'components/ProjectCreate/LanguageCreate'
 
 function ProjectEdit() {
   const {
@@ -36,7 +36,10 @@ function ProjectEdit() {
   const [users] = useUsers(user?.access_token)
   const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
 
-  const [steps] = useGetSteps({ token: user?.access_token, code })
+  const [steps, { mutate: mutateSteps }] = useGetSteps({
+    token: user?.access_token,
+    code,
+  })
   const [project] = useProject({ token: user?.access_token, code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }] = useAccess({
     token: user?.access_token,
@@ -61,8 +64,7 @@ function ProjectEdit() {
     mode: 'onChange',
     defaultValues: defaults,
   })
-  const onSubmit = async (data) => {
-    console.log(data)
+  const onSubmitBasic = async (data) => {
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
       return
@@ -72,11 +74,29 @@ function ProjectEdit() {
     reset(defaults)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [defaults])
+  const saveStepToDb = async (updatedStep) => {
+    const updatedPartStep = ['title', 'intro', 'description'].reduce(
+      (acc, key) => ({ ...acc, [key]: updatedStep[key] }),
+      {}
+    )
 
-  const updateStep = ({ ref, index }) => {
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .put(`/api/projects/${code}/steps/${updatedStep?.id}`, {
+        updatedPartStep,
+      })
+      .then()
+      .catch((err) => {
+        toast.error(t('SaveFailed'))
+      })
+  }
+
+  const updateStep = ({ ref, index, id }) => {
     const _steps = customSteps.map((obj, idx) => {
       if (index === idx) {
-        return { ...obj, ...ref }
+        const updatedStep = { ...obj, ...ref }
+        saveStepToDb(updatedStep)
+        return updatedStep
       }
 
       return obj
@@ -91,20 +111,16 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:General',
           panel: (
-            <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
-              <p className="text-xl font-bold mb-5">Основная информация</p>
-              <form onSubmit={handleSubmit(onSubmit)}>
+            <div className="card flex flex-col gap-7 border-y border-slate-900 py-2">
+              <p className="text-xl font-bold">Основная информация</p>
+              <form className="space-y-7" onSubmit={handleSubmit(onSubmitBasic)}>
                 <BasicInformation
                   register={register}
                   errors={{}}
                   user={user}
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                 />
-                <input
-                  className="btn-secondary btn-filled"
-                  type="submit"
-                  value={t('Save')}
-                />
+                <input className="btn-primary" type="submit" value={t('Save')} />
               </form>
             </div>
           ),
@@ -138,23 +154,17 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'Steps',
           panel: (
-            <div className="card flex flex-col gap-2 border-y border-slate-900 py-7">
-              <p className="text-xl font-bold mb-5">Шаги</p>
-              <Steps customSteps={customSteps} updateStep={updateStep} t={t} />
+            <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
+              <p className="text-xl font-bold">Шаги</p>
+              <Steps customSteps={customSteps} updateCollection={updateStep} t={t} />
               <button
                 className="w-fit btn-secondary btn-filled"
                 onClick={() => updateDB({ steps: customSteps })}
               >
-                Save
+                {t('Save')}
               </button>
             </div>
           ),
-        },
-        {
-          id: 'briefLocale',
-          access: isAdminAccess,
-          label: 'BriefLocalization',
-          panel: <></>,
         },
       ].filter((el) => el.access),
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -241,34 +251,6 @@ function ProjectEdit() {
               {tabs.map((tab, index) => (
                 <Tab.Panel key={index}>{tab.panel}</Tab.Panel>
               ))}
-              <Tab.Panel>
-                {/* <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
-                  <p className="text-xl font-bold mb-5">Основная информация</p>
-                  <form onSubmit={handleSubmit(onSubmit)}>
-                    <BasicInformation
-                      register={register}
-                      errors={{}}
-                      user={user}
-                      setIsOpenLanguageCreate={setIsOpenLanguageCreate}
-                    />
-                    <input
-                      className="btn-secondary btn-filled"
-                      type="submit"
-                      value={t('Save')}
-                    />
-                  </form>
-                </div> */}
-              </Tab.Panel>
-              <Tab.Panel>{/* <Brief access={isCoordinatorAccess} /> */}</Tab.Panel>
-              <Tab.Panel>
-                {/* <Participants
-                  user={user}
-                  users={users}
-                  access={{ isCoordinatorAccess, isAdminAccess }}
-                /> */}
-              </Tab.Panel>
-              <Tab.Panel></Tab.Panel>
-              <Tab.Panel></Tab.Panel>
             </Tab.Panels>
           </Tab.Group>
         )}

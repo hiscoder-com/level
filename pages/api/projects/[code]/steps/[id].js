@@ -39,15 +39,16 @@ import { supabase } from 'utils/supabaseClient'
 //   return { error }
 // }
 
-export default async function bookPropertiesHandler(req, res) {
+export default async function stepsHandler(req, res) {
   if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  let data = {}
+  supabase.auth.setAuth(req.headers.token)
 
+  let data = {}
   const {
-    query: { id, code },
-    body,
+    query: { code, id },
+    body: { updatedPartStep },
     method,
   } = req
 
@@ -73,41 +74,20 @@ export default async function bookPropertiesHandler(req, res) {
   //   return
   // }
   switch (method) {
-    case 'GET':
-      try {
-        const { data: value, error } = await supabase
-          .from('steps')
-          .select(
-            'id, projects!inner(code), description, intro, title, count_of_users, time, config'
-          )
-          .eq('projects.code', code)
-          .order('sorting', { ascending: true })
-        if (error) throw error
-        data = value
-      } catch (error) {
-        console.log({ error })
-        res.status(404).json({ error })
-        return
-      }
-      res.status(200).json(data)
-      break
     case 'PUT':
-      const project_id = body
       try {
-        // return
-        const { data, error } = await supabaseService.from('steps').upsert(body._steps)
-        // .match({ project_id })
+        const { data, error } = await supabaseService
+          .from('steps')
+          .update({ ...updatedPartStep })
+          .match({ id })
         if (error) throw error
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json({ success: true })
-
-      break
+      return res.status(200).json({ success: true })
 
     default:
-      res.setHeader('Allow', ['GET', 'PUT'])
+      res.setHeader('Allow', ['GET'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
