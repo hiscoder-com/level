@@ -47,7 +47,6 @@ export default async function stepsHandler(req, res) {
   supabase.auth.setAuth(req.headers.token)
 
   let data = {}
-  console.log('object')
   const {
     query: { code },
     body,

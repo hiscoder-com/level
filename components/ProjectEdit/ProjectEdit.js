@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form'
 
 import { Tab } from '@headlessui/react'
 
-import Brief from './Brief/BriefBlock'
+import Brief from './Brief/Brief'
 import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
@@ -40,40 +40,70 @@ function ProjectEdit() {
     token: user?.access_token,
     code,
   })
-  const [project] = useProject({ token: user?.access_token, code })
-  const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }] = useAccess({
+  const [project, { mutate: mutateProject }] = useProject({
     token: user?.access_token,
-    user_id: user?.id,
-    code: project?.code,
+    code,
   })
+  const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess, isTranslatorAccess }] =
+    useAccess({
+      token: user?.access_token,
+      user_id: user?.id,
+      code: project?.code,
+    })
   const defaults = useMemo(
     () => ({
       title: project?.title,
       origtitle: project?.orig_title,
       code: project?.code,
-      languageId: project?.languages.id,
+      languageId: project?.languages?.id,
     }),
-    [project?.title, project?.orig_title, project?.code, project?.languages.id]
+    [project?.title, project?.orig_title, project?.code, project?.languages?.id]
   )
   const {
     register,
     handleSubmit,
     formState: { errors },
-    reset,
+    getValues,
   } = useForm({
     mode: 'onChange',
-    defaultValues: defaults,
+    values: defaults,
+    resetOptions: {
+      keepDirtyValues: true,
+    },
   })
-  const onSubmitBasic = async (data) => {
-    const { title, code, languageId, origtitle } = data
-    if (!title || !code || !languageId) {
+  const errorsBasicInfo = { errors }
+  const saveBasicToDb = async (basicInfo) => {
+    const { title, code: codeProject, languageId, origtitle } = basicInfo
+    if (!title || !codeProject || !languageId || !origtitle) {
       return
     }
+
+    axios.defaults.headers.common['token'] = user?.access_token
+    axios
+      .put(`/api/projects/${code}`, {
+        title,
+        code: codeProject,
+        language_id: languageId,
+        orig_title: origtitle,
+      })
+      .then(() => {
+        mutateProject()
+        if (codeProject !== code) {
+          replace(
+            {
+              pathname: `/projects/${codeProject}/edit`,
+              query: { setting: 'general' },
+            },
+            undefined,
+            { shallow: true }
+          )
+        }
+      })
+      .catch((err) => {
+        toast.error(t('SaveFailed'))
+      })
   }
-  useEffect(() => {
-    reset(defaults)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [defaults])
+
   const saveStepToDb = async (updatedStep) => {
     const updatedPartStep = ['title', 'intro', 'description'].reduce(
       (acc, key) => ({ ...acc, [key]: updatedStep[key] }),
@@ -91,7 +121,7 @@ function ProjectEdit() {
       })
   }
 
-  const updateStep = ({ ref, index, id }) => {
+  const updateStep = ({ ref, index }) => {
     const _steps = customSteps.map((obj, idx) => {
       if (index === idx) {
         const updatedStep = { ...obj, ...ref }
@@ -103,6 +133,7 @@ function ProjectEdit() {
     })
     setCustomSteps(_steps)
   }
+
   const tabs = useMemo(
     () =>
       [
@@ -113,12 +144,13 @@ function ProjectEdit() {
           panel: (
             <div className="card flex flex-col gap-7 border-y border-slate-900 py-2">
               <p className="text-xl font-bold">Основная информация</p>
-              <form className="space-y-7" onSubmit={handleSubmit(onSubmitBasic)}>
+              <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
                   register={register}
-                  errors={{}}
+                  errors={errors}
                   user={user}
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
+                  uniqueCheck={!(getValues('code') === code)}
                 />
                 <input className="btn-primary" type="submit" value={t('Save')} />
               </form>
@@ -127,7 +159,7 @@ function ProjectEdit() {
         },
         {
           id: 'brief',
-          access: true,
+          access: isTranslatorAccess,
           label: 'project-edit:Brief',
           panel: <Brief access={isCoordinatorAccess} />,
         },
@@ -167,8 +199,18 @@ function ProjectEdit() {
           ),
         },
       ].filter((el) => el.access),
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [customSteps, isAdminAccess, isCoordinatorAccess, isModeratorAccess, user, users]
+    [
+      isAdminAccess,
+      errorsBasicInfo,
+      user,
+      isTranslatorAccess,
+      isCoordinatorAccess,
+      isModeratorAccess,
+      users,
+      customSteps,
+    ]
   )
 
   const idTabs = useMemo(() => tabs.map((tab) => tab.id), [tabs])
@@ -198,20 +240,8 @@ function ProjectEdit() {
     if (steps) {
       setCustomSteps(steps)
     }
-    // const getSteps = async () => {
-    //   const { data, error } = await supabase
-    //     .from('steps')
-    //     .select('*')
-    //     .eq('project_id', project.id)
-    //   setCustomSteps(data)
-    // }
-    // if (project) {
-    //   getSteps()
-    // }
   }, [steps])
-
-  // console.log(project)
-
+  const index = useMemo(() => idTabs.indexOf(setting), [idTabs, setting])
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
       <Breadcrumbs
@@ -221,10 +251,9 @@ function ProjectEdit() {
         ]}
         full
       />
-
       <div className="hidden sm:flex flex-col gap-7">
         {user?.id && (
-          <Tab.Group defaultIndex={idTabs.indexOf(setting)}>
+          <Tab.Group defaultIndex={tabs.length ? index : 0}>
             <Tab.List className="grid grid-cols-3 md:grid-cols-6 xl:grid-cols-9 gap-4 mt-2 lg:text-lg font-bold text-center border-b border-slate-600">
               {tabs.map((tab) => (
                 <Tab

@@ -1,14 +1,15 @@
 import { supabase } from 'utils/supabaseClient'
 
-export default async function languageProjectHandler(req, res) {
+export default async function projectHandler(req, res) {
   if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+    return res.status(401).json({ error: 'Access denied!' })
   }
   supabase.auth.setAuth(req.headers.token)
 
   let data = {}
   const {
     query: { code },
+    body: basicInfo,
     method,
   } = req
   switch (method) {
@@ -24,13 +25,31 @@ export default async function languageProjectHandler(req, res) {
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json({ ...data })
+      return res.status(200).json({ ...data })
       break
+    case 'PUT':
+      try {
+        const { data: project, errorGetProject } = await supabase
+          .from('projects')
+          .select('id')
+          .eq('code', code)
+          .maybeSingle()
+        if (errorGetProject) throw errorGetProject
+        const { data: value, error } = await supabase
+          .from('projects')
+          .update(basicInfo)
+          .eq('id', project.id)
+        if (error) throw error
+        data = value
+      } catch (error) {
+        return res.status(404).json({ error })
+      }
+      return res.status(200).json({ data })
+
     default:
       res.setHeader('Allow', ['GET'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
