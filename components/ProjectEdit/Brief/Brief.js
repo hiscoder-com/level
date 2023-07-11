@@ -16,8 +16,9 @@ import { supabase } from 'utils/supabaseClient'
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 
-function Brief({ access }) {
-  const [briefDataCollection, setBriefDataCollection] = useState('')
+function BriefBlock({ access }) {
+  const [briefDataCollection, setBriefDataCollection] = useState([])
+  const [hidden, setHidden] = useState(true)
 
   const {
     query: { code },
@@ -33,7 +34,7 @@ function Brief({ access }) {
   })
 
   useEffect(() => {
-    if (!briefDataCollection && brief?.data_collection) {
+    if (briefDataCollection.length == 0 && brief?.data_collection) {
       setBriefDataCollection(brief.data_collection)
     }
   }, [brief, briefDataCollection])
@@ -88,6 +89,7 @@ function Brief({ access }) {
       return prev
     })
   }
+
   const handleSwitch = () => {
     if (brief) {
       axios.defaults.headers.common['token'] = user?.access_token
@@ -100,8 +102,8 @@ function Brief({ access }) {
   return (
     <div className="card">
       <div className="flex flex-col gap-7">
-        <div className="flex justify-between">
-          <h3 className="text-2xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
+        <div className="flex flex-col sm:flex-row justify-between gap-7">
+          <h3 className="text-xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
           <div>
             {access && (
               <div className="flex">
@@ -126,80 +128,55 @@ function Brief({ access }) {
             )}
           </div>
         </div>
-        {briefDataCollection && (
-          <div className="flex flex-col md:flex-row gap-4 w-full mb-4">
-            <div className="w-full md:w-1/3">
-              <p className="mb-4 text-xl font-bold">{t('Questions')}</p>
-              <div className="text-sm bg-white">
-                {briefDataCollection.map((briefItem, index) => {
-                  const questionTitle = `${briefItem.id}. ${briefItem.title}`
-                  return (
-                    <div
-                      key={index}
-                      className={`${
-                        briefItem.id >= briefDataCollection.length
-                          ? ''
-                          : 'border-b-2 mb-2 pb-2 mr-2 leading-6'
-                      }`}
-                    >
-                      <p className="text-lg font-bold">{questionTitle}</p>
-                      <ul className="list-disc px-4">
-                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                          return (
-                            <li key={blockIndex}>{questionAndAnswerPair.question}</li>
-                          )
-                        })}
-                      </ul>
+        <div className="flex">
+          <span className="mr-3">{t('Detailed')}</span>
+          <Switch
+            checked={!hidden}
+            onChange={() => {
+              setHidden((prev) => !prev)
+            }}
+            className={`${
+              !hidden ? 'bg-cyan-600' : 'bg-gray-200'
+            } relative inline-flex h-7 w-12 items-center rounded-full`}
+          >
+            <span
+              className={`${
+                !hidden ? 'translate-x-6' : 'translate-x-1'
+              } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+            />
+          </Switch>
+        </div>
+        {briefDataCollection.length > 0 ? (
+          <div className="flex flex-col gap-4 w-full mb-4">
+            <div className="text-base text-slate-900">
+              {briefDataCollection.map((briefItem, index) => {
+                const questionTitle = `${briefItem.id}. ${briefItem.title}`
+                return (
+                  <div key={index}>
+                    <p className="text-lg font-bold mb-7">{questionTitle}</p>
+                    <div className={hidden ? 'hidden' : ''}>
+                      {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                        return (
+                          <div key={blockIndex} className="mb-7">
+                            <div className="mb-2">{questionAndAnswerPair.question}</div>
+                            <BriefAnswer
+                              access={access}
+                              saveToDatabase={saveToDatabase}
+                              objQA={questionAndAnswerPair}
+                              updateObjQA={updateObjQA}
+                              blockIndex={blockIndex}
+                              briefItem={briefItem}
+                              index={index}
+                              t={t}
+                            />
+                          </div>
+                        )
+                      })}
                     </div>
-                  )
-                })}
-              </div>
-            </div>
-            <div className="w-full md:w-1/3">
-              <p className="mb-4 text-xl font-bold">{t('project-edit:Answers')}</p>
-              <div className="text-sm bg-white">
-                {briefDataCollection.map((briefItem, index) => {
-                  const questionTitle = `${briefItem.id}. ${briefItem.title}`
-                  return (
-                    <div
-                      key={index}
-                      className={`${
-                        briefItem.id >= briefDataCollection.length
-                          ? ''
-                          : 'border-b-2 mb-2 pb-2 mr-2'
-                      }`}
-                    >
-                      <p className="text-lg font-bold">{questionTitle}</p>
-                      <ul className="list-disc px-4">
-                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                          return (
-                            <li className="flex flex-nowrap leading-6" key={blockIndex}>
-                              <BriefAnswer
-                                access={access}
-                                saveToDatabase={saveToDatabase}
-                                objQA={questionAndAnswerPair}
-                                updateObjQA={updateObjQA}
-                                blockIndex={blockIndex}
-                                briefItem={briefItem}
-                                index={index}
-                                t={t}
-                              />
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-            <div className="w-full md:w-1/3">
-              <p className="mb-4 text-xl font-bold">{t('TranslationGoal')}</p>
-              <div className="text-sm text-gray-500 bg-white">
-                {briefDataCollection.map((briefItem, index) => {
-                  return (
-                    <div className="flex flex-nowrap leading-6 py-2" key={index}>
-                      -&nbsp;
+                    <div className="mb-7">
+                      <p className={hidden ? 'hidden' : 'text-lg font-bold mb-7'}>
+                        {t('project-edit:Summary')}
+                      </p>
                       <BriefResume
                         access={access}
                         saveToDatabase={saveToDatabase}
@@ -209,11 +186,27 @@ function Brief({ access }) {
                         t={t}
                       />
                     </div>
-                  )
-                })}
-              </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
+        ) : (
+          <>
+            <div role="status" className="w-full animate-pulse">
+              <div className="flex flex-col">
+                <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-7/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-4/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-9/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-6/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-10/12 mt-4 bg-gray-200 rounded-full"></div>
+                <div className="h-7 w-8/12 mt-4 bg-gray-200 rounded-full"></div>
+              </div>
+            </div>
+          </>
         )}
 
         {access && (
@@ -235,4 +228,4 @@ function Brief({ access }) {
   )
 }
 
-export default Brief
+export default BriefBlock
