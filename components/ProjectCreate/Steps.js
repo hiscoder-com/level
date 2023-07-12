@@ -1,7 +1,7 @@
 import { Disclosure } from '@headlessui/react'
+import { useTranslation } from 'next-i18next'
 
 import Down from 'public/arrow-down.svg'
-import { useTranslation } from 'react-i18next'
 import UpdateField from './UpdateField'
 
 function Steps({ customSteps = [], updateCollection, setCustomSteps }) {

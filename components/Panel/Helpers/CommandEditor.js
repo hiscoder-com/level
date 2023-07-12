@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import axios from 'axios'
 
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { toast, Toaster } from 'react-hot-toast'
 

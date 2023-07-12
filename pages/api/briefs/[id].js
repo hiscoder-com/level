@@ -12,7 +12,6 @@ export default async function briefsGetHandler(req, res) {
     method,
   } = req
 
-  
   switch (method) {
     case 'GET':
       try {

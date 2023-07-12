@@ -255,13 +255,12 @@ export const parseManifests = async ({ resources, current_method }) => {
       manifest = jsyaml.load(data, { json: true })
       if (current_method.resources[el]) {
         baseResource = { books: manifest.projects, name: el }
-
       }
     } catch (err) {
       return { error: err, data: null }
     }
-    
-    return { resource: el, url: resources[el], manifest  }
+
+    return { resource: el, url: resources[el], manifest }
   })
   const manifests = await Promise.all(promises)
   let newResources = {}

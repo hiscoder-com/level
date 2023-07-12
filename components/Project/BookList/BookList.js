@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import { Tab } from '@headlessui/react'
 
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import Testament from './Testament'
 import BookProperties from './BookProperties/BookProperties'
