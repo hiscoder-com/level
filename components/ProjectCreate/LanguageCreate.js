@@ -3,8 +3,11 @@ import toast from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 
 import Modal from 'components/Modal'
+import { useTranslation } from 'next-i18next'
 
-function LanguageCreate({ t, isOpen, closeHandle, user, mutateLanguage, languages }) {
+function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }) {
+  const { t } = useTranslation(['projects', 'project-edit', 'common'])
+
   const {
     register,
     handleSubmit,
@@ -28,7 +31,7 @@ function LanguageCreate({ t, isOpen, closeHandle, user, mutateLanguage, language
   const inputs = [
     {
       id: 1,
-      title: t('LanguageEngName'),
+      title: t('project-edit:LanguageEngName'),
       className: errors?.eng ? 'input-invalid' : 'input-primary',
       placeholder: '',
       register: {
@@ -41,26 +44,26 @@ function LanguageCreate({ t, isOpen, closeHandle, user, mutateLanguage, language
       },
       errorMessage:
         errors?.eng?.type === 'notUnique'
-          ? t('NameLanguageNotUnique')
+          ? t('project-edit:NameLanguageNotUnique')
           : errors?.eng?.type === 'required'
-          ? t('NameLanguageRequired')
+          ? t('project-edit:NameLanguageRequired')
           : '',
     },
     {
       id: 2,
-      title: t('LanguageOrigName'),
+      title: t('project-edit:LanguageOrigName'),
       className: errors?.origName ? 'input-invalid' : 'input-primary',
       placeholder: '',
       register: {
         ...register('origName', {
-          required: t('OrigNameLanguageRequired'),
+          required: t('project-edit:OrigNameLanguageRequired'),
         }),
       },
       errorMessage: errors?.origName ? errors?.origName.message : '',
     },
     {
       id: 3,
-      title: t('LanguageCode'),
+      title: t('project-edit:LanguageCode'),
       className: errors?.code ? 'input-invalid' : 'input-primary',
       placeholder: '',
       register: {
@@ -73,9 +76,9 @@ function LanguageCreate({ t, isOpen, closeHandle, user, mutateLanguage, language
       },
       errorMessage:
         errors?.code?.type === 'notUnique'
-          ? t('CodeLanguageNotUnique')
+          ? t('project-edit:CodeLanguageNotUnique')
           : errors?.code?.type === 'required'
-          ? t('CodeLanguageRequired')
+          ? t('project-edit:CodeLanguageRequired')
           : '',
     },
   ]
@@ -91,7 +94,7 @@ function LanguageCreate({ t, isOpen, closeHandle, user, mutateLanguage, language
             </div>
           ))}
           <div className="flex items-center">
-            <label htmlFor={'isGl'}>{t('GatewayLanguage')}</label>
+            <label htmlFor={'isGl'}>{t('project-edit:GatewayLanguage')}</label>
             <label
               className="relative flex cursor-pointer items-center justify-center rounded-full p-3"
               htmlFor="isGl"
