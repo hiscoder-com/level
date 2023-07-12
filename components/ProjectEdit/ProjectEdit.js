@@ -81,10 +81,13 @@ function ProjectEdit() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/projects/${code}`, {
-        title,
-        code: codeProject,
-        language_id: languageId,
-        orig_title: origtitle,
+        basicInfo: {
+          title,
+          code: codeProject,
+          language_id: languageId,
+          orig_title: origtitle,
+        },
+        user_id: user?.id,
       })
       .then(() => {
         mutateProject()
@@ -150,7 +153,7 @@ function ProjectEdit() {
                   errors={errors}
                   user={user}
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
-                  uniqueCheck={!(getValues('code') === code)}
+                  uniqueCheck={getValues('code') !== code}
                 />
                 <input className="btn-primary" type="submit" value={t('Save')} />
               </form>
@@ -210,6 +213,7 @@ function ProjectEdit() {
       isModeratorAccess,
       users,
       customSteps,
+      getValues,
     ]
   )
 

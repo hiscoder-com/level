@@ -9,7 +9,7 @@ export default async function projectHandler(req, res) {
   let data = {}
   const {
     query: { code },
-    body: basicInfo,
+    body: { basicInfo, user_id },
     method,
   } = req
   switch (method) {
@@ -28,28 +28,27 @@ export default async function projectHandler(req, res) {
         return res.status(404).json({ error })
       }
       return res.status(200).json({ ...data })
-      break
+
     case 'PUT':
+      const { code: new_code, title, orig_title, language_id } = basicInfo
+
       try {
-        const { data: project, errorGetProject } = await supabase
-          .from('projects')
-          .select('id')
-          .eq('code', code)
-          .maybeSingle()
-        if (errorGetProject) throw errorGetProject
-        const { data: value, error } = await supabase
-          .from('projects')
-          .update(basicInfo)
-          .eq('id', project.id)
+        const { error } = await supabase.rpc('update_project_basic', {
+          language_id,
+          orig_title,
+          title,
+          code: new_code,
+          project_code: code,
+          user_id,
+        })
         if (error) throw error
-        data = value
       } catch (error) {
         return res.status(404).json({ error })
       }
-      return res.status(200).json({ data })
+      return res.status(200).json({ success: 'updated' })
 
     default:
-      res.setHeader('Allow', ['GET'])
+      res.setHeader('Allow', ['GET', 'PUT'])
       return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
