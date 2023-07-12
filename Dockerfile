@@ -23,7 +23,7 @@ COPY styles ./styles
 COPY utils ./utils
 COPY jsconfig.json .
 COPY next-i18next.config.js .
-COPY next.config.json .
+COPY next.config.js .
 COPY postcss.config.js .
 COPY tailwind.config.js .
 
