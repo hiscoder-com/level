@@ -1,53 +1,65 @@
 FROM node:18-alpine AS base
 
-# Install dependencies only when needed
-FROM base AS deps
-# Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
-RUN apk add --no-cache libc6-compat
+# Step 1. Rebuild the source code only when needed
+FROM base AS builder
+
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Install dependencies
 COPY package.json yarn.lock* ./
+# Omit --production flag for TypeScript devDependencies
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  else echo "Lockfile not found." && exit 1; \
+  # Allow install without lockfile, so example works even without Node.js installed locally
+  else echo "Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
   fi
 
+COPY components ./components
+COPY images ./images
+COPY lib ./lib
+COPY pages ./pages
+COPY public ./public
+COPY styles ./styles
+COPY utils ./utils
+COPY jsconfig.json .
+COPY next-i18next.config.js .
+COPY next.config.json .
+COPY postcss.config.js .
+COPY tailwind.config.js .
 
-# Rebuild the source code only when needed
-FROM base AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-
+# Environment variables must be present at build time
+# https://github.com/vercel/next.js/discussions/14030
 ARG NODE_HOST $NODE_HOST
 ARG SUPABASE_URL $SUPABASE_URL
 ARG SUPABASE_ANON_KEY $SUPABASE_ANON_KEY
-ARG SERVICE_KEY $SERVICE_KEY
+ARG SUPABASE_SERVICE_KEY $SUPABASE_SERVICE_KEY
 ARG CREATE_USERS $CREATE_USERS
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
-ENV NEXT_PUBLIC_SUPABASE_URL http://localhost:8000
+ENV NEXT_PUBLIC_SUPABASE_URL $SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY $SUPABASE_ANON_KEY
 ENV SUPABASE_URL http://kong:8000
-ENV SUPABASE_SERVICE_KEY $SERVICE_KEY
+ENV SUPABASE_SERVICE_KEY $SUPABASE_SERVICE_KEY
 ENV CREATE_USERS $CREATE_USERS
-ENV NEXT_PUBLIC_NODE_HOST http://localhost:4008
+ENV NEXT_PUBLIC_NODE_HOST $NODE_HOST
 ENV NODE_HOST http://dcs:4008
 
+# Build Next.js
 RUN yarn build
 
-# Production image, copy all the files and run next
+# Note: It is not necessary to add an intermediate step that does a full copy of `node_modules` here
+
+# Step 2. Production image, copy all the files and run next
 FROM base AS runner
+
 WORKDIR /app
 
-ENV NODE_ENV production
 
-ENV NEXT_TELEMETRY_DISABLED 1
-
+# Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
+USER nextjs
 
 COPY --from=builder /app/public ./public
 
@@ -56,10 +68,22 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-USER nextjs
+# Environment variables must be redefined at run time
+ARG NODE_HOST $NODE_HOST
+ARG SUPABASE_URL $SUPABASE_URL
+ARG SUPABASE_ANON_KEY $SUPABASE_ANON_KEY
+ARG SUPABASE_SERVICE_KEY $SUPABASE_SERVICE_KEY
+ARG CREATE_USERS $CREATE_USERS
 
-EXPOSE 4004
+ENV NEXT_TELEMETRY_DISABLED 1
 
-ENV PORT 4004
+ENV NEXT_PUBLIC_SUPABASE_URL $SUPABASE_URL
+ENV NEXT_PUBLIC_SUPABASE_ANON_KEY $SUPABASE_ANON_KEY
+ENV SUPABASE_URL http://kong:8000
+ENV SUPABASE_SERVICE_KEY $SUPABASE_SERVICE_KEY
+ENV CREATE_USERS $CREATE_USERS
+ENV NEXT_PUBLIC_NODE_HOST $NODE_HOST
+ENV NODE_HOST http://dcs:4008
 
+# Note: Don't expose ports here, Compose will handle that for us
 CMD ["node", "server.js"]

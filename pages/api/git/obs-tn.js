@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-import { filterNotes } from 'utils/helper'
 import { tsvToJson } from '@texttree/translation-words-helpers'
+import { filterNotes } from 'utils/helper'
 
 /**
  *  @swagger
