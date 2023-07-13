@@ -116,9 +116,7 @@ function BookReader() {
         <div className="card flex flex-col gap-7">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code}>
-              <a>
-                <Left className="w-5 h-5 hover:text-gray-500" />
-              </a>
+              <Left className="w-5 h-5 hover:text-gray-500" />
             </Link>
             <Navigation
               books={
@@ -200,7 +198,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
                 <div
-                  className="flex gap-2 
+                  className="flex gap-2
                   text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
                   onClick={() =>
                     push({
@@ -234,7 +232,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
 }
 function Navigation({ books, reference, setReference }) {
   const { query, replace } = useRouter()
-  const [selectedBook, setSelectedBook] = useState()
+  const [selectedBook, setSelectedBook] = useState({})
   const { t } = useTranslation()
   useEffect(() => {
     if (books?.length) {
@@ -289,13 +287,13 @@ function Navigation({ books, reference, setReference }) {
             <Listbox.Button>
               <div
                 className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
-                  !selectedBook ? 'animate-pulse' : ''
+                  !Object.keys(selectedBook)?.length ? 'animate-pulse' : ''
                 } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
               >
                 <div
                   className={`flex ${
                     books?.length > 1 ? 'justify-between' : 'justify-center'
-                  } ${!selectedBook ? 'opacity-0' : 'opacity-auto'}`}
+                  } ${!Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'}`}
                 >
                   <span>{t('books:' + selectedBook?.code)}</span>
                   {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
@@ -347,7 +345,7 @@ function Navigation({ books, reference, setReference }) {
       >
         <div
           className={`flex justify-around gap-1 ${
-            !selectedBook ? 'opacity-0' : 'opacity-auto'
+            !Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'
           }`}
         >
           <span

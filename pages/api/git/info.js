@@ -1,5 +1,4 @@
 import axios from 'axios'
-import jsyaml from 'js-yaml'
 
 import { tsvToJson } from '@texttree/translation-words-helpers'
 
@@ -77,6 +76,5 @@ export default async function infoHandler(req, res) {
     intros[newNote.title] = newNote.text
   })
 
-  res.status(200).json(intros)
-  return
+  return res.status(200).json(intros)
 }

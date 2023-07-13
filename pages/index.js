@@ -25,10 +25,8 @@ export default function Home() {
           <Login />
         </div>
         <div className="text-[#909090] mb-4 text-center">{t('DevelopedBy')}</div>
-        <Link href="https://openmediabible.com/">
-          <a target="_blank">
-            <OmbLogo className="logo mb-4" />
-          </a>
+        <Link href="https://openmediabible.com/" target="_blank">
+          <OmbLogo className="logo mb-4" />
         </Link>
       </div>
 
@@ -40,10 +38,8 @@ export default function Home() {
               {t('PlatformForBibleTranslate')}
             </h1>
             <div className="text-[#909090] mb-4">{t('DevelopedBy')}</div>
-            <Link href="https://openmediabible.com/">
-              <a target="_blank">
-                <OmbLogo className="logo" />
-              </a>
+            <Link href="https://openmediabible.com/" target="_blank">
+              <OmbLogo className="logo" />
             </Link>
           </div>
         </div>

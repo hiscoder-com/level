@@ -10,7 +10,7 @@ import SideBar from './SideBar'
 
 import Timer from 'components/Timer'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
@@ -19,6 +19,7 @@ import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
 
 export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
+  const supabase = useSupabaseClient()
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -29,7 +30,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
   useEffect(() => {
     const hasAccess = async () => {
@@ -44,23 +44,22 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
     if (user?.id) {
       hasAccess()
     }
-  }, [user])
+  }, [supabase, user])
 
   return (
     <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center justify-between md:justify-start gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
-          <Link href="/account">
-            <a
-              className={
-                !isStepPage
-                  ? 'absolute sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
-                  : ''
-              }
-            >
-              <VCANA_logo className="h-6" />
-            </a>
+          <Link
+            href="/account"
+            className={
+              !isStepPage
+                ? 'absolute sm:static left-1/2 sm:left-auto -translate-x-1/2 sm:translate-x-0'
+                : ''
+            }
+          >
+            <VCANA_logo className="h-6" />
           </Link>
           {isStepPage && (
             <div className="flex gap-7 md:hidden">

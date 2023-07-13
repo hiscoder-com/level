@@ -1,10 +1,10 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function briefsToggleHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
   const {
     query: { id },
     body: { is_enable },
@@ -18,15 +18,14 @@ export default async function briefsToggleHandler(req, res) {
           .from('briefs')
           .update({ is_enable })
           .match({ project_id: id })
+          .select()
         if (error) throw error
-        res.status(200).json(data)
+        return res.status(200).json(data)
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      break
     default:
       res.setHeader('Allow', ['PUT'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

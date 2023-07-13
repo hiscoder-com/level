@@ -11,12 +11,14 @@ import axios from 'axios'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import BriefResume from './BriefResume'
 import BriefAnswer from './BriefAnswer'
 
 function Brief({ access }) {
+  const supabase = useSupabaseClient()
+
   const [briefDataCollection, setBriefDataCollection] = useState('')
 
   const {
@@ -53,16 +55,18 @@ function Brief({ access }) {
 
   useEffect(() => {
     const briefUpdates = supabase
-      .from('briefs')
-      .on('UPDATE', (payload) => {
-        setBriefDataCollection(payload.new.data_collection)
-      })
+      .channel('public:briefs')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'briefs' },
+        (payload) => setBriefDataCollection(payload.new.data_collection)
+      )
       .subscribe()
 
     return () => {
-      briefUpdates.unsubscribe()
+      supabase.removeChannel(briefUpdates)
     }
-  }, [])
+  }, [supabase])
 
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {

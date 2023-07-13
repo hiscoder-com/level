@@ -10,7 +10,7 @@ import { Menu, Transition } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import {
   useGetBook,
   useGetChapter,
@@ -51,6 +51,7 @@ const defaultColor = {
 }
 
 function ChapterVersesPage() {
+  const supabase = useSupabaseClient()
   const {
     query: { code, bookid, chapterid },
   } = useRouter()
@@ -421,8 +422,8 @@ function ChapterVersesPage() {
               } `}
             ></div>
             <Menu.Button
-              className={`fixed sm:hidden p-4 translate-y-1/2 
-               bottom-[60vh] 
+              className={`fixed sm:hidden p-4 translate-y-1/2
+               bottom-[60vh]
                right-10 z-50 rounded-full bg-slate-600 text-white transition-all duration-700 shadow-2xl`}
             >
               <Plus
@@ -449,9 +450,7 @@ function ChapterVersesPage() {
                     <div className="flex gap-2 items-center">
                       <div className="p-4 text-xl font-bold">{t('Participants')}</div>
                       <Link href={`/projects/${project?.code}/edit?setting=participants`}>
-                        <a>
-                          <Gear className="w-6 h-6 min-w-[1.5rem]" />
-                        </a>
+                        <Gear className="w-6 h-6 min-w-[1.5rem]" />
                       </Link>
                     </div>
 

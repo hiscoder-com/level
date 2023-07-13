@@ -13,7 +13,7 @@ import Workspace from 'components/Workspace'
 import { stepConfigState } from 'components/Panel/state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 /**
@@ -21,6 +21,7 @@ import { supabaseService } from 'utils/supabaseServer'
  * либо в компонентах для редактора надо проверять, чьи стихи
  */
 function TranslatorPage({ last_step }) {
+  const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const { query, replace } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)
@@ -41,7 +42,7 @@ function TranslatorPage({ last_step }) {
           setVersesRange(res.data.filter((el) => el.translator === translator))
         })
     }
-  }, [book, chapter, project, translator, user?.login])
+  }, [book, chapter, project, supabase, translator, user?.login])
 
   useEffect(() => {
     supabase
@@ -88,8 +89,7 @@ function TranslatorPage({ last_step }) {
             setStepConfig(stepConfig)
           })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter, project, step])
+  }, [book, chapter, last_step, project, replace, setStepConfigData, step, supabase])
 
   return (
     <div>
@@ -108,7 +108,7 @@ function TranslatorPage({ last_step }) {
       )}
 
       <div className="flex justify-end px-6 lg:px-0 mx-auto w-full max-w-7xl bg-blue-150">
-        <Link href={`/translate/${project}/${book}/${chapter}/${step}`}>
+        <Link href={`/translate/${project}/${book}/${chapter}/${step}`} legacyBehavior>
           <button className="my-4 btn-cyan !px-6">{t('BackTo')}</button>
         </Link>
       </div>

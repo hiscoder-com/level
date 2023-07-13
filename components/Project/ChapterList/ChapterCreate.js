@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function ChapterCreate({
   setCreatingChapter,
@@ -13,6 +13,8 @@ function ChapterCreate({
   mutate: { mutateChapters, mutateCreatedChapters },
   project,
 }) {
+  const supabase = useSupabaseClient()
+
   const {
     push,
     query: { bookid },
