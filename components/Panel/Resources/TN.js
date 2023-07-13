@@ -26,7 +26,6 @@ function TN({ config, url, toolName }) {
         config.targetResourceLink,
     },
   })
-
   useEffect(() => {
     if (extraTNotes) {
       const _data = []
@@ -45,7 +44,7 @@ function TN({ config, url, toolName }) {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading || !extraTNotes?.length ? (
         <Placeholder />
       ) : (
         <div className="relative h-full">
