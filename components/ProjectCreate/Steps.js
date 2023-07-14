@@ -37,9 +37,9 @@ function Steps({ customSteps = [], updateCollection, setCustomSteps }) {
                         index={index}
                         type={field.type}
                         textarea={field.textarea}
-                        collection={customSteps}
+                        array={customSteps}
                         name="steps"
-                        setter={setCustomSteps}
+                        setArray={setCustomSteps}
                       />
                     </div>
                   </div>

@@ -319,9 +319,9 @@ function BriefQuestions({
                       updateCollection={updateCollection}
                       index={index}
                       type={'title'}
-                      collection={customBriefQuestions}
+                      array={customBriefQuestions}
                       name="brief"
-                      setter={setCustomBriefQuestions}
+                      setArray={setCustomBriefQuestions}
                     />
                   </div>
                   <div>{t('common:Questions')}</div>

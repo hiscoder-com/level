@@ -1,19 +1,24 @@
 import { useEffect, useState } from 'react'
+import ReactTextareaAutosize from 'react-textarea-autosize'
 
 function UpdateField({
-  value,
-  updateCollection,
   index,
+  subIndex,
+  value,
+  update,
   type,
   textarea = false,
   editable = true,
-  collection,
+  array,
   name,
-  setter,
+  setArray,
+  access,
+  t,
 }) {
   const [valueField, setValueField] = useState(value)
   useEffect(() => {
     if (value) {
+      console.log({ value })
       setValueField(value)
     }
   }, [value])
@@ -22,18 +27,28 @@ function UpdateField({
     value: valueField,
     onChange: (e) => setValueField(e.target.value),
     onBlur: () => {
-      updateCollection({
+      update({
         ref: { [type]: valueField.trim() },
         index,
-        array: collection,
+        array,
         name,
-        setter,
+        setArray,
+        subIndex,
       })
     },
     disabled: !editable,
     rows: 6,
+    placeholder: access ? t('project-edit:enterText') : '',
   }
-  return <>{textarea ? <textarea {...props} /> : <input {...props} />}</>
+  return (
+    <>
+      {textarea ? (
+        <ReactTextareaAutosize {...props} />
+      ) : (
+        <ReactTextareaAutosize {...props} />
+      )}
+    </>
+  )
 }
 
 export default UpdateField

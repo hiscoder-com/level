@@ -13,11 +13,11 @@ import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 
-import BriefResume from './BriefResume'
-import BriefAnswer from './BriefAnswer'
+import UpdateField from 'components/ProjectCreate/UpdateField'
 
 function BriefBlock({ access }) {
   const [briefDataCollection, setBriefDataCollection] = useState([])
+  const [editableMode, setEditableMode] = useState(false)
   const [hidden, setHidden] = useState(true)
 
   const {
@@ -65,31 +65,6 @@ function BriefBlock({ access }) {
     }
   }, [])
 
-  const updateBrief = (text, index) => {
-    setBriefDataCollection((prev) => {
-      prev[index] = {
-        ...prev[index],
-        resume: text,
-      }
-      return prev
-    })
-  }
-
-  const updateObjQA = (text, briefItem, blockIndex, objQA, index) => {
-    setBriefDataCollection((prev) => {
-      const updateBriefItemBlock = briefItem.block
-      updateBriefItemBlock[blockIndex] = {
-        ...objQA,
-        answer: text,
-      }
-      prev[index] = {
-        ...prev[index],
-        block: updateBriefItemBlock,
-      }
-      return prev
-    })
-  }
-
   const handleSwitch = () => {
     if (brief) {
       axios.defaults.headers.common['token'] = user?.access_token
@@ -99,6 +74,68 @@ function BriefBlock({ access }) {
         .catch(console.log)
     }
   }
+  const removeBlockByIndex = (index, array, setter) => {
+    if (array.length > 1) {
+      setter(array.filter((_, idx) => index !== idx))
+    }
+  }
+  const addBlock = (array, setter) => {
+    const newBlock = {
+      block: [
+        {
+          answer: '',
+          question: 'question',
+        },
+      ],
+      id: 'id' + Math.random().toString(16).slice(2),
+      resume: '',
+      title: 'block',
+    }
+    const _array = [...array]
+    _array.push(newBlock)
+    setter(_array)
+  }
+  const addQuestionIntoBlock = (index, array, setter) => {
+    const question = {
+      answer: '',
+      question: 'question',
+    }
+    const _array = [...array]
+    _array[index].block.push(question)
+    setter(_array)
+  }
+
+  const removeQuestionFromeBlock = (blockIndex, questionIndex, array, setter) => {
+    if (array[blockIndex].block.length > 1) {
+      const _array = [...array]
+      _array[blockIndex] = {
+        ...array[blockIndex],
+        block: array[blockIndex].block.filter((_, index) => index !== questionIndex),
+      }
+      setter(_array)
+    }
+  }
+
+  const updateCollection = ({ ref, index, array, setter }) => {
+    const _array = array.map((obj, idx) => {
+      if (index === idx) {
+        return { ...obj, ...ref }
+      }
+      return obj
+    })
+    setter(_array)
+  }
+
+  const updateResume = ({ ref, index, array, name, setter }) => {
+    updateCollection({ ref, index, array, name, setter })
+    setTimeout(saveToDatabase, 1000)
+  }
+  const updateQuestions = ({ ref, index, array, setter, subIndex }) => {
+    const _array = [...array]
+    _array[index].block[subIndex] = { ..._array[index].block[subIndex], ...ref }
+    setter(_array)
+  }
+
   return (
     <div className="card">
       <div className="flex flex-col gap-7">
@@ -128,68 +165,175 @@ function BriefBlock({ access }) {
             )}
           </div>
         </div>
-        <div className="flex">
-          <span className="mr-3">{t('Detailed')}</span>
-          <Switch
-            checked={!hidden}
-            onChange={() => {
-              setHidden((prev) => !prev)
-            }}
-            className={`${
-              !hidden ? 'bg-cyan-600' : 'bg-gray-200'
-            } relative inline-flex h-7 w-12 items-center rounded-full`}
-          >
-            <span
+        <div className="flex justify-between">
+          <div className="flex">
+            <span className="mr-3">{t('Detailed')}</span>
+            <Switch
+              disabled={editableMode}
+              checked={!hidden}
+              onChange={() => {
+                setHidden((prev) => !prev)
+              }}
               className={`${
-                !hidden ? 'translate-x-6' : 'translate-x-1'
-              } inline-block h-5 w-5 transform rounded-full bg-white transition`}
-            />
-          </Switch>
+                !hidden && !editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+              } relative inline-flex h-7 w-12 items-center rounded-full`}
+            >
+              <span
+                className={`${
+                  !hidden ? 'translate-x-6' : 'translate-x-1'
+                } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+              />
+            </Switch>
+          </div>
+          <div className="flex">
+            <span className="mr-3">{t('EditableMode')}</span>
+            <Switch
+              checked={editableMode}
+              onChange={() => {
+                setHidden(false)
+                setEditableMode((prev) => !prev)
+              }}
+              className={`${
+                editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+              } relative inline-flex h-7 w-12 items-center rounded-full`}
+            >
+              <span
+                className={`${
+                  editableMode ? 'translate-x-6' : 'translate-x-1'
+                } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+              />
+            </Switch>
+          </div>
         </div>
+
         {briefDataCollection.length > 0 ? (
           <div className="flex flex-col gap-4 w-full mb-4">
-            <div className="text-base text-slate-900">
+            <ul className="list-decimal ml-4 ext-base text-slate-900 space-y-7">
               {briefDataCollection.map((briefItem, index) => {
-                const questionTitle = `${briefItem.id}. ${briefItem.title}`
                 return (
-                  <div key={index}>
-                    <p className="text-lg font-bold mb-7">{questionTitle}</p>
+                  <li key={index} className="space-y-7">
+                    <div className="flex gap-7 center justify-between">
+                      {editableMode ? (
+                        <UpdateField
+                          value={briefItem.title}
+                          update={updateResume}
+                          array={briefDataCollection}
+                          setArray={setBriefDataCollection}
+                          type={'title'}
+                          index={index}
+                        />
+                      ) : (
+                        <p className="">{briefItem.title}</p>
+                      )}
+                      {editableMode && (
+                        <button
+                          disabled={briefDataCollection.length < 2}
+                          className={'btn-primary'}
+                          onClick={() =>
+                            removeBlockByIndex(
+                              index,
+                              briefDataCollection,
+                              setBriefDataCollection
+                            )
+                          }
+                        >
+                          Удалить блок вопросов
+                        </button>
+                      )}
+                    </div>
+
                     <div className={hidden ? 'hidden' : ''}>
                       {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                         return (
-                          <div key={blockIndex} className="mb-7">
-                            <div className="mb-2">{questionAndAnswerPair.question}</div>
-                            <BriefAnswer
-                              access={access}
-                              saveToDatabase={saveToDatabase}
-                              objQA={questionAndAnswerPair}
-                              updateObjQA={updateObjQA}
-                              blockIndex={blockIndex}
-                              briefItem={briefItem}
-                              index={index}
-                              t={t}
-                            />
+                          <div key={blockIndex} className="">
+                            <div className="flex items-center gap-7">
+                              <div className="flex gap-7 center justify-between">
+                                {editableMode ? (
+                                  <UpdateField
+                                    value={questionAndAnswerPair.question}
+                                    update={updateQuestions}
+                                    array={briefDataCollection}
+                                    setArray={setBriefDataCollection}
+                                    subIndex={blockIndex}
+                                    type={'question'}
+                                    index={index}
+                                  />
+                                ) : (
+                                  <p className="">{questionAndAnswerPair.question}</p>
+                                )}
+                              </div>
+                              {editableMode && (
+                                <button
+                                  disabled={briefDataCollection[index].block.length < 2}
+                                  className={'btn-primary'}
+                                  onClick={() =>
+                                    removeQuestionFromeBlock(
+                                      index,
+                                      blockIndex,
+                                      briefDataCollection,
+                                      setBriefDataCollection
+                                    )
+                                  }
+                                >
+                                  Удалить вопрос
+                                </button>
+                              )}
+                            </div>
+
+                            {!editableMode && (
+                              <>
+                                <UpdateField
+                                  value={questionAndAnswerPair.answer}
+                                  update={updateQuestions}
+                                  array={briefDataCollection}
+                                  setArray={setBriefDataCollection}
+                                  type={'answer'}
+                                  index={index}
+                                  access={access}
+                                  subIndex={blockIndex}
+                                  t={t}
+                                />
+                              </>
+                            )}
                           </div>
                         )
                       })}
                     </div>
-                    <div className="mb-7">
-                      <p className={hidden ? 'hidden' : 'text-lg font-bold mb-7'}>
-                        {t('project-edit:Summary')}
-                      </p>
-                      <BriefResume
-                        access={access}
-                        saveToDatabase={saveToDatabase}
-                        objResume={briefItem.resume}
-                        updateBrief={updateBrief}
-                        index={index}
-                        t={t}
-                      />
-                    </div>
-                  </div>
+                    {editableMode && (
+                      <button
+                        className="btn-primary w-fit"
+                        onClick={() =>
+                          addQuestionIntoBlock(
+                            index,
+                            briefDataCollection,
+                            setBriefDataCollection
+                          )
+                        }
+                      >
+                        Добавить вопрос
+                      </button>
+                    )}
+                    {!editableMode && (
+                      <div className="">
+                        <p className={hidden ? 'hidden' : 'text-lg font-bold'}>
+                          {t('project-edit:Summary')}
+                        </p>
+                        <UpdateField
+                          value={briefItem.resume}
+                          update={updateCollection}
+                          array={briefDataCollection}
+                          setarray={setBriefDataCollection}
+                          type={'resume'}
+                          index={index}
+                          access={access}
+                          t={t}
+                        />
+                      </div>
+                    )}
+                  </li>
                 )
               })}
-            </div>
+            </ul>
           </div>
         ) : (
           <>
@@ -208,7 +352,14 @@ function BriefBlock({ access }) {
             </div>
           </>
         )}
-
+        {editableMode && (
+          <button
+            className="btn-primary w-fit"
+            onClick={() => addBlock(briefDataCollection, setBriefDataCollection)}
+          >
+            Добавить блок вопросов
+          </button>
+        )}
         {access && (
           <div>
             <button
