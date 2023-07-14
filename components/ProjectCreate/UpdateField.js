@@ -5,7 +5,7 @@ function UpdateField({
   index,
   subIndex,
   value,
-  update,
+  // update,
   type,
   textarea = false,
   editable = true,
@@ -14,6 +14,8 @@ function UpdateField({
   setArray,
   access,
   t,
+  updateValue,
+  fieldName,
 }) {
   const [valueField, setValueField] = useState(value)
   useEffect(() => {
@@ -27,14 +29,15 @@ function UpdateField({
     value: valueField,
     onChange: (e) => setValueField(e.target.value),
     onBlur: () => {
-      update({
-        ref: { [type]: valueField.trim() },
-        index,
-        array,
-        name,
-        setArray,
-        subIndex,
-      })
+      // update({
+      //   ref: { [type]: valueField.trim() },
+      //   index,
+      //   array,
+      //   name,
+      //   setArray,
+      //   subIndex,
+      // })
+      updateValue({ value: valueField.trim(), index, subIndex, fieldName })
     },
     disabled: !editable,
     rows: 6,

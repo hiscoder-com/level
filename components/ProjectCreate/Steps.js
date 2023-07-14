@@ -4,13 +4,13 @@ import { useTranslation } from 'next-i18next'
 import Down from 'public/arrow-down.svg'
 import UpdateField from './UpdateField'
 
-function Steps({ customSteps = [], updateCollection, setCustomSteps }) {
+function Steps({ customSteps = [], updateSteps }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
 
   const fields = [
-    { name: t('common:Title'), type: 'title', textarea: false },
-    { name: t('common:Description'), type: 'description', textarea: true },
-    { name: t('common:Intro'), type: 'intro', textarea: true },
+    { title: t('common:Title'), name: 'title', textarea: false },
+    { title: t('common:Description'), name: 'description', textarea: true },
+    { title: t('common:Intro'), name: 'intro', textarea: true },
   ]
   return (
     <>
@@ -28,18 +28,15 @@ function Steps({ customSteps = [], updateCollection, setCustomSteps }) {
               </Disclosure.Button>
               <Disclosure.Panel className="space-y-7">
                 {fields.map((field) => (
-                  <div className="flex items-center gap-2 w-full" key={field.type}>
-                    <span className="w-1/6">{field.name}</span>
+                  <div className="flex items-center gap-2 w-full" key={field.name}>
+                    <span className="w-1/6">{field.title}</span>
                     <div className="w-5/6">
                       <UpdateField
-                        value={step[field.type]}
-                        updateCollection={updateCollection}
+                        value={step[field.name]}
                         index={index}
-                        type={field.type}
                         textarea={field.textarea}
-                        array={customSteps}
-                        name="steps"
-                        setArray={setCustomSteps}
+                        fieldName={field.name}
+                        updateValue={updateSteps}
                       />
                     </div>
                   </div>

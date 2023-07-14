@@ -34,7 +34,6 @@ function ProjectCreate() {
   })
   const [method, setMethod] = useState({})
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
-  const [customResources, setCustomResources] = useState({})
   const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [resourcesUrl, setResourcesUrl] = useState({})
   const [customSteps, setCustomSteps] = useState([])
@@ -48,6 +47,7 @@ function ProjectCreate() {
     formState: { errors },
   } = useForm({ mode: 'onChange' })
   const methodId = useWatch({ control, name: 'methodId' })
+
   useEffect(() => {
     if (methods && methodId) {
       const selectedMethod = methods.find(
@@ -57,7 +57,6 @@ function ProjectCreate() {
         setMethod(selectedMethod)
         setCustomSteps(selectedMethod.steps)
         setCustomBriefQuestions(selectedMethod.brief)
-        setCustomResources(selectedMethod.resources)
       }
     }
   }, [methodId, methods])
@@ -81,13 +80,15 @@ function ProjectCreate() {
     }
   }, [methods])
 
-  const resetMethods = (methods) => {
-    localStorage.setItem('methods', JSON.stringify(methods))
-    setMethods(methods)
-  }
   useEffect(() => {
     setResourcesUrl({})
   }, [methodId])
+
+  const saveMethods = (methods) => {
+    localStorage.setItem('methods', JSON.stringify(methods))
+    setMethods(methods)
+  }
+
   const onSubmit = async (data) => {
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
@@ -107,7 +108,7 @@ function ProjectCreate() {
         resources: resourcesUrl,
       })
       .then((result) => {
-        resetMethods(_methods)
+        saveMethods(_methods)
         const {
           status,
           headers: { location },
@@ -122,44 +123,72 @@ function ProjectCreate() {
     // .finally(mutateProjects)
   }
 
-  const updateCollection = ({ ref, index, array, name, setter }) => {
+  const updateArray = ({ array, index, fieldName, value }) => {
     const _array = array.map((obj, idx) => {
       if (index === idx) {
-        return { ...obj, ...ref }
+        return { ...obj, [fieldName]: value }
       }
       return obj
     })
-    const _methods = methods.map((el) => {
-      if (el.id === method.id) {
-        return { ...el, [name]: _array }
-      }
-      return el
-    })
-    resetMethods(_methods)
-    setter(_array)
+    return _array
   }
 
-  const updateBlockQuestion = ({ blockQuestion, indexBlock, indexQuestion }) => {
-    const brief = customBriefQuestions.map((obj, idx) => {
-      if (indexBlock === idx) {
-        const block = obj.block.map((el, index) => {
-          if (index === indexQuestion) {
-            return { ...el, question: blockQuestion }
-          }
-          return el
-        })
-        return { ...obj, block }
-      }
-      return obj
-    })
+  const updateMethods = (methods, key, array) => {
     const _methods = methods.map((el) => {
-      if (method.id === el.id) {
-        return { ...el, brief }
+      if (el.id === method.id) {
+        return { ...el, [key]: array }
       }
       return el
     })
-    resetMethods(_methods)
-    setCustomBriefQuestions(brief)
+    saveMethods(_methods)
+  }
+
+  const updateBlock = ({ value, index, fieldName, array, setArray, blockName }) => {
+    const _array = updateArray({
+      array,
+      index,
+      fieldName,
+      value,
+    })
+
+    setArray(_array)
+    updateMethods(methods, blockName, _array)
+  }
+  const updateSteps = ({ value, index, fieldName }) => {
+    if (value && index != null && fieldName) {
+      updateBlock({
+        value,
+        index,
+        fieldName,
+        array: customSteps,
+        setArray: setCustomSteps,
+        blockName: 'steps',
+      })
+    }
+  }
+  const updateTitleBlock = ({ value, index, fieldName }) => {
+    if (value && index != null && fieldName) {
+      updateBlock({
+        value,
+        index,
+        fieldName,
+        array: customBriefQuestions,
+        setArray: setCustomBriefQuestions,
+        blockName: 'brief',
+      })
+    }
+  }
+
+  const updateQuestion = ({ value, index, subIndex, fieldName }) => {
+    if (value && index != null && subIndex && fieldName) {
+      const brief = [...customBriefQuestions]
+      brief[index].block[subIndex] = {
+        ...brief[index].block[subIndex],
+        [fieldName]: value,
+      }
+      updateMethods(methods, 'brief', array)
+      setCustomBriefQuestions(brief)
+    }
   }
 
   return (
@@ -183,10 +212,9 @@ function ProjectCreate() {
             <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
             <Steps
               customSteps={customSteps}
-              updateCollection={updateCollection}
               t={t}
-              method={method}
               setCustomSteps={setCustomSteps}
+              updateSteps={updateSteps}
             />
           </div>
           <div className="card flex flex-col gap-7 py-7">
@@ -213,9 +241,9 @@ function ProjectCreate() {
             </div>
             <BriefQuestions
               customBriefQuestions={customBriefQuestions}
-              updateBlockQuestion={updateBlockQuestion}
-              updateCollection={updateCollection}
+              updateQuestion={updateQuestion}
               setCustomBriefQuestions={setCustomBriefQuestions}
+              updateTitle={updateTitleBlock}
             />
           </div>
           {/*
@@ -289,12 +317,7 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 
 export default ProjectCreate
 
-function BriefQuestions({
-  customBriefQuestions = [],
-  updateBlockQuestion,
-  updateCollection,
-  setCustomBriefQuestions,
-}) {
+function BriefQuestions({ customBriefQuestions = [], updateQuestion, updateTitle }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   return (
     <>
@@ -316,23 +339,28 @@ function BriefQuestions({
                     <div>{t('common:Title')}</div>
                     <UpdateField
                       value={el.title}
-                      updateCollection={updateCollection}
                       index={index}
-                      type={'title'}
-                      array={customBriefQuestions}
-                      name="brief"
-                      setArray={setCustomBriefQuestions}
+                      updateValue={updateTitle}
+                      fieldName={'title'}
                     />
                   </div>
                   <div>{t('common:Questions')}</div>
                   {el.block.map((item, idx) => (
-                    <Question
+                    <UpdateField
                       key={item.question}
-                      blockQuestion={item.question}
-                      updateBlockQuestion={updateBlockQuestion}
-                      indexBlock={index}
-                      indexQuestion={idx}
+                      value={item.question}
+                      index={index}
+                      subIndex={idx}
+                      updateValue={updateQuestion}
+                      fieldName={'question'}
                     />
+                    // <Question
+                    //   key={item.question}
+                    //   blockQuestion={item.question}
+                    //   updateBlockQuestion={updateBlockQuestion}
+                    //   indexBlock={index}
+                    //   indexQuestion={idx}
+                    // />
                   ))}
                 </Disclosure.Panel>
               </>
