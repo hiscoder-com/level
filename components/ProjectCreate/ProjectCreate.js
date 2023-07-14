@@ -12,16 +12,18 @@ import axios from 'axios'
 import { Disclosure, Switch } from '@headlessui/react'
 
 import CommitsList from '../CommitsList'
-import Steps from './Steps'
-import BasicInformation from './BasicInformation'
-import LanguageCreate from './LanguageCreate'
-import UpdateField from './UpdateField'
+import Steps from '../Steps'
+import BasicInformation from '../BasicInformation'
+import LanguageCreate from '../LanguageCreate'
+import UpdateField from '../UpdateField'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 
 import Down from 'public/arrow-down.svg'
+import Minus from 'public/minus.svg'
+import Plus from 'public/plus.svg'
 
 function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -90,6 +92,8 @@ function ProjectCreate() {
   }
 
   const onSubmit = async (data) => {
+    saveMethods(_methods)
+
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
       return
@@ -190,6 +194,30 @@ function ProjectCreate() {
       setCustomBriefQuestions(brief)
     }
   }
+  const removeBlockByIndex = ({ index, blocks }) => {
+    if (blocks.length > 1) {
+      const briefs = blocks.filter((_, idx) => index !== idx)
+      setCustomBriefQuestions(briefs)
+      updateMethods(methods, 'brief', briefs)
+    }
+  }
+  const addBlock = (blocks) => {
+    const newBlock = {
+      block: [
+        {
+          answer: '',
+          question: 'question',
+        },
+      ],
+      id: 'id' + Math.random().toString(16).slice(2),
+      resume: '',
+      title: 'block',
+    }
+    const _blocks = [...blocks]
+    _blocks.push(newBlock)
+    setCustomBriefQuestions(_blocks)
+    updateMethods(methods, 'brief', _blocks)
+  }
 
   return (
     <>
@@ -239,11 +267,12 @@ function ProjectCreate() {
                 </Switch>
               </div>
             </div>
-            <BriefQuestions
+            <BriefEditQuestions
               customBriefQuestions={customBriefQuestions}
               updateQuestion={updateQuestion}
-              setCustomBriefQuestions={setCustomBriefQuestions}
               updateTitle={updateTitleBlock}
+              removeBlockByIndex={removeBlockByIndex}
+              addBlock={addBlock}
             />
           </div>
           {/*
@@ -317,7 +346,13 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
 
 export default ProjectCreate
 
-function BriefQuestions({ customBriefQuestions = [], updateQuestion, updateTitle }) {
+function BriefEditQuestions({
+  removeBlockByIndex,
+  customBriefQuestions = [],
+  updateQuestion,
+  updateTitle,
+  addBlock,
+}) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   return (
     <>
@@ -326,14 +361,26 @@ function BriefQuestions({ customBriefQuestions = [], updateQuestion, updateTitle
           {({ open }) => {
             return (
               <>
-                <Disclosure.Button className="flex justify-between gap-2 py-2 px-4 bg-slate-200 rounded-md">
-                  <span>{el.title}</span>
-                  <Down
-                    className={`w-5 h-5 transition-transform duration-200 ${
-                      open ? 'rotate-180' : 'rotate-0'
-                    } `}
-                  />
-                </Disclosure.Button>
+                <div className="flex gap-7 w-full">
+                  <Disclosure.Button className="flex justify-between gap-2 py-2 px-4 bg-slate-200 rounded-md w-full">
+                    <span>{el.title}</span>
+                    <Down
+                      className={`w-5 h-5 transition-transform duration-200 ${
+                        open ? 'rotate-180' : 'rotate-0'
+                      } `}
+                    />
+                  </Disclosure.Button>
+                  <button
+                    type="button"
+                    className="rounded-full border-slate-900 border py-1 px-2"
+                    onClick={() =>
+                      removeBlockByIndex({ blocks: customBriefQuestions, index })
+                    }
+                  >
+                    <Minus className="w-5 h-5 " />
+                  </button>
+                </div>
+
                 <Disclosure.Panel className="flex flex-col gap-2">
                   <div className="flex items-center gap-2">
                     <div>{t('common:Title')}</div>
@@ -354,13 +401,6 @@ function BriefQuestions({ customBriefQuestions = [], updateQuestion, updateTitle
                       updateValue={updateQuestion}
                       fieldName={'question'}
                     />
-                    // <Question
-                    //   key={item.question}
-                    //   blockQuestion={item.question}
-                    //   updateBlockQuestion={updateBlockQuestion}
-                    //   indexBlock={index}
-                    //   indexQuestion={idx}
-                    // />
                   ))}
                 </Disclosure.Panel>
               </>
@@ -368,25 +408,13 @@ function BriefQuestions({ customBriefQuestions = [], updateQuestion, updateTitle
           }}
         </Disclosure>
       ))}
+      <button
+        type="button"
+        className="flex justify-center py-2 px-4 bg-slate-200 rounded-md"
+        onClick={() => addBlock(customBriefQuestions)}
+      >
+        <Plus className="w-6 h-6" />
+      </button>
     </>
-  )
-}
-
-function Question({ blockQuestion, updateBlockQuestion, indexBlock, indexQuestion }) {
-  const [question, setQuestion] = useState(blockQuestion)
-  useEffect(() => {
-    if (blockQuestion) {
-      setQuestion(blockQuestion)
-    }
-  }, [blockQuestion])
-  return (
-    <input
-      className="input-primary"
-      value={question}
-      onChange={(e) => setQuestion(e.target.value)}
-      onBlur={() =>
-        updateBlockQuestion({ blockQuestion: question, indexBlock, indexQuestion })
-      }
-    />
   )
 }

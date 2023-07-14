@@ -13,7 +13,7 @@ import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabase } from 'utils/supabaseClient'
 
-import UpdateField from 'components/ProjectCreate/UpdateField'
+import UpdateField from 'components/UpdateField'
 
 function BriefBlock({ access }) {
   const [briefDataCollection, setBriefDataCollection] = useState([])

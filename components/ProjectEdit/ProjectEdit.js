@@ -10,13 +10,13 @@ import { useForm } from 'react-hook-form'
 
 import { Tab } from '@headlessui/react'
 
-import Brief from './Brief/Brief'
+import Brief from './Brief'
 import ResourceSettings from './ResourceSettings'
 import Participants from './Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
-import Steps from 'components/ProjectCreate/Steps'
-import BasicInformation from 'components/ProjectCreate/BasicInformation'
-import LanguageCreate from 'components/ProjectCreate/LanguageCreate'
+import Steps from 'components/Steps'
+import BasicInformation from 'components/BasicInformation'
+import LanguageCreate from 'components/LanguageCreate'
 
 import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -124,10 +124,10 @@ function ProjectEdit() {
       })
   }
 
-  const updateStep = ({ ref, index }) => {
+  const updateSteps = ({ index, fieldName, value }) => {
     const _steps = customSteps.map((obj, idx) => {
       if (index === idx) {
-        const updatedStep = { ...obj, ...ref }
+        const updatedStep = { ...obj, [fieldName]: value }
         saveStepToDb(updatedStep)
         return updatedStep
       }
@@ -191,7 +191,7 @@ function ProjectEdit() {
           panel: (
             <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
               <p className="text-xl font-bold">Шаги</p>
-              <Steps customSteps={customSteps} updateCollection={updateStep} t={t} />
+              <Steps customSteps={customSteps} updateSteps={updateSteps} />
               <button
                 className="w-fit btn-secondary btn-filled"
                 onClick={() => updateDB({ steps: customSteps })}

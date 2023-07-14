@@ -1,26 +1,22 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'next-i18next'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 function UpdateField({
   index,
   subIndex,
   value,
-  // update,
-  type,
   textarea = false,
   editable = true,
-  array,
-  name,
-  setArray,
   access,
-  t,
   updateValue,
   fieldName,
 }) {
+  const { t } = useTranslation(['project-edit'])
+
   const [valueField, setValueField] = useState(value)
   useEffect(() => {
     if (value) {
-      console.log({ value })
       setValueField(value)
     }
   }, [value])
@@ -29,19 +25,11 @@ function UpdateField({
     value: valueField,
     onChange: (e) => setValueField(e.target.value),
     onBlur: () => {
-      // update({
-      //   ref: { [type]: valueField.trim() },
-      //   index,
-      //   array,
-      //   name,
-      //   setArray,
-      //   subIndex,
-      // })
       updateValue({ value: valueField.trim(), index, subIndex, fieldName })
     },
     disabled: !editable,
     rows: 6,
-    placeholder: access ? t('project-edit:enterText') : '',
+    placeholder: access ? t('enterText') : '',
   }
   return (
     <>
