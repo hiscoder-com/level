@@ -190,7 +190,7 @@ function ProjectCreate() {
         ...brief[index].block[subIndex],
         [fieldName]: value,
       }
-      updateMethods(methods, 'brief', array)
+      updateMethods(methods, 'brief', brief)
       setCustomBriefQuestions(brief)
     }
   }
@@ -217,6 +217,26 @@ function ProjectCreate() {
     _blocks.push(newBlock)
     setCustomBriefQuestions(_blocks)
     updateMethods(methods, 'brief', _blocks)
+  }
+
+  const removeQuestionFromeBlock = ({ blockIndex, questionIndex, blocks }) => {
+    if (blocks[blockIndex].block.length > 1) {
+      const _array = [...blocks]
+      _array[blockIndex] = {
+        ...blocks[blockIndex],
+        block: blocks[blockIndex].block.filter((_, index) => index !== questionIndex),
+      }
+      setCustomBriefQuestions(_array)
+    }
+  }
+  const addQuestionIntoBlock = ({ index, blocks }) => {
+    const question = {
+      answer: '',
+      question: 'question',
+    }
+    const _array = [...blocks]
+    _array[index].block.push(question)
+    setCustomBriefQuestions(_array)
   }
 
   return (
@@ -273,6 +293,8 @@ function ProjectCreate() {
               updateTitle={updateTitleBlock}
               removeBlockByIndex={removeBlockByIndex}
               addBlock={addBlock}
+              removeQuestionFromeBlock={removeQuestionFromeBlock}
+              addQuestionIntoBlock={addQuestionIntoBlock}
             />
           </div>
           {/*
@@ -352,6 +374,8 @@ function BriefEditQuestions({
   updateQuestion,
   updateTitle,
   addBlock,
+  removeQuestionFromeBlock,
+  addQuestionIntoBlock,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   return (
@@ -362,7 +386,7 @@ function BriefEditQuestions({
             return (
               <>
                 <div className="flex gap-7 w-full">
-                  <Disclosure.Button className="flex justify-between gap-2 py-2 px-4 bg-slate-200 rounded-md w-full">
+                  <Disclosure.Button className="flex justify-between items-center gap-2 py-2 px-4 bg-slate-200 rounded-md w-5/6">
                     <span>{el.title}</span>
                     <Down
                       className={`w-5 h-5 transition-transform duration-200 ${
@@ -372,12 +396,15 @@ function BriefEditQuestions({
                   </Disclosure.Button>
                   <button
                     type="button"
-                    className="rounded-full border-slate-900 border py-1 px-2"
+                    className="btn-red flex items-center gap-2"
                     onClick={() =>
                       removeBlockByIndex({ blocks: customBriefQuestions, index })
                     }
                   >
-                    <Minus className="w-5 h-5 " />
+                    <div className="rounded-full border-red-500 border p-1">
+                      <Minus className="w-5 h-5 " />
+                    </div>
+                    <div className="hidden sm:block">{t('RemoveBlock')}</div>
                   </button>
                 </div>
 
@@ -393,15 +420,44 @@ function BriefEditQuestions({
                   </div>
                   <div>{t('common:Questions')}</div>
                   {el.block.map((item, idx) => (
-                    <UpdateField
-                      key={item.question}
-                      value={item.question}
-                      index={index}
-                      subIndex={idx}
-                      updateValue={updateQuestion}
-                      fieldName={'question'}
-                    />
+                    <div className=" flex gap-7" key={idx}>
+                      <UpdateField
+                        value={item.question}
+                        index={index}
+                        subIndex={idx}
+                        updateValue={updateQuestion}
+                        fieldName={'question'}
+                      />
+                      <button
+                        type="button"
+                        className="btn-red flex items-center gap-2"
+                        onClick={() =>
+                          removeQuestionFromeBlock({
+                            blocks: customBriefQuestions,
+                            blockIndex: index,
+                            questionIndex: idx,
+                          })
+                        }
+                      >
+                        <div className="rounded-full border-red-500 border p-1">
+                          <Minus className="w-5 h-5 " />
+                        </div>
+                        <div className="hidden sm:block">{t('RemoveQuestion')}</div>
+                      </button>
+                    </div>
                   ))}
+                  <button
+                    type="button"
+                    className="flex justify-center items-center py-2 px-4 rounded-md border border-slate-900 gap-2 hover:bg-slate-200 hover:border-white"
+                    onClick={() =>
+                      addQuestionIntoBlock({ blocks: customBriefQuestions, index: index })
+                    }
+                  >
+                    <div className="p-2 border border-slate-900 rounded-full">
+                      <Plus className="w-5 h-5" />
+                    </div>
+                    <div>{t('AddQuestion')}</div>
+                  </button>
                 </Disclosure.Panel>
               </>
             )
@@ -410,10 +466,13 @@ function BriefEditQuestions({
       ))}
       <button
         type="button"
-        className="flex justify-center py-2 px-4 bg-slate-200 rounded-md"
+        className="flex justify-center items-center gap-2 py-2 px-4 bg-slate-200 border border-white rounded-md hover:bg-white hover:border hover:border-slate-900"
         onClick={() => addBlock(customBriefQuestions)}
       >
-        <Plus className="w-6 h-6" />
+        <div className="p-2 border border-slate-900 rounded-full flex">
+          <Plus className="w-5 h-5" />
+        </div>
+        <div>{t('AddBlock')}</div>
       </button>
     </>
   )

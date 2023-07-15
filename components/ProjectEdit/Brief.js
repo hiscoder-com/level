@@ -79,31 +79,31 @@ function BriefBlock({ access }) {
       setter(array.filter((_, idx) => index !== idx))
     }
   }
-  const addBlock = (array, setter) => {
-    const newBlock = {
-      block: [
-        {
-          answer: '',
-          question: 'question',
-        },
-      ],
-      id: 'id' + Math.random().toString(16).slice(2),
-      resume: '',
-      title: 'block',
-    }
-    const _array = [...array]
-    _array.push(newBlock)
-    setter(_array)
-  }
-  const addQuestionIntoBlock = (index, array, setter) => {
-    const question = {
-      answer: '',
-      question: 'question',
-    }
-    const _array = [...array]
-    _array[index].block.push(question)
-    setter(_array)
-  }
+  // const addBlock = (array, setter) => {
+  //   const newBlock = {
+  //     block: [
+  //       {
+  //         answer: '',
+  //         question: 'question',
+  //       },
+  //     ],
+  //     id: 'id' + Math.random().toString(16).slice(2),
+  //     resume: '',
+  //     title: 'block',
+  //   }
+  //   const _array = [...array]
+  //   _array.push(newBlock)
+  //   setter(_array)
+  // }
+  // const addQuestionIntoBlock = (index, array, setter) => {
+  //   const question = {
+  //     answer: '',
+  //     question: 'question',
+  //   }
+  //   const _array = [...array]
+  //   _array[index].block.push(question)
+  //   setter(_array)
+  // }
 
   const removeQuestionFromeBlock = (blockIndex, questionIndex, array, setter) => {
     if (array[blockIndex].block.length > 1) {
