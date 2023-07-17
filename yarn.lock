@@ -1827,8 +1827,8 @@
   integrity sha512-gdpTDRYJg8g55MQBy1JMcVJ3UgHC71M/u7BccI9oqvizVtV7ESgyCdJgGFPfZJJGCgWe2ANfQCk1wgA0yosnow==
   dependencies:
     "@netlify/esbuild" "0.14.39"
-    "@netlify/functions" "^1.4.0"
-    "@netlify/ipx" "^1.4.0"
+    "@netlify/functions" "^1.6.0"
+    "@netlify/ipx" "^1.4.1"
     "@vercel/node-bridge" "^2.1.0"
     chalk "^4.1.2"
     chokidar "^3.5.3"
@@ -2509,10 +2509,10 @@
     localforage "^1.10.0"
     react-editor-js "^2.1.0"
 
-"@texttree/obs-format-convert-rcl@^0.3.0":
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/@texttree/obs-format-convert-rcl/-/obs-format-convert-rcl-0.3.0.tgz#04aa0f9b040a930efa263adee02c4de095dae9b2"
-  integrity sha512-EvLIQgaw/YBmDo4WilyMhvymr91ciKvbeJOxDxtQX4BW8o7leWUXqOJ0R9I9V7qks/lEV2J7weT249OL51Ecbg==
+"@texttree/obs-format-convert-rcl@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@texttree/obs-format-convert-rcl/-/obs-format-convert-rcl-0.4.0.tgz#06927e0349e874bb40e2f8069185e73e8cb567e5"
+  integrity sha512-XJfJHt2zF8zDIt6Cr9TZhOlDv3Qvx4T8VQQhCfq42OY7szryq1ugih3NETs3bhWy8n7elAw6MukHPQD8GPKf6w==
   dependencies:
     file-saver "^2.0.5"
     jszip "^3.10.1"

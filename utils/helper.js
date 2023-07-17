@@ -47,7 +47,7 @@ export const readableDate = (date, locale = 'ru') => {
   }).format(new Date(date))
 }
 
-export const createObjectToTransform = (ref) => {
+export const createObjectToTransform = (ref, t) => {
   if (ref.json === null) {
     return
   }
@@ -56,7 +56,7 @@ export const createObjectToTransform = (ref) => {
   const objectToTransform = {
     verseObjects: [],
     title: `${chapterNum}.`,
-    reference: '',
+    reference: ' ', // PDF Bible does not work without reference
   }
 
   if (json[0] && json[200]) {
@@ -76,7 +76,7 @@ export const createObjectToTransform = (ref) => {
       }
     }
   } else {
-    objectToTransform.title = `${chapterNum}`
+    objectToTransform.title = `${t('Chapter')} ${chapterNum}`
 
     for (const [key, value] of Object.entries(json)) {
       const verseObject = {
@@ -128,44 +128,46 @@ export const downloadFile = ({ text, title, type = 'text/plain' }) => {
 }
 
 export const downloadPdf = async ({
+  t,
   book,
   title,
   chapter,
   chapters,
   fileName,
   projectTitle,
-  projectLanguage, // пока не использую
+  projectLanguage,
   downloadSettings,
   obs = false,
 }) => {
   const commonStyles = {
-    projectTitle: {
-      fontSize: 24,
-      bold: true,
+    titlePageTitle: { alignment: 'center', fontSize: 32, bold: true, margin: [73, 20] },
+    SubtitlePageTitle: {
       alignment: 'center',
-    },
-    chapterTitle: {
-      fontSize: 24,
+      fontSize: 20,
       bold: true,
-      alignment: 'center',
-      margin: [0, 250, 0, 0],
+      margin: [73, 0, 73, 20],
     },
+    chapterTitle: { fontSize: 20, bold: true, margin: [0, 26, 0, 15] },
+    currentPage: { alignment: 'center', fontSize: 16, bold: true, margin: [0, 10, 0, 0] },
+    projectLanguage: { alignment: 'center', bold: true, margin: [73, 15, 73, 0] },
+    copyright: { alignment: 'center', margin: [0, 10, 0, 0] },
+    defaultPageHeader: { bold: true, width: '50%' },
     text: {
       alignment: 'justify',
     },
   }
 
   const obsStyles = {
-    intro: { fontSize: 14 },
     image: {
       alignment: 'center',
-      margin: [0, 10],
+      margin: [0, 15],
     },
     reference: {
       margin: [0, 10, 0, 0],
       italics: true,
     },
-    back: { fontSize: 14, alignment: 'center' },
+    tableOfContentsTitle: { alignment: 'center', margin: [0, 0, 0, 20] },
+    back: { alignment: 'center' },
   }
 
   const bibleStyles = {
@@ -188,15 +190,21 @@ export const downloadPdf = async ({
     }
 
     pdfOptions = {
-      data: [],
       styles,
       fileName,
+      data: [],
+      showChapterTitlePage: false,
+      bookPropertiesObs: {
+        SubtitlePageTitle: title,
+        back: ' ', // to display the page headers
+      },
     }
 
     if (downloadSettings?.withFront) {
       pdfOptions.bookPropertiesObs = {
-        projectTitle,
-        title,
+        ...pdfOptions.bookPropertiesObs,
+        titlePageTitle: projectTitle,
+        copyright: 'unfoldingWord®',
         projectLanguage,
       }
     }
@@ -219,6 +227,7 @@ export const downloadPdf = async ({
         pdfOptions.bookPropertiesObs = {
           ...pdfOptions.bookPropertiesObs,
           intro: book.properties.obs.intro,
+          tableOfContentsTitle: t('TableOfContents'),
         }
       }
 
@@ -237,19 +246,25 @@ export const downloadPdf = async ({
 
   const createPdfOptionsBible = (chapters, downloadSettings, book) => {
     pdfOptions = {
-      data: [],
       styles,
       fileName,
+      data: [],
       showVerseNumber: true,
       combineVerses: true,
       showTitlePage: false,
+      showChapterTitlePage: false,
+      bookPropertiesObs: {
+        SubtitlePageTitle: title,
+        back: ' ', // to display the page headers
+      },
     }
 
     if (downloadSettings?.withFront) {
       pdfOptions.bookPropertiesObs = {
-        projectTitle,
-        title,
+        ...pdfOptions.bookPropertiesObs,
+        titlePageTitle: projectTitle,
         projectLanguage,
+        copyright: 'unfoldingWord®',
       }
     }
 
@@ -257,25 +272,19 @@ export const downloadPdf = async ({
       pdfOptions.data = chapters
         .filter((chapter) => chapter.text !== null)
         .map((chapter) =>
-          createObjectToTransform({
-            json: chapter.text,
-            chapterNum: chapter.num,
-          })
+          createObjectToTransform(
+            {
+              json: chapter.text,
+              chapterNum: chapter.num,
+            },
+            t
+          )
         )
     } else {
       if (!chapter) {
         return
       }
-
-      pdfOptions.data = [createObjectToTransform(chapter)]
-
-      if (downloadSettings?.withFront) {
-        pdfOptions.bookPropertiesObs = {
-          projectTitle,
-          title: fileName,
-          projectLanguage,
-        }
-      }
+      pdfOptions.data = [createObjectToTransform(chapter, t)]
     }
 
     return pdfOptions

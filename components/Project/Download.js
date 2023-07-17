@@ -213,15 +213,13 @@ function Download({
           obs: project?.type === 'obs',
           chapter: { json: chapter?.text, chapterNum: chapter?.num },
           title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
-          projectLanguage: {
-            code: project.languages.code,
-            title: project.languages.orig_name,
-          },
+          projectLanguage: project.languages.orig_name,
           fileName: `${project.title}_${
             project?.type !== 'obs'
               ? book?.properties?.scripture?.toc1 ?? t('Book')
               : book?.properties?.obs?.title ?? t('OpenBibleStories')
           }`,
+          t,
         })
 
         break
