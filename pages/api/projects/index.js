@@ -95,6 +95,7 @@ export default async function languageProjectsHandler(req, res) {
       }
     case 'GET':
       try {
+        console.log(supabase)
         const { data, error } = await supabase
           .from('projects')
           .select('id,title,code,type,method,languages!inner(*)')

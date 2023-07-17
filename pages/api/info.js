@@ -11,7 +11,7 @@ export default async function info(req, res) {
           .select('id, project_id, config, sorting, projects(resources)')
         if (error) throw error
 
-        const host = process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+        const host = process.env.NODE_HOST ?? 'https://git.door43.org'
 
         for (const step of steps) {
           if (!step.projects.resources?.tnotes) {
