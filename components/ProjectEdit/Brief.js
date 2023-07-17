@@ -3,18 +3,20 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import toast from 'react-hot-toast'
+
 import { useTranslation } from 'next-i18next'
 
 import { Switch } from '@headlessui/react'
 
 import axios from 'axios'
 
-import { useGetBrief, useProject } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
-
 import UpdateField from 'components/UpdateField'
 import BriefEditQuestions from 'components/BriefEditQuestions'
+
+import { useGetBrief, useProject } from 'utils/hooks'
+
+import { useCurrentUser } from 'lib/UserContext'
+import { supabase } from 'utils/supabaseClient'
 
 function BriefBlock({ access }) {
   const [briefDataCollection, setBriefDataCollection] = useState([])
@@ -40,13 +42,17 @@ function BriefBlock({ access }) {
     }
   }, [brief, briefDataCollection])
 
-  const saveToDatabase = () => {
+  const saveToDatabase = (briefDataCollection) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
       })
-      .then()
+
+      .then(() => {
+        toast.success(t('SaveSuccess'))
+        mutate()
+      })
       .catch((err) => {
         toast.error(t('SaveFailed'))
         console.log(err)
@@ -84,19 +90,14 @@ function BriefBlock({ access }) {
       return obj
     })
     setBriefDataCollection(_array)
-    setTimeout(saveToDatabase, 1000)
-  }
-
-  const updateResume = ({ ref, index, array, name, setter }) => {
-    updateCollection({ ref, index, array, name, setter })
-    setTimeout(saveToDatabase, 1000)
+    saveToDatabase(_array)
   }
 
   const updateQuestions = ({ value, index, subIndex }) => {
     const _array = [...briefDataCollection]
     _array[index].block[subIndex] = { ..._array[index].block[subIndex], answer: value }
     setBriefDataCollection(_array)
-    setTimeout(saveToDatabase, 1000)
+    saveToDatabase(_array)
   }
 
   return (
@@ -245,8 +246,7 @@ function BriefBlock({ access }) {
                 <button
                   className="btn-primary text-xl"
                   onClick={() => {
-                    saveToDatabase()
-                    toast.success(t('SaveSuccess'))
+                    saveToDatabase(briefDataCollection)
                   }}
                 >
                   {t('Save')}

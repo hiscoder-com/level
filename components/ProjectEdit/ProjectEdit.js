@@ -20,7 +20,6 @@ import LanguageCreate from 'components/LanguageCreate'
 
 import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import BriefEditQuestions from 'components/BriefEditQuestions'
 
 function ProjectEdit() {
   const {

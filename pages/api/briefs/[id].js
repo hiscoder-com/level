@@ -30,7 +30,7 @@ export default async function briefsGetHandler(req, res) {
       break
     case 'PUT':
       try {
-        if (data_collection?.length > 1 && !validationBrief(data_collection)?.error) {
+        if (data_collection?.length > 0 && !validationBrief(data_collection)?.error) {
           const { data, error } = await supabase
             .from('briefs')
             .update({ data_collection })
@@ -38,7 +38,7 @@ export default async function briefsGetHandler(req, res) {
           if (error) throw error
           res.status(200).json(data)
         } else {
-          res.status(404).json({ error })
+          res.status(404).json({ error: { message: 'Wrong brief structure' } })
         }
       } catch (error) {
         res.status(404).json({ error })

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
+
 import { useTranslation } from 'next-i18next'
 
 import { useForm, useWatch } from 'react-hook-form'
@@ -15,11 +16,11 @@ import CommitsList from '../CommitsList'
 import Steps from '../Steps'
 import BasicInformation from '../BasicInformation'
 import LanguageCreate from '../LanguageCreate'
+import BriefEditQuestions from 'components/BriefEditQuestions'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import BriefEditQuestions from 'components/BriefEditQuestions'
 
 function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])

@@ -75,7 +75,6 @@ function BriefEditQuestions({
         ...brief[index].block[subIndex],
         [fieldName]: value,
       }
-      console.log(brief)
       setCustomBriefQuestions(brief)
       if (autoSave) {
         saveFunction(brief)
@@ -148,7 +147,7 @@ function BriefEditQuestions({
                   </div>
                   <div>{t('common:Questions')}</div>
                   {el.block.map((item, idx) => (
-                    <div className=" flex gap-7" key={idx}>
+                    <div className="flex gap-7" key={idx}>
                       <UpdateField
                         value={item.question}
                         index={index}
@@ -156,22 +155,24 @@ function BriefEditQuestions({
                         updateValue={updateQuestion}
                         fieldName={'question'}
                       />
-                      <button
-                        type="button"
-                        className="btn-red flex items-center gap-2"
-                        onClick={() =>
-                          removeQuestionFromeBlock({
-                            blocks: customBriefQuestions,
-                            blockIndex: index,
-                            questionIndex: idx,
-                          })
-                        }
-                      >
-                        <div className="rounded-full border-red-500 border p-1">
-                          <Minus className="w-5 h-5 " />
-                        </div>
-                        <div className="hidden sm:block">{t('RemoveQuestion')}</div>
-                      </button>
+                      <div>
+                        <button
+                          type="button"
+                          className="btn-red flex items-center gap-2"
+                          onClick={() =>
+                            removeQuestionFromeBlock({
+                              blocks: customBriefQuestions,
+                              blockIndex: index,
+                              questionIndex: idx,
+                            })
+                          }
+                        >
+                          <div className="p-1 rounded-full border-red-500 border">
+                            <Minus className="w-5 h-5" />
+                          </div>
+                          <div className="hidden sm:block">{t('RemoveQuestion')}</div>
+                        </button>
+                      </div>
                     </div>
                   ))}
                   <button
