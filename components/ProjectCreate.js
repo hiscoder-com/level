@@ -12,10 +12,10 @@ import axios from 'axios'
 
 import { Switch } from '@headlessui/react'
 
-import CommitsList from '../CommitsList'
-import Steps from '../Steps'
-import BasicInformation from '../BasicInformation'
-import LanguageCreate from '../LanguageCreate'
+import CommitsList from './CommitsList'
+import Steps from './Steps'
+import BasicInformation from './BasicInformation'
+import LanguageCreate from './LanguageCreate'
 import BriefEditQuestions from 'components/BriefEditQuestions'
 
 import { useLanguages, useMethod } from 'utils/hooks'

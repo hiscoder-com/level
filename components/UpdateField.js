@@ -31,15 +31,7 @@ function UpdateField({
     rows: 6,
     placeholder: access ? t('enterText') : '',
   }
-  return (
-    <>
-      {textarea ? (
-        <ReactTextareaAutosize {...props} />
-      ) : (
-        <ReactTextareaAutosize {...props} />
-      )}
-    </>
-  )
+  return <>{textarea ? <ReactTextareaAutosize {...props} /> : <input {...props} />}</>
 }
 
 export default UpdateField
