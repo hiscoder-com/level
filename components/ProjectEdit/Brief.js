@@ -104,7 +104,7 @@ function BriefBlock({ access }) {
   }
 
   return (
-    <div className="card">
+    <div className="card text-sm md:text-base">
       <div className="flex flex-col gap-7">
         <div className="flex flex-col sm:flex-row justify-between gap-7">
           <h3 className="text-xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
@@ -157,7 +157,6 @@ function BriefBlock({ access }) {
             <Switch
               checked={editableMode}
               onChange={() => {
-                setHidden(false)
                 setEditableMode((prev) => !prev)
               }}
               className={`${

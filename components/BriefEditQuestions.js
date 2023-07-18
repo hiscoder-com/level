@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import UpdateField from './UpdateField'
 
 import Down from 'public/arrow-down.svg'
-import Minus from 'public/minus.svg'
+import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
 
 function BriefEditQuestions({
@@ -117,31 +117,29 @@ function BriefEditQuestions({
             return (
               <>
                 <div className="flex gap-7 w-full text-sm md:text-base">
-                  <Disclosure.Button className="flex flex-col md:flex-row justify-between items-center gap-2 py-2 px-4 w-5/6 bg-blue-150 rounded-md">
+                  <Disclosure.Button className="flex flex-col md:flex-row justify-between items-center gap-2 py-2 px-4 w-full bg-blue-150 rounded-md">
                     <span>{el.title}</span>
-                    <Down
-                      className={`w-5 h-5 transition-transform duration-200 ${
-                        open ? 'rotate-180' : 'rotate-0'
-                      } `}
-                    />
+
+                    <div className="flex gap-7 items-center">
+                      <Down
+                        className={`w-5 h-5 transition-transform duration-200 ${
+                          open ? 'rotate-180' : 'rotate-0'
+                        } `}
+                      />
+                      <button
+                        type="button"
+                        className="btn-red"
+                        onClick={() =>
+                          removeBlockByIndex({ blocks: customBriefQuestions, index })
+                        }
+                      >
+                        <Trash className="w-5 h-5" />
+                      </button>
+                    </div>
                   </Disclosure.Button>
-                  <div className="flex items-center">
-                    <button
-                      type="button"
-                      className="btn-red flex items-center gap-2 bg-blue-150"
-                      onClick={() =>
-                        removeBlockByIndex({ blocks: customBriefQuestions, index })
-                      }
-                    >
-                      <div className="rounded-full border-red-500 border p-1">
-                        <Minus className="w-5 h-5" />
-                      </div>
-                      <div className="hidden sm:block">{t('RemoveBlock')}</div>
-                    </button>
-                  </div>
                 </div>
 
-                <Disclosure.Panel className="flex flex-col gap-2 p-4 bg-blue-150 rounded-md">
+                <Disclosure.Panel className="flex flex-col gap-2 p-4 bg-blue-150 rounded-md -mt-9">
                   <div className="flex flex-col md:flex-row items-center gap-2">
                     <div className="font-bold">{t('common:Title')}</div>
                     <UpdateField
@@ -165,7 +163,7 @@ function BriefEditQuestions({
                       <div>
                         <button
                           type="button"
-                          className="btn-red flex items-center gap-2 bg-white"
+                          className="btn-red bg-white"
                           onClick={() =>
                             removeQuestionFromeBlock({
                               blocks: customBriefQuestions,
@@ -174,10 +172,7 @@ function BriefEditQuestions({
                             })
                           }
                         >
-                          <div className="p-1 rounded-full border-red-500 border">
-                            <Minus className="w-5 h-5" />
-                          </div>
-                          <div className="hidden sm:block">{t('RemoveQuestion')}</div>
+                          <Trash className="w-5 h-5" />
                         </button>
                       </div>
                     </div>

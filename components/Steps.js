@@ -27,7 +27,7 @@ function Steps({ customSteps = [], updateSteps }) {
                   } `}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="p-4 space-y-7 bg-blue-150 rounded-md">
+              <Disclosure.Panel className="p-4 space-y-7 bg-blue-150 rounded-md -mt-9">
                 {fields.map((field) => (
                   <div
                     className="flex flex-col md:flex-row items-center gap-2 w-full"
