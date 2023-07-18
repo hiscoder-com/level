@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
-import ReactTextareaAutosize from 'react-textarea-autosize'
 
 function UpdateField({
   index,
@@ -11,6 +10,7 @@ function UpdateField({
   access,
   updateValue,
   fieldName,
+  specificClassName,
 }) {
   const { t } = useTranslation(['project-edit'])
 
@@ -21,7 +21,7 @@ function UpdateField({
     }
   }, [value])
   const props = {
-    className: 'input-primary',
+    className: 'input-primary ' + specificClassName,
     value: valueField,
     onChange: (e) => setValueField(e.target.value),
     onBlur: () => {
@@ -31,7 +31,7 @@ function UpdateField({
     rows: 6,
     placeholder: access ? t('enterText') : '',
   }
-  return <>{textarea ? <ReactTextareaAutosize {...props} /> : <input {...props} />}</>
+  return <>{textarea ? <textarea {...props} /> : <input {...props} />}</>
 }
 
 export default UpdateField

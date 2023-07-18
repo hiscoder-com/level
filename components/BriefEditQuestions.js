@@ -1,6 +1,8 @@
 import { Disclosure } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
+
 import UpdateField from './UpdateField'
+
 import Down from 'public/arrow-down.svg'
 import Minus from 'public/minus.svg'
 import Plus from 'public/plus.svg'
@@ -8,7 +10,9 @@ import Plus from 'public/plus.svg'
 function BriefEditQuestions({
   customBriefQuestions = [],
   setCustomBriefQuestions,
-  saveFunction,
+  saveFunction = (blocks) => {
+    console.log('Save this ' + blocks + 'to anywere')
+  },
   autoSave = false,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -112,8 +116,8 @@ function BriefEditQuestions({
           {({ open }) => {
             return (
               <>
-                <div className="flex gap-7 w-full">
-                  <Disclosure.Button className="flex justify-between items-center gap-2 py-2 px-4 bg-slate-200 rounded-md w-5/6">
+                <div className="flex gap-7 w-full text-sm md:text-base">
+                  <Disclosure.Button className="flex flex-col md:flex-row justify-between items-center gap-2 py-2 px-4 w-5/6 bg-blue-150 rounded-md">
                     <span>{el.title}</span>
                     <Down
                       className={`w-5 h-5 transition-transform duration-200 ${
@@ -121,31 +125,34 @@ function BriefEditQuestions({
                       } `}
                     />
                   </Disclosure.Button>
-                  <button
-                    type="button"
-                    className="btn-red flex items-center gap-2"
-                    onClick={() =>
-                      removeBlockByIndex({ blocks: customBriefQuestions, index })
-                    }
-                  >
-                    <div className="rounded-full border-red-500 border p-1">
-                      <Minus className="w-5 h-5 " />
-                    </div>
-                    <div className="hidden sm:block">{t('RemoveBlock')}</div>
-                  </button>
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      className="btn-red flex items-center gap-2 bg-blue-150"
+                      onClick={() =>
+                        removeBlockByIndex({ blocks: customBriefQuestions, index })
+                      }
+                    >
+                      <div className="rounded-full border-red-500 border p-1">
+                        <Minus className="w-5 h-5" />
+                      </div>
+                      <div className="hidden sm:block">{t('RemoveBlock')}</div>
+                    </button>
+                  </div>
                 </div>
 
-                <Disclosure.Panel className="flex flex-col gap-2">
-                  <div className="flex items-center gap-2">
-                    <div>{t('common:Title')}</div>
+                <Disclosure.Panel className="flex flex-col gap-2 p-4 bg-blue-150 rounded-md">
+                  <div className="flex flex-col md:flex-row items-center gap-2">
+                    <div className="font-bold">{t('common:Title')}</div>
                     <UpdateField
                       value={el.title}
                       index={index}
                       updateValue={updateTitleBlock}
                       fieldName={'title'}
+                      specificClassName={'!bg-blue-150'}
                     />
                   </div>
-                  <div>{t('common:Questions')}</div>
+                  <div className="font-bold">{t('common:Questions')}</div>
                   {el.block.map((item, idx) => (
                     <div className="flex gap-7" key={idx}>
                       <UpdateField
@@ -158,7 +165,7 @@ function BriefEditQuestions({
                       <div>
                         <button
                           type="button"
-                          className="btn-red flex items-center gap-2"
+                          className="btn-red flex items-center gap-2 bg-white"
                           onClick={() =>
                             removeQuestionFromeBlock({
                               blocks: customBriefQuestions,
@@ -177,7 +184,7 @@ function BriefEditQuestions({
                   ))}
                   <button
                     type="button"
-                    className="flex justify-center items-center py-2 px-4 rounded-md border border-slate-900 gap-2 hover:bg-slate-200 hover:border-white"
+                    className="flex justify-center items-center py-2 px-4 rounded-md border border-slate-900 gap-2 hover:bg-white"
                     onClick={() =>
                       addQuestionIntoBlock({ blocks: customBriefQuestions, index: index })
                     }
@@ -195,10 +202,10 @@ function BriefEditQuestions({
       ))}
       <button
         type="button"
-        className="flex justify-center items-center gap-2 py-2 px-4 bg-slate-200 border border-white rounded-md hover:bg-white hover:border hover:border-slate-900"
+        className="flex justify-center items-center gap-2 py-2 px-4 bg-white border border-slate-900 rounded-md hover:bg-blue-150 hover:border hover:border-slate-900"
         onClick={() => addBlock(customBriefQuestions)}
       >
-        <div className="p-2 border border-slate-900 rounded-full flex">
+        <div className="flex p-2 border border-slate-900 rounded-full">
           <Plus className="w-5 h-5" />
         </div>
         <div>{t('AddBlock')}</div>

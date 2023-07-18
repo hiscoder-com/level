@@ -121,9 +121,9 @@ function ProjectCreate() {
       .catch((err) => {
         toast.error(t('SaveFailed'))
       })
-    // .finally(mutateProjects)
+      .finally(mutateProjects)
   }
-
+  //TODO проверить где ещё используется
   const updateArray = ({ array, index, fieldName, value }) => {
     const _array = array.map((obj, idx) => {
       if (index === idx) {
@@ -175,9 +175,11 @@ function ProjectCreate() {
   return (
     <>
       <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
-        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card space-y-7 py-7">
-            <p className="text-xl font-bold">{t('project-edit:BasicInformation')}</p>
+        <form className="flex flex-col gap-0 md:gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <div className="card py-7 space-y-7">
+            <p className="pl-7 md:pl-0 text-xl font-bold">
+              {t('project-edit:BasicInformation')}
+            </p>
             <BasicInformation
               t={t}
               errors={errors}
@@ -190,19 +192,16 @@ function ProjectCreate() {
             />
           </div>
           <div className="card flex flex-col gap-7 py-7">
-            <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
-            <Steps
-              customSteps={customSteps}
-              t={t}
-              setCustomSteps={setCustomSteps}
-              updateSteps={updateSteps}
-            />
+            <p className="pl-7 text-xl font-bold">{t('project-edit:Steps')}</p>
+            <div className="flex flex-col gap-7 px-4 md:px-0 text-sm md:text-base">
+              <Steps customSteps={customSteps} updateSteps={updateSteps} />
+            </div>
           </div>
           <div className="card flex flex-col gap-7 py-7">
-            <div className="flex justify-between">
+            <div className="flex justify-between px-7">
               <p className="text-xl font-bold">{t('Brief')}</p>
-              <div>
-                <span className="mr-3">
+              <div className="flex flex-col items-center gap-2">
+                <span className="mr-3 text-sm md:text-base">
                   {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
                 </span>
                 <Switch
@@ -227,47 +226,7 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          {/*
-          <p>
-            Нужно превратить в форму. Сейчас сюда приходит объект. Ключ - это
-            идентификатор ресурса в шагах метода. Тут нет каких-то правил, можно называть
-            как хочешь. Главное чтоб он встречался в шагах. Значение - булево. Тут только
-            один тру, остальные фолс. Тру означает основной ресурс с которого будет
-            вестись перевод. У нас это смысловой перевод. Это нужно тут в форме как-то
-            показать, чтоб юзер знал что с него идет перевод. Форма такая, указан айди
-            ресурса, точечка или жирным выделен основной, а рядом пустое поле куда юзер
-            вводит ссылку на гит. Ссылка должна быть определенного формата, там должен
-            быть коммит обязательно.
-          </p>
-          */}
-          {/* {method?.type !== 'obs' ? (
-            <pre className="whitespace-pre-wrap break-words">
-              {`literal
-https://git.door43.org/ru_gl/ru_rlob/src/commit/94fca1416d1c2a0ff5d74eedb0597f21bd3b59b6
-simplified
-https://git.door43.org/ru_gl/ru_rsob/src/commit/03519d2d1f66a07ba42d7a62afb75393cf83fa1c
-tn
-https://git.door43.org/ru_gl/ru_tn/src/commit/cd4216222c098dd1a58e49c0011e6b3220f9ef38
-tq
-https://git.door43.org/ru_gl/ru_tq/src/commit/787f3f48f4ada9f0a29451b5ef318125a5fd6c7a
-twl
-https://git.door43.org/ru_gl/ru_twl/src/commit/17383807b558d6a7268cb44a90ac105c864a2ca1
-`}
-            </pre>
-          ) : (
-            <pre className="whitespace-pre-wrap break-words">
-              {`obs
-https://git.door43.org/ru_gl/ru_obs/src/commit/e562a415f60c5262382ba936928f32479056310e
-obs-tn
-https://git.door43.org/ru_gl/ru_obs-tn/src/commit/c61f002ac87f8321ad14fb9660798be9109fcbf3
-obs-tq
-https://git.door43.org/ru_gl/ru_obs-tq/src/commit/f413397bdeb3e143b96b4d978b698fa8408a77fd
-obs-twl
-https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601faee4ecb1a0cad
-`}
-            </pre>
-          )} */}
-          <div className="card flex flex-col gap-7 border-b border-slate-900 pb-7 mb-7">
+          <div className="card flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
             <p className="text-xl font-bold">{t('common:ResourcesList')}</p>
             <CommitsList
               methodId={methodId}
@@ -286,7 +245,6 @@ https://git.door43.org/ru_gl/ru_obs-twl/src/commit/9f3b5ac96ee5f3b86556d2a601fae
       </div>
       <LanguageCreate
         user={user}
-        t={t}
         isOpen={isOpenLanguageCreate}
         closeHandle={() => setIsOpenLanguageCreate(false)}
         mutateLanguage={mutateLanguage}

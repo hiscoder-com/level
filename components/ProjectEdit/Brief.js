@@ -178,7 +178,7 @@ function BriefBlock({ access }) {
           <div>
             {briefDataCollection.length > 0 ? (
               <div className="flex flex-col gap-4 w-full mb-4">
-                <ul className="list-decimal ml-4 ext-base text-slate-900 space-y-7">
+                <ul className="list-decimal ml-4 text-base text-slate-900 space-y-7">
                   {briefDataCollection.map((briefItem, index) => {
                     return (
                       <li key={index} className="space-y-7">

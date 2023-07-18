@@ -6,7 +6,7 @@ import Modal from 'components/Modal'
 import { useTranslation } from 'next-i18next'
 
 function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }) {
-  const { t } = useTranslation(['projects', 'project-edit', 'common'])
+  const { t } = useTranslation(['projects', 'project-edit'])
 
   const {
     register,
@@ -96,7 +96,7 @@ function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }
           <div className="flex items-center">
             <label htmlFor={'isGl'}>{t('project-edit:GatewayLanguage')}</label>
             <label
-              className="relative flex cursor-pointer items-center justify-center rounded-full p-3"
+              className="relative flex justify-center items-center p-3 cursor-pointer rounded-full"
               htmlFor="isGl"
               data-ripple-dark="true"
             >

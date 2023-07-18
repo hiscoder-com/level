@@ -1,8 +1,9 @@
 import { Disclosure } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
 
-import Down from 'public/arrow-down.svg'
 import UpdateField from './UpdateField'
+
+import Down from 'public/arrow-down.svg'
 
 function Steps({ customSteps = [], updateSteps }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -18,7 +19,7 @@ function Steps({ customSteps = [], updateSteps }) {
         <Disclosure key={index}>
           {({ open }) => (
             <>
-              <Disclosure.Button className="flex justify-between gap-2 py-2 px-4 bg-slate-200 rounded-md">
+              <Disclosure.Button className="flex justify-between gap-2 py-2 px-4 bg-blue-150 rounded-md">
                 <span>{step.title}</span>
                 <Down
                   className={`w-5 h-5 transition-transform duration-200 ${
@@ -26,10 +27,13 @@ function Steps({ customSteps = [], updateSteps }) {
                   } `}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="space-y-7">
+              <Disclosure.Panel className="p-4 space-y-7 bg-blue-150 rounded-md">
                 {fields.map((field) => (
-                  <div className="flex items-center gap-2 w-full" key={field.name}>
-                    <span className="w-1/6">{field.title}</span>
+                  <div
+                    className="flex flex-col md:flex-row items-center gap-2 w-full"
+                    key={field.name}
+                  >
+                    <span className="w-auto md:w-1/6 font-bold">{field.title}</span>
                     <div className="w-5/6">
                       <UpdateField
                         value={step[field.name]}
@@ -37,22 +41,23 @@ function Steps({ customSteps = [], updateSteps }) {
                         textarea={field.textarea}
                         fieldName={field.name}
                         updateValue={updateSteps}
+                        specificClassName={'!bg-blue-150'}
                       />
                     </div>
                   </div>
                 ))}
-                <div className="flex items-center w-full gap-2">
-                  <div className="w-1/6">{t('Tools')}</div>
-                  <div className="flex flex-wrap justify-start gap-2 w-5/6">
+                <div className="flex flex-col md:flex-row items-center w-full gap-2">
+                  <div className="w-auto md:w-1/6 font-bold">{t('Tools')}</div>
+                  <div className="flex flex-wrap justify-start gap-2 w-auto md:w-5/6">
                     {step?.config?.map((config, index) => (
                       <div
                         key={index}
-                        className="flex gap-2 pr-2 border-r border-slate-900 last:border-r-0"
+                        className="flex flex-wrap gap-2 pr-2 border-r border-slate-900 last:border-r-0"
                       >
                         {config.tools.map((tool) => (
                           <div
                             key={tool.name}
-                            className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto"
+                            className="btn-primary p-2 rounded-md !cursor-auto hover:bg-transparent hover:border-slate-600"
                           >
                             {t('common:' + tool.name)}
                           </div>
@@ -62,14 +67,18 @@ function Steps({ customSteps = [], updateSteps }) {
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <span className="w-1/6">{t('project-edit:TranslatorsCount')}</span>
-                  <div className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto">
+                  <span className="w-auto md:w-1/6 font-bold">
+                    {t('project-edit:TranslatorsCount')}
+                  </span>
+                  <div className="btn-primary p-2 rounded-md !cursor-auto hover:bg-transparent hover:border-slate-600">
                     {step?.count_of_users}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <span className="w-1/6">{t('project-edit:ExecutionTime')}</span>
-                  <div className="btn-primary hover:bg-transparent hover:border-slate-600 p-2 rounded-md !cursor-auto">
+                  <span className="w-auto md:w-1/6 font-bold">
+                    {t('project-edit:ExecutionTime')}
+                  </span>
+                  <div className="btn-primary p-2 rounded-md !cursor-auto hover:bg-transparent hover:border-slate-600">
                     {step.time}
                   </div>
                 </div>

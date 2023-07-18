@@ -36,7 +36,7 @@ function ProjectEdit() {
   const [users] = useUsers(user?.access_token)
   const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
 
-  const [steps, { mutate: mutateSteps }] = useGetSteps({
+  const [steps] = useGetSteps({
     token: user?.access_token,
     code,
   })
@@ -145,8 +145,8 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:General',
           panel: (
-            <div className="card flex flex-col gap-7 border-y border-slate-900 py-2">
-              <p className="text-xl font-bold">Основная информация</p>
+            <div className="card flex flex-col gap-7 py-2 border-y border-slate-900">
+              <p className="text-xl font-bold">{t('BaseInformation')}</p>
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
                   register={register}
@@ -189,11 +189,11 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'Steps',
           panel: (
-            <div className="card flex flex-col gap-7 border-y border-slate-900 py-7">
-              <p className="text-xl font-bold">Шаги</p>
+            <div className="card flex flex-col gap-7 py-7 border-y border-slate-900">
+              <p className="text-xl font-bold">{t('Steps')}</p>
               <Steps customSteps={customSteps} updateSteps={updateSteps} />
               <button
-                className="w-fit btn-secondary btn-filled"
+                className="btn-secondary w-fit"
                 onClick={() => updateDB({ steps: customSteps })}
               >
                 {t('Save')}

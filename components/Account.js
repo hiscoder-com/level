@@ -62,7 +62,7 @@ function Account() {
               </Tab.Panels>
             </Tab.Group>
 
-            <Tab.Group as="div" className="sm:block hidden">
+            <Tab.Group as="div" className="hidden sm:block">
               <Tab.List className="grid grid-cols-3 md:grid-cols-8 xl:grid-cols-9 gap-4 mt-2 text-center font-bold border-b border-slate-600">
                 {tabs.map(
                   (tab) =>
@@ -103,7 +103,7 @@ function Account() {
             ></div>
             <Menu.Button
               className={`fixed sm:hidden translate-y-1/2 right-10 z-50 rounded-full bg-slate-600 text-white p-4 transition-all duration-700 shadow-2xl ${
-                openInternalMenu ? 'bottom-[50vh]' : 'bottom-[15vh]'
+                openInternalMenu ? 'bottom-[80vh]' : 'bottom-[15vh]'
               }`}
               onClick={() => setOpenInternalMenu(false)}
             >
@@ -113,7 +113,6 @@ function Account() {
                 }`}
               />
             </Menu.Button>
-
             <Transition
               as={Fragment}
               show={open}
@@ -154,7 +153,7 @@ function Account() {
                           leaveTo="translate-y-full"
                         >
                           <Menu.Items>
-                            <div className="h-[50vh] overflow-y-scroll">
+                            <div className="h-[80vh] overflow-y-scroll">
                               <ProjectCreate />
                             </div>
                           </Menu.Items>

@@ -66,10 +66,13 @@ function BasicInformation({
   ]
   return (
     <>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 text-sm md:text-base">
         {inputs.map((el) => (
-          <div className="flex gap-2 items-center" key={el.title}>
-            <div className="w-1/5 font-bold">{el.title}</div>
+          <div
+            className="flex flex-col md:flex-row justify-start items-center gap-2"
+            key={el.title}
+          >
+            <div className="w-auto md:w-1/5 font-bold">{el.title}</div>
             <div className="flex flex-col gap-2 w-4/5">
               <input
                 className={`${el.classname}`}
@@ -80,8 +83,8 @@ function BasicInformation({
             </div>
           </div>
         ))}
-        <div className="flex gap-2 items-center">
-          <div className="w-1/5 font-bold">{t('Language')}</div>
+        <div className="flex flex-col md:flex-row gap-2 items-center">
+          <div className="w-auto md:w-1/5 font-bold">{t('Language')}</div>
           <div className="flex gap-2 w-4/5">
             <select
               className="input-primary w-3/4"
@@ -103,8 +106,8 @@ function BasicInformation({
                 className="input-primary flex items-center justify-around gap-1 truncate"
                 onClick={() => setIsOpenLanguageCreate(true)}
               >
-                <div className="rounded-full p-1 border border-slate-900 w-fit">
-                  <Plus className="w-5 " />
+                <div className="p-1 w-fit border border-slate-900 rounded-full">
+                  <Plus className="w-5" />
                 </div>
 
                 <span className="hidden lg:block">{t('AddLanguage')}</span>
@@ -113,8 +116,8 @@ function BasicInformation({
           </div>
         </div>
         {methods && (
-          <div className="flex gap-2 items-center">
-            <div className="w-1/5 font-bold">{t('Method')}</div>
+          <div className="flex flex-col md:flex-row items-center gap-2">
+            <div className="w-auto md:w-1/5 font-bold">{t('Method')}</div>
             <div className="w-4/5">
               <select
                 placeholder={t('Method')}
