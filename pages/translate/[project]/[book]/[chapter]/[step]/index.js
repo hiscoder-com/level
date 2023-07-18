@@ -14,12 +14,19 @@ import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseServer'
-import { supabase } from 'utils/supabaseClient'
-import { projectIdState, stepConfigState } from 'components/Panel/state/atoms'
+import useSupabaseClient from 'utils/supabaseClient'
+import {
+  projectIdState,
+  stepConfigState,
+  currentVerse,
+} from 'components/Panel/state/atoms'
 
 export default function ProgressPage({ last_step }) {
+  const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const setStepConfigData = useSetRecoilState(stepConfigState)
+  const setCurrentVerse = useSetRecoilState(currentVerse)
+
   const { t } = useTranslation('common')
   const {
     query: { project, book, chapter, step },
@@ -43,7 +50,7 @@ export default function ProgressPage({ last_step }) {
           setVersesRange(res.data.filter((el) => el.translator === user.login))
         })
     }
-  }, [book, chapter, project, user?.login])
+  }, [book, chapter, project, supabase, user?.login])
 
   useEffect(() => {
     supabase
@@ -102,7 +109,8 @@ export default function ProgressPage({ last_step }) {
       chapter,
       current_step: step,
     })
-    localStorage.setItem('scrollIds', JSON.stringify({}))
+    localStorage.setItem('highlightIds', JSON.stringify({}))
+    setCurrentVerse('1')
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {

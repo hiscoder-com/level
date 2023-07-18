@@ -61,16 +61,17 @@ function BriefBlock({ access }) {
 
   useEffect(() => {
     const briefUpdates = supabase
-      .from('briefs')
-      .on('UPDATE', (payload) => {
-        setBriefDataCollection(payload.new.data_collection)
-      })
+      .channel('public:briefs')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'briefs' },
+        (payload) => setBriefDataCollection(payload.new.data_collection)
+      )
       .subscribe()
-
     return () => {
-      briefUpdates.unsubscribe()
+      supabase.removeChannel(briefUpdates)
     }
-  }, [])
+  }, [supabase])
 
   const handleSwitch = () => {
     if (brief) {

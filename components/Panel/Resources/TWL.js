@@ -4,16 +4,11 @@ import ReactMarkdown from 'react-markdown'
 
 import { useTranslation } from 'next-i18next'
 
-import { setup } from 'axios-cache-adapter'
-
-import localforage from 'localforage'
-
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
-import { checkLSVal, filterNotes } from 'utils/helper'
-
-const DEFAULT_MAX_AGE = 24
+import { checkLSVal, filterNotes, getWords } from 'utils/helper'
+import { getFile } from 'utils/apiHelper'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
@@ -21,47 +16,20 @@ function TWL({ config, url, toolName }) {
   const [wordObjects, setWordObjects] = useState([])
   const [isLoadingTW, setIsLoadingTW] = useState(false)
   useEffect(() => {
-    const getWords = async () => {
-      const cacheStore = localforage.createInstance({
-        driver: [localforage.INDEXEDDB],
-        name: 'web-cache',
+    const getData = async () => {
+      setIsLoadingTW(true)
+      const zip = await getFile({
+        owner: config.resource.owner,
+        repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
+        commit: config.resource.commit,
+        apiUrl: '/api/git/tw',
       })
-      const api = setup({
-        cache: {
-          store: cacheStore,
-          maxAge: 60 * 60 * DEFAULT_MAX_AGE,
-        },
+      const words = await getWords({
+        zip,
+        repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
+        wordObjects: data,
       })
-      const {
-        resource: { owner, repo },
-      } = config
-      const promises = data.map(async (wordObject) => {
-        const url = `${
-          process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
-        }/${owner}/${repo
-          .slice(0, -1)
-          .replace('obs-', '')}/raw/branch/master/${wordObject.TWLink.split('/')
-          .slice(-3)
-          .join('/')}.md`
-        let markdown
-        try {
-          setIsLoadingTW(true)
-          markdown = await api.get(url)
-        } catch (error) {
-          setIsLoadingTW(false)
-          console.log(error)
-        }
-
-        const splitter = markdown?.data?.search('\n')
-        return {
-          ...wordObject,
-          title: markdown?.data?.slice(0, splitter),
-          text: markdown?.data?.slice(splitter),
-        }
-      })
-      const words = await Promise.all(promises)
       const finalData = {}
-
       words?.forEach((word) => {
         const {
           ID,
@@ -89,10 +57,9 @@ function TWL({ config, url, toolName }) {
       setIsLoadingTW(false)
       setWordObjects(finalData)
     }
-    if (data && config) {
-      getWords()
-    }
-  }, [config, data])
+    getData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
 
   return (
     <>
@@ -113,10 +80,15 @@ export default TWL
 
 function TWLList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
+
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { highlightId, handleSaveScroll } = useScroll({
+    toolName,
+    isLoading,
+    idPrefix: 'idtwl',
+  })
 
   useEffect(() => {
     localStorage.setItem('filter_words', filter)
@@ -142,13 +114,13 @@ function TWLList({ setItem, data, toolName, isLoading }) {
           <Placeholder />
         </div>
       ) : (
-        verses?.map((el, verseIndex) => {
+        verses?.map(([verseNumber, words], verseIndex) => {
           return (
-            <div key={verseIndex} className="p-4 flex mx-4">
-              <div className="text-2xl">{el[0]}</div>
+            <div key={verseIndex} className="p-4 flex mx-4" id={'idtwl' + verseNumber}>
+              <div className="text-2xl">{verseNumber}</div>
               <div className="text-gray-700 pl-7 flex-1">
                 <ul>
-                  {el[1]?.map((item, index) => {
+                  {words?.map((item, index) => {
                     let itemFilter
                     switch (filter) {
                       case 'disabled':
@@ -172,10 +144,10 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                         className={`p-2 cursor-pointer ${
                           itemFilter ? 'text-gray-400' : ''
                         } hover:bg-gray-200
-                      ${scrollId === 'id' + item.id ? 'bg-gray-200' : ''}
+                      ${highlightId === 'id' + item.id ? 'bg-gray-200' : ''}
                       `}
                         onClick={() => {
-                          handleSave(item.id)
+                          handleSaveScroll(verseNumber, item.id)
                           setItem({ text: item.text, title: item.title })
                         }}
                       >

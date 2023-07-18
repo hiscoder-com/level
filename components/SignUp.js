@@ -2,10 +2,11 @@ import { useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
 export default function SignUp() {
+  const supabase = useSupabaseClient()
   const [loading, setLoading] = useState(false)
   const [password, setPassword] = useState('')
   const [email, setEmail] = useState('')

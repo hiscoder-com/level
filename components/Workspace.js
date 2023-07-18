@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+
 import { useTranslation } from 'next-i18next'
 
 import { Tab } from '@headlessui/react'
@@ -39,7 +41,32 @@ const icons = {
 
 function Workspace({ stepConfig, reference, editable = false }) {
   const inactive = useRecoilValue(inactiveState)
+  const [tnLink, setTnLink] = useState('')
+  useEffect(() => {
+    for (const resourceName in stepConfig.resources) {
+      if (Object.hasOwnProperty.call(stepConfig.resources, resourceName)) {
+        const res = stepConfig.resources[resourceName]
+        if (res.manifest.dublin_core.identifier === 'tn') {
+          const repo = `${res.owner}/${res.repo}/raw/commit/${res.commit}`
+          const bookPath = res.manifest.projects.find(
+            (el) => el.identifier === reference.book
+          )?.path
 
+          let url = ''
+          if (bookPath.slice(0, 2) === './') {
+            url = `${
+              process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+            }/${repo}${bookPath.slice(1)}`
+          } else {
+            url = `${
+              process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+            }/${repo}/${bookPath}`
+          }
+          setTnLink(url)
+        }
+      }
+    }
+  }, [reference?.book, stepConfig])
   return (
     <div className="layout-step">
       {stepConfig.config.map((el, index) => {
@@ -54,6 +81,10 @@ function Workspace({ stepConfig, reference, editable = false }) {
               tools={el.tools}
               resources={stepConfig.resources}
               reference={reference}
+              targetResourceLink={`${
+                stepConfig.resources[stepConfig.base_manifest].owner
+              }/${stepConfig.resources[stepConfig.base_manifest].repo}`}
+              tnLink={tnLink}
               wholeChapter={stepConfig.whole_chapter}
               editable={editable}
             />
@@ -66,24 +97,23 @@ function Workspace({ stepConfig, reference, editable = false }) {
 
 export default Workspace
 
-function Panel({ tools, resources, reference, wholeChapter, editable = false }) {
+function classNames(...classes) {
+  return classes.filter(Boolean).join(' ')
+}
+
+function Panel({
+  tools,
+  resources,
+  targetResourceLink,
+  tnLink,
+  reference,
+  wholeChapter,
+  editable = false,
+}) {
   const { t } = useTranslation('common')
-  function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-  }
 
   return (
-    <Tab.Group
-      onChange={(index) => {
-        const scrollIds = JSON.parse(localStorage.getItem('scrollIds'))
-        const id = scrollIds?.[tools[index].name]
-        if (id) {
-          setTimeout(() => {
-            document?.getElementById(id)?.scrollIntoView()
-          }, 100)
-        }
-      }}
-    >
+    <Tab.Group>
       <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-7 flex overflow-auto">
         {tools?.map((tool) => (
           <Tab
@@ -122,6 +152,8 @@ function Panel({ tools, resources, reference, wholeChapter, editable = false }) 
               <div className="flex flex-col bg-white rounded-lg h-full">
                 <Tool
                   editable={editable}
+                  targetResourceLink={targetResourceLink}
+                  tnLink={tnLink}
                   config={{
                     reference,
                     wholeChapter,

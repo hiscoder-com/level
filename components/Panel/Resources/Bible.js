@@ -15,7 +15,12 @@ function Bible({ config, url, toolName }) {
     config,
     url,
   })
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { handleSaveScroll, currentScrollVerse } = useScroll({
+    toolName,
+    idPrefix: 'id',
+    isLoading,
+  })
+
   return (
     <>
       {isLoading ? (
@@ -23,14 +28,13 @@ function Bible({ config, url, toolName }) {
       ) : config?.config?.draft ? (
         <VersesExtended
           verseObjects={data?.verseObjects}
-          handleSave={handleSave}
-          scrollId={scrollId}
+          handleSaveScroll={handleSaveScroll}
         />
       ) : (
         <Verses
           verseObjects={data?.verseObjects}
-          handleSave={handleSave}
-          scrollId={scrollId}
+          handleSaveScroll={handleSaveScroll}
+          currentScrollVerse={currentScrollVerse}
         />
       )}
     </>
@@ -39,15 +43,19 @@ function Bible({ config, url, toolName }) {
 
 export default Bible
 
-function Verses({ verseObjects, handleSave, scrollId }) {
+function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
   return (
     <>
       {verseObjects?.map((verseObject) => (
         <div
           key={verseObject.verse}
           id={'id' + verseObject.verse}
-          className={`p-2 ${scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''}`}
-          onClick={() => handleSave(verseObject.verse)}
+          className={`p-2 ${
+            'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
+          }`}
+          onClick={() => {
+            handleSaveScroll(String(verseObject.verse))
+          }}
         >
           <ReactMarkdown>
             {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
@@ -58,7 +66,7 @@ function Verses({ verseObjects, handleSave, scrollId }) {
   )
 }
 
-function VersesExtended({ verseObjects, handleSave, scrollId }) {
+function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
   return (
     <>
@@ -67,9 +75,9 @@ function VersesExtended({ verseObjects, handleSave, scrollId }) {
         return (
           <div
             key={verseObject.verse}
-            onClick={() => handleSave(verseObject.verse)}
+            onClick={() => handleSaveScroll(verseObject.verse)}
             className={`my-3 flex items-start select-none ${
-              scrollId === 'id' + verseObject.verse ? 'bg-gray-200' : ''
+              'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
             }`}
           >
             <div id={'id' + verseObject.verse} className={`ml-2`}>

@@ -24,8 +24,8 @@ export default function UsersPage() {
       <div className="mx-auto max-w-7xl">
         <div>{t('Users')}</div>
         <UsersList access_token={user?.access_token} />
-        <Link href={'/users/create'}>
-          <a className="btn btn-filled">{t('CreateNewUser')}</a>
+        <Link href={'/users/create'} className="btn btn-filled">
+          {t('CreateNewUser')}
         </Link>
       </div>
     </>

@@ -1,4 +1,4 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 /**
  *  @swagger
@@ -98,10 +98,10 @@ import { supabase } from 'utils/supabaseClient'
  */
 
 export default async function languagesHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
   let data = {}
   const {
     query: { code },
@@ -120,45 +120,42 @@ export default async function languagesHandler(req, res) {
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json(data)
-      break
+      return res.status(200).json(data)
     case 'PUT':
       try {
         const { data: value, error } = await supabase
           .from('languages')
           .update([{ eng, orig_name, is_gl }])
           .match({ code: code })
+          .select()
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(201).json(data)
-      break
+      return res.status(201).json(data)
+
     case 'DELETE':
       try {
         const { data: value, error } = await supabase
           .from('languages')
           .delete({ returning: 'representation', count: 'estimated' })
           .match({ code: code })
+          .select()
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
       if (data.length === 0) {
-        res.status(204).end()
-        return
+        return res.status(204).end()
       }
-      res.status(200).json(data?.code)
-      break
+      return res.status(200).json(data?.code)
+
     default:
       res.setHeader('Allow', ['GET', 'PUT', 'DELETE'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

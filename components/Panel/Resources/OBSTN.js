@@ -6,54 +6,22 @@ import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
 
-import { useQuotesTranslation } from '@texttree/tn-quote'
-
-import { filterNotes } from 'utils/helper'
-
-function TN({ config, url, toolName }) {
+function OBSTN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
-  const [tnotes, setTnotes] = useState([])
   const { isLoading, data, error } = useGetResource({ config, url })
-
-  const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
-    domain: process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org',
-    book: config.reference.book,
-    tnotes: data,
-    usfm: {
-      link:
-        (process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org') +
-        '/' +
-        config.targetResourceLink,
-    },
-  })
-  useEffect(() => {
-    if (extraTNotes) {
-      const _data = []
-      for (const el of extraTNotes) {
-        filterNotes(el, el.verse, _data)
-      }
-      setTnotes(_data)
-    }
-  }, [extraTNotes])
-
-  useEffect(() => {
-    if (updateTnotes && data) {
-      updateTnotes(data)
-    }
-  }, [data, updateTnotes])
 
   return (
     <>
-      {isLoading || !extraTNotes?.length ? (
+      {isLoading ? (
         <Placeholder />
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
           <TNList
             setItem={setItem}
-            data={tnotes}
+            data={data}
             toolName={toolName}
-            isLoading={isLoading || tnotes}
+            isLoading={isLoading}
           />
         </div>
       )}
@@ -61,7 +29,7 @@ function TN({ config, url, toolName }) {
   )
 }
 
-export default TN
+export default OBSTN
 
 function TNList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
@@ -70,6 +38,7 @@ function TNList({ setItem, data, toolName, isLoading }) {
     isLoading,
     idPrefix: 'idtn',
   })
+
   useEffect(() => {
     if (data) {
       setVerses(Object.entries(data))
@@ -88,17 +57,17 @@ function TNList({ setItem, data, toolName, isLoading }) {
                   {notes?.map((note) => {
                     return (
                       <li
-                        key={note.ID}
-                        id={'idtn' + note.ID}
+                        key={note.id}
+                        id={'idtn' + note.id}
                         className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                          highlightId === 'id' + note.ID ? 'bg-gray-200' : ''
+                          highlightId === 'id' + note.id ? 'bg-gray-200' : ''
                         }`}
                         onClick={() => {
-                          handleSaveScroll(verseNumber, note.ID)
-                          setItem({ text: note.Note, title: note.Quote })
+                          handleSaveScroll(verseNumber, note.id)
+                          setItem({ text: note.text, title: note.title })
                         }}
                       >
-                        <ReactMarkdown>{note.Quote}</ReactMarkdown>
+                        <ReactMarkdown>{note.title}</ReactMarkdown>
                       </li>
                     )
                   })}

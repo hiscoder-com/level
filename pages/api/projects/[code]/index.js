@@ -1,10 +1,10 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function projectHandler(req, res) {
   if (!req.headers.token) {
     return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
 
   let data = {}
   const {
@@ -28,7 +28,6 @@ export default async function projectHandler(req, res) {
         return res.status(404).json({ error })
       }
       return res.status(200).json({ ...data })
-
     case 'PUT':
       const { code: new_code, title, orig_title, language_id } = basicInfo
 

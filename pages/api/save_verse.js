@@ -1,12 +1,9 @@
-import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default async function handler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
-    return
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
 
   const { method } = req
 
@@ -20,10 +17,9 @@ export default async function handler(req, res) {
           verses: { [id]: text },
         })
         if (errorPost) throw errorPost
-        res.status(201).json({})
+        return res.status(201).json({})
       } catch (error) {
-        res.status(404).json(error)
-        return
+        return res.status(404).json(error)
       }
       break
     default:

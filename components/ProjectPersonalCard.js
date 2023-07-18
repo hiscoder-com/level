@@ -7,11 +7,13 @@ import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
 
-import { supabase } from 'utils/supabaseClient'
 import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function ProjectPersonalCard({ project, token, user }) {
+  const supabase = useSupabaseClient()
+
   const { locale } = useRouter()
 
   const [currentSteps, setCurrentSteps] = useState(null)
@@ -32,7 +34,7 @@ function ProjectPersonalCard({ project, token, user }) {
     supabase
       .rpc('get_current_steps', { project_id: project.id })
       .then((res) => setCurrentSteps(res.data))
-  }, [project?.id])
+  }, [project?.id, supabase])
 
   const chapters = useMemo(() => {
     const _chapters = {}
@@ -115,10 +117,11 @@ function ProjectPersonalCard({ project, token, user }) {
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
                           <p>{t('projects:Project')}:</p>
-                          <Link href={`/projects/${project.code}`}>
-                            <a className="text-cyan-700 hover:text-gray-500">
-                              {project?.title}
-                            </a>
+                          <Link
+                            href={`/projects/${project.code}`}
+                            className="text-cyan-700 hover:text-gray-500"
+                          >
+                            {project?.title}
                           </Link>
                         </div>
                         <div className="flex gap-3">
@@ -171,10 +174,9 @@ function ProjectPersonalCard({ project, token, user }) {
                                 ? '/intro'
                                 : ''
                             }`}
+                            className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base"
                           >
-                            <a className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base">
-                              {stepLink}
-                            </a>
+                            {stepLink}
                           </Link>
                         ) : (
                           <button
@@ -187,10 +189,11 @@ function ProjectPersonalCard({ project, token, user }) {
                         )
                       })}
                       {briefResume === '' && (
-                        <Link href={`/projects/${project?.code}/edit?setting=brief`}>
-                          <a className="btn-primary flex gap-1 sm:gap-2">
-                            {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
-                          </a>
+                        <Link
+                          href={`/projects/${project?.code}/edit?setting=brief`}
+                          className="btn-primary flex gap-1 sm:gap-2"
+                        >
+                          {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                         </Link>
                       )}
                     </div>

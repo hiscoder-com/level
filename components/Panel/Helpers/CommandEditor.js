@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import { toast, Toaster } from 'react-hot-toast'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
@@ -21,6 +21,8 @@ import { obsCheckAdditionalVerses } from 'utils/helper'
 //              - FALSE видно все стихи, исправлять можно только свои
 
 function CommandEditor({ config }) {
+  const supabase = useSupabaseClient()
+
   const { user } = useCurrentUser()
   const { t } = useTranslation(['common'])
 
@@ -49,7 +51,7 @@ function CommandEditor({ config }) {
     if (currentProject?.id && user?.id) {
       getLevel(user.id, currentProject.id)
     }
-  }, [currentProject?.id, user?.id])
+  }, [currentProject?.id, supabase, user?.id])
 
   useEffect(() => {
     supabase
@@ -68,7 +70,7 @@ function CommandEditor({ config }) {
         }))
         setVerseObjects(result)
       })
-  }, [book, chapter_num, config?.reference?.verses, project])
+  }, [book, chapter_num, config?.reference?.verses, project, supabase])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {
@@ -86,19 +88,27 @@ function CommandEditor({ config }) {
     let mySubscription = null
     if (chapter?.id) {
       mySubscription = supabase
-        .from('verses:chapter_id=eq.' + chapter.id)
-        .on('UPDATE', (payload) => {
-          const { id, text } = payload.new
-          updateVerseObject(id, text)
-        })
+        .channel('public' + 'verses:chapter_id=eq.' + chapter.id)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'verses:chapter_id=eq.' + chapter.id,
+          },
+          (payload) => {
+            const { id, text } = payload.new
+            updateVerseObject(id, text)
+          }
+        )
         .subscribe()
     }
     return () => {
       if (mySubscription) {
-        supabase.removeSubscription(mySubscription)
+        supabase.removeChannel(mySubscription)
       }
     }
-  }, [chapter?.id])
+  }, [chapter?.id, supabase])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {

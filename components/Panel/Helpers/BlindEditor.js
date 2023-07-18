@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import { useSetRecoilState } from 'recoil'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import { toast, Toaster } from 'react-hot-toast'
 
@@ -16,6 +16,7 @@ import Pencil from 'public/pencil.svg'
 import Check from 'public/check.svg'
 
 function BlindEditor({ config }) {
+  const supabase = useSupabaseClient()
   const [isShowFinalButton, setIsShowFinalButton] = useState(false)
   const [translatedVerses, setTranslatedVerses] = useState([])
   const [enabledInputs, setEnabledInputs] = useState([])

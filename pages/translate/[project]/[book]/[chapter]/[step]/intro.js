@@ -7,10 +7,11 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import IntroStep from 'components/IntroStep'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
 
 export default function IntroPage() {
+  const supabase = useSupabaseClient()
   const { query, replace } = useRouter()
   const { project, book, chapter, step } = query
 
@@ -44,8 +45,7 @@ export default function IntroPage() {
             }
           })
       })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter, project, step])
+  }, [book, chapter, project, replace, step, supabase])
   return (
     <div className="layout-appbar">
       <Head>

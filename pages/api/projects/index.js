@@ -1,12 +1,14 @@
-import { supabase } from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseServer'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import { parseManifests } from 'utils/helper'
 
 import { parseManifests, validationBrief } from 'utils/helper'
 export default async function languageProjectsHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+
+  const supabase = createPagesServerClient({ req, res })
 
   const {
     body: {
@@ -80,8 +82,8 @@ export default async function languageProjectsHandler(req, res) {
               books: baseResource.books,
             },
           },
-        ])
-        
+        ])        
+
         if (error) throw error
         const { error: briefError } = await supabase.rpc('create_brief', {
           project_id: project[0].id,
@@ -99,12 +101,10 @@ export default async function languageProjectsHandler(req, res) {
             .insert([{ ...step_el, sorting: sorting++, project_id: project[0].id }])
         }
         res.setHeader('Location', `/projects/${project[0].code}`)
-        res.status(201).json({})
-        res.status(200).json({})
+        return res.status(201).json({})
       } catch (error) {
         return res.status(404).json({ error })
       }
-      break
     case 'GET':
       try {
         const { data, error } = await supabase
@@ -118,6 +118,6 @@ export default async function languageProjectsHandler(req, res) {
       }
     default:
       res.setHeader('Allow', ['POST', 'GET'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
