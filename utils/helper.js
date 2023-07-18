@@ -47,7 +47,7 @@ export const readableDate = (date, locale = 'ru') => {
   }).format(new Date(date))
 }
 
-export const createObjectToTransform = (ref, t) => {
+export const createObjectToTransform = (ref, partOfChapterTitle) => {
   if (ref.json === null) {
     return
   }
@@ -76,7 +76,7 @@ export const createObjectToTransform = (ref, t) => {
       }
     }
   } else {
-    objectToTransform.title = `${t('Chapter')} ${chapterNum}`
+    objectToTransform.title = `${partOfChapterTitle} ${chapterNum}`
 
     for (const [key, value] of Object.entries(json)) {
       const verseObject = {
@@ -245,6 +245,7 @@ export const downloadPdf = async ({
   }
 
   const createPdfOptionsBible = (chapters, downloadSettings, book) => {
+    const partOfChapterTitle = t('Chapter')
     pdfOptions = {
       styles,
       fileName,
@@ -277,14 +278,14 @@ export const downloadPdf = async ({
               json: chapter.text,
               chapterNum: chapter.num,
             },
-            t
+            partOfChapterTitle
           )
         )
     } else {
       if (!chapter) {
         return
       }
-      pdfOptions.data = [createObjectToTransform(chapter, t)]
+      pdfOptions.data = [createObjectToTransform(chapter, partOfChapterTitle)]
     }
 
     return pdfOptions

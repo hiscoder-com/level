@@ -3,17 +3,12 @@ import { useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import { supabase } from 'utils/supabaseClient'
-
-import { saveAs } from 'file-saver'
-
-import useSupabaseClient from 'utils/supabaseClient'
-
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
 
+import useSupabaseClient from 'utils/supabaseClient'
 import { usfmFileNames } from 'utils/config'
 import {
   createObjectToTransform,
@@ -108,19 +103,19 @@ function Download({
     const fileData = { name: 'content', isFolder: true, content: [] }
 
     for (const story of obs) {
-      if (story.text === null) {
+      if (!story || story.text === null) {
         continue
       }
       const text = JsonToMd(
         createObjectToTransform({
-          json: story?.text,
-          chapterNum: story?.num,
+          json: story.text,
+          chapterNum: story.num,
         })
       )
 
       if (text) {
         const chapterFile = {
-          name: `${story?.num}.md`,
+          name: `${story.num}.md`,
           content: text,
         }
         fileData.content.push(chapterFile)
@@ -130,7 +125,7 @@ function Download({
     if (downloadingBook?.properties?.obs?.back) {
       const backFile = {
         name: 'intro.md',
-        content: downloadingBook?.properties?.obs?.back,
+        content: downloadingBook.properties.obs.back,
       }
       const backFolder = {
         name: 'back',
@@ -143,7 +138,7 @@ function Download({
     if (downloadingBook?.properties?.obs?.intro) {
       const introFile = {
         name: 'intro.md',
-        content: downloadingBook?.properties?.obs?.intro,
+        content: downloadingBook.properties.obs.intro,
       }
       const frontFolder = {
         name: 'front',
@@ -156,7 +151,7 @@ function Download({
     if (downloadingBook?.properties?.obs?.title) {
       const titleFile = {
         name: 'title.md',
-        content: downloadingBook?.properties?.obs?.title,
+        content: downloadingBook.properties.obs.title,
       }
       const frontFolder = {
         name: 'front',
@@ -168,7 +163,7 @@ function Download({
 
     MdToZip({
       fileData,
-      fileName: `${downloadingBook?.properties?.obs?.title || 'obs'}.zip`,
+      fileName: `${downloadingBook.properties.obs.title || 'obs'}.zip`,
     })
   }
 
