@@ -16,9 +16,11 @@ import BriefEditQuestions from 'components/BriefEditQuestions'
 import { useGetBrief, useProject } from 'utils/hooks'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function BriefBlock({ access }) {
+  const supabase = useSupabaseClient()
+
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [editableMode, setEditableMode] = useState(false)
   const [hidden, setHidden] = useState(true)

@@ -1,6 +1,5 @@
 import { supabaseService } from 'utils/supabaseServer'
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
-import { parseManifests } from 'utils/helper'
 
 import { parseManifests, validationBrief } from 'utils/helper'
 export default async function languageProjectsHandler(req, res) {
@@ -67,7 +66,7 @@ export default async function languageProjectsHandler(req, res) {
         })
 
         if (errorManifest) throw errorManifest
-        
+
         const { data: project, error } = await supabase.from('projects').insert([
           {
             title,
@@ -82,7 +81,7 @@ export default async function languageProjectsHandler(req, res) {
               books: baseResource.books,
             },
           },
-        ])        
+        ])
 
         if (error) throw error
         const { error: briefError } = await supabase.rpc('create_brief', {
