@@ -1,46 +1,33 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
-// const validation = (properties) => {
-//   const error = null
-//   if (!properties) {
-//     return { error: 'Properties is null or undefined' }
-//   }
+const stepValidation = (steps) => {
+  // TODO доделать валидацию
+  const error = null
+  if (!steps?.length) {
+    return { error: 'This is incorrect json', steps }
+  }
+  for (const step of steps) {
+    try {
+      const obj = JSON.parse(JSON.stringify(step))
+      if (!obj || typeof obj !== 'object') {
+        throw new Error('This is incorrect json')
+      }
+      if (
+        JSON.stringify(Object.keys(step)?.sort()) !==
+        JSON.stringify(['intro', 'description', 'title'].sort())
+      ) {
+        throw new Error('step has different keys')
+      }
+    } catch (error) {
+      return error
+    }
+  }
 
-//   try {
-//     const obj = JSON.parse(JSON.stringify(properties))
-//     if (!obj || typeof obj !== 'object') {
-//       throw new Error('This is incorrect json')
-//     }
-//   } catch (error) {
-//     return { error: 'This is incorrect json', properties }
-//   }
-
-//   if (
-//     JSON.stringify(Object.keys(properties)?.sort()) !==
-//     JSON.stringify(['obs', 'scripture'].sort())
-//   ) {
-//     throw new Error('Properties has different keys')
-//   }
-
-//   if (
-//     JSON.stringify(Object.keys(properties.obs)?.sort()) !==
-//     JSON.stringify(['title', 'intro', 'back', 'chapter_label'].sort())
-//   ) {
-//     throw new Error('Properties has different keys in OBS part')
-//   }
-
-//   if (
-//     JSON.stringify(Object.keys(properties.scripture)?.sort()) !==
-//     JSON.stringify(['h', 'toc1', 'toc2', 'toc3', 'mt', 'chapter_label'].sort())
-//   ) {
-//     throw new Error('Properties has different keys in Scripture part')
-//   }
-//   return { error }
-// }
+  return { error }
+}
 
 export default async function stepsHandler(req, res) {
   if (!req.headers.token) {
-    console.log({ error: 'Access denied!' })
     return res.status(401).json({ error: 'Access denied!' })
   }
   const supabase = createPagesServerClient({ req, res })
@@ -52,27 +39,6 @@ export default async function stepsHandler(req, res) {
     method,
   } = req
 
-  // if (!project_id || !user_id) {
-  //   res.status(401).json({ error: 'Access denied!' })
-  // }
-  // try {
-  //   const level = await supabase.rpc('authorize', {
-  //     user_id,
-  //     project_id,
-  //   })
-
-  //   if (!['admin', 'coordinator'].includes(level.data)) {
-  //     res.status(401).json({ error: 'Access denied!' })
-  //   }
-  // } catch (error) {
-  //   res.status(404).json({ error })
-  // }
-
-  // const { error: validationError } = validation(properties)
-  // if (validationError) {
-  //   res.status(404).json({ validationError })
-  //   return
-  // }
   switch (method) {
     case 'GET':
       try {
@@ -89,20 +55,23 @@ export default async function stepsHandler(req, res) {
         return res.status(404).json({ error })
       }
       return res.status(200).json(data)
-    // case 'PUT':
-    //   const project_id = body
-    //   try {
-    //     // return
-    //     const { data, error } = await supabaseService.from('steps').upsert(body._steps)
-    //     // .match({ project_id })
-    //     if (error) throw error
-    //   } catch (error) {
-    //     res.status(404).json({ error })
-    //     return
-    //   }
-    //   res.status(200).json({ success: true })
+    case 'PUT':
+      const { project_id, _steps } = body
+      // const error = stepValidation(_steps)
+      if (error) throw error
+      try {
+        const { error } = await supabase.rpc('update_multiple_steps', {
+          steps: _steps,
+          project_id,
+        })
+        if (error) throw error
+      } catch (error) {
+        res.status(404).json({ error })
+        return
+      }
+      res.status(200).json({ success: true })
 
-    //   break
+      break
 
     default:
       res.setHeader('Allow', ['GET', 'PUT'])
