@@ -863,6 +863,28 @@
 
     END;
    $$;
+
+  -- update multiple steps
+  CREATE FUNCTION update_multiple_steps(steps jsonb[], project_id BIGINT) RETURNS BOOLEAN AS $$
+    DECLARE
+      step jsonb;
+    BEGIN
+      IF authorize(auth.uid(), update_multiple_steps.project_id) NOT IN ('admin') THEN
+        RETURN FALSE;
+      END IF;
+      FOREACH step IN ARRAY steps
+      LOOP
+        UPDATE public.steps
+        SET 
+          title = (step->>'title')::TEXT,
+          description = (step->>'description')::TEXT,
+          intro = (step->>'intro')::TEXT
+        WHERE id = (step->>'id')::BIGINT;
+      END LOOP;
+      RETURN TRUE;
+    END;
+  $$ LANGUAGE plpgsql;
+
 -- END CREATE FUNCTION
 
 -- USERS
@@ -1181,6 +1203,12 @@
     CREATE POLICY "Добавлять можно только админу" ON PUBLIC.steps FOR
     INSERT
       WITH CHECK (admin_only());
+
+    DROP POLICY IF EXISTS "Изменять может админ" ON PUBLIC.steps;
+
+    CREATE POLICY "Изменять может админ" ON PUBLIC.steps FOR
+    UPDATE
+      USING (authorize(auth.uid(), project_id) IN ('admin'));
   -- END RLS
 -- END STEPS
 
