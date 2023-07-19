@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import SwitchLocalization from './SwitchLocalization'
 
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
 import EyeIcon from 'public/eye-icon.svg'
@@ -16,6 +16,7 @@ import EyeOffIcon from 'public/eye-off-icon.svg'
 import Spinner from 'public/spinner.svg'
 
 function PasswordRecovery() {
+  const supabase = useSupabaseClient()
   const { t } = useTranslation('users')
   const { user } = useCurrentUser()
   const [password, setPassword] = useState('')
@@ -160,10 +161,11 @@ function PasswordRecovery() {
           ) : (
             <>
               <div>{successResult}</div>
-              <Link href={'/'}>
-                <a className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400">
-                  {t('GoToLogin')}
-                </a>
+              <Link
+                href={'/'}
+                className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400"
+              >
+                {t('GoToLogin')}
               </Link>
             </>
           )}

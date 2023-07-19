@@ -1,10 +1,10 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function sendRecoveryHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
 
   const {
     method,
@@ -14,7 +14,7 @@ export default async function sendRecoveryHandler(req, res) {
   switch (method) {
     case 'POST':
       try {
-        const { data: dataSend, error } = await supabase.auth.api.resetPasswordForEmail(
+        const { data: dataSend, error } = await supabase.auth.resetPasswordForEmail(
           email,
           {
             redirectTo: `${url}/password-recovery`,

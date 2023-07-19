@@ -1,10 +1,10 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function updatePasswordHandler(req, res) {
   if (!req.headers.token) {
     res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
 
   const {
     method,
@@ -14,7 +14,7 @@ export default async function updatePasswordHandler(req, res) {
   switch (method) {
     case 'PUT':
       try {
-        const { user, error } = await supabase.auth.update({ password })
+        const { user, error } = await supabase.auth.updateUser({ password })
         data = user
         if (error) throw error
       } catch (error) {
