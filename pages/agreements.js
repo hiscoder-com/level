@@ -8,7 +8,7 @@ export default function Agreements() {
 
   return (
     <div className="layout-appbar">
-      <div className="flex flex-col text-center space-y-2.5">
+      <div className="flex flex-col mt-16 md:mt-0 text-center space-y-2.5">
         <Link href="/user-agreement" className="btn-white w-64">
           {t('Agreement')}
         </Link>

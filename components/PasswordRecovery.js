@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
@@ -19,14 +19,20 @@ function PasswordRecovery() {
   const supabase = useSupabaseClient()
   const { t } = useTranslation('users')
   const { user } = useCurrentUser()
+
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
   const [isRecovering, setIsRecovering] = useState(false)
 
   const [error, setError] = useState('')
-  const [successResult, setSuccessResult] = useState(null)
+  const [successResult, setSuccessResult] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showRepeatPassword, setShowRepeatPassword] = useState(false)
+  useEffect(() => {
+    if (user) {
+      console.log(user)
+    }
+  }, [user])
 
   const signOut = async () => {
     try {
@@ -150,7 +156,7 @@ function PasswordRecovery() {
                 >
                   <div className="flex justify-center">
                     {isRecovering ? (
-                      <Spinner className="h-6 w- text-gray-400 animate-spin self-center" />
+                      <Spinner className="h-6 w-6 text-gray-400 animate-spin self-center" />
                     ) : (
                       t('UpdatePassword')
                     )}

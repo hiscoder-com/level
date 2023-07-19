@@ -11,7 +11,9 @@ function StartPage({ children }) {
   return (
     <>
       <div className="flex flex-col items-center px-10 sm:hidden">
-        <VcanaLogo className="my-[6vh] max-w-xs sm:max-w-md w-28" />
+        <Link href="/">
+          <VcanaLogo className="my-[6vh] max-w-xs sm:max-w-md w-28" />
+        </Link>
         <div className="bg-white w-[80vw] mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
           {children}
         </div>
@@ -24,7 +26,9 @@ function StartPage({ children }) {
       <div className="hidden sm:flex">
         <div className="flex flex-col items-center justify-center w-1/2">
           <div className="flex flex-col items-center text-base xl:text-lg">
-            <VcanaLogo className="max-w-xs w-28 xl:w-40 mb-9" />
+            <Link href="/">
+              <VcanaLogo className="max-w-xs w-28 xl:w-40 mb-9" />
+            </Link>
             <h1 className="mb-10 2xl:mb-20 text-center">
               {t('PlatformForBibleTranslate')}
             </h1>
