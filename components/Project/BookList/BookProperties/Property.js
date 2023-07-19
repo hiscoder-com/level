@@ -18,14 +18,13 @@ function Property({ t, property, content, type, updateProperty }) {
           {t(`book-properties:${property}${type === 'obs' ? '_obs' : ''}`)}
         </div>
         {additionalLinks[property] && (
-          <Link href={additionalLinks[property]}>
-            <a
-              title={additionalLinks[property]}
-              target="_blank"
-              className="text-cyan-700 hover:text-gray-400"
-            >
-              ?
-            </a>
+          <Link
+            href={additionalLinks[property]}
+            title={additionalLinks[property]}
+            target="_blank"
+            className="text-cyan-700 hover:text-gray-400"
+          >
+            ?
           </Link>
         )}
       </div>

@@ -11,7 +11,7 @@ import toast from 'react-hot-toast'
 
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useAccess, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
@@ -45,6 +45,8 @@ function Dictionary() {
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
+
+  const supabase = useSupabaseClient()
 
   const totalPageCount = useMemo(
     () => Math.ceil(words?.count / CountWordsOnPage),

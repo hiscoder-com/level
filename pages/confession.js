@@ -27,8 +27,8 @@ export default function Confession() {
             https://texttree.org/
           </a>
         </p>
-        <Link href="/confession-steps">
-          <a className="btn-cyan w-28 mt-7">{t('Start')}</a>
+        <Link href="/confession-steps" className="btn-cyan w-28 mt-7">
+          {t('Start')}
         </Link>
       </div>
     </div>

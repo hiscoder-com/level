@@ -17,7 +17,12 @@ function OBSTN({ config, url, toolName }) {
       ) : (
         <div className="relative h-full">
           <TNTWLContent setItem={setItem} item={item} />
-          <TNList setItem={setItem} data={data} toolName={toolName} />
+          <TNList
+            setItem={setItem}
+            data={data}
+            toolName={toolName}
+            isLoading={isLoading}
+          />
         </div>
       )}
     </>
@@ -26,9 +31,13 @@ function OBSTN({ config, url, toolName }) {
 
 export default OBSTN
 
-function TNList({ setItem, data, toolName }) {
+function TNList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
-  const { scrollId, handleSave } = useScroll({ toolName })
+  const { highlightId, handleSaveScroll } = useScroll({
+    toolName,
+    isLoading,
+    idPrefix: 'idtn',
+  })
 
   useEffect(() => {
     if (data) {
@@ -43,18 +52,18 @@ function TNList({ setItem, data, toolName }) {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1">
+              <div className="text-gray-700 pl-7 flex-1" id={'idtn' + verseNumber}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.id}
-                        id={'id' + note.id}
+                        id={'idtn' + note.id}
                         className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                          scrollId === 'id' + note.id ? 'bg-gray-200' : ''
+                          highlightId === 'id' + note.id ? 'bg-gray-200' : ''
                         }`}
                         onClick={() => {
-                          handleSave(note.id)
+                          handleSaveScroll(verseNumber, note.id)
                           setItem({ text: note.text, title: note.title })
                         }}
                       >

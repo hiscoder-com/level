@@ -9,14 +9,14 @@ export default function Agreements() {
   return (
     <div className="layout-appbar">
       <div className="flex flex-col text-center space-y-2.5">
-        <Link href="/user-agreement">
-          <a className="btn-white w-64">{t('Agreement')}</a>
+        <Link href="/user-agreement" className="btn-white w-64">
+          {t('Agreement')}
         </Link>
-        <Link href="/confession">
-          <a className="btn-white w-64">{t('Confession')}</a>
+        <Link href="/confession" className="btn-white w-64">
+          {t('Confession')}
         </Link>
-        <Link href="/user-agreement">
-          <a className="btn-cyan w-64">{t('common:Next')}</a>
+        <Link href="/user-agreement" className="btn-cyan w-64">
+          {t('common:Next')}
         </Link>
       </div>
     </div>

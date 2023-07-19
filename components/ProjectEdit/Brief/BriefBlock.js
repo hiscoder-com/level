@@ -15,11 +15,13 @@ import BriefAnswer from './BriefAnswer'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import Spinner from 'public/spinner.svg'
 
 function BriefBlock({ access }) {
+  const supabase = useSupabaseClient()
+
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [hidden, setHidden] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
@@ -65,16 +67,17 @@ function BriefBlock({ access }) {
 
   useEffect(() => {
     const briefUpdates = supabase
-      .from('briefs')
-      .on('UPDATE', (payload) => {
-        setBriefDataCollection(payload.new.data_collection)
-      })
+      .channel('public:briefs')
+      .on(
+        'postgres_changes',
+        { event: 'UPDATE', schema: 'public', table: 'briefs' },
+        (payload) => setBriefDataCollection(payload.new.data_collection)
+      )
       .subscribe()
-
     return () => {
-      briefUpdates.unsubscribe()
+      supabase.removeChannel(briefUpdates)
     }
-  }, [])
+  }, [supabase])
 
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {

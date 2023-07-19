@@ -17,7 +17,7 @@ import {
   useGetCreatedChapters,
   useProject,
 } from 'utils/hooks'
-import { supabase } from 'utils/supabaseClient'
+import useSupabaseClient from 'utils/supabaseClient'
 import { readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
@@ -26,6 +26,7 @@ import Plus from '/public/plus.svg'
 
 function ChapterList() {
   const { user } = useCurrentUser()
+  const supabase = useSupabaseClient()
 
   const {
     locale,
@@ -73,7 +74,7 @@ function ChapterList() {
         .rpc('get_current_steps', { project_id: project.id })
         .then((res) => setCurrentSteps(res.data))
     }
-  }, [project?.id])
+  }, [project.id, supabase])
 
   const getCurrentStep = (chapter) => {
     const step = currentSteps
@@ -83,18 +84,19 @@ function ChapterList() {
       return (
         <>
           {!(!isBrief || briefResume) ? (
-            <Link href={`/projects/${project?.code}/edit?setting=brief`}>
-              <a onClick={(e) => e.stopPropagation()}>
-                {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
-              </a>
+            <Link
+              href={`/projects/${project?.code}/edit?setting=brief`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
             </Link>
           ) : (
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+              onClick={(e) => e.stopPropagation()}
+              className="text-sm xl:text-lg"
             >
-              <a onClick={(e) => e.stopPropagation()} className="text-sm xl:text-lg">
-                {step.step} {t('Step').toLowerCase()}
-              </a>
+              {step.step} {t('Step').toLowerCase()}
             </Link>
           )}
         </>

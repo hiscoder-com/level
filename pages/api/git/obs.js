@@ -94,10 +94,8 @@ export default async function obsHandler(req, res) {
           })
         : verseObjectsObs
 
-    res.status(200).json({ verseObjects: _verseObjects, header })
-    return
+    return res.status(200).json({ verseObjects: _verseObjects, header })
   } catch (error) {
-    res.status(404).json({ error })
-    return
+    return res.status(404).json({ error })
   }
 }

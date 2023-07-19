@@ -1,4 +1,4 @@
-import { supabase } from 'utils/supabaseClient'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 /**
  * @swagger
  * components:
@@ -73,10 +73,10 @@ import { supabase } from 'utils/supabaseClient'
  */
 
 export default async function languagesHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  if (!req?.headers?.token) {
+    return res.status(401).json({ error: 'Access denied!' })
   }
-  supabase.auth.setAuth(req.headers.token)
+  const supabase = createPagesServerClient({ req, res })
   let data = {}
   const {
     body: { eng, code, orig_name, is_gl },
@@ -89,26 +89,25 @@ export default async function languagesHandler(req, res) {
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(200).json(data)
-      break
+      return res.status(200).json(data)
+
     case 'POST':
       try {
         const { data: value, error } = await supabase
           .from('languages')
           .insert([{ eng, code, orig_name, is_gl }])
+          .select()
         if (error) throw error
         data = value
       } catch (error) {
-        res.status(404).json({ error })
-        return
+        return res.status(404).json({ error })
       }
-      res.status(201).json(data)
-      break
+      return res.status(201).json(data)
+
     default:
       res.setHeader('Allow', ['GET', 'POST'])
-      res.status(405).end(`Method ${method} Not Allowed`)
+      return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }
