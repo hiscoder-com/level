@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next'
 
 import { useRecoilState } from 'recoil'
 
+import { useRouter } from 'next/router'
+
 import { inactiveState } from './Panel/state/atoms'
 
 import RecorderButton from 'public/recorder.svg'
@@ -27,6 +29,7 @@ export default function Recorder() {
     <PlayButton className="stroke-gray-300 stroke-2" />
   )
   const audioRef = useRef(null)
+  const router = useRouter()
 
   const startStop = () => {
     if (mediaRec?.state === 'inactive') {
@@ -74,6 +77,19 @@ export default function Recorder() {
       setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
     }
   }, [voice])
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setInactive(false)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [router, setInactive])
+
   const playPause = () => {
     if (audioRef.current.paused) {
       audioRef.current.play()
