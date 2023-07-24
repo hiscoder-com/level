@@ -7,7 +7,7 @@
 		font-family: "Roboto", system-ui, sans-serif;
 	}
 	body {
-		@apply text-slate-900
+				@apply text-slate-900
 	}
 }
 
@@ -118,6 +118,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .f-screen-appbar {
 	min-height: calc(100vh - 11.5rem);
+}
+
+.f-screen-account-tab {
+	height: 80vh;
 }
 
 .input-base {
