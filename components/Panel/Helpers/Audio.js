@@ -13,18 +13,13 @@ import BackButton from 'public/left-arrow.svg'
 
 export default function Audio() {
   const [audioState, setAudioState] = useState('Main Audio')
-  const [inactive, setInactive] = useRecoilState(inactiveState)
 
   return (
     <>
       {audioState === 'Retell Yourself' ? (
-        <RetellYourself setAudioState={setAudioState} setInactive={setInactive} />
+        <RetellYourself setAudioState={setAudioState} />
       ) : audioState === 'Retell Partner' ? (
-        <RetellPartner
-          setAudioState={setAudioState}
-          inactive={inactive}
-          setInactive={setInactive}
-        />
+        <RetellPartner setAudioState={setAudioState} />
       ) : (
         <MainAudio setAudioState={setAudioState} />
       )}
@@ -48,7 +43,8 @@ function MainAudio({ setAudioState }) {
   )
 }
 
-function RetellPartner({ setAudioState, inactive, setInactive }) {
+function RetellPartner({ setAudioState }) {
+  const [inactive, setInactive] = useRecoilState(inactiveState)
   const { t } = useTranslation(['audio'])
   const router = useRouter()
 
@@ -69,7 +65,6 @@ function RetellPartner({ setAudioState, inactive, setInactive }) {
       <BackButtonComponent
         setAudioState={setAudioState}
         audioState={'Main Audio'}
-        setInactive={setInactive}
         className="border-0 w-4 h-4 absolute top-0 left-0"
       />
       {inactive ? (
@@ -93,7 +88,7 @@ function RetellPartner({ setAudioState, inactive, setInactive }) {
   )
 }
 
-function RetellYourself({ setAudioState, setInactive }) {
+function RetellYourself({ setAudioState }) {
   const { t } = useTranslation(['audio'])
 
   return (
@@ -101,7 +96,6 @@ function RetellYourself({ setAudioState, setInactive }) {
       <BackButtonComponent
         setAudioState={setAudioState}
         audioState={'Main Audio Component'}
-        setInactive={setInactive}
         className="border-0 w-4 h-4"
       />
       <div className="flex justify-center flex-wrap mt-8">
@@ -118,7 +112,9 @@ function RetellYourself({ setAudioState, setInactive }) {
   )
 }
 
-function BackButtonComponent({ setAudioState, audioState, setInactive, className }) {
+function BackButtonComponent({ setAudioState, audioState, className }) {
+  const [, setInactive] = useRecoilState(inactiveState)
+
   return (
     <button
       onClick={() => {
