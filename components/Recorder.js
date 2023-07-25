@@ -2,11 +2,11 @@ import { useRef, useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import { useRecoilState } from 'recoil'
-
-import { useRouter } from 'next/router'
+import { useSetRecoilState } from 'recoil'
 
 import { inactiveState } from './Panel/state/atoms'
+
+import Modal from './Modal'
 
 import RecorderButton from 'public/recorder.svg'
 import StopButton from 'public/stop.svg'
@@ -14,11 +14,10 @@ import RecorderCrossedButton from 'public/error-outline.svg'
 import TrashButton from 'public/trash.svg'
 import PlayButton from 'public/play.svg'
 import PauseButton from 'public/pause.svg'
-import Modal from './Modal'
 
 export default function Recorder() {
   const { t } = useTranslation(['audio', 'common'])
-  const [, setInactive] = useRecoilState(inactiveState)
+  const setInactive = useSetRecoilState(inactiveState)
   const [showModal, setShowModal] = useState(false)
   const [mediaRec, setMediaRec] = useState()
   const [voice, setVoice] = useState([])
@@ -29,7 +28,6 @@ export default function Recorder() {
     <PlayButton className="stroke-gray-300 stroke-2" />
   )
   const audioRef = useRef(null)
-  const router = useRouter()
 
   const startStop = () => {
     if (mediaRec?.state === 'inactive') {
@@ -77,18 +75,6 @@ export default function Recorder() {
       setButtonPlay(<PlayButton className={'stroke-cyan-700 stroke-2'} />)
     }
   }, [voice])
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setInactive(false)
-    }
-
-    router.events.on('routeChangeStart', handleRouteChange)
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange)
-    }
-  }, [router, setInactive])
 
   const playPause = () => {
     if (audioRef.current.paused) {

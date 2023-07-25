@@ -7,7 +7,7 @@
 		font-family: "Roboto", system-ui, sans-serif;
 	}
 	body {
-				@apply text-slate-900
+		@apply text-slate-900
 	}
 }
 

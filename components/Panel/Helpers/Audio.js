@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import Recorder from 'components/Recorder'
 
@@ -13,6 +13,20 @@ import BackButton from 'public/left-arrow.svg'
 
 export default function Audio() {
   const [audioState, setAudioState] = useState('Main Audio')
+  const setInactive = useSetRecoilState(inactiveState)
+  const router = useRouter()
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setInactive(false)
+    }
+
+    router.events.on('routeChangeStart', handleRouteChange)
+
+    return () => {
+      router.events.off('routeChangeStart', handleRouteChange)
+    }
+  }, [router, setInactive])
 
   return (
     <>
@@ -46,19 +60,6 @@ function MainAudio({ setAudioState }) {
 function RetellPartner({ setAudioState }) {
   const [inactive, setInactive] = useRecoilState(inactiveState)
   const { t } = useTranslation(['audio'])
-  const router = useRouter()
-
-  useEffect(() => {
-    const handleRouteChange = () => {
-      setInactive(false)
-    }
-
-    router.events.on('routeChangeStart', handleRouteChange)
-
-    return () => {
-      router.events.off('routeChangeStart', handleRouteChange)
-    }
-  }, [router, setInactive])
 
   return (
     <div className="flex flex-col items-center gap-5 min-h-full justify-center relative">
@@ -113,7 +114,7 @@ function RetellYourself({ setAudioState }) {
 }
 
 function BackButtonComponent({ setAudioState, audioState, className }) {
-  const [, setInactive] = useRecoilState(inactiveState)
+  const setInactive = useSetRecoilState(inactiveState)
 
   return (
     <button
