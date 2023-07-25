@@ -130,8 +130,8 @@ function ProjectCreate() {
   ]
 
   return (
-    <div className="py-0 sm:py-10">
-      <div className="card">
+    <div className="py-10">
+      <div className="card f-screen-account-tab overflow-y-auto">
         <form onSubmit={handleSubmit(onSubmit)}>
           <p>
             Повесить слушателя чтобы проверять, есть такой код проекта или нет. Либо на

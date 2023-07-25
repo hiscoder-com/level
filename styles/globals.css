@@ -120,6 +120,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	min-height: calc(100vh - 11.5rem);
 }
 
+.f-screen-account-tab {
+	height: 80vh;
+}
+
 .input-base {
 	@apply w-full text-sm rounded-md py-2 pl-2 border
 	focus:outline-none;
