@@ -87,13 +87,14 @@ function CommandEditor({ config }) {
     let mySubscription = null
     if (chapter?.id) {
       mySubscription = supabase
-        .channel('public' + 'verses:chapter_id=eq.' + chapter.id)
+        .channel('public:verses' + chapter.id)
         .on(
           'postgres_changes',
           {
             event: 'UPDATE',
             schema: 'public',
-            table: 'verses:chapter_id=eq.' + chapter.id,
+            table: 'verses',
+            filter: 'chapter_id=eq.' + chapter.id,
           },
           (payload) => {
             const { id, text } = payload.new
@@ -101,9 +102,7 @@ function CommandEditor({ config }) {
           }
         )
         .subscribe()
-    }
-    return () => {
-      if (mySubscription) {
+      return () => {
         supabase.removeChannel(mySubscription)
       }
     }

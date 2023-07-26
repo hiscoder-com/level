@@ -51,18 +51,25 @@ function BriefBlock({ access }) {
   }
 
   useEffect(() => {
-    const briefUpdates = supabase
-      .channel('public:briefs')
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'briefs' },
-        (payload) => setBriefDataCollection(payload.new.data_collection)
-      )
-      .subscribe()
-    return () => {
-      supabase.removeChannel(briefUpdates)
+    if (project?.id) {
+      const briefUpdates = supabase
+        .channel('public:briefs:' + project?.id)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'briefs',
+            filter: `project_id=eq.${project?.id}`,
+          },
+          (payload) => setBriefDataCollection(payload.new.data_collection)
+        )
+        .subscribe()
+      return () => {
+        supabase.removeChannel(briefUpdates)
+      }
     }
-  }, [supabase])
+  }, [supabase, project?.id])
 
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {
