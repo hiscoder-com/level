@@ -27,6 +27,7 @@
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
     DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
     DROP TRIGGER IF EXISTS on_dictionaries_update ON PUBLIC.dictionaries;
+    DROP TRIGGER IF EXISTS update_alphabet_upon_soft_delete ON PUBLIC.dictionaries;
     DROP TRIGGER IF EXISTS on_public_chapters_update ON PUBLIC.chapters;
 
   -- END DROP TRIGGER
@@ -58,6 +59,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.handle_update_dictionaries;
+    DROP FUNCTION IF EXISTS PUBLIC.remove_alphabet_letter_upon_soft_delete;
     DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
@@ -716,6 +718,27 @@
         ELSE
           UPDATE PUBLIC.projects SET dictionaries_alphabet = alphabet || to_jsonb( upper(NEW.title::VARCHAR(1))) WHERE projects.id = NEW.project_id;
         END IF;
+      RETURN NEW;
+    END;
+  $$;
+
+-- Update the array of alphabet in projects column when a word is soft deleted and no other words in the dictionary start with the same letter
+  CREATE FUNCTION PUBLIC.remove_alphabet_letter_upon_soft_delete() RETURNS TRIGGER
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE
+      alphabet JSONB;
+      word_exists BOOLEAN;
+    BEGIN
+      IF OLD.deleted_at IS NOT NULL OR NEW.deleted_at IS NULL THEN
+        RETURN NEW;
+      END IF;
+      SELECT dictionaries_alphabet INTO alphabet FROM PUBLIC.projects WHERE NEW.project_id = projects.id;
+      SELECT EXISTS(SELECT 1 FROM PUBLIC.dictionaries WHERE upper(title::VARCHAR(1)) = upper(OLD.title::VARCHAR(1)) AND project_id = OLD.project_id AND deleted_at IS NULL) INTO word_exists;
+      IF word_exists THEN
+        RETURN NEW;
+      ELSE
+        UPDATE PUBLIC.projects SET dictionaries_alphabet = alphabet - upper(OLD.title::VARCHAR(1)) WHERE projects.id = OLD.project_id;
+      END IF;
       RETURN NEW;
     END;
   $$;
@@ -1497,6 +1520,10 @@
   CREATE TRIGGER on_dictionaries_update BEFORE
     UPDATE
       ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.handle_update_dictionaries();
+
+  CREATE TRIGGER update_alphabet_upon_soft_delete AFTER
+    UPDATE
+      ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.remove_alphabet_letter_upon_soft_delete();
 
   CREATE TRIGGER on_public_chapters_update BEFORE
     UPDATE
