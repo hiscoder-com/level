@@ -48,8 +48,10 @@ export default async function infoHandler(req, res) {
 
   let _data
   try {
-    const {pathname} = new URL(url)
-    _data = await axios.get((process.env.NODE_HOST  ?? 'https://git.door43.org') + pathname)
+    const { pathname } = new URL(url)
+    _data = await axios.get(
+      (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
+    )
   } catch (error) {
     res.status(404).json({ error })
     return
