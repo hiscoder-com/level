@@ -134,9 +134,17 @@ function Dictionary() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/dictionaries/${id}`)
-      .then(() => removeCacheNote('dictionary', id))
+      .then(() => {
+        removeCacheNote('dictionary', id)
+        setWords((prevWords) => {
+          return {
+            ...prevWords,
+            data: prevWords.data.filter((word) => word.id !== id),
+            count: prevWords.count - 1,
+          }
+        })
+      })
       .catch(console.log)
-      .finally(() => getWords(searchQuery, currentPageWords))
   }
 
   const saveWord = async () => {
