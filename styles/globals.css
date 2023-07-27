@@ -5,6 +5,9 @@
 @layer base {
 	html {
 		font-family: "Roboto", system-ui, sans-serif;
+		::-webkit-scrollbar {  display: none; }
+		-ms-overflow-style: none;
+		scrollbar-width: none;
 	}
 	body {
 		@apply text-slate-900
@@ -120,8 +123,9 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	min-height: calc(100vh - 11.5rem);
 }
 
-.f-screen-account-tab {
-	height: 80vh;
+.text-area {
+	@apply w-full text-sm rounded-md p-2 border text-gray-600  border-gray-200 bg-gray-100
+	focus:outline-none focus:border-gray-300;
 }
 
 .input-base {
