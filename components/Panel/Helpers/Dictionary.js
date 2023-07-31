@@ -143,6 +143,7 @@ function Dictionary() {
             count: prevWords.count - 1,
           }
         })
+        mutate()
       })
       .catch(console.log)
   }
