@@ -8,8 +8,12 @@ import { Menu, Tab, Transition } from '@headlessui/react'
 
 import ProjectCreate from './ProjectCreate'
 import Projects from './Projects'
+import Modal from './Modal'
 
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
+
+import packageJson from '../package.json'
 
 import Plus from 'public/plus.svg'
 
@@ -17,6 +21,10 @@ function Account() {
   const { user, loading } = useCurrentUser()
   const router = useRouter()
   const [openInternalMenu, setOpenInternalMenu] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+  const [updateInfo, setUpdateInfo] = useState({ version: '', releaseNotes: '' })
+
+  const supabase = useSupabaseClient()
 
   const { t } = useTranslation(['users'])
 
@@ -27,6 +35,36 @@ function Account() {
   }, [router, user, loading])
   const tabs = ['Account', 'projects:Projects', 'projects:CreateProject']
 
+  useEffect(() => {
+    const currentVersion = packageJson.version
+    let storedVersion = localStorage.getItem('appVersion')
+
+    if (!storedVersion || storedVersion !== currentVersion) {
+      fetchUpdateInfo(currentVersion)
+      localStorage.setItem('appVersion', currentVersion)
+    }
+  }, [])
+
+  async function fetchUpdateInfo(version) {
+    try {
+      let { data: updates, error } = await supabase
+        .from('updates')
+        .select('version, release_notes')
+        .eq('version', version)
+        .single()
+
+      if (error) throw error
+      if (updates) {
+        setUpdateInfo({
+          version: updates.version,
+          releaseNotes: updates.release_notes,
+        })
+        setIsOpen(true)
+      }
+    } catch (error) {
+      console.log('Ошибка при получении информации об обновлении: ', error.message)
+    }
+  }
   return (
     <>
       <div className="mx-auto max-w-7xl">
@@ -168,6 +206,31 @@ function Account() {
           </>
         )}
       </Menu>
+      <Modal
+        isOpen={isOpen}
+        closeHandle={() => {
+          localStorage.setItem('appVersion', updateInfo.version)
+          setIsOpen(false)
+        }}
+        title={`New update v${updateInfo.version}`}
+      >
+        <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-scroll">
+          <p className="text-sm text-white whitespace-pre-line">
+            {updateInfo?.releaseNotes}
+          </p>
+        </div>
+        <div className="text-center">
+          <button
+            className="btn-secondary"
+            onClick={() => {
+              localStorage.setItem('appVersion', updateInfo.version)
+              setIsOpen(false)
+            }}
+          >
+            Close
+          </button>
+        </div>
+      </Modal>
     </>
   )
 }
