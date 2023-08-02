@@ -3,10 +3,12 @@
 @tailwind utilities;
 
 @layer base {
+	* {
+		scrollbar-width: none;
+	}
 	html {
 		font-family: "Roboto", system-ui, sans-serif;
 		-ms-overflow-style: none;
-		scrollbar-width: none;
 	}
 	body {
 		@apply text-slate-900
