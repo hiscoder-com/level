@@ -131,7 +131,7 @@ function ProjectCreate() {
 
   return (
     <div className="py-10">
-      <div className="card f-screen-account-tab overflow-y-auto">
+      <div className="card">
         <form onSubmit={handleSubmit(onSubmit)}>
           <p>
             Повесить слушателя чтобы проверять, есть такой код проекта или нет. Либо на
@@ -185,7 +185,7 @@ function ProjectCreate() {
             rows="30"
             onChange={(e) => setCustomBriefs(e.target.value)}
             value={customBriefs}
-            className="w-full"
+            className="text-area"
           />
           <div>
             <span className="mr-3">
@@ -231,7 +231,7 @@ function ProjectCreate() {
             rows="30"
             onChange={(e) => setCustomSteps(e.target.value)}
             value={customSteps}
-            className="w-full"
+            className="text-area"
           />
           <br />
           <p>
@@ -250,7 +250,7 @@ function ProjectCreate() {
             rows="6"
             disabled={true}
             value={JSON.stringify(customResources, null, 2)}
-            className="w-full"
+            className="text-area"
           />
           <br />
           {method?.type !== 'obs' ? (
