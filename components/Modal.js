@@ -11,8 +11,9 @@ function Modal({
   className = 'primary',
 }) {
   const classes = {
-    primary: 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
-    secondary: 'bg-gray-400 text-white',
+    primary: 'max-w-md bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
+    secondary: 'max-w-md bg-gray-400 text-white',
+    tertiary: 'max-w-xl bg-white text-black',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -41,7 +42,7 @@ function Modal({
               leave="ease-in duration-200"
             >
               <Dialog.Panel
-                className={`${classes[className]} w-full max-w-md transform overflow-y-auto ${additionalClasses} p-6 align-middle rounded-3xl shadow-xl transition-all`}
+                className={`${classes[className]} w-full transform overflow-y-auto ${additionalClasses} p-6 align-middle rounded-3xl shadow-xl transition-all`}
               >
                 <Dialog.Title
                   as="h3"
