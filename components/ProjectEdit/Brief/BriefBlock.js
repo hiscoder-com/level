@@ -10,7 +10,6 @@ import { Switch } from '@headlessui/react'
 import axios from 'axios'
 
 import { useGetBrief, useProject } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import BriefResume from './BriefResume'
@@ -25,13 +24,11 @@ function BriefBlock({ access }) {
   const {
     query: { code },
   } = useRouter()
-  const { user } = useCurrentUser()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const { t } = useTranslation(['common', 'project-edit'])
 
   const [brief, { mutate }] = useGetBrief({
-    token: user?.access_token,
     project_id: project?.id,
   })
 
@@ -42,7 +39,6 @@ function BriefBlock({ access }) {
   }, [brief, briefDataCollection])
 
   const saveToDatabase = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
@@ -55,18 +51,25 @@ function BriefBlock({ access }) {
   }
 
   useEffect(() => {
-    const briefUpdates = supabase
-      .channel('public:briefs')
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'briefs' },
-        (payload) => setBriefDataCollection(payload.new.data_collection)
-      )
-      .subscribe()
-    return () => {
-      supabase.removeChannel(briefUpdates)
+    if (project?.id) {
+      const briefUpdates = supabase
+        .channel('public:briefs:' + project?.id)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'briefs',
+            filter: `project_id=eq.${project?.id}`,
+          },
+          (payload) => setBriefDataCollection(payload.new.data_collection)
+        )
+        .subscribe()
+      return () => {
+        supabase.removeChannel(briefUpdates)
+      }
     }
-  }, [supabase])
+  }, [supabase, project?.id])
 
   const updateBrief = (text, index) => {
     setBriefDataCollection((prev) => {
@@ -95,7 +98,6 @@ function BriefBlock({ access }) {
 
   const handleSwitch = () => {
     if (brief) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
         .then(mutate)

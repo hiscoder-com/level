@@ -14,7 +14,7 @@ import { stepConfigState } from 'components/Panel/state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { supabaseService } from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 
 /**
  * что если тут мы заменим все инструменты на обычную читалку, и так же надо подгрузить чужие стихи

@@ -29,7 +29,7 @@ function BookReader() {
     token: user?.access_token,
     code,
   })
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const resource = useMemo(() => {
     if (reference?.checks) {
@@ -148,11 +148,10 @@ function Verses({ verseObjects, user, reference, isLoading }) {
     query: { bookid, code },
   } = useRouter()
   const [{ isCoordinatorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code,
   })
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
   const { t } = useTranslation()
 
   return (

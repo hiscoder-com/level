@@ -8,10 +8,9 @@ import { useAccess, useProject } from 'utils/hooks'
 
 function Project({ code }) {
   const { user } = useCurrentUser()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }, { isLoading }] =
     useAccess({
-      token: user?.access_token,
       user_id: user?.id,
       code: project?.code,
     })
