@@ -1,30 +1,5 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
-
-const stepValidation = (steps) => {
-  // TODO доделать валидацию
-  const error = null
-  if (!steps?.length) {
-    return { error: 'This is incorrect json', steps }
-  }
-  for (const step of steps) {
-    try {
-      const obj = JSON.parse(JSON.stringify(step))
-      if (!obj || typeof obj !== 'object') {
-        throw new Error('This is incorrect json')
-      }
-      if (
-        JSON.stringify(Object.keys(step)?.sort()) !==
-        JSON.stringify(['intro', 'description', 'title'].sort())
-      ) {
-        throw new Error('step has different keys')
-      }
-    } catch (error) {
-      return error
-    }
-  }
-
-  return { error }
-}
+import { stepsValidation } from 'utils/helper'
 
 export default async function stepsHandler(req, res) {
   if (!req.headers.token) {
@@ -57,7 +32,7 @@ export default async function stepsHandler(req, res) {
       return res.status(200).json(data)
     case 'PUT':
       const { project_id, _steps } = body
-      // const error = stepValidation(_steps)
+      const { error } = stepsValidation(_steps)
       if (error) throw error
       try {
         const { error } = await supabase.rpc('update_multiple_steps', {

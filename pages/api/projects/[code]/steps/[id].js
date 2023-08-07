@@ -14,6 +14,7 @@ export default async function stepsHandler(req, res) {
     method,
   } = req
 
+  console.log(updatedPartStep)
   // const { error: validationError } = validation(properties)
   // if (validationError) {
   //   res.status(404).json({ validationError })

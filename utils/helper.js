@@ -530,3 +530,38 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
   })
   return await Promise.all(promises)
 }
+
+export const stepValidation = (step) => {
+  const error = null
+  try {
+    const obj = JSON.parse(JSON.stringify(step))
+    if (!obj || typeof obj !== 'object') {
+      throw new Error('This is incorrect json')
+    }
+    if (
+      JSON.stringify(Object.keys(step)?.sort()) !==
+      JSON.stringify(['intro', 'description', 'title', 'id'].sort())
+    ) {
+      throw new Error('step has different keys')
+    }
+  } catch (error) {
+    return error
+  }
+  return error
+}
+
+export const stepsValidation = (steps) => {
+  const error = null
+  if (!steps?.length) {
+    return { error: 'This is incorrect json', steps }
+  }
+  for (const step of steps) {
+    try {
+      const { error } = stepValidation(step)
+      if (error) throw error
+    } catch (error) {
+      return error
+    }
+  }
+  return { error }
+}
