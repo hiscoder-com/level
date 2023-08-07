@@ -9,15 +9,23 @@ function Modal({
   closeHandle,
   additionalClasses,
   className = 'primary',
+  noBackdropBlur = false,
+  top = 0,
+  left = 0,
 }) {
   const classes = {
-    primary: 'max-w-md bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
-    secondary: 'max-w-md bg-gray-400 text-white',
-    tertiary: 'max-w-xl bg-white text-black',
+    primary:
+      'w-full align-middle bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
+    secondary: 'w-full align-middle bg-gray-400 text-white',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className="relative z-50" onClose={closeHandle}>
+      <Dialog
+        as="div"
+        className={`z-50 ${noBackdropBlur ? 'fixed flex inset-0' : 'relative'}`}
+        style={{ paddingTop: top, paddingLeft: left }}
+        onClose={closeHandle}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -27,11 +35,22 @@ function Modal({
           enterTo="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-300 bg-opacity-25" />
+          <div
+            className={`inset-0 bg-gray-300 bg-opacity-25 ${
+              noBackdropBlur ? 'absolute' : 'fixed'
+            }`}
+          />
         </Transition.Child>
-
-        <div className="fixed inset-0 overflow-y-auto backdrop-blur">
-          <div className="flex items-center justify-center p-4 min-h-full">
+        <div
+          className={`inset-0 ${
+            noBackdropBlur ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
+          }`}
+        >
+          <div
+            className={`${
+              noBackdropBlur ? '' : 'flex items-center justify-center p-4 min-h-full'
+            }`}
+          >
             <Transition.Child
               as={Fragment}
               leaveFrom="opacity-100 scale-100"
@@ -42,7 +61,9 @@ function Modal({
               leave="ease-in duration-200"
             >
               <Dialog.Panel
-                className={`${classes[className]} w-full transform overflow-y-auto ${additionalClasses} p-6 align-middle rounded-3xl shadow-xl transition-all`}
+                className={`${
+                  noBackdropBlur ? 'bg-white text-black' : classes[className]
+                } max-w-md transform overflow-y-auto ${additionalClasses} p-6 rounded-3xl shadow-xl transition-all`}
               >
                 <Dialog.Title
                   as="h3"
