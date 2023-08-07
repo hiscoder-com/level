@@ -533,6 +533,7 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
 
 export const stepValidation = (step) => {
   const error = null
+
   try {
     const obj = JSON.parse(JSON.stringify(step))
     if (!obj || typeof obj !== 'object') {
@@ -545,9 +546,9 @@ export const stepValidation = (step) => {
       throw new Error('step has different keys')
     }
   } catch (error) {
-    return error
+    return { error }
   }
-  return error
+  return { error }
 }
 
 export const stepsValidation = (steps) => {
@@ -560,7 +561,7 @@ export const stepsValidation = (steps) => {
       const { error } = stepValidation(step)
       if (error) throw error
     } catch (error) {
-      return error
+      return { error }
     }
   }
   return { error }

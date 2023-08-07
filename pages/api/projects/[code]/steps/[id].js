@@ -1,5 +1,5 @@
-import { supabaseService } from 'utils/supabaseServer'
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import { stepValidation } from 'utils/helper'
 
 export default async function stepsHandler(req, res) {
   if (!req.headers.token) {
@@ -7,34 +7,29 @@ export default async function stepsHandler(req, res) {
   }
   const supabase = createPagesServerClient({ req, res })
 
-  let data = {}
   const {
-    query: { code, id },
-    body: { updatedPartStep },
+    query: { id },
+    body: { step },
     method,
   } = req
 
-  console.log(updatedPartStep)
-  // const { error: validationError } = validation(properties)
-  // if (validationError) {
-  //   res.status(404).json({ validationError })
-  //   return
-  // }
   switch (method) {
     case 'PUT':
       try {
-        const { data, error } = await supabaseService
-          .from('steps')
-          .update({ ...updatedPartStep })
-          .match({ id })
+        const { error } = stepValidation({ ...step, id })
         if (error) throw error
+        const { error: stepError } = await supabase
+          .from('steps')
+          .update({ ...step })
+          .match({ id })
+        if (stepError) throw stepError
       } catch (error) {
         return res.status(404).json({ error })
       }
       return res.status(200).json({ success: true })
 
     default:
-      res.setHeader('Allow', ['GET'])
+      res.setHeader('Allow', ['PUT'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

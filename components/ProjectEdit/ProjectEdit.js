@@ -108,7 +108,7 @@ function ProjectEdit() {
   }
 
   const saveStepToDb = async (updatedStep) => {
-    const updatedPartStep = ['title', 'intro', 'description'].reduce(
+    const step = ['title', 'intro', 'description'].reduce(
       (acc, key) => ({ ...acc, [key]: updatedStep[key] }),
       {}
     )
@@ -116,7 +116,7 @@ function ProjectEdit() {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/projects/${code}/steps/${updatedStep?.id}`, {
-        updatedPartStep,
+        step,
       })
       .then()
       .catch((err) => {
