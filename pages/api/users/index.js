@@ -51,12 +51,13 @@ export default async function handler(req, res) {
       }
       const { email, password, login } = req.body
       try {
-        const { error: errorPost } = await supabaseService.auth.api.createUser({
+        const { error: errorPost } = await supabaseService.auth.admin.createUser({
           email,
           password,
           user_metadata: { login },
           email_confirm: true,
         })
+
         if (errorPost) throw errorPost
 
         const { data: users, error: errorUser } = await supabaseService
