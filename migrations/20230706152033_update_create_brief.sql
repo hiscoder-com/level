@@ -1,4 +1,7 @@
  -- creating a new brief for the project
+
+  DROP FUNCTION IF EXISTS PUBLIC.create_brief;
+
   CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN, data_collection JSON) RETURNS BIGINT
       LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
