@@ -1,15 +1,12 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import ReactMarkdown from 'react-markdown'
 import { useRecoilValue } from 'recoil'
-import emojiDictionary from 'emoji-dictionary'
 
 import Dropdown from './Dropdown'
 import SideBar from './SideBar'
-import Modal from './Modal'
 
 import Timer from 'components/Timer'
 
@@ -17,23 +14,15 @@ import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 import { stepConfigState } from './Panel/state/atoms'
 
-import packageJson from '../package.json'
-import changelogData from '../CHANGELOG.md'
-
 import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 import VCANA_logo from 'public/vcana-logo.svg'
-import Close from 'public/close.svg'
 
 export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const supabase = useSupabaseClient()
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
-
-  // const openModal = () => setIsOpen(true)
-  const closeModal = () => setIsOpen(false)
 
   const stepConfig = useRecoilValue(stepConfigState)
   const { user } = useCurrentUser()
@@ -58,49 +47,13 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
     }
   }, [supabase, user])
 
-  const VersionInfo = () => {
-    const regex = /(## \[[\s\S]*?)(?=## \[|$)/g
-    const changelogVersions = changelogData.match(regex)
-    const currentVersion = packageJson.version
-    const currentVersionText = changelogVersions.find((versionText) =>
-      versionText.includes(`[${currentVersion}]`)
-    )
-
-    const emojiConvertedText = currentVersionText.replace(
-      /:(.+?):/g,
-      (match, p1) => emojiDictionary.getUnicode(p1) || match
-    )
-
-    const commitRemovedText = emojiConvertedText.replace(
-      /\(\[\w+\]\(https:\/\/github\.com\/texttree\/v-cana\/commit\/\w+\)\)/g,
-      ''
-    )
-
-    return commitRemovedText
-  }
-
-  const logoRef = useRef(null)
-  const [modalPosition, setModalPosition] = useState({ top: 0, left: 0 })
-
-  const openModal = () => {
-    if (logoRef.current) {
-      const rect = logoRef.current.getBoundingClientRect()
-      setModalPosition({
-        top: rect.bottom + window.scrollY,
-        left: rect.left + window.scrollX,
-      })
-    }
-    setIsOpen(true)
-  }
-
   return (
     <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center justify-between md:justify-start gap-7 cursor-pointer">
-          {/* <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} /> */}
+          <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <div className="flex items-center">
             <Link
-              ref={logoRef}
               href="/account"
               className={
                 !isStepPage
@@ -110,33 +63,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             >
               <VCANA_logo className="h-6" />
             </Link>
-
-            {!isStepPage && (
-              <div className="cursor-pointer ml-4" onClick={openModal}>
-                Version {packageJson.version}
-              </div>
-            )}
-
-            <Modal
-              isOpen={isOpen}
-              closeHandle={closeModal}
-              noBackdropBlur={true}
-              additionalClasses="absolute h-[calc(85vh)] top-10"
-              top={modalPosition.top}
-              left={modalPosition.left}
-            >
-              <div className="flex justify-between items-center mb-10">
-                <p className="text-2xl font-bold text-left">
-                  Version {packageJson.version}
-                </p>
-                <button className="text-right" onClick={closeModal}>
-                  <Close className="h-8 stroke-slate-500" />
-                </button>
-              </div>
-              <ReactMarkdown className="whitespace-pre-line">
-                {VersionInfo()}
-              </ReactMarkdown>
-            </Modal>
           </div>
 
           {isStepPage && (

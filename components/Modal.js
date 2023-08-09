@@ -9,9 +9,10 @@ function Modal({
   closeHandle,
   additionalClasses,
   className = 'primary',
-  noBackdropBlur = false,
+  isChangelogUpd = false,
   top = 0,
   left = 0,
+  isMobileFullScreen = false,
 }) {
   const classes = {
     primary:
@@ -22,7 +23,7 @@ function Modal({
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className={`z-50 ${noBackdropBlur ? 'fixed flex inset-0' : 'relative'}`}
+        className={`z-50 ${isChangelogUpd ? 'fixed flex inset-0' : 'relative'}`}
         style={{ paddingTop: top, paddingLeft: left }}
         onClose={closeHandle}
       >
@@ -37,18 +38,18 @@ function Modal({
         >
           <div
             className={`inset-0 bg-gray-300 bg-opacity-25 ${
-              noBackdropBlur ? 'absolute' : 'fixed'
+              isChangelogUpd ? 'absolute' : 'fixed'
             }`}
           />
         </Transition.Child>
         <div
           className={`inset-0 ${
-            noBackdropBlur ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
+            isChangelogUpd ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
           }`}
         >
           <div
             className={`${
-              noBackdropBlur ? '' : 'flex items-center justify-center p-4 min-h-full'
+              isChangelogUpd ? '' : 'flex items-center justify-center p-4 min-h-full'
             }`}
           >
             <Transition.Child
@@ -62,8 +63,10 @@ function Modal({
             >
               <Dialog.Panel
                 className={`${
-                  noBackdropBlur ? 'bg-white text-black' : classes[className]
-                } max-w-md transform overflow-y-auto ${additionalClasses} p-6 rounded-3xl shadow-xl transition-all`}
+                  isChangelogUpd ? 'bg-white text-black' : classes[className]
+                } transform overflow-y-auto ${additionalClasses} ${
+                  isMobileFullScreen ? 'px-6 pb-6' : 'max-w-md rounded-3xl p-6'
+                } shadow-xl transition-all`}
               >
                 <Dialog.Title
                   as="h3"
