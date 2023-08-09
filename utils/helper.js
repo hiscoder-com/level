@@ -2,9 +2,13 @@ import axios from 'axios'
 import usfm from 'usfm-js'
 import jsyaml from 'js-yaml'
 import { obsStoryVerses } from './config'
+const isServer = typeof window === 'undefined'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
   let value
+  if (isServer) {
+    return val
+  }
   switch (type) {
     case 'object':
       try {
