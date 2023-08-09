@@ -1,6 +1,8 @@
 {
+  "AddBlock": "Add a block of questions",
   "AddCoordinator": "Add a coordinator",
   "AddLanguage": "Add a language",
+  "AddQuestion": "Add a question",
   "AddTranslator": "Add a translator",
   "AddingCoordinator": "Adding a coordinator",
   "AddingTranslator": "Adding a translator",
@@ -24,6 +26,7 @@
   "RemovingCoordinator": "Removing a coordinator",
   "RemovingModerator": "Removing a moderator",
   "RemovingTranslator": "Removing a translator",
+  "ResourcesList": "List of resources",
   "Steps": "Steps",
   "Summary": "Summary",
   "Tools": "Tools",
