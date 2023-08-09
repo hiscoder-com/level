@@ -67,23 +67,27 @@ export default async function languageProjectsHandler(req, res) {
 
         if (errorManifest) throw errorManifest
 
-        const { data: project, error } = await supabase.from('projects').insert([
-          {
-            title,
-            orig_title: origtitle,
-            code,
-            language_id,
-            type: current_method.type,
-            resources: newResources,
-            method: current_method.title,
-            base_manifest: {
-              resource: baseResource.name,
-              books: baseResource.books,
+        const { data: project, error } = await supabase
+          .from('projects')
+          .insert([
+            {
+              title,
+              orig_title: origtitle,
+              code,
+              language_id,
+              type: current_method.type,
+              resources: newResources,
+              method: current_method.title,
+              base_manifest: {
+                resource: baseResource.name,
+                books: baseResource.books,
+              },
             },
-          },
-        ])
+          ])
+          .select()
 
         if (error) throw error
+
         const { error: briefError } = await supabase.rpc('create_brief', {
           project_id: project[0].id,
           is_enable: isBriefEnable,

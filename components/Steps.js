@@ -27,14 +27,14 @@ function Steps({ customSteps = [], updateSteps }) {
                   } `}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="p-4 space-y-7 bg-blue-150 rounded-md -mt-9">
+              <Disclosure.Panel className="p-4 space-y-7 bg-blue-150 rounded-md -mt-9 text-xs md:text-base">
                 {fields.map((field) => (
                   <div
-                    className="flex flex-col md:flex-row items-center gap-2 w-full"
+                    className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full"
                     key={field.name}
                   >
                     <span className="w-auto md:w-1/6 font-bold">{field.title}</span>
-                    <div className="w-5/6">
+                    <div className="w-full md:w-5/6">
                       <UpdateField
                         value={step[field.name]}
                         index={index}

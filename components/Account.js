@@ -26,7 +26,6 @@ function Account() {
     }
   }, [router, user, loading])
   const tabs = ['Account', 'projects:Projects', 'projects:CreateProject']
-
   return (
     <>
       <div className="mx-auto max-w-7xl">
@@ -92,81 +91,87 @@ function Account() {
           </>
         )}
       </div>
-      <Menu>
-        {({ open }) => (
-          <>
-            <div
-              className={`inset-0 bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur ${
-                open ? 'fixed' : 'hidden'
-              }`}
-              onClick={() => setOpenInternalMenu(false)}
-            ></div>
-            <Menu.Button
-              className={`fixed sm:hidden translate-y-1/2 right-10 z-50 rounded-full bg-slate-600 text-white p-4 transition-all duration-700 shadow-2xl ${
-                openInternalMenu ? 'bottom-[80vh]' : 'bottom-[15vh]'
+      {user?.is_admin && (
+        <Menu>
+          {({ open }) => (
+            <>
+              <div
+                className={`inset-0 bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur ${
+                  open ? 'fixed' : 'hidden'
+                }`}
+              ></div>
+              <Menu.Button
+                className={`sm:hidden p-4 translate-y-1/2 right-10 z-50 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                  openInternalMenu ? 'hidden' : 'fixed'
+                }`}
+                onClick={() => setOpenInternalMenu(false)}
+              >
+                <Plus
+                  className={`w-7 h-7 transition-all duration-700 ${
+                    open ? 'rotate-45' : 'rotate-0'
+                  }`}
+                />
+              </Menu.Button>
+              <Transition
+                as={Fragment}
+                show={open}
+                enter="transition-all duration-700 ease-in-out transform"
+                enterFrom="translate-y-full"
+                enterTo="translate-y-0"
+                leave="transition-all duration-700 ease-in-out transform"
+                leaveFrom="translate-y-0"
+                leaveTo="translate-y-full"
+              >
+                <Menu.Items
+                  className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md ${
+                    openInternalMenu ? 'bg-inherit' : 'bg-white'
+                  }`}
+                >
+                  <Menu.Item
+                    as="div"
+                    className="flex flex-col justify-center items-center"
+                  >
+                    <Menu>
+                      <Menu.Button>
+                        <div
+                          className={`py-2 px-7 text-center text-white cursor-pointer bg-slate-600 rounded-3xl ${
+                            openInternalMenu ? 'hidden' : 'block'
+                          }`}
+                          onClick={() => setOpenInternalMenu(true)}
+                        >
+                          {t('NewProject')}
+                        </div>
+                      </Menu.Button>
+                    </Menu>
+                  </Menu.Item>
+                </Menu.Items>
+              </Transition>
+            </>
+          )}
+        </Menu>
+      )}
+      {openInternalMenu && (
+        <div
+          className="fixed px-5 pb-4 mt-14
+          inset-0 h-[100vh] overflow-y-scroll bg-white"
+        >
+          <div className="flex justify-end">
+            <button
+              className={`p-4 mt-4 text-white rounded-full bg-slate-600 shadow-2xl ${
+                openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}
             >
               <Plus
                 className={`w-7 h-7 transition-all duration-700 ${
-                  open ? 'rotate-45' : 'rotate-0'
+                  open || openInternalMenu ? 'rotate-45' : 'rotate-0'
                 }`}
               />
-            </Menu.Button>
-            <Transition
-              as={Fragment}
-              show={open}
-              enter="transition-all duration-700 ease-in-out transform"
-              enterFrom="translate-y-full"
-              enterTo="translate-y-0"
-              leave="transition-all duration-700 ease-in-out transform"
-              leaveFrom="translate-y-0"
-              leaveTo="translate-y-full"
-            >
-              <Menu.Items
-                className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md ${
-                  openInternalMenu ? 'bg-inherit' : 'bg-white'
-                }`}
-              >
-                <Menu.Item as="div" className="flex flex-col justify-center items-center">
-                  <Menu>
-                    {({ open: openInternal }) => (
-                      <>
-                        <Menu.Button>
-                          <div
-                            className={`rounded-3xl py-2 px-7 text-center cursor-pointer bg-slate-600 text-white ${
-                              openInternalMenu ? 'hidden' : 'block'
-                            }`}
-                            onClick={() => setOpenInternalMenu(true)}
-                          >
-                            {t('NewProject')}
-                          </div>
-                        </Menu.Button>
-                        <Transition
-                          as={Fragment}
-                          show={openInternal}
-                          enter="transition-all duration-700 ease-in-out transform"
-                          enterFrom="translate-y-full"
-                          enterTo="translate-y-0"
-                          leave="transition-all duration-700 ease-in-out transform"
-                          leaveFrom="translate-y-0"
-                          leaveTo="translate-y-full"
-                        >
-                          <Menu.Items>
-                            <div className="h-[80vh] overflow-y-scroll">
-                              <ProjectCreate />
-                            </div>
-                          </Menu.Items>
-                        </Transition>
-                      </>
-                    )}
-                  </Menu>
-                </Menu.Item>
-              </Menu.Items>
-            </Transition>
-          </>
-        )}
-      </Menu>
+            </button>
+          </div>
+          <ProjectCreate />
+        </div>
+      )}
     </>
   )
 }

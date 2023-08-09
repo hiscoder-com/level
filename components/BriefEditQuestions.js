@@ -103,7 +103,6 @@ function BriefEditQuestions({
         value,
       })
       setCustomBriefQuestions(_blocks)
-
       if (autoSave) {
         saveFunction(_blocks)
       }
@@ -117,30 +116,29 @@ function BriefEditQuestions({
             return (
               <>
                 <div className="flex gap-7 w-full text-sm md:text-base">
-                  <Disclosure.Button className="flex flex-col md:flex-row justify-between items-center gap-2 py-2 px-4 w-full bg-blue-150 rounded-md">
+                  <Disclosure.Button className="flex flex-row justify-between items-center gap-2 py-2 px-4 w-full bg-blue-150 rounded-md">
                     <span>{el.title}</span>
 
                     <div className="flex gap-7 items-center">
                       <Down
-                        className={`w-5 h-5 transition-transform duration-200 ${
+                        className={`w-4 h-4 transition-transform duration-200 ${
                           open ? 'rotate-180' : 'rotate-0'
                         } `}
                       />
-                      <button
-                        type="button"
+                      <div
                         className="btn-red"
                         onClick={() =>
                           removeBlockByIndex({ blocks: customBriefQuestions, index })
                         }
                       >
-                        <Trash className="w-5 h-5" />
-                      </button>
+                        <Trash className="w-4 h-4" />
+                      </div>
                     </div>
                   </Disclosure.Button>
                 </div>
 
-                <Disclosure.Panel className="flex flex-col gap-2 p-4 bg-blue-150 rounded-md -mt-9">
-                  <div className="flex flex-col md:flex-row items-center gap-2">
+                <Disclosure.Panel className="flex flex-col gap-2 p-4 bg-blue-150 rounded-md -mt-9 text-xs md:text-base">
+                  <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
                     <div className="font-bold">{t('common:Title')}</div>
                     <UpdateField
                       value={el.title}
@@ -184,10 +182,10 @@ function BriefEditQuestions({
                       addQuestionIntoBlock({ blocks: customBriefQuestions, index: index })
                     }
                   >
-                    <div className="p-2 border border-slate-900 rounded-full">
-                      <Plus className="w-5 h-5" />
+                    <div className="border border-slate-900 rounded-full">
+                      <Plus className="w-4 h-4" />
                     </div>
-                    <div>{t('AddQuestion')}</div>
+                    <div>{t('project-edit:AddQuestion')}</div>
                   </button>
                 </Disclosure.Panel>
               </>
@@ -197,13 +195,13 @@ function BriefEditQuestions({
       ))}
       <button
         type="button"
-        className="flex justify-center items-center gap-2 py-2 px-4 bg-white border border-slate-900 rounded-md hover:bg-blue-150 hover:border hover:border-slate-900"
+        className="flex justify-center items-center gap-2 py-2 px-4 text-xs md:text-basebg-white border border-slate-900 rounded-md hover:bg-blue-150 hover:border hover:border-slate-900"
         onClick={() => addBlock(customBriefQuestions)}
       >
-        <div className="flex p-2 border border-slate-900 rounded-full">
-          <Plus className="w-5 h-5" />
+        <div className="flex border border-slate-900 rounded-full">
+          <Plus className="w-4 h-4" />
         </div>
-        <div>{t('AddBlock')}</div>
+        <div>{t('project-edit:AddBlock')}</div>
       </button>
     </>
   )

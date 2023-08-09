@@ -65,80 +65,78 @@ function BasicInformation({
     },
   ]
   return (
-    <>
-      <div className="flex flex-col gap-4 text-sm md:text-base">
-        {inputs.map((el) => (
-          <div
-            className="flex flex-col md:flex-row justify-start items-center gap-2"
-            key={el.title}
-          >
-            <div className="w-auto md:w-1/5 font-bold">{el.title}</div>
-            <div className="flex flex-col gap-2 w-4/5">
-              <input
-                className={`${el.classname}`}
-                placeholder={el.placeholder}
-                {...el.register}
-              />
-              {el.errorMessage && <div>{' ' + el.errorMessage}</div>}
-            </div>
+    <div className="flex flex-col gap-3 text-sm md:text-base">
+      {inputs.map((el) => (
+        <div
+          className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 md:gap-2"
+          key={el.title}
+        >
+          <div className="w-auto md:w-1/5 font-bold">{el.title}</div>
+          <div className="flex flex-col gap-2 w-full md:w-4/5">
+            <input
+              className={`${el.classname}`}
+              placeholder={el.placeholder}
+              {...el.register}
+            />
+            {el.errorMessage && <div>{' ' + el.errorMessage}</div>}
           </div>
-        ))}
-        <div className="flex flex-col md:flex-row gap-2 items-center">
-          <div className="w-auto md:w-1/5 font-bold">{t('Language')}</div>
-          <div className="flex gap-2 w-4/5">
-            <select
-              className="input-primary w-3/4"
-              placeholder={t('Language')}
-              {...register('languageId')}
+        </div>
+      ))}
+      <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-2">
+        <div className="w-auto md:w-1/5 font-bold">{t('Language')}</div>
+        <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-4/5">
+          <select
+            className="input-primary md:w-3/4"
+            placeholder={t('Language')}
+            {...register('languageId')}
+          >
+            {languages &&
+              languages.map((el) => {
+                return (
+                  <option key={el.id} value={el.id}>
+                    {el.orig_name}
+                  </option>
+                )
+              })}
+          </select>
+          <div className="md:w-1/4">
+            <button
+              type="button"
+              className="input-primary flex items-center justify-start md:justify-around gap-2 truncate"
+              onClick={() => setIsOpenLanguageCreate(true)}
             >
-              {languages &&
-                languages.map((el) => {
+              <div className="border border-slate-900 rounded-full">
+                <Plus className="w-4 h-4" />
+              </div>
+
+              <span>{t('project-edit:AddLanguage')}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      {methods && (
+        <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-2">
+          <div className="w-auto md:w-1/5 font-bold">{t('Method')}</div>
+          <div className="w-full md:w-4/5">
+            <select
+              placeholder={t('Method')}
+              {...register('methodId')}
+              className="input-primary w-3/4"
+              defaultValue={methods?.[0]?.id}
+            >
+              {methods &&
+                methods.map((el) => {
                   return (
                     <option key={el.id} value={el.id}>
-                      {el.orig_name}
+                      {el.title} ({el.type})
                     </option>
                   )
                 })}
             </select>
-            <div className="w-1/4">
-              <button
-                type="button"
-                className="input-primary flex items-center justify-around gap-1 truncate"
-                onClick={() => setIsOpenLanguageCreate(true)}
-              >
-                <div className="p-1 w-fit border border-slate-900 rounded-full">
-                  <Plus className="w-5" />
-                </div>
-
-                <span className="hidden lg:block">{t('AddLanguage')}</span>
-              </button>
-            </div>
           </div>
         </div>
-        {methods && (
-          <div className="flex flex-col md:flex-row items-center gap-2">
-            <div className="w-auto md:w-1/5 font-bold">{t('Method')}</div>
-            <div className="w-4/5">
-              <select
-                placeholder={t('Method')}
-                {...register('methodId')}
-                className="input-primary w-3/4"
-                defaultValue={methods?.[0]?.id}
-              >
-                {methods &&
-                  methods.map((el) => {
-                    return (
-                      <option key={el.id} value={el.id}>
-                        {el.title} ({el.type})
-                      </option>
-                    )
-                  })}
-              </select>
-            </div>
-          </div>
-        )}
-      </div>
-    </>
+      )}
+    </div>
   )
 }
 

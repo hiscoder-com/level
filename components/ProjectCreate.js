@@ -21,6 +21,7 @@ import BriefEditQuestions from 'components/BriefEditQuestions'
 import { useLanguages, useMethod } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
+import Spinner from '../public/spinner.svg'
 
 function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -32,6 +33,7 @@ function ProjectCreate() {
     return checkLSVal('methods', _methods, 'object')
   })
   const [method, setMethod] = useState({})
+  const [isCreating, setIsCreating] = useState(false)
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
   const [isBriefEnable, setIsBriefEnable] = useState(true)
   const [resourcesUrl, setResourcesUrl] = useState({})
@@ -95,6 +97,7 @@ function ProjectCreate() {
     if (!title || !code || !languageId) {
       return
     }
+    setIsCreating(true)
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {
@@ -121,7 +124,7 @@ function ProjectCreate() {
       .catch((err) => {
         toast.error(t('SaveFailed'))
       })
-      .finally(mutateProjects)
+      .finally(() => setIsCreating(false))
   }
   //TODO проверить где ещё используется
   const updateArray = ({ array, index, fieldName, value }) => {
@@ -176,10 +179,8 @@ function ProjectCreate() {
     <>
       <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
         <form className="flex flex-col gap-0 md:gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card py-7 space-y-7">
-            <p className="pl-7 md:pl-0 text-xl font-bold">
-              {t('project-edit:BasicInformation')}
-            </p>
+          <div className="md:card py-7 space-y-7">
+            <p className="text-xl font-bold">{t('project-edit:BasicInformation')}</p>
             <BasicInformation
               t={t}
               errors={errors}
@@ -191,16 +192,16 @@ function ProjectCreate() {
               uniqueCheck
             />
           </div>
-          <div className="card flex flex-col gap-7 py-7">
-            <p className="pl-7 text-xl font-bold">{t('project-edit:Steps')}</p>
-            <div className="flex flex-col gap-7 px-4 md:px-0 text-sm md:text-base">
+          <div className="md:card flex flex-col gap-7 py-7">
+            <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
+            <div className="flex flex-col gap-7 text-sm md:text-base">
               <Steps customSteps={customSteps} updateSteps={updateSteps} />
             </div>
           </div>
-          <div className="card flex flex-col gap-7 py-7">
-            <div className="flex justify-between px-7">
+          <div className="md:card flex flex-col gap-7 py-7">
+            <div className="flex justify-between">
               <p className="text-xl font-bold">{t('Brief')}</p>
-              <div className="flex flex-col items-center gap-2">
+              <div className="flex items-center gap-2">
                 <span className="mr-3 text-sm md:text-base">
                   {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
                 </span>
@@ -226,19 +227,25 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="card flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
-            <p className="text-xl font-bold">{t('common:ResourcesList')}</p>
+          <div className="md:card flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
+            <p className="text-xl font-bold">{t('project-edit:ResourcesList')}</p>
             <CommitsList
               methodId={methodId}
               resourcesUrl={resourcesUrl}
               setResourcesUrl={setResourcesUrl}
             />
-            <div>
+            <div className="flex w-fit items-center justify-center">
               <input
-                className="btn-secondary btn-filled"
+                className={`btn-secondary btn-filled ${
+                  isCreating ? '!text-gray-200 hover:!text-white' : ''
+                }`}
                 type="submit"
                 value={t('CreateProject')}
+                disabled={isCreating}
               />
+              {isCreating && (
+                <Spinner className="absolute animate-spin h-5 w-5 text-cyan-600 overflow-hidden" />
+              )}
             </div>
           </div>
         </form>
