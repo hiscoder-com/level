@@ -114,14 +114,17 @@ function BriefEditQuestions({
         <Disclosure key={index}>
           {({ open }) => {
             return (
-              <>
-                <div className="flex gap-7 w-full text-sm md:text-base">
-                  <Disclosure.Button className="flex flex-row justify-between items-center gap-2 py-2 px-4 w-full bg-blue-150 rounded-md">
+              <div>
+                <div className="flex w-full text-sm md:text-base">
+                  <Disclosure.Button
+                    className={`flex flex-row justify-between items-center gap-2 py-2 px-4 w-full text-start bg-blue-150 ${
+                      open ? 'rounded-t-md' : 'rounded-md'
+                    }`}
+                  >
                     <span>{el.title}</span>
-
                     <div className="flex gap-7 items-center">
                       <Down
-                        className={`w-4 h-4 transition-transform duration-200 ${
+                        className={`w-5 h-5 transition-transform duration-200 ${
                           open ? 'rotate-180' : 'rotate-0'
                         } `}
                       />
@@ -137,7 +140,7 @@ function BriefEditQuestions({
                   </Disclosure.Button>
                 </div>
 
-                <Disclosure.Panel className="flex flex-col gap-2 p-4 bg-blue-150 rounded-md -mt-9 text-xs md:text-base">
+                <Disclosure.Panel className="flex flex-col gap-7 p-4 bg-blue-150 rounded-b-md text-sm md:text-base">
                   <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
                     <div className="font-bold">{t('common:Title')}</div>
                     <UpdateField
@@ -149,32 +152,34 @@ function BriefEditQuestions({
                     />
                   </div>
                   <div className="font-bold">{t('common:Questions')}</div>
-                  {el.block.map((item, idx) => (
-                    <div className="flex gap-7" key={idx}>
-                      <UpdateField
-                        value={item.question}
-                        index={index}
-                        subIndex={idx}
-                        updateValue={updateQuestion}
-                        fieldName={'question'}
-                      />
-                      <div>
-                        <button
-                          type="button"
-                          className="btn-red bg-white"
-                          onClick={() =>
-                            removeQuestionFromeBlock({
-                              blocks: customBriefQuestions,
-                              blockIndex: index,
-                              questionIndex: idx,
-                            })
-                          }
-                        >
-                          <Trash className="w-5 h-5" />
-                        </button>
+                  <div className="space-y-4">
+                    {el.block.map((item, idx) => (
+                      <div className="flex gap-7" key={idx}>
+                        <UpdateField
+                          value={item.question}
+                          index={index}
+                          subIndex={idx}
+                          updateValue={updateQuestion}
+                          fieldName={'question'}
+                        />
+                        <div>
+                          <button
+                            type="button"
+                            className="btn-red bg-white"
+                            onClick={() =>
+                              removeQuestionFromeBlock({
+                                blocks: customBriefQuestions,
+                                blockIndex: index,
+                                questionIndex: idx,
+                              })
+                            }
+                          >
+                            <Trash className="w-5 h-5" />
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                   <button
                     type="button"
                     className="flex justify-center items-center py-2 px-4 rounded-md border border-slate-900 gap-2 hover:bg-white"
@@ -188,14 +193,14 @@ function BriefEditQuestions({
                     <div>{t('project-edit:AddQuestion')}</div>
                   </button>
                 </Disclosure.Panel>
-              </>
+              </div>
             )
           }}
         </Disclosure>
       ))}
       <button
         type="button"
-        className="flex justify-center items-center gap-2 py-2 px-4 text-xs md:text-basebg-white border border-slate-900 rounded-md hover:bg-blue-150 hover:border hover:border-slate-900"
+        className="flex justify-center items-center gap-2 py-2 px-4 text-sm md:text-base bg-white border border-slate-900 rounded-md hover:bg-blue-150 hover:border hover:border-slate-900"
         onClick={() => addBlock(customBriefQuestions)}
       >
         <div className="flex border border-slate-900 rounded-full">

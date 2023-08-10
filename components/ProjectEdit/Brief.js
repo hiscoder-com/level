@@ -44,7 +44,7 @@ function BriefBlock({ access }) {
     }
   }, [brief, briefDataCollection])
 
-  const saveToDatabase = (briefDataCollection) => {
+  const saveToDatabase = (briefDataCollection, isSaveFinal) => {
     axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${project?.id}`, {
@@ -52,7 +52,7 @@ function BriefBlock({ access }) {
       })
 
       .then(() => {
-        toast.success(t('SaveSuccess'))
+        isSaveFinal && toast.success(t('SaveSuccess'))
         mutate()
       })
       .catch((err) => {
@@ -104,56 +104,51 @@ function BriefBlock({ access }) {
   }
 
   return (
-    <div className="card text-sm md:text-base">
-      <div className="flex flex-col gap-7">
-        <div className="flex flex-col sm:flex-row justify-between gap-7">
-          <h3 className="text-xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
-          <div>
-            {access && (
-              <div className="flex">
-                <span className="mr-3">
-                  {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
-                </span>
-
-                <Switch
-                  checked={brief?.is_enable}
-                  onChange={handleSwitch}
-                  className={`${
-                    brief?.is_enable ? 'bg-cyan-600' : 'bg-gray-200'
-                  } relative inline-flex h-7 w-12 items-center rounded-full`}
-                >
-                  <span
-                    className={`${
-                      brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-5 w-5 transform rounded-full bg-white transition`}
-                  />
-                </Switch>
-              </div>
-            )}
-          </div>
-        </div>
-        <div className="flex justify-between">
+    <div className="flex flex-col gap-7">
+      <div className="flex flex-col md:flex-row gap-7 justify-end">
+        {access && (
           <div className="flex">
-            <span className="mr-3">{t('Detailed')}</span>
+            <span className="mr-3">
+              {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+            </span>
+
             <Switch
-              disabled={editableMode}
-              checked={!hidden}
-              onChange={() => {
-                setHidden((prev) => !prev)
-              }}
+              checked={brief?.is_enable || false}
+              onChange={handleSwitch}
               className={`${
-                !hidden && !editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+                brief?.is_enable ? 'bg-cyan-600' : 'bg-gray-200'
               } relative inline-flex h-7 w-12 items-center rounded-full`}
             >
               <span
                 className={`${
-                  !hidden ? 'translate-x-6' : 'translate-x-1'
+                  brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
                 } inline-block h-5 w-5 transform rounded-full bg-white transition`}
               />
             </Switch>
           </div>
+        )}
+        <div className="flex">
+          <span className="mr-3">{t('Detailed')}</span>
+          <Switch
+            disabled={editableMode}
+            checked={!hidden}
+            onChange={() => {
+              setHidden((prev) => !prev)
+            }}
+            className={`${
+              !hidden && !editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+            } relative inline-flex h-7 w-12 items-center rounded-full`}
+          >
+            <span
+              className={`${
+                !hidden ? 'translate-x-6' : 'translate-x-1'
+              } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+            />
+          </Switch>
+        </div>
+        {access && (
           <div className="flex">
-            <span className="mr-3">{t('EditableMode')}</span>
+            <span className="mr-3">{t('project-edit:EditableMode')}</span>
             <Switch
               checked={editableMode}
               onChange={() => {
@@ -170,33 +165,30 @@ function BriefBlock({ access }) {
               />
             </Switch>
           </div>
-        </div>
-        {editableMode ? (
-          <BriefEditQuestions
-            customBriefQuestions={briefDataCollection}
-            setCustomBriefQuestions={setBriefDataCollection}
-          />
-        ) : (
-          <div>
-            {briefDataCollection.length > 0 ? (
-              <div className="flex flex-col gap-4 w-full mb-4">
-                <ul className="list-decimal ml-4 text-base text-slate-900 space-y-7">
-                  {briefDataCollection.map((briefItem, index) => {
-                    return (
-                      <li key={index} className="space-y-7">
-                        <div className="flex gap-7 center justify-between">
-                          <p className="">{briefItem.title}</p>
-                        </div>
-                        <div className={hidden ? 'hidden' : ''}>
-                          {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
-                            return (
-                              <div key={blockIndex} className="">
-                                <div className="flex items-center gap-7">
-                                  <div className="flex gap-7 center justify-between">
-                                    <p className="">{questionAndAnswerPair.question}</p>
-                                  </div>
-                                </div>
-
+        )}
+      </div>
+      {editableMode ? (
+        <BriefEditQuestions
+          customBriefQuestions={briefDataCollection}
+          setCustomBriefQuestions={setBriefDataCollection}
+        />
+      ) : (
+        <div className="space-y-7">
+          {briefDataCollection.length > 0 ? (
+            <div className="flex flex-col gap-4 w-full mb-4">
+              <ul className="list-decimal ml-4 text-sm md:text-base text-slate-900 space-y-7">
+                {briefDataCollection.map((briefItem, index) => {
+                  return (
+                    <li key={index} className="space-y-3">
+                      <div className="flex gap-7 center justify-between">
+                        <p className="font-bold">{briefItem.title}</p>
+                      </div>
+                      <div className={hidden ? 'hidden' : 'space-y-7'}>
+                        {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
+                          return (
+                            <div key={blockIndex} className="">
+                              <div className="space-y-3">
+                                <p>{questionAndAnswerPair.question}</p>
                                 <UpdateField
                                   value={questionAndAnswerPair.answer}
                                   updateValue={updateQuestions}
@@ -205,59 +197,59 @@ function BriefBlock({ access }) {
                                   subIndex={blockIndex}
                                 />
                               </div>
-                            )
-                          })}
-                        </div>
+                            </div>
+                          )
+                        })}
+                      </div>
 
-                        <div className="">
-                          <p className={hidden ? 'hidden' : 'text-lg font-bold'}>
-                            {t('project-edit:Summary')}
-                          </p>
-                          <UpdateField
-                            value={briefItem.resume}
-                            updateValue={updateCollection}
-                            index={index}
-                            access={access}
-                          />
-                        </div>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            ) : (
-              <>
-                <div role="status" className="w-full animate-pulse">
-                  <div className="flex flex-col">
-                    <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-7/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-4/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-9/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-6/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-10/12 mt-4 bg-gray-200 rounded-full"></div>
-                    <div className="h-7 w-8/12 mt-4 bg-gray-200 rounded-full"></div>
-                  </div>
+                      <div className="space-y-7">
+                        <p className={hidden ? 'hidden' : 'text-lg font-bold mt-7'}>
+                          {t('project-edit:Summary')}
+                        </p>
+                        <UpdateField
+                          value={briefItem.resume}
+                          updateValue={updateCollection}
+                          index={index}
+                          access={access}
+                        />
+                      </div>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          ) : (
+            <>
+              <div role="status" className="w-full animate-pulse">
+                <div className="flex flex-col">
+                  <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-7/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-4/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-9/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-6/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-10/12 mt-4 bg-gray-200 rounded-full"></div>
+                  <div className="h-7 w-8/12 mt-4 bg-gray-200 rounded-full"></div>
                 </div>
-              </>
-            )}
-
-            {access && (
-              <div>
-                <button
-                  className="btn-primary text-xl"
-                  onClick={() => {
-                    saveToDatabase(briefDataCollection)
-                  }}
-                >
-                  {t('Save')}
-                </button>
               </div>
-            )}
-          </div>
-        )}
-      </div>
+            </>
+          )}
+
+          {access && (
+            <div>
+              <button
+                className="btn-primary text-xl"
+                onClick={() => {
+                  saveToDatabase(briefDataCollection, true)
+                }}
+              >
+                {t('Save')}
+              </button>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }

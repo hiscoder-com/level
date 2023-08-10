@@ -228,7 +228,7 @@ function ProjectCreate() {
             />
           </div>
           <div className="md:card flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
-            <p className="text-xl font-bold">{t('project-edit:ResourcesList')}</p>
+            <p className="text-xl font-bold">{t('common:ListResources')}</p>
             <CommitsList
               methodId={methodId}
               resourcesUrl={resourcesUrl}

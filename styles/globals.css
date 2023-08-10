@@ -237,7 +237,7 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 }
 .btn-base {
-  @apply px-5 py-2 border rounded-3xl cursor-pointer text-center text-xs md:text-base;
+  @apply px-5 py-2 border rounded-3xl cursor-pointer text-center text-sm md:text-base;
 }
 
 .btn-primary {

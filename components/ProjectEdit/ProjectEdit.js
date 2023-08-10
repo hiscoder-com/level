@@ -27,7 +27,7 @@ function ProjectEdit() {
     query,
     query: { code, setting },
   } = useRouter()
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'project-edit'])
   const [customSteps, setCustomSteps] = useState([])
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
 
@@ -145,8 +145,8 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:General',
           panel: (
-            <div className="card flex flex-col gap-7 py-2 border-y border-slate-900">
-              <p className="text-xl font-bold">{t('BaseInformation')}</p>
+            <div className="card space-y-7">
+              <h3 className="text-xl font-bold">{t('BasicInformation')}</h3>
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
                   register={register}
@@ -164,36 +164,51 @@ function ProjectEdit() {
           id: 'brief',
           access: isTranslatorAccess,
           label: 'project-edit:Brief',
-          panel: <Brief access={isCoordinatorAccess} />,
+          panel: (
+            <div className="card space-y-7">
+              <h3 className="text-xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
+              <Brief access={isCoordinatorAccess} />,
+            </div>
+          ),
         },
         {
           id: 'participants',
           access: isModeratorAccess,
           label: 'Participants',
           panel: (
-            <Participants
-              user={user}
-              users={users}
-              access={{ isCoordinatorAccess, isAdminAccess }}
-            />
+            <div className="card space-y-7">
+              <h3 className="text-xl font-bold">{t('Participants')}</h3>
+              <Participants
+                user={user}
+                users={users}
+                access={{ isCoordinatorAccess, isAdminAccess }}
+              />
+            </div>
           ),
         },
         {
           id: 'resources',
           access: isAdminAccess,
           label: 'Resources',
-          panel: <ResourceSettings />,
+          panel: (
+            <div className="card space-y-7">
+              <h3 className="text-lg md:text-xl font-bold">{t('ListResources')}</h3>
+              <ResourceSettings />
+            </div>
+          ),
         },
         {
           id: 'steps',
           access: isAdminAccess,
           label: 'Steps',
           panel: (
-            <div className="card flex flex-col gap-7 py-7 border-y border-slate-900">
+            <div className="card space-y-7">
               <p className="text-xl font-bold">{t('Steps')}</p>
-              <Steps customSteps={customSteps} updateSteps={updateSteps} />
+              <div className="space-y-7">
+                <Steps customSteps={customSteps} updateSteps={updateSteps} />
+              </div>
               <button
-                className="btn-secondary w-fit"
+                className="btn-primary w-fit"
                 onClick={() => updateDB({ steps: customSteps })}
               >
                 {t('Save')}
@@ -248,17 +263,19 @@ function ProjectEdit() {
   const index = useMemo(() => idTabs.indexOf(setting), [idTabs, setting])
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
-      <Breadcrumbs
-        links={[
-          { title: project?.title, href: '/projects/' + code },
-          { title: t('Settings') },
-        ]}
-        full
-      />
+      <div className="hidden md:block">
+        <Breadcrumbs
+          links={[
+            { title: project?.title, href: '/projects/' + code },
+            { title: t('Settings') },
+          ]}
+          full
+        />
+      </div>
       <div className="hidden sm:flex flex-col gap-7">
         {user?.id && (
           <Tab.Group defaultIndex={tabs.length ? index : 0}>
-            <Tab.List className="grid grid-cols-3 md:grid-cols-6 xl:grid-cols-9 gap-4 mt-2 lg:text-lg font-bold text-center border-b border-slate-600">
+            <Tab.List className="grid grid-cols-3 sm:grid-cols-6 xl:grid-cols-9 gap-4 mt-2 lg:text-lg font-bold text-center border-b border-slate-600">
               {tabs.map((tab) => (
                 <Tab
                   key={tab.label}
@@ -288,14 +305,42 @@ function ProjectEdit() {
           </Tab.Group>
         )}
       </div>
-      <div className="flex sm:hidden flex-col gap-7">
-        <Brief access={isCoordinatorAccess} />
+      <div className="flex sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 flex-col gap-7 bg-white">
+        <Breadcrumbs
+          links={[
+            { title: project?.title, href: '/projects/' + code },
+            { title: t('Settings') },
+          ]}
+        />
+        <p className="text-lg font-bold">{t('project-edit:BasicInformation')}</p>
+        <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
+          <BasicInformation
+            register={register}
+            errors={errors}
+            user={user}
+            setIsOpenLanguageCreate={setIsOpenLanguageCreate}
+            uniqueCheck={getValues('code') !== code}
+          />
+          <input className="btn-primary" type="submit" value={t('Save')} />
+        </form>
+        <div className="space-y-7">
+          <h3 className="text-lg font-bold">{t('project-edit:EditBriefTitle')}</h3>
+          <Brief access={isCoordinatorAccess} />,
+        </div>
+        <p className="text-lg font-bold">{t('Participants')}</p>
         <Participants
           user={user}
           users={users}
           access={{ isCoordinatorAccess, isAdminAccess }}
         />
-        <ResourceSettings />
+        <div className="space-y-7">
+          <h3 className="text-lg font-bold">{t('ListResources')}</h3>
+          <ResourceSettings />
+        </div>
+        <div className="space-y-7">
+          <h3 className="text-lg font-bold">{t('Steps')}</h3>
+          <Steps customSteps={customSteps} updateSteps={updateSteps} />
+        </div>
       </div>
       <LanguageCreate
         user={user}

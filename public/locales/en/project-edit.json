@@ -13,6 +13,7 @@
   "CodeLanguageNotUnique": "The name of the language is not unique",
   "CodeLanguageRequired": "The code of the language is required",
   "DisableBrief": "Disable brief",
+  "EditableMode": "Editable mode",
   "EditBriefTitle": "Brief and purpose of the translation",
   "EnableBrief": "Enable brief",
   "ExecutionTime": "Execution time",
