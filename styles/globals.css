@@ -236,11 +236,18 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .tab-active {
 	@apply tab text-white bg-slate-600 cursor-default focus:outline-none
 }
-@responsive {
+
 .card {
   @apply p-3 sm:p-7 bg-white rounded-2xl border border-gray-350 shadow-md;
 }
+
+@screen md {
+  .card-md {
+	 @apply p-3 sm:p-7 bg-white rounded-2xl border border-gray-350 shadow-md;
 }
+}
+
+
 .btn-base {
   @apply px-5 py-2 border rounded-3xl cursor-pointer text-center text-sm md:text-base;
 }
@@ -275,3 +282,4 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .input-invalid {
 	@apply p-2 w-full rounded-lg bg-white text-red-600 border border-red-500 placeholder-cyan-200 focus:border-red-700 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300;
 }
+

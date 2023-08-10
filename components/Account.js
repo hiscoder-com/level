@@ -39,7 +39,7 @@ function Account() {
                     <Tab as={Fragment} key={tab}>
                       {({ selected }) => (
                         <div
-                          className={`p-2 w-full rounded-3xl text-center cursor-pointer ${
+                          className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
                             selected ? 'bg-slate-600 text-white' : ''
                           }
                       `}
@@ -101,7 +101,7 @@ function Account() {
                 }`}
               ></div>
               <Menu.Button
-                className={`sm:hidden p-4 translate-y-1/2 right-10 z-50 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`md:hidden p-4 translate-y-1/2 right-10 z-50 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}

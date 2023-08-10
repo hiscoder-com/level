@@ -16,10 +16,10 @@ import CommitsList from './CommitsList'
 import Steps from './Steps'
 import BasicInformation from './BasicInformation'
 import LanguageCreate from './LanguageCreate'
-import BriefEditQuestions from 'components/BriefEditQuestions'
+import BriefEditQuestions from './BriefEditQuestions'
 
 import { useLanguages, useMethod } from 'utils/hooks'
-import { checkLSVal } from 'utils/helper'
+import { checkLSVal, updateArray } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 import Spinner from '../public/spinner.svg'
 
@@ -126,16 +126,6 @@ function ProjectCreate() {
       })
       .finally(() => setIsCreating(false))
   }
-  //TODO проверить где ещё используется
-  const updateArray = ({ array, index, fieldName, value }) => {
-    const _array = array.map((obj, idx) => {
-      if (index === idx) {
-        return { ...obj, [fieldName]: value }
-      }
-      return obj
-    })
-    return _array
-  }
 
   const updateMethods = (methods, key, array) => {
     const _methods = methods.map((el) => {
@@ -179,8 +169,8 @@ function ProjectCreate() {
     <>
       <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
         <form className="flex flex-col gap-0 md:gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="md:card py-7 space-y-7">
-            <p className="text-xl font-bold">{t('project-edit:BasicInformation')}</p>
+          <div className="card-md py-7 space-y-7">
+            <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
             <BasicInformation
               t={t}
               errors={errors}
@@ -192,15 +182,15 @@ function ProjectCreate() {
               uniqueCheck
             />
           </div>
-          <div className="md:card flex flex-col gap-7 py-7">
-            <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
+          <div className="card-md flex flex-col gap-7 py-7">
+            <h3 className="text-xl font-bold">{t('project-edit:Steps')}</h3>
             <div className="flex flex-col gap-7 text-sm md:text-base">
               <Steps customSteps={customSteps} updateSteps={updateSteps} />
             </div>
           </div>
-          <div className="md:card flex flex-col gap-7 py-7">
+          <div className="card-md flex flex-col gap-7 py-7">
             <div className="flex justify-between">
-              <p className="text-xl font-bold">{t('Brief')}</p>
+              <h3 className="text-xl font-bold">{t('Brief')}</h3>
               <div className="flex items-center gap-2">
                 <span className="mr-3 text-sm md:text-base">
                   {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
@@ -227,8 +217,8 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="md:card flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
-            <p className="text-xl font-bold">{t('common:ListResources')}</p>
+          <div className="card-md flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
+            <h3 className="text-xl font-bold">{t('common:ListResources')}</h3>
             <CommitsList
               methodId={methodId}
               resourcesUrl={resourcesUrl}

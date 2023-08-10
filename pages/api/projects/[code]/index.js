@@ -1,7 +1,7 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function projectHandler(req, res) {
-  if (!req.headers.token) {
+  if (!req?.headers?.token) {
     return res.status(401).json({ error: 'Access denied!' })
   }
   const supabase = createPagesServerClient({ req, res })

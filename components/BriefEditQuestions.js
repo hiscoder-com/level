@@ -2,6 +2,7 @@ import { Disclosure } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 
 import UpdateField from './UpdateField'
+import { updateArray } from 'utils/helper'
 
 import Down from 'public/arrow-down.svg'
 import Trash from 'public/trash.svg'
@@ -85,15 +86,7 @@ function BriefEditQuestions({
       }
     }
   }
-  const updateArray = ({ array, index, fieldName, value }) => {
-    const _array = array.map((obj, idx) => {
-      if (index === idx) {
-        return { ...obj, [fieldName]: value }
-      }
-      return obj
-    })
-    return _array
-  }
+
   const updateTitleBlock = ({ value, index, fieldName }) => {
     if (value && index != null && fieldName) {
       const _blocks = updateArray({

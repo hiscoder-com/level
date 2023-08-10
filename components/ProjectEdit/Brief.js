@@ -10,8 +10,8 @@ import { Switch } from '@headlessui/react'
 
 import axios from 'axios'
 
-import UpdateField from 'components/UpdateField'
-import BriefEditQuestions from 'components/BriefEditQuestions'
+import UpdateField from '../UpdateField'
+import BriefEditQuestions from '../BriefEditQuestions'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 

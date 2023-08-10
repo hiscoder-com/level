@@ -1,9 +1,9 @@
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
-import { useTranslation } from 'next-i18next'
 
 function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit'])
@@ -126,12 +126,8 @@ function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }
           </div>
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
-              <button className="btn-secondary flex-1">{t('Save')}</button>
-              <button
-                type="button"
-                className="btn-secondary flex-1"
-                onClick={closeHandle}
-              >
+              <button className="btn-secondary">{t('Save')}</button>
+              <button type="button" className="btn-secondary" onClick={closeHandle}>
                 {t('Close')}
               </button>
             </div>
