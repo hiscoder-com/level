@@ -31,7 +31,7 @@ function SideBar({ setIsOpenSideBar, access }) {
 
             <Menu.Items
               // внутри <main> есть первый див, который даёт здесь смещение (class="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto"), поэтому я использовал отрицательные отступы
-              className="fixed flex flex-col w-full gap-7 top-20 px-5 -mx-5 z-20 cursor-default md:w-1/2 md:pr-3 lg:pr-0 lg:w-[48%] xl:w-[27rem] 2xl:w-[27rem]"
+              className="fixed flex flex-col w-full gap-7 top-20 px-5 -mx-5 z-20 cursor-default md:w-1/2 md:pr-3 lg:pr-0 lg:w-[48%] xl:w-[27rem]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="card flex flex-col gap-7 cursor-default">
