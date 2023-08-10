@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import Head from 'next/head'
 import Link from 'next/link'
 
@@ -15,9 +13,6 @@ import VcanaLogo from 'public/vcana-logo.svg'
 export default function Home() {
   const { t } = useTranslation('common')
 
-  const [isOpenMobile, setIsOpenMobile] = useState(false)
-  const [isOpenDesktop, setIsOpenDesktop] = useState(false)
-
   return (
     <main className="layout-empty bg-[#f4f4f4]">
       <Head>
@@ -28,11 +23,7 @@ export default function Home() {
       <div className="flex flex-col items-center sm:hidden">
         <div className="flex items-center mb-2">
           <VcanaLogo className="max-w-xs my-[6vh] sm:max-w-md w-28" />
-          <AboutVersion
-            isOpen={isOpenMobile}
-            setIsOpen={setIsOpenMobile}
-            isMobile={true}
-          />
+          <AboutVersion isMobile={true} />
         </div>
         <div className="bg-white w-[90vw] mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
           <Login />
@@ -48,7 +39,7 @@ export default function Home() {
           <div className="flex flex-col items-center text-base xl:text-lg">
             <div className="flex flex-col relative items-center mb-2">
               <VcanaLogo className="scale-[1.65] xl:scale-[1.85] mb-4" />
-              <AboutVersion isOpen={isOpenDesktop} setIsOpen={setIsOpenDesktop} />
+              <AboutVersion />
             </div>
             <h1 className="mb-2 text-center">{t('PlatformForBibleTranslate')}</h1>
             <div className="text-[#909090] mb-2 text-xs">{t('DevelopedBy')}</div>

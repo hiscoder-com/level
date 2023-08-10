@@ -3,12 +3,14 @@ import { useTranslation } from 'react-i18next'
 import { Menu } from '@headlessui/react'
 
 import SwitchLocalization from './SwitchLocalization'
+import AboutVersion from 'components/AboutVersion'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
 
+import Localization from 'public/localization.svg'
+import VersionLogo from 'public/version.svg'
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
-import Localization from 'public/localization.svg'
 
 import { useCurrentUser } from 'lib/UserContext'
 function SideBar({ setIsOpenSideBar, access }) {
@@ -62,6 +64,19 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <span>{t('Language')} </span>
                       </div>
                       <SwitchLocalization />
+                    </Menu.Item>
+
+                    <Menu.Item
+                      as="div"
+                      disabled
+                      className="flex items-center gap-2 justify-between cursor-default"
+                    >
+                      <div className="flex gap-4 items-center">
+                        <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
+                          <VersionLogo className="w-5 h-5 min-w-[1.5rem]" />
+                        </div>
+                        <AboutVersion isSidebar={true} />
+                      </div>
                     </Menu.Item>
                   </div>
 

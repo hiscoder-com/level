@@ -2,18 +2,19 @@ import { useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import ReactMarkdown from 'react-markdown'
 import emojiDictionary from 'emoji-dictionary'
+import ReactMarkdown from 'react-markdown'
 
 import Modal from './Modal'
 
-import packageJson from '../package.json'
 import changelogData from '../CHANGELOG.md'
+import packageJson from '../package.json'
 
 import Close from 'public/close.svg'
 
-function AboutVersion({ isOpen, setIsOpen, isMobile = false }) {
+function AboutVersion({ isMobile = false, isSidebar = false }) {
   const { t } = useTranslation('common')
+  const [isOpen, setIsOpen] = useState(false)
 
   const [showAllUpdates, setShowAllUpdates] = useState(false)
 
@@ -43,7 +44,9 @@ function AboutVersion({ isOpen, setIsOpen, isMobile = false }) {
   return (
     <>
       <div
-        className={`text-xs cursor-pointer text-[#909090] ${isMobile ? 'l-4' : ''}`}
+        className={`cursor-pointer ${isMobile ? 'l-4' : ''} ${
+          isSidebar ? '' : 'text-xs text-[#909090]'
+        }`}
         onClick={() => setIsOpen(true)}
       >
         {t('Version')} {packageJson.version}
