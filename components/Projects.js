@@ -16,11 +16,11 @@ export default function Projects({ type }) {
     case 'projects':
       CurrentCard = ProjectCard
       className =
-        'grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-7 py-10 md:py-10'
+        'grid grid-cols-1 gap-3 py-10 content-start md:grid-cols-2 xl:grid-cols-3 sm:gap-7 md:py-10'
       break
     case 'account':
       CurrentCard = ProjectPersonalCard
-      className = 'flex flex-col gap-3 sm:gap-7 py-10'
+      className = 'flex flex-col gap-3 py-10 sm:gap-7'
       break
     default:
       break
