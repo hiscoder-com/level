@@ -1,5 +1,5 @@
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-
 import { Menu } from '@headlessui/react'
 
 import SwitchLocalization from './SwitchLocalization'
@@ -16,6 +16,7 @@ import { useCurrentUser } from 'lib/UserContext'
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation('projects')
+  const [isVersionModalOpen, setIsVersionModalOpen] = useState(false)
 
   return (
     <>
@@ -36,7 +37,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               className="fixed flex flex-col w-full gap-7 top-20 px-5 -mx-5 z-20 cursor-default md:w-1/2 md:pr-3 lg:pr-0 lg:w-[48%] xl:w-[27rem]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="card flex flex-col gap-7 cursor-default">
+              <div className="card flex flex-col gap-7 cursor-default relative">
                 <div>
                   <div className="cursor-default flex items-center pb-5 gap-2 border-b border-gray-300">
                     <div className="w-12 h-12 min-w-[3rem]">
@@ -71,11 +72,18 @@ function SideBar({ setIsOpenSideBar, access }) {
                       disabled
                       className="flex items-center gap-2 justify-between cursor-default"
                     >
-                      <div className="flex gap-4 items-center">
+                      <div
+                        className="flex w-full items-center gap-4 cursor-pointer"
+                        onClick={() => setIsVersionModalOpen((prev) => !prev)}
+                      >
                         <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
                           <VersionLogo className="w-5 h-5 min-w-[1.5rem]" />
                         </div>
-                        <AboutVersion isSidebar={true} />
+                        <AboutVersion
+                          isSidebar={true}
+                          isVersionModalOpen={isVersionModalOpen}
+                          setIsVersionModalOpen={setIsVersionModalOpen}
+                        />
                       </div>
                     </Menu.Item>
                   </div>

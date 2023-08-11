@@ -12,7 +12,12 @@ import packageJson from '../package.json'
 
 import Close from 'public/close.svg'
 
-function AboutVersion({ isMobile = false, isSidebar = false }) {
+function AboutVersion({
+  isMobile = false,
+  isSidebar = false,
+  isVersionModalOpen,
+  setIsVersionModalOpen,
+}) {
   const { t } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
 
@@ -47,42 +52,75 @@ function AboutVersion({ isMobile = false, isSidebar = false }) {
         className={`cursor-pointer ${isMobile ? 'l-4' : ''} ${
           isSidebar ? '' : 'text-xs text-[#909090]'
         }`}
-        onClick={() => setIsOpen(true)}
+        onClick={() => {
+          !isSidebar && setIsOpen(true)
+        }}
       >
         {t('Version')} {packageJson.version}
       </div>
 
-      <Modal
-        isOpen={isOpen}
-        closeHandle={() => setIsOpen(false)}
-        additionalClasses={`${isMobile ? 'h-screen w-screen' : ''}`}
-        isMobileFullScreen={isMobile}
-        isChangelogUpd={isMobile}
-      >
-        <div
-          className={`flex justify-between items-center mb-7 ${
-            isMobile ? 'sticky top-0 py-6 bg-white' : ''
-          }`}
-        >
-          <p className="text-2xl font-bold text-left">
-            {t('Version')} {packageJson.version}
-          </p>
-          <button className="text-right" onClick={() => setIsOpen(false)}>
-            <Close className="h-8 stroke-slate-500" />
-          </button>
-        </div>
-        <ReactMarkdown className="whitespace-pre-line leading-5">
-          {VersionInfo()}
-        </ReactMarkdown>
-        <div className="flex justify-center mt-6">
-          <button
-            onClick={() => setShowAllUpdates(!showAllUpdates)}
-            className={`${isMobile ? 'btn-slate' : 'btn-secondary'}`}
+      {isSidebar ? (
+        isVersionModalOpen && (
+          <div
+            className="absolute w-full h-full left-full px-3 pb-3 ml-5 top-0 overflow-y-auto border rounded-2xl border-gray-350 shadow-md bg-white sm:px-7 sm:pb-7"
+            onClick={(e) => e.stopPropagation()}
           >
-            {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
-          </button>
-        </div>
-      </Modal>
+            <div
+              className={`flex justify-between items-center mb-7 sticky top-0 py-6 bg-white`}
+            >
+              <p className="text-2xl font-bold text-left">
+                {t('Version')} {packageJson.version}
+              </p>
+              <button className="text-right" onClick={() => setIsVersionModalOpen(false)}>
+                <Close className="h-8 stroke-slate-500" />
+              </button>
+            </div>
+            <ReactMarkdown className="whitespace-pre-line leading-5">
+              {VersionInfo()}
+            </ReactMarkdown>
+            <div className="flex justify-center mt-6">
+              <button
+                onClick={() => setShowAllUpdates(!showAllUpdates)}
+                className={`${isMobile ? 'btn-slate' : 'btn-secondary'}`}
+              >
+                {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
+              </button>
+            </div>
+          </div>
+        )
+      ) : (
+        <Modal
+          isOpen={isOpen}
+          closeHandle={() => setIsOpen(false)}
+          additionalClasses={`${isMobile ? 'h-screen w-screen' : ''}`}
+          isMobileFullScreen={isMobile}
+          isChangelogUpd={isMobile}
+        >
+          <div
+            className={`flex justify-between items-center mb-7 ${
+              isMobile ? 'sticky top-0 py-6 bg-white' : ''
+            }`}
+          >
+            <p className="text-2xl font-bold text-left">
+              {t('Version')} {packageJson.version}
+            </p>
+            <button className="text-right" onClick={() => setIsOpen(false)}>
+              <Close className="h-8 stroke-slate-500" />
+            </button>
+          </div>
+          <ReactMarkdown className="whitespace-pre-line leading-5">
+            {VersionInfo()}
+          </ReactMarkdown>
+          <div className="flex justify-center mt-6">
+            <button
+              onClick={() => setShowAllUpdates(!showAllUpdates)}
+              className={`${isMobile ? 'btn-slate' : 'btn-secondary'}`}
+            >
+              {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
+            </button>
+          </div>
+        </Modal>
+      )}
     </>
   )
 }

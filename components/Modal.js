@@ -10,8 +10,6 @@ function Modal({
   additionalClasses,
   className = 'primary',
   isChangelogUpd = false,
-  top = 0,
-  left = 0,
   isMobileFullScreen = false,
 }) {
   const classes = {
@@ -24,7 +22,6 @@ function Modal({
       <Dialog
         as="div"
         className={`z-50 ${isChangelogUpd ? 'fixed flex inset-0' : 'relative'}`}
-        style={{ paddingTop: top, paddingLeft: left }}
         onClose={closeHandle}
       >
         <Transition.Child
