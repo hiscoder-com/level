@@ -23,7 +23,7 @@ export default function Home() {
       <div className="flex flex-col items-center sm:hidden">
         <div className="flex items-center mb-2">
           <VcanaLogo className="max-w-xs my-[6vh] sm:max-w-md w-28" />
-          <AboutVersion isMobile={true} />
+          <AboutVersion isMobileIndexPage={true} />
         </div>
         <div className="bg-white w-[90vw] mb-10 rounded-lg shadow-lg shadow-[#0000001A]">
           <Login />

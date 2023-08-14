@@ -14,10 +14,9 @@ import Close from 'public/close.svg'
 import { useRecoilState } from 'recoil'
 import { versionModalState } from './Panel/state/atoms'
 
-function AboutVersion({ isMobile = false, isSidebar = false }) {
+function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   const { t } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
-
   const [showAllUpdates, setShowAllUpdates] = useState(false)
   const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(versionModalState)
 
@@ -47,7 +46,7 @@ function AboutVersion({ isMobile = false, isSidebar = false }) {
   return (
     <>
       <div
-        className={`${isMobile && 'ml-4'} ${
+        className={`${isMobileIndexPage && 'ml-4'} ${
           !isSidebar && 'text-xs cursor-pointer text-[#909090]'
         }`}
         onClick={() => {
@@ -79,7 +78,7 @@ function AboutVersion({ isMobile = false, isSidebar = false }) {
             <div className="flex justify-center mt-6">
               <button
                 onClick={() => setShowAllUpdates(!showAllUpdates)}
-                className={`${isMobile ? 'btn-slate' : 'btn-secondary'}`}
+                className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}
               >
                 {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
               </button>
@@ -90,13 +89,12 @@ function AboutVersion({ isMobile = false, isSidebar = false }) {
         <Modal
           isOpen={isOpen}
           closeHandle={() => setIsOpen(false)}
-          additionalClasses={`${isMobile ? 'h-screen w-screen' : ''}`}
-          isMobileFullScreen={isMobile}
-          isChangelogUpd={isMobile}
+          additionalClasses={`${isMobileIndexPage ? 'h-screen w-screen' : ''}`}
+          isMobileChangelog={isMobileIndexPage}
         >
           <div
             className={`flex items-center justify-between mb-7 ${
-              isMobile && 'sticky top-0 py-6 bg-white'
+              isMobileIndexPage && 'sticky top-0 py-6 bg-white'
             }`}
           >
             <p className="text-2xl font-bold text-left">
@@ -112,7 +110,7 @@ function AboutVersion({ isMobile = false, isSidebar = false }) {
           <div className="flex justify-center mt-6">
             <button
               onClick={() => setShowAllUpdates(!showAllUpdates)}
-              className={`${isMobile ? 'btn-slate' : 'btn-secondary'}`}
+              className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}
             >
               {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
             </button>

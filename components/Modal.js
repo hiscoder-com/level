@@ -4,13 +4,12 @@ import { Transition, Dialog } from '@headlessui/react'
 
 function Modal({
   title,
-  children,
   isOpen,
+  children,
   closeHandle,
   additionalClasses,
   className = 'primary',
-  isChangelogUpd = false,
-  isMobileFullScreen = false,
+  isMobileChangelog = false,
 }) {
   const classes = {
     primary:
@@ -21,7 +20,7 @@ function Modal({
     <Transition appear show={isOpen} as={Fragment}>
       <Dialog
         as="div"
-        className={`z-50 ${isChangelogUpd ? 'fixed flex inset-0' : 'relative'}`}
+        className={`z-50 ${isMobileChangelog ? 'fixed flex inset-0' : 'relative'}`}
         onClose={closeHandle}
       >
         <Transition.Child
@@ -34,40 +33,38 @@ function Modal({
           leaveTo="opacity-0"
         >
           <div
-            className={`inset-0 bg-gray-300 bg-opacity-25 ${
-              isChangelogUpd ? 'absolute' : 'fixed'
+            className={`inset-0 bg-opacity-25 bg-gray-300 ${
+              isMobileChangelog ? 'absolute' : 'fixed'
             }`}
           />
         </Transition.Child>
         <div
           className={`inset-0 ${
-            isChangelogUpd ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
+            isMobileChangelog ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
           }`}
         >
           <div
-            className={`${
-              isChangelogUpd ? '' : 'flex items-center justify-center p-4 min-h-full'
-            }`}
+            className={`${!isMobileChangelog && 'flex justify-center p-4 min-h-full'}`}
           >
             <Transition.Child
               as={Fragment}
               leaveFrom="opacity-100 scale-100"
-              enterTo="opacity-100 scale-100"
               enterFrom="opacity-100 scale-95"
+              enterTo="opacity-100 scale-100"
               enter="ease-out duration-300"
               leaveTo="opacity-0 scale-95"
               leave="ease-in duration-200"
             >
               <Dialog.Panel
                 className={`${
-                  isChangelogUpd ? 'bg-white text-black' : classes[className]
-                } transform overflow-y-auto ${additionalClasses} ${
-                  isMobileFullScreen ? 'px-6 pb-6' : 'max-w-md rounded-3xl p-6'
-                } shadow-xl transition-all`}
+                  isMobileChangelog
+                    ? 'px-6 pb-6 bg-white text-black'
+                    : `${classes[className]} p-6 max-w-md rounded-3xl`
+                } transform overflow-y-auto ${additionalClasses} shadow-xl transition-all`}
               >
                 <Dialog.Title
                   as="h3"
-                  className="text-2xl font-medium leading-6 text-center"
+                  className="text-center text-2xl font-medium leading-6"
                 >
                   {title}
                 </Dialog.Title>
