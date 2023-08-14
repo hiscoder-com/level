@@ -1,22 +1,25 @@
-import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Menu } from '@headlessui/react'
 
-import SwitchLocalization from './SwitchLocalization'
+import { useSetRecoilState } from 'recoil'
+
 import AboutVersion from 'components/AboutVersion'
+import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
+import { versionModalState } from './Panel/state/atoms'
+
+import { useCurrentUser } from 'lib/UserContext'
 
 import Localization from 'public/localization.svg'
 import VersionLogo from 'public/version.svg'
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
 
-import { useCurrentUser } from 'lib/UserContext'
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation('projects')
-  const [isVersionModalOpen, setIsVersionModalOpen] = useState(false)
+  const setVersionModalIsOpen = useSetRecoilState(versionModalState)
 
   return (
     <>
@@ -37,9 +40,9 @@ function SideBar({ setIsOpenSideBar, access }) {
               className="fixed flex flex-col w-full gap-7 top-20 px-5 -mx-5 z-20 cursor-default md:w-1/2 md:pr-3 lg:pr-0 lg:w-[48%] xl:w-[27rem]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="card flex flex-col gap-7 cursor-default relative">
+              <div className="relative card flex flex-col gap-7 cursor-default">
                 <div>
-                  <div className="cursor-default flex items-center pb-5 gap-2 border-b border-gray-300">
+                  <div className="flex items-center gap-2 pb-5 border-b cursor-default border-gray-300">
                     <div className="w-12 h-12 min-w-[3rem]">
                       <TranslatorImage item={{ users: user }} />
                     </div>
@@ -51,14 +54,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                   </div>
                 </div>
 
-                <div className="flex flex-col min-h-[60vh] justify-between">
+                <div className="flex flex-col justify-between min-h-[60vh]">
                   <div className="flex flex-col gap-7">
                     <Menu.Item
                       as="div"
                       disabled
-                      className="flex items-center gap-2 justify-between cursor-default"
+                      className="flex items-center justify-between gap-2 cursor-default"
                     >
-                      <div className="flex gap-4 items-center">
+                      <div className="flex items-center gap-4">
                         <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
                           <Localization className="w-5 h-5 min-w-[1.5rem] stroke-slate-600" />
                         </div>
@@ -70,20 +73,16 @@ function SideBar({ setIsOpenSideBar, access }) {
                     <Menu.Item
                       as="div"
                       disabled
-                      className="flex items-center gap-2 justify-between cursor-default"
+                      className="flex items-center justify-between gap-2 cursor-default"
                     >
                       <div
                         className="flex w-full items-center gap-4 cursor-pointer"
-                        onClick={() => setIsVersionModalOpen((prev) => !prev)}
+                        onClick={() => setVersionModalIsOpen((prev) => !prev)}
                       >
                         <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
                           <VersionLogo className="w-5 h-5 min-w-[1.5rem]" />
                         </div>
-                        <AboutVersion
-                          isSidebar={true}
-                          isVersionModalOpen={isVersionModalOpen}
-                          setIsVersionModalOpen={setIsVersionModalOpen}
-                        />
+                        <AboutVersion isSidebar={true} />
                       </div>
                     </Menu.Item>
                   </div>

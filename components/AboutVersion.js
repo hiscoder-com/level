@@ -1,9 +1,9 @@
 import { useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 import { useTranslation } from 'next-i18next'
 
 import emojiDictionary from 'emoji-dictionary'
-import ReactMarkdown from 'react-markdown'
 
 import Modal from './Modal'
 
@@ -11,17 +11,15 @@ import changelogData from '../CHANGELOG.md'
 import packageJson from '../package.json'
 
 import Close from 'public/close.svg'
+import { useRecoilState } from 'recoil'
+import { versionModalState } from './Panel/state/atoms'
 
-function AboutVersion({
-  isMobile = false,
-  isSidebar = false,
-  isVersionModalOpen,
-  setIsVersionModalOpen,
-}) {
+function AboutVersion({ isMobile = false, isSidebar = false }) {
   const { t } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
 
   const [showAllUpdates, setShowAllUpdates] = useState(false)
+  const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(versionModalState)
 
   const VersionInfo = () => {
     const regex = /(## \[[\s\S]*?)(?=## \[|$)/g
@@ -49,8 +47,8 @@ function AboutVersion({
   return (
     <>
       <div
-        className={`cursor-pointer ${isMobile ? 'l-4' : ''} ${
-          isSidebar ? '' : 'text-xs text-[#909090]'
+        className={`${isMobile && 'ml-4'} ${
+          !isSidebar && 'text-xs cursor-pointer text-[#909090]'
         }`}
         onClick={() => {
           !isSidebar && setIsOpen(true)
@@ -60,18 +58,18 @@ function AboutVersion({
       </div>
 
       {isSidebar ? (
-        isVersionModalOpen && (
+        versionModalIsOpen && (
           <div
-            className="absolute w-full h-full left-full px-3 pb-3 ml-5 top-0 overflow-y-auto border rounded-2xl border-gray-350 shadow-md bg-white sm:px-7 sm:pb-7"
+            className="absolute w-full h-full left-full px-3 pb-3 ml-5 top-0 overflow-y-auto border rounded-2xl shadow-md cursor-default bg-white border-gray-350 sm:px-7 sm:pb-7"
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className={`flex justify-between items-center mb-7 sticky top-0 py-6 bg-white`}
+              className={`sticky flex items-center justify-between mb-7 top-0 py-6 bg-white`}
             >
-              <p className="text-2xl font-bold text-left">
+              <p className="text-left text-2xl font-bold">
                 {t('Version')} {packageJson.version}
               </p>
-              <button className="text-right" onClick={() => setIsVersionModalOpen(false)}>
+              <button className="text-right" onClick={() => setVersionModalIsOpen(false)}>
                 <Close className="h-8 stroke-slate-500" />
               </button>
             </div>
@@ -97,8 +95,8 @@ function AboutVersion({
           isChangelogUpd={isMobile}
         >
           <div
-            className={`flex justify-between items-center mb-7 ${
-              isMobile ? 'sticky top-0 py-6 bg-white' : ''
+            className={`flex items-center justify-between mb-7 ${
+              isMobile && 'sticky top-0 py-6 bg-white'
             }`}
           >
             <p className="text-2xl font-bold text-left">
