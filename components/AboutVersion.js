@@ -60,7 +60,7 @@ function AboutVersion({ isMobile = false, isSidebar = false }) {
       {isSidebar ? (
         versionModalIsOpen && (
           <div
-            className="absolute w-full h-full left-full px-3 pb-3 ml-5 top-0 overflow-y-auto border rounded-2xl shadow-md cursor-default bg-white border-gray-350 sm:px-7 sm:pb-7"
+            className="absolute w-full h-full px-3 right-0 pb-3 top-0 overflow-y-auto border shadow-md cursor-default bg-white border-gray-350 sm:px-7 sm:pb-7 sm:rounded-2xl md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div
