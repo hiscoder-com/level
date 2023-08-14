@@ -1999,5 +1999,3 @@
     WHERE steps.project_id = projects.id AND projects.type = 'obs' AND steps.sorting = '7';
 
     ALTER TABLE public.projects ALTER COLUMN dictionaries_alphabet SET DEFAULT '[]';
-
-
