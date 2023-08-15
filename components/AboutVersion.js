@@ -1,18 +1,23 @@
 import { useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
+import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import Modal from './Modal'
-
-import updateData from '../update_en.md'
-import packageJson from '../package.json'
-
-import Close from 'public/close.svg'
 import { useRecoilState } from 'recoil'
 import { versionModalState } from './Panel/state/atoms'
 
+import Modal from './Modal'
+
+import updateEN from '../update_en.md'
+import updateRU from '../update_ru.md'
+import updateES from '../update_es.md'
+import packageJson from '../package.json'
+
+import Close from 'public/close.svg'
+
 function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
+  const { locale } = useRouter()
   const { t } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
   const [showAllUpdates, setShowAllUpdates] = useState(false)
@@ -20,31 +25,39 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
 
   const VersionInfo = () => {
     const currentVersion = packageJson.version
-    let matchedTexts
-
-    if (showAllUpdates) {
-      matchedTexts = [updateData]
-    } else {
-      const regex = new RegExp(
-        `# Version ${currentVersion}([\\s\\S]*?)(?=# Version|$)`,
-        'g'
-      )
-      matchedTexts = updateData.match(regex)
+    const updates = {
+      ru: updateRU,
+      es: updateES,
     }
+
+    const getContentByLanguage = (lang) => {
+      return updates[lang] || updateEN
+    }
+
+    const getUpdateData = (updateContent, version) => {
+      const regex = new RegExp(`# Version ${version}([\\s\\S]*?)(?=# Version|$)`, 'g')
+      return updateContent.match(regex)
+    }
+
+    const processText = (text, version) => {
+      return text
+        .replace(/^### (.+)/gm, (title) => `${title.toUpperCase()}`)
+        .replace(/^-\s+/gm, '∙ ')
+        .replace(/# Version (\d+\.\d+\.\d+)/g, (_, v) =>
+          v === version ? '' : `# **Version ${v}**`
+        )
+    }
+
+    const updateData = getContentByLanguage(locale)
+
+    let matchedTexts = showAllUpdates
+      ? [updateData]
+      : getUpdateData(updateData, currentVersion)
 
     if (matchedTexts && matchedTexts.length > 0) {
-      let processedText = matchedTexts[0].replace(
-        /^### (.+)/gm,
-        (title) => `${title.toUpperCase()}`
-      )
-      processedText = processedText
-        .replace(/^-\s+/gm, '∙ ')
-        .replace(/# Version (\d+\.\d+\.\d+)/g, (_, version) =>
-          version === currentVersion ? '' : `# **Version ${version}**`
-        )
-      console.log(processedText)
-      return processedText
+      return processText(matchedTexts[0], currentVersion)
     }
+
     return ''
   }
 

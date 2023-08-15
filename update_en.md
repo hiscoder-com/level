@@ -31,12 +31,9 @@
 ## Date: 07/24/2023
 
 ### **Added:**
-- Update according to design
-- Add checks in API
-- Add testament lists
-- Add toasts and update mutate
+- design update
+- Add toasts
 - Support for custom resource URL
-- Added placeholder projectPersonalCard
 - Added option for downloading high-resolution images
 - Modified audio component
 - Added support of CheckingIcon from chapters
@@ -50,12 +47,10 @@
 - Added link on top page
 
 ### **Fixed:**
-- Fixed issues with optional chains and translation
+- Fixed issues with translation
 - Fixed view of num verses
-- Fixed several bugs in update_commits and download OBS stories and books
 - Fixed auto scroll in TN
 - Fixed link to brief
 - Fixed loading in TN
 - Fixed styles and logic
-- Fixed UX loading in chapter start/finish
 - Fixed size of icon
