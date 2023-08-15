@@ -30,19 +30,37 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
   }, [router.pathname])
-  useEffect(() => {
-    const hasAccess = async () => {
-      try {
-        const { data, error } = await supabase.rpc('has_access')
-        if (error) throw error
-        setAccess(data)
-      } catch (error) {
-        return error
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => getPrevPath, [router.asPath])
+
+  const hasAccess = async () => {
+    try {
+      const { data, error } = await supabase.rpc('has_access')
+      if (error) throw error
+      setAccess(data)
+    } catch (error) {
+      return error
+    }
+  }
+  function getPrevPath() {
+    const storage = globalThis?.sessionStorage
+    if (!storage) return
+    const prevPath = storage.getItem('currentPath')
+    storage.setItem('prevPath', prevPath)
+    storage.setItem('currentPath', globalThis.location.pathname)
+
+    if (prevPath.split('/').splice(-1)[0] === 'confession-steps') {
+      if (user?.id) {
+        hasAccess()
       }
     }
+  }
+  useEffect(() => {
     if (user?.id) {
       hasAccess()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase, user])
 
   return (

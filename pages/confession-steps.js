@@ -8,7 +8,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import LeftArrow from 'public/left-arrow.svg'
-import RightArrow from 'public/right-arrow.svg'
 
 export default function ConfessionSteps() {
   const supabase = useSupabaseClient()
