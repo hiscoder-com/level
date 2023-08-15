@@ -1,19 +1,10 @@
 # Version 0.3.0
 ## Date: 08/02/2023
 
-## Features:
-
-### Updates and Upgrades:
+### **Added:**
 - Update tn-quote
-- Updated display of PDF files
 - Upgrade Supabase 2
-
-### UI Improvements:
-- Add link for OMB to mobile
-- Removed the scrollbar (the burger stopped moving on the Account page)
-- Many more enhancements to the user interface
-
-### New Additions:
+- Updated display of PDF files
 - Add API level checks
 - Add book creation functionality
 - Add chapter list and checks
@@ -21,7 +12,12 @@
 - Added recovery of a deleted word (alphabet)
 - Breadcrumbs, drag-n-drop functionality
 
-## Bug Fixes:
+### **Changed:**
+- Add link for OMB to mobile
+- Removed the scrollbar (the burger stopped moving on the Account page)
+- Many more enhancements to the user interface
+
+### **Fixed:**
 - Blur does not appear on the retelling step
 - Fixed various issues with Bookreader, BookProperties, useGetResources
 - Multiple fixes to the download page, API, and filters
@@ -34,9 +30,7 @@
 # Version 0.2.0
 ## Date: 07/24/2023
 
-## Features:
-
-### New Additions:
+### **Added:**
 - Update according to design
 - Add checks in API
 - Add testament lists
@@ -48,14 +42,14 @@
 - Added support of CheckingIcon from chapters
 - Added PersonalList
 
-### User Interface Improvements:
+### **Changed:**
 - Added new links to git.door43
 - Updated design for Account
 - New version of participants list
 - New brief
 - Added link on top page
 
-### Bug Fixes:
+### **Fixed:**
 - Fixed issues with optional chains and translation
 - Fixed view of num verses
 - Fixed several bugs in update_commits and download OBS stories and books

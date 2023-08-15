@@ -3,11 +3,9 @@ import ReactMarkdown from 'react-markdown'
 
 import { useTranslation } from 'next-i18next'
 
-import emojiDictionary from 'emoji-dictionary'
-
 import Modal from './Modal'
 
-import changelogData from '../CHANGELOG.md'
+import updateData from '../update_en.md'
 import packageJson from '../package.json'
 
 import Close from 'public/close.svg'
@@ -21,26 +19,33 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(versionModalState)
 
   const VersionInfo = () => {
-    const regex = /(## \[[\s\S]*?)(?=## \[|$)/g
     const currentVersion = packageJson.version
-    let matchedTexts = changelogData.match(regex)
+    let matchedTexts
 
-    if (!showAllUpdates) {
-      matchedTexts = matchedTexts.filter((versionText) =>
-        versionText.includes(`[${currentVersion}]`)
+    if (showAllUpdates) {
+      matchedTexts = [updateData]
+    } else {
+      const regex = new RegExp(
+        `# Version ${currentVersion}([\\s\\S]*?)(?=# Version|$)`,
+        'g'
       )
+      matchedTexts = updateData.match(regex)
     }
 
-    const processedText = matchedTexts
-      .join('\n')
-      .replace(
-        /:(.+?):/g,
-        (match, emojiName) => emojiDictionary.getUnicode(emojiName) || match
+    if (matchedTexts && matchedTexts.length > 0) {
+      let processedText = matchedTexts[0].replace(
+        /^### (.+)/gm,
+        (title) => `${title.toUpperCase()}`
       )
-      .replace(/\(\[\w+\]\(https:\/\/github\.com\/texttree\/v-cana\/commit\/\w+\)\)/g, '')
-      .replace(/^### (.+)/gm, (title) => `${title.toUpperCase()}:`)
-
-    return processedText
+      processedText = processedText
+        .replace(/^-\s+/gm, '∙ ')
+        .replace(/# Version (\d+\.\d+\.\d+)/g, (_, version) =>
+          version === currentVersion ? '' : `# **Version ${version}**`
+        )
+      console.log(processedText)
+      return processedText
+    }
+    return ''
   }
 
   return (
@@ -68,7 +73,13 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
               <p className="text-left text-2xl font-bold">
                 {t('Version')} {packageJson.version}
               </p>
-              <button className="text-right" onClick={() => setVersionModalIsOpen(false)}>
+              <button
+                className="text-right"
+                onClick={() => {
+                  setShowAllUpdates(false)
+                  setVersionModalIsOpen(false)
+                }}
+              >
                 <Close className="h-8 stroke-slate-500" />
               </button>
             </div>
