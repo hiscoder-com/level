@@ -44,7 +44,9 @@ function Modal({
           }`}
         >
           <div
-            className={`${!isMobileChangelog && 'flex justify-center p-4 min-h-full'}`}
+            className={`${
+              !isMobileChangelog && 'flex items-center justify-center p-4 min-h-full'
+            }`}
           >
             <Transition.Child
               as={Fragment}

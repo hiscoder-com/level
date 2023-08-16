@@ -63,6 +63,11 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
     return ''
   }
 
+  const closeModal = () => {
+    setShowAllUpdates(false)
+    setIsOpen(false)
+  }
+
   return (
     <>
       <div
@@ -114,7 +119,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
       ) : (
         <Modal
           isOpen={isOpen}
-          closeHandle={() => setIsOpen(false)}
+          closeHandle={closeModal}
           additionalClasses={`${isMobileIndexPage ? 'h-screen w-screen' : ''}`}
           isMobileChangelog={isMobileIndexPage}
         >
@@ -126,7 +131,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
             <p className="text-2xl font-bold text-left">
               {t('Version')} {packageJson.version}
             </p>
-            <button className="text-right" onClick={() => setIsOpen(false)}>
+            <button className="text-right" onClick={closeModal}>
               <Close className="h-8 stroke-slate-500" />
             </button>
           </div>
