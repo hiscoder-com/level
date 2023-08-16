@@ -9,9 +9,9 @@ import { aboutVersionModalIsOpen } from './Panel/state/atoms'
 
 import Modal from './Modal'
 
-import updateEN from '../update_en.md'
-import updateRU from '../update_ru.md'
-import updateES from '../update_es.md'
+import updateEN from '../public/updateVersion/update_en.md'
+import updateRU from '../public/updateVersion/update_ru.md'
+import updateES from '../public/updateVersion/update_es.md'
 import packageJson from '../package.json'
 
 import Close from 'public/close.svg'
@@ -43,7 +43,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
 
     const processText = (text, version) => {
       return text
-        .replace(/^### (.+)/gm, (title) => `${title.toUpperCase()}`)
+        .replace(/^### (.+)/gm, (title) => `${title}`)
         .replace(/^-\s+/gm, '∙ ')
         .replace(/# Version (\d+\.\d+\.\d+)/g, (_, v) =>
           v === version ? '' : `# **Version ${v}**`
@@ -84,11 +84,11 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
       {isSidebar ? (
         versionModalIsOpen && (
           <div
-            className="absolute w-full h-full px-3 right-0 pb-3 top-0 overflow-y-auto border shadow-md cursor-default bg-white border-gray-350 sm:px-7 sm:pb-7 sm:rounded-2xl md:left-full md:ml-5"
+            className="absolute right-0 top-0 w-full h-full px-3 pb-3 overflow-y-auto cursor-default shadow-md bg-white border-gray-350 sm:border sm:px-7 sm:pb-7 sm:rounded-2xl md:max-h-full md:h-min md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div
-              className={`sticky flex items-center justify-between mb-7 top-0 py-6 bg-white`}
+              className={`sticky top-0 flex items-center justify-between py-6 bg-white`}
             >
               <p className="text-left text-2xl font-bold">
                 {t('Version')} {packageJson.version}
@@ -106,7 +106,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
             <ReactMarkdown className="whitespace-pre-line leading-5">
               {VersionInfo()}
             </ReactMarkdown>
-            <div className="flex justify-center mt-6">
+            <div className="flex justify-center mt-8">
               <button
                 onClick={() => setShowAllUpdates(!showAllUpdates)}
                 className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}
@@ -120,7 +120,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
         <Modal
           isOpen={isOpen}
           closeHandle={closeModal}
-          additionalClasses={`${isMobileIndexPage ? 'h-screen w-screen' : ''}`}
+          additionalClasses={`${isMobileIndexPage ? 'h-screen w-screen' : '!max-w-lg'}`}
           isMobileChangelog={isMobileIndexPage}
         >
           <div
@@ -138,7 +138,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           <ReactMarkdown className="whitespace-pre-line leading-5">
             {VersionInfo()}
           </ReactMarkdown>
-          <div className="flex justify-center mt-6">
+          <div className="flex justify-center mt-8">
             <button
               onClick={() => setShowAllUpdates(!showAllUpdates)}
               className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}
