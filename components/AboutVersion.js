@@ -5,7 +5,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { useRecoilState } from 'recoil'
-import { versionModalState } from './Panel/state/atoms'
+import { aboutVersionModalIsOpen } from './Panel/state/atoms'
 
 import Modal from './Modal'
 
@@ -21,7 +21,9 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   const { t } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
   const [showAllUpdates, setShowAllUpdates] = useState(false)
-  const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(versionModalState)
+  const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(
+    aboutVersionModalIsOpen
+  )
 
   const VersionInfo = () => {
     const currentVersion = packageJson.version

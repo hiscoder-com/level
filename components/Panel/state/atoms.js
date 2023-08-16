@@ -48,7 +48,7 @@ export const currentVerse = atom({
   effects: [localStorageEffect('currentScrollVerse')],
 })
 
-export const versionModalState = atom({
-  key: 'versionModalState',
+export const aboutVersionModalIsOpen = atom({
+  key: 'aboutVersionModalIsOpen',
   default: false,
 })

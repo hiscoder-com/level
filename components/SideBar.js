@@ -7,7 +7,7 @@ import AboutVersion from 'components/AboutVersion'
 import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
-import { versionModalState } from './Panel/state/atoms'
+import { aboutVersionModalIsOpen } from './Panel/state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -19,14 +19,19 @@ import Close from 'public/close.svg'
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation('projects')
-  const setVersionModalIsOpen = useSetRecoilState(versionModalState)
+  const setVersionModalIsOpen = useSetRecoilState(aboutVersionModalIsOpen)
 
   return (
     <>
       <Menu>
         {({ open }) => (
           <>
-            <Menu.Button onClick={() => setIsOpenSideBar((prev) => !prev)}>
+            <Menu.Button
+              onClick={() => {
+                setVersionModalIsOpen(false)
+                setIsOpenSideBar((prev) => !prev)
+              }}
+            >
               {access &&
                 (!open ? (
                   <Burger className="h-10 stroke-slate-600" />
