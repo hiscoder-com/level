@@ -2,6 +2,7 @@ import { useTranslation } from 'next-i18next'
 import { useLanguages, useProjects } from 'utils/hooks'
 
 import Plus from '/public/plus.svg'
+import Down from 'public/arrow-down.svg'
 
 function BasicInformation({
   errors,
@@ -12,15 +13,15 @@ function BasicInformation({
   uniqueCheck = false,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
-  const [projects, { mutate: mutateProjects }] = useProjects({
+  const [projects] = useProjects({
     token: user?.access_token,
   })
-  const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
+  const [languages] = useLanguages(user?.access_token)
   const inputs = [
     {
       id: 1,
       title: t('Title'),
-      classname: errors?.title ? 'input-invalid' : 'input-primary',
+      classname: errors?.title ? 'input-invalid' : 'input-primary bg-white',
       placeholder: '',
       register: {
         ...register('title', {
@@ -32,7 +33,7 @@ function BasicInformation({
     {
       id: 2,
       title: t('OrigTitle'),
-      classname: errors?.origtitle ? 'input-invalid' : 'input-primary',
+      classname: errors?.origtitle ? 'input-invalid' : 'input-primary bg-white',
       placeholder: '',
       register: {
         ...register('origtitle', {
@@ -44,7 +45,7 @@ function BasicInformation({
     {
       id: 3,
       title: t('Code'),
-      classname: errors?.code ? 'input-invalid' : 'input-primary',
+      classname: errors?.code ? 'input-invalid' : 'input-primary bg-white',
       placeholder: '',
       register: {
         ...register('code', {
@@ -85,28 +86,31 @@ function BasicInformation({
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-2">
         <div className="w-auto md:w-1/5 font-bold">{t('Language')}</div>
         <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-4/5">
-          <select
-            className="input-primary md:w-3/4"
-            placeholder={t('Language')}
-            {...register('languageId')}
-          >
-            {languages &&
-              languages.map((el) => {
-                return (
-                  <option key={el.id} value={el.id}>
-                    {el.orig_name}
-                  </option>
-                )
-              })}
-          </select>
-          <div className="md:w-1/4">
+          <div className="relative flex w-full md:w-3/4">
+            <select
+              className="input-primary bg-white h-full appearance-none cursor-pointer"
+              placeholder={t('Language')}
+              {...register('languageId')}
+            >
+              {languages &&
+                languages.map((el) => {
+                  return (
+                    <option key={el.id} value={el.id}>
+                      {el.orig_name}
+                    </option>
+                  )
+                })}
+            </select>
+            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 pointer-events-none" />
+          </div>
+          <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-primary flex items-center justify-start md:justify-around gap-2 truncate"
+              className="input-primary bg-white flex items-center gap-2 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
-              <div className="border border-slate-900 rounded-full">
-                <Plus className="w-4 h-4" />
+              <div className="border-2 border-slate-900 rounded-full">
+                <Plus className="w-5 h-5 stroke-2" />
               </div>
 
               <span>{t('project-edit:AddLanguage')}</span>
@@ -117,11 +121,11 @@ function BasicInformation({
       {methods && (
         <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-2">
           <div className="w-auto md:w-1/5 font-bold">{t('Method')}</div>
-          <div className="w-full md:w-4/5">
+          <div className="relative flex w-full md:w-4/5">
             <select
               placeholder={t('Method')}
               {...register('methodId')}
-              className="input-primary w-3/4"
+              className="input-primary bg-white w-3/4 appearance-none cursor-pointer"
               defaultValue={methods?.[0]?.id}
             >
               {methods &&
@@ -133,6 +137,7 @@ function BasicInformation({
                   )
                 })}
             </select>
+            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 pointer-events-none" />
           </div>
         </div>
       )}

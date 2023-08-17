@@ -18,7 +18,7 @@ import { useGetBrief, useProject } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
-function BriefBlock({ access }) {
+function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
 
   const [briefDataCollection, setBriefDataCollection] = useState([])
@@ -105,67 +105,75 @@ function BriefBlock({ access }) {
 
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex flex-col md:flex-row gap-7 justify-end">
-        {access && (
-          <div className="flex">
-            <span className="mr-3">
-              {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
-            </span>
-
-            <Switch
-              checked={brief?.is_enable || false}
-              onChange={handleSwitch}
-              className={`${
-                brief?.is_enable ? 'bg-cyan-600' : 'bg-gray-200'
-              } relative inline-flex h-7 w-12 items-center rounded-full`}
-            >
-              <span
-                className={`${
-                  brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-5 w-5 transform rounded-full bg-white transition`}
-              />
-            </Switch>
-          </div>
+      <div className="flex justify-end sm:justify-between">
+        {title && (
+          <h3 className="text-lg md:text-xl font-bold">
+            {t('project-edit:EditBriefTitle')}
+          </h3>
         )}
-        <div className="flex">
-          <span className="mr-3">{t('Detailed')}</span>
-          <Switch
-            disabled={editableMode}
-            checked={!hidden}
-            onChange={() => {
-              setHidden((prev) => !prev)
-            }}
-            className={`${
-              !hidden && !editableMode ? 'bg-cyan-600' : 'bg-gray-200'
-            } relative inline-flex h-7 w-12 items-center rounded-full`}
-          >
-            <span
-              className={`${
-                !hidden ? 'translate-x-6' : 'translate-x-1'
-              } inline-block h-5 w-5 transform rounded-full bg-white transition`}
-            />
-          </Switch>
-        </div>
-        {access && (
-          <div className="flex">
-            <span className="mr-3">{t('project-edit:EditableMode')}</span>
+
+        <div className="flex flex-col items-end lg:flex-row gap-7 justify-end text-sm md:text-base">
+          {access && (
+            <div className="flex items-center">
+              <span className="mr-3">
+                {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
+              </span>
+
+              <Switch
+                checked={brief?.is_enable || false}
+                onChange={handleSwitch}
+                className={`${
+                  brief?.is_enable ? 'bg-cyan-600' : 'bg-gray-200'
+                } relative inline-flex h-7 w-12 items-center rounded-full`}
+              >
+                <span
+                  className={`${
+                    brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                />
+              </Switch>
+            </div>
+          )}
+          <div className="flex items-center">
+            <span className="mr-3">{t('Detailed')}</span>
             <Switch
-              checked={editableMode}
+              disabled={editableMode}
+              checked={!hidden}
               onChange={() => {
-                setEditableMode((prev) => !prev)
+                setHidden((prev) => !prev)
               }}
               className={`${
-                editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+                !hidden && !editableMode ? 'bg-cyan-600' : 'bg-gray-200'
               } relative inline-flex h-7 w-12 items-center rounded-full`}
             >
               <span
                 className={`${
-                  editableMode ? 'translate-x-6' : 'translate-x-1'
+                  !hidden ? 'translate-x-6' : 'translate-x-1'
                 } inline-block h-5 w-5 transform rounded-full bg-white transition`}
               />
             </Switch>
           </div>
-        )}
+          {access && (
+            <div className="flex items-center">
+              <span className="mr-3">{t('project-edit:EditableMode')}</span>
+              <Switch
+                checked={editableMode}
+                onChange={() => {
+                  setEditableMode((prev) => !prev)
+                }}
+                className={`${
+                  editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+                } relative inline-flex h-7 w-12 items-center rounded-full`}
+              >
+                <span
+                  className={`${
+                    editableMode ? 'translate-x-6' : 'translate-x-1'
+                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                />
+              </Switch>
+            </div>
+          )}
+        </div>
       </div>
       {editableMode ? (
         <BriefEditQuestions
@@ -195,6 +203,7 @@ function BriefBlock({ access }) {
                                   index={index}
                                   access={access}
                                   subIndex={blockIndex}
+                                  className="input-primary"
                                 />
                               </div>
                             </div>
@@ -211,6 +220,7 @@ function BriefBlock({ access }) {
                           updateValue={updateCollection}
                           index={index}
                           access={access}
+                          className="input-primary"
                         />
                       </div>
                     </li>

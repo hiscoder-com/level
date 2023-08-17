@@ -166,8 +166,7 @@ function ProjectEdit() {
           label: 'project-edit:Brief',
           panel: (
             <div className="card space-y-7">
-              <h3 className="text-xl font-bold">{t('project-edit:EditBriefTitle')}</h3>
-              <Brief access={isCoordinatorAccess} />,
+              <Brief access={isCoordinatorAccess} title />
             </div>
           ),
         },
@@ -312,34 +311,40 @@ function ProjectEdit() {
             { title: t('Settings') },
           ]}
         />
-        <p className="text-lg font-bold">{t('project-edit:BasicInformation')}</p>
-        <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
-          <BasicInformation
-            register={register}
-            errors={errors}
-            user={user}
-            setIsOpenLanguageCreate={setIsOpenLanguageCreate}
-            uniqueCheck={getValues('code') !== code}
-          />
-          <input className="btn-primary" type="submit" value={t('Save')} />
-        </form>
-        <div className="space-y-7">
-          <h3 className="text-lg font-bold">{t('project-edit:EditBriefTitle')}</h3>
-          <Brief access={isCoordinatorAccess} />,
-        </div>
-        <p className="text-lg font-bold">{t('Participants')}</p>
-        <Participants
-          user={user}
-          users={users}
-          access={{ isCoordinatorAccess, isAdminAccess }}
-        />
-        <div className="space-y-7">
-          <h3 className="text-lg font-bold">{t('ListResources')}</h3>
-          <ResourceSettings />
-        </div>
-        <div className="space-y-7">
-          <h3 className="text-lg font-bold">{t('Steps')}</h3>
-          <Steps customSteps={customSteps} updateSteps={updateSteps} />
+        <div className="space-y-7 divide-y divide-slate-900">
+          <div className="space-y-7">
+            <h3 className="text-lg font-bold">{t('project-edit:BasicInformation')}</h3>
+            <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
+              <BasicInformation
+                register={register}
+                errors={errors}
+                user={user}
+                setIsOpenLanguageCreate={setIsOpenLanguageCreate}
+                uniqueCheck={getValues('code') !== code}
+              />
+              <input className="btn-primary" type="submit" value={t('Save')} />
+            </form>
+          </div>
+          <div className="space-y-7">
+            <h3 className="mt-7 text-lg font-bold">{t('project-edit:EditBriefTitle')}</h3>
+            <Brief access={isCoordinatorAccess} />
+          </div>
+          <div className="space-y-7">
+            <h3 className="mt-7 text-lg font-bold">{t('Participants')}</h3>
+            <Participants
+              user={user}
+              users={users}
+              access={{ isCoordinatorAccess, isAdminAccess }}
+            />
+          </div>
+          <div className="space-y-7">
+            <h3 className="mt-7 text-lg font-bold">{t('ListResources')}</h3>
+            <ResourceSettings />
+          </div>
+          <div className="space-y-7">
+            <h3 className="mt-7 text-lg font-bold">{t('Steps')}</h3>
+            <Steps customSteps={customSteps} updateSteps={updateSteps} />
+          </div>
         </div>
       </div>
       <LanguageCreate

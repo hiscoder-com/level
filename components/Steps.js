@@ -20,7 +20,7 @@ function Steps({ customSteps = [], updateSteps }) {
           {({ open }) => (
             <div>
               <Disclosure.Button
-                className={`flex justify-between text-start gap-2 py-2 px-4 w-full bg-blue-150 ${
+                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-blue-150 ${
                   open ? 'rounded-t-md' : 'rounded-md'
                 }`}
               >
@@ -45,7 +45,7 @@ function Steps({ customSteps = [], updateSteps }) {
                         textarea={field.textarea}
                         fieldName={field.name}
                         updateValue={updateSteps}
-                        specificClassName={'!bg-blue-150'}
+                        className="input-primary bg-blue-150"
                       />
                     </div>
                   </div>

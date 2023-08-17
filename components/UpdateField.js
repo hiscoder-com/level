@@ -10,7 +10,7 @@ function UpdateField({
   access,
   updateValue,
   fieldName,
-  specificClassName,
+  className,
 }) {
   const { t } = useTranslation(['project-edit'])
 
@@ -21,7 +21,7 @@ function UpdateField({
     }
   }, [value])
   const props = {
-    className: 'input-primary ' + specificClassName,
+    className,
     value: valueField,
     onChange: (e) => setValueField(e.target.value),
     onBlur: () => {

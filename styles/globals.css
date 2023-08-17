@@ -12,7 +12,7 @@
 }
 
 .appbar {
-	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-white sm:bg-inherit z-[999] sm:z-auto mx-auto flex flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
+	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-white sm:bg-inherit z-[999] sm:z-auto mx-auto flex flex-1 flex-col justify-between sm:items-center px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
 }
 
 .step {
@@ -238,15 +238,14 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .card {
-  @apply p-3 sm:p-7 bg-white rounded-2xl border border-gray-350 shadow-md;
+  @apply p-3 sm:py-5 sm:px-8 bg-white rounded-2xl border border-gray-350 shadow-md;
 }
 
-@screen md {
+@screen sm {
   .card-md {
-	 @apply p-3 sm:p-7 bg-white rounded-2xl border border-gray-350 shadow-md;
+	 @apply p-3 sm:py-5 sm:px-8 bg-white rounded-2xl border border-gray-350 shadow-md;
 }
 }
-
 
 .btn-base {
   @apply px-5 py-2 border rounded-3xl cursor-pointer text-center text-sm md:text-base;
@@ -275,9 +274,8 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .third-check path:nth-child(3) {
 	@apply fill-cyan-700
 }
-
 .input-primary {
-	@apply p-2 w-full rounded-lg bg-white text-slate-900 border border-slate-900 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300
+	@apply px-4 py-2 w-full rounded-lg text-slate-900 border border-slate-900 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300
 }
 .input-invalid {
 	@apply p-2 w-full rounded-lg bg-white text-red-600 border border-red-500 placeholder-cyan-200 focus:border-red-700 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300;

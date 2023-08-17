@@ -5,7 +5,7 @@ import UpdateField from './UpdateField'
 import { updateArray } from 'utils/helper'
 
 import Down from 'public/arrow-down.svg'
-import Trash from 'public/trash.svg'
+import Trash from 'public/trash-rounded.svg'
 import Plus from 'public/plus.svg'
 
 function BriefEditQuestions({
@@ -107,10 +107,10 @@ function BriefEditQuestions({
         <Disclosure key={index}>
           {({ open }) => {
             return (
-              <div>
-                <div className="flex w-full text-sm md:text-base">
+              <div className="flex items-start gap-5">
+                <div className="w-full">
                   <Disclosure.Button
-                    className={`flex flex-row justify-between items-center gap-2 py-2 px-4 w-full text-start bg-blue-150 ${
+                    className={`flex flex-row justify-between items-center gap-2 py-2 px-4 w-full text-start text-sm md:text-base bg-blue-150 ${
                       open ? 'rounded-t-md' : 'rounded-md'
                     }`}
                   >
@@ -121,44 +121,34 @@ function BriefEditQuestions({
                           open ? 'rotate-180' : 'rotate-0'
                         } `}
                       />
-                      <div
-                        className="btn-red"
-                        onClick={() =>
-                          removeBlockByIndex({ blocks: customBriefQuestions, index })
-                        }
-                      >
-                        <Trash className="w-4 h-4" />
-                      </div>
                     </div>
                   </Disclosure.Button>
-                </div>
 
-                <Disclosure.Panel className="flex flex-col gap-7 p-4 bg-blue-150 rounded-b-md text-sm md:text-base">
-                  <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
-                    <div className="font-bold">{t('common:Title')}</div>
-                    <UpdateField
-                      value={el.title}
-                      index={index}
-                      updateValue={updateTitleBlock}
-                      fieldName={'title'}
-                      specificClassName={'!bg-blue-150'}
-                    />
-                  </div>
-                  <div className="font-bold">{t('common:Questions')}</div>
-                  <div className="space-y-4">
-                    {el.block.map((item, idx) => (
-                      <div className="flex gap-7" key={idx}>
-                        <UpdateField
-                          value={item.question}
-                          index={index}
-                          subIndex={idx}
-                          updateValue={updateQuestion}
-                          fieldName={'question'}
-                        />
-                        <div>
+                  <Disclosure.Panel className="flex flex-col gap-7 p-4 bg-blue-150 rounded-b-md text-sm md:text-base">
+                    <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
+                      <div className="font-bold">{t('common:Title')}</div>
+                      <UpdateField
+                        value={el.title}
+                        index={index}
+                        updateValue={updateTitleBlock}
+                        fieldName={'title'}
+                        className={'input-primary bg-blue-150'}
+                      />
+                    </div>
+                    <div className="font-bold">{t('common:Questions')}</div>
+                    <div className="space-y-4">
+                      {el.block.map((item, idx) => (
+                        <div className="flex gap-5" key={idx}>
+                          <UpdateField
+                            value={item.question}
+                            index={index}
+                            subIndex={idx}
+                            updateValue={updateQuestion}
+                            fieldName={'question'}
+                            className={'input-primary bg-blue-150'}
+                          />
                           <button
                             type="button"
-                            className="btn-red bg-white"
                             onClick={() =>
                               removeQuestionFromeBlock({
                                 blocks: customBriefQuestions,
@@ -167,25 +157,37 @@ function BriefEditQuestions({
                               })
                             }
                           >
-                            <Trash className="w-5 h-5" />
+                            <Trash className="w-10 h-10 text-slate-900 rounded-full hover:bg-white" />
                           </button>
                         </div>
-                      </div>
-                    ))}
-                  </div>
-                  <button
-                    type="button"
-                    className="flex justify-center items-center py-2 px-4 rounded-md border border-slate-900 gap-2 hover:bg-white"
-                    onClick={() =>
-                      addQuestionIntoBlock({ blocks: customBriefQuestions, index: index })
-                    }
-                  >
-                    <div className="border border-slate-900 rounded-full">
-                      <Plus className="w-4 h-4" />
+                      ))}
                     </div>
-                    <div>{t('project-edit:AddQuestion')}</div>
-                  </button>
-                </Disclosure.Panel>
+                    <button
+                      type="button"
+                      className="flex justify-center items-center py-2 px-4 rounded-md border border-slate-900 gap-2 hover:bg-white"
+                      onClick={() =>
+                        addQuestionIntoBlock({
+                          blocks: customBriefQuestions,
+                          index: index,
+                        })
+                      }
+                    >
+                      <div className="border-2 border-slate-900 rounded-full">
+                        <Plus className="w-5 h-5 stroke-2" />
+                      </div>
+                      <div>{t('project-edit:AddQuestion')}</div>
+                    </button>
+                  </Disclosure.Panel>
+                </div>
+
+                <button
+                  className={open ? 'hidden md:block' : 'block'}
+                  onClick={() =>
+                    removeBlockByIndex({ blocks: customBriefQuestions, index })
+                  }
+                >
+                  <Trash className="w-10 h-10 text-slate-900 rounded-full hover:bg-blue-150" />
+                </button>
               </div>
             )
           }}
@@ -196,8 +198,8 @@ function BriefEditQuestions({
         className="flex justify-center items-center gap-2 py-2 px-4 text-sm md:text-base bg-white border border-slate-900 rounded-md hover:bg-blue-150 hover:border hover:border-slate-900"
         onClick={() => addBlock(customBriefQuestions)}
       >
-        <div className="flex border border-slate-900 rounded-full">
-          <Plus className="w-4 h-4" />
+        <div className="border-2 border-slate-900 rounded-full">
+          <Plus className="w-5 h-5 stroke-2" />
         </div>
         <div>{t('project-edit:AddBlock')}</div>
       </button>
