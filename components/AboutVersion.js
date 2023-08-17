@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 import { useRouter } from 'next/router'
@@ -24,6 +24,12 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(
     aboutVersionModalIsOpen
   )
+
+  useEffect(() => {
+    if (!versionModalIsOpen || !isOpen) {
+      setShowAllUpdates(false)
+    }
+  }, [isOpen, versionModalIsOpen])
 
   const VersionInfo = () => {
     const currentVersion = packageJson.version
@@ -63,11 +69,6 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
     return ''
   }
 
-  const closeModal = () => {
-    setShowAllUpdates(false)
-    setIsOpen(false)
-  }
-
   return (
     <>
       <div
@@ -84,7 +85,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
       {isSidebar ? (
         versionModalIsOpen && (
           <div
-            className="absolute right-0 top-0 w-full h-full px-3 pb-3 overflow-y-auto cursor-default shadow-md bg-white border-gray-350 sm:border sm:px-7 sm:pb-7 sm:rounded-2xl md:max-h-full md:h-min md:left-full md:ml-5"
+            className="absolute flex flex-col right-0 top-0 w-full h-full px-3 pb-3 overflow-auto cursor-default shadow-md bg-white border-gray-350 sm:overflow-visible sm:border sm:px-7 sm:pb-7 sm:rounded-2xl md:max-h-full md:h-min md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div
@@ -96,20 +97,19 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
               <button
                 className="text-right"
                 onClick={() => {
-                  setShowAllUpdates(false)
                   setVersionModalIsOpen(false)
                 }}
               >
                 <Close className="h-8 stroke-slate-500" />
               </button>
             </div>
-            <ReactMarkdown className="whitespace-pre-line leading-5">
+            <ReactMarkdown className="mb-10 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
               {VersionInfo()}
             </ReactMarkdown>
-            <div className="flex justify-center mt-8">
+            <div className="flex justify-center pt-5 border-t">
               <button
                 onClick={() => setShowAllUpdates(!showAllUpdates)}
-                className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}
+                className={`${isMobileIndexPage ? 'btn-slate' : 'btn-primary'}`}
               >
                 {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
               </button>
@@ -119,26 +119,34 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
       ) : (
         <Modal
           isOpen={isOpen}
-          closeHandle={closeModal}
-          additionalClasses={`${isMobileIndexPage ? 'h-screen w-screen' : '!max-w-lg'}`}
+          closeHandle={() => setIsOpen(false)}
+          additionalClasses={`${isMobileIndexPage && 'h-screen w-screen'}`}
           isMobileChangelog={isMobileIndexPage}
+          isChangelog={!isMobileIndexPage}
         >
           <div
-            className={`flex items-center justify-between mb-7 ${
-              isMobileIndexPage && 'sticky top-0 py-6 bg-white'
+            className={`sticky top-0 flex items-center justify-between py-6 ${
+              isMobileIndexPage
+                ? 'bg-white'
+                : 'bg-gradient-to-r from-slate-700 to-slate-600'
             }`}
           >
             <p className="text-2xl font-bold text-left">
               {t('Version')} {packageJson.version}
             </p>
-            <button className="text-right" onClick={closeModal}>
+            <button className="text-right" onClick={() => setIsOpen(false)}>
               <Close className="h-8 stroke-slate-500" />
             </button>
           </div>
-          <ReactMarkdown className="whitespace-pre-line leading-5">
+
+          <ReactMarkdown
+            className={`whitespace-pre-line leading-5 ${
+              !isMobileIndexPage && 'max-h-full mb-4 overflow-auto'
+            }`}
+          >
             {VersionInfo()}
           </ReactMarkdown>
-          <div className="flex justify-center mt-8">
+          <div className="flex justify-center mt-4">
             <button
               onClick={() => setShowAllUpdates(!showAllUpdates)}
               className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}

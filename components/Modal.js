@@ -8,13 +8,17 @@ function Modal({
   children,
   closeHandle,
   additionalClasses,
+  isChangelog = false,
   className = 'primary',
   isMobileChangelog = false,
 }) {
   const classes = {
-    primary:
-      'w-full align-middle bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250',
-    secondary: 'w-full align-middle bg-gray-400 text-white',
+    primary: `w-full align-middle ${
+      isChangelog
+        ? 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6'
+        : 'max-w-md p-6'
+    } bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250`,
+    secondary: 'w-full max-w-md align-middle p-6 bg-gray-400 text-white',
   }
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -61,7 +65,7 @@ function Modal({
                 className={`${
                   isMobileChangelog
                     ? 'px-6 pb-6 bg-white text-black'
-                    : `${classes[className]} p-6 max-w-md rounded-3xl`
+                    : `${classes[className]} rounded-3xl`
                 } transform overflow-y-auto ${additionalClasses} shadow-xl transition-all`}
               >
                 <Dialog.Title

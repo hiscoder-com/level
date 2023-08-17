@@ -37,11 +37,11 @@ export default function Home() {
       <div className="hidden sm:flex">
         <div className="flex flex-col items-center justify-center w-1/2">
           <div className="flex flex-col items-center text-base xl:text-lg">
-            <div className="flex flex-col relative items-center mb-2">
+            <div className="flex flex-col relative items-center">
               <VcanaLogo className="scale-[1.65] xl:scale-[1.85] mb-4" />
               <AboutVersion />
             </div>
-            <h1 className="mb-2 text-center">{t('PlatformForBibleTranslate')}</h1>
+            <h1 className="my-4 text-center">{t('PlatformForBibleTranslate')}</h1>
             <div className="text-[#909090] mb-2 text-xs">{t('DevelopedBy')}</div>
             <Link href="https://openmediabible.com/" target="_blank">
               <OmbLogo className="logo" />
