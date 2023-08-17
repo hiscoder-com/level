@@ -9,11 +9,9 @@ import Trash from 'public/trash-rounded.svg'
 import Plus from 'public/plus.svg'
 
 function BriefEditQuestions({
-  customBriefQuestions = [],
   setCustomBriefQuestions,
-  saveFunction = (blocks) => {
-    console.log('Save this ' + blocks + 'to anywere')
-  },
+  customBriefQuestions = [],
+  saveFunction = () => {},
   autoSave = false,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -103,7 +101,7 @@ function BriefEditQuestions({
   }
   return (
     <>
-      {customBriefQuestions?.map((el, index) => (
+      {customBriefQuestions?.map((blockQuestion, index) => (
         <Disclosure key={index}>
           {({ open }) => {
             return (
@@ -114,7 +112,7 @@ function BriefEditQuestions({
                       open ? 'rounded-t-md' : 'rounded-md'
                     }`}
                   >
-                    <span>{el.title}</span>
+                    <span>{blockQuestion.title}</span>
                     <div className="flex gap-7 items-center">
                       <Down
                         className={`w-5 h-5 transition-transform duration-200 ${
@@ -128,7 +126,7 @@ function BriefEditQuestions({
                     <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
                       <div className="font-bold">{t('common:Title')}</div>
                       <UpdateField
-                        value={el.title}
+                        value={blockQuestion.title}
                         index={index}
                         updateValue={updateTitleBlock}
                         fieldName={'title'}
@@ -137,10 +135,10 @@ function BriefEditQuestions({
                     </div>
                     <div className="font-bold">{t('common:Questions')}</div>
                     <div className="space-y-4">
-                      {el.block.map((item, idx) => (
+                      {blockQuestion.block.map((question, idx) => (
                         <div className="flex gap-5" key={idx}>
                           <UpdateField
-                            value={item.question}
+                            value={question.question}
                             index={index}
                             subIndex={idx}
                             updateValue={updateQuestion}
@@ -172,16 +170,14 @@ function BriefEditQuestions({
                         })
                       }
                     >
-                      <div className="border-2 border-slate-900 rounded-full">
-                        <Plus className="w-5 h-5 stroke-2" />
-                      </div>
+                      <Plus className="w-6 h-6 stroke-2 border-2 border-slate-900 rounded-full" />
                       <div>{t('project-edit:AddQuestion')}</div>
                     </button>
                   </Disclosure.Panel>
                 </div>
 
                 <button
-                  className={open ? 'hidden md:block' : 'block'}
+                  className={open ? 'hidden sm:block' : 'block'}
                   onClick={() =>
                     removeBlockByIndex({ blocks: customBriefQuestions, index })
                   }
@@ -198,9 +194,7 @@ function BriefEditQuestions({
         className="flex justify-center items-center gap-2 py-2 px-4 text-sm md:text-base bg-white border border-slate-900 rounded-md hover:bg-blue-150 hover:border hover:border-slate-900"
         onClick={() => addBlock(customBriefQuestions)}
       >
-        <div className="border-2 border-slate-900 rounded-full">
-          <Plus className="w-5 h-5 stroke-2" />
-        </div>
+        <Plus className="w-6 h-6 stroke-2 border-2 border-slate-900 rounded-full" />
         <div>{t('project-edit:AddBlock')}</div>
       </button>
     </>

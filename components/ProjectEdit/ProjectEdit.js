@@ -208,7 +208,7 @@ function ProjectEdit() {
               </div>
               <button
                 className="btn-primary w-fit"
-                onClick={() => updateDB({ steps: customSteps })}
+                onClick={() => saveStepsToDb({ steps: customSteps })}
               >
                 {t('Save')}
               </button>
@@ -233,7 +233,7 @@ function ProjectEdit() {
 
   const idTabs = useMemo(() => tabs.map((tab) => tab.id), [tabs])
 
-  const updateDB = async ({ steps }) => {
+  const saveStepsToDb = async ({ steps }) => {
     const _steps = steps.map((el) => {
       const { id, description, intro, title } = el
       return { id, description, intro, title }
@@ -245,9 +245,9 @@ function ProjectEdit() {
         _steps,
         project_id: project.id,
       })
-      .then()
+      .then(() => toast.success(t('SaveSuccess')))
       .catch((error) => {
-        toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+        toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
           duration: 8000,
         })
         console.log(error)
@@ -297,8 +297,8 @@ function ProjectEdit() {
             </Tab.List>
 
             <Tab.Panels>
-              {tabs.map((tab, index) => (
-                <Tab.Panel key={index}>{tab.panel}</Tab.Panel>
+              {tabs.map((tab, idx) => (
+                <Tab.Panel key={idx}>{tab.panel}</Tab.Panel>
               ))}
             </Tab.Panels>
           </Tab.Group>

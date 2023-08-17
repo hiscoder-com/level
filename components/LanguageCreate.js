@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import Modal from 'components/Modal'
 
 function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }) {
-  const { t } = useTranslation(['projects', 'project-edit'])
+  const { t } = useTranslation(['projects', 'project-edit', 'common'])
 
   const {
     register,
@@ -20,11 +20,11 @@ function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }
       axios.defaults.headers.common['token'] = user?.access_token
       const { error } = await axios.post('/api/languages', languageOptions)
       if (error) throw error
-      toast.success(t('SaveSuccess'))
+      toast.success(t('common:SaveSuccess'))
       mutateLanguage()
       reset()
     } catch (error) {
-      toast.error(t('SaveFailed'))
+      toast.error(t('common:SaveFailed'))
       console.log(error)
     }
   }
@@ -38,7 +38,7 @@ function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }
         ...register('eng', {
           required: true,
           validate: {
-            notUnique: (value) => !languages?.find((el) => el.eng === value),
+            notUnique: (value) => !languages?.find((language) => language.eng === value),
           },
         }),
       },

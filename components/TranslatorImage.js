@@ -59,11 +59,6 @@ function TranslatorImage({ item, size, clickable }) {
           </text>
         </svg>
       )}
-      <span
-        className={`absolute w-[17.68%] h-[17.68%] right-[1px] top-[1px] rounded-full ${
-          item?.status ? 'bg-green-500' : 'bg-red-500'
-        }`}
-      ></span>
     </div>
   )
 }

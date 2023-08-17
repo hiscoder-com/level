@@ -125,7 +125,7 @@ function CommandEditor({ config }) {
         .put(`/api/save_verse`, { id: prev[id].verse_id, text })
         .then()
         .catch((error) => {
-          toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+          toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
             duration: 8000,
           })
           console.log(error)

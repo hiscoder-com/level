@@ -28,7 +28,7 @@ function BasicInformation({
           required: true,
         }),
       },
-      errorMessage: errors?.title ? errors?.title.message : '',
+      errorMessage: errors?.title?.message ?? '',
     },
     {
       id: 2,
@@ -40,7 +40,7 @@ function BasicInformation({
           required: true,
         }),
       },
-      errorMessage: errors?.origtitle ? errors?.origtitle.message : '',
+      errorMessage: errors?.title?.message ?? '',
     },
     {
       id: 3,
@@ -53,7 +53,7 @@ function BasicInformation({
           validate: {
             wrongTypeCode: (value) => /^[a-z\d\-]{2,12}\_[a-z\d\-]{1,12}$/i.test(value),
             notUniqueProject: (value) =>
-              uniqueCheck ? !projects?.find((el) => el.code === value) : true,
+              uniqueCheck ? !projects?.find((project) => project.code === value) : true,
           },
         }),
       },
@@ -67,19 +67,19 @@ function BasicInformation({
   ]
   return (
     <div className="flex flex-col gap-3 text-sm md:text-base">
-      {inputs.map((el) => (
+      {inputs.map((input) => (
         <div
           className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 md:gap-2"
-          key={el.title}
+          key={input.title}
         >
-          <div className="w-auto md:w-1/5 font-bold">{el.title}</div>
+          <div className="w-auto md:w-1/5 font-bold">{input.title}</div>
           <div className="flex flex-col gap-2 w-full md:w-4/5">
             <input
-              className={`${el.classname}`}
-              placeholder={el.placeholder}
-              {...el.register}
+              className={`${input.classname}`}
+              placeholder={input.placeholder}
+              {...input.register}
             />
-            {el.errorMessage && <div>{' ' + el.errorMessage}</div>}
+            {input.errorMessage && <div>{' ' + input.errorMessage}</div>}
           </div>
         </div>
       ))}
@@ -93,10 +93,10 @@ function BasicInformation({
               {...register('languageId')}
             >
               {languages &&
-                languages.map((el) => {
+                languages.map((language) => {
                   return (
-                    <option key={el.id} value={el.id}>
-                      {el.orig_name}
+                    <option key={language.id} value={language.id}>
+                      {language.orig_name}
                     </option>
                   )
                 })}
@@ -109,9 +109,7 @@ function BasicInformation({
               className="input-primary bg-white flex items-center gap-2 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
-              <div className="border-2 border-slate-900 rounded-full">
-                <Plus className="w-5 h-5 stroke-2" />
-              </div>
+              <Plus className="w-6 h-6 stroke-2 border-2 border-slate-900 rounded-full" />
 
               <span>{t('project-edit:AddLanguage')}</span>
             </button>
@@ -129,10 +127,10 @@ function BasicInformation({
               defaultValue={methods?.[0]?.id}
             >
               {methods &&
-                methods.map((el) => {
+                methods.map((method) => {
                   return (
-                    <option key={el.id} value={el.id}>
-                      {el.title} ({el.type})
+                    <option key={method.id} value={method.id}>
+                      {method.title} ({method.type})
                     </option>
                   )
                 })}

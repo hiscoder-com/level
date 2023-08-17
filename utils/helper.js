@@ -631,7 +631,7 @@ export const validationBrief = (brief_data) => {
         JSON.stringify(Object.keys(briefObj).sort()) !==
         JSON.stringify(['block', 'id', 'resume', 'title'].sort())
       if (isNotValid) {
-        return isNotValid
+        return { error: 'brief_data is not valid', briefObj }
       } else {
         briefObj.block?.forEach((blockObj) => {
           if (
@@ -675,8 +675,6 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
 }
 
 export const stepValidation = (step) => {
-  const error = null
-
   try {
     const obj = JSON.parse(JSON.stringify(step))
     if (!obj || typeof obj !== 'object') {
@@ -691,11 +689,10 @@ export const stepValidation = (step) => {
   } catch (error) {
     return { error }
   }
-  return { error }
+  return { error: null }
 }
 
 export const stepsValidation = (steps) => {
-  const error = null
   if (!steps?.length) {
     return { error: 'This is incorrect json', steps }
   }
@@ -707,15 +704,14 @@ export const stepsValidation = (steps) => {
       return { error }
     }
   }
-  return { error }
+  return { error: null }
 }
 
 export const updateArray = ({ array, index, fieldName, value }) => {
-  const _array = array.map((obj, idx) => {
+  return array.map((obj, idx) => {
     if (index === idx) {
       return { ...obj, [fieldName]: value }
     }
     return obj
   })
-  return _array
 }

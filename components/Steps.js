@@ -5,7 +5,7 @@ import UpdateField from './UpdateField'
 
 import Down from 'public/arrow-down.svg'
 
-function Steps({ customSteps = [], updateSteps }) {
+function Steps({ updateSteps, customSteps = [] }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
 
   const fields = [
@@ -61,7 +61,7 @@ function Steps({ customSteps = [], updateSteps }) {
                         {config.tools.map((tool) => (
                           <div
                             key={tool.name}
-                            className="btn-primary p-2 rounded-md !cursor-auto hover:bg-transparent hover:border-slate-600"
+                            className="btn-primary p-2 pointer-events-none rounded-md hover:bg-transparent hover:border-slate-600"
                           >
                             {t('common:' + tool.name)}
                           </div>
@@ -74,7 +74,7 @@ function Steps({ customSteps = [], updateSteps }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:TranslatorsCount')}
                   </span>
-                  <div className="btn-primary p-2 rounded-md !cursor-auto hover:bg-transparent hover:border-slate-600">
+                  <div className="btn-primary p-2 rounded-md pointer-events-none hover:bg-transparent hover:border-slate-600">
                     {step?.count_of_users}
                   </div>
                 </div>
@@ -82,7 +82,7 @@ function Steps({ customSteps = [], updateSteps }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:ExecutionTime')}
                   </span>
-                  <div className="btn-primary p-2 rounded-md !cursor-auto hover:bg-transparent hover:border-slate-600">
+                  <div className="btn-primary p-2 rounded-md pointer-events-none hover:bg-transparent hover:border-slate-600">
                     {step.time}
                   </div>
                 </div>

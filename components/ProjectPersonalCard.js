@@ -105,7 +105,7 @@ function ProjectPersonalCard({ project, token, user }) {
               <div key={i} className="card flex flex-col sm:flex-row gap-7 p-7 h-full">
                 {!isLoading && currentSteps && project ? (
                   <>
-                    <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
+                    <div className="flex flex-col gap-7 w-auto lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <div className="text-xl font-bold">{t(`books:${book}`)}</div>
                         <div className="pt-1">{`(${t('Chapter', {
@@ -124,7 +124,7 @@ function ProjectPersonalCard({ project, token, user }) {
                             {project?.title}
                           </Link>
                         </div>
-                        <div className="flex gap-3">
+                        <div className="flex flex-wrap gap-3">
                           <p>{t('Translator_other')}:</p>
                           <Translators projectCode={project?.code} size="25px" />
                         </div>

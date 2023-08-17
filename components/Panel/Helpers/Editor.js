@@ -28,7 +28,7 @@ function Editor({ config }) {
           verses: { [prev[id].verse_id]: text },
         })
         if (res.error || !res) {
-          toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+          toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
             duration: 8000,
           })
           console.log(res)

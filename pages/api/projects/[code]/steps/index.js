@@ -2,9 +2,6 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 import { stepsValidation } from 'utils/helper'
 
 export default async function stepsHandler(req, res) {
-  if (!req.headers.token) {
-    return res.status(401).json({ error: 'Access denied!' })
-  }
   const supabase = createPagesServerClient({ req, res })
 
   let data = {}

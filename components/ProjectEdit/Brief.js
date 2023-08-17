@@ -194,7 +194,7 @@ function BriefBlock({ access, title = false }) {
                       <div className={hidden ? 'hidden' : 'space-y-7'}>
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           return (
-                            <div key={blockIndex} className="">
+                            <div key={blockIndex}>
                               <div className="space-y-3">
                                 <p>{questionAndAnswerPair.question}</p>
                                 <UpdateField
@@ -232,15 +232,12 @@ function BriefBlock({ access, title = false }) {
             <>
               <div role="status" className="w-full animate-pulse">
                 <div className="flex flex-col">
-                  <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-7/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-4/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-9/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-6/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-3/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-10/12 mt-4 bg-gray-200 rounded-full"></div>
-                  <div className="h-7 w-8/12 mt-4 bg-gray-200 rounded-full"></div>
+                  {[3, 7, 3, 4, 9, 6, 3, 10, 8].map((width, index) => (
+                    <div
+                      key={index}
+                      className={`h-7 w-${width}/12 mt-4 bg-gray-200 rounded-full`}
+                    ></div>
+                  ))}
                 </div>
               </div>
             </>

@@ -18,7 +18,7 @@ function Account() {
   const router = useRouter()
   const [openInternalMenu, setOpenInternalMenu] = useState(false)
 
-  const { t } = useTranslation(['users'])
+  const { t } = useTranslation(['users', 'project-edit'])
 
   useEffect(() => {
     if (!loading && user === null) {
@@ -101,7 +101,7 @@ function Account() {
                 }`}
               ></div>
               <Menu.Button
-                className={`md:hidden p-4 translate-y-1/2 right-10 z-50 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`md:hidden p-4 translate-y-1/2 right-5 z-50 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}
@@ -139,7 +139,7 @@ function Account() {
                           }`}
                           onClick={() => setOpenInternalMenu(true)}
                         >
-                          {t('NewProject')}
+                          {t('project-edit:CreateNewProject')}
                         </div>
                       </Menu.Button>
                     </Menu>
@@ -153,7 +153,7 @@ function Account() {
       {openInternalMenu && (
         <div
           className="fixed px-5 pb-4 mt-14
-          inset-0 h-[100vh] overflow-y-scroll bg-white"
+          inset-0 min-h-screen overflow-y-scroll bg-white"
         >
           <div className="flex justify-end">
             <button

@@ -28,18 +28,18 @@ export default async function languageProjectsHandler(req, res) {
     case 'POST':
       try {
         if (!Object?.keys(resources)?.length) {
-          throw { message: 'There is no information about resources' }
+          throw new Error('There is no information about resources')
         }
 
         if (
           Object?.values(resources).filter((el) => el).length !==
           Object?.keys(resources)?.length
         ) {
-          throw { message: 'Not all resource fields are filled in' }
+          throw new Error('Not all resource fields are filled in')
         }
 
         if (validationBrief(customBriefQuestions)?.error) {
-          throw { message: 'Brief template is not valid' }
+          throw new Error('Brief template is not valid')
         }
 
         const { data: current_method, error: methodError } = await supabase
@@ -54,7 +54,7 @@ export default async function languageProjectsHandler(req, res) {
           JSON.stringify(Object.keys(resources).sort()) !==
           JSON.stringify(Object.keys(current_method.resources).sort())
         ) {
-          throw { message: 'Resources not an equal' }
+          throw new Error('Resources not an equal')
         }
 
         const {
@@ -84,24 +84,25 @@ export default async function languageProjectsHandler(req, res) {
               },
             },
           ])
+          .single()
           .select()
 
         if (error) throw error
 
         const { error: briefError } = await supabase.rpc('create_brief', {
-          project_id: project[0].id,
+          project_id: project.id,
           is_enable: isBriefEnable,
           data_collection: customBriefQuestions,
         })
         if (briefError) {
-          await supabaseService.from('projects').delete().eq('id', project[0].id)
+          await supabaseService.from('projects').delete().eq('id', project.id)
           throw briefError
         }
         let sorting = 1
         for (const step_el of steps) {
           await supabase
             .from('steps')
-            .insert([{ ...step_el, sorting: sorting++, project_id: project[0].id }])
+            .insert([{ ...step_el, sorting: sorting++, project_id: project.id }])
         }
         res.setHeader('Location', `/projects/${project[0].code}`)
         return res.status(201).json({})

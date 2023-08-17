@@ -260,7 +260,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
   @apply btn-base text-slate-900 bg-gray-200 hover:bg-white;
 }
 
-
 .btn-red {
   @apply btn-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
 }

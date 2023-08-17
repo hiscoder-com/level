@@ -5,12 +5,12 @@ function UpdateField({
   index,
   subIndex,
   value,
-  textarea = false,
-  editable = true,
   access,
   updateValue,
   fieldName,
   className,
+  textarea = false,
+  editable = true,
 }) {
   const { t } = useTranslation(['project-edit'])
 
