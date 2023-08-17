@@ -65,6 +65,8 @@
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
     DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
     DROP FUNCTION IF EXISTS PUBLIC.update_project_basic;
+    DROP FUNCTION IF EXISTS PUBLIC.update_multiple_steps;
+    
 
   -- END DROP FUNCTION
 
@@ -641,8 +643,7 @@
   -- creating a new brief for the project
    CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN, data_collection JSON) RETURNS BIGINT
       LANGUAGE plpgsql SECURITY DEFINER AS $$
-      DECLARE
-        brief_JSON JSON;
+      DECLARE        
         brief_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
@@ -877,12 +878,12 @@
   $$;
 
   -- create update_project_basic
-  CREATE FUNCTION PUBLIC.update_project_basic( project_code TEXT,title TEXT,orig_title TEXT,code TEXT, language_id BIGINT,user_id uuid ) RETURNS BOOLEAN
+  CREATE FUNCTION PUBLIC.update_project_basic( project_code TEXT,title TEXT,orig_title TEXT,code TEXT, language_id BIGINT ) RETURNS BOOLEAN
     LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       project_id BIGINT;
     BEGIN
-      IF project_code != update_project_basic.code THEN
+      IF update_project_basic.project_code != update_project_basic.code THEN
         SELECT id FROM public.projects WHERE projects.code = update_project_basic.code INTO project_id;
         IF project_id IS NOT NULL THEN
           RAISE EXCEPTION SQLSTATE '23505' USING MESSAGE = 'This project code is already in use';
@@ -894,9 +895,9 @@
         RAISE EXCEPTION SQLSTATE '42000' USING MESSAGE = 'No access rights to this function';
       END IF;
 
-      UPDATE PUBLIC.projects SET code = update_project_basic.code,title=update_project_basic.title,orig_title=update_project_basic.orig_title,language_id=update_project_basic.language_id WHERE projects.id = project_id;
+      UPDATE PUBLIC.projects SET code = update_project_basic.code, title=update_project_basic.title, orig_title = update_project_basic.orig_title, language_id = update_project_basic.language_id WHERE projects.id = project_id;
 
-      RETURN true;
+      RETURN TRUE;
 
     END;
    $$;
@@ -909,10 +910,10 @@
       IF authorize(auth.uid(), update_multiple_steps.project_id) NOT IN ('admin') THEN
         RETURN FALSE;
       END IF;
-      FOREACH step IN ARRAY steps
+      FOREACH step IN ARRAY update_multiple_steps.steps
       LOOP
         UPDATE public.steps
-        SET 
+        SET
           title = (step->>'title')::TEXT,
           description = (step->>'description')::TEXT,
           intro = (step->>'intro')::TEXT

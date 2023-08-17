@@ -5,7 +5,6 @@
   CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN, data_collection JSON) RETURNS BIGINT
       LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
-        brief_JSON JSON;
         brief_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN

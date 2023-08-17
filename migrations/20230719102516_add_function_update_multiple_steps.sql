@@ -8,7 +8,7 @@ BEGIN
   FOREACH step IN ARRAY steps
   LOOP
     UPDATE public.steps
-    SET 
+    SET
       title = (step->>'title')::TEXT,
       description = (step->>'description')::TEXT,
       intro = (step->>'intro')::TEXT
