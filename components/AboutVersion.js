@@ -5,14 +5,14 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
 import { useRecoilState } from 'recoil'
-import { aboutVersionModalIsOpen } from './Panel/state/atoms'
 
 import Modal from './Modal'
+import { aboutVersionModalIsOpen } from './Panel/state/atoms'
 
-import updateEN from '../public/updateVersion/update_en.md'
-import updateRU from '../public/updateVersion/update_ru.md'
-import updateES from '../public/updateVersion/update_es.md'
 import packageJson from '../package.json'
+import updateEN from '../public/updateVersionInfo/update_en.md'
+import updateRU from '../public/updateVersionInfo/update_ru.md'
+import updateES from '../public/updateVersionInfo/update_es.md'
 
 import Close from 'public/close.svg'
 
@@ -85,7 +85,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
       {isSidebar ? (
         versionModalIsOpen && (
           <div
-            className="absolute flex flex-col right-0 top-0 w-full h-full px-3 pb-3 overflow-auto cursor-default shadow-md bg-white border-gray-350 sm:overflow-visible sm:border sm:px-7 sm:pb-7 sm:rounded-2xl md:max-h-full md:h-min md:left-full md:ml-5"
+            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-white border-gray-350 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div

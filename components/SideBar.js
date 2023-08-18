@@ -8,7 +8,6 @@ import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
 import { aboutVersionModalIsOpen } from './Panel/state/atoms'
-
 import { useCurrentUser } from 'lib/UserContext'
 
 import Localization from 'public/localization.svg'
@@ -41,11 +40,10 @@ function SideBar({ setIsOpenSideBar, access }) {
             </Menu.Button>
 
             <Menu.Items
-              // внутри <main> есть первый див, который даёт здесь смещение (class="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto"), поэтому я использовал отрицательные отступы
-              className="fixed flex flex-col w-full gap-7 top-14 -mx-5 z-20 cursor-default sm:top-20 sm:px-5 md:w-1/2 md:pr-3 lg:pr-0 lg:w-[48%] xl:w-[27rem]"
+              className="fixed flex flex-col w-full md:w-1/2 lg:w-[48%] xl:w-[27rem] gap-7 top-14 sm:top-20 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 lg:pr-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative flex flex-col gap-7 p-3 cursor-default border shadow-md border-gray-350 bg-white  sm:p-7 sm:rounded-2xl">
+              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-gray-350 bg-white sm:rounded-2xl">
                 <div>
                   <div className="flex items-center gap-2 pb-5 border-b cursor-default border-gray-300">
                     <div className="w-12 h-12 min-w-[3rem]">
