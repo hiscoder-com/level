@@ -1047,7 +1047,7 @@
     CREATE TABLE PUBLIC.projects (
       id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       title TEXT NOT NULL,
-      orig_title TEXT NOT NULL,
+      orig_title TEXT DEFAULT NULL,
       code TEXT NOT NULL,
       language_id BIGINT REFERENCES PUBLIC.languages ON
       DELETE

@@ -25,7 +25,6 @@ function ProjectPersonalCard({ project, token, user }) {
     project_id: project?.id,
   })
   const [{ isCoordinatorAccess }, { isLoading }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code: project?.code,
   })

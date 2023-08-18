@@ -1,5 +1,5 @@
-import { supabaseService } from 'utils/supabaseServer'
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import { supabaseService } from 'utils/supabaseService'
+import supabaseApi from 'utils/supabaseServer'
 
 const validation = (properties) => {
   const error = null
@@ -40,12 +40,12 @@ const validation = (properties) => {
 }
 
 export default async function bookPropertiesHandler(req, res) {
-  const supabase = createPagesServerClient({ req, res })
-
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-
   const {
     query: { id },
     body: { properties, project_id, user_id },

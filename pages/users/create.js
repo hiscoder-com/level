@@ -16,7 +16,6 @@ function UserCreatePage() {
   const { t } = useTranslation(['users', 'common'])
 
   const handleSaveUser = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/users', { email, password, login })
       .then(() => {

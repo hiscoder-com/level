@@ -1,14 +1,16 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
-import { supabaseService } from 'utils/supabaseServer'
+import supabaseApi from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 
 export default async function handler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
-  }
-  const supabase = createPagesServerClient({ req, res })
   const { method } = req
   switch (method) {
     case 'GET':
+      let supabase
+      try {
+        supabase = await supabaseApi({ req, res })
+      } catch (error) {
+        return res.status(401).json({ error })
+      }
       try {
         const { data: users, error: errorGet } = await supabase
           .from('users')
@@ -32,6 +34,12 @@ export default async function handler(req, res) {
               .limit(1)
             if (errorUser) throw errorUser
             if (users?.length === 1) {
+              let supabase
+              try {
+                supabase = await supabaseApi({ req, res })
+              } catch (error) {
+                return res.status(401).json({ error })
+              }
               const { data: is_admin, error: error_rpc } = await supabase.rpc(
                 'admin_only'
               )

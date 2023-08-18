@@ -27,7 +27,7 @@ function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const { user } = useCurrentUser()
 
-  const [_methods] = useMethod(user?.access_token)
+  const [_methods] = useMethod()
   const router = useRouter()
   const [methods, setMethods] = useState(() => {
     return checkLSVal('methods', _methods, 'object')
@@ -39,7 +39,7 @@ function ProjectCreate() {
   const [resourcesUrl, setResourcesUrl] = useState({})
   const [customSteps, setCustomSteps] = useState([])
   const [customBriefQuestions, setCustomBriefQuestions] = useState([])
-  const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
+  const [languages, { mutate: mutateLanguage }] = useLanguages()
   const {
     register,
     handleSubmit,
@@ -98,7 +98,6 @@ function ProjectCreate() {
       return
     }
     setIsCreating(true)
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/projects', {
         isBriefEnable,

@@ -61,11 +61,9 @@ function Dictionary() {
   } = useRouter()
 
   const [project, { mutate }] = useProject({
-    token: user?.access_token,
     code,
   })
   const [{ isModeratorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code,
   })
@@ -119,7 +117,6 @@ function Dictionary() {
   function addNote() {
     const placeholder = t('NewWord').toLowerCase()
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/dictionaries', {
         id,
@@ -131,7 +128,6 @@ function Dictionary() {
   }
 
   const removeNote = (id) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/dictionaries/${id}`)
       .then(() => {
@@ -152,7 +148,6 @@ function Dictionary() {
     if (!isModeratorAccess) {
       return
     }
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
       .then(() => saveCacheNote('dictionary', activeWord, user))

@@ -76,7 +76,6 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
     coordinators: { mutate: mutateCoordinator, reset: setSelectedCoordinator },
   }
   const assign = (role) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post(`/api/projects/${code}/${role}/`, {
         user_id: selectedUser,
@@ -93,7 +92,6 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
     }
   }, [translators])
   const remove = (userId, role) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/projects/${code}/${role}/${userId}`)
       .then(() => {

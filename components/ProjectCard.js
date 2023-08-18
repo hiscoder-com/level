@@ -10,7 +10,6 @@ import { useBriefState, useAccess } from 'utils/hooks'
 function ProjectCard({ project, token, user }) {
   const { t } = useTranslation(['projects', 'common'])
   const [{ isCoordinatorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code: project?.code,
   })

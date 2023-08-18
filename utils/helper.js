@@ -389,45 +389,46 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
 
 export const parseManifests = async ({ resources, current_method }) => {
   let baseResource = {}
-  let error = null
   const promises = Object.keys(resources).map(async (el) => {
-    const url = resources[el].replace('/src/', '/raw/') + '/manifest.yaml'
-    let manifest
-    try {
-      const { data } = await axios.get(url)
-      manifest = jsyaml.load(data, { json: true })
-      if (current_method.resources[el]) {
-        baseResource = { books: manifest.projects, name: el }
-      }
-    } catch (err) {
-      return { error: err, data: null }
-    }
+    const { pathname } = new URL(resources[el])
+    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
+    const manifestUrl = url.replace('/src/', '/raw/') + '/manifest.yaml'
+    const { data } = await axios.get(manifestUrl)
 
-    return { resource: el, url: resources[el], manifest }
+    const manifest = jsyaml.load(data, { json: true })
+
+    if (current_method.resources[el]) {
+      baseResource = { books: manifest.projects, name: el }
+    }
+    return {
+      resource: el,
+      url,
+      manifest,
+    }
   })
+
   const manifests = await Promise.all(promises)
+
   let newResources = {}
-
-  for (const data of manifests) {
-    if (data.error) {
-      return { error: data.error }
-    }
-
-    const url = data.url.split('://')[1].split('/')
-
-    newResources[data.resource] = {
+  manifests.forEach((el) => {
+    const { pathname } = new URL(el.url)
+    const url = pathname.split('/')
+    newResources[el.resource] = {
       owner: url[1],
       repo: url[2],
       commit: url[5],
-      manifest: data.manifest,
+      manifest: el.manifest,
     }
-  }
-  baseResource.books = baseResource.books.map((el) => ({
-    name: el.identifier,
-    link: resources[baseResource.name].replace('/src/', '/raw/') + el.path.substring(1),
-  }))
-
-  return { data: { baseResource, newResources }, error }
+  })
+  baseResource.books = baseResource.books.map((el) => {
+    const { pathname } = new URL(resources[baseResource.name])
+    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
+    return {
+      name: el.identifier,
+      link: url.replace('/src/', '/raw/') + el.path.substring(1),
+    }
+  })
+  return { baseResource, newResources }
 }
 
 export const countOfChaptersAndVerses = async ({ link, book_code }) => {
@@ -532,7 +533,6 @@ export const saveCacheNote = (key, note, user) => {
   const cache = JSON.parse(localStorage.getItem(key))
   if (!note?.data?.blocks?.length) {
     if (cache?.[note.id]?.length) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post(`/api/logs`, {
           message: `${key} saved empty`,

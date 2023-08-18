@@ -33,20 +33,15 @@ function ProjectEdit() {
 
   const { user } = useCurrentUser()
 
-  const [users] = useUsers(user?.access_token)
-  const [languages, { mutate: mutateLanguage }] = useLanguages(user?.access_token)
+  const [users] = useUsers()
+  const [languages, { mutate: mutateLanguage }] = useLanguages()
 
   const [steps] = useGetSteps({
-    token: user?.access_token,
     code,
   })
-  const [project, { mutate: mutateProject }] = useProject({
-    token: user?.access_token,
-    code,
-  })
+  const [project, { mutate: mutateProject }] = useProject({ code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess, isTranslatorAccess }] =
     useAccess({
-      token: user?.access_token,
       user_id: user?.id,
       code: project?.code,
     })
@@ -77,8 +72,6 @@ function ProjectEdit() {
     if (!title || !codeProject || !languageId || !origtitle) {
       return
     }
-
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/projects/${code}`, {
         basicInfo: {
@@ -112,8 +105,6 @@ function ProjectEdit() {
       (acc, key) => ({ ...acc, [key]: updatedStep[key] }),
       {}
     )
-
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/projects/${code}/steps/${updatedStep?.id}`, {
         step,
@@ -238,8 +229,6 @@ function ProjectEdit() {
       const { id, description, intro, title } = el
       return { id, description, intro, title }
     })
-
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/projects/${code}/steps`, {
         _steps,

@@ -24,10 +24,9 @@ function ResourceSettings() {
   const {
     query: { code },
   } = useRouter()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const [resources] = useGetProjectResources({
-    token: user?.access_token,
     code,
   })
 
@@ -54,7 +53,6 @@ function ResourceSettings() {
     setIsErrorCommit(false)
     setIsSaving(true)
 
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post(`/api/projects/${code}/update_commits`, {
         resources: resourcesUrl,

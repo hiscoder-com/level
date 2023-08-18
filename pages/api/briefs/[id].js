@@ -1,11 +1,13 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import supabaseApi from 'utils/supabaseServer'
 import { validationBrief } from 'utils/helper'
 
 export default async function briefsGetHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-  const supabase = createPagesServerClient({ req, res })
   const {
     query: { id },
     body: { data_collection },
