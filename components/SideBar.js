@@ -21,7 +21,7 @@ function SideBar({ setIsOpenSideBar, access }) {
   const setVersionModalIsOpen = useSetRecoilState(aboutVersionModalIsOpen)
 
   return (
-    <>
+    <div className="flex items-center z-10">
       <Menu>
         {({ open }) => (
           <>
@@ -99,7 +99,7 @@ function SideBar({ setIsOpenSideBar, access }) {
           </>
         )}
       </Menu>
-    </>
+    </div>
   )
 }
 

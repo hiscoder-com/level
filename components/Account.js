@@ -102,7 +102,7 @@ function Account() {
               onClick={() => setOpenInternalMenu(false)}
             ></div>
             <Menu.Button
-              className={`fixed sm:hidden translate-y-1/2 right-10 z-50 rounded-full bg-slate-600 text-white p-4 transition-all duration-700 shadow-2xl ${
+              className={`fixed sm:hidden translate-y-1/2 right-10 z-10 rounded-full bg-slate-600 text-white p-4 transition-all duration-700 shadow-2xl ${
                 openInternalMenu ? 'bottom-[50vh]' : 'bottom-[15vh]'
               }`}
               onClick={() => setOpenInternalMenu(false)}
