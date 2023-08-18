@@ -9,6 +9,24 @@
 	body {
 		@apply text-slate-900
 	}
+	* {
+    scrollbar-width: thin;
+    scrollbar-color: darkgray lightgray;
+  }
+
+  *::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: lightgray;
+    border-radius: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: darkgray;
+    border-radius: 10px;
+  }
 }
 
 .appbar {

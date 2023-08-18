@@ -3,26 +3,31 @@ import Head from 'next/head'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { Helmet } from 'react-helmet'
-
 import Account from 'components/Account'
+import { useEffect } from 'react'
 
 function AccountHomePage() {
   const { t } = useTranslation(['users', 'common'])
 
-  return (
-    <div>
-      <Helmet>
-        <style>{`
-          html {
-            scrollbar-width: none;
-          }
+  useEffect(() => {
+    document.body.classList.add('no-scrollbar')
 
-          html::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
-      </Helmet>
+    return () => {
+      document.body.classList.remove('no-scrollbar')
+    }
+  }, [])
+
+  return (
+    <div className="no-scrollbar">
+      <style>{`
+      body.no-scrollbar {
+        scrollbar-width: none !important;
+      }
+
+      body.no-scrollbar::-webkit-scrollbar {
+        display: none !important;
+      }
+    `}</style>
 
       <Head>
         <title>{t('V-CANAAccount')}</title>
