@@ -101,7 +101,7 @@ function Account() {
                 }`}
               ></div>
               <Menu.Button
-                className={`md:hidden p-4 translate-y-1/2 right-5 z-50 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`block md:hidden p-4 translate-y-1/2 right-5 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}

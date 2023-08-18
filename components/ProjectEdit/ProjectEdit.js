@@ -39,6 +39,7 @@ function ProjectEdit() {
   const [steps] = useGetSteps({
     code,
   })
+
   const [project, { mutate: mutateProject }] = useProject({ code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess, isTranslatorAccess }] =
     useAccess({

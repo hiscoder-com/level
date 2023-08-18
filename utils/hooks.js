@@ -507,17 +507,16 @@ export function useAccess({ user_id, code }) {
 /**
  *hook returns information about steps of current project
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  *
  * @returns {array}
  */
-export function useGetSteps({ token, code }) {
+export function useGetSteps({ code }) {
   const {
     data: steps,
     mutate,
     error,
     isLoading,
-  } = useSWR(token && code ? [`/api/projects/${code}/steps`, token] : null, fetcher, {
+  } = useSWR(code ? [`/api/projects/${code}/steps`] : null, fetcher, {
     revalidateOnFocus: true,
     revalidateIfStale: true,
   })

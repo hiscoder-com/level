@@ -109,7 +109,7 @@ function BasicInformation({
               className="input-primary bg-white flex items-center gap-2 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
-              <Plus className="w-6 h-6 stroke-2 border-2 border-slate-900 rounded-full" />
+              <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-slate-900 rounded-full" />
 
               <span>{t('project-edit:AddLanguage')}</span>
             </button>

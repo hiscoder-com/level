@@ -1,8 +1,13 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import supabaseApi from 'utils/supabaseServer'
 import { stepsValidation } from 'utils/helper'
 
 export default async function stepsHandler(req, res) {
-  const supabase = createPagesServerClient({ req, res })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
+  }
 
   let data = {}
   const {
