@@ -103,7 +103,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
                 <Close className="h-8 stroke-slate-500" />
               </button>
             </div>
-            <ReactMarkdown className="mb-10 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
+            <ReactMarkdown className="mb-10 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
               {VersionInfo()}
             </ReactMarkdown>
             <div className="flex justify-center pt-5 border-t">
@@ -140,7 +140,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           </div>
 
           <ReactMarkdown
-            className={`whitespace-pre-line leading-5 ${
+            className={`pr-3 whitespace-pre-line leading-5 ${
               !isMobileIndexPage && 'max-h-full mb-4 overflow-auto'
             }`}
           >

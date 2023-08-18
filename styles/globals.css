@@ -11,7 +11,7 @@
 	}
 	* {
     scrollbar-width: thin;
-    scrollbar-color: darkgray lightgray;
+    scrollbar-color: #4D4D4D #DBDBDB;
   }
 
   *::-webkit-scrollbar {
@@ -19,12 +19,12 @@
   }
 
   *::-webkit-scrollbar-track {
-    background: lightgray;
+    background: #DBDBDB;
     border-radius: 10px;
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: darkgray;
+    background-color: #4D4D4D;
     border-radius: 10px;
   }
 }
