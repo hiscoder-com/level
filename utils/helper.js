@@ -684,7 +684,7 @@ export const stepValidation = (step) => {
       JSON.stringify(Object.keys(step)?.sort()) !==
       JSON.stringify(['intro', 'description', 'title', 'id'].sort())
     ) {
-      throw new Error('step has different keys')
+      throw new Error('Step has different keys')
     }
   } catch (error) {
     return { error }

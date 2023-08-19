@@ -20,6 +20,14 @@ import LanguageCreate from '../LanguageCreate'
 
 import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+const sizeTabs = {
+  1: 'w-1/6',
+  2: 'w-2/6',
+  3: 'w-3/6',
+  4: 'w-4/6',
+  5: 'w-5/6',
+  6: 'w-full',
+}
 
 function ProjectEdit() {
   const {
@@ -264,27 +272,33 @@ function ProjectEdit() {
       <div className="hidden sm:flex flex-col gap-7">
         {user?.id && (
           <Tab.Group defaultIndex={tabs.length ? index : 0}>
-            <Tab.List className="grid grid-cols-3 sm:grid-cols-6 xl:grid-cols-9 gap-4 mt-2 lg:text-lg font-bold text-center border-b border-slate-600">
-              {tabs.map((tab) => (
-                <Tab
-                  key={tab.label}
-                  className={({ selected }) =>
-                    selected ? 'tab-active truncate' : 'tab truncate'
-                  }
-                  onClick={() =>
-                    replace(
-                      {
-                        query: { ...query, setting: tab.id },
-                      },
-                      undefined,
-                      { shallow: true }
-                    )
-                  }
-                >
-                  {t(tab.label)}
-                </Tab>
-              ))}
-            </Tab.List>
+            <div className="border-b border-slate-600">
+              <Tab.List
+                className={`flex ${
+                  sizeTabs[tabs.length]
+                } gap-4 mt-2 lg:text-lg font-bold text-center`}
+              >
+                {tabs.map((tab) => (
+                  <Tab
+                    key={tab.label}
+                    className={({ selected }) =>
+                      `flex-1 ${selected ? 'tab-active truncate' : 'tab truncate'}`
+                    }
+                    onClick={() =>
+                      replace(
+                        {
+                          query: { ...query, setting: tab.id },
+                        },
+                        undefined,
+                        { shallow: true }
+                      )
+                    }
+                  >
+                    {t(tab.label)}
+                  </Tab>
+                ))}
+              </Tab.List>
+            </div>
 
             <Tab.Panels>
               {tabs.map((tab, idx) => (

@@ -13,6 +13,15 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import Plus from 'public/plus.svg'
 
+const sizeTabs = {
+  1: 'w-1/6',
+  2: 'w-2/6',
+  3: 'w-3/6',
+  4: 'w-4/6',
+  5: 'w-5/6',
+  6: 'w-full',
+}
+
 function Account() {
   const { user, loading } = useCurrentUser()
   const router = useRouter()
@@ -62,20 +71,35 @@ function Account() {
             </Tab.Group>
 
             <Tab.Group as="div" className="hidden sm:block">
-              <Tab.List className="grid grid-cols-3 md:grid-cols-8 xl:grid-cols-9 gap-4 mt-2 text-center font-bold border-b border-slate-600">
-                {tabs.map(
-                  (tab) =>
-                    ((user?.is_admin && tab === 'projects:CreateProject') ||
-                      tab !== 'projects:CreateProject') && (
-                      <Tab
-                        key={tab}
-                        className={({ selected }) => (selected ? 'tab-active' : 'tab')}
-                      >
-                        {t(tab)}
-                      </Tab>
-                    )
-                )}
-              </Tab.List>
+              <div className="border-b border-slate-600">
+                <Tab.List
+                  className={`flex ${
+                    sizeTabs[
+                      tabs.filter(
+                        (tab) =>
+                          (user?.is_admin && tab === 'projects:CreateProject') ||
+                          tab !== 'projects:CreateProject'
+                      ).length
+                    ]
+                  } gap-4 mt-2 text-center font-bold`}
+                >
+                  {tabs.map(
+                    (tab) =>
+                      ((user?.is_admin && tab === 'projects:CreateProject') ||
+                        tab !== 'projects:CreateProject') && (
+                        <Tab
+                          key={tab}
+                          className={({ selected }) =>
+                            `flex-1 ${selected ? 'tab-active ' : 'tab'}`
+                          }
+                        >
+                          {t(tab)}
+                        </Tab>
+                      )
+                  )}
+                </Tab.List>
+              </div>
+
               <Tab.Panels>
                 <Tab.Panel>
                   <Projects type={'account'} />
