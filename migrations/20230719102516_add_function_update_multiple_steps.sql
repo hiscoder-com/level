@@ -12,7 +12,7 @@ BEGIN
       title = (step->>'title')::TEXT,
       description = (step->>'description')::TEXT,
       intro = (step->>'intro')::TEXT
-    WHERE id = (step->>'id')::BIGINT;
+     WHERE id = (step->>'id')::BIGINT AND update_multiple_steps.project_id = public.steps.project_id;
   END LOOP;
   RETURN TRUE;
 END;
