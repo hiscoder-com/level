@@ -46,7 +46,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   }, [supabase, user])
 
   return (
-    <div className={`bg-white ${isOpenSideBar && 'sticky top-0 z-30'}`}>
+    <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
