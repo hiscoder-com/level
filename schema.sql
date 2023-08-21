@@ -1228,12 +1228,11 @@
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.books;
+    DROP POLICY IF EXISTS "Добавлять можно админу и координатору" ON PUBLIC.books;
 
-    CREATE POLICY "Добавлять можно только админу" ON PUBLIC.books FOR
+    CREATE POLICY "Добавлять можно админу и координатору" ON PUBLIC.books FOR
     INSERT
-      WITH CHECK (admin_only());
-
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
   -- END RLS
 -- END BOOKS
 

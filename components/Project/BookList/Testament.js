@@ -189,7 +189,7 @@ function Testament({
                           )}
                         </>
                       )}
-                      {!isBookCreated && isAdminAccess && (
+                      {!isBookCreated && isCoordinatorAccess && (
                         <>
                           <Play
                             className="w-6 min-w-[1.5rem] cursor-pointer"
