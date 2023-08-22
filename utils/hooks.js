@@ -129,6 +129,24 @@ export function useCoordinators({ code }) {
   })
   return [coordinators, { mutate, error, isLoading }]
 }
+
+/**
+ *hook returns all users on specific project with role 'supporter'
+ * @param {string} code code of project
+ * @returns {array}
+ */
+export function useSupporters({ code }) {
+  const {
+    data: supporters,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(code ? [`/api/projects/${code}/supporters`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [supporters, { mutate, error, isLoading }]
+}
 /**
  *hook returns all users on specific project with role 'translator'
  * @param {string} code code of project
