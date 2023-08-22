@@ -17,6 +17,8 @@
     DROP TABLE IF EXISTS PUBLIC.role_permissions;
     DROP TABLE IF EXISTS PUBLIC.languages;
     DROP TABLE IF EXISTS PUBLIC.logs;
+    DROP TABLE IF EXISTS PUBLIC.project_supporter;
+
 
   -- END DROP TABLE
 
@@ -108,11 +110,14 @@
       BEGIN
         SELECT u.is_admin AS is_admin,
           pc.project_id*1 IS NOT NULL AS is_coordinator,
+          ps.project_id*1 IS NOT NULL AS is_supporter,
           pt.project_id*1 IS NOT NULL AS is_translator,
           pt.is_moderator IS TRUE AS is_moderator
         FROM public.users AS u
           LEFT JOIN public.project_coordinators AS pc
             ON (u.id = pc.user_id AND pc.project_id = authorize.project_id)
+          LEFT JOIN public.project_supporters AS ps
+            ON (u.id = ps.user_id AND ps.project_id = authorize.project_id)
           LEFT JOIN public.project_translators AS pt
             ON (u.id = pt.user_id AND pt.project_id = authorize.project_id)
         WHERE u.id = authorize.user_id AND u.blocked IS NULL INTO priv;
@@ -123,6 +128,10 @@
 
         IF priv.is_coordinator THEN
           RETURN 'coordinator';
+        END IF;
+
+        IF priv.is_supporter THEN
+          RETURN 'supporter';
         END IF;
 
         IF priv.is_moderator THEN
@@ -1126,6 +1135,43 @@
       USING (admin_only());
   -- END RLS
 -- END PROJECT COORDINATORS
+
+-- PROJECT SUPPORTERS
+  -- TABLE
+    CREATE TABLE PUBLIC.project_supporters (
+      id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
+      project_id BIGINT REFERENCES PUBLIC.projects ON
+      DELETE
+        CASCADE NOT NULL,
+      user_id uuid REFERENCES PUBLIC.users ON
+      DELETE
+        CASCADE NOT NULL,
+      UNIQUE (project_id, user_id)
+    );
+    ALTER TABLE
+      PUBLIC.project_supporters enable ROW LEVEL SECURITY;
+  -- END TABLE
+
+  -- RLS
+    DROP POLICY IF EXISTS "Админ видит всех, остальные только тех кто с ними на проекте" ON PUBLIC.project_supporters;
+
+    CREATE POLICY "Админ видит всех, остальные только тех кто с ними на проекте" ON PUBLIC.project_supporters FOR
+    SELECT
+      TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
+
+    DROP POLICY IF EXISTS "Добавлять на проект может только админ" ON PUBLIC.project_supporters;
+
+    CREATE POLICY "Добавлять на проект может только админ" ON PUBLIC.project_supporters FOR
+    INSERT
+      WITH CHECK (admin_only());
+
+    DROP POLICY IF EXISTS "Удалять только админ" ON PUBLIC.project_supporters;
+
+    CREATE POLICY "Удалять только админ" ON PUBLIC.project_supporters FOR
+    DELETE
+      USING (admin_only());
+  -- END RLS
+-- END PROJECT SUPPORTERS
 
 -- BRIEFS
   -- TABLE
