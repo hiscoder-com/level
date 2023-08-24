@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
 
-function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating }) {
+function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
   const { push } = useRouter()
 
   const { t } = useTranslation('common')

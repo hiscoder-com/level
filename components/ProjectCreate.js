@@ -19,7 +19,7 @@ import LanguageCreate from './LanguageCreate'
 import BriefEditQuestions from './BriefEditQuestions'
 
 import { useLanguages, useMethod } from 'utils/hooks'
-import { checkLSVal, updateArray } from 'utils/helper'
+import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 import Spinner from '../public/spinner.svg'
 
@@ -100,10 +100,10 @@ function ProjectCreate() {
     setIsCreating(true)
     axios
       .post('/api/projects', {
-        isBriefEnable,
-        customBriefQuestions,
+        is_brief_enable: isBriefEnable,
+        custom_brief_questions: customBriefQuestions,
         title,
-        origtitle,
+        orig_title: origtitle,
         language_id: languageId,
         code,
         method_id: method.id,
@@ -136,16 +136,10 @@ function ProjectCreate() {
     saveMethods(_methods)
   }
 
-  const updateBlock = ({ value, index, fieldName, array, setArray, blockName }) => {
-    const _array = updateArray({
-      array,
-      index,
-      fieldName,
-      value,
-    })
-
-    setArray(_array)
-    updateMethods(methods, blockName, _array)
+  const updateBlock = ({ value, index, fieldName, block, setBlock, blockName }) => {
+    block[index][fieldName] = value
+    setBlock(block)
+    updateMethods(methods, blockName, block)
   }
   const updateSteps = ({ value, index, fieldName }) => {
     if (value && index != null && fieldName) {
@@ -153,8 +147,8 @@ function ProjectCreate() {
         value,
         index,
         fieldName,
-        array: customSteps,
-        setArray: setCustomSteps,
+        block: customSteps,
+        setBlock: setCustomSteps,
         blockName: 'steps',
       })
     }

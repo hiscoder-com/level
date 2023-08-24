@@ -17,7 +17,6 @@ function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }
 
   const handleAddLanguage = async (languageOptions) => {
     try {
-      axios.defaults.headers.common['token'] = user?.access_token
       const { error } = await axios.post('/api/languages', languageOptions)
       if (error) throw error
       toast.success(t('common:SaveSuccess'))

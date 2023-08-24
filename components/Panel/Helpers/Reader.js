@@ -2,13 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { useGetChapter } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Reader({ config }) {
@@ -18,13 +15,8 @@ function Reader({ config }) {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
 
-  const { t } = useTranslation(['common'])
-
-  const { user } = useCurrentUser()
-
   const [verseObjects, setVerseObjects] = useState([])
   const [chapter] = useGetChapter({
-    token: user?.access_token,
     code: project,
     book_code: book,
     chapter_id: chapter_num,

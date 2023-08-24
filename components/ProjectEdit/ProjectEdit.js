@@ -178,7 +178,6 @@ function ProjectEdit() {
             <div className="card space-y-7">
               <h3 className="text-xl font-bold">{t('Participants')}</h3>
               <Participants
-                user={user}
                 users={users}
                 access={{ isCoordinatorAccess, isAdminAccess }}
               />

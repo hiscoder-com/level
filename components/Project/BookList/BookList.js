@@ -27,7 +27,6 @@ function BookList({ user, project, access }) {
     obs: [{ title: 'OpenBibleStories', books: ['obs'] }],
   }
   const [books, { mutate: mutateBooks }] = useGetBooks({
-    token: user?.access_token,
     code: project?.code,
   })
   useEffect(() => {
@@ -81,7 +80,6 @@ function BookList({ user, project, access }) {
                       <Testament
                         bookList={testament.books}
                         title={testament.title}
-                        user={user}
                         project={project}
                         access={access}
                         setCurrentBook={setCurrentBook}
@@ -124,7 +122,6 @@ function BookList({ user, project, access }) {
                     <Testament
                       bookList={testament.books}
                       title={testament.title}
-                      user={user}
                       project={project}
                       access={access}
                       setCurrentBook={setCurrentBook}

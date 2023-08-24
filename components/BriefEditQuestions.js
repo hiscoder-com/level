@@ -2,7 +2,6 @@ import { Disclosure } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 
 import UpdateField from './UpdateField'
-import { updateArray } from 'utils/helper'
 
 import Down from 'public/arrow-down.svg'
 import Trash from 'public/trash-rounded.svg'
@@ -87,12 +86,8 @@ function BriefEditQuestions({
 
   const updateTitleBlock = ({ value, index, fieldName }) => {
     if (value && index != null && fieldName) {
-      const _blocks = updateArray({
-        array: customBriefQuestions,
-        index,
-        fieldName,
-        value,
-      })
+      let _blocks = [...customBriefQuestions]
+      _blocks[index][fieldName] = value
       setCustomBriefQuestions(_blocks)
       if (autoSave) {
         saveFunction(_blocks)

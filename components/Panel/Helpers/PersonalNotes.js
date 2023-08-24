@@ -39,7 +39,6 @@ function PersonalNotes() {
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
   const [notes, { mutate }] = usePersonalNotes({
-    token: user?.access_token,
     sort: 'changed_at',
   })
 

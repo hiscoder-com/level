@@ -1,13 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { useCurrentUser } from 'lib/UserContext'
 import { useMethod } from 'utils/hooks'
 
 function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
   const [customResources, setCustomResources] = useState({})
 
-  const { user } = useCurrentUser()
-  const [methods] = useMethod(user?.access_token)
+  const [methods] = useMethod()
   useEffect(() => {
     if (methods && methodId) {
       const selectedMethod = methods.find(

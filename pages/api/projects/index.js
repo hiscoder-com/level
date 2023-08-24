@@ -14,11 +14,11 @@ export default async function languageProjectsHandler(req, res) {
       method_id,
       code,
       title,
-      origtitle,
+      orig_title,
       resources,
       steps,
-      customBriefQuestions,
-      isBriefEnable,
+      custom_brief_questions,
+      is_brief_enable,
     },
     method,
   } = req
@@ -37,7 +37,7 @@ export default async function languageProjectsHandler(req, res) {
           throw new Error('Not all resource fields are filled in')
         }
 
-        if (validationBrief(customBriefQuestions)?.error) {
+        if (validationBrief(custom_brief_questions)?.error) {
           throw new Error('Brief template is not valid')
         }
 
@@ -71,7 +71,7 @@ export default async function languageProjectsHandler(req, res) {
           .insert([
             {
               title,
-              orig_title: origtitle,
+              orig_title: orig_title,
               code,
               language_id,
               type: current_method.type,
@@ -90,8 +90,8 @@ export default async function languageProjectsHandler(req, res) {
 
         const { error: briefError } = await supabase.rpc('create_brief', {
           project_id: project.id,
-          is_enable: isBriefEnable,
-          data_collection: customBriefQuestions,
+          is_enable: is_brief_enable,
+          data_collection: custom_brief_questions,
         })
         if (briefError) {
           await supabaseService.from('projects').delete().eq('id', project.id)

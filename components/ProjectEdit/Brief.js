@@ -15,7 +15,6 @@ import BriefEditQuestions from '../BriefEditQuestions'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 
-import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
 function BriefBlock({ access, title = false }) {
@@ -28,13 +27,11 @@ function BriefBlock({ access, title = false }) {
   const {
     query: { code },
   } = useRouter()
-  const { user } = useCurrentUser()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const { t } = useTranslation(['common', 'project-edit'])
 
   const [brief, { mutate }] = useGetBrief({
-    token: user?.access_token,
     project_id: project?.id,
   })
 
@@ -45,7 +42,6 @@ function BriefBlock({ access, title = false }) {
   }, [brief, briefDataCollection])
 
   const saveToDatabase = (briefDataCollection, isSaveFinal) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
@@ -77,7 +73,6 @@ function BriefBlock({ access, title = false }) {
 
   const handleSwitch = () => {
     if (brief) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
         .then(mutate)

@@ -7,14 +7,12 @@ import Card from './Card'
 
 import { useCoordinators, useTranslators } from 'utils/hooks'
 
-function ParticipantInfo({ project, user, access }) {
+function ParticipantInfo({ project, access }) {
   const { t } = useTranslation()
   const [translators] = useTranslators({
-    token: user?.access_token,
     code: project?.code,
   })
   const [coordinators] = useCoordinators({
-    token: user?.access_token,
     code: project?.code,
   })
 

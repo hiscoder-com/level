@@ -15,7 +15,7 @@ import AssignParticipant from './AssignPartiсipant'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
 
-function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAccess } }) {
+function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
   const supabase = useSupabaseClient()
 
   const { t } = useTranslation(['common', 'project-edit', 'projects'])
@@ -23,14 +23,12 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
     query: { code },
   } = useRouter()
   const [translators, { mutate: mutateTranslator }] = useTranslators({
-    token: user?.access_token,
     code,
   })
   const [coordinators, { mutate: mutateCoordinator }] = useCoordinators({
-    token: user?.access_token,
     code,
   })
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const [listOfTranslators, setListOfTranslators] = useState([])
   const [listOfCoordinators, setListOfCoordinators] = useState([])

@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 import { useLanguages, useProjects } from 'utils/hooks'
 
-import Plus from '/public/plus.svg'
+import Plus from 'public/plus.svg'
 import Down from 'public/arrow-down.svg'
 
 function BasicInformation({
@@ -13,15 +13,13 @@ function BasicInformation({
   uniqueCheck = false,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
-  const [projects] = useProjects({
-    token: user?.access_token,
-  })
-  const [languages] = useLanguages(user?.access_token)
+  const [projects] = useProjects()
+  const [languages] = useLanguages()
   const inputs = [
     {
       id: 1,
       title: t('Title'),
-      classname: errors?.title ? 'input-invalid' : 'input-primary bg-white',
+      className: errors?.title ? 'input-invalid' : 'input-primary bg-white',
       placeholder: '',
       register: {
         ...register('title', {
@@ -33,7 +31,7 @@ function BasicInformation({
     {
       id: 2,
       title: t('OrigTitle'),
-      classname: errors?.origtitle ? 'input-invalid' : 'input-primary bg-white',
+      className: errors?.origtitle ? 'input-invalid' : 'input-primary bg-white',
       placeholder: '',
       register: {
         ...register('origtitle', {
@@ -45,7 +43,7 @@ function BasicInformation({
     {
       id: 3,
       title: t('Code'),
-      classname: errors?.code ? 'input-invalid' : 'input-primary bg-white',
+      className: errors?.code ? 'input-invalid' : 'input-primary bg-white',
       placeholder: '',
       register: {
         ...register('code', {
@@ -75,7 +73,7 @@ function BasicInformation({
           <div className="w-auto md:w-1/5 font-bold">{input.title}</div>
           <div className="flex flex-col gap-2 w-full md:w-4/5">
             <input
-              className={`${input.classname}`}
+              className={`${input.className}`}
               placeholder={input.placeholder}
               {...input.register}
             />

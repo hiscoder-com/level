@@ -11,7 +11,7 @@ function Steps({ updateSteps, customSteps = [] }) {
   const fields = [
     { title: t('common:Title'), name: 'title', textarea: false },
     { title: t('common:Description'), name: 'description', textarea: true },
-    { title: t('common:Intro'), name: 'intro', textarea: true },
+    { title: t('common:IntroStep'), name: 'intro', textarea: true },
   ]
   return (
     <>
@@ -53,9 +53,9 @@ function Steps({ updateSteps, customSteps = [] }) {
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full">
                   <div className="w-auto md:w-1/6 font-bold">{t('Tools')}</div>
                   <div className="flex flex-wrap justify-start gap-2 w-auto md:w-5/6">
-                    {step?.config?.map((config, index) => (
+                    {step?.config?.map((config, idx) => (
                       <div
-                        key={index}
+                        key={idx}
                         className="flex flex-wrap gap-2 pr-2 border-r border-slate-900 last:border-r-0"
                       >
                         {config.tools.map((tool) => (

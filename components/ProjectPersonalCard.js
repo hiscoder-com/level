@@ -11,7 +11,7 @@ import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
-function ProjectPersonalCard({ project, token, user }) {
+function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
 
   const { locale } = useRouter()
@@ -21,7 +21,6 @@ function ProjectPersonalCard({ project, token, user }) {
   const { t } = useTranslation(['common', 'books'])
 
   const { briefResume, isBrief } = useBriefState({
-    token,
     project_id: project?.id,
   })
   const [{ isCoordinatorAccess }, { isLoading }] = useAccess({
@@ -64,7 +63,6 @@ function ProjectPersonalCard({ project, token, user }) {
     return isRepeatIntro
   }
   const [books] = useGetBooks({
-    token,
     code: project?.code,
   })
   const countChaptersVerses = useMemo(() => {

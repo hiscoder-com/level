@@ -706,12 +706,3 @@ export const stepsValidation = (steps) => {
   }
   return { error: null }
 }
-
-export const updateArray = ({ array, index, fieldName, value }) => {
-  return array.map((obj, idx) => {
-    if (index === idx) {
-      return { ...obj, [fieldName]: value }
-    }
-    return obj
-  })
-}

@@ -7,13 +7,10 @@ import axios from 'axios'
 
 import CommitsList from '../CommitsList'
 
-import { useCurrentUser } from 'lib/UserContext'
-
 import { useProject, useMethod, useGetProjectResources } from 'utils/hooks'
 
 function ResourceSettings() {
-  const { user } = useCurrentUser()
-  const [methods] = useMethod(user?.access_token)
+  const [methods] = useMethod()
   const { t } = useTranslation()
 
   const [isSaving, setIsSaving] = useState(false)
