@@ -22,7 +22,7 @@ export default function Home() {
       </Head>
       <div className="flex flex-col items-center sm:hidden">
         <div className="flex items-center mb-2">
-          <VcanaLogo className="max-w-xs my-[6vh] sm:max-w-md w-28" />
+          <VcanaLogo className="max-w-xs my-10 sm:max-w-md w-28" />
           <AboutVersion isMobileIndexPage={true} />
         </div>
         <div className="bg-white w-[90vw] mb-10 rounded-lg shadow-lg">
@@ -38,7 +38,7 @@ export default function Home() {
         <div className="flex flex-col items-center justify-center w-1/2">
           <div className="flex flex-col items-center text-base xl:text-lg">
             <div className="flex flex-col relative items-center">
-              <VcanaLogo className="scale-[1.65] xl:scale-[1.85] mb-4" />
+              <VcanaLogo className="w-44 xl:w-52 mb-4" />
               <AboutVersion />
             </div>
             <h1 className="my-4 text-center">{t('PlatformForBibleTranslate')}</h1>

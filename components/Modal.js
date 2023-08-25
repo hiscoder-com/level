@@ -2,8 +2,14 @@ import { Fragment, useEffect } from 'react'
 
 import { Transition, Dialog } from '@headlessui/react'
 
-function Modal({ title, isOpen, children, closeHandle, className = {} }) {
-  const mergedClassNames = {
+function Modal({
+  title,
+  isOpen,
+  children,
+  closeHandle,
+  className: propsClassNames = {},
+}) {
+  const classNames = {
     ...{
       main: 'z-50 relative',
       dialogTitle: 'text-center text-2xl font-medium leading-6',
@@ -13,12 +19,12 @@ function Modal({ title, isOpen, children, closeHandle, className = {} }) {
       backdrop: 'inset-0 fixed overflow-y-auto backdrop-blur',
       content: 'flex items-center justify-center p-4 min-h-full',
     },
-    ...className,
+    ...propsClassNames,
   }
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className={mergedClassNames.main} onClose={closeHandle}>
+      <Dialog as="div" className={classNames.main} onClose={closeHandle}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -28,10 +34,10 @@ function Modal({ title, isOpen, children, closeHandle, className = {} }) {
           enterTo="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className={mergedClassNames.transitionChild} />
+          <div className={classNames.transitionChild} />
         </Transition.Child>
-        <div className={mergedClassNames.backdrop}>
-          <div className={mergedClassNames.content}>
+        <div className={classNames.backdrop}>
+          <div className={classNames.content}>
             <Transition.Child
               as={Fragment}
               leaveFrom="opacity-100 scale-100"
@@ -41,8 +47,8 @@ function Modal({ title, isOpen, children, closeHandle, className = {} }) {
               leaveTo="opacity-0 scale-95"
               leave="ease-in duration-200"
             >
-              <Dialog.Panel className={mergedClassNames.dialogPanel}>
-                <Dialog.Title as="h3" className={mergedClassNames.dialogTitle}>
+              <Dialog.Panel className={classNames.dialogPanel}>
+                <Dialog.Title as="h3" className={classNames.dialogTitle}>
                   {title}
                 </Dialog.Title>
                 {children}

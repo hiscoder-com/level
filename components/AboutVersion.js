@@ -11,11 +11,18 @@ import { aboutVersionModalIsOpen } from './Panel/state/atoms'
 
 import packageJson from '../package.json'
 
-import { aboutVersion } from 'public/updateVersionInfo'
+import updatesEN from '../public/updateVersionInfo/updates_en.md'
+import updatesRU from '../public/updateVersionInfo/updates_ru.md'
+import updatesES from '../public/updateVersionInfo/updates_es.md'
 
 import Close from 'public/close.svg'
 
 function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
+  const aboutVersion = {
+    en: updatesEN,
+    ru: updatesRU,
+    es: updatesES,
+  }
   const { locale } = useRouter()
   const { t } = useTranslation('common')
   const [isOpen, setIsOpen] = useState(false)
@@ -34,16 +41,18 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   }
 
   const getAboutVersionByLanguage = (lang) => {
-    return aboutVersion[lang] || aboutVersion[en]
+    return aboutVersion[lang] || aboutVersion['en']
   }
   const fullAboutVersion = useMemo(() => {
     const content = getAboutVersionByLanguage(locale)
     return content ? processText(content) : ''
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale])
 
   const currentAboutVersion = useMemo(() => {
     const content = getAboutVersionByLanguage(locale).match(/^#\s([\s\S]+?)\n#\s/g)
     return content?.length ? processText(content[0]) : ''
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale])
 
   return (
@@ -93,11 +102,11 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           isOpen={isOpen}
           closeHandle={() => setIsOpen(false)}
           className={{
-            dialogPanel: `w-full align-middle ${
+            dialogPanel: `w-full align-middle transform overflow-y-auto shadow-xl transition-all ${
               isMobileIndexPage
-                ? 'px-6 pb-6 bg-white text-black'
-                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl'
-            }  ${isMobileIndexPage ? 'h-screen w-screen' : ''}`,
+                ? 'px-6 pb-6 bg-white text-black h-screen w-screen'
+                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250'
+            }`,
             main: `z-50 ${isMobileIndexPage ? 'fixed flex inset-0' : 'relative'}`,
             transitionChild: `inset-0 bg-opacity-25 bg-gray-300 ${
               isMobileIndexPage ? 'absolute' : 'fixed'
