@@ -6,27 +6,37 @@
 	html {
 		font-family: "Roboto", system-ui, sans-serif;
 	}
+
 	body {
 		@apply text-slate-900
 	}
+
+	body.no-scrollbar {
+		scrollbar-width: none !important;
+	}
+
+	body.no-scrollbar::-webkit-scrollbar {
+		display: none !important;
+	}
+	
 	* {
-    scrollbar-width: thin;
-    scrollbar-color: #4D4D4D #DBDBDB;
-  }
+		scrollbar-width: thin;
+		scrollbar-color: #4D4D4D #DBDBDB;
+	}
 
-  *::-webkit-scrollbar {
-    width: 7px;
-  }
+	*::-webkit-scrollbar {
+		width: 7px;
+	}
 
-  *::-webkit-scrollbar-track {
-    background: #DBDBDB;
-    border-radius: 10px;
-  }
+	*::-webkit-scrollbar-track {
+		background: #DBDBDB;
+		border-radius: 10px;
+	}
 
-  *::-webkit-scrollbar-thumb {
-    background-color: #4D4D4D;
-    border-radius: 10px;
-  }
+	*::-webkit-scrollbar-thumb {
+		background-color: #4D4D4D;
+		border-radius: 10px
+	}
 }
 
 .appbar {

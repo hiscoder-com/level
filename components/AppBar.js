@@ -51,7 +51,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <div
-            className={`w-full flex justify-center ${
+            className={`flex justify-center w-full ${
               access && !isStepPage ? '-ml-10' : ''
             } md:ml-0`}
           >
@@ -72,7 +72,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         </div>
         {isStepPage && (
           <>
-            <div className={`md:flex text-center ${!showFullAppbar && 'hidden'}`}>
+            <div className={`md:flex text-center ${!showFullAppbar ? 'hidden' : ''}`}>
               {stepConfig.title}
             </div>
             <div

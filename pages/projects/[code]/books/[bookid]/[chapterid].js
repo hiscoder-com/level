@@ -424,7 +424,7 @@ function ChapterVersesPage() {
             <Menu.Button
               className={`fixed sm:hidden p-4 translate-y-1/2
                bottom-[60vh]
-               right-10 z-50 rounded-full bg-slate-600 text-white transition-all duration-700 shadow-2xl`}
+               right-5 z-10 rounded-full bg-slate-600 text-white transition-all duration-700 shadow-2xl`}
             >
               <Plus
                 className={`w-7 h-7 transition-all duration-700 ${

@@ -68,7 +68,13 @@ function ChapterCreate({
     <Modal
       isOpen={typeof creatingChapter === 'object'}
       closeHandle={reset}
-      className={!isCreated ? 'primary' : 'secondary'}
+      className={{
+        dialogPanel: `w-full max-w-md align-middle p-6 rounded-3xl ${
+          isCreated
+            ? 'bg-gray-400 text-white'
+            : 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250'
+        }`,
+      }}
     >
       <div className="flex flex-col justify-center items-center gap-7 min-h-[15vh]">
         <div className="flex flex-row gap-2 mb-4 text-xl text-center">

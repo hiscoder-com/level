@@ -1,32 +1,24 @@
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 
 import { Transition, Dialog } from '@headlessui/react'
 
-function Modal({
-  title,
-  isOpen,
-  children,
-  closeHandle,
-  additionalClasses,
-  isChangelog = false,
-  className = 'primary',
-  isMobileChangelog = false,
-}) {
-  const classes = {
-    primary: `w-full align-middle ${
-      isChangelog
-        ? 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6'
-        : 'max-w-md p-6'
-    } bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250`,
-    secondary: 'w-full max-w-md align-middle p-6 bg-gray-400 text-white',
+function Modal({ title, isOpen, children, closeHandle, className = {} }) {
+  const mergedClassNames = {
+    ...{
+      main: 'z-50 relative',
+      dialogTitle: 'text-center text-2xl font-medium leading-6',
+      dialogPanel:
+        'w-full max-w-md p-6 align-middle transform overflow-y-auto shadow-xl transition-all bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 rounded-3xl',
+      transitionChild: 'fixed inset-0 bg-opacity-25 bg-gray-300',
+      backdrop: 'inset-0 fixed overflow-y-auto backdrop-blur',
+      content: 'flex items-center justify-center p-4 min-h-full',
+    },
+    ...className,
   }
+
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog
-        as="div"
-        className={`z-50 ${isMobileChangelog ? 'fixed flex inset-0' : 'relative'}`}
-        onClose={closeHandle}
-      >
+      <Dialog as="div" className={mergedClassNames.main} onClose={closeHandle}>
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -36,22 +28,10 @@ function Modal({
           enterTo="opacity-100"
           leaveTo="opacity-0"
         >
-          <div
-            className={`inset-0 bg-opacity-25 bg-gray-300 ${
-              isMobileChangelog ? 'absolute' : 'fixed'
-            }`}
-          />
+          <div className={mergedClassNames.transitionChild} />
         </Transition.Child>
-        <div
-          className={`inset-0 ${
-            isMobileChangelog ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
-          }`}
-        >
-          <div
-            className={`${
-              !isMobileChangelog && 'flex items-center justify-center p-4 min-h-full'
-            }`}
-          >
+        <div className={mergedClassNames.backdrop}>
+          <div className={mergedClassNames.content}>
             <Transition.Child
               as={Fragment}
               leaveFrom="opacity-100 scale-100"
@@ -61,17 +41,8 @@ function Modal({
               leaveTo="opacity-0 scale-95"
               leave="ease-in duration-200"
             >
-              <Dialog.Panel
-                className={`${
-                  isMobileChangelog
-                    ? 'px-6 pb-6 bg-white text-black'
-                    : `${classes[className]} rounded-3xl`
-                } transform overflow-y-auto ${additionalClasses} shadow-xl transition-all`}
-              >
-                <Dialog.Title
-                  as="h3"
-                  className="text-center text-2xl font-medium leading-6"
-                >
+              <Dialog.Panel className={mergedClassNames.dialogPanel}>
+                <Dialog.Title as="h3" className={mergedClassNames.dialogTitle}>
                   {title}
                 </Dialog.Title>
                 {children}

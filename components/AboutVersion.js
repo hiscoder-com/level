@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 import { useRouter } from 'next/router'
@@ -10,9 +10,8 @@ import Modal from './Modal'
 import { aboutVersionModalIsOpen } from './Panel/state/atoms'
 
 import packageJson from '../package.json'
-import updateEN from '../public/updateVersionInfo/update_en.md'
-import updateRU from '../public/updateVersionInfo/update_ru.md'
-import updateES from '../public/updateVersionInfo/update_es.md'
+
+import { aboutVersion } from 'public/updateVersionInfo'
 
 import Close from 'public/close.svg'
 
@@ -24,56 +23,34 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(
     aboutVersionModalIsOpen
   )
-
   useEffect(() => {
     if (!versionModalIsOpen || !isOpen) {
       setShowAllUpdates(false)
     }
   }, [isOpen, versionModalIsOpen])
 
-  const VersionInfo = () => {
-    const currentVersion = packageJson.version
-    const updates = {
-      ru: updateRU,
-      es: updateES,
-    }
-
-    const getContentByLanguage = (lang) => {
-      return updates[lang] || updateEN
-    }
-
-    const getUpdateData = (updateContent, version) => {
-      const regex = new RegExp(`# Version ${version}([\\s\\S]*?)(?=# Version|$)`, 'g')
-      return updateContent.match(regex)
-    }
-
-    const processText = (text, version) => {
-      return text
-        .replace(/^### (.+)/gm, (title) => `${title}`)
-        .replace(/^-\s+/gm, '∙ ')
-        .replace(/# Version (\d+\.\d+\.\d+)/g, (_, v) =>
-          v === version ? '' : `# **Version ${v}**`
-        )
-    }
-
-    const updateData = getContentByLanguage(locale)
-
-    let matchedTexts = showAllUpdates
-      ? [updateData]
-      : getUpdateData(updateData, currentVersion)
-
-    if (matchedTexts && matchedTexts.length > 0) {
-      return processText(matchedTexts[0], currentVersion)
-    }
-
-    return ''
+  const processText = (text) => {
+    return text.replace(/^-\s+/gm, '∙ ').replace(/^#([\s\S]+?)\n/g, '')
   }
+
+  const getAboutVersionByLanguage = (lang) => {
+    return aboutVersion[lang] || aboutVersion[en]
+  }
+  const fullAboutVersion = useMemo(() => {
+    const content = getAboutVersionByLanguage(locale)
+    return content ? processText(content) : ''
+  }, [locale])
+
+  const currentAboutVersion = useMemo(() => {
+    const content = getAboutVersionByLanguage(locale).match(/^#\s([\s\S]+?)\n#\s/g)
+    return content?.length ? processText(content[0]) : ''
+  }, [locale])
 
   return (
     <>
       <div
-        className={`${isMobileIndexPage && 'ml-4'} ${
-          !isSidebar && 'text-xs cursor-pointer text-[#909090]'
+        className={`${isMobileIndexPage ? 'ml-4' : ''} ${
+          !isSidebar ? 'text-xs cursor-pointer text-neutral-400' : ''
         }`}
         onClick={() => {
           !isSidebar && setIsOpen(true)
@@ -94,21 +71,16 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
               <p className="text-left text-2xl font-bold">
                 {t('Version')} {packageJson.version}
               </p>
-              <button
-                className="text-right"
-                onClick={() => {
-                  setVersionModalIsOpen(false)
-                }}
-              >
+              <button className="text-right" onClick={() => setVersionModalIsOpen(false)}>
                 <Close className="h-8 stroke-slate-500" />
               </button>
             </div>
             <ReactMarkdown className="mb-10 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
-              {VersionInfo()}
+              {showAllUpdates ? fullAboutVersion : currentAboutVersion}
             </ReactMarkdown>
             <div className="flex justify-center pt-5 border-t">
               <button
-                onClick={() => setShowAllUpdates(!showAllUpdates)}
+                onClick={() => setShowAllUpdates((prev) => !prev)}
                 className={`${isMobileIndexPage ? 'btn-slate' : 'btn-primary'}`}
               >
                 {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
@@ -120,8 +92,23 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
         <Modal
           isOpen={isOpen}
           closeHandle={() => setIsOpen(false)}
-          additionalClasses={`${isMobileIndexPage && 'h-screen w-screen'}`}
-          isMobileChangelog={isMobileIndexPage}
+          className={{
+            dialogPanel: `w-full align-middle ${
+              isMobileIndexPage
+                ? 'px-6 pb-6 bg-white text-black'
+                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl'
+            }  ${isMobileIndexPage ? 'h-screen w-screen' : ''}`,
+            main: `z-50 ${isMobileIndexPage ? 'fixed flex inset-0' : 'relative'}`,
+            transitionChild: `inset-0 bg-opacity-25 bg-gray-300 ${
+              isMobileIndexPage ? 'absolute' : 'fixed'
+            }`,
+            backdrop: `inset-0 ${
+              isMobileIndexPage ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
+            }`,
+            content: `${
+              !isMobileIndexPage && 'flex items-center justify-center p-4 min-h-full'
+            }`,
+          }}
           isChangelog={!isMobileIndexPage}
         >
           <div
@@ -141,14 +128,14 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
 
           <ReactMarkdown
             className={`pr-3 whitespace-pre-line leading-5 ${
-              !isMobileIndexPage && 'max-h-full mb-4 overflow-auto'
+              !isMobileIndexPage ? 'max-h-full mb-4 overflow-auto' : ''
             }`}
           >
-            {VersionInfo()}
+            {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
           <div className="flex justify-center mt-4">
             <button
-              onClick={() => setShowAllUpdates(!showAllUpdates)}
+              onClick={() => setShowAllUpdates((prev) => !prev)}
               className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}
             >
               {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
