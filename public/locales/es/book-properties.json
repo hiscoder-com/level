@@ -5,7 +5,7 @@
   "title_placeholder_obs": "Historias abiertas de la Biblia",
   "chapter_label_obs": "El nombre de las historias",
   "chapter_label_placeholder_obs": "Historia",
-  "intro_obs": "Intro",
+  "intro_obs": "Описание",
   "intro_placeholder_obs": "Aquí necesitas un texto en formato markdown para describir el libro",
   "h": "Título del libro",
   "h_placeholder": "3 Juanes",
