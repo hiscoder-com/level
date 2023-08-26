@@ -71,7 +71,7 @@ export default async function languageProjectsHandler(req, res) {
           .insert([
             {
               title,
-              orig_title: orig_title,
+              orig_title,
               code,
               language_id,
               type: current_method.type,

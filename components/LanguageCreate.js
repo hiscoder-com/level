@@ -4,6 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
+import CheckboxShevron from 'public/checkbox-shevron.svg'
 
 function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -106,20 +107,7 @@ function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }
                 {...register('isGl', {})}
               />
               <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
-                <svg
-                  width="15"
-                  height="11"
-                  viewBox="0 0 15 11"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    fillRule="evenodd"
-                    clipRule="evenodd"
-                    d="M14.1449 0.762586C14.4429 1.06062 14.4429 1.54382 14.1449 1.84185L5.75017 10.2366C5.45214 10.5346 4.96894 10.5346 4.67091 10.2366L0.855116 6.4208C0.557084 6.12277 0.557084 5.63957 0.855116 5.34153C1.15315 5.0435 1.63635 5.0435 1.93438 5.34153L5.21054 8.61769L13.0656 0.762586C13.3637 0.464555 13.8469 0.464555 14.1449 0.762586Z"
-                    fill="white"
-                  />
-                </svg>
+                <CheckboxShevron />
               </div>
             </label>
           </div>

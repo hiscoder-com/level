@@ -142,6 +142,7 @@ function ProjectCreate() {
     updateMethods(methods, blockName, block)
   }
   const updateSteps = ({ value, index, fieldName }) => {
+    console.log(value, index)
     if (value && index != null && fieldName) {
       updateBlock({
         value,
