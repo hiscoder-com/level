@@ -7,10 +7,10 @@ import { useRecoilState } from 'recoil'
 
 import { currentVerse } from '../components/Panel/state/atoms'
 
-const fetcher = async ([url, token]) => {
+const fetcher = async ([url]) => {
   const res = await fetch(url, {
     method: 'GET',
-    headers: new Headers({ 'Content-Type': 'application/json', token }),
+    headers: new Headers({ 'Content-Type': 'application/json' }),
     credentials: 'same-origin',
   })
   if (!res.ok) {
@@ -22,16 +22,15 @@ const fetcher = async ([url, token]) => {
 }
 /**
  *hook returns information about all languages from table ''
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useLanguages(token) {
+export function useLanguages() {
   const {
     data: languages,
     mutate,
     error,
     isLoading,
-  } = useSWR(token ? ['/api/languages', token] : null, fetcher, {
+  } = useSWR(['/api/languages'], fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -40,16 +39,15 @@ export function useLanguages(token) {
 }
 /**
  *hook returns information about all users
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useUsers(token) {
+export function useUsers() {
   const {
     data: users,
     mutate,
     error,
     isLoading,
-  } = useSWR(token ? ['/api/users', token] : null, fetcher, {
+  } = useSWR(['/api/users'], fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -57,29 +55,24 @@ export function useUsers(token) {
   return [users, { mutate, isLoading, error }]
 }
 
-export function useUser(token, id) {
+export function useUser(id) {
   const {
     data: user,
     mutate,
     error,
     isLoading,
-  } = useSWR(token && id ? ['/api/users/' + id, token] : null, fetcher)
+  } = useSWR(id ? ['/api/users/' + id] : null, fetcher)
   return [user, { mutate, isLoading, error }]
 }
 /**
  *hook returns information about projects
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useProjects({ token }) {
-  const { data, mutate, error, isLoading } = useSWR(
-    token ? [`/api/projects`, token] : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
+export function useProjects() {
+  const { data, mutate, error, isLoading } = useSWR([`/api/projects`], fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
   // TODO форматировать data, нужно пройтись по всем проектам и раскидать, чтобы каждый проект лежал внутри языка
   return [data, { mutate, error, isLoading }]
 }
@@ -87,16 +80,15 @@ export function useProjects({ token }) {
 /**
  *hook returns all methods from table 'methods'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useMethod(token) {
+export function useMethod() {
   const {
     data: methods,
     mutate,
     error,
     isLoading,
-  } = useSWR(token ? ['/api/methods', token] : null, fetcher, {
+  } = useSWR(['/api/methods'], fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -106,16 +98,15 @@ export function useMethod(token) {
 /**
  *hook returns information about specific project from table 'projects'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @returns {object}
  */
-export function useProject({ token, code }) {
+export function useProject({ code }) {
   const {
     data: project,
     mutate,
     error,
     isLoading,
-  } = useSWR(token && code ? [`/api/projects/${code}`, token] : null, fetcher, {
+  } = useSWR(code ? [`/api/projects/${code}`] : null, fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -124,45 +115,35 @@ export function useProject({ token, code }) {
 /**
  *hook returns all users on specific project with role 'coordinator'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useCoordinators({ token, code }) {
+export function useCoordinators({ code }) {
   const {
     data: coordinators,
     mutate,
     error,
     isLoading,
-  } = useSWR(
-    token && code ? [`/api/projects/${code}/coordinators`, token] : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
+  } = useSWR(code ? [`/api/projects/${code}/coordinators`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
   return [coordinators, { mutate, error, isLoading }]
 }
 /**
  *hook returns all users on specific project with role 'translator'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useTranslators({ token, code }) {
+export function useTranslators({ code }) {
   const {
     data: translators,
     mutate,
     error,
     isLoading,
-  } = useSWR(
-    token && code ? [`/api/projects/${code}/translators`, token] : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
+  } = useSWR(code ? [`/api/projects/${code}/translators`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
 
   return [translators, { mutate, error, isLoading }]
 }
@@ -170,7 +151,6 @@ export function useTranslators({ token, code }) {
 /**
  *hook receives information from the database - whether the user has confirmed agreements and returns a link for a redirect
  * @param {string} userId id of authenticated user
- * @param {string} token token of current session of authenticated user
  * @param {string} startLink the default link that the application needs to follow if the user has not passed the agreement
  * @returns {string}
  */
@@ -223,13 +203,13 @@ export function useGetResource({ config, url }) {
   return { isLoading, data, error }
 }
 
-export function usePersonalNotes({ token }) {
+export function usePersonalNotes() {
   const {
     data: notes,
     mutate,
     error,
     isLoading,
-  } = useSWR(token ? [`/api/personal_notes`, token] : null, fetcher, {
+  } = useSWR([`/api/personal_notes`], fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -237,31 +217,27 @@ export function usePersonalNotes({ token }) {
   return [notes, { mutate, error, isLoading }]
 }
 
-export function useTeamNotes({ token, project_id }) {
+export function useTeamNotes({ project_id }) {
   const {
     data: notes,
     mutate,
     error,
     isLoading,
-  } = useSWR(
-    token && project_id ? [`/api/team_notes/${project_id}`, token] : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
+  } = useSWR(project_id ? [`/api/team_notes/${project_id}`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
 
   return [notes, { mutate, error, isLoading }]
 }
 
-export function useGetBrief({ token, project_id }) {
+export function useGetBrief({ project_id }) {
   const {
     data: brief,
     mutate,
     error,
     isLoading,
-  } = useSWR(token && project_id ? [`/api/briefs/${project_id}`, token] : null, fetcher, {
+  } = useSWR(project_id ? [`/api/briefs/${project_id}`] : null, fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -295,10 +271,9 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
   return { highlightId: highlightIds[toolName], currentScrollVerse, handleSaveScroll }
 }
 
-export function useBriefState({ token, project_id }) {
+export function useBriefState({ project_id }) {
   const [briefResume, setBriefResume] = useState()
   const [brief, { isLoading }] = useGetBrief({
-    token,
     project_id,
   })
   useEffect(() => {
@@ -312,16 +287,15 @@ export function useBriefState({ token, project_id }) {
 /**
  *hook returns information about resources of specific project from table 'projects'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useGetProjectResources({ token, code }) {
+export function useGetProjectResources({ code }) {
   const {
     data: resources,
     mutate,
     error,
     isLoading,
-  } = useSWR(token && code ? [`/api/projects/${code}/resources`, token] : null, fetcher, {
+  } = useSWR(code ? [`/api/projects/${code}/resources`] : null, fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -331,16 +305,15 @@ export function useGetProjectResources({ token, code }) {
 /**
  *hook returns information about books of specific project from table 'books'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @returns {array}
  */
-export function useGetBooks({ token, code }) {
+export function useGetBooks({ code }) {
   const {
     data: books,
     mutate,
     error,
     isLoading,
-  } = useSWR(token && code ? [`/api/projects/${code}/books`, token] : null, fetcher, {
+  } = useSWR(code ? [`/api/projects/${code}/books`] : null, fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
@@ -350,20 +323,17 @@ export function useGetBooks({ token, code }) {
 /**
  *hook returns information about specific book of specific project from table 'books'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @param {string} book_code code of book
  * @returns {object}
  */
-export function useGetBook({ token, code, book_code }) {
+export function useGetBook({ code, book_code }) {
   const {
     data: book,
     mutate,
     error,
     isLoading,
   } = useSWR(
-    token && code && book_code
-      ? [`/api/projects/${code}/books/${book_code}`, token]
-      : null,
+    code && book_code ? [`/api/projects/${code}/books/${book_code}`] : null,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -376,20 +346,17 @@ export function useGetBook({ token, code, book_code }) {
 /**
  *hook returns information about chapters of specific project from table 'chapters'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @param {string} book_code code of book
  * @returns {array}
  */
-export function useGetChapters({ token, code, book_code }) {
+export function useGetChapters({ code, book_code }) {
   const {
     data: chapters,
     mutate,
     error,
     isLoading,
   } = useSWR(
-    token && code && book_code
-      ? [`/api/projects/${code}/books/${book_code}/chapters`, token]
-      : null,
+    code && book_code ? [`/api/projects/${code}/books/${book_code}/chapters`] : null,
     fetcher,
     {
       revalidateOnFocus: false,
@@ -402,13 +369,12 @@ export function useGetChapters({ token, code, book_code }) {
 /**
  *hook returns information about specific chapter from table 'chapters'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @param {string} book_code code of book
  * @param {string} chapter_id num of chapter
 
  * @returns {object}
  */
-export function useGetChapter({ token, code, book_code, chapter_id }) {
+export function useGetChapter({ code, book_code, chapter_id }) {
   const {
     data: chapter,
     mutate,
@@ -416,8 +382,8 @@ export function useGetChapter({ token, code, book_code, chapter_id }) {
     isLoading,
     isValidating,
   } = useSWR(
-    token && code && book_code && chapter_id
-      ? [`/api/projects/${code}/books/${book_code}/chapters/${chapter_id}`, token]
+    code && book_code && chapter_id
+      ? [`/api/projects/${code}/books/${book_code}/chapters/${chapter_id}`]
       : null,
     fetcher,
     {
@@ -431,20 +397,19 @@ export function useGetChapter({ token, code, book_code, chapter_id }) {
 /**
  *hook returns information about created chapters from table 'chapters'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @param {array} chapters
  *
  * @returns {array}
  */
-export function useGetCreatedChapters({ token, code, chapters }) {
+export function useGetCreatedChapters({ code, chapters }) {
   const {
     data: createdChapters,
     mutate,
     error,
     isLoading,
   } = useSWR(
-    token && code && chapters
-      ? [`/api/projects/${code}/created_chapters?chapters=${chapters}`, token]
+    code && chapters
+      ? [`/api/projects/${code}/created_chapters?chapters=${chapters}`]
       : null,
     fetcher,
     {
@@ -458,20 +423,19 @@ export function useGetCreatedChapters({ token, code, chapters }) {
 /**
  *hook returns information about verses of specific chapter from table 'verses'
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @param {string} book_code code of book
  * @param {string} chapter_id id of chapter
  * @returns {array}
  */
-export function useGetVerses({ token, code, book_code, chapter_id }) {
+export function useGetVerses({ code, book_code, chapter_id }) {
   const {
     data: verses,
     mutate,
     error,
     isLoading,
   } = useSWR(
-    token && code && book_code && chapter_id
-      ? [`/api/projects/${code}/books/${book_code}/chapters/${chapter_id}/verses`, token]
+    code && book_code && chapter_id
+      ? [`/api/projects/${code}/books/${book_code}/chapters/${chapter_id}/verses`]
       : null,
     fetcher,
     {
@@ -506,24 +470,24 @@ export function useGetInfo({ config, url }) {
 /**
  *hook returns information about access
  * @param {string} code code of project
- * @param {string} token token of current session of authenticated user
  * @param {string} user_id id of user
  * @returns {object}
  */
-export function useAccess({ token, user_id, code }) {
+export function useAccess({ user_id, code }) {
   const {
     data: level,
     mutate,
     error,
     isLoading,
-  } = useSWR(
-    token && code && user_id ? [`/api/projects/${code}/${user_id}`, token] : null,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
+  } = useSWR(code && user_id ? [`/api/projects/${code}/${user_id}`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  const isTranslatorAccess = useMemo(
+    () => ['admin', 'coordinator', 'moderator', 'translator'].includes(level),
+    [level]
   )
+
   const isModeratorAccess = useMemo(
     () => ['admin', 'coordinator', 'moderator'].includes(level),
     [level]
@@ -535,7 +499,26 @@ export function useAccess({ token, user_id, code }) {
   const isAdminAccess = useMemo(() => 'admin' === level, [level])
 
   return [
-    { isModeratorAccess, isCoordinatorAccess, isAdminAccess },
+    { isModeratorAccess, isCoordinatorAccess, isAdminAccess, isTranslatorAccess },
     { mutate, error, isLoading },
   ]
+}
+
+/**
+ *hook returns information about steps of current project
+ * @param {string} code code of project
+ *
+ * @returns {array}
+ */
+export function useGetSteps({ code }) {
+  const {
+    data: steps,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(code ? [`/api/projects/${code}/steps`] : null, fetcher, {
+    revalidateOnFocus: true,
+    revalidateIfStale: true,
+  })
+  return [steps, { mutate, error, isLoading }]
 }

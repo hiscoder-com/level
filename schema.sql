@@ -64,6 +64,9 @@
     DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
     DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
+    DROP FUNCTION IF EXISTS PUBLIC.update_project_basic;
+    DROP FUNCTION IF EXISTS PUBLIC.update_multiple_steps;
+    
 
   -- END DROP FUNCTION
 
@@ -638,19 +641,16 @@
   $$;
 
   -- creating a new brief for the project
-  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) RETURNS BOOLEAN
+  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN, data_collection JSON) RETURNS BIGINT
       LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
-        brief_JSON JSON;
+        brief_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
           RETURN false;
         END IF;
-        SELECT brief FROM PUBLIC.methods
-          JOIN PUBLIC.projects ON (projects.method = methods.title)
-          WHERE projects.id = project_id INTO brief_JSON;
-          INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);
-        RETURN true;
+        INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, data_collection, is_enable) RETURNING id INTO brief_id;
+        RETURN brief_id;
       END;
   $$;
 
@@ -876,6 +876,52 @@
 
     END;
   $$;
+
+  -- create update_project_basic
+  CREATE FUNCTION PUBLIC.update_project_basic( project_code TEXT,title TEXT,orig_title TEXT,code TEXT, language_id BIGINT ) RETURNS BOOLEAN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE
+      project_id BIGINT;
+    BEGIN
+      SELECT id FROM public.projects WHERE projects.code = project_code INTO project_id;
+        IF authorize(auth.uid(), project_id) NOT IN ('admin') THEN
+          RAISE EXCEPTION SQLSTATE '42000' USING MESSAGE = 'No access rights to this function';
+        END IF;
+      IF update_project_basic.project_code != update_project_basic.code THEN
+        SELECT id FROM public.projects WHERE projects.code = update_project_basic.code INTO project_id;
+        IF project_id IS NOT NULL THEN
+          RAISE EXCEPTION SQLSTATE '23505' USING MESSAGE = 'This project code is already in use';
+        END IF;
+      END IF;     
+
+      UPDATE PUBLIC.projects SET code = update_project_basic.code, title=update_project_basic.title, orig_title = update_project_basic.orig_title, language_id = update_project_basic.language_id WHERE projects.id = project_id;
+
+      RETURN TRUE;
+
+    END;
+   $$;
+
+  -- update multiple steps
+  CREATE FUNCTION update_multiple_steps(steps jsonb[], project_id BIGINT) RETURNS BOOLEAN AS $$
+    DECLARE
+      step jsonb;
+    BEGIN
+      IF authorize(auth.uid(), update_multiple_steps.project_id) NOT IN ('admin') THEN
+        RETURN FALSE;
+      END IF;
+      FOREACH step IN ARRAY update_multiple_steps.steps
+      LOOP
+        UPDATE public.steps
+        SET
+          title = (step->>'title')::TEXT,
+          description = (step->>'description')::TEXT,
+          intro = (step->>'intro')::TEXT
+         WHERE id = (step->>'id')::BIGINT AND update_multiple_steps.project_id = public.steps.project_id;
+      END LOOP;
+      RETURN TRUE;
+    END;
+  $$ LANGUAGE plpgsql;
+
 -- END CREATE FUNCTION
 
 -- USERS
@@ -1000,7 +1046,7 @@
     CREATE TABLE PUBLIC.projects (
       id BIGINT GENERATED ALWAYS AS IDENTITY primary key,
       title TEXT NOT NULL,
-      orig_title TEXT NOT NULL,
+      orig_title TEXT DEFAULT NULL,
       code TEXT NOT NULL,
       language_id BIGINT REFERENCES PUBLIC.languages ON
       DELETE
@@ -1194,6 +1240,12 @@
     CREATE POLICY "Добавлять можно только админу" ON PUBLIC.steps FOR
     INSERT
       WITH CHECK (admin_only());
+
+    DROP POLICY IF EXISTS "Изменять может админ" ON PUBLIC.steps;
+
+    CREATE POLICY "Изменять может админ" ON PUBLIC.steps FOR
+    UPDATE
+      USING (admin_only());
   -- END RLS
 -- END STEPS
 

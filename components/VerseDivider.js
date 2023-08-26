@@ -9,7 +9,6 @@ import toast, { Toaster } from 'react-hot-toast'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import { useProject, useTranslators } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
 
 const defaultColor = [
   'bg-yellow-400',
@@ -33,18 +32,15 @@ function VerseDivider({ verses }) {
 
   const { t } = useTranslation('common')
 
-  const { user } = useCurrentUser()
   const {
     query: { code },
   } = useRouter()
 
   const [translators] = useTranslators({
-    token: user?.access_token,
     code,
   })
 
   const [project] = useProject({
-    token: user?.access_token,
     code,
   })
 

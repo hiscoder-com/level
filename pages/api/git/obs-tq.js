@@ -74,7 +74,7 @@ export default async function obsTQHandler(req, res) {
     verses = verses.split(',').map((el) => el.trim())
   }
   const url = `${
-    process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    process.env.NODE_HOST ?? 'https://git.door43.org'
   }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
   try {
     const _data = await axios.get(url)

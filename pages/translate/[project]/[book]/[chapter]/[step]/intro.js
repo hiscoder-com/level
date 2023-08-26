@@ -8,7 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import IntroStep from 'components/IntroStep'
 
 import useSupabaseClient from 'utils/supabaseClient'
-import { supabaseService } from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 
 export default function IntroPage() {
   const supabase = useSupabaseClient()

@@ -31,7 +31,6 @@ const downloadSettingsBook = {
 
 function Download({
   project,
-  user,
   chapterNum,
   setIsOpenDownloading,
   bookCode,
@@ -44,7 +43,7 @@ function Download({
   const {
     query: { code },
   } = useRouter()
-  const [book] = useGetBook({ token: user?.access_token, code, book_code: bookCode })
+  const [book] = useGetBook({ code, book_code: bookCode })
 
   const options = useMemo(() => {
     const options = [{ label: 'PDF', value: 'pdf' }]
@@ -71,7 +70,6 @@ function Download({
   }, [project, isBook])
 
   const [chapters] = useGetChapters({
-    token: user?.access_token,
     code,
     book_code: bookCode,
   })

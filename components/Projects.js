@@ -6,9 +6,7 @@ import { useCurrentUser } from 'lib/UserContext'
 
 export default function Projects({ type }) {
   const { user } = useCurrentUser()
-  const [projects] = useProjects({
-    token: user?.access_token,
-  })
+  const [projects] = useProjects()
 
   let CurrentCard
   let className
@@ -31,14 +29,7 @@ export default function Projects({ type }) {
         {projects &&
           projects.map(
             (project) =>
-              project && (
-                <CurrentCard
-                  key={project.id}
-                  project={project}
-                  token={user?.access_token}
-                  user={user}
-                />
-              )
+              project && <CurrentCard key={project.id} project={project} user={user} />
           )}
       </div>
     </>

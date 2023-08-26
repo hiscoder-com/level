@@ -2,13 +2,10 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { useGetChapter } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Reader({ config }) {
@@ -18,13 +15,8 @@ function Reader({ config }) {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
 
-  const { t } = useTranslation(['common'])
-
-  const { user } = useCurrentUser()
-
   const [verseObjects, setVerseObjects] = useState([])
   const [chapter] = useGetChapter({
-    token: user?.access_token,
     code: project,
     book_code: book,
     chapter_id: chapter_num,
@@ -74,13 +66,14 @@ function Reader({ config }) {
     let mySubscription = null
     if (chapter?.id) {
       mySubscription = supabase
-        .channel('public' + 'verses:chapter_id=eq.' + chapter.id)
+        .channel('public:verses:' + chapter.id)
         .on(
           'postgres_changes',
           {
             event: 'UPDATE',
             schema: 'public',
-            table: 'verses:chapter_id=eq.' + chapter.id,
+            table: 'verses',
+            filter: 'chapter_id=eq.' + chapter.id,
           },
           (payload) => {
             const { id, text } = payload.new
@@ -88,9 +81,7 @@ function Reader({ config }) {
           }
         )
         .subscribe()
-    }
-    return () => {
-      if (mySubscription) {
+      return () => {
         supabase.removeChannel(mySubscription)
       }
     }

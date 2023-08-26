@@ -5,9 +5,13 @@ import jsyaml from 'js-yaml'
 import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
 import { obsStoryVerses } from './config'
+const isServer = typeof window === 'undefined'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
   let value
+  if (isServer) {
+    return val
+  }
   switch (type) {
     case 'object':
       try {
@@ -386,8 +390,10 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
 export const parseManifests = async ({ resources, current_method }) => {
   let baseResource = {}
   const promises = Object.keys(resources).map(async (el) => {
-    const url = resources[el].replace('/src/', '/raw/') + '/manifest.yaml'
-    const { data } = await axios.get(url)
+    const { pathname } = new URL(resources[el])
+    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
+    const manifestUrl = url.replace('/src/', '/raw/') + '/manifest.yaml'
+    const { data } = await axios.get(manifestUrl)
 
     const manifest = jsyaml.load(data, { json: true })
 
@@ -396,7 +402,7 @@ export const parseManifests = async ({ resources, current_method }) => {
     }
     return {
       resource: el,
-      url: resources[el],
+      url,
       manifest,
     }
   })
@@ -405,7 +411,8 @@ export const parseManifests = async ({ resources, current_method }) => {
 
   let newResources = {}
   manifests.forEach((el) => {
-    const url = el.url.split('://')[1].split('/')
+    const { pathname } = new URL(el.url)
+    const url = pathname.split('/')
     newResources[el.resource] = {
       owner: url[1],
       repo: url[2],
@@ -413,10 +420,14 @@ export const parseManifests = async ({ resources, current_method }) => {
       manifest: el.manifest,
     }
   })
-  baseResource.books = baseResource.books.map((el) => ({
-    name: el.identifier,
-    link: resources[baseResource.name].replace('/src/', '/raw/') + el.path.substring(1),
-  }))
+  baseResource.books = baseResource.books.map((el) => {
+    const { pathname } = new URL(resources[baseResource.name])
+    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
+    return {
+      name: el.identifier,
+      link: url.replace('/src/', '/raw/') + el.path.substring(1),
+    }
+  })
   return { baseResource, newResources }
 }
 
@@ -522,7 +533,6 @@ export const saveCacheNote = (key, note, user) => {
   const cache = JSON.parse(localStorage.getItem(key))
   if (!note?.data?.blocks?.length) {
     if (cache?.[note.id]?.length) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post(`/api/logs`, {
           message: `${key} saved empty`,
@@ -611,6 +621,35 @@ export function filterNotes(newNote, verse, notes) {
     }
   }
 }
+export const validationBrief = (brief_data) => {
+  if (!brief_data) {
+    return { error: 'Properties is null or undefined' }
+  }
+  if (Array.isArray(brief_data)) {
+    const isValidKeys = brief_data.find((briefObj) => {
+      const isNotValid =
+        JSON.stringify(Object.keys(briefObj).sort()) !==
+        JSON.stringify(['block', 'id', 'resume', 'title'].sort())
+      if (isNotValid) {
+        return { error: 'brief_data is not valid', briefObj }
+      } else {
+        briefObj.block?.forEach((blockObj) => {
+          if (
+            JSON.stringify(Object.keys(blockObj).sort()) !==
+            JSON.stringify(['question', 'answer'].sort())
+          ) {
+            return { error: 'brief_data.block has different keys', blockObj }
+          }
+        })
+      }
+    })
+    if (isValidKeys) {
+      return { error: 'brief_data has different keys', isValidKeys }
+    }
+  }
+
+  return { error: null }
+}
 
 export const getWords = async ({ zip, repo, wordObjects }) => {
   if (!zip || !repo || !wordObjects) {
@@ -633,4 +672,37 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
     }
   })
   return await Promise.all(promises)
+}
+
+export const stepValidation = (step) => {
+  try {
+    const obj = JSON.parse(JSON.stringify(step))
+    if (!obj || typeof obj !== 'object') {
+      throw new Error('This is incorrect json')
+    }
+    if (
+      JSON.stringify(Object.keys(step)?.sort()) !==
+      JSON.stringify(['intro', 'description', 'title', 'id'].sort())
+    ) {
+      throw new Error('Step has different keys')
+    }
+  } catch (error) {
+    return { error }
+  }
+  return { error: null }
+}
+
+export const stepsValidation = (steps) => {
+  if (!steps?.length) {
+    return { error: 'This is incorrect json', steps }
+  }
+  for (const step of steps) {
+    try {
+      const { error } = stepValidation(step)
+      if (error) throw error
+    } catch (error) {
+      return { error }
+    }
+  }
+  return { error: null }
 }
