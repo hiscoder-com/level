@@ -130,10 +130,10 @@ function BriefEditQuestions({
                     </div>
                     <div className="font-bold">{t('common:Questions')}</div>
                     <div className="space-y-4">
-                      {blockQuestion.block.map((question, idx) => (
+                      {blockQuestion.block.map(({ question }, idx) => (
                         <div className="flex gap-5" key={idx}>
                           <UpdateField
-                            value={question.question}
+                            value={question}
                             index={index}
                             subIndex={idx}
                             updateValue={updateQuestion}

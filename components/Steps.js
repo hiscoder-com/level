@@ -15,8 +15,8 @@ function Steps({ updateSteps, customSteps = [] }) {
   ]
   return (
     <>
-      {customSteps?.map((step, index) => (
-        <Disclosure key={index}>
+      {customSteps?.map((step, idx_step) => (
+        <Disclosure key={idx_step}>
           {({ open }) => (
             <div>
               <Disclosure.Button
@@ -41,7 +41,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                     <div className="w-full md:w-5/6">
                       <UpdateField
                         value={step[field.name]}
-                        index={index}
+                        index={idx_step}
                         textarea={field.textarea}
                         fieldName={field.name}
                         updateValue={updateSteps}
@@ -53,9 +53,9 @@ function Steps({ updateSteps, customSteps = [] }) {
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full">
                   <div className="w-auto md:w-1/6 font-bold">{t('Tools')}</div>
                   <div className="flex flex-wrap justify-start gap-2 w-auto md:w-5/6">
-                    {step?.config?.map((config, idx) => (
+                    {step?.config?.map((config, idx_config) => (
                       <div
-                        key={idx}
+                        key={idx_config}
                         className="flex flex-wrap gap-2 pr-2 border-r border-slate-900 last:border-r-0"
                       >
                         {config.tools.map((tool) => (
