@@ -56,16 +56,12 @@ export default async function languageProjectsHandler(req, res) {
           throw new Error('Resources not an equal')
         }
 
-        const {
-          data: { baseResource, newResources },
-          error: errorManifest,
-        } = await parseManifests({
+        const { baseResource, newResources } = await parseManifests({
           resources,
           current_method,
         })
 
-        if (errorManifest) throw errorManifest
-
+        if (!baseResource || !newResources) throw new Error('Resources are not valid')
         const { data: project, error } = await supabase
           .from('projects')
           .insert([
@@ -85,7 +81,6 @@ export default async function languageProjectsHandler(req, res) {
           ])
           .single()
           .select()
-
         if (error) throw error
 
         const { error: briefError } = await supabase.rpc('create_brief', {
@@ -103,7 +98,7 @@ export default async function languageProjectsHandler(req, res) {
             .from('steps')
             .insert([{ ...step_el, sorting: sorting++, project_id: project.id }])
         }
-        res.setHeader('Location', `/projects/${project[0].code}`)
+        res.setHeader('Location', `/projects/${project.code}`)
         return res.status(201).json({})
       } catch (error) {
         return res.status(404).json({ error })
