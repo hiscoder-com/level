@@ -7,7 +7,7 @@
 
 ### **Changed:**
 - V-CANA logo
-- component Modal, changed class props
+- modal window
 
 ### **Fixed:**
 - mobile design at several pages

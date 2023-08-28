@@ -7,7 +7,7 @@
 
 ### **Cambiado:**
 - Logotipo de V-CANA
-- modal de componentes, accesorios de clase cambiados
+- ventana modal
 
 ### **Fijo:**
 - diseño móvil en varias páginas
