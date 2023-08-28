@@ -55,7 +55,6 @@ function Testament({
       })
     }
   }
-
   return (
     <>
       <div className="flex flex-col gap-7 sm:px-3">
@@ -118,7 +117,7 @@ function Testament({
                                 </button>
                               </Menu.Item>
                             )}
-                            {!isBookCreated && isAdminAccess && (
+                            {!isBookCreated && isCoordinatorAccess && (
                               <Menu.Item>
                                 <button>
                                   <Play
@@ -186,7 +185,7 @@ function Testament({
                           )}
                         </>
                       )}
-                      {!isBookCreated && isAdminAccess && (
+                      {!isBookCreated && isCoordinatorAccess && (
                         <>
                           <Play
                             className="w-6 min-w-[1.5rem] cursor-pointer"
