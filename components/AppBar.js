@@ -72,7 +72,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         </div>
         {isStepPage && (
           <>
-            <div className={`md:flex text-center ${!showFullAppbar ? 'hidden' : ''}`}>
+            <div
+              className={`block md:flex text-center ${showFullAppbar ? '' : 'hidden'}`}
+            >
               {stepConfig.title}
             </div>
             <div

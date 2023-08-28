@@ -22,7 +22,6 @@ import Elipsis from '/public/elipsis.svg'
 function Testament({
   bookList,
   title,
-  user,
   project,
   access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess, isLoading },
   setCurrentBook,
@@ -34,7 +33,6 @@ function Testament({
   const [isOpenDownloading, setIsOpenDownloading] = useState(false)
   const [downloadingBook, setDownloadingBook] = useState(null)
   const [books, { mutate: mutateBooks }] = useGetBooks({
-    token: user?.access_token,
     code: project?.code,
   })
   const levelChecks = useMemo(() => {
@@ -57,7 +55,6 @@ function Testament({
       })
     }
   }
-
   return (
     <>
       <div className="flex flex-col gap-7 sm:px-3">
@@ -70,7 +67,6 @@ function Testament({
                 <div className="flex flex-1 items-center gap-5 truncate">
                   <ChecksIcon
                     book={book}
-                    user={user}
                     project={project}
                     levelCheck={levelChecks?.[book]}
                   />
@@ -121,7 +117,7 @@ function Testament({
                                 </button>
                               </Menu.Item>
                             )}
-                            {!isBookCreated && isAdminAccess && (
+                            {!isBookCreated && isCoordinatorAccess && (
                               <Menu.Item>
                                 <button>
                                   <Play
@@ -189,7 +185,7 @@ function Testament({
                           )}
                         </>
                       )}
-                      {!isBookCreated && isAdminAccess && (
+                      {!isBookCreated && isCoordinatorAccess && (
                         <>
                           <Play
                             className="w-6 min-w-[1.5rem] cursor-pointer"
@@ -236,7 +232,6 @@ function Testament({
         setBookCodeCreating={setBookCodeCreating}
         bookCode={bookCodeCreating}
         project={project}
-        user={user}
         mutateBooks={mutateBooks}
       />
 
@@ -250,7 +245,6 @@ function Testament({
       >
         <Download
           isBook
-          user={user}
           project={project}
           bookCode={downloadingBook}
           books={books}

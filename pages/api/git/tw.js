@@ -34,7 +34,7 @@ import axios from 'axios'
 export default async function twHandler(req, res) {
   const { repo, owner, branch = 'master' } = req.query
   const url = `${
-    process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    process.env.NODE_HOST ?? 'https://git.door43.org'
   }/${owner}/${repo}/archive/${branch}.zip`
   try {
     const response = await axios.get(url, {

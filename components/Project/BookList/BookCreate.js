@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
 
-function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating }) {
+function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
   const { push } = useRouter()
 
   const { t } = useTranslation('common')
@@ -26,7 +26,6 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
       setTextModal(t('BookCreationError'))
       setTimeout(reset, 2000)
     }
-    axios.defaults.headers.common['token'] = user?.access_token
     try {
       setIsCreating(true)
       setTextModal(t('BookIsCreating'))

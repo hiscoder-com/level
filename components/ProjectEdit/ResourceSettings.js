@@ -7,13 +7,10 @@ import axios from 'axios'
 
 import CommitsList from '../CommitsList'
 
-import { useCurrentUser } from 'lib/UserContext'
-
 import { useProject, useMethod, useGetProjectResources } from 'utils/hooks'
 
 function ResourceSettings() {
-  const { user } = useCurrentUser()
-  const [methods] = useMethod(user?.access_token)
+  const [methods] = useMethod()
   const { t } = useTranslation()
 
   const [isSaving, setIsSaving] = useState(false)
@@ -24,10 +21,9 @@ function ResourceSettings() {
   const {
     query: { code },
   } = useRouter()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const [resources] = useGetProjectResources({
-    token: user?.access_token,
     code,
   })
 
@@ -54,7 +50,6 @@ function ResourceSettings() {
     setIsErrorCommit(false)
     setIsSaving(true)
 
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post(`/api/projects/${code}/update_commits`, {
         resources: resourcesUrl,
@@ -69,15 +64,13 @@ function ResourceSettings() {
       .finally(() => setIsSaving(false))
   }
   return (
-    <div className="card flex flex-col gap-7">
-      <h3 className="text-xl font-bold">{t('ListResources')}</h3>
+    <>
       <CommitsList
         resourcesUrl={resourcesUrl}
         setResourcesUrl={setResourcesUrl}
         methodId={currentMethod?.id}
       />
       {isErrorCommit && <div className="mt-3">{t('WrongResource')}</div>}
-
       <button
         className="btn-primary w-fit text-xl"
         onClick={handleSaveCommits}
@@ -108,7 +101,7 @@ function ResourceSettings() {
           t('Save')
         )}
       </button>
-    </div>
+    </>
   )
 }
 

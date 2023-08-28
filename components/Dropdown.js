@@ -148,7 +148,6 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
   const projectId = useRecoilValue(projectIdState)
 
   const [brief] = useGetBrief({
-    token: user?.access_token,
     project_id: projectId,
   })
 

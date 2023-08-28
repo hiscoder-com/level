@@ -12,7 +12,7 @@ function ProjectInfo({ project, access }) {
   return (
     <Card
       title={t('Information')}
-      link={`${project?.code}/edit?setting=resources`}
+      link={`${project?.code}/edit?setting=basic`}
       access={access}
     >
       {project && (

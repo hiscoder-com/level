@@ -13,7 +13,7 @@ import Workspace from 'components/Workspace'
 import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { supabaseService } from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 import useSupabaseClient from 'utils/supabaseClient'
 import {
   projectIdState,

@@ -1,12 +1,12 @@
 {
   "name": "v-cana",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "license": "MIT",
   "author": {
     "name": "TextTree"
   },
   "description": "App to translate Scripture step by step",
-  "homepage": "https://v-cana.netlify.app/",
+  "homepage": "https://v-cana.com/",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -29,10 +29,10 @@
     "@texttree/obs-format-convert-rcl": "^0.4.2",
     "@texttree/tn-quote": "^0.5.0",
     "@texttree/translation-words-helpers": "^0.2.4",
-    "axios": "^0.21.0",
+    "axios": "^0.27.2",
     "file-saver": "^2.0.5",
     "github-markdown-css": "^5.2.0",
-    "i18next": "^23.2.5",
+    "i18next": "^23.2.10",
     "js-yaml": "^4.1.0",
     "jszip": "^3.10.1",
     "localforage": "^1.10.0",
@@ -43,7 +43,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.1",
     "react-hot-toast": "^2.4.1",
-    "react-i18next": "^13.0.1",
+    "react-i18next": "^13.0.2",
     "react-markdown": "^8.0.7",
     "react-textarea-autosize": "^8.5.0",
     "recoil": "^0.7.7",
