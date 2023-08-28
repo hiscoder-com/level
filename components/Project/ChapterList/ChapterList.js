@@ -216,7 +216,6 @@ function ChapterList() {
             additionalClasses="overflow-y-visible"
           >
             <Download
-              user={user}
               project={project}
               bookCode={bookid}
               chapterNum={downloadingChapter}

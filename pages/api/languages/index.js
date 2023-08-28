@@ -81,7 +81,7 @@ export default async function languagesHandler(req, res) {
   }
   let data = {}
   const {
-    body: { eng, code, orig_name, is_gl },
+    body: { eng, code, origName: orig_name, isGl: is_gl },
     method,
   } = req
   switch (method) {

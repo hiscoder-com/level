@@ -65,6 +65,7 @@ export default async function handler(req, res) {
           user_metadata: { login },
           email_confirm: true,
         })
+
         if (errorPost) throw errorPost
 
         const { data: users, error: errorUser } = await supabaseService

@@ -19,10 +19,10 @@ function Project({ code }) {
       <div className="static xl:sticky top-7 flex flex-col sm:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
         <div className="flex flex-col gap-7 w-full sm:w-1/2 xl:w-full">
           <ProjectInfo project={project} access={isCoordinatorAccess} />
-          <ParticipantInfo project={project} user={user} access={isModeratorAccess} />
+          <ParticipantInfo project={project} access={isModeratorAccess} />
         </div>
         <div className="w-full sm:w-1/2 xl:w-full">
-          <ResumeInfo project={project} user={user} />
+          <ResumeInfo project={project} />
         </div>
       </div>
       <div className="w-full xl:w-2/3">

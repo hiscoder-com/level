@@ -24,7 +24,7 @@ function AssignParticipant({
       additionalClasses="overflow-y-visible"
     >
       <div className="flex flex-col min-h-[15vh] gap-7">
-        <div className="text-xl sm:text-2xl text-center">{t(label)}</div>
+        <div className="text-base sm:text-xl text-center">{t(label)}</div>
         <ListBox
           options={listOfAssigned?.map((el) => ({ label: el.login, value: el.id }))}
           selectedOption={selectedUser}

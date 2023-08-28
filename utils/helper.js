@@ -5,9 +5,13 @@ import jsyaml from 'js-yaml'
 import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
 import { obsStoryVerses } from './config'
+const isServer = typeof window === 'undefined'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
   let value
+  if (isServer) {
+    return val
+  }
   switch (type) {
     case 'object':
       try {
@@ -617,6 +621,35 @@ export function filterNotes(newNote, verse, notes) {
     }
   }
 }
+export const validationBrief = (brief_data) => {
+  if (!brief_data) {
+    return { error: 'Properties is null or undefined' }
+  }
+  if (Array.isArray(brief_data)) {
+    const isValidKeys = brief_data.find((briefObj) => {
+      const isNotValid =
+        JSON.stringify(Object.keys(briefObj).sort()) !==
+        JSON.stringify(['block', 'id', 'resume', 'title'].sort())
+      if (isNotValid) {
+        return { error: 'brief_data is not valid', briefObj }
+      } else {
+        briefObj.block?.forEach((blockObj) => {
+          if (
+            JSON.stringify(Object.keys(blockObj).sort()) !==
+            JSON.stringify(['question', 'answer'].sort())
+          ) {
+            return { error: 'brief_data.block has different keys', blockObj }
+          }
+        })
+      }
+    })
+    if (isValidKeys) {
+      return { error: 'brief_data has different keys', isValidKeys }
+    }
+  }
+
+  return { error: null }
+}
 
 export const getWords = async ({ zip, repo, wordObjects }) => {
   if (!zip || !repo || !wordObjects) {
@@ -639,4 +672,37 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
     }
   })
   return await Promise.all(promises)
+}
+
+export const stepValidation = (step) => {
+  try {
+    const obj = JSON.parse(JSON.stringify(step))
+    if (!obj || typeof obj !== 'object') {
+      throw new Error('This is incorrect json')
+    }
+    if (
+      JSON.stringify(Object.keys(step)?.sort()) !==
+      JSON.stringify(['intro', 'description', 'title', 'id'].sort())
+    ) {
+      throw new Error('Step has different keys')
+    }
+  } catch (error) {
+    return { error }
+  }
+  return { error: null }
+}
+
+export const stepsValidation = (steps) => {
+  if (!steps?.length) {
+    return { error: 'This is incorrect json', steps }
+  }
+  for (const step of steps) {
+    try {
+      const { error } = stepValidation(step)
+      if (error) throw error
+    } catch (error) {
+      return { error }
+    }
+  }
+  return { error: null }
 }

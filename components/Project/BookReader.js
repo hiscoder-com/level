@@ -26,7 +26,6 @@ function BookReader() {
     query: { code, bookid },
   } = useRouter()
   const [books] = useGetBooks({
-    token: user?.access_token,
     code,
   })
   const [project] = useProject({ code })

@@ -83,7 +83,7 @@ function BlindEditor({ config }) {
       verse_id: verseObjects[index].verse_id,
     })
     if (res.error || !res) {
-      toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+      toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
         duration: 8000,
       })
       console.log(res)
