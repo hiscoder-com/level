@@ -51,7 +51,9 @@ function Steps({ updateSteps, customSteps = [] }) {
                   </div>
                 ))}
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full">
-                  <div className="w-auto md:w-1/6 font-bold">{t('Tools')}</div>
+                  <div className="w-auto md:w-1/6 font-bold">
+                    {t('project-edit:Tools')}
+                  </div>
                   <div className="flex flex-wrap justify-start gap-2 w-auto md:w-5/6">
                     {step?.config?.map((config, idx_config) => (
                       <div

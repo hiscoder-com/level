@@ -7,7 +7,6 @@ import Down from 'public/arrow-down.svg'
 function BasicInformation({
   errors,
   register,
-  user,
   methods,
   setIsOpenLanguageCreate,
   uniqueCheck = false,
