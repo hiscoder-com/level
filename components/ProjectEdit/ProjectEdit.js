@@ -75,6 +75,18 @@ function ProjectEdit() {
       keepDirtyValues: true,
     },
   })
+  const {
+    register: registerSmall,
+    handleSubmit: handleSubmitSmall,
+    formState: { errors: errorsSmall },
+    getValues: getValuesSmall,
+  } = useForm({
+    mode: 'onChange',
+    values: defaults,
+    resetOptions: {
+      keepDirtyValues: true,
+    },
+  })
   const errorsBasicInfo = { errors }
   const saveBasicToDb = async (basicInfo) => {
     const { title, code: codeProject, languageId, origtitle } = basicInfo
@@ -89,15 +101,15 @@ function ProjectEdit() {
           language_id: languageId,
           orig_title: origtitle,
         },
-        user_id: user?.id,
       })
       .then(() => {
         mutateProject()
+        toast.success(t('SaveSuccess'))
         if (codeProject !== code) {
           replace(
             {
               pathname: `/projects/${codeProject}/edit`,
-              query: { setting: 'general' },
+              query: { setting: 'basic' },
             },
             undefined,
             { shallow: true }
@@ -136,22 +148,20 @@ function ProjectEdit() {
     })
     setCustomSteps(_steps)
   }
-
   const tabs = useMemo(
     () =>
       [
         {
-          id: 'general',
+          id: 'basic',
           access: isAdminAccess,
-          label: 'project-edit:General',
+          label: 'project-edit:Basic',
           panel: (
             <div className="card space-y-7">
-              <h3 className="text-xl font-bold">{t('BasicInformation')}</h3>
+              <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
                   register={register}
                   errors={errors}
-                  user={user}
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValues('code') !== code}
                 />
@@ -198,10 +208,10 @@ function ProjectEdit() {
         {
           id: 'steps',
           access: isAdminAccess,
-          label: 'Steps',
+          label: 'project-edit:Steps',
           panel: (
             <div className="card space-y-7">
-              <p className="text-xl font-bold">{t('Steps')}</p>
+              <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
               <div className="space-y-7">
                 <Steps customSteps={customSteps} updateSteps={updateSteps} />
               </div>
@@ -317,13 +327,12 @@ function ProjectEdit() {
         <div className="space-y-7 divide-y divide-slate-900">
           <div className="space-y-7">
             <h3 className="text-lg font-bold">{t('project-edit:BasicInformation')}</h3>
-            <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
+            <form className="space-y-7" onSubmit={handleSubmitSmall(saveBasicToDb)}>
               <BasicInformation
-                register={register}
-                errors={errors}
-                user={user}
+                register={registerSmall}
+                errors={errorsSmall}
                 setIsOpenLanguageCreate={setIsOpenLanguageCreate}
-                uniqueCheck={getValues('code') !== code}
+                uniqueCheck={getValuesSmall('code') !== code}
               />
               <input className="btn-primary" type="submit" value={t('Save')} />
             </form>

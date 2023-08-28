@@ -10,7 +10,7 @@ export default async function projectHandler(req, res) {
   let data = {}
   const {
     query: { code },
-    body: { basicInfo, user_id },
+    body: { basicInfo },
     method,
   } = req
   switch (method) {
@@ -39,7 +39,6 @@ export default async function projectHandler(req, res) {
           title,
           code: new_code,
           project_code: code,
-          user_id,
         })
         if (error) throw error
       } catch (error) {

@@ -23,7 +23,6 @@ function BriefBlock({ access, title = false }) {
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [editableMode, setEditableMode] = useState(false)
   const [hidden, setHidden] = useState(true)
-
   const {
     query: { code },
   } = useRouter()
@@ -199,6 +198,7 @@ function BriefBlock({ access, title = false }) {
                                   access={access}
                                   subIndex={blockIndex}
                                   className="input-primary"
+                                  editable={access}
                                 />
                               </div>
                             </div>
@@ -216,6 +216,7 @@ function BriefBlock({ access, title = false }) {
                           index={index}
                           access={access}
                           className="input-primary"
+                          editable={access}
                         />
                       </div>
                     </li>

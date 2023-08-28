@@ -27,6 +27,7 @@
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
     DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
     DROP TRIGGER IF EXISTS alphabet_change_trigger ON PUBLIC.dictionaries;
+    DROP TRIGGER IF EXISTS alphabet_insert_trigger ON PUBLIC.dictionaries;
     DROP TRIGGER IF EXISTS on_public_chapters_update ON PUBLIC.chapters;
 
   -- END DROP TRIGGER
@@ -58,6 +59,7 @@
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.alphabet_change_handler;
+    DROP FUNCTION IF EXISTS PUBLIC.alphabet_insert_handler;
     DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
@@ -755,7 +757,30 @@
 
       RETURN NEW;
     END;
-  $$;
+  $$;  
+
+  CREATE FUNCTION PUBLIC.alphabet_insert_handler() RETURNS TRIGGER
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+    new_letter_exists BOOLEAN;
+  BEGIN
+    -- Check if the letter exists in the alphabet
+    SELECT EXISTS(
+      SELECT 1 FROM PUBLIC.projects
+      WHERE jsonb_exists(dictionaries_alphabet, upper(NEW.title::VARCHAR(1)))
+      AND projects.id = NEW.project_id
+    ) INTO new_letter_exists;
+
+    -- If the letter does not exist, add it to the project alphabet
+    IF NOT new_letter_exists THEN
+      UPDATE PUBLIC.projects
+      SET dictionaries_alphabet = dictionaries_alphabet || jsonb_build_array(upper(NEW.title::VARCHAR(1)))
+      WHERE projects.id = NEW.project_id;
+    END IF;
+
+    RETURN NEW;
+  END;
+$$;
 
   CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -1241,11 +1266,11 @@
     INSERT
       WITH CHECK (admin_only());
 
-    DROP POLICY IF EXISTS "Изменять может админ" ON PUBLIC.steps;
+    DROP POLICY IF EXISTS "Обновлять может только админ" ON PUBLIC.steps;
 
-    CREATE POLICY "Изменять может админ" ON PUBLIC.steps FOR
-    UPDATE
-      USING (admin_only());
+    CREATE POLICY "Обновлять может только админ" ON PUBLIC.steps FOR
+      UPDATE
+          USING (admin_only());
   -- END RLS
 -- END STEPS
 
@@ -1280,11 +1305,11 @@
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    DROP POLICY IF EXISTS "Добавлять можно только админу" ON PUBLIC.books;
+    DROP POLICY IF EXISTS "Добавлять можно админу или координатору" ON PUBLIC.books;
 
-    CREATE POLICY "Добавлять можно только админу" ON PUBLIC.books FOR
-    INSERT
-      WITH CHECK (admin_only());
+    CREATE POLICY "Добавлять можно админу или координатору" ON PUBLIC.books FOR
+      INSERT
+      WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
 
   -- END RLS
 -- END BOOKS
@@ -1586,6 +1611,10 @@
   CREATE TRIGGER alphabet_change_trigger AFTER
     UPDATE
       ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.alphabet_change_handler();
+
+  CREATE TRIGGER alphabet_insert_trigger BEFORE
+  INSERT
+    ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.alphabet_insert_handler();
 
   CREATE TRIGGER on_public_chapters_update BEFORE
     UPDATE
