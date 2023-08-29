@@ -25,7 +25,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const router = useRouter()
-
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
   }, [router.pathname])
@@ -45,11 +44,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
   }, [supabase, user])
 
   return (
-    <div
-      className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''} ${
-        hideAppbar ? 'hidden md:block' : 'block'
-      }`}
-    >
+    <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
