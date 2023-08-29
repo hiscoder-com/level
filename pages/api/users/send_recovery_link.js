@@ -1,10 +1,10 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
-
 export default async function sendRecoveryHandler(req, res) {
-  if (!req.headers.token) {
-    res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-  const supabase = createPagesServerClient({ req, res })
 
   const {
     method,

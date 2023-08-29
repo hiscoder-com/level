@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import LeftArrow from 'public/left-arrow.svg'
+import { useCurrentUser } from 'lib/UserContext'
 
 export default function ConfessionSteps() {
   const supabase = useSupabaseClient()
@@ -15,6 +16,7 @@ export default function ConfessionSteps() {
   const router = useRouter()
   const [checked, setChecked] = useState(false)
   const [page, setPage] = useState(0)
+  const { getUser } = useCurrentUser()
 
   const confessionSteps = [
     <p
@@ -80,6 +82,7 @@ export default function ConfessionSteps() {
     if (error) {
       console.error(error)
     } else {
+      getUser()
       router.push(`/account`)
     }
   }

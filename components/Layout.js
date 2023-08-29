@@ -30,7 +30,9 @@ function Layout({ backgroundColor, children, hideAppbar }) {
           onClick={() => setIsOpenSideBar(false)}
         ></div>
         <main>
-          <div className={`pt-5 px-5 lg:px-8 ${hideAppbar ? 'mt-0 ' : 'mt-14'} md:mt-14`}>
+          <div
+            className={`pt-5 px-5 lg:px-8 ${hideAppbar ? 'mt-0 ' : 'mt-14 sm:mt-auto'} `}
+          >
             {children}
           </div>
         </main>

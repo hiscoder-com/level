@@ -91,7 +91,6 @@ function VerseDivider({ verses }) {
       console.error(error)
       toast.error(t('SaveFailed'))
     } else {
-      console.log('Success', data)
       toast.success(t('SaveSuccess'))
     }
   }

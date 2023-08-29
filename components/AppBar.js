@@ -29,37 +29,19 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
   }, [router.pathname])
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => getPrevPath, [router.asPath])
-
-  const hasAccess = async () => {
-    try {
-      const { data, error } = await supabase.rpc('has_access')
-      if (error) throw error
-      setAccess(data)
-    } catch (error) {
-      return error
-    }
-  }
-  function getPrevPath() {
-    const storage = globalThis?.sessionStorage
-    if (!storage) return
-    const prevPath = storage.getItem('currentPath')
-    storage.setItem('prevPath', prevPath)
-    storage.setItem('currentPath', globalThis.location.pathname)
-
-    if (prevPath.split('/').splice(-1)[0] === 'confession-steps') {
-      if (user?.id) {
-        hasAccess()
+  useEffect(() => {
+    const hasAccess = async () => {
+      try {
+        const { data, error } = await supabase.rpc('has_access')
+        if (error) throw error
+        setAccess(data)
+      } catch (error) {
+        return error
       }
     }
-  }
-  useEffect(() => {
     if (user?.id) {
       hasAccess()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase, user])
 
   return (
@@ -71,11 +53,10 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7 cursor-pointer">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
-
           <div
             className={`flex justify-center w-full ${
               access && !isStepPage ? '-ml-10' : ''
-            } md:ml-0`}
+            } md:ml-0  ${!access ? 'pointer-events-none ' : ''}`}
           >
             <Link href="/account">
               <VCANA_logo className="h-6" />
@@ -111,7 +92,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
               <div className="hidden md:flex">
                 <Timer time={stepConfig.time} />
               </div>
-
               <Dropdown description={stepConfig?.description} user={user} />
             </div>
           </>

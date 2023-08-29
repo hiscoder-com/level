@@ -63,7 +63,6 @@ function PasswordRecovery() {
 
     if (user) {
       setIsRecovering(true)
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put('/api/users/update_password', {
           password,

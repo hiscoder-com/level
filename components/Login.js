@@ -100,7 +100,6 @@ function Login() {
     }
     if (validateEmail(email)) {
       setIsSendingEmail(true)
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post('/api/users/send_recovery_link', {
           email,
