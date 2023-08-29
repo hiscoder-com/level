@@ -6,13 +6,41 @@
 	html {
 		font-family: "Roboto", system-ui, sans-serif;
 	}
+
 	body {
 		@apply text-slate-900
+	}
+
+	body.no-scrollbar {
+		scrollbar-width: none !important;
+	}
+
+	body.no-scrollbar::-webkit-scrollbar {
+		display: none !important;
+	}
+	
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: #4D4D4D #DBDBDB;
+	}
+
+	*::-webkit-scrollbar {
+		width: 7px;
+	}
+
+	*::-webkit-scrollbar-track {
+		background: #DBDBDB;
+		border-radius: 10px;
+	}
+
+	*::-webkit-scrollbar-thumb {
+		background-color: #4D4D4D;
+		border-radius: 10px
 	}
 }
 
 .appbar {
-	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-white sm:bg-inherit z-[999] sm:z-auto mx-auto flex flex-1 flex-col justify-center sm:justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
+	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-white sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
 }
 
 .step {
@@ -85,6 +113,13 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300;
 }
 
+.btn-slate-base {
+	@apply text-white bg-slate-600 border-slate-600
+	hover:bg-slate-700 hover:border-slate-700
+	active:bg-slate-800 active:border-slate-800
+	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300 fill-white;
+}
+
 .btn-start {
 	@apply btn-cyan-base rounded-full duration-300 uppercase text-2xl font-medium cursor-pointer;
 }
@@ -99,6 +134,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .btn-gray-red {
 	@apply btn btn-gray-red-base;
+}
+
+.btn-slate {
+	@apply btn-slate-base rounded-3xl py-2 px-7 text-center cursor-pointer;
 }
 
 .btn-white {
@@ -137,11 +176,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .input-blue {
 	@apply input-base text-blue-250 placeholder-gray-400 border-blue-250 bg-white
 	focus:border-blue-450;
-}
-
-.input-invalid {
-	@apply input-base text-red-600 border-red-500 bg-red-50
-	focus:border-red-700;
 }
 
 .layout-appbar {
@@ -243,23 +277,30 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .card {
-  @apply p-3 sm:p-7 bg-white rounded-2xl border border-gray-350 shadow-md;
+  @apply p-3 sm:py-5 sm:px-8 bg-white rounded-2xl border border-gray-350 shadow-md;
+}
+
+@screen sm {
+  .card-md {
+	 @apply p-3 sm:py-5 sm:px-8 bg-white rounded-2xl border border-gray-350 shadow-md;
+}
 }
 
 .btn-base {
-  @apply px-5 border rounded-3xl cursor-pointer text-center text-base disabled:text-gray-400 disabled:cursor-default;
+  @apply px-5 py-2 border rounded-3xl cursor-pointer text-center text-sm md:text-base;
 }
 
 .btn-primary {
-  @apply btn-base py-2 text-slate-900 border-slate-600 hover:bg-gray-200 hover:border-gray-200 disabled:bg-white disabled:border-gray-300;
+  @apply btn-base text-slate-900 border-slate-600 hover:bg-gray-200 hover:border-gray-200 disabled:bg-white disabled:border-gray-300
+	disabled:text-gray-400 disabled:cursor-default;
 }
 
 .btn-secondary {
-  @apply btn-base py-2 text-slate-900 bg-gray-200 hover:bg-white disabled:hover:bg-gray-200;
+  @apply btn-base text-slate-900 bg-gray-200 hover:bg-white;
 }
 
 .btn-red {
-  @apply btn-base py-2 text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
+  @apply btn-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
 }
 
 .first-check path:nth-child(1) {
@@ -271,7 +312,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 .third-check path:nth-child(3) {
 	@apply fill-cyan-700
 }
-
 .input-primary {
-	@apply p-2 w-full rounded-lg bg-white text-slate-900 border border-slate-900 empty:border-cyan-300 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 disabled:placeholder-gray-300
+	@apply px-4 py-2 w-full rounded-lg text-slate-900 border border-slate-900 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300
 }
+.input-invalid {
+	@apply p-2 w-full rounded-lg bg-white text-red-600 border border-red-500 placeholder-cyan-200 focus:border-red-700 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300;
+}
+

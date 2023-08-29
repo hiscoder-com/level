@@ -1,11 +1,12 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import supabaseApi from 'utils/supabaseServer'
 
 export default async function chapterHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-  const supabase = createPagesServerClient({ req, res })
-
   let data = {}
   const {
     query: { code, book_code, chapter_id },

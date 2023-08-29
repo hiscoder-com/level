@@ -55,7 +55,6 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
       )
     )
   const handleSaveProperties = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/book_properties/${book.id}`, {
         properties,
@@ -132,7 +131,6 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
 
   const handleSaveLevelChecks = () => {
     if (translationLink) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/projects/${code}/books/${properties}/level_checks`, {
           level_checks: translationLink,

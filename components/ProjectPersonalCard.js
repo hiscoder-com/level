@@ -11,7 +11,7 @@ import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
-function ProjectPersonalCard({ project, token, user }) {
+function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
 
   const { locale } = useRouter()
@@ -21,11 +21,9 @@ function ProjectPersonalCard({ project, token, user }) {
   const { t } = useTranslation(['common', 'books'])
 
   const { briefResume, isBrief } = useBriefState({
-    token,
     project_id: project?.id,
   })
   const [{ isCoordinatorAccess }, { isLoading }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code: project?.code,
   })
@@ -65,7 +63,6 @@ function ProjectPersonalCard({ project, token, user }) {
     return isRepeatIntro
   }
   const [books] = useGetBooks({
-    token,
     code: project?.code,
   })
   const countChaptersVerses = useMemo(() => {
@@ -105,7 +102,7 @@ function ProjectPersonalCard({ project, token, user }) {
               <div key={i} className="card flex flex-col sm:flex-row gap-7 p-7 h-full">
                 {!isLoading && currentSteps && project ? (
                   <>
-                    <div className="flex flex-col gap-7 w-1/2 lg:w-1/3">
+                    <div className="flex flex-col gap-7 w-auto lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
                           href={`/projects/${project.code}/books/${book}`}
@@ -129,7 +126,7 @@ function ProjectPersonalCard({ project, token, user }) {
                             {project?.title}
                           </Link>
                         </div>
-                        <div className="flex gap-3">
+                        <div className="flex flex-wrap gap-3">
                           <p>{t('Translator_other')}:</p>
                           <Translators projectCode={project?.code} size="25px" />
                         </div>

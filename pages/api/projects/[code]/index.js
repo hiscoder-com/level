@@ -1,14 +1,16 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import supabaseApi from 'utils/supabaseServer'
 
-export default async function languageProjectHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
+export default async function projectHandler(req, res) {
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-  const supabase = createPagesServerClient({ req, res })
-
   let data = {}
   const {
     query: { code },
+    body: { basicInfo },
     method,
   } = req
   switch (method) {
@@ -17,7 +19,7 @@ export default async function languageProjectHandler(req, res) {
         const { data: value, error } = await supabase
           .from('projects')
           .select(
-            'id, title, orig_title, code, type, method, languages(orig_name,code), dictionaries_alphabet, base_manifest'
+            'id, title, orig_title, code, type, method, languages(id,orig_name,code), dictionaries_alphabet, base_manifest'
           )
           .eq('code', code)
           .maybeSingle()
@@ -27,8 +29,25 @@ export default async function languageProjectHandler(req, res) {
         return res.status(404).json({ error })
       }
       return res.status(200).json({ ...data })
+    case 'PUT':
+      const { code: new_code, title, orig_title, language_id } = basicInfo
+
+      try {
+        const { error } = await supabase.rpc('update_project_basic', {
+          language_id,
+          orig_title,
+          title,
+          code: new_code,
+          project_code: code,
+        })
+        if (error) throw error
+      } catch (error) {
+        return res.status(404).json({ error })
+      }
+      return res.status(200).json({ success: 'updated' })
+
     default:
-      res.setHeader('Allow', ['GET'])
+      res.setHeader('Allow', ['GET', 'PUT'])
       return res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

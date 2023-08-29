@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import axios from 'axios'
 
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'next-i18next'
 
 import { toast, Toaster } from 'react-hot-toast'
 
@@ -33,9 +33,8 @@ function CommandEditor({ config }) {
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
 
-  const [currentProject] = useProject({ token: user?.access_token, code: project })
+  const [currentProject] = useProject({ code: project })
   const [chapter] = useGetChapter({
-    token: user?.access_token,
     code: project,
     book_code: book,
     chapter_id: chapter_num,
@@ -88,13 +87,14 @@ function CommandEditor({ config }) {
     let mySubscription = null
     if (chapter?.id) {
       mySubscription = supabase
-        .channel('public' + 'verses:chapter_id=eq.' + chapter.id)
+        .channel('public:verses' + chapter.id)
         .on(
           'postgres_changes',
           {
             event: 'UPDATE',
             schema: 'public',
-            table: 'verses:chapter_id=eq.' + chapter.id,
+            table: 'verses',
+            filter: 'chapter_id=eq.' + chapter.id,
           },
           (payload) => {
             const { id, text } = payload.new
@@ -102,9 +102,7 @@ function CommandEditor({ config }) {
           }
         )
         .subscribe()
-    }
-    return () => {
-      if (mySubscription) {
+      return () => {
         supabase.removeChannel(mySubscription)
       }
     }
@@ -120,12 +118,11 @@ function CommandEditor({ config }) {
         return prev
       }
       prev[id].verse = text
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .put(`/api/save_verse`, { id: prev[id].verse_id, text })
         .then()
         .catch((error) => {
-          toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+          toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
             duration: 8000,
           })
           console.log(error)

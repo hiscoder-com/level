@@ -1,5 +1,5 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
-import { supabaseService } from 'utils/supabaseServer'
+import supabaseApi from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 import { validateNote } from 'utils/helper'
 
 const sendLog = async (log) => {
@@ -13,10 +13,12 @@ const sendLog = async (log) => {
 }
 
 export default async function notesDeleteHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-  const supabase = createPagesServerClient({ req, res })
   const {
     query: { id },
     body: { data: data_note, title },

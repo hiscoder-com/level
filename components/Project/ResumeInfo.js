@@ -2,10 +2,9 @@ import { useTranslation } from 'next-i18next'
 import { useGetBrief } from 'utils/hooks'
 import Card from './Card'
 
-function ResumeInfo({ project, user }) {
+function ResumeInfo({ project }) {
   const { t } = useTranslation(['common', 'projects'])
   const [brief] = useGetBrief({
-    token: user?.access_token,
     project_id: project?.id,
   })
 

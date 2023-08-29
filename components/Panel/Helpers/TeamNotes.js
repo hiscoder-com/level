@@ -44,18 +44,15 @@ function TeamNotes() {
   const {
     query: { project: code },
   } = useRouter()
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
   const [notes, { mutate }] = useTeamNotes({
-    token: user?.access_token,
     project_id: project?.id,
   })
   const [{ isModeratorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code,
   })
   const saveNote = () => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .put(`/api/team_notes/${activeNote?.id}`, activeNote)
       .then(() => {
@@ -76,7 +73,6 @@ function TeamNotes() {
 
   const addNote = () => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post('/api/team_notes', { id, project_id: project?.id })
       .then(() => mutate())
@@ -84,7 +80,6 @@ function TeamNotes() {
   }
 
   const removeNote = (id) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/team_notes/${id}`)
       .then(() => {

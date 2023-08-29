@@ -21,10 +21,13 @@ function AssignParticipant({
         setOpenModalAssign(false)
         setSelectedUser('')
       }}
-      additionalClasses="overflow-y-visible"
+      className={{
+        dialogPanel:
+          'w-full max-w-md align-middle p-6 bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 overflow-y-visible rounded-3xl',
+      }}
     >
       <div className="flex flex-col min-h-[15vh] gap-7">
-        <div className="text-xl sm:text-2xl text-center">{t(label)}</div>
+        <div className="text-base sm:text-xl text-center">{t(label)}</div>
         <ListBox
           options={listOfAssigned?.map((el) => ({ label: el.login, value: el.id }))}
           selectedOption={selectedUser}

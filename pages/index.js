@@ -8,8 +8,9 @@ import StartPage from 'components/StartPage'
 
 export default function Home() {
   const { t } = useTranslation('common')
+
   return (
-    <main className="layout-empty bg-[#f4f4f4]">
+    <main className="layout-empty bg-zinc-100">
       <Head>
         <title>{t('V-CANA')}</title>
         <meta name="description" content="VCANA" />

@@ -1,11 +1,11 @@
 import { useState } from 'react'
 
-import AppBar from 'components/AppBar'
 import { Toaster } from 'react-hot-toast'
+
+import AppBar from 'components/AppBar'
 
 function Layout({ backgroundColor, children, hideAppbar }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
-
   return (
     <>
       <div
@@ -20,6 +20,7 @@ function Layout({ backgroundColor, children, hideAppbar }) {
           setIsOpenSideBar={setIsOpenSideBar}
           isOpenSideBar={isOpenSideBar}
         />
+
         <div
           className={
             isOpenSideBar

@@ -34,7 +34,6 @@ function ChapterList() {
     push,
   } = useRouter()
   const [{ isCoordinatorAccess, isModeratorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code,
   })
@@ -43,20 +42,17 @@ function ChapterList() {
   const [creatingChapter, setCreatingChapter] = useState(false)
   const [downloadingChapter, setDownloadingChapter] = useState(null)
   const [currentSteps, setCurrentSteps] = useState([])
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
   const { briefResume, isBrief } = useBriefState({
-    token: user?.access_token,
     project_id: project?.id,
   })
 
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
-    token: user?.access_token,
     code,
     book_code: bookid,
   })
 
   const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({
-    token: user?.access_token,
     code,
     chapters: chapters?.map((el) => el.id),
   })
@@ -74,7 +70,7 @@ function ChapterList() {
         .rpc('get_current_steps', { project_id: project.id })
         .then((res) => setCurrentSteps(res.data))
     }
-  }, [project.id, supabase])
+  }, [project?.id, supabase])
 
   const getCurrentStep = (chapter) => {
     const step = currentSteps
@@ -217,10 +213,12 @@ function ChapterList() {
           <Modal
             isOpen={isOpenDownloading}
             closeHandle={setIsOpenDownloading}
-            additionalClasses="overflow-y-visible"
+            className={{
+              dialogPanel:
+                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 overflow-y-visible rounded-3xl',
+            }}
           >
             <Download
-              user={user}
               project={project}
               bookCode={bookid}
               chapterNum={downloadingChapter}
