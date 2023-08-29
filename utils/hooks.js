@@ -501,6 +501,11 @@ export function useAccess({ user_id, code }) {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
+  const isTranslatorAccess = useMemo(
+    () => ['admin', 'coordinator', 'moderator', 'translator'].includes(level),
+    [level]
+  )
+
   const isModeratorAccess = useMemo(
     () => ['admin', 'coordinator', 'moderator'].includes(level),
     [level]
@@ -512,7 +517,26 @@ export function useAccess({ user_id, code }) {
   const isAdminAccess = useMemo(() => 'admin' === level, [level])
 
   return [
-    { isModeratorAccess, isCoordinatorAccess, isAdminAccess },
+    { isModeratorAccess, isCoordinatorAccess, isAdminAccess, isTranslatorAccess },
     { mutate, error, isLoading },
   ]
+}
+
+/**
+ *hook returns information about steps of current project
+ * @param {string} code code of project
+ *
+ * @returns {array}
+ */
+export function useGetSteps({ code }) {
+  const {
+    data: steps,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(code ? [`/api/projects/${code}/steps`] : null, fetcher, {
+    revalidateOnFocus: true,
+    revalidateIfStale: true,
+  })
+  return [steps, { mutate, error, isLoading }]
 }

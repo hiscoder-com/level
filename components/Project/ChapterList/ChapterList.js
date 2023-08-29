@@ -213,10 +213,12 @@ function ChapterList() {
           <Modal
             isOpen={isOpenDownloading}
             closeHandle={setIsOpenDownloading}
-            additionalClasses="overflow-y-visible"
+            className={{
+              dialogPanel:
+                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 overflow-y-visible rounded-3xl',
+            }}
           >
             <Download
-              user={user}
               project={project}
               bookCode={bookid}
               chapterNum={downloadingChapter}

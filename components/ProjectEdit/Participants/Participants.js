@@ -16,7 +16,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 import { useCoordinators, useProject, useSupporters, useTranslators } from 'utils/hooks'
 import SupportersList from './SupportersList'
 
-function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAccess } }) {
+function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
   const supabase = useSupabaseClient()
 
   const { t } = useTranslation(['common', 'project-edit', 'projects'])
@@ -32,7 +32,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
   const [supporters, { mutate: mutateSupporter }] = useSupporters({
     code,
   })
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const [listOfTranslators, setListOfTranslators] = useState([])
   const [listOfCoordinators, setListOfCoordinators] = useState([])
@@ -115,8 +115,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
       .catch(console.log)
   }
   return (
-    <div className="card text-slate-900">
-      <h3 className="hidden sm:block mb-5 text-xl font-bold">{t('Participants')}</h3>
+    <>
       <div className="hidden sm:block divide-y divide-black">
         <div className="flex flex-col gap-7 pb-5">
           <div className="flex justify-between items-center gap-2">
@@ -185,7 +184,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
             closeHandle={() => setSelectedModerator(false)}
           >
             <div className="flex flex-col justify-center gap-7 min-h-[15vh]">
-              <div className="text-2xl text-center">
+              <div className="text-base md:text-xl text-center">
                 {moderatorIds?.includes(selectedModerator?.id)
                   ? t('project-edit:RemovingModerator')
                   : t('project-edit:AssigningModerator')}
@@ -329,7 +328,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 export default Parcticipants

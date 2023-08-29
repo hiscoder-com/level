@@ -4,9 +4,9 @@ import { useTranslation } from 'next-i18next'
 
 import { useUsers } from 'utils/hooks'
 
-function UsersList({ access_token }) {
+function UsersList() {
   const { t } = useTranslation(['users'])
-  const [users, { error, isLoading }] = useUsers(access_token)
+  const [users, { error, isLoading }] = useUsers()
   return (
     <table className="table-auto bg-white">
       <thead>

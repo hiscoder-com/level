@@ -1,5 +1,10 @@
 {
-  "version": "0.10.0",
-  "date": "2022-06-06",
-  "dependencies": ["npm/@texttree/notepad-rcl"]
+  "version": "0.5.0",
+  "date": "2023-28-08",
+  "dependencies": [
+    "npm/@texttree/notepad-rcl",
+    "npm/@texttree/obs-format-convert-rcl",
+    "npm/@texttree/tn-quote",
+    "npm/@texttree/translation-words-helpers"
+  ]
 }

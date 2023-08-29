@@ -29,6 +29,7 @@
     DROP TRIGGER IF EXISTS on_public_personal_notes_update ON PUBLIC.personal_notes;
     DROP TRIGGER IF EXISTS on_public_team_notes_update ON PUBLIC.team_notes;
     DROP TRIGGER IF EXISTS alphabet_change_trigger ON PUBLIC.dictionaries;
+    DROP TRIGGER IF EXISTS alphabet_insert_trigger ON PUBLIC.dictionaries;
     DROP TRIGGER IF EXISTS on_public_chapters_update ON PUBLIC.chapters;
 
   -- END DROP TRIGGER
@@ -60,12 +61,16 @@
     DROP FUNCTION IF EXISTS PUBLIC.change_finish_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.change_start_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.alphabet_change_handler;
+    DROP FUNCTION IF EXISTS PUBLIC.alphabet_insert_handler;
     DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.update_chapters_in_books;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_chapter;
     DROP FUNCTION IF EXISTS PUBLIC.update_verses_in_chapters;
     DROP FUNCTION IF EXISTS PUBLIC.insert_additional_verses;
     DROP FUNCTION IF EXISTS PUBLIC.update_resources_in_projects;
+    DROP FUNCTION IF EXISTS PUBLIC.update_project_basic;
+    DROP FUNCTION IF EXISTS PUBLIC.update_multiple_steps;
+    
 
   -- END DROP FUNCTION
 
@@ -647,19 +652,16 @@
   $$;
 
   -- creating a new brief for the project
-  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN) RETURNS BOOLEAN
+  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN, data_collection JSON) RETURNS BIGINT
       LANGUAGE plpgsql SECURITY DEFINER AS $$
       DECLARE
-        brief_JSON JSON;
+        brief_id BIGINT;
       BEGIN
         IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
           RETURN false;
         END IF;
-        SELECT brief FROM PUBLIC.methods
-          JOIN PUBLIC.projects ON (projects.method = methods.title)
-          WHERE projects.id = project_id INTO brief_JSON;
-          INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, brief_JSON, is_enable);
-        RETURN true;
+        INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, data_collection, is_enable) RETURNING id INTO brief_id;
+        RETURN brief_id;
       END;
   $$;
 
@@ -764,7 +766,30 @@
 
       RETURN NEW;
     END;
-  $$;
+  $$;  
+
+  CREATE FUNCTION PUBLIC.alphabet_insert_handler() RETURNS TRIGGER
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+    new_letter_exists BOOLEAN;
+  BEGIN
+    -- Check if the letter exists in the alphabet
+    SELECT EXISTS(
+      SELECT 1 FROM PUBLIC.projects
+      WHERE jsonb_exists(dictionaries_alphabet, upper(NEW.title::VARCHAR(1)))
+      AND projects.id = NEW.project_id
+    ) INTO new_letter_exists;
+
+    -- If the letter does not exist, add it to the project alphabet
+    IF NOT new_letter_exists THEN
+      UPDATE PUBLIC.projects
+      SET dictionaries_alphabet = dictionaries_alphabet || jsonb_build_array(upper(NEW.title::VARCHAR(1)))
+      WHERE projects.id = NEW.project_id;
+    END IF;
+
+    RETURN NEW;
+  END;
+$$;
 
   CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -885,6 +910,52 @@
 
     END;
   $$;
+
+  -- create update_project_basic
+  CREATE FUNCTION PUBLIC.update_project_basic( project_code TEXT,title TEXT,orig_title TEXT,code TEXT, language_id BIGINT ) RETURNS BOOLEAN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE
+      project_id BIGINT;
+    BEGIN
+      SELECT id FROM public.projects WHERE projects.code = project_code INTO project_id;
+        IF authorize(auth.uid(), project_id) NOT IN ('admin') THEN
+          RAISE EXCEPTION SQLSTATE '42000' USING MESSAGE = 'No access rights to this function';
+        END IF;
+      IF update_project_basic.project_code != update_project_basic.code THEN
+        SELECT id FROM public.projects WHERE projects.code = update_project_basic.code INTO project_id;
+        IF project_id IS NOT NULL THEN
+          RAISE EXCEPTION SQLSTATE '23505' USING MESSAGE = 'This project code is already in use';
+        END IF;
+      END IF;     
+
+      UPDATE PUBLIC.projects SET code = update_project_basic.code, title=update_project_basic.title, orig_title = update_project_basic.orig_title, language_id = update_project_basic.language_id WHERE projects.id = project_id;
+
+      RETURN TRUE;
+
+    END;
+   $$;
+
+  -- update multiple steps
+  CREATE FUNCTION update_multiple_steps(steps jsonb[], project_id BIGINT) RETURNS BOOLEAN AS $$
+    DECLARE
+      step jsonb;
+    BEGIN
+      IF authorize(auth.uid(), update_multiple_steps.project_id) NOT IN ('admin') THEN
+        RETURN FALSE;
+      END IF;
+      FOREACH step IN ARRAY update_multiple_steps.steps
+      LOOP
+        UPDATE public.steps
+        SET
+          title = (step->>'title')::TEXT,
+          description = (step->>'description')::TEXT,
+          intro = (step->>'intro')::TEXT
+         WHERE id = (step->>'id')::BIGINT AND update_multiple_steps.project_id = public.steps.project_id;
+      END LOOP;
+      RETURN TRUE;
+    END;
+  $$ LANGUAGE plpgsql;
+
 -- END CREATE FUNCTION
 
 -- USERS
@@ -1240,6 +1311,12 @@
     CREATE POLICY "Добавлять можно только админу" ON PUBLIC.steps FOR
     INSERT
       WITH CHECK (admin_only());
+
+    DROP POLICY IF EXISTS "Обновлять может только админ" ON PUBLIC.steps;
+
+    CREATE POLICY "Обновлять может только админ" ON PUBLIC.steps FOR
+      UPDATE
+          USING (admin_only());
   -- END RLS
 -- END STEPS
 
@@ -1274,11 +1351,12 @@
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    DROP POLICY IF EXISTS "Добавлять можно админу и координатору" ON PUBLIC.books;
+    DROP POLICY IF EXISTS "Добавлять можно админу или координатору" ON PUBLIC.books;
 
-    CREATE POLICY "Добавлять можно админу и координатору" ON PUBLIC.books FOR
-    INSERT
+    CREATE POLICY "Добавлять можно админу или координатору" ON PUBLIC.books FOR
+      INSERT
       WITH CHECK (authorize(auth.uid(), project_id) IN ('admin', 'coordinator'));
+
   -- END RLS
 -- END BOOKS
 
@@ -1579,6 +1657,10 @@
   CREATE TRIGGER alphabet_change_trigger AFTER
     UPDATE
       ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.alphabet_change_handler();
+
+  CREATE TRIGGER alphabet_insert_trigger BEFORE
+  INSERT
+    ON PUBLIC.dictionaries FOR each ROW EXECUTE FUNCTION PUBLIC.alphabet_insert_handler();
 
   CREATE TRIGGER on_public_chapters_update BEFORE
     UPDATE

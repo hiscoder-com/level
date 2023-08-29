@@ -11,6 +11,12 @@ const nextConfig = {
       test: /\.svg$/,
       use: '@svgr/webpack',
     })
+
+    config.module.rules.push({
+      test: /\.md$/,
+      type: 'asset/source',
+    })
+
     return config
   },
   i18n,
