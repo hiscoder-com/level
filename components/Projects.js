@@ -1,5 +1,6 @@
 import ProjectCard from './ProjectCard'
 import ProjectPersonalCard from './ProjectPersonalCard'
+import ProjectSupportCard from './ProjectSupportCard'
 
 import { useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -7,7 +8,6 @@ import { useCurrentUser } from 'lib/UserContext'
 export default function Projects({ type }) {
   const { user } = useCurrentUser()
   const [projects] = useProjects()
-
   let CurrentCard
   let className
   switch (type) {
@@ -18,6 +18,10 @@ export default function Projects({ type }) {
       break
     case 'account':
       CurrentCard = ProjectPersonalCard
+      className = 'flex flex-col gap-3 py-10 sm:gap-7'
+      break
+    case 'support':
+      CurrentCard = ProjectSupportCard
       className = 'flex flex-col gap-3 py-10 sm:gap-7'
       break
     default:

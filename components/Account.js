@@ -34,7 +34,8 @@ function Account() {
       router.push('/')
     }
   }, [router, user, loading])
-  const tabs = ['Account', 'projects:Projects', 'projects:CreateProject']
+
+  const tabs = ['Account', 'projects:Projects', 'Support', 'projects:CreateProject']
   return (
     <>
       <div className="mx-auto max-w-7xl">
@@ -108,8 +109,9 @@ function Account() {
                   <Projects type={'projects'} />
                 </Tab.Panel>
                 <Tab.Panel>
-                  <ProjectCreate />
+                  <Projects type={'support'} />
                 </Tab.Panel>
+                <Tab.Panel>{user?.is_admin && <ProjectCreate />}</Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
           </>
