@@ -15,11 +15,7 @@ import Modal from 'components/Modal'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseService'
 import useSupabaseClient from 'utils/supabaseClient'
-import {
-  projectIdState,
-  stepConfigState,
-  currentVerse,
-} from 'components/Panel/state/atoms'
+import { projectIdState, stepConfigState, currentVerse } from 'components/state/atoms'
 
 export default function ProgressPage({ last_step }) {
   const supabase = useSupabaseClient()

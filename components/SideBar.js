@@ -8,7 +8,7 @@ import AboutVersion from 'components/AboutVersion'
 import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
-import { aboutVersionModalIsOpen } from './Panel/state/atoms'
+import { aboutVersionModalIsOpen } from './state/atoms'
 import { useCurrentUser } from 'lib/UserContext'
 
 import Localization from 'public/localization.svg'

@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import { useSetRecoilState } from 'recoil'
 
-import { inactiveState } from './Panel/state/atoms'
+import { inactiveState } from './state/atoms'
 
 import Modal from './Modal'
 

@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 import { useRecoilState } from 'recoil'
 
 import Modal from './Modal'
-import { aboutVersionModalIsOpen } from './Panel/state/atoms'
+import { aboutVersionModalIsOpen } from './state/atoms'
 
 import packageJson from '../package.json'
 

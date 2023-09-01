@@ -9,7 +9,7 @@ import Timer from 'components/Timer'
 import Dropdown from './Dropdown'
 import SideBar from './SideBar'
 
-import { stepConfigState } from './Panel/state/atoms'
+import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
