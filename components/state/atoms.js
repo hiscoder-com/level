@@ -52,3 +52,7 @@ export const aboutVersionModalIsOpen = atom({
   key: 'aboutVersionModalIsOpen',
   default: false,
 })
+export const isSwitchingPageState = atom({
+  key: 'isSwitchingPageState',
+  default: false,
+})

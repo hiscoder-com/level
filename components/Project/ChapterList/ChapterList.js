@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
+
+import { useSetRecoilState } from 'recoil'
 
 import ChapterCreate from './ChapterCreate'
 import Download from '../Download'
@@ -22,11 +23,14 @@ import { readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
 
+import { isSwitchingPageState } from 'components/state/atoms'
+
 import Plus from '/public/plus.svg'
 
 function ChapterList() {
   const { user } = useCurrentUser()
   const supabase = useSupabaseClient()
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const {
     locale,
@@ -80,20 +84,32 @@ function ChapterList() {
       return (
         <>
           {!(!isBrief || briefResume) ? (
-            <Link
-              href={`/projects/${project?.code}/edit?setting=brief`}
-              onClick={(e) => e.stopPropagation()}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setSwitchingPage(true)
+                setTimeout(() => {
+                  push(`/projects/${project?.code}/edit?setting=brief`)
+                }, 500)
+              }}
             >
               {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
-            </Link>
+            </button>
           ) : (
-            <Link
-              href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
-              onClick={(e) => e.stopPropagation()}
+            <button
+              onClick={(e) => {
+                e.stopPropagation()
+                setSwitchingPage(true)
+                setTimeout(() => {
+                  push(
+                    `/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`
+                  )
+                }, 500)
+              }}
               className="text-sm xl:text-lg"
             >
               {step.step} {t('Step').toLowerCase()}
-            </Link>
+            </button>
           )}
         </>
       )
@@ -121,13 +137,16 @@ function ChapterList() {
                       className={`h-24 ${
                         !isCreated && isCoordinatorAccess ? 'verse-block' : ''
                       }`}
-                      onClick={() =>
-                        isCreated &&
-                        isCoordinatorAccess &&
-                        push({
-                          pathname: `/projects/${project?.code}/books/${bookid}/${num}`,
-                        })
-                      }
+                      onClick={() => {
+                        if (isCreated && isCoordinatorAccess) {
+                          setSwitchingPage(true)
+                          setTimeout(() => {
+                            push({
+                              pathname: `/projects/${project?.code}/books/${bookid}/${num}`,
+                            })
+                          }, 500)
+                        }
+                      }}
                     >
                       <div
                         className={`flex flex-col justify-between px-5 py-3 h-24 rounded-2xl ${

@@ -10,7 +10,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Workspace from 'components/Workspace'
 
-import { stepConfigState } from 'components/state/atoms'
+import { stepConfigState, isSwitchingPageState } from 'components/state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
@@ -25,10 +25,14 @@ function TranslatorPage({ last_step }) {
   const { user } = useCurrentUser()
   const { query, replace } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
   const { project, book, chapter, step, translator } = query
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
   const [versesRange, setVersesRange] = useState([])
+  useEffect(() => {
+    setSwitchingPage(false)
+  }, [setSwitchingPage])
 
   useEffect(() => {
     if (user?.login) {

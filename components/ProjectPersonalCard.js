@@ -1,20 +1,23 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
+
+import { useSetRecoilState } from 'recoil'
 
 import Translators from 'components/Translators'
 
 import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
+import { isSwitchingPageState } from 'components/state/atoms'
 
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
-  const { locale } = useRouter()
+  const { locale, push } = useRouter()
 
   const [currentSteps, setCurrentSteps] = useState(null)
 
@@ -114,12 +117,17 @@ function ProjectPersonalCard({ project, user }) {
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
                           <p>{t('projects:Project')}:</p>
-                          <Link
-                            href={`/projects/${project.code}`}
+                          <button
+                            onClick={() => {
+                              setSwitchingPage(true)
+                              setTimeout(() => {
+                                push(`/projects/${project.code}`)
+                              }, 500)
+                            }}
                             className="text-cyan-700 hover:text-gray-500"
                           >
                             {project?.title}
-                          </Link>
+                          </button>
                         </div>
                         <div className="flex flex-wrap gap-3">
                           <p>{t('Translator_other')}:</p>
@@ -161,20 +169,27 @@ function ProjectPersonalCard({ project, user }) {
                         )
 
                         return !isBrief || briefResume ? (
-                          <Link
+                          <button
                             key={index}
-                            href={`/translate/${step.project}/${step.book}/${
-                              step.chapter
-                            }/${step.step}${
-                              typeof searchLocalStorage(step, localStorageSteps) ===
-                              'undefined'
-                                ? '/intro'
-                                : ''
-                            }`}
+                            onClick={() => {
+                              setSwitchingPage(true)
+                              setTimeout(() => {
+                                push(
+                                  `/translate/${step.project}/${step.book}/${
+                                    step.chapter
+                                  }/${step.step}${
+                                    typeof searchLocalStorage(step, localStorageSteps) ===
+                                    'undefined'
+                                      ? '/intro'
+                                      : ''
+                                  }`
+                                )
+                              }, 500)
+                            }}
                             className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base"
                           >
                             {stepLink}
-                          </Link>
+                          </button>
                         ) : (
                           <button
                             key={index}
@@ -186,12 +201,19 @@ function ProjectPersonalCard({ project, user }) {
                         )
                       })}
                       {briefResume === '' && (
-                        <Link
-                          href={`/projects/${project?.code}/edit?setting=brief`}
-                          className="btn-primary flex gap-1 sm:gap-2"
-                        >
-                          {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
-                        </Link>
+                        <>
+                          <button
+                            onClick={() => {
+                              setSwitchingPage(true)
+                              setTimeout(() => {
+                                push(`/projects/${project?.code}/edit?setting=brief`)
+                              }, 500)
+                            }}
+                            className="btn-primary flex gap-1 sm:gap-2"
+                          >
+                            {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                          </button>
+                        </>
                       )}
                     </div>
                   </>

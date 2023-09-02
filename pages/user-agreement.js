@@ -3,12 +3,17 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { useSetRecoilState } from 'recoil'
+
 import Footer from 'components/Footer'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
+import { isSwitchingPageState } from 'components/state/atoms'
+
 export default function UserAgreement() {
   const supabase = useSupabaseClient()
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common', 'users'])
@@ -17,7 +22,10 @@ export default function UserAgreement() {
     if (error) {
       console.error(error)
     } else {
-      router.push(`/confession`)
+      setSwitchingPage(true)
+      setTimeout(() => {
+        router.push(`/confession`)
+      }, 500)
     }
   }
 

@@ -10,8 +10,9 @@ import { Switch } from '@headlessui/react'
 
 import axios from 'axios'
 
-import UpdateField from '../UpdateField'
-import BriefEditQuestions from '../BriefEditQuestions'
+import UpdateField from 'components/UpdateField'
+import BriefEditQuestions from 'components/BriefEditQuestions'
+import ButtonSave from 'components/ButtonSave'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 
@@ -23,6 +24,7 @@ function BriefBlock({ access, title = false }) {
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [editableMode, setEditableMode] = useState(false)
   const [hidden, setHidden] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
   const {
     query: { code },
   } = useRouter()
@@ -41,6 +43,7 @@ function BriefBlock({ access, title = false }) {
   }, [brief, briefDataCollection])
 
   const saveToDatabase = (briefDataCollection, isSaveFinal) => {
+    setIsSaving(true)
     axios
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
@@ -54,6 +57,7 @@ function BriefBlock({ access, title = false }) {
         toast.error(t('SaveFailed'))
         console.log(err)
       })
+      .finally(() => setIsSaving(false))
   }
 
   useEffect(() => {
@@ -241,14 +245,13 @@ function BriefBlock({ access, title = false }) {
 
           {access && (
             <div>
-              <button
-                className="btn-primary text-xl"
-                onClick={() => {
-                  saveToDatabase(briefDataCollection, true)
-                }}
+              <ButtonSave
+                className="btn-primary"
+                onClick={() => saveToDatabase(briefDataCollection, true)}
+                isSaving={isSaving}
               >
                 {t('Save')}
-              </button>
+              </ButtonSave>
             </div>
           )}
         </div>

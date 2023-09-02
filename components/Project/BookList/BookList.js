@@ -13,7 +13,7 @@ import { useGetBooks } from 'utils/hooks'
 
 import { oldTestamentList, newTestamentList } from 'utils/config'
 
-function BookList({ user, project, access }) {
+function BookList({ user, project, access, setSwitchingPage }) {
   const { t } = useTranslation()
   const { query } = useRouter()
   const [currentBook, setCurrentBook] = useState(null)
@@ -33,10 +33,12 @@ function BookList({ user, project, access }) {
     if (query?.properties) {
       setPropertiesBook(query?.properties)
     } else {
+      setSwitchingPage(false)
       setPropertiesBook(null)
       setCurrentBook(null)
     }
-  }, [query, books, setCurrentBook])
+  }, [query, books, setCurrentBook, setSwitchingPage])
+
   return (
     <div className="flex flex-col gap-7">
       <div className="flex sm:hidden flex-col gap-7">

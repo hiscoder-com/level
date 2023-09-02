@@ -6,6 +6,10 @@ import { useTranslation } from 'next-i18next'
 
 import { Menu, Transition } from '@headlessui/react'
 
+import { useSetRecoilState } from 'recoil'
+
+import { isSwitchingPageState } from 'components/state/atoms'
+
 import BookCreate from './BookCreate'
 import ChecksIcon from './ChecksIcon'
 import Modal from 'components/Modal'
@@ -32,6 +36,8 @@ function Testament({
   const [bookCodeCreating, setBookCodeCreating] = useState(null)
   const [isOpenDownloading, setIsOpenDownloading] = useState(false)
   const [downloadingBook, setDownloadingBook] = useState(null)
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
+
   const [books, { mutate: mutateBooks }] = useGetBooks({
     code: project?.code,
   })
@@ -50,9 +56,11 @@ function Testament({
   const handleOpenBook = (book, isBookCreated) => {
     if (isBookCreated && book) {
       setCurrentBook(book)
-      push({
-        pathname: `/projects/${project?.code}/books/${book}`,
-      })
+      setTimeout(() => {
+        push({
+          pathname: `/projects/${project?.code}/books/${book}`,
+        })
+      }, 500)
     }
   }
   return (
@@ -76,7 +84,10 @@ function Testament({
                         ? 'text-slate-900 cursor-pointer truncate'
                         : 'text-gray-400'
                     }
-                    onClick={() => handleOpenBook(book, isBookCreated)}
+                    onClick={() => {
+                      setSwitchingPage(true)
+                      handleOpenBook(book, isBookCreated)
+                    }}
                   >
                     {t(`books:${book}`)}
                   </div>
@@ -145,15 +156,18 @@ function Testament({
                                 <button>
                                   <Reader
                                     className="w-6 min-w-[1.5rem] cursor-pointer"
-                                    onClick={() =>
-                                      push({
-                                        pathname: `/projects/${project?.code}/books/read`,
-                                        query: {
-                                          bookid: book,
-                                        },
-                                        shallow: true,
-                                      })
-                                    }
+                                    onClick={() => {
+                                      setSwitchingPage(true)
+                                      setTimeout(() => {
+                                        push({
+                                          pathname: `/projects/${project?.code}/books/read`,
+                                          query: {
+                                            bookid: book,
+                                          },
+                                          shallow: true,
+                                        })
+                                      }, 500)
+                                    }}
                                   />
                                 </button>
                               </Menu.Item>
@@ -167,6 +181,41 @@ function Testament({
                 {!isLoading ? (
                   <>
                     <div className="hidden sm:flex gap-2">
+                      {!isBookCreated && isCoordinatorAccess && (
+                        <>
+                          <Play
+                            className="w-6 min-w-[1.5rem] cursor-pointer"
+                            onClick={() => setBookCodeCreating(book)}
+                          />
+                        </>
+                      )}
+
+                      {levelChecks?.[book] && (
+                        <Reader
+                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          onClick={() => {
+                            setSwitchingPage(true)
+                            setTimeout(() => {
+                              push({
+                                pathname: `/projects/${project?.code}/books/read`,
+                                query: {
+                                  bookid: book,
+                                },
+                                shallow: true,
+                              })
+                            }, 500)
+                          }}
+                        />
+                      )}
+                      {isModeratorAccess && isBookCreated && (
+                        <DownloadIcon
+                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          onClick={() => {
+                            setIsOpenDownloading(true)
+                            setDownloadingBook(book)
+                          }}
+                        />
+                      )}
                       {isCoordinatorAccess && (
                         <>
                           {isBookCreated && (
@@ -184,37 +233,6 @@ function Testament({
                             />
                           )}
                         </>
-                      )}
-                      {!isBookCreated && isCoordinatorAccess && (
-                        <>
-                          <Play
-                            className="w-6 min-w-[1.5rem] cursor-pointer"
-                            onClick={() => setBookCodeCreating(book)}
-                          />
-                        </>
-                      )}
-                      {isModeratorAccess && isBookCreated && (
-                        <DownloadIcon
-                          className="w-6 min-w-[1.5rem] cursor-pointer"
-                          onClick={() => {
-                            setIsOpenDownloading(true)
-                            setDownloadingBook(book)
-                          }}
-                        />
-                      )}
-                      {levelChecks?.[book] && (
-                        <Reader
-                          className="w-6 min-w-[1.5rem] cursor-pointer"
-                          onClick={() =>
-                            push({
-                              pathname: `/projects/${project?.code}/books/read`,
-                              query: {
-                                bookid: book,
-                              },
-                              shallow: true,
-                            })
-                          }
-                        />
                       )}
                     </div>
                   </>

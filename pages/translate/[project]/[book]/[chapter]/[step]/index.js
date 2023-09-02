@@ -15,13 +15,19 @@ import Modal from 'components/Modal'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseService'
 import useSupabaseClient from 'utils/supabaseClient'
-import { projectIdState, stepConfigState, currentVerse } from 'components/state/atoms'
+import {
+  projectIdState,
+  stepConfigState,
+  currentVerse,
+  isSwitchingPageState,
+} from 'components/state/atoms'
 
 export default function ProgressPage({ last_step }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const setStepConfigData = useSetRecoilState(stepConfigState)
   const setCurrentVerse = useSetRecoilState(currentVerse)
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const { t } = useTranslation('common')
   const {
@@ -33,6 +39,10 @@ export default function ProgressPage({ last_step }) {
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
+
+  useEffect(() => {
+    setSwitchingPage(false)
+  }, [setSwitchingPage])
 
   useEffect(() => {
     if (user?.login) {
@@ -98,6 +108,8 @@ export default function ProgressPage({ last_step }) {
   }, [book, chapter, project, step])
 
   const handleNextStep = async () => {
+    setIsOpenModal(false)
+    setSwitchingPage(true)
     setLoading(true)
     const { data: next_step } = await supabase.rpc('go_to_step', {
       project,
@@ -107,11 +119,13 @@ export default function ProgressPage({ last_step }) {
     })
     localStorage.setItem('highlightIds', JSON.stringify({}))
     setCurrentVerse('1')
-    if (parseInt(step) === parseInt(next_step)) {
-      replace(`/account`)
-    } else {
-      replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
-    }
+    setTimeout(() => {
+      if (parseInt(step) === parseInt(next_step)) {
+        replace(`/account`)
+      } else {
+        replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
+      }
+    }, 500)
   }
 
   return (

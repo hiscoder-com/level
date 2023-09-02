@@ -3,8 +3,18 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { useSetRecoilState } from 'recoil'
+
+import { isSwitchingPageState } from 'components/state/atoms'
+
 export default function Confession() {
   const { t } = useTranslation('common', 'users')
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
+
+  useEffect(() => {
+    setSwitchingPage(false)
+  }, [setSwitchingPage])
+
   return (
     <div className="layout-appbar">
       <div className="mx-5 max-w-lg text-center whitespace-pre-line">

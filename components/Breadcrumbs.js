@@ -1,12 +1,18 @@
 import { Fragment, useEffect, useState } from 'react'
 
-import Link from 'next/link'
+import { useRouter } from 'next/router'
+
+import { useSetRecoilState } from 'recoil'
 
 import LeftArrow from 'public/left.svg'
+import { isSwitchingPageState } from 'components/state/atoms'
 
 function Breadcrumbs({ links = [], full }) {
+  const { push } = useRouter()
   const [arrowLink, setArrowLink] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
+
   useEffect(() => {
     if (links.length > 0) {
       const _arrowLink = links.length > 1 ? links[links.length - 2]?.href : links[0]?.href
@@ -32,17 +38,32 @@ function Breadcrumbs({ links = [], full }) {
           </div>
         ) : (
           <>
-            <Link href={arrowLink}>
+            <button
+              onClick={() => {
+                setSwitchingPage(true)
+                setTimeout(() => {
+                  push(arrowLink)
+                }, 500)
+              }}
+            >
               <LeftArrow className="h-5 w-5 min-w-[1.25rem] hover:text-gray-500" />
-            </Link>
+            </button>
             {links?.map((link, index) => (
               <Fragment key={index}>
                 {index === links.length - 1 ? (
                   <h3 className="cursor-default">{link.title}</h3>
                 ) : (
-                  <Link href={link.href} className="hover:text-gray-500">
+                  <button
+                    onClick={() => {
+                      setSwitchingPage(true)
+                      setTimeout(() => {
+                        push(link.href)
+                      }, 500)
+                    }}
+                    className="hover:text-gray-500"
+                  >
                     {link.title}
-                  </Link>
+                  </button>
                 )}
                 {index !== links.length - 1 && <span>/</span>}
               </Fragment>

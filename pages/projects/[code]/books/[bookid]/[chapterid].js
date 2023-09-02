@@ -23,6 +23,7 @@ import {
 import Button from 'components/Button'
 import Card from 'components/Project/Card'
 import Breadcrumbs from 'components/Breadcrumbs'
+import { isSwitchingPageState } from 'components/state/atoms'
 
 import Gear from 'public/gear.svg'
 import Spinner from 'public/spinner.svg'
@@ -31,6 +32,7 @@ import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
+import { useSetRecoilState } from 'recoil'
 
 const translatorColors = [
   { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
@@ -55,6 +57,7 @@ function ChapterVersesPage() {
     query: { code, bookid, chapterid },
   } = useRouter()
   const { t } = useTranslation(['common', 'chapters'])
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const [project] = useProject({ code })
   const [book] = useGetBook({ code, book_code: bookid })
@@ -108,6 +111,9 @@ function ChapterVersesPage() {
   const [_translators] = useTranslators({
     code,
   })
+  useEffect(() => {
+    setSwitchingPage(false)
+  }, [setSwitchingPage])
 
   useEffect(() => {
     if (_translators) {
