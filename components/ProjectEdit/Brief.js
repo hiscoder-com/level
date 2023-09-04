@@ -185,7 +185,7 @@ function BriefBlock({ access, title = false }) {
               <ul className="list-decimal ml-4 text-sm md:text-base text-slate-900 space-y-7">
                 {briefDataCollection.map((briefItem, index) => {
                   return (
-                    <li key={index} className="space-y-3">
+                    <li key={index} className="space-y-3 font-bold">
                       <div className="flex gap-7 center justify-between">
                         <p className="font-bold">{briefItem.title}</p>
                       </div>
