@@ -1,16 +1,18 @@
-import Link from 'next/link'
+import { useEffect } from 'react'
+
+import { useRouter } from 'next/router'
+
+import { useSetRecoilState } from 'recoil'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import { useSetRecoilState } from 'recoil'
 
 import { isSwitchingPageState } from 'components/state/atoms'
 
 export default function Confession() {
   const { t } = useTranslation('common', 'users')
   const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
-
+  const { push } = useRouter()
   useEffect(() => {
     setSwitchingPage(false)
   }, [setSwitchingPage])
@@ -37,9 +39,17 @@ export default function Confession() {
             https://texttree.org/
           </a>
         </p>
-        <Link href="/confession-steps" className="btn-cyan w-28 mt-7">
+        <button
+          onClick={() => {
+            setSwitchingPage(true)
+            setTimeout(() => {
+              push('/confession-steps')
+            }, 500)
+          }}
+          className="btn-cyan w-28 mt-7"
+        >
           {t('Start')}
-        </Link>
+        </button>
       </div>
     </div>
   )

@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
@@ -17,6 +19,10 @@ export default function UserAgreement() {
 
   const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common', 'users'])
+
+  useEffect(() => {
+    setSwitchingPage(false)
+  }, [setSwitchingPage])
   const handleClick = async () => {
     const { error } = await supabase.rpc('check_agreement')
     if (error) {

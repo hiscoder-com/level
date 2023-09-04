@@ -1,23 +1,41 @@
-import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useSetRecoilState } from 'recoil'
+
+import { isSwitchingPageState } from 'components/state/atoms'
 
 export default function Agreements() {
   const { t } = useTranslation('users', 'common')
+  const { push } = useRouter()
+  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
+
+  function pushWithLoading(link) {
+    setSwitchingPage(true)
+    setTimeout(() => {
+      push(link)
+    }, 500)
+  }
 
   return (
     <div className="layout-appbar">
       <div className="flex flex-col text-center space-y-2.5">
-        <Link href="/user-agreement" className="btn-white w-64">
+        <button
+          onClick={() => pushWithLoading('/user-agreement')}
+          className="btn-white w-64"
+        >
           {t('Agreement')}
-        </Link>
-        <Link href="/confession" className="btn-white w-64">
+        </button>
+        <button onClick={() => pushWithLoading('/confession')} className="btn-white w-64">
           {t('Confession')}
-        </Link>
-        <Link href="/user-agreement" className="btn-cyan w-64">
+        </button>
+        <button
+          onClick={() => pushWithLoading('/user-agreement')}
+          className="btn-cyan w-64"
+        >
           {t('common:Next')}
-        </Link>
+        </button>
       </div>
     </div>
   )
