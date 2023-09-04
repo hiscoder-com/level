@@ -28,6 +28,7 @@ function BookReader() {
 
   const {
     query: { code, bookid },
+    push,
   } = useRouter()
   const [books] = useGetBooks({
     code,

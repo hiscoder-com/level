@@ -27,7 +27,7 @@ function Testament({
   bookList,
   title,
   project,
-  access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess, isLoading },
+  access: { isCoordinatorAccess, isModeratorAccess, isLoading },
   setCurrentBook,
 }) {
   const { t } = useTranslation('books')

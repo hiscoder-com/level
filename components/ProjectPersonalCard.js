@@ -13,6 +13,8 @@ import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 import { isSwitchingPageState } from 'components/state/atoms'
 
+import Reader from '/public/dictionary.svg'
+
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
   const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
@@ -68,6 +70,18 @@ function ProjectPersonalCard({ project, user }) {
   const [books] = useGetBooks({
     code: project?.code,
   })
+  const levelChecks = useMemo(() => {
+    if (books) {
+      const _books = {}
+      books.forEach((book) => {
+        if (book.level_checks) {
+          _books[book.code] = book.level_checks
+        }
+      })
+      return _books
+    }
+  }, [books])
+
   const countChaptersVerses = useMemo(() => {
     if (books) {
       const count = {}
@@ -107,12 +121,39 @@ function ProjectPersonalCard({ project, user }) {
                   <>
                     <div className="flex flex-col gap-7 w-auto lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
-                        <div className="text-xl font-bold">{t(`books:${book}`)}</div>
+                        <div
+                          className="text-xl font-bold text-cyan-700 hover:text-gray-500 cursor-pointer"
+                          onClick={() => {
+                            setSwitchingPage(true)
+                            setTimeout(() => {
+                              push(`/projects/${project.code}/books/${book}`)
+                            }, 500)
+                          }}
+                        >
+                          {t(`books:${book}`)}
+                        </div>
                         <div className="pt-1">{`(${t('Chapter', {
                           count: countChaptersVerses?.[book]?.countChapters,
                         })} ${t('Verse', {
                           count: countChaptersVerses?.[book]?.countVerses,
                         })})`}</div>
+                        {levelChecks?.[book] && (
+                          <Reader
+                            className="w-6 min-w-[1.5rem] text-cyan-700 hover:text-gray-500 cursor-pointer"
+                            onClick={() => {
+                              setSwitchingPage(true)
+                              setTimeout(() => {
+                                push({
+                                  pathname: `/projects/${project?.code}/books/read`,
+                                  query: {
+                                    bookid: book,
+                                  },
+                                  shallow: true,
+                                })
+                              }, 500)
+                            }}
+                          />
+                        )}
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
@@ -209,7 +250,7 @@ function ProjectPersonalCard({ project, user }) {
                                 push(`/projects/${project?.code}/edit?setting=brief`)
                               }, 500)
                             }}
-                            className="btn-primary flex gap-1 sm:gap-2"
+                            className="btn-primary flex justify-center gap-1 sm:gap-2"
                           >
                             {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                           </button>
