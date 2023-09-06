@@ -186,14 +186,14 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           {book?.level_checks && (
             <div
               className="flex gap-4 cursor-pointer hover:text-teal-500"
-              onClick={() => {
+              onClick={() =>
                 push({
                   pathname: `/projects/${project?.code}/books/read`,
                   query: {
                     bookid: book.code,
                   },
                 })
-              }}
+              }
             >
               <div className="font-bold">{t('OpenInReader')}</div>
               <Reader className="w-6 min-w-[1.5rem] cursor-pointer" />

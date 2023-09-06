@@ -33,7 +33,6 @@ function IntroStep({ title, markdown, nextLink }) {
       'viewedIntroSteps',
       JSON.stringify([...viewedSteps, router.query])
     )
-
     router.push(nextLink)
   }
 

@@ -1,13 +1,12 @@
-import Link from 'next/link'
-
 import { Fragment, useEffect, useState } from 'react'
+
+import Link from 'next/link'
 
 import LeftArrow from 'public/left.svg'
 
 function Breadcrumbs({ links = [], full }) {
   const [arrowLink, setArrowLink] = useState('')
   const [isLoading, setIsLoading] = useState(true)
-
   useEffect(() => {
     if (links.length > 0) {
       const _arrowLink = links.length > 1 ? links[links.length - 2]?.href : links[0]?.href

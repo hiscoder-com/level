@@ -15,13 +15,9 @@ import Reader from '/public/dictionary.svg'
 
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
-
   const { locale, push } = useRouter()
-
   const [currentSteps, setCurrentSteps] = useState(null)
-
   const { t } = useTranslation(['common', 'books'])
-
   const { briefResume, isBrief } = useBriefState({
     project_id: project?.id,
   })
@@ -219,14 +215,12 @@ function ProjectPersonalCard({ project, user }) {
                         )
                       })}
                       {briefResume === '' && (
-                        <>
-                          <Link
-                            href={`/projects/${project?.code}/edit?setting=brief`}
-                            className="btn-primary flex justify-center gap-1 sm:gap-2"
-                          >
-                            {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
-                          </Link>
-                        </>
+                        <Link
+                          href={`/projects/${project?.code}/edit?setting=brief`}
+                          className="btn-primary flex justify-center gap-1 sm:gap-2"
+                        >
+                          {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                        </Link>
                       )}
                     </div>
                   </>

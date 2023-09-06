@@ -5,7 +5,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default function Confession() {
   const { t } = useTranslation('common', 'users')
-
   return (
     <div className="layout-appbar">
       <div className="mx-5 max-w-lg text-center whitespace-pre-line">
@@ -28,7 +27,7 @@ export default function Confession() {
             https://texttree.org/
           </a>
         </p>
-        <Link href={'/confession-steps'} className="btn-cyan w-28 mt-7">
+        <Link href="/confession-steps" className="btn-cyan w-28 mt-7">
           {t('Start')}
         </Link>
       </div>

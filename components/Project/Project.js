@@ -14,7 +14,6 @@ function Project({ code }) {
       user_id: user?.id,
       code: project?.code,
     })
-
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
       <div className="static xl:sticky top-7 flex flex-col sm:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">

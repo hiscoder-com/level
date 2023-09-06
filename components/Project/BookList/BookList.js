@@ -37,7 +37,6 @@ function BookList({ user, project, access }) {
       setCurrentBook(null)
     }
   }, [query, books, setCurrentBook])
-
   return (
     <div className="flex flex-col gap-7">
       <div className="flex sm:hidden flex-col gap-7">

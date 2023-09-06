@@ -12,7 +12,6 @@ export default function UserAgreement() {
 
   const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common', 'users'])
-
   const handleClick = async () => {
     const { error } = await supabase.rpc('check_agreement')
     if (error) {

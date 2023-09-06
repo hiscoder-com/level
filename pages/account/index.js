@@ -12,6 +12,7 @@ function AccountHomePage() {
 
   useEffect(() => {
     document.body.classList.add('no-scrollbar')
+
     return () => {
       document.body.classList.remove('no-scrollbar')
     }

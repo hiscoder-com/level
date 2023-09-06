@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
@@ -81,15 +81,15 @@ function ChapterList() {
         <>
           {!(!isBrief || briefResume) ? (
             <Link
-              onClick={(e) => e.stopPropagation()}
               href={`/projects/${project?.code}/edit?setting=brief`}
+              onClick={(e) => e.stopPropagation()}
             >
               {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
             </Link>
           ) : (
             <Link
-              onClick={(e) => e.stopPropagation()}
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
+              onClick={(e) => e.stopPropagation()}
               className="text-sm xl:text-lg"
             >
               {step.step} {t('Step').toLowerCase()}
@@ -122,11 +122,11 @@ function ChapterList() {
                         !isCreated && isCoordinatorAccess ? 'verse-block' : ''
                       }`}
                       onClick={() => {
-                        if (isCreated && isCoordinatorAccess) {
+                        isCreated &&
+                          isCoordinatorAccess &&
                           push({
                             pathname: `/projects/${project?.code}/books/${bookid}/${num}`,
                           })
-                        }
                       }}
                     >
                       <div

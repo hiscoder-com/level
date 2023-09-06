@@ -51,11 +51,9 @@ function Testament({
   const handleOpenBook = (book, isBookCreated) => {
     if (isBookCreated && book) {
       setCurrentBook(book)
-      setTimeout(() => {
-        push({
-          pathname: `/projects/${project?.code}/books/${book}`,
-        })
-      }, 500)
+      push({
+        pathname: `/projects/${project?.code}/books/${book}`,
+      })
     }
   }
   return (
@@ -79,9 +77,7 @@ function Testament({
                         ? 'text-slate-900 cursor-pointer truncate'
                         : 'text-gray-400'
                     }
-                    onClick={() => {
-                      handleOpenBook(book, isBookCreated)
-                    }}
+                    onClick={() => handleOpenBook(book, isBookCreated)}
                   >
                     {t(`books:${book}`)}
                   </div>
@@ -150,7 +146,7 @@ function Testament({
                                 <button>
                                   <Reader
                                     className="w-6 min-w-[1.5rem] cursor-pointer"
-                                    onClick={() => {
+                                    onClick={() =>
                                       push({
                                         pathname: `/projects/${project?.code}/books/read`,
                                         query: {
@@ -158,7 +154,7 @@ function Testament({
                                         },
                                         shallow: true,
                                       })
-                                    }}
+                                    }
                                   />
                                 </button>
                               </Menu.Item>
@@ -184,7 +180,7 @@ function Testament({
                       {levelChecks?.[book] && (
                         <Reader
                           className="w-6 min-w-[1.5rem] cursor-pointer"
-                          onClick={() => {
+                          onClick={() =>
                             push({
                               pathname: `/projects/${project?.code}/books/read`,
                               query: {
@@ -192,7 +188,7 @@ function Testament({
                               },
                               shallow: true,
                             })
-                          }}
+                          }
                         />
                       )}
                       {isModeratorAccess && isBookCreated && (

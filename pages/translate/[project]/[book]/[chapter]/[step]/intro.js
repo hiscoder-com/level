@@ -12,13 +12,11 @@ import { supabaseService } from 'utils/supabaseService'
 
 export default function IntroPage() {
   const supabase = useSupabaseClient()
-
   const { query, replace } = useRouter()
   const { project, book, chapter, step } = query
 
   const [introMd, setIntroMd] = useState('')
   const [title, setTitle] = useState('')
-
   useEffect(() => {
     supabase
       .from('steps')

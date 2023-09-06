@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
@@ -22,7 +22,6 @@ import Gear from '/public/gear.svg'
 function BookReader() {
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
-
   const {
     query: { code, bookid },
   } = useRouter()
@@ -56,7 +55,6 @@ function BookReader() {
       setReference((prev) => ({ ...prev, chapter: 1, bookid, checks: book.level_checks }))
     }
   }, [bookid, books])
-
   const createdNewTestamentBooks = useMemo(
     () =>
       books
@@ -201,7 +199,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                 <div
                   className="flex gap-2
                   text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
-                  onClick={() => {
+                  onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
                       query: {
@@ -209,7 +207,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                         levels: true,
                       },
                     })
-                  }}
+                  }
                 >
                   <span>{t('CheckLinkResource')}</span>
                   <Gear className="w-6 min-w-[1.5rem]" />
