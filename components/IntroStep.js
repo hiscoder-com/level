@@ -1,17 +1,12 @@
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 
-import { useSetRecoilState } from 'recoil'
-
 import MarkdownExtended from 'components/MarkdownExtended'
 import Footer from 'components/Footer'
-
-import { isSwitchingPageState } from 'components/state/atoms'
 
 function IntroStep({ title, markdown, nextLink }) {
   const { t } = useTranslation('common')
   const router = useRouter()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const saveStepLocalStorage = () => {
     let viewedSteps = JSON.parse(localStorage.getItem('viewedIntroSteps'))
@@ -38,10 +33,8 @@ function IntroStep({ title, markdown, nextLink }) {
       'viewedIntroSteps',
       JSON.stringify([...viewedSteps, router.query])
     )
-    setSwitchingPage(true)
-    setTimeout(() => {
-      router.push(nextLink)
-    }, 500)
+
+    router.push(nextLink)
   }
 
   return (

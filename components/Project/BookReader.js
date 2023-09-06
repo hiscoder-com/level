@@ -1,8 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+import Link from 'next/link'
 import { useRouter } from 'next/router'
-
-import { useSetRecoilState } from 'recoil'
 
 import { useTranslation } from 'next-i18next'
 
@@ -11,7 +10,6 @@ import { Disclosure, Listbox, Tab } from '@headlessui/react'
 import ResumeInfo from './ResumeInfo'
 import ChecksIcon from './BookList/ChecksIcon'
 import Breadcrumbs from 'components/Breadcrumbs'
-import { isSwitchingPageState } from 'components/state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
 import { useAccess, useGetBooks, useGetResource, useProject } from 'utils/hooks'
@@ -24,11 +22,9 @@ import Gear from '/public/gear.svg'
 function BookReader() {
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const {
     query: { code, bookid },
-    push,
   } = useRouter()
   const [books] = useGetBooks({
     code,
@@ -60,9 +56,6 @@ function BookReader() {
       setReference((prev) => ({ ...prev, chapter: 1, bookid, checks: book.level_checks }))
     }
   }, [bookid, books])
-  useEffect(() => {
-    setSwitchingPage(false)
-  }, [setSwitchingPage])
 
   const createdNewTestamentBooks = useMemo(
     () =>
@@ -123,16 +116,9 @@ function BookReader() {
       <div className="w-full xl:w-2/3">
         <div className="card flex flex-col gap-7">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
-            <button
-              onClick={() => {
-                setSwitchingPage(true)
-                setTimeout(() => {
-                  push('/projects/' + project?.code)
-                }, 500)
-              }}
-            >
+            <Link href={'/projects/' + project?.code}>
               <Left className="w-5 h-5 hover:text-gray-500" />
-            </button>
+            </Link>
             <Navigation
               books={
                 project?.type === 'obs'
@@ -162,7 +148,6 @@ function Verses({ verseObjects, user, reference, isLoading }) {
     push,
     query: { bookid, code },
   } = useRouter()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const [{ isCoordinatorAccess }] = useAccess({
     user_id: user?.id,
@@ -217,16 +202,13 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                   className="flex gap-2
                   text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
                   onClick={() => {
-                    setSwitchingPage(true)
-                    setTimeout(() => {
-                      push({
-                        pathname: `/projects/${project?.code}`,
-                        query: {
-                          properties: bookid,
-                          levels: true,
-                        },
-                      })
-                    }, 500)
+                    push({
+                      pathname: `/projects/${project?.code}`,
+                      query: {
+                        properties: bookid,
+                        levels: true,
+                      },
+                    })
                   }}
                 >
                   <span>{t('CheckLinkResource')}</span>

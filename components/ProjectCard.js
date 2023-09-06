@@ -1,19 +1,14 @@
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
-
-import { useSetRecoilState } from 'recoil'
 
 import Translators from './Translators'
 import Placeholder from './Placeholder'
 
 import { useBriefState, useAccess } from 'utils/hooks'
-import { isSwitchingPageState } from 'components/state/atoms'
 
 function ProjectCard({ project, user }) {
   const { t } = useTranslation(['projects', 'common'])
-  const { push } = useRouter()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const [{ isCoordinatorAccess }] = useAccess({
     user_id: user?.id,
@@ -28,14 +23,7 @@ function ProjectCard({ project, user }) {
       {!project?.code || isLoading || !user?.id ? (
         <Placeholder />
       ) : (
-        <div
-          onClick={() => {
-            setSwitchingPage(true)
-            setTimeout(() => {
-              push(`/projects/${project.code}`)
-            }, 500)
-          }}
-        >
+        <Link href={`/projects/${project.code}`} legacyBehavior>
           <div className="card flex justify-between items-start h-min cursor-pointer">
             <div className="flex flex-col gap-9">
               <div className="text-xl font-bold">{project.title}</div>
@@ -51,21 +39,15 @@ function ProjectCard({ project, user }) {
               </div>
             </div>
             {briefResume === '' && (
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setSwitchingPage(true)
-                  setTimeout(() => {
-                    push(`/projects/${project?.code}/edit?setting=brief`)
-                  }, 500)
-                }}
+              <Link
+                href={`/projects/${project?.code}/edit?setting=brief`}
                 className="btn-primary w-fit"
               >
                 {t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
-              </button>
+              </Link>
             )}
           </div>
-        </div>
+        </Link>
       )}
     </>
   )

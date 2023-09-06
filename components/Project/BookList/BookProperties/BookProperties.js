@@ -10,13 +10,9 @@ import toast, { Toaster } from 'react-hot-toast'
 
 import { Tab } from '@headlessui/react'
 
-import { useSetRecoilState } from 'recoil'
-
 import Property from './Property'
 import ButtonSave from 'components/ButtonSave'
 import Breadcrumbs from 'components/Breadcrumbs'
-
-import { isSwitchingPageState } from 'components/state/atoms'
 
 import Reader from 'public/dictionary.svg'
 import CheckboxShevron from 'public/checkbox-shevron.svg'
@@ -146,7 +142,6 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
     push,
     query: { properties, code },
   } = useRouter()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const handleSaveLevelChecks = () => {
     if (translationLink) {
@@ -192,15 +187,12 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
             <div
               className="flex gap-4 cursor-pointer hover:text-teal-500"
               onClick={() => {
-                setSwitchingPage(true)
-                setTimeout(() => {
-                  push({
-                    pathname: `/projects/${project?.code}/books/read`,
-                    query: {
-                      bookid: book.code,
-                    },
-                  })
-                }, 500)
+                push({
+                  pathname: `/projects/${project?.code}/books/read`,
+                  query: {
+                    bookid: book.code,
+                  },
+                })
               }}
             >
               <div className="font-bold">{t('OpenInReader')}</div>

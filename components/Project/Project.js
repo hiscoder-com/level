@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import ProjectInfo from './ProjectInfo'
 import ParticipantInfo from './ParticipantInfo'
 import ResumeInfo from './ResumeInfo'
@@ -8,7 +6,7 @@ import BookList from './BookList/BookList'
 import { useCurrentUser } from 'lib/UserContext'
 import { useAccess, useProject } from 'utils/hooks'
 
-function Project({ code, setSwitchingPage }) {
+function Project({ code }) {
   const { user } = useCurrentUser()
   const [project] = useProject({ code })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess }, { isLoading }] =
@@ -16,9 +14,6 @@ function Project({ code, setSwitchingPage }) {
       user_id: user?.id,
       code: project?.code,
     })
-  useEffect(() => {
-    setSwitchingPage(false)
-  }, [setSwitchingPage])
 
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
@@ -36,7 +31,6 @@ function Project({ code, setSwitchingPage }) {
           user={user}
           project={project}
           access={{ isCoordinatorAccess, isModeratorAccess, isAdminAccess, isLoading }}
-          setSwitchingPage={setSwitchingPage}
         />
       </div>
     </div>

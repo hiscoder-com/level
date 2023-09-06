@@ -6,10 +6,6 @@ import { useTranslation } from 'next-i18next'
 
 import { Menu, Transition } from '@headlessui/react'
 
-import { useSetRecoilState } from 'recoil'
-
-import { isSwitchingPageState } from 'components/state/atoms'
-
 import BookCreate from './BookCreate'
 import ChecksIcon from './ChecksIcon'
 import Modal from 'components/Modal'
@@ -36,7 +32,6 @@ function Testament({
   const [bookCodeCreating, setBookCodeCreating] = useState(null)
   const [isOpenDownloading, setIsOpenDownloading] = useState(false)
   const [downloadingBook, setDownloadingBook] = useState(null)
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const [books, { mutate: mutateBooks }] = useGetBooks({
     code: project?.code,
@@ -85,7 +80,6 @@ function Testament({
                         : 'text-gray-400'
                     }
                     onClick={() => {
-                      setSwitchingPage(true)
                       handleOpenBook(book, isBookCreated)
                     }}
                   >
@@ -157,16 +151,13 @@ function Testament({
                                   <Reader
                                     className="w-6 min-w-[1.5rem] cursor-pointer"
                                     onClick={() => {
-                                      setSwitchingPage(true)
-                                      setTimeout(() => {
-                                        push({
-                                          pathname: `/projects/${project?.code}/books/read`,
-                                          query: {
-                                            bookid: book,
-                                          },
-                                          shallow: true,
-                                        })
-                                      }, 500)
+                                      push({
+                                        pathname: `/projects/${project?.code}/books/read`,
+                                        query: {
+                                          bookid: book,
+                                        },
+                                        shallow: true,
+                                      })
                                     }}
                                   />
                                 </button>
@@ -194,16 +185,13 @@ function Testament({
                         <Reader
                           className="w-6 min-w-[1.5rem] cursor-pointer"
                           onClick={() => {
-                            setSwitchingPage(true)
-                            setTimeout(() => {
-                              push({
-                                pathname: `/projects/${project?.code}/books/read`,
-                                query: {
-                                  bookid: book,
-                                },
-                                shallow: true,
-                              })
-                            }, 500)
+                            push({
+                              pathname: `/projects/${project?.code}/books/read`,
+                              query: {
+                                bookid: book,
+                              },
+                              shallow: true,
+                            })
                           }}
                         />
                       )}

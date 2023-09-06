@@ -1,14 +1,15 @@
 import { useState, useEffect } from 'react'
 
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useRecoilValue, useSetRecoilState } from 'recoil'
+import { useRecoilValue } from 'recoil'
 
 import Timer from 'components/Timer'
 import Dropdown from './Dropdown'
 import SideBar from './SideBar'
 
-import { stepConfigState, isSwitchingPageState } from './state/atoms'
+import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -24,7 +25,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const router = useRouter()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
@@ -55,19 +55,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               access && !isStepPage ? '-ml-10' : ''
             } md:ml-0`}
           >
-            <button
-              onClick={() => {
-                if (router.pathname === '/account') {
-                  return
-                }
-                setSwitchingPage(true)
-                setTimeout(() => {
-                  router.push('/account')
-                }, 500)
-              }}
-            >
+            <Link href="/account">
               <VCANA_logo className="h-6" />
-            </button>
+            </Link>
           </div>
 
           {isStepPage && (

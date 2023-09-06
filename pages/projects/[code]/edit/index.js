@@ -1,19 +1,8 @@
-import { useEffect } from 'react'
-
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useSetRecoilState } from 'recoil'
-
 import ProjectEdit from 'components/ProjectEdit/ProjectEdit'
-import { isSwitchingPageState } from 'components/state/atoms'
 
 function ProjectPageEdit() {
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
-
-  useEffect(() => {
-    setSwitchingPage(false)
-  }, [setSwitchingPage])
-
   return <ProjectEdit />
 }
 

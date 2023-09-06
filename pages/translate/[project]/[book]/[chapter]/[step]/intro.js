@@ -3,29 +3,21 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import { useSetRecoilState } from 'recoil'
-
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import IntroStep from 'components/IntroStep'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
-import { isSwitchingPageState } from 'components/state/atoms'
 
 export default function IntroPage() {
   const supabase = useSupabaseClient()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const { query, replace } = useRouter()
   const { project, book, chapter, step } = query
 
   const [introMd, setIntroMd] = useState('')
   const [title, setTitle] = useState('')
-
-  useEffect(() => {
-    setSwitchingPage(false)
-  }, [setSwitchingPage])
 
   useEffect(() => {
     supabase

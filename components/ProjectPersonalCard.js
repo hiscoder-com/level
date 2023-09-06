@@ -1,23 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
-
-import { useSetRecoilState } from 'recoil'
 
 import Translators from 'components/Translators'
 
 import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
-import { isSwitchingPageState } from 'components/state/atoms'
 
 import Reader from '/public/dictionary.svg'
 
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
-  const setSwitchingPage = useSetRecoilState(isSwitchingPageState)
 
   const { locale, push } = useRouter()
 
@@ -121,17 +118,12 @@ function ProjectPersonalCard({ project, user }) {
                   <>
                     <div className="flex flex-col gap-7 w-auto lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
-                        <div
+                        <Link
                           className="text-xl font-bold text-cyan-700 hover:text-gray-500 cursor-pointer"
-                          onClick={() => {
-                            setSwitchingPage(true)
-                            setTimeout(() => {
-                              push(`/projects/${project.code}/books/${book}`)
-                            }, 500)
-                          }}
+                          href={`/projects/${project.code}/books/${book}`}
                         >
                           {t(`books:${book}`)}
-                        </div>
+                        </Link>
                         <div className="pt-1">{`(${t('Chapter', {
                           count: countChaptersVerses?.[book]?.countChapters,
                         })} ${t('Verse', {
@@ -140,35 +132,27 @@ function ProjectPersonalCard({ project, user }) {
                         {levelChecks?.[book] && (
                           <Reader
                             className="w-6 min-w-[1.5rem] text-cyan-700 hover:text-gray-500 cursor-pointer"
-                            onClick={() => {
-                              setSwitchingPage(true)
-                              setTimeout(() => {
-                                push({
-                                  pathname: `/projects/${project?.code}/books/read`,
-                                  query: {
-                                    bookid: book,
-                                  },
-                                  shallow: true,
-                                })
-                              }, 500)
-                            }}
+                            onClick={() =>
+                              push({
+                                pathname: `/projects/${project?.code}/books/read`,
+                                query: {
+                                  bookid: book,
+                                },
+                                shallow: true,
+                              })
+                            }
                           />
                         )}
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
                           <p>{t('projects:Project')}:</p>
-                          <button
-                            onClick={() => {
-                              setSwitchingPage(true)
-                              setTimeout(() => {
-                                push(`/projects/${project.code}`)
-                              }, 500)
-                            }}
+                          <Link
+                            href={`/projects/${project.code}`}
                             className="text-cyan-700 hover:text-gray-500"
                           >
                             {project?.title}
-                          </button>
+                          </Link>
                         </div>
                         <div className="flex flex-wrap gap-3">
                           <p>{t('Translator_other')}:</p>
@@ -210,27 +194,20 @@ function ProjectPersonalCard({ project, user }) {
                         )
 
                         return !isBrief || briefResume ? (
-                          <button
+                          <Link
                             key={index}
-                            onClick={() => {
-                              setSwitchingPage(true)
-                              setTimeout(() => {
-                                push(
-                                  `/translate/${step.project}/${step.book}/${
-                                    step.chapter
-                                  }/${step.step}${
-                                    typeof searchLocalStorage(step, localStorageSteps) ===
-                                    'undefined'
-                                      ? '/intro'
-                                      : ''
-                                  }`
-                                )
-                              }, 500)
-                            }}
+                            href={`/translate/${step.project}/${step.book}/${
+                              step.chapter
+                            }/${step.step}${
+                              typeof searchLocalStorage(step, localStorageSteps) ===
+                              'undefined'
+                                ? '/intro'
+                                : ''
+                            }`}
                             className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base"
                           >
                             {stepLink}
-                          </button>
+                          </Link>
                         ) : (
                           <button
                             key={index}
@@ -243,17 +220,12 @@ function ProjectPersonalCard({ project, user }) {
                       })}
                       {briefResume === '' && (
                         <>
-                          <button
-                            onClick={() => {
-                              setSwitchingPage(true)
-                              setTimeout(() => {
-                                push(`/projects/${project?.code}/edit?setting=brief`)
-                              }, 500)
-                            }}
+                          <Link
+                            href={`/projects/${project?.code}/edit?setting=brief`}
                             className="btn-primary flex justify-center gap-1 sm:gap-2"
                           >
                             {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
-                          </button>
+                          </Link>
                         </>
                       )}
                     </div>
