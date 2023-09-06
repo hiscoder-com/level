@@ -11,7 +11,13 @@ function Layout({ backgroundColor, children }) {
   const [loadingPage, setLoadingPage] = useState(false)
   const router = useRouter()
   useEffect(() => {
-    router.events.on('routeChangeStart', () => setLoadingPage(true))
+    const handleStart = (url, { shallow }) => {
+      if (!shallow) {
+        setLoadingPage(true)
+      }
+    }
+
+    router.events.on('routeChangeStart', handleStart)
 
     return () => {
       router.events.off('routeChangeStart', setLoadingPage(false))
@@ -22,7 +28,7 @@ function Layout({ backgroundColor, children }) {
       <div
         className={`mx-auto min-h-screen ${backgroundColor} ${
           isOpenSideBar || loadingPage
-            ? 'backdrop-blur bg-gray-300 bg-opacity-25 overflow-y-hidden h-[100vh]'
+            ? 'backdrop-blur bg-gray-300 bg-opacity-25 overflow-y-hidden h-[100vh] transition-all duration-1000'
             : ''
         } `}
       >
@@ -30,7 +36,7 @@ function Layout({ backgroundColor, children }) {
         <div
           className={
             isOpenSideBar || loadingPage
-              ? 'absolute top-14 flex justify-center items-center left-0 bottom-0 right-0 bg-gray-300 bg-opacity-25 backdrop-blur z-10 overflow-y-hidden'
+              ? 'absolute top-14 flex justify-center items-center left-0 bottom-0 right-0 bg-gray-300 bg-opacity-25 backdrop-blur z-10 overflow-y-hidden transition-all duration-700'
               : ''
           }
           onClick={() => !loadingPage && setIsOpenSideBar(false)}
