@@ -22,7 +22,7 @@
     "release:patch": "standard-version --release-as patch"
   },
   "dependencies": {
-    "@headlessui/react": "^1.7.15",
+    "@headlessui/react": "^1.7.17",
     "@supabase/auth-helpers-nextjs": "^0.7.2",
     "@supabase/supabase-js": "^2.26.0",
     "@texttree/notepad-rcl": "^2.0.1",
