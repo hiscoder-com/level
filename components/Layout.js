@@ -27,16 +27,14 @@ function Layout({ backgroundColor, children }) {
     <>
       <div
         className={`mx-auto min-h-screen ${backgroundColor} ${
-          isOpenSideBar || loadingPage
-            ? 'backdrop-blur bg-gray-300 bg-opacity-25 overflow-y-hidden h-[100vh] transition-all duration-1000'
-            : ''
+          isOpenSideBar || loadingPage ? 'overflow-y-hidden h-[100vh]' : ''
         } `}
       >
         <AppBar setIsOpenSideBar={setIsOpenSideBar} isOpenSideBar={isOpenSideBar} />
         <div
           className={
             isOpenSideBar || loadingPage
-              ? 'absolute top-14 flex justify-center items-center left-0 bottom-0 right-0 bg-gray-300 bg-opacity-25 backdrop-blur z-10 overflow-y-hidden transition-all duration-700'
+              ? 'absolute top-14 flex justify-center items-center left-0 bottom-0 right-0 bg-zinc-500 bg-opacity-10 backdrop-blur z-10 overflow-y-hidden transition-all duration-100'
               : ''
           }
           onClick={() => !loadingPage && setIsOpenSideBar(false)}
