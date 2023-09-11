@@ -8,6 +8,7 @@ function Modal({
   children,
   closeHandle,
   className: propsClassNames = {},
+  handleCloseDisabled,
 }) {
   const classNames = {
     ...{
@@ -24,7 +25,11 @@ function Modal({
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className={classNames.main} onClose={closeHandle}>
+      <Dialog
+        as="div"
+        className={classNames.main}
+        onClose={() => !handleCloseDisabled && closeHandle}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

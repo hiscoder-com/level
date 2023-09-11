@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
+
+import { useRouter } from 'next/router'
 
 import { Toaster } from 'react-hot-toast'
 
+import { Transition } from '@headlessui/react'
+
 import AppBar from 'components/AppBar'
 import Progress from 'public/progress.svg'
-import { useRouter } from 'next/router'
 
 function Layout({ backgroundColor, children }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
@@ -16,9 +19,7 @@ function Layout({ backgroundColor, children }) {
         setLoadingPage(true)
       }
     }
-
     router.events.on('routeChangeStart', handleStart)
-
     return () => {
       router.events.off('routeChangeStart', setLoadingPage(false))
     }
@@ -31,16 +32,24 @@ function Layout({ backgroundColor, children }) {
         } `}
       >
         <AppBar setIsOpenSideBar={setIsOpenSideBar} isOpenSideBar={isOpenSideBar} />
-        <div
-          className={
-            isOpenSideBar || loadingPage
-              ? 'absolute top-14 flex justify-center items-center left-0 bottom-0 right-0 bg-zinc-500 bg-opacity-10 backdrop-blur z-10 overflow-y-hidden transition-all duration-100'
-              : ''
-          }
-          onClick={() => !loadingPage && setIsOpenSideBar(false)}
-        >
-          {loadingPage && <Progress className="w-14 animate-spin" />}
+        <div onClick={() => setIsOpenSideBar(false)}>
+          <Transition
+            as={Fragment}
+            appear={true}
+            show={isOpenSideBar || loadingPage}
+            enter="transition-opacity duration-200"
+            leave="transition-opacity duration-200"
+          >
+            <div
+              className={
+                'absolute flex justify-center items-center top-14 sm:top-16 left-0 bottom-0 right-0 bg-zinc-500 bg-opacity-10 backdrop-blur z-10 overflow-y-hidden'
+              }
+            >
+              {loadingPage && <Progress className="w-14 animate-spin" />}
+            </div>
+          </Transition>
         </div>
+
         <main>
           <div className="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto">{children}</div>
         </main>

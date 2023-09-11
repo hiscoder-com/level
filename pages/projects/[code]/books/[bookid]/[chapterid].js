@@ -25,12 +25,12 @@ import Card from 'components/Project/Card'
 import Breadcrumbs from 'components/Breadcrumbs'
 
 import Gear from 'public/gear.svg'
-import Spinner from 'public/spinner.svg'
 import Sparkles from 'public/sparkles.svg'
 import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
+import Loading from 'public/progress.svg'
 
 const translatorColors = [
   { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
@@ -42,7 +42,6 @@ const translatorColors = [
   { border: 'border-cyan-700', bg: 'bg-cyan-700', text: 'text-cyan-700' },
   { border: 'border-sky-700', bg: 'bg-sky-700', text: 'text-sky-700' },
 ]
-
 const defaultColor = {
   border: 'border-slate-900',
   bg: 'bg-white',
@@ -55,7 +54,6 @@ function ChapterVersesPage() {
     query: { code, bookid, chapterid },
   } = useRouter()
   const { t } = useTranslation(['common', 'chapters'])
-
   const [project] = useProject({ code })
   const [book] = useGetBook({ code, book_code: bookid })
   const [chapter, { isLoading, mutate: mutateChapter, isValidating }] = useGetChapter({
@@ -74,7 +72,11 @@ function ChapterVersesPage() {
     chapter_id: chapter?.id,
   })
 
+  const [isLoadingCancelStart, setIsLoadingCancelStart] = useState(false)
+  const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
+
   const changeStartChapter = () => {
+    setIsLoadingCancelStart(true)
     supabase
       .rpc('change_start_chapter', {
         chapter_id: chapter?.id,
@@ -85,9 +87,11 @@ function ChapterVersesPage() {
         mutateChapters()
       })
       .catch(console.log)
+      .finally(() => setIsLoadingCancelStart(false))
   }
 
   const changeFinishChapter = () => {
+    setIsLoadingCancelFinish(true)
     supabase
       .rpc('change_finish_chapter', {
         chapter_id: chapter?.id,
@@ -98,6 +102,7 @@ function ChapterVersesPage() {
         mutateChapters()
       })
       .catch(console.log)
+      .finally(() => setIsLoadingCancelFinish(false))
   }
 
   const [currentTranslator, setCurrentTranslator] = useState(null)
@@ -156,7 +161,7 @@ function ChapterVersesPage() {
     }
     setVersesDivided(newArr)
   }
-
+  console.log(translators?.length === 0)
   const verseDividing = async () => {
     //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
     const { error } = await supabase.rpc('divide_verses', {
@@ -171,7 +176,6 @@ function ChapterVersesPage() {
       toast.success(t('SaveSuccess'))
     }
   }
-  const [isOpenMenu, setIsOpenMenu] = useState(false)
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
@@ -192,7 +196,9 @@ function ChapterVersesPage() {
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
               onMouseLeave={() => setIsHighlight(false)}
-              className="w-full grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 select-none"
+              className={`w-full grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 select-none ${
+                translators?.length === 0 ? 'pointer-events-none' : ''
+              }`}
             >
               {versesDivided.length > 0 ? (
                 versesDivided
@@ -201,12 +207,12 @@ function ChapterVersesPage() {
                     return (
                       <div
                         onMouseUp={() => {
-                          if (currentTranslator !== null) {
+                          if (currentTranslator) {
                             coloring(index)
                           }
                         }}
                         onMouseLeave={() => {
-                          if (isHighlight && currentTranslator !== null) {
+                          if (isHighlight && currentTranslator) {
                             coloring(index)
                           }
                         }}
@@ -216,9 +222,9 @@ function ChapterVersesPage() {
                         key={index}
                       >
                         <div
-                          className={`${verse.color.bg} ${
-                            verse.color.bg === 'bg-white' ? '' : 'text-white'
-                          } ${verse.color.border} border-2 truncate rounded-2xl ${
+                          className={`${verse.color?.bg} ${
+                            verse.color?.bg === 'bg-white' ? '' : 'text-white'
+                          } ${verse.color?.border} border-2 truncate rounded-2xl ${
                             currentTranslator ? '' : 'flex'
                           } w-full h-full flex-col p-4 justify-between`}
                         >
@@ -326,6 +332,7 @@ function ChapterVersesPage() {
                   text={t('Save')}
                   color="green"
                   icon={<Check className="w-5 h-5" />}
+                  disabled={() => translators?.length === 0}
                 />
                 <Button
                   onClick={() =>
@@ -341,6 +348,7 @@ function ChapterVersesPage() {
                   text={t('Reset')}
                   color="red"
                   icon={<Trash className="w-5 h-5" />}
+                  disabled={() => translators?.length === 0}
                 />
               </div>
             </Card>
@@ -352,10 +360,12 @@ function ChapterVersesPage() {
                     text={t('chapters:StartChapter')}
                     color={'green'}
                     icon={<Check className="w-5 h-5" />}
-                    disabled={chapter?.finished_at || isValidating}
+                    disabled={
+                      chapter?.finished_at || isValidating || translators?.length === 0
+                    }
                     avatar={
                       isValidating || isLoading ? (
-                        <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                        <Loading className="w-5 h-5 animate-spin" />
                       ) : (
                         ''
                       )
@@ -369,8 +379,8 @@ function ChapterVersesPage() {
                     icon={<Trash className="w-5 h-5" />}
                     disabled={chapter?.finished_at || isValidating}
                     avatar={
-                      isValidating || isLoading ? (
-                        <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                      isLoadingCancelStart ? (
+                        <Loading className="w-5 h-5 animate-spin" />
                       ) : (
                         ''
                       )
@@ -395,8 +405,8 @@ function ChapterVersesPage() {
                   }
                   disabled={isValidating}
                   avatar={
-                    isValidating || isLoading ? (
-                      <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                    isLoadingCancelFinish ? (
+                      <Loading className="w-5 h-5 animate-spin" />
                     ) : (
                       ''
                     )
@@ -531,7 +541,7 @@ function ChapterVersesPage() {
                                 disabled={chapter?.finished_at || isValidating}
                                 avatar={
                                   isValidating || isLoading ? (
-                                    <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                                    <Loading className="w-5 h-5 animate-spin" />
                                   ) : (
                                     ''
                                   )
@@ -545,8 +555,8 @@ function ChapterVersesPage() {
                                 icon={<Trash className="w-5 h-5" />}
                                 disabled={chapter?.finished_at || isValidating}
                                 avatar={
-                                  isValidating || isLoading ? (
-                                    <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                                  isLoadingCancelStart ? (
+                                    <Loading className="w-5 h-5 animate-spin" />
                                   ) : (
                                     ''
                                   )
@@ -571,8 +581,8 @@ function ChapterVersesPage() {
                               }
                               disabled={isValidating}
                               avatar={
-                                isValidating || isLoading ? (
-                                  <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
+                                isLoadingCancelFinish ? (
+                                  <Loading className="w-5 h-5 animate-spin" />
                                 ) : (
                                   ''
                                 )
