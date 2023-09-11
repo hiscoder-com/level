@@ -161,7 +161,6 @@ function ChapterVersesPage() {
     }
     setVersesDivided(newArr)
   }
-  console.log(translators?.length === 0)
   const verseDividing = async () => {
     //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
     const { error } = await supabase.rpc('divide_verses', {
@@ -348,7 +347,7 @@ function ChapterVersesPage() {
                   text={t('Reset')}
                   color="red"
                   icon={<Trash className="w-5 h-5" />}
-                  disabled={() => translators?.length === 0}
+                  disabled={translators?.length === 0}
                 />
               </div>
             </Card>

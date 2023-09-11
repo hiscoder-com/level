@@ -121,13 +121,13 @@ function ChapterList() {
                       className={`h-24 ${
                         !isCreated && isCoordinatorAccess ? 'verse-block' : ''
                       }`}
-                      onClick={() => {
+                      onClick={() =>
                         isCreated &&
-                          isCoordinatorAccess &&
-                          push({
-                            pathname: `/projects/${project?.code}/books/${bookid}/${num}`,
-                          })
-                      }}
+                        isCoordinatorAccess &&
+                        push({
+                          pathname: `/projects/${project?.code}/books/${bookid}/${num}`,
+                        })
+                      }
                     >
                       <div
                         className={`flex flex-col justify-between px-5 py-3 h-24 rounded-2xl ${
