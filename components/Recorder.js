@@ -107,7 +107,7 @@ export default function Recorder() {
           }`}
         />
       </button>
-      <Modal isOpen={showModal} closeHandle={setShowModal}>
+      <Modal isOpen={showModal} closeHandle={() => setShowModal(false)}>
         <div className="flex flex-col gap-7">
           <div className="text-2xl text-center">{t('MicrophoneAccess')}</div>
           <p>{t('TurnMicrophone')}</p>

@@ -32,7 +32,6 @@ function Testament({
   const [bookCodeCreating, setBookCodeCreating] = useState(null)
   const [isOpenDownloading, setIsOpenDownloading] = useState(false)
   const [downloadingBook, setDownloadingBook] = useState(null)
-
   const [books, { mutate: mutateBooks }] = useGetBooks({
     code: project?.code,
   })
@@ -239,7 +238,7 @@ function Testament({
 
       <Modal
         isOpen={isOpenDownloading}
-        closeHandle={setIsOpenDownloading}
+        closeHandle={() => setIsOpenDownloading(false)}
         className={{
           dialogPanel:
             'w-full max-w-md align-middle p-6 bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 overflow-y-visible rounded-3xl',
