@@ -15,7 +15,6 @@ import { stepConfigState } from 'components/Panel/state/atoms'
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
-import { useAccess } from 'utils/hooks'
 
 /**
  * что если тут мы заменим все инструменты на обычную читалку, и так же надо подгрузить чужие стихи
@@ -24,16 +23,13 @@ import { useAccess } from 'utils/hooks'
 function TranslatorPage({ last_step }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
-
   const { query, replace } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)
   const { project, book, chapter, step, translator } = query
-  const [{ isSupporterAccess }] = useAccess({ user_id: user?.id, code: project })
-
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
   const [versesRange, setVersesRange] = useState([])
-  console.log(isSupporterAccess)
+
   useEffect(() => {
     if (user?.login) {
       supabase
@@ -62,17 +58,18 @@ function TranslatorPage({ last_step }) {
         supabase
           .rpc('get_current_steps', { project_id: res.data.projects.id })
           .then((response) => {
-            // const current_step = response.data.filter(
-            //   (el) => el.book === book && el.chapter.toString() === chapter.toString()
-            // )?.[0]?.step
-            // if (!current_step) {
-            //   return replace(`/account`)
-            // }
-            // if (parseInt(current_step) !== parseInt(step)) {
-            //   return replace(
-            //     `/translate/${project}/${book}/${chapter}/${current_step}/intro`
-            //   )
-            // }
+            const current_step = response.data.filter(
+              (el) => el.book === book && el.chapter.toString() === chapter.toString()
+            )?.[0]?.step
+            if (!current_step) {
+              return replace(`/account`)
+            }
+            if (parseInt(current_step) !== parseInt(step)) {
+              return replace(
+                `/translate/${project}/${book}/${chapter}/${current_step}/intro`
+              )
+            }
+
             let stepConfig = {
               title: res.data?.title,
               config: [...res.data?.config],
