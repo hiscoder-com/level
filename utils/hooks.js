@@ -505,7 +505,7 @@ export function useAccess({ user_id, code }) {
     () => ['admin', 'coordinator', 'moderator', 'translator'].includes(level),
     [level]
   )
-  const isSupporterAccess = useMemo(() => ['supporter'].includes(level), [level])
+  const isSupporterAccess = useMemo(() => ['admin', 'supporter'].includes(level), [level])
   const isModeratorAccess = useMemo(
     () => ['admin', 'coordinator', 'moderator'].includes(level),
     [level]
