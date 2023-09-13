@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9D27AE']
 
-function TranslatorImage({ item, size, clickable }) {
+function TranslatorImage({ item, size, clickable, support }) {
   const {
     push,
     query: { project, book, chapter, step, translator },
@@ -20,7 +20,11 @@ function TranslatorImage({ item, size, clickable }) {
       title={`${item?.users ? `${item.users?.login}` : ''}`}
       onClick={() => {
         if (canClick) {
-          push(`/translate/${project}/${book}/${chapter}/${step}/${item?.users?.login}`)
+          push(
+            `/${support ? 'support' : 'translate'}/${project}/${book}/${chapter}/${
+              support ? item.step : step
+            }/${item?.users?.login}`
+          )
         }
       }}
       className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
@@ -58,6 +62,11 @@ function TranslatorImage({ item, size, clickable }) {
             {item?.users?.login.toUpperCase().slice(0, 2)}
           </text>
         </svg>
+      )}
+      {support && (
+        <span className="absolute mx-5 -my-3 px-2 py-1 top-0 rounded-full bg-white text-xs">
+          {item.step}
+        </span>
       )}
     </div>
   )
