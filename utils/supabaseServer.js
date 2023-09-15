@@ -13,7 +13,7 @@ const supabaseApi = async ({ req, res, isAuth = true }) => {
         },
       }
     )
-    if (!isAuth) {
+    if (isAuth) {
       const {
         data: { session },
       } = await supabaseServerApi.auth.getSession()

@@ -106,6 +106,7 @@ function Login() {
           url: urlOrigin,
         })
         .then((res) => {
+          setErrorMessageSendLink('')
           setSuccessMessageSendLink(t('LinkHasSendedToYourEmail'))
           setTimeout(() => {
             setIsOpenModal(false)
