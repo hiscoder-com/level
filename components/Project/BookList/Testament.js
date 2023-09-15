@@ -23,7 +23,7 @@ function Testament({
   bookList,
   title,
   project,
-  access: { isCoordinatorAccess, isModeratorAccess, isAdminAccess, isLoading },
+  access: { isCoordinatorAccess, isModeratorAccess, isLoading },
   setCurrentBook,
 }) {
   const { t } = useTranslation('books')
@@ -167,6 +167,38 @@ function Testament({
                 {!isLoading ? (
                   <>
                     <div className="hidden sm:flex gap-2">
+                      {!isBookCreated && isCoordinatorAccess && (
+                        <>
+                          <Play
+                            className="w-6 min-w-[1.5rem] cursor-pointer"
+                            onClick={() => setBookCodeCreating(book)}
+                          />
+                        </>
+                      )}
+
+                      {levelChecks?.[book] && (
+                        <Reader
+                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          onClick={() =>
+                            push({
+                              pathname: `/projects/${project?.code}/books/read`,
+                              query: {
+                                bookid: book,
+                              },
+                              shallow: true,
+                            })
+                          }
+                        />
+                      )}
+                      {isModeratorAccess && isBookCreated && (
+                        <DownloadIcon
+                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          onClick={() => {
+                            setIsOpenDownloading(true)
+                            setDownloadingBook(book)
+                          }}
+                        />
+                      )}
                       {isCoordinatorAccess && (
                         <>
                           {isBookCreated && (
@@ -184,37 +216,6 @@ function Testament({
                             />
                           )}
                         </>
-                      )}
-                      {!isBookCreated && isCoordinatorAccess && (
-                        <>
-                          <Play
-                            className="w-6 min-w-[1.5rem] cursor-pointer"
-                            onClick={() => setBookCodeCreating(book)}
-                          />
-                        </>
-                      )}
-                      {isModeratorAccess && isBookCreated && (
-                        <DownloadIcon
-                          className="w-6 min-w-[1.5rem] cursor-pointer"
-                          onClick={() => {
-                            setIsOpenDownloading(true)
-                            setDownloadingBook(book)
-                          }}
-                        />
-                      )}
-                      {levelChecks?.[book] && (
-                        <Reader
-                          className="w-6 min-w-[1.5rem] cursor-pointer"
-                          onClick={() =>
-                            push({
-                              pathname: `/projects/${project?.code}/books/read`,
-                              query: {
-                                bookid: book,
-                              },
-                              shallow: true,
-                            })
-                          }
-                        />
                       )}
                     </div>
                   </>
@@ -237,7 +238,7 @@ function Testament({
 
       <Modal
         isOpen={isOpenDownloading}
-        closeHandle={setIsOpenDownloading}
+        closeHandle={() => setIsOpenDownloading(false)}
         className={{
           dialogPanel:
             'w-full max-w-md align-middle p-6 bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 overflow-y-visible rounded-3xl',

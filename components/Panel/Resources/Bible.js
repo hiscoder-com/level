@@ -6,7 +6,7 @@ import { useRecoilValue } from 'recoil'
 
 import { Placeholder } from '../UI'
 
-import { checkedVersesBibleState } from '../state/atoms'
+import { checkedVersesBibleState } from '../../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 

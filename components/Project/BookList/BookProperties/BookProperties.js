@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 
+import { useRouter } from 'next/router'
+
 import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
@@ -9,15 +11,19 @@ import toast, { Toaster } from 'react-hot-toast'
 import { Tab } from '@headlessui/react'
 
 import Property from './Property'
+import ButtonSave from 'components/ButtonSave'
 import Breadcrumbs from 'components/Breadcrumbs'
-import { useRouter } from 'next/router'
-import Reader from '/public/dictionary.svg'
+
+import Reader from 'public/dictionary.svg'
+import CheckboxShevron from 'public/checkbox-shevron.svg'
 
 function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { query } = useRouter()
   const { t } = useTranslation()
   const book = useMemo(() => books?.find((el) => el.code === bookCode), [bookCode, books])
   const [properties, setProperties] = useState()
+  const [isSaving, setIsSaving] = useState(false)
+
   useEffect(() => {
     if (book?.properties) {
       setProperties(book?.properties)
@@ -55,6 +61,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
       )
     )
   const handleSaveProperties = () => {
+    setIsSaving(true)
     axios
       .put(`/api/book_properties/${book.id}`, {
         properties,
@@ -70,6 +77,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         toast.error(t('SaveFailed'))
         console.log(err)
       })
+      .finally(() => setIsSaving(false))
   }
 
   return (
@@ -94,10 +102,12 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         <Tab.Panels>
           <Tab.Panel>
             <div className="card flex flex-col py-7">
-              <div className="flex flex-col gap-4">{renderProperties}</div>
-              <button className="btn-primary mt-7 w-fit" onClick={handleSaveProperties}>
-                {t('Save')}
-              </button>
+              <div className="flex flex-col gap-4">
+                {renderProperties}
+                <ButtonSave onClick={handleSaveProperties} isSaving={isSaving}>
+                  {t('Save')}
+                </ButtonSave>
+              </div>
             </div>
           </Tab.Panel>
           <Tab.Panel>
@@ -126,6 +136,8 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
     'checked:bg-cyan-700 checked:border-cyan-700 checked:before:bg-cyan-700',
   ]
   const [translationLink, setTranslationLink] = useState()
+  const [isSaving, setIsSaving] = useState(false)
+
   const {
     push,
     query: { properties, code },
@@ -133,6 +145,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
 
   const handleSaveLevelChecks = () => {
     if (translationLink) {
+      setIsSaving(true)
       axios
         .put(`/api/projects/${code}/books/${properties}/level_checks`, {
           level_checks: translationLink,
@@ -148,6 +161,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           toast.error(t('SaveFailed'))
           console.log(err)
         })
+        .finally(() => setIsSaving(false))
     }
   }
 
@@ -210,20 +224,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                         }
                       />
                       <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
-                        <svg
-                          width="15"
-                          height="11"
-                          viewBox="0 0 15 11"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M14.1449 0.762586C14.4429 1.06062 14.4429 1.54382 14.1449 1.84185L5.75017 10.2366C5.45214 10.5346 4.96894 10.5346 4.67091 10.2366L0.855116 6.4208C0.557084 6.12277 0.557084 5.63957 0.855116 5.34153C1.15315 5.0435 1.63635 5.0435 1.93438 5.34153L5.21054 8.61769L13.0656 0.762586C13.3637 0.464555 13.8469 0.464555 14.1449 0.762586Z"
-                            fill="white"
-                          />
-                        </svg>
+                        <CheckboxShevron />
                       </div>
                     </label>
                     <label htmlFor={el}>{el}</label>
@@ -231,12 +232,9 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                 ))}
             </div>
           </div>
-          <button
-            className="btn-primary w-1/2 sm:w-auto self-end sm:self-auto"
-            onClick={handleSaveLevelChecks}
-          >
+          <ButtonSave onClick={handleSaveLevelChecks} isSaving={isSaving}>
             {t('Save')}
-          </button>
+          </ButtonSave>
         </div>
       </div>
     </div>
