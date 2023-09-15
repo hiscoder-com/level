@@ -1,11 +1,12 @@
+import supabaseApi from 'utils/supabaseServer'
+
 export default async function sendRecoveryHandler(req, res) {
   let supabase
   try {
-    supabase = await supabaseApi({ req, res })
+    supabase = await supabaseApi({ req, res, isAuth: false })
   } catch (error) {
     return res.status(401).json({ error })
   }
-
   const {
     method,
     body: { email, url },

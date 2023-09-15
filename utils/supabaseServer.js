@@ -1,6 +1,6 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
-const supabaseApi = async ({ req, res }) => {
+const supabaseApi = async ({ req, res, isAuth = true }) => {
   let supabaseServerApi
   try {
     supabaseServerApi = createPagesServerClient(
@@ -13,11 +13,13 @@ const supabaseApi = async ({ req, res }) => {
         },
       }
     )
-    const {
-      data: { session },
-    } = await supabaseServerApi.auth.getSession()
-    if (!session) {
-      throw Error('Access denied!')
+    if (!isAuth) {
+      const {
+        data: { session },
+      } = await supabaseServerApi.auth.getSession()
+      if (!session) {
+        throw Error('Access denied!')
+      }
     }
   } catch (error) {
     throw error
