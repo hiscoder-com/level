@@ -1,3 +1,9 @@
+# Versión 0.6.0
+## Fecha: 09/04/2023
+
+### **Añadido:**
+- estado de la descarga al hacer clic en el enlace interno
+- enlace al modo de lectura de libros terminados en su cuenta personal
 # Versión 0.5.0
 ## Fecha: 08/29/2023
 

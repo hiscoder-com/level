@@ -8,11 +8,10 @@ import { toast } from 'react-hot-toast'
 
 import axios from 'axios'
 
-import CommitsList from '../CommitsList'
+import CommitsList from 'components/CommitsList'
+import ButtonLoading from 'components/ButtonLoading'
 
 import { useProject, useMethod, useGetProjectResources } from 'utils/hooks'
-
-import Spinner from 'public/spinner.svg'
 
 function ResourceSettings() {
   const [methods] = useMethod()
@@ -76,17 +75,9 @@ function ResourceSettings() {
         methodId={currentMethod?.id}
       />
       {isErrorCommit && <div className="mt-3">{t('WrongResource')}</div>}
-      <button
-        className="btn-primary w-fit text-xl"
-        onClick={handleSaveCommits}
-        disabled={isSaving}
-      >
-        {isSaving ? (
-          <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
-        ) : (
-          t('Save')
-        )}
-      </button>
+      <ButtonLoading onClick={handleSaveCommits} isLoading={isSaving}>
+        {t('Save')}
+      </ButtonLoading>
     </>
   )
 }

@@ -8,7 +8,7 @@ import { useRecoilValue } from 'recoil'
 
 import Tool from 'components/Panel/Tool'
 
-import { inactiveState } from './Panel/state/atoms'
+import { inactiveState } from './state/atoms'
 
 import Dict from 'public/dictionary.svg'
 import TeamNote from 'public/team-note.svg'

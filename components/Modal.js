@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment } from 'react'
 
 import { Transition, Dialog } from '@headlessui/react'
 
@@ -8,6 +8,7 @@ function Modal({
   children,
   closeHandle,
   className: propsClassNames = {},
+  handleCloseDisabled = false,
 }) {
   const classNames = {
     ...{
@@ -24,7 +25,11 @@ function Modal({
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
-      <Dialog as="div" className={classNames.main} onClose={closeHandle}>
+      <Dialog
+        as="div"
+        className={classNames.main}
+        onClose={() => !handleCloseDisabled && closeHandle()}
+      >
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

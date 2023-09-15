@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 
-import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useRecoilValue } from 'recoil'
 
@@ -9,7 +9,7 @@ import Timer from 'components/Timer'
 import Dropdown from './Dropdown'
 import SideBar from './SideBar'
 
-import { stepConfigState } from './Panel/state/atoms'
+import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -46,7 +46,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
   return (
     <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
-        <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7 cursor-pointer">
+        <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <div
             className={`flex justify-center w-full ${

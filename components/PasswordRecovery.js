@@ -7,13 +7,13 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
 import SwitchLocalization from './SwitchLocalization'
+import ButtonLoading from './ButtonLoading'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
-import Spinner from 'public/spinner.svg'
 
 function PasswordRecovery() {
   const supabase = useSupabaseClient()
@@ -60,7 +60,6 @@ function PasswordRecovery() {
       setError(message)
       return
     }
-
     if (user) {
       setIsRecovering(true)
       axios
@@ -84,9 +83,7 @@ function PasswordRecovery() {
   return (
     <div className="flex flex-col p-5 lg:py-10 xl:px-8">
       <div className="flex justify-between mb-6">
-        <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold">
-          {t('PasswordRecovery')}
-        </h1>
+        <h1 className="text-2xl font-bold">{t('PasswordRecovery')}</h1>
         <SwitchLocalization />
       </div>
 
@@ -147,20 +144,14 @@ function PasswordRecovery() {
                 <div className={`${error ? 'opacity-100' : 'opacity-0'} min-h-[1.5rem]`}>
                   {t(error)}
                 </div>
-
-                <button
+                <ButtonLoading
                   type="button"
                   className="btn-cyan self-center w-1/2 text-sm lg:text-base"
                   onClick={handleRecovery}
+                  isLoading={isRecovering}
                 >
-                  <div className="flex justify-center">
-                    {isRecovering ? (
-                      <Spinner className="h-6 w-6 text-gray-400 animate-spin self-center" />
-                    ) : (
-                      t('UpdatePassword')
-                    )}
-                  </div>
-                </button>
+                  {t('UpdatePassword')}
+                </ButtonLoading>
               </>
             )
           ) : (

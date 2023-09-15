@@ -10,8 +10,9 @@ import { Switch } from '@headlessui/react'
 
 import axios from 'axios'
 
-import UpdateField from '../UpdateField'
-import BriefEditQuestions from '../BriefEditQuestions'
+import UpdateField from 'components/UpdateField'
+import BriefEditQuestions from 'components/BriefEditQuestions'
+import ButtonLoading from 'components/ButtonLoading'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 
@@ -19,17 +20,15 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
-
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [editableMode, setEditableMode] = useState(false)
   const [hidden, setHidden] = useState(true)
+  const [isSaving, setIsSaving] = useState(false)
   const {
     query: { code },
   } = useRouter()
   const [project] = useProject({ code })
-
   const { t } = useTranslation(['common', 'project-edit'])
-
   const [brief, { mutate }] = useGetBrief({
     project_id: project?.id,
   })
@@ -41,6 +40,7 @@ function BriefBlock({ access, title = false }) {
   }, [brief, briefDataCollection])
 
   const saveToDatabase = (briefDataCollection, isSaveFinal) => {
+    setIsSaving(true)
     axios
       .put(`/api/briefs/${project?.id}`, {
         data_collection: briefDataCollection,
@@ -54,6 +54,7 @@ function BriefBlock({ access, title = false }) {
         toast.error(t('SaveFailed'))
         console.log(err)
       })
+      .finally(() => setIsSaving(false))
   }
 
   useEffect(() => {
@@ -105,14 +106,12 @@ function BriefBlock({ access, title = false }) {
             {t('project-edit:EditBriefTitle')}
           </h3>
         )}
-
         <div className="flex flex-col items-end lg:flex-row gap-7 justify-end text-sm md:text-base">
           {access && (
             <div className="flex items-center">
               <span className="mr-3">
                 {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
               </span>
-
               <Switch
                 checked={brief?.is_enable || false}
                 onChange={handleSwitch}
@@ -181,7 +180,7 @@ function BriefBlock({ access, title = false }) {
               <ul className="list-decimal ml-4 text-sm md:text-base text-slate-900 space-y-7">
                 {briefDataCollection.map((briefItem, index) => {
                   return (
-                    <li key={index} className="space-y-3">
+                    <li key={index} className="space-y-3 font-bold">
                       <div className="flex gap-7 center justify-between">
                         <p className="font-bold">{briefItem.title}</p>
                       </div>
@@ -205,7 +204,6 @@ function BriefBlock({ access, title = false }) {
                           )
                         })}
                       </div>
-
                       <div className="space-y-7">
                         <p className={hidden ? 'hidden' : 'text-lg font-bold mt-7'}>
                           {t('project-edit:Summary')}
@@ -238,17 +236,15 @@ function BriefBlock({ access, title = false }) {
               </div>
             </>
           )}
-
           {access && (
             <div>
-              <button
-                className="btn-primary text-xl"
-                onClick={() => {
-                  saveToDatabase(briefDataCollection, true)
-                }}
+              <ButtonLoading
+                className="relative btn-primary"
+                onClick={() => saveToDatabase(briefDataCollection, true)}
+                isLoading={isSaving}
               >
                 {t('Save')}
-              </button>
+              </ButtonLoading>
             </div>
           )}
         </div>

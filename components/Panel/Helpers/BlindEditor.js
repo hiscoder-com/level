@@ -8,7 +8,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 import { toast, Toaster } from 'react-hot-toast'
 
-import { checkedVersesBibleState } from '../state/atoms'
+import { checkedVersesBibleState } from '../../state/atoms'
 import Modal from 'components/Modal'
 
 import { obsCheckAdditionalVerses } from 'utils/helper'

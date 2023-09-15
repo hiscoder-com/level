@@ -11,15 +11,13 @@ import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
 import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
+import Reader from '/public/dictionary.svg'
+
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
-
-  const { locale } = useRouter()
-
+  const { locale, push } = useRouter()
   const [currentSteps, setCurrentSteps] = useState(null)
-
   const { t } = useTranslation(['common', 'books'])
-
   const { briefResume, isBrief } = useBriefState({
     project_id: project?.id,
   })
@@ -65,6 +63,18 @@ function ProjectPersonalCard({ project, user }) {
   const [books] = useGetBooks({
     code: project?.code,
   })
+  const levelChecks = useMemo(() => {
+    if (books) {
+      const _books = {}
+      books.forEach((book) => {
+        if (book.level_checks) {
+          _books[book.code] = book.level_checks
+        }
+      })
+      return _books
+    }
+  }, [books])
+
   const countChaptersVerses = useMemo(() => {
     if (books) {
       const count = {}
@@ -105,8 +115,8 @@ function ProjectPersonalCard({ project, user }) {
                     <div className="flex flex-col gap-7 w-auto lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
+                          className="text-xl font-bold text-cyan-700 hover:text-gray-500 cursor-pointer"
                           href={`/projects/${project.code}/books/${book}`}
-                          className="text-xl font-bold hover:text-gray-500"
                         >
                           {t(`books:${book}`)}
                         </Link>
@@ -115,6 +125,20 @@ function ProjectPersonalCard({ project, user }) {
                         })} ${t('Verse', {
                           count: countChaptersVerses?.[book]?.countVerses,
                         })})`}</div>
+                        {levelChecks?.[book] && (
+                          <Reader
+                            className="w-6 min-w-[1.5rem] text-cyan-700 hover:text-gray-500 cursor-pointer"
+                            onClick={() =>
+                              push({
+                                pathname: `/projects/${project?.code}/books/read`,
+                                query: {
+                                  bookid: book,
+                                },
+                                shallow: true,
+                              })
+                            }
+                          />
+                        )}
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
@@ -193,7 +217,7 @@ function ProjectPersonalCard({ project, user }) {
                       {briefResume === '' && (
                         <Link
                           href={`/projects/${project?.code}/edit?setting=brief`}
-                          className="btn-primary flex gap-1 sm:gap-2"
+                          className="btn-primary flex justify-center gap-1 sm:gap-2"
                         >
                           {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
                         </Link>

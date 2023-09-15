@@ -10,6 +10,7 @@ import axios from 'axios'
 import SwitchLocalization from './SwitchLocalization'
 import SignOut from './SignOut'
 import Modal from './Modal'
+import ButtonLoading from './ButtonLoading'
 
 import { useRedirect } from 'utils/hooks'
 
@@ -19,7 +20,6 @@ import useSupabaseClient from 'utils/supabaseClient'
 import Report from 'public/error-outline.svg'
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
-import Spinner from 'public/spinner.svg'
 
 function Login() {
   const supabase = useSupabaseClient()
@@ -119,7 +119,10 @@ function Login() {
           setErrorMessageSendLink(t('ErrorSendingLink'))
           console.log(error)
         })
-        .finally(() => setIsSendingEmail(false))
+        .finally(() => {
+          setIsSendingEmail(false)
+          setEmail('')
+        })
     } else {
       setErrorMessageSendLink(t('WriteCorrectEmail'))
       return
@@ -214,22 +217,16 @@ function Login() {
               )}
             </div>
             <div className="flex flex-col lg:flex-row items-center lg:justify-around">
-              <button
-                disabled={loading || isLoadingLogin}
+              <ButtonLoading
+                disabled={loading}
                 onClick={handleLogin}
-                className={`${
+                isLoading={isLoadingLogin}
+                className={`relative w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold ${
                   loading || isLoadingLogin ? 'btn' : 'btn-cyan'
-                } w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold`}
+                } `}
               >
-                <div className="flex justify-center">
-                  {loading || isLoadingLogin ? (
-                    <Spinner className="h-6 w- text-gray-400 animate-spin self-center" />
-                  ) : (
-                    t('SignIn')
-                  )}
-                </div>
-              </button>
-
+                {t('SignIn')}
+              </ButtonLoading>
               <button
                 type="button"
                 className="text-sm lg:text-base text-cyan-700 hover:text-gray-400"
@@ -261,17 +258,14 @@ function Login() {
                   setEmail(e.target.value)
                 }}
               />
-              <button
-                className="btn-secondary"
+              <ButtonLoading
+                className="relative btn-secondary"
+                disabled={!email}
+                isLoading={isSendingEmail}
                 onClick={handleSend}
-                disabled={!email || isSendingEmail}
               >
-                {isSendingEmail ? (
-                  <Spinner className="h-5 w-5 text-gray-400 animate-spin" />
-                ) : (
-                  t('Send')
-                )}
-              </button>
+                {t('Send')}
+              </ButtonLoading>
             </div>
           </div>
         )}
