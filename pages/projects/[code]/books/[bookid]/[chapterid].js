@@ -331,7 +331,7 @@ function ChapterVersesPage() {
                   text={t('Save')}
                   color="green"
                   icon={<Check className="w-5 h-5" />}
-                  disabled={() => translators?.length === 0}
+                  disabled={!translators?.length}
                 />
                 <Button
                   onClick={() =>
@@ -347,7 +347,7 @@ function ChapterVersesPage() {
                   text={t('Reset')}
                   color="red"
                   icon={<Trash className="w-5 h-5" />}
-                  disabled={translators?.length === 0}
+                  disabled={!translators?.length}
                 />
               </div>
             </Card>

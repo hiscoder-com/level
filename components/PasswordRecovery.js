@@ -19,20 +19,13 @@ function PasswordRecovery() {
   const supabase = useSupabaseClient()
   const { t } = useTranslation('users')
   const { user } = useCurrentUser()
-
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
   const [isRecovering, setIsRecovering] = useState(false)
-
   const [error, setError] = useState('')
   const [successResult, setSuccessResult] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showRepeatPassword, setShowRepeatPassword] = useState(false)
-  useEffect(() => {
-    if (user) {
-      console.log(user)
-    }
-  }, [user])
 
   const signOut = async () => {
     try {
@@ -86,7 +79,6 @@ function PasswordRecovery() {
         <h1 className="text-2xl font-bold">{t('PasswordRecovery')}</h1>
         <SwitchLocalization />
       </div>
-
       <form className="space-y-6 xl:space-y-10">
         <div className="flex flex-col gap-5 lg:justify-around">
           {!successResult ? (
@@ -133,9 +125,7 @@ function PasswordRecovery() {
 
                   <span
                     className="eye"
-                    onClick={() => {
-                      setShowRepeatPassword((prev) => !prev)
-                    }}
+                    onClick={() => setShowRepeatPassword((prev) => !prev)}
                   >
                     {showRepeatPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </span>

@@ -9,7 +9,6 @@ import OmbLogo from 'public/omb-logo.svg'
 
 function StartPage({ children }) {
   const { t } = useTranslation('common')
-
   return (
     <>
       <div className="flex flex-col items-center sm:hidden">
@@ -38,7 +37,7 @@ function StartPage({ children }) {
             </Link>
           </div>
         </div>
-        <div className="flex justify-center items-center my-4 w-1/2 min-h-[90vh] bg-[url('../public/login_image.jpg')] bg-cover bg-no-repeat rounded-l-lg lg:rounded-l-[48px] xl:rounded-l-[72px] 2xl:rounded-l-[120px] ">
+        <div className="flex justify-center items-center my-4 w-1/2 min-h-[90vh] bg-[url('../public/login_image.jpg')] bg-cover bg-no-repeat rounded-l-lg lg:rounded-l-[48px] xl:rounded-l-[72px] 2xl:rounded-l-[120px]">
           <div className="w-5/6 xl:w-3/4 2xl:w-3/5 bg-white rounded-lg shadow-lg">
             {children}
           </div>

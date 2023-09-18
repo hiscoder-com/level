@@ -11,7 +11,6 @@ import Progress from 'public/progress.svg'
 
 function Layout({ backgroundColor, children }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
-
   const [loadingPage, setLoadingPage] = useState(false)
   const router = useRouter()
   useEffect(() => {

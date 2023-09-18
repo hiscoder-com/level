@@ -127,8 +127,6 @@ export default function ConfessionSteps() {
   )
 }
 
-ConfessionSteps.hideAppbar = true
-
 export async function getStaticProps({ locale }) {
   return {
     props: {

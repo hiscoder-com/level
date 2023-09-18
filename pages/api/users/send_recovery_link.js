@@ -30,7 +30,7 @@ export default async function sendRecoveryHandler(req, res) {
           return res.status(404).json({ error })
         }
       }
-      res.status(201).json({ data })
+      res.status(200).json({ data })
       break
     default:
       res.setHeader('Allow', ['POST'])

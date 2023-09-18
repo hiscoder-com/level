@@ -22,7 +22,7 @@ export default async function updatePasswordHandler(req, res) {
       } catch (error) {
         return res.status(404).json({ error })
       }
-      res.status(201).json({ data })
+      res.status(200).json({ data })
       break
     default:
       res.setHeader('Allow', ['PUT'])

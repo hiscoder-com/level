@@ -60,7 +60,6 @@ export default function UserAgreement() {
     </div>
   )
 }
-UserAgreement.hideAppbar = true
 
 export async function getStaticProps({ locale }) {
   return {
