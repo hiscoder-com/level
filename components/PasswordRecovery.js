@@ -66,7 +66,7 @@ function PasswordRecovery() {
           }
         })
         .catch((error) => {
-          setError(error?.data?.message ?? 'ProblemWithRecovery')
+          setError(error?.response?.data?.error?.message ?? 'ProblemWithRecovery')
           console.log(error)
         })
         .finally(() => setIsRecovering(false))
