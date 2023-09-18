@@ -66,7 +66,7 @@ function PasswordRecovery() {
           }
         })
         .catch((error) => {
-          setError('ProblemWithRecovery')
+          setError(error?.data?.message ?? 'ProblemWithRecovery')
           console.log(error)
         })
         .finally(() => setIsRecovering(false))
@@ -136,7 +136,7 @@ function PasswordRecovery() {
                 </div>
                 <ButtonLoading
                   type="button"
-                  className="btn-cyan self-center w-1/2 text-sm lg:text-base"
+                  className="btn-cyan relative self-center w-1/2 text-sm lg:text-base"
                   onClick={handleRecovery}
                   isLoading={isRecovering}
                 >
