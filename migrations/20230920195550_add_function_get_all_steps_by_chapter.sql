@@ -21,6 +21,6 @@
         AND chapters.started_at IS NOT NULL
         AND chapters.finished_at IS NULL
         AND verses.project_translator_id IS NOT NULL        
-      GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id,project_translator_id,users.login;
+      GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id,project_translator_id,users.login ORDER BY users.login;
     END;
   $$
