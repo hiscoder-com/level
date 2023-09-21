@@ -1,4 +1,4 @@
-import { Fragment, useEffect } from 'react'
+import { Fragment, useEffect, useMemo } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -22,19 +22,29 @@ const sizeTabs = {
   6: 'w-full',
 }
 
-function Account({ isSupporter }) {
+function Account() {
   const { user, loading } = useCurrentUser()
   const router = useRouter()
+  const isSupportAccess = true //TODO сделать проверку на support, желательно на уровне сервера
 
   const { t } = useTranslation(['users', 'project-edit'])
-
   useEffect(() => {
     if (!loading && user === null) {
       router.push('/')
     }
   }, [router, user, loading])
 
-  const tabs = ['Account', 'projects:Projects', 'Support', 'projects:CreateProject']
+  const tabs = useMemo(() => {
+    const defaultTabs = ['Account', 'projects:Projects']
+    const isAdmin = user?.is_admin
+    if (isAdmin) {
+      return defaultTabs.concat('Support', 'projects:CreateProject')
+    } else if (isSupportAccess) {
+      return defaultTabs.concat('Support')
+    } else {
+      return defaultTabs
+    }
+  }, [isSupportAccess, user?.is_admin])
   return (
     <>
       <div className="mx-auto max-w-7xl">
@@ -57,13 +67,12 @@ function Account({ isSupporter }) {
                   </Tab>
                 ))}
               </Tab.List>
-              {(user?.is_admin || isSupporter) && (
+              {(user?.is_admin || isSupportAccess) && (
                 <Disclosure as="div" className="relative flex flex-col items-center mt-2">
                   <Disclosure.Button>
                     <Threedots className="w-8" />
                   </Disclosure.Button>
-
-                  <Disclosure.Panel className="mt-2 flex p-1 w-full bg-white border border-gray-350 rounded-3xl shadow-md">
+                  <Disclosure.Panel className="flex mt-2 p-1 w-full bg-white border border-gray-350 rounded-3xl shadow-md">
                     {['Support', 'projects:CreateProject']
                       .filter((tab) => user?.is_admin || tab !== 'projects:CreateProject')
                       .map((tab) => (
@@ -91,7 +100,7 @@ function Account({ isSupporter }) {
                 <Tab.Panel>
                   <Projects type={'projects'} />
                 </Tab.Panel>
-                {(user?.is_admin || isSupporter) && (
+                {(user?.is_admin || isSupportAccess) && (
                   <Tab.Panel>
                     <Projects type={'support'} />
                   </Tab.Panel>
@@ -113,29 +122,19 @@ function Account({ isSupporter }) {
               <div className="border-b border-slate-600">
                 <Tab.List
                   className={`flex ${
-                    sizeTabs[
-                      tabs.filter(
-                        (tab) =>
-                          (user?.is_admin && tab === 'projects:CreateProject') ||
-                          tab !== 'projects:CreateProject'
-                      ).length
-                    ]
+                    sizeTabs[tabs.length]
                   } gap-4 mt-2 text-center font-bold`}
                 >
-                  {tabs.map(
-                    (tab) =>
-                      ((user?.is_admin && tab === 'projects:CreateProject') ||
-                        tab !== 'projects:CreateProject') && (
-                        <Tab
-                          key={tab}
-                          className={({ selected }) =>
-                            `flex-1 ${selected ? 'tab-active ' : 'tab'}`
-                          }
-                        >
-                          {t(tab)}
-                        </Tab>
-                      )
-                  )}
+                  {tabs.map((tab) => (
+                    <Tab
+                      key={tab}
+                      className={({ selected }) =>
+                        `flex-1 ${selected ? 'tab-active ' : 'tab'}`
+                      }
+                    >
+                      {t(tab)}
+                    </Tab>
+                  ))}
                 </Tab.List>
               </div>
 

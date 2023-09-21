@@ -6,9 +6,8 @@ import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Account from 'components/Account'
-import supabaseApi from 'utils/supabaseServer'
 
-function AccountHomePage({ is_supporter }) {
+function AccountHomePage() {
   const { t } = useTranslation(['users', 'common'])
 
   useEffect(() => {
@@ -26,23 +25,14 @@ function AccountHomePage({ is_supporter }) {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Account isSupporter={is_supporter} />
+      <Account />
     </>
   )
 }
 
 export default AccountHomePage
 
-export async function getServerSideProps({ locale, req, res }) {
-  const supabase = await supabaseApi({ req, res })
-  const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  const { data: supporter, error } = await supabase
-    .from('project_supporters')
-    .select('*')
-    .eq('user_id', session.user.id)
-
+export async function getServerSideProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, [
@@ -52,7 +42,6 @@ export async function getServerSideProps({ locale, req, res }) {
         'projects',
         'project-edit',
       ])),
-      is_supporter: supporter?.length,
     },
   }
 }

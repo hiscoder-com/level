@@ -10,7 +10,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Workspace from 'components/Workspace'
 import Translators from 'components/Translators'
 
-import { stepConfigState } from 'components/Panel/state/atoms'
+import { stepConfigState } from 'components/state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
