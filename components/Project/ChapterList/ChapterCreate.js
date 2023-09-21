@@ -75,6 +75,7 @@ function ChapterCreate({
             : 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250'
         }`,
       }}
+      handleCloseDisabled={isCreating}
     >
       <div className="flex flex-col justify-center items-center gap-7 min-h-[15vh]">
         <div className="flex flex-row gap-2 mb-4 text-xl text-center">

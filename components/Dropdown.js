@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil'
 import Modal from './Modal'
 
 import { useGetBrief } from 'utils/hooks'
-import { projectIdState } from './Panel/state/atoms'
+import { projectIdState } from './state/atoms'
 
 import Tools from 'public/tools.svg'
 

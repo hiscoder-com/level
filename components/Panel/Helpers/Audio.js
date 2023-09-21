@@ -7,7 +7,7 @@ import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import Recorder from 'components/Recorder'
 
-import { inactiveState } from '../state/atoms'
+import { inactiveState } from '../../state/atoms'
 
 import BackButton from 'public/left-arrow.svg'
 

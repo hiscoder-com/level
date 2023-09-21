@@ -146,6 +146,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
     push,
     query: { bookid, code },
   } = useRouter()
+
   const [{ isCoordinatorAccess }] = useAccess({
     user_id: user?.id,
     code,

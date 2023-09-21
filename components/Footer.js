@@ -9,7 +9,7 @@ import { useRecoilValue } from 'recoil'
 import Translators from 'components/Translators'
 import ProgressBar from 'components/ProgressBar'
 
-import { stepConfigState } from './Panel/state/atoms'
+import { stepConfigState } from './state/atoms'
 import Spinner from '../public/spinner.svg'
 export default function Footer({
   loading = false,
