@@ -17,6 +17,7 @@ import Breadcrumbs from '../Breadcrumbs'
 import Steps from '../Steps'
 import BasicInformation from '../BasicInformation'
 import LanguageCreate from '../LanguageCreate'
+import ButtonSave from 'components/ButtonSave'
 
 import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -36,7 +37,11 @@ function ProjectEdit() {
     query: { code, setting },
   } = useRouter()
   const { t } = useTranslation(['common', 'project-edit'])
+
   const [customSteps, setCustomSteps] = useState([])
+  const [isSavingSteps, setIsSavingSteps] = useState(false)
+  const [isSavingBasic, setIsSavingBasic] = useState(false)
+
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
 
   const { user } = useCurrentUser()
@@ -93,6 +98,7 @@ function ProjectEdit() {
     if (!title || !codeProject || !languageId || !origtitle) {
       return
     }
+    setIsSavingBasic(true)
     axios
       .put(`/api/projects/${code}`, {
         basicInfo: {
@@ -119,6 +125,7 @@ function ProjectEdit() {
       .catch((err) => {
         toast.error(t('SaveFailed'))
       })
+      .finally(() => setIsSavingBasic(false))
   }
 
   const saveStepToDb = async (updatedStep) => {
@@ -165,7 +172,8 @@ function ProjectEdit() {
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValues('code') !== code}
                 />
-                <input className="btn-primary" type="submit" value={t('Save')} />
+
+                <ButtonSave isSaving={isSavingBasic}>{t('Save')}</ButtonSave>
               </form>
             </div>
           ),
@@ -215,12 +223,12 @@ function ProjectEdit() {
               <div className="space-y-7">
                 <Steps customSteps={customSteps} updateSteps={updateSteps} />
               </div>
-              <button
-                className="btn-primary w-fit"
+              <ButtonSave
                 onClick={() => saveStepsToDb({ steps: customSteps })}
+                isSaving={isSavingSteps}
               >
                 {t('Save')}
-              </button>
+              </ButtonSave>
             </div>
           ),
         },
@@ -247,6 +255,7 @@ function ProjectEdit() {
       const { id, description, intro, title } = el
       return { id, description, intro, title }
     })
+    setIsSavingSteps(true)
     axios
       .put(`/api/projects/${code}/steps`, {
         _steps,
@@ -259,6 +268,7 @@ function ProjectEdit() {
         })
         console.log(error)
       })
+      .finally(() => setIsSavingSteps(false))
   }
 
   useEffect(() => {
@@ -266,6 +276,7 @@ function ProjectEdit() {
       setCustomSteps(steps)
     }
   }, [steps])
+
   const index = useMemo(() => idTabs.indexOf(setting), [idTabs, setting])
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">

@@ -15,11 +15,7 @@ import Modal from 'components/Modal'
 import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseService'
 import useSupabaseClient from 'utils/supabaseClient'
-import {
-  projectIdState,
-  stepConfigState,
-  currentVerse,
-} from 'components/Panel/state/atoms'
+import { projectIdState, stepConfigState, currentVerse } from 'components/state/atoms'
 
 export default function ProgressPage({ last_step }) {
   const supabase = useSupabaseClient()
@@ -102,6 +98,7 @@ export default function ProgressPage({ last_step }) {
   }, [book, chapter, project, step])
 
   const handleNextStep = async () => {
+    setIsOpenModal(false)
     setLoading(true)
     const { data: next_step } = await supabase.rpc('go_to_step', {
       project,

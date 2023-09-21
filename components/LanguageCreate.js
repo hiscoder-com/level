@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 import Modal from 'components/Modal'
 import CheckboxShevron from 'public/checkbox-shevron.svg'
 
-function LanguageCreate({ isOpen, closeHandle, user, mutateLanguage, languages }) {
+function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
 
   const {

@@ -5,7 +5,7 @@ import useSWR from 'swr'
 import { checkLSVal } from './helper'
 import { useRecoilState } from 'recoil'
 
-import { currentVerse } from '../components/Panel/state/atoms'
+import { currentVerse } from '../components/state/atoms'
 
 const fetcher = async ([url]) => {
   const res = await fetch(url, {

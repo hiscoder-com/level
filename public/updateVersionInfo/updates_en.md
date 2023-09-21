@@ -1,3 +1,10 @@
+# Version 0.6.0
+## Date: 09/04/2023
+
+### **Added:**
+- loading status for clicking on the internal link 
+- link to the ready-made books reading mode in account
+
 # Version 0.5.0
 ## Date: 08/29/2023
 

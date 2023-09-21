@@ -79,6 +79,7 @@ function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
               : 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250'
           }`,
         }}
+        handleCloseDisabled={isCreating}
       >
         <div className="flex flex-col justify-center items-center gap-7 min-h-[10rem]">
           <div className="flex flex-row gap-2 mb-4 text-xl sm:text-2xl text-center">
