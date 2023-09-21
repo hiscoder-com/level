@@ -91,10 +91,7 @@ function Login() {
       )
   }
   const handleSend = async () => {
-    let urlOrigin
-    if (typeof window !== 'undefined') {
-      urlOrigin = window.location.origin
-    }
+    const urlOrigin = typeof window !== 'undefined' ? window.location.origin : ''
     if (!urlOrigin) {
       return
     }
