@@ -25,15 +25,20 @@ function TranslatorPage({ last_step }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
 
-  const { query, replace } = useRouter()
+  const { query, replace, push } = useRouter()
   const setStepConfigData = useSetRecoilState(stepConfigState)
-  const { project, book, chapter, step, translator } = query
+  const { project, book, chapter, step, translator: login } = query
   const [{ isSupporterAccess }] = useAccess({ user_id: user?.id, code: project })
   const { t } = useTranslation(['common'])
   const [stepConfig, setStepConfig] = useState(null)
   const [versesRange, setVersesRange] = useState([])
   const [translators, setTranslators] = useState([])
 
+  const currentTranslator = useMemo(
+    () => translators.find((translator) => translator.login === login),
+    [login, translators]
+  )
+  console.log({ currentTranslator })
   useEffect(() => {
     supabase
       .rpc('get_all_steps_by_chapter', {
@@ -42,11 +47,12 @@ function TranslatorPage({ last_step }) {
         chapter_num: chapter,
       })
       .then((res) => {
-        console.log(res.data)
         const translators = res?.data?.map((translator) => ({
           step: translator.step,
           login: translator.login,
           stepTitle: translator.title,
+          projectTranslatorId: translator.translator_id,
+          chapterId: translator.chapter_id,
         }))
         setTranslators(translators)
       })
@@ -61,10 +67,63 @@ function TranslatorPage({ last_step }) {
           book_code: book,
         })
         .then((res) => {
-          setVersesRange(res.data.filter((el) => el.translator === translator))
+          setVersesRange(res.data.filter((el) => el.translator === login))
         })
     }
-  }, [book, chapter, project, supabase, translator, user?.login])
+  }, [book, chapter, project, supabase, login, user?.login])
+
+  useEffect(() => {
+    if (!currentTranslator?.chapterId) {
+      return
+    }
+    const changes = supabase
+      .channel('table-db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'verses',
+          filter: 'chapter_id=eq.' + currentTranslator.chapterId,
+        },
+        (payload) => {
+          if (
+            payload.new.current_step &&
+            payload.new.project_translator_id === currentTranslator.projectTranslatorId
+          ) {
+            if (!project || !book || !chapter || !step || !login) {
+              return
+            }
+            supabase
+              .from('steps')
+              .select('sorting')
+              .eq('id', payload.new.current_step)
+              .single('1')
+              .then((res) =>
+                push(
+                  `/support/${project}/${book}/${chapter}/${res.data.sorting}/${login}`
+                )
+              )
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(changes)
+    }
+  }, [
+    book,
+    chapter,
+    currentTranslator?.chapterId,
+    currentTranslator?.projectTranslatorId,
+    login,
+    project,
+    push,
+    query,
+    step,
+    supabase,
+  ])
 
   useEffect(() => {
     supabase
@@ -77,7 +136,7 @@ function TranslatorPage({ last_step }) {
         if (!res.data) {
           return replace('/')
         }
-        const filters = ['personalNotes', 'teamNotes', 'dictionary']
+        const filters = ['teamNotes', 'dictionary']
         const filteredConfig = res.data?.config.map((config) => {
           return {
             ...config,
