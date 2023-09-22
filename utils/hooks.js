@@ -546,3 +546,22 @@ export function useGetSteps({ code }) {
   })
   return [steps, { mutate, error, isLoading }]
 }
+
+/**
+ *hook returns information about books and started chapters from table 'chapters' by project_code
+ * @param {string} code code of project
+ *
+ * @returns {array}
+ */
+export function useGetBooksWithStartedChapters(code) {
+  const {
+    data: startedChapters,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(code ? [`/api/projects/${code}/started_chapters`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [startedChapters, { mutate, error, isLoading }]
+}
