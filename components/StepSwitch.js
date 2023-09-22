@@ -8,7 +8,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 import Down from 'public/arrow-down.svg'
 
-function StepSwitch({ stepProps, handleStep, isUnderButton = true }) {
+function StepSwitch({ stepProps, handleGetSteps }) {
   const supabase = useSupabaseClient()
   const { t } = useTranslation(['common'])
   const [activeSteps, setActiveSteps] = useState({})
@@ -24,10 +24,11 @@ function StepSwitch({ stepProps, handleStep, isUnderButton = true }) {
       })
       .then((res) => {
         if (res.data) {
-          handleStep(stepProps.book, stepProps.chapter)
+          handleGetSteps(stepProps.book, stepProps.chapter)
           getActiveSteps(stepProps)
         }
       })
+      .catch((err) => console.log(err))
   }
   const getActiveSteps = async (step) => {
     supabase
