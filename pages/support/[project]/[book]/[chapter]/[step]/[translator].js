@@ -17,11 +17,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
 import { useAccess } from 'utils/hooks'
 
-/**
- * что если тут мы заменим все инструменты на обычную читалку, и так же надо подгрузить чужие стихи
- * либо в компонентах для редактора надо проверять, чьи стихи
- */
-function TranslatorPage({ last_step }) {
+function SupporterPage({ last_step }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
 
@@ -195,7 +191,7 @@ function TranslatorPage({ last_step }) {
   )
 }
 
-export default TranslatorPage
+export default SupporterPage
 
 export async function getServerSideProps({ locale, params }) {
   const steps = await supabaseService

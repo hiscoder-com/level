@@ -50,8 +50,8 @@
     "rehype-raw": "^6.1.1",
     "remark-gfm": "^3.0.1",
     "showdown": "^2.1.0",
-    "swagger-ui-react": "^5.1.0",
-    "swr": "^2.2.0",
+    "swagger-ui-react": "^5.7.2",
+    "swr": "^2.2.2",
     "usfm-js": "^3.4.2"
   },
   "devDependencies": {
