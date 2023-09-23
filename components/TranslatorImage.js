@@ -20,11 +20,18 @@ function TranslatorImage({ item, size, clickable, support }) {
       title={`${item?.users ? `${item.users?.login}` : ''}`}
       onClick={() => {
         if (canClick) {
-          push(
-            `/${support ? 'support' : 'translate'}/${project}/${book}/${chapter}/${
-              support ? item.step : step
-            }/${item?.users?.login}`
-          )
+          push({
+            pathname: `/${
+              support ? 'support' : 'translate'
+            }/[project]/[book]/[chapter]/[step]/[translator]`,
+            query: {
+              project,
+              book,
+              chapter,
+              step: support ? item.step : step,
+              translator: item?.users?.login,
+            },
+          })
         }
       }}
       className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${

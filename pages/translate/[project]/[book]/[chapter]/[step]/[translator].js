@@ -108,8 +108,14 @@ function TranslatorPage({ last_step }) {
       )}
 
       <div className="flex justify-end px-6 lg:px-0 mx-auto w-full max-w-7xl bg-blue-150">
-        <Link href={`/translate/${project}/${book}/${chapter}/${step}`} legacyBehavior>
-          <button className="my-4 btn-cyan !px-6">{t('BackTo')}</button>
+        <Link
+          href={{
+            pathname: '/translate/[project]/[book]/[chapter]/[step]',
+            query: { project, book, chapter, step },
+          }}
+          className="my-4 btn-cyan !px-6"
+        >
+          {t('BackTo')}
         </Link>
       </div>
     </div>

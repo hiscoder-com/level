@@ -51,7 +51,10 @@ function ChapterCreate({
             mutateCreatedChapters()
             setTextModal(t('ChapterCreated'))
             setTimeout(() => {
-              push('/projects/' + project.code + '/books/' + bookid + '/' + num)
+              push({
+                pathname: '/projects/[code]/books/[bookid]/[chapterid]',
+                query: { code: project.code, bookid, chapterid: num },
+              })
             }, 2000)
           }, 1000)
         } else {

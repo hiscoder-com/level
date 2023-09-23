@@ -283,7 +283,10 @@ function ProjectEdit() {
       <div className="hidden md:block">
         <Breadcrumbs
           links={[
-            { title: project?.title, href: '/projects/' + code },
+            {
+              title: project?.title,
+              href: { pathname: '/projects/[code]', query: { code } },
+            },
             { title: t('Settings') },
           ]}
           full
@@ -331,7 +334,10 @@ function ProjectEdit() {
       <div className="flex sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 flex-col gap-7 bg-white">
         <Breadcrumbs
           links={[
-            { title: project?.title, href: '/projects/' + code },
+            {
+              title: project?.title,
+              href: { pathname: '/projects/[code]', query: { code } },
+            },
             { title: t('Settings') },
           ]}
         />

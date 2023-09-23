@@ -41,7 +41,6 @@ function ProjectSupportCard({ project, user }) {
   const handleGetSteps = useCallback(
     async (book, chapter) => {
       try {
-        console.log('deee')
         const { data } = await supabase.rpc('get_all_steps_by_chapter', {
           project_code: project.code,
           book_code: book,
@@ -113,11 +112,20 @@ function ProjectSupportCard({ project, user }) {
                 <div key={step_idx}>
                   <div
                     className="flex justify-between pl-5 items-center bg-white text-slate-900 rounded-xl cursor-pointer hover:bg-teal-500 hover:text-white"
-                    onClick={() =>
-                      push(
-                        `support/${step.project}/${step.book}/${step.chapter}/${step.step}/${step.login}`
-                      )
-                    }
+                    onClick={() => {
+                      setIsOpenModal(false)
+                      push({
+                        pathname:
+                          'support/[project]/[book]/[chapter]/[step]/[translator]',
+                        query: {
+                          project: step.project,
+                          book: step.book,
+                          chapter: step.chapter,
+                          step: step.step,
+                          translator: step.login,
+                        },
+                      })
+                    }}
                   >
                     <div>{step.login} </div>
                     <StepSwitch stepProps={step} handleGetSteps={handleGetSteps} />
@@ -130,7 +138,10 @@ function ProjectSupportCard({ project, user }) {
       {isSupporterAccess && books?.length > 0 && (
         <div className="card space-y-1">
           <Link
-            href={`/projects/${project.code}`}
+            href={{
+              pathname: '/projects/[code]',
+              query: { code: project.code },
+            }}
             className="font-bold text-2xl mb-10 text-cyan-700 hover:text-gray-500"
           >
             {project.title}

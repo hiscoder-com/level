@@ -96,9 +96,16 @@ function SupporterPage({ last_step }) {
               .eq('id', payload.new.current_step)
               .single('1')
               .then((res) =>
-                push(
-                  `/support/${project}/${book}/${chapter}/${res.data.sorting}/${login}`
-                )
+                push({
+                  pathname: '/support/[project]/[book]/[chapter]/[step]/[translator]',
+                  query: {
+                    project,
+                    book,
+                    chapter,
+                    step: res.data.sorting,
+                    translator: login,
+                  },
+                })
               )
           }
         }

@@ -43,7 +43,8 @@ function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
             setTextModal(t('BookCreated'))
             setTimeout(() => {
               push({
-                pathname: `/projects/${project?.code}/books/${book_code}`,
+                pathname: '/projects/[code]/books/[bookid]',
+                query: { code: project?.code, bookid: book_code },
               })
             }, 2000)
           } else {

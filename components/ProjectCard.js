@@ -22,7 +22,10 @@ function ProjectCard({ project, user }) {
       {!project?.code || isLoading || !user?.id ? (
         <Placeholder />
       ) : (
-        <Link href={`/projects/${project.code}`} legacyBehavior>
+        <Link
+          href={{ pathname: '/projects/[code]', query: { code: project.code } }}
+          legacyBehavior
+        >
           <div className="card flex justify-between items-start h-min cursor-pointer">
             <div className="flex flex-col gap-9">
               <div className="text-xl font-bold">{project.title}</div>
@@ -39,9 +42,13 @@ function ProjectCard({ project, user }) {
             </div>
             {briefResume === '' && (
               <Link
-                href={`/projects/${project?.code}/edit?setting=brief`}
+                href={{
+                  pathname: '/projects/[code]/edit',
+                  query: { code: project.code, setting: 'brief' },
+                }}
                 className="btn-primary w-fit"
               >
+                {/* //TODO Ползёт кнопка на разных экранах */}
                 {t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
               </Link>
             )}

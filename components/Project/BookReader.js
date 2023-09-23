@@ -114,7 +114,12 @@ function BookReader() {
       <div className="w-full xl:w-2/3">
         <div className="card flex flex-col gap-7">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
-            <Link href={'/projects/' + project?.code}>
+            <Link
+              href={{
+                pathname: '/projects/[code]',
+                query: { code: project.code },
+              }}
+            >
               <Left className="w-5 h-5 hover:text-gray-500" />
             </Link>
             <Navigation
@@ -160,7 +165,13 @@ function Verses({ verseObjects, user, reference, isLoading }) {
         <Breadcrumbs
           links={
             reference && [
-              { title: project?.title, href: '/projects/' + project?.code },
+              {
+                title: project?.title,
+                href: {
+                  pathname: '/projects/[code]',
+                  query: { code: project.code },
+                },
+              },
               { title: t('Reader') },
             ]
           }
@@ -201,10 +212,11 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                   text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
                   onClick={() =>
                     push({
-                      pathname: `/projects/${project?.code}`,
+                      pathname: `/projects/[code]`,
                       query: {
                         properties: bookid,
                         levels: true,
+                        code: project?.code,
                       },
                     })
                   }
@@ -255,7 +267,7 @@ function Navigation({ books, reference, setReference }) {
     [nextChapter, selectedBook?.chapters]
   )
   return (
-    <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3 z-10">
+    <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3">
       <button
         className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
           !prevChapter ? 'bg-gray-100 cursor-default' : 'bg-slate-200 cursor-pointer'

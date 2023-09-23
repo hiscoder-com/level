@@ -116,7 +116,10 @@ function ProjectPersonalCard({ project, user }) {
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
                           className="text-xl font-bold text-cyan-700 hover:text-gray-500 cursor-pointer"
-                          href={`/projects/${project.code}/books/${book}`}
+                          href={{
+                            pathname: '/projects/[code]/books/[bookid]',
+                            query: { code: project.code, bookid: book },
+                          }}
                         >
                           {t(`books:${book}`)}
                         </Link>
@@ -130,8 +133,9 @@ function ProjectPersonalCard({ project, user }) {
                             className="w-6 min-w-[1.5rem] text-cyan-700 hover:text-gray-500 cursor-pointer"
                             onClick={() =>
                               push({
-                                pathname: `/projects/${project?.code}/books/read`,
+                                pathname: `/projects/[code]/books/read`,
                                 query: {
+                                  code: project?.code,
                                   bookid: book,
                                 },
                                 shallow: true,
@@ -144,7 +148,10 @@ function ProjectPersonalCard({ project, user }) {
                         <div className="flex gap-3">
                           <p>{t('projects:Project')}:</p>
                           <Link
-                            href={`/projects/${project.code}`}
+                            href={{
+                              pathname: '/projects/[code]',
+                              query: { code: project.code },
+                            }}
                             className="text-cyan-700 hover:text-gray-500"
                           >
                             {project?.title}
@@ -192,14 +199,19 @@ function ProjectPersonalCard({ project, user }) {
                         return !isBrief || briefResume ? (
                           <Link
                             key={index}
-                            href={`/translate/${step.project}/${step.book}/${
-                              step.chapter
-                            }/${step.step}${
-                              typeof searchLocalStorage(step, localStorageSteps) ===
-                              'undefined'
-                                ? '/intro'
-                                : ''
-                            }`}
+                            href={{
+                              pathname:
+                                typeof searchLocalStorage(step, localStorageSteps) ===
+                                'undefined'
+                                  ? '/translate/[project]/[book]/[chapter]/[step]/intro'
+                                  : '/translate/[project]/[book]/[chapter]/[step]',
+                              query: {
+                                project: step.project,
+                                book: step.book,
+                                chapter: step.chapter,
+                                step: step.step,
+                              },
+                            }}
                             className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base"
                           >
                             {stepLink}
@@ -216,7 +228,10 @@ function ProjectPersonalCard({ project, user }) {
                       })}
                       {briefResume === '' && (
                         <Link
-                          href={`/projects/${project?.code}/edit?setting=brief`}
+                          href={{
+                            pathname: '/projects/[code]/edit',
+                            query: { code: project.code, setting: 'brief' },
+                          }}
                           className="btn-primary flex justify-center gap-1 sm:gap-2"
                         >
                           {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}

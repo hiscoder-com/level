@@ -166,10 +166,19 @@ function Download({
   }
 
   const links = [
-    { title: project?.title, href: '/projects/' + project?.code },
+    {
+      title: project?.title,
+      href: {
+        pathname: '/projects/[code]',
+        query: { code: project.code },
+      },
+    },
     {
       title: t('books:' + bookCode),
-      href: '/projects/' + project?.code + '?book=' + bookCode,
+      href: {
+        pathname: '/projects/[code]',
+        query: { code: project.code, book: bookCode },
+      },
     },
     {
       title: !isBook
