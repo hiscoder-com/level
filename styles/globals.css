@@ -39,6 +39,32 @@
 	}
 }
 
+:root {
+  --primary: theme('colors.slate.600');
+  --secondary: theme('colors.yellow.600');
+  --primary-background: theme('colors.gray.200');
+	--secondary-background: theme('colors.white');
+	--primary-icons:theme('colors.neutral.800');
+	--secondary-icons:theme('colors.white');
+	--primary-text:theme('colors.neutral.800');
+	--secondary-text:theme('colors.white');
+	--disabled-text:theme('colors.neutral.400');
+	--additional-text:theme('colors.slate.600');
+	--primary-link:theme('colors.slate.600');
+	--hover-link:theme('colors.slate.400');
+	--disabled-link:theme('colors.neutral.400');
+	--primary-border:theme('colors.slate.600');  
+	--secondary-border:theme('colors.gray.400');
+	--primary-modal-from:	theme('colors.slate.700');
+	--primary-modal-to:	theme('colors.teal.900');  
+
+}
+
+[data-theme='dark'] {
+  
+}
+
+
 .appbar {
 	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-white sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
 }
