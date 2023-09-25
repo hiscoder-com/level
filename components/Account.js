@@ -49,7 +49,7 @@ function Account() {
                       {({ selected }) => (
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                            selected ? 'bg-th-primary text-secondary-text' : ''
+                            selected ? 'bg-th-primary text-th-secondary-text' : ''
                           }
                       `}
                         >
@@ -181,7 +181,7 @@ function Account() {
         >
           <div className="flex justify-end">
             <button
-              className={`p-4 mt-4 text-th-secondary-text rounded-full bg-th-primary shadow-2xl ${
+              className={`p-4 mt-4 stroke-th-secondary-text rounded-full bg-th-primary shadow-2xl ${
                 openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}

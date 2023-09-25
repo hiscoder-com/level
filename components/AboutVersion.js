@@ -129,7 +129,13 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
               {t('Version')} {packageJson.version}
             </p>
             <button className="text-right" onClick={() => setIsOpen(false)}>
-              <Close className="h-8 stroke-th-secondary-icons" />
+              <Close
+                className={`h-8 ${
+                  isMobileIndexPage
+                    ? 'stroke-th-primary-icons'
+                    : 'stroke-th-secondary-icons'
+                }`}
+              />
             </button>
           </div>
 
