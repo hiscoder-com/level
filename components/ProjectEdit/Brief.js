@@ -121,13 +121,13 @@ function BriefBlock({ access, title = false }) {
                 checked={brief?.is_enable || false}
                 onChange={handleSwitch}
                 className={`${
-                  brief?.is_enable ? 'bg-cyan-600' : 'bg-gray-200'
+                  brief?.is_enable ? 'bg-th-primary' : 'bg-th-primary-background'
                 } relative inline-flex h-7 w-12 items-center rounded-full`}
               >
                 <span
                   className={`${
                     brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-background transition`}
                 />
               </Switch>
             </div>
@@ -141,13 +141,13 @@ function BriefBlock({ access, title = false }) {
                 setHidden((prev) => !prev)
               }}
               className={`${
-                !hidden && !editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+                !hidden && !editableMode ? 'bg-th-primary' : 'bg-th-primary-background'
               } relative inline-flex h-7 w-12 items-center rounded-full`}
             >
               <span
                 className={`${
                   !hidden ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                } inline-block h-5 w-5 transform rounded-full bg-th-secondary-background transition`}
               />
             </Switch>
           </div>
@@ -160,13 +160,13 @@ function BriefBlock({ access, title = false }) {
                   setEditableMode((prev) => !prev)
                 }}
                 className={`${
-                  editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+                  editableMode ? 'bg-th-primary' : 'bg-th-primary-background'
                 } relative inline-flex h-7 w-12 items-center rounded-full`}
               >
                 <span
                   className={`${
                     editableMode ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-background transition`}
                 />
               </Switch>
             </div>
@@ -182,7 +182,7 @@ function BriefBlock({ access, title = false }) {
         <div className="space-y-7">
           {briefDataCollection.length > 0 ? (
             <div className="flex flex-col gap-4 w-full mb-4">
-              <ul className="list-decimal ml-4 text-sm md:text-base text-slate-900 space-y-7">
+              <ul className="list-decimal ml-4 text-sm md:text-base text-th-primary-text space-y-7">
                 {briefDataCollection.map((briefItem, index) => {
                   return (
                     <li key={index} className="space-y-3 font-bold">
@@ -235,7 +235,7 @@ function BriefBlock({ access, title = false }) {
                   {[3, 7, 3, 4, 9, 6, 3, 10, 8].map((width, index) => (
                     <div
                       key={index}
-                      className={`h-7 w-${width}/12 mt-4 bg-gray-200 rounded-full`}
+                      className={`h-7 w-${width}/12 mt-4 bg-th-primary-background rounded-full`}
                     ></div>
                   ))}
                 </div>

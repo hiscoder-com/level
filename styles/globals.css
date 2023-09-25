@@ -52,13 +52,18 @@
 	--disabled-text:theme('colors.neutral.400');
 	--additional-text:theme('colors.slate.600');
 	--primary-link:theme('colors.slate.600');
-	--hover-link:theme('colors.slate.400');
+	--hover-primary-link:theme('colors.slate.500');
 	--disabled-link:theme('colors.neutral.400');
 	--primary-border:theme('colors.slate.600');  
 	--secondary-border:theme('colors.gray.400');
 	--primary-modal-from:	theme('colors.slate.700');
 	--primary-modal-to:	theme('colors.teal.900');  
-
+	--primary-btn-background:	theme('colors.neutral.200');
+	--primary-btn-hover: theme('colors.yellow.600');
+	--secondary-btn-background:	theme('colors.yellow.600');
+	--decondary-btn-hover: theme('colors.neutral.200');
+	--active-tab-from:	theme('colors.slate.600');
+	--active-tab-to:	theme('colors.slate.700');
 }
 
 [data-theme='dark'] {
@@ -300,16 +305,16 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply py-2 px-2 text-sm border-x border-t border-slate-600 rounded-t-2xl cursor-pointer
 }
 .tab-active {
-	@apply tab text-white bg-slate-600 cursor-default focus:outline-none
+	@apply tab text-th-secondary-text bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to cursor-default focus:outline-none shadow
 }
 
 .card {
-  @apply p-3 sm:py-5 sm:px-8 bg-white rounded-2xl border border-gray-350 shadow-md;
+  @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-border shadow-md;
 }
 
 @screen sm {
   .card-md {
-	 @apply p-3 sm:py-5 sm:px-8 bg-white rounded-2xl border border-gray-350 shadow-md;
+	 @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-border shadow-md;
 }
 }
 
@@ -318,12 +323,12 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-primary {
-  @apply btn-base text-slate-900 border-slate-600 hover:bg-gray-200 hover:border-gray-200 disabled:bg-white disabled:border-gray-300
-	disabled:text-gray-400 disabled:cursor-default;
+  @apply btn-base text-th-primary-text border-th-secondary-border bg-th-primary-btn-background hover:bg-th-primary-btn-hover hover:border-th-primary-btn-hover hover:text-th-secondary-text disabled:hover:bg-th-primary-btn-background  disabled:border-th-secondary-text 
+	disabled:text-th-secondary-text disabled:cursor-default;
 }
 
 .btn-secondary {
-  @apply btn-base text-slate-900 bg-gray-200 hover:bg-white;
+  @apply btn-base text-th-secondary-text bg-th-secondary;
 }
 
 .btn-red {

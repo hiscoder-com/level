@@ -85,7 +85,7 @@ function BasicInformation({
         <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-4/5">
           <div className="relative flex w-full md:w-3/4">
             <select
-              className="input-primary bg-white h-full appearance-none cursor-pointer"
+              className="input-primary bg-th-secondary-background h-full appearance-none cursor-pointer"
               placeholder={t('Language')}
               {...register('languageId')}
             >
@@ -103,11 +103,10 @@ function BasicInformation({
           <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-primary bg-white flex items-center gap-2 truncate"
+              className="input-primary bg-th-secondary-background flex items-center gap-2 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
-              <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-slate-900 rounded-full" />
-
+              <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-primary-icons stroke-th-primary-icons rounded-full" />
               <span>{t('project-edit:AddLanguage')}</span>
             </button>
           </div>
@@ -120,7 +119,7 @@ function BasicInformation({
             <select
               placeholder={t('Method')}
               {...register('methodId')}
-              className="input-primary bg-white w-3/4 appearance-none cursor-pointer"
+              className="input-primary bg-th-secondary-background w-3/4 appearance-none cursor-pointer"
               defaultValue={methods?.[0]?.id}
             >
               {methods &&

@@ -163,7 +163,7 @@ function ProjectCreate() {
     <>
       <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
         <form className="flex flex-col gap-0 md:gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card-md py-7 space-y-7">
+          <div className="card-md bg-th-primary-background py-7 space-y-7">
             <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
             <BasicInformation
               t={t}
@@ -176,13 +176,13 @@ function ProjectCreate() {
               uniqueCheck
             />
           </div>
-          <div className="card-md flex flex-col gap-7 py-7">
+          <div className="card-md bg-th-primary-background flex flex-col gap-7 py-7">
             <h3 className="text-xl font-bold">{t('project-edit:Steps')}</h3>
             <div className="flex flex-col gap-7 text-sm md:text-base">
               <Steps customSteps={customSteps} updateSteps={updateSteps} />
             </div>
           </div>
-          <div className="card-md flex flex-col gap-7 py-7">
+          <div className="card-md bg-th-primary-background flex flex-col gap-7 py-7">
             <div className="flex justify-between">
               <h3 className="text-xl font-bold">{t('Brief')}</h3>
               <div className="flex items-center gap-2">
@@ -211,7 +211,7 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="card-md flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
+          <div className="card-md bg-th-primary-background flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
             <h3 className="text-xl font-bold">{t('common:ListResources')}</h3>
             <CommitsList
               methodId={methodId}

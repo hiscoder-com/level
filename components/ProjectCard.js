@@ -23,13 +23,21 @@ function ProjectCard({ project, user }) {
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`} legacyBehavior>
-          <div className="card flex justify-between items-start h-min cursor-pointer">
+          <div className="card bg-th-primary-background flex justify-between items-start cursor-pointer h-full">
             <div className="flex flex-col gap-9">
-              <div className="text-xl font-bold">{project.title}</div>
+              <div className="text-xl font-bold">{project.title}</div>{' '}
+              {briefResume === '' && (
+                <Link
+                  href={`/projects/${project?.code}/edit?setting=brief`}
+                  className="btn-primary w-fit"
+                >
+                  {t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                </Link>
+              )}
               <div className="flex flex-col gap-5">
                 <div className="flex gap-3">
                   <p>{t('Language')}:</p>
-                  <p className="text-gray-400">{project.languages.orig_name}</p>
+                  <p className="text-th-disabled-text">{project.languages.orig_name}</p>
                 </div>
                 <div className="flex gap-3">
                   <p>{t('common:Translator_other')}:</p>
@@ -37,14 +45,6 @@ function ProjectCard({ project, user }) {
                 </div>
               </div>
             </div>
-            {briefResume === '' && (
-              <Link
-                href={`/projects/${project?.code}/edit?setting=brief`}
-                className="btn-primary w-fit"
-              >
-                {t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
-              </Link>
-            )}
           </div>
         </Link>
       )}

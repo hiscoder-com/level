@@ -20,8 +20,8 @@ function Steps({ updateSteps, customSteps = [] }) {
           {({ open }) => (
             <div>
               <Disclosure.Button
-                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-blue-150 ${
-                  open ? 'rounded-t-md' : 'rounded-md'
+                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-th-secondary-background border-x border-t border-th-secondary-border ${
+                  open ? 'rounded-t-md' : 'rounded-md border-b'
                 }`}
               >
                 <span>{step.title}</span>
@@ -31,7 +31,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   } `}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="p-4 space-y-7 bg-blue-150 rounded-b-md text-sm md:text-base">
+              <Disclosure.Panel className="p-4 space-y-7 bg-th-secondary-background border-x border-b border-th-secondary-border rounded-b-md text-sm md:text-base">
                 {fields.map((field) => (
                   <div
                     className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full"
@@ -45,7 +45,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                         textarea={field.textarea}
                         fieldName={field.name}
                         updateValue={updateSteps}
-                        className="input-primary bg-blue-150"
+                        className="input-primary bg-th-secondary-background"
                       />
                     </div>
                   </div>
@@ -58,12 +58,12 @@ function Steps({ updateSteps, customSteps = [] }) {
                     {step?.config?.map((config, idx_config) => (
                       <div
                         key={idx_config}
-                        className="flex flex-wrap gap-2 pr-2 border-r border-slate-900 last:border-r-0"
+                        className="flex flex-wrap gap-2 pr-2 border-r last:border-r-0"
                       >
                         {config.tools.map((tool) => (
                           <div
                             key={tool.name}
-                            className="btn-primary p-2 pointer-events-none rounded-md hover:bg-transparent hover:border-slate-600"
+                            className="btn-primary p-2 pointer-events-none rounded-md hover:bg-transparent"
                           >
                             {t('common:' + tool.name)}
                           </div>

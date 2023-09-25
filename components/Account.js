@@ -71,45 +71,45 @@ function Account() {
             </Tab.Group>
 
             <Tab.Group as="div" className="hidden sm:block">
-              <div className="border-b border-th-primary">
-                <Tab.List
-                  className={`flex ${
-                    sizeTabs[
-                      tabs.filter(
-                        (tab) =>
-                          (user?.is_admin && tab === 'projects:CreateProject') ||
-                          tab !== 'projects:CreateProject'
-                      ).length
-                    ]
-                  } gap-4 mt-2 text-center font-bold`}
-                >
-                  {tabs.map(
-                    (tab) =>
-                      ((user?.is_admin && tab === 'projects:CreateProject') ||
-                        tab !== 'projects:CreateProject') && (
-                        <Tab
-                          key={tab}
-                          className={({ selected }) =>
-                            `flex-1 ${selected ? 'tab-active ' : 'tab'}`
-                          }
-                        >
-                          {t(tab)}
-                        </Tab>
-                      )
-                  )}
-                </Tab.List>
-              </div>
-
-              <Tab.Panels>
-                <Tab.Panel>
-                  <Projects type={'account'} />
-                </Tab.Panel>
-                <Tab.Panel>
-                  <Projects type={'projects'} />
-                </Tab.Panel>
-                <Tab.Panel>
-                  <ProjectCreate />
-                </Tab.Panel>
+              <Tab.List
+                className={`flex px-5 ${
+                  sizeTabs[
+                    tabs.filter(
+                      (tab) =>
+                        (user?.is_admin && tab === 'projects:CreateProject') ||
+                        tab !== 'projects:CreateProject'
+                    ).length
+                  ]
+                } gap-4 mt-2 text-center font-bold`}
+              >
+                {tabs.map(
+                  (tab) =>
+                    ((user?.is_admin && tab === 'projects:CreateProject') ||
+                      tab !== 'projects:CreateProject') && (
+                      <Tab
+                        key={tab}
+                        className={({ selected }) =>
+                          `flex-1 ${selected ? 'tab-active' : 'tab'}`
+                        }
+                      >
+                        {t(tab)}
+                      </Tab>
+                    )
+                )}
+              </Tab.List>
+              <Tab.Panels className="pb-10">
+                <div className="bg-th-primary h-12 rounded-t-3xl px-10"></div>
+                <div className="bg-th-secondary-background px-10 border border-th-secondary-border rounded-b-2xl">
+                  <Tab.Panel>
+                    <Projects type={'account'} />
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <Projects type={'projects'} />
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <ProjectCreate />
+                  </Tab.Panel>
+                </div>
               </Tab.Panels>
             </Tab.Group>
           </>

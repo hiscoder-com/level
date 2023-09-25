@@ -163,7 +163,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:Basic',
           panel: (
-            <div className="card space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
               <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
@@ -183,7 +183,7 @@ function ProjectEdit() {
           access: isTranslatorAccess,
           label: 'project-edit:Brief',
           panel: (
-            <div className="card space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
               <Brief access={isCoordinatorAccess} title />
             </div>
           ),
@@ -193,7 +193,7 @@ function ProjectEdit() {
           access: isModeratorAccess,
           label: 'Participants',
           panel: (
-            <div className="card space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
               <h3 className="text-xl font-bold">{t('Participants')}</h3>
               <Participants
                 users={users}
@@ -207,7 +207,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'Resources',
           panel: (
-            <div className="card space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
               <h3 className="text-lg md:text-xl font-bold">{t('ListResources')}</h3>
               <ResourceSettings />
             </div>
@@ -218,7 +218,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:Steps',
           panel: (
-            <div className="card space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
               <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
               <div className="space-y-7">
                 <Steps customSteps={customSteps} updateSteps={updateSteps} />
@@ -251,8 +251,8 @@ function ProjectEdit() {
   const idTabs = useMemo(() => tabs.map((tab) => tab.id), [tabs])
 
   const saveStepsToDb = async ({ steps }) => {
-    const _steps = steps.map((el) => {
-      const { id, description, intro, title } = el
+    const _steps = steps.map((step) => {
+      const { id, description, intro, title } = step
       return { id, description, intro, title }
     })
     setIsSavingSteps(true)
@@ -289,12 +289,12 @@ function ProjectEdit() {
           full
         />
       </div>
-      <div className="hidden sm:flex flex-col gap-7">
+      <div className="hidden sm:flex flex-col">
         {user?.id && (
           <Tab.Group defaultIndex={tabs.length ? index : 0}>
-            <div className="border-b border-slate-600">
+            <div className="">
               <Tab.List
-                className={`flex ${
+                className={`flex px-5 ${
                   sizeTabs[tabs.length]
                 } gap-4 mt-2 lg:text-lg font-bold text-center`}
               >
@@ -319,7 +319,7 @@ function ProjectEdit() {
                 ))}
               </Tab.List>
             </div>
-
+            <div className="bg-th-primary h-12 rounded-t-3xl px-5" />
             <Tab.Panels>
               {tabs.map((tab, idx) => (
                 <Tab.Panel key={idx}>{tab.panel}</Tab.Panel>
@@ -328,7 +328,7 @@ function ProjectEdit() {
           </Tab.Group>
         )}
       </div>
-      <div className="flex sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 flex-col gap-7 bg-white">
+      <div className="flex sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 flex-col gap-7 bg-th-secondary-background">
         <Breadcrumbs
           links={[
             { title: project?.title, href: '/projects/' + code },

@@ -10,7 +10,7 @@ import Translators from 'components/Translators'
 import ProgressBar from 'components/ProgressBar'
 
 import { stepConfigState } from './state/atoms'
-import Spinner from '../public/spinner.svg'
+import ButtonSave from './ButtonSave'
 export default function Footer({
   loading = false,
   textCheckbox,
@@ -36,13 +36,13 @@ export default function Footer({
   }, [router.pathname])
 
   return (
-    <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-blue-150 md:flex-row-reverse lg:px-0">
+    <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-th-primary-background md:flex-row-reverse lg:px-0">
       <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
           <div className="space-x-1.5 items-center">
             <label className="cursor-pointer p-3">
               <input
-                className="h-[17px] w-[17px] cursor-pointer accent-cyan-600"
+                className="h-[17px] w-[17px] cursor-pointer accent-th-secondary"
                 type="checkbox"
                 checked={checked}
                 onChange={() => setChecked((prev) => !prev)}
@@ -57,17 +57,20 @@ export default function Footer({
               </button>
             </Link>
           ) : (
-            <button
-              onClick={handleClick}
-              className="btn-cyan w-28 text-center"
-              disabled={!checked || loading}
-            >
-              {loading ? (
-                <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
-              ) : (
-                textButton
-              )}
-            </button>
+            <ButtonSave onClick={handleClick} isSaving={loading}>
+              {textButton}
+            </ButtonSave>
+            // <button
+            //   onClick={handleClick}
+            //   className="btn-cyan w-28 text-center"
+            //   disabled={!checked || loading}
+            // >
+            //   {loading ? (
+            //     <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
+            //   ) : (
+            //     textButton
+            //   )}
+            // </button>
           )}
         </div>
       </div>

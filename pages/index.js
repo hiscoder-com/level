@@ -8,7 +8,7 @@ import AboutVersion from 'components/AboutVersion'
 import Login from 'components/Login'
 
 import OmbLogo from 'public/omb-logo.svg'
-import VcanaLogo from 'public/vcana-logo.svg'
+import VcanaLogo from 'public/vcana-logo-color.svg'
 
 export default function Home() {
   const { t } = useTranslation('common')
