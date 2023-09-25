@@ -41,7 +41,7 @@ function Account() {
         {user?.id && (
           <>
             <Tab.Group as="div" className="block sm:hidden">
-              <Tab.List className="flex p-1 w-full bg-white border border-gray-350 rounded-3xl shadow-md">
+              <Tab.List className="flex p-1 w-full bg-th-secondary-background border border-th-secondary-border rounded-3xl shadow-md">
                 {tabs
                   .filter((el) => el !== 'projects:CreateProject')
                   .map((tab) => (
@@ -49,7 +49,7 @@ function Account() {
                       {({ selected }) => (
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                            selected ? 'bg-slate-600 text-white' : ''
+                            selected ? 'bg-th-primary text-secondary-text' : ''
                           }
                       `}
                         >
@@ -71,7 +71,7 @@ function Account() {
             </Tab.Group>
 
             <Tab.Group as="div" className="hidden sm:block">
-              <div className="border-b border-slate-600">
+              <div className="border-b border-th-primary">
                 <Tab.List
                   className={`flex ${
                     sizeTabs[
@@ -120,12 +120,12 @@ function Account() {
           {({ open }) => (
             <>
               <div
-                className={`inset-0 bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur ${
+                className={`inset-0 bg-th-primary-background bg-opacity-25 backdrop-filter backdrop-blur ${
                   open ? 'fixed' : 'hidden'
                 }`}
               ></div>
               <Menu.Button
-                className={`block md:hidden p-4 translate-y-1/2 right-5 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`block md:hidden p-4 translate-y-1/2 right-5 text-th-secondary rounded-full bg-th-primary transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}
@@ -148,7 +148,7 @@ function Account() {
               >
                 <Menu.Items
                   className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md ${
-                    openInternalMenu ? 'bg-inherit' : 'bg-white'
+                    openInternalMenu ? 'bg-inherit' : 'bg-th-secondary-background'
                   }`}
                 >
                   <Menu.Item
@@ -158,7 +158,7 @@ function Account() {
                     <Menu>
                       <Menu.Button>
                         <div
-                          className={`py-2 px-7 text-center text-white cursor-pointer bg-slate-600 rounded-3xl ${
+                          className={`py-2 px-7 text-center text-th-secondary-text cursor-pointer bg-th-primary rounded-3xl ${
                             openInternalMenu ? 'hidden' : 'block'
                           }`}
                           onClick={() => setOpenInternalMenu(true)}
@@ -181,7 +181,7 @@ function Account() {
         >
           <div className="flex justify-end">
             <button
-              className={`p-4 mt-4 text-white rounded-full bg-slate-600 shadow-2xl ${
+              className={`p-4 mt-4 text-th-secondary-text rounded-full bg-th-primary shadow-2xl ${
                 openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}

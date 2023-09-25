@@ -59,7 +59,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
     <>
       <div
         className={`${isMobileIndexPage ? 'ml-4' : ''} ${
-          !isSidebar ? 'text-xs cursor-pointer text-neutral-400' : ''
+          !isSidebar ? 'text-xs cursor-pointer text-th-primary-text' : ''
         }`}
         onClick={() => {
           !isSidebar && setIsOpen(true)
@@ -71,23 +71,21 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
       {isSidebar ? (
         versionModalIsOpen && (
           <div
-            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-white border-gray-350 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-background border-th-secondary-border sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
           >
-            <div
-              className={`sticky top-0 flex items-center justify-between py-6 bg-white`}
-            >
+            <div className="sticky top-0 flex items-center justify-between py-6">
               <p className="text-left text-2xl font-bold">
                 {t('Version')} {packageJson.version}
               </p>
               <button className="text-right" onClick={() => setVersionModalIsOpen(false)}>
-                <Close className="h-8 stroke-slate-500" />
+                <Close className="h-8 stroke-th-primary" />
               </button>
             </div>
             <ReactMarkdown className="mb-10 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
               {showAllUpdates ? fullAboutVersion : currentAboutVersion}
             </ReactMarkdown>
-            <div className="flex justify-center pt-5 border-t">
+            <div className="flex justify-center pt-5 border-t border-th-secondary-border">
               <button
                 onClick={() => setShowAllUpdates((prev) => !prev)}
                 className={`${isMobileIndexPage ? 'btn-slate' : 'btn-primary'}`}
@@ -104,11 +102,11 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           className={{
             dialogPanel: `w-full align-middle transform overflow-y-auto shadow-xl transition-all ${
               isMobileIndexPage
-                ? 'px-6 pb-6 bg-white text-black h-screen w-screen'
-                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250'
+                ? 'px-6 pb-6 bg-th-secondary-background text-th-primary-text h-screen w-screen'
+                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-gradient-to-r from-th-primary-modal-from to-th-primary-modal-to text-th-secondary-text'
             }`,
             main: `z-50 ${isMobileIndexPage ? 'fixed flex inset-0' : 'relative'}`,
-            transitionChild: `inset-0 bg-opacity-25 bg-gray-300 ${
+            transitionChild: `inset-0 opacity-25 bg-th-primary-background ${
               isMobileIndexPage ? 'absolute' : 'fixed'
             }`,
             backdrop: `inset-0 ${
@@ -123,15 +121,15 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           <div
             className={`sticky top-0 flex items-center justify-between py-6 ${
               isMobileIndexPage
-                ? 'bg-white'
-                : 'bg-gradient-to-r from-slate-700 to-slate-600'
+                ? 'bg-th-secondary-background'
+                : 'bg-gradient-to-r from-th-primary-modal-from to-th-primary-modal-to'
             }`}
           >
             <p className="text-2xl font-bold text-left">
               {t('Version')} {packageJson.version}
             </p>
             <button className="text-right" onClick={() => setIsOpen(false)}>
-              <Close className="h-8 stroke-slate-500" />
+              <Close className="h-8 stroke-th-secondary-icons" />
             </button>
           </div>
 
