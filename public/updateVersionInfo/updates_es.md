@@ -1,10 +1,14 @@
+# Versión 0.7.0
+## Fecha: 09/26/2023
+
+### **Añadido:**
+- contraseña de recuperación
 # Versión 0.6.0
 ## Fecha: 09/18/2023
 
 ### **Añadido:**
 - estado de la descarga al hacer clic en el enlace interno
 - enlace al modo de lectura de libros terminados en su cuenta personal
-- contraseña de recuperación
 # Versión 0.5.0
 ## Fecha: 08/29/2023
 

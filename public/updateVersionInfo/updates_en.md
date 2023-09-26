@@ -1,10 +1,15 @@
+# Version 0.7.0
+## Date: 09/26/2023
+
+### **Added:**
+- recovery password
 # Version 0.6.0
 ## Date: 09/18/2023
 
 ### **Added:**
 - loading status for clicking on the internal link 
 - link to the ready-made books reading mode in account
-- recovery password
+
 # Version 0.5.0
 ## Date: 08/29/2023
 
