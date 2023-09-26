@@ -26,6 +26,7 @@ function PasswordRecovery() {
   const [successResult, setSuccessResult] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [showRepeatPassword, setShowRepeatPassword] = useState(false)
+  const [session, setSession] = useState(null)
 
   const signOut = async () => {
     try {
@@ -35,6 +36,14 @@ function PasswordRecovery() {
       console.log(error)
     }
   }
+  useEffect(() => {
+    const getSession = async () => {
+      const { data: session } = await supabase.auth.getSession()
+      setSession(session)
+    }
+    getSession()
+  }, [supabase.auth])
+  console.log({ session })
   const comparePasswords = (passFirst, passSecond) => {
     if (!passFirst || !passSecond) {
       return { error: true, message: 'NotAllFieldsFilled' }
