@@ -6,12 +6,12 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import { Tab } from '@headlessui/react'
 
 import Property from './Property'
-import ButtonSave from 'components/ButtonSave'
+import ButtonLoading from 'components/ButtonLoading'
 import Breadcrumbs from 'components/Breadcrumbs'
 
 import Reader from 'public/dictionary.svg'
@@ -45,7 +45,6 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
       }
     })
   }
-
   const renderProperties =
     properties &&
     Object.entries(type !== 'obs' ? properties?.scripture : properties?.obs)?.map(
@@ -89,7 +88,6 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         ]}
         full
       />
-
       <Tab.Group defaultIndex={query?.levels ? 1 : 0}>
         <Tab.List className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 mt-2 font-bold text-center border-b border-slate-600">
           <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
@@ -104,9 +102,9 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
             <div className="card flex flex-col py-7">
               <div className="flex flex-col gap-4">
                 {renderProperties}
-                <ButtonSave onClick={handleSaveProperties} isSaving={isSaving}>
+                <ButtonLoading onClick={handleSaveProperties} isLoading={isSaving}>
                   {t('Save')}
-                </ButtonSave>
+                </ButtonLoading>
               </div>
             </div>
           </Tab.Panel>
@@ -122,8 +120,6 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
           <Tab.Panel></Tab.Panel>
         </Tab.Panels>
       </Tab.Group>
-
-      <Toaster />
     </div>
   )
 }
@@ -137,7 +133,6 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
   ]
   const [translationLink, setTranslationLink] = useState()
   const [isSaving, setIsSaving] = useState(false)
-
   const {
     push,
     query: { properties, code },
@@ -164,7 +159,6 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
         .finally(() => setIsSaving(false))
     }
   }
-
   useEffect(() => {
     if (book?.level_checks) {
       setTranslationLink(book?.level_checks)
@@ -232,9 +226,9 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                 ))}
             </div>
           </div>
-          <ButtonSave onClick={handleSaveLevelChecks} isSaving={isSaving}>
+          <ButtonLoading onClick={handleSaveLevelChecks} isLoading={isSaving}>
             {t('Save')}
-          </ButtonSave>
+          </ButtonLoading>
         </div>
       </div>
     </div>

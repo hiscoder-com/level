@@ -17,11 +17,11 @@ import Steps from './Steps'
 import BasicInformation from './BasicInformation'
 import LanguageCreate from './LanguageCreate'
 import BriefEditQuestions from './BriefEditQuestions'
+import ButtonLoading from './ButtonLoading'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import Spinner from '../public/spinner.svg'
 
 function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -142,7 +142,6 @@ function ProjectCreate() {
     updateMethods(methods, blockName, block)
   }
   const updateSteps = ({ value, index, fieldName }) => {
-    console.log(value, index)
     if (value && index != null && fieldName) {
       updateBlock({
         value,
@@ -219,17 +218,15 @@ function ProjectCreate() {
               setResourcesUrl={setResourcesUrl}
             />
             <div className="flex w-fit items-center justify-center">
-              <input
-                className={`btn-secondary btn-filled ${
+              <ButtonLoading
+                className={`relative btn-secondary btn-filled ${
                   isCreating ? '!text-gray-200 hover:!text-white' : ''
                 }`}
-                type="submit"
                 value={t('CreateProject')}
-                disabled={isCreating}
-              />
-              {isCreating && (
-                <Spinner className="absolute animate-spin h-5 w-5 text-cyan-600 overflow-hidden" />
-              )}
+                isLoading={isCreating}
+              >
+                {t('CreateProject')}
+              </ButtonLoading>
             </div>
           </div>
         </form>

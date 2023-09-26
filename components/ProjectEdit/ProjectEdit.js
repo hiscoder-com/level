@@ -17,7 +17,7 @@ import Breadcrumbs from '../Breadcrumbs'
 import Steps from '../Steps'
 import BasicInformation from '../BasicInformation'
 import LanguageCreate from '../LanguageCreate'
-import ButtonSave from 'components/ButtonSave'
+import ButtonLoading from '../ButtonLoading'
 
 import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -172,8 +172,7 @@ function ProjectEdit() {
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValues('code') !== code}
                 />
-
-                <ButtonSave isSaving={isSavingBasic}>{t('Save')}</ButtonSave>
+                <ButtonLoading isLoading={isSavingBasic}>{t('Save')}</ButtonLoading>
               </form>
             </div>
           ),
@@ -223,12 +222,12 @@ function ProjectEdit() {
               <div className="space-y-7">
                 <Steps customSteps={customSteps} updateSteps={updateSteps} />
               </div>
-              <ButtonSave
+              <ButtonLoading
                 onClick={() => saveStepsToDb({ steps: customSteps })}
-                isSaving={isSavingSteps}
+                isLoading={isSavingSteps}
               >
                 {t('Save')}
-              </ButtonSave>
+              </ButtonLoading>
             </div>
           ),
         },

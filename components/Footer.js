@@ -8,9 +8,9 @@ import { useRecoilValue } from 'recoil'
 
 import Translators from 'components/Translators'
 import ProgressBar from 'components/ProgressBar'
+import ButtonLoading from './ButtonLoading'
 
 import { stepConfigState } from './state/atoms'
-import Spinner from '../public/spinner.svg'
 export default function Footer({
   loading = false,
   textCheckbox,
@@ -57,17 +57,14 @@ export default function Footer({
               </button>
             </Link>
           ) : (
-            <button
+            <ButtonLoading
               onClick={handleClick}
-              className="btn-cyan w-28 text-center"
-              disabled={!checked || loading}
+              className="relative btn-cyan w-28 text-center"
+              disabled={!checked}
+              isLoading={loading}
             >
-              {loading ? (
-                <Spinner className="animate-spin my-0 mx-auto h-5 w-5 text-blue-600" />
-              ) : (
-                textButton
-              )}
-            </button>
+              {textButton}
+            </ButtonLoading>
           )}
         </div>
       </div>
@@ -80,7 +77,7 @@ export default function Footer({
             />
           </div>
           <div className="flex gap-2.5 items-center pb-3 md:pb-0">
-            <div>{t('Fulfilled')}:</div>
+            <div>{t('Participants')}:</div>
             <Translators
               projectCode={stepConfig.project_code}
               size="34px"

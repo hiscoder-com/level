@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
@@ -337,7 +337,6 @@ function Dictionary() {
           </div>
         </div>
       </Modal>
-      <Toaster />
     </div>
   )
 }

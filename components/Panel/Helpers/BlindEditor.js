@@ -86,7 +86,6 @@ function BlindEditor({ config }) {
       toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
         duration: 8000,
       })
-      console.log(res)
     }
   }
   const saveVerse = (ref) => {

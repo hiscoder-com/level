@@ -49,7 +49,6 @@ function Layout({ backgroundColor, children }) {
             </div>
           </Transition>
         </div>
-
         <main>
           <div className="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto">{children}</div>
         </main>

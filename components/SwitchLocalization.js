@@ -18,7 +18,7 @@ function SwitchLocalization() {
         >
           {t(locale.toUpperCase())}
         </Menu.Button>
-        <Menu.Items className="absolute flex top-0 right-0 text-sm bg-gray-200 rounded-2xl">
+        <Menu.Items className="absolute flex top-0 right-0 text-sm bg-gray-200 rounded-2xl z-10">
           <div className="flex flex-col">
             {supportedLngs.map((loc) => (
               <Menu.Item
