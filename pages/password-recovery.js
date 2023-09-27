@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import StartPage from 'components/StartPage'
 import PasswordRecovery from 'components/PasswordRecovery'
+import { supabaseService } from 'utils/supabaseService'
 
 export default function PasswordRecoveryPage() {
   const { t } = useTranslation('common')
@@ -25,6 +26,9 @@ export default function PasswordRecoveryPage() {
 PasswordRecoveryPage.layoutType = 'empty'
 
 export async function getStaticProps({ locale }) {
+  supabaseService.auth.onAuthStateChange((event, session) => {
+    console.log(event, session)
+  })
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'users'])),

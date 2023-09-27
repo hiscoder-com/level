@@ -1,6 +1,12 @@
-import { supabaseService } from 'utils/supabaseService'
+import supabaseApi from 'utils/supabaseServer'
 
 export default async function sendRecoveryHandler(req, res) {
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res, isAuth: false })
+  } catch (error) {
+    return res.status(401).json({ error })
+  }
   const {
     method,
     body: { email, url },
@@ -9,13 +15,12 @@ export default async function sendRecoveryHandler(req, res) {
   switch (method) {
     case 'POST':
       try {
-        const { data: dataSend, error } =
-          await supabaseService.auth.resetPasswordForEmail(
-            email
-            //   , {
-            //   redirectTo: `${url}/password-recovery`,
-            // }
-          )
+        const { data: dataSend, error } = await supabase.auth.resetPasswordForEmail(
+          email
+          //   , {
+          //   redirectTo: `${url}/password-recovery`,
+          // }
+        )
         data = dataSend
         if (error) throw error
       } catch (error) {
