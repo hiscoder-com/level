@@ -87,7 +87,7 @@ function PasswordRecovery() {
         .then((res) => {
           if (res) {
             setSuccessResult(t('PasswordChanged'))
-            signOut()
+            // signOut()
           }
         })
         .catch((error) => {
@@ -97,8 +97,8 @@ function PasswordRecovery() {
         .finally(() => setIsRecovering(false))
     }
   }
-  // console.log({ successResult })
-  // console.log({ user })
+  console.log({ successResult })
+  console.log({ user })
   console.log({ supabase })
   return (
     <div className="flex flex-col p-5 lg:py-10 xl:px-8">
