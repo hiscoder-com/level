@@ -5,7 +5,6 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY
 
 export const supabaseService = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
-    // persistSession: false,
-    flowType: 'pkce',
+    persistSession: false,
   },
 })
