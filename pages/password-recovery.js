@@ -24,7 +24,7 @@ export default function PasswordRecoveryPage() {
 
 PasswordRecoveryPage.layoutType = 'empty'
 
-export async function getServerProps({ locale }) {
+export async function getStaticProps({ locale }) {
   return {
     props: {
       ...(await serverSideTranslations(locale, ['common', 'users'])),
