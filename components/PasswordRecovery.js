@@ -43,6 +43,21 @@ function PasswordRecovery() {
     }
     getSession()
   }, [supabase.auth])
+
+  useEffect(() => {
+    if (!supabase?.auth) {
+      return
+    }
+    supabase.auth.onAuthStateChange((event, session) => {
+      if (event == 'PASSWORD_RECOVERY') {
+        console.log('PASSWORD_RECOVERY', session)
+
+        // show screen to update user's password
+        showPasswordResetScreen(true)
+      }
+    })
+  }, [supabase.auth])
+
   console.log({ session })
   const comparePasswords = (passFirst, passSecond) => {
     if (!passFirst || !passSecond) {
