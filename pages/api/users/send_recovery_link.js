@@ -10,9 +10,12 @@ export default async function sendRecoveryHandler(req, res) {
     case 'POST':
       try {
         const { data: dataSend, error } =
-          await supabaseService.auth.resetPasswordForEmail(email, {
-            redirectTo: `${url}/password-recovery`,
-          })
+          await supabaseService.auth.resetPasswordForEmail(
+            email
+            //   , {
+            //   redirectTo: `${url}/password-recovery`,
+            // }
+          )
         data = dataSend
         if (error) throw error
       } catch (error) {

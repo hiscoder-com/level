@@ -45,10 +45,11 @@ function PasswordRecovery() {
   }, [supabase.auth])
 
   useEffect(() => {
-    if (!supabase?.auth) {
+    if (!supabase.auth) {
       return
     }
     supabase.auth.onAuthStateChange((event, session) => {
+      console.log(event, session)
       if (event == 'PASSWORD_RECOVERY') {
         console.log('PASSWORD_RECOVERY', session)
 
@@ -56,7 +57,7 @@ function PasswordRecovery() {
         showPasswordResetScreen(true)
       }
     })
-  }, [supabase.auth])
+  }, [supabase?.auth])
 
   console.log({ session })
   const comparePasswords = (passFirst, passSecond) => {
