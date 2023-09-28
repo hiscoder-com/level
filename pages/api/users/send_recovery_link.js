@@ -1,4 +1,4 @@
-import { supabaseService } from 'utils/supabaseService'
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function sendRecoveryHandler(req, res) {
   const {
@@ -6,13 +6,25 @@ export default async function sendRecoveryHandler(req, res) {
     body: { email, url },
   } = req
   let data = ''
+  const supabase = createPagesServerClient(
+    { req, res },
+    {
+      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      supabaseUrl: process.env.SUPABASE_URL,
+      cookieOptions: {
+        name: process.env.NEXT_PUBLIC_COOKIE_NAME ?? 'sb-vcana-cookies',
+      },
+    }
+  )
   switch (method) {
     case 'POST':
       try {
-        const { data: dataSend, error } =
-          await supabaseService.auth.resetPasswordForEmail(email, {
+        const { data: dataSend, error } = await supabase.auth.resetPasswordForEmail(
+          email,
+          {
             redirectTo: `${url}/password-recovery`,
-          })
+          }
+        )
         data = dataSend
         if (error) throw error
       } catch (error) {
