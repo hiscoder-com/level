@@ -12,7 +12,7 @@ import 'swagger-ui-react/swagger-ui.css'
 
 function ApiDoc() {
   const [spec, setSpec] = useState()
-  const { user } = useCurrentUser()
+  const { session } = useCurrentUser()
   const [labelButton, setLabelButton] = useState(null)
   const copyToClipBoard = async (token) => {
     try {
@@ -32,7 +32,6 @@ function ApiDoc() {
     }
     init()
   }, [])
-
   return (
     <>
       <SwaggerUI spec={spec} />
@@ -40,7 +39,7 @@ function ApiDoc() {
         <button
           className="btn-cyan mb-10"
           disabled={labelButton}
-          onClick={() => copyToClipBoard(user?.access_token)}
+          onClick={() => copyToClipBoard(session?.access_token)}
         >
           {labelButton ?? 'Copy to clipboard api-key'}
         </button>

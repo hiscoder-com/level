@@ -17,7 +17,7 @@ import VCANA_logo from 'public/vcana-logo.svg'
 import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 
-export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
+export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -25,11 +25,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const router = useRouter()
-
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
   }, [router.pathname])
-
   useEffect(() => {
     const hasAccess = async () => {
       try {
@@ -53,7 +51,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
           <div
             className={`flex justify-center w-full ${
               access && !isStepPage ? '-ml-10' : ''
-            } md:ml-0`}
+            } md:ml-0  ${!access ? 'pointer-events-none ' : ''}`}
           >
             <Link href="/account">
               <VCANA_logo className="h-6" />
@@ -89,7 +87,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               <div className="hidden md:flex">
                 <Timer time={stepConfig.time} />
               </div>
-
               <Dropdown description={stepConfig?.description} user={user} />
             </div>
           </>

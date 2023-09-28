@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
@@ -91,7 +91,6 @@ function VerseDivider({ verses }) {
       console.error(error)
       toast.error(t('SaveFailed'))
     } else {
-      console.log('Success', data)
       toast.success(t('SaveSuccess'))
     }
   }
@@ -193,7 +192,6 @@ function VerseDivider({ verses }) {
           {t('Save')}
         </button>
       </div>
-      <Toaster />
     </div>
   )
 }

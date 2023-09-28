@@ -3,7 +3,7 @@ import { Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 import { Menu, Transition } from '@headlessui/react'
 
@@ -331,7 +331,7 @@ function ChapterVersesPage() {
                   text={t('Save')}
                   color="green"
                   icon={<Check className="w-5 h-5" />}
-                  disabled={() => translators?.length === 0}
+                  disabled={!translators?.length}
                 />
                 <Button
                   onClick={() =>
@@ -347,7 +347,7 @@ function ChapterVersesPage() {
                   text={t('Reset')}
                   color="red"
                   icon={<Trash className="w-5 h-5" />}
-                  disabled={translators?.length === 0}
+                  disabled={!translators?.length}
                 />
               </div>
             </Card>
@@ -598,7 +598,6 @@ function ChapterVersesPage() {
           </>
         )}
       </Menu>
-      <Toaster />
     </div>
   )
 }

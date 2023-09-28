@@ -1,13 +1,17 @@
+import { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'next-i18next'
 
-import Modal from 'components/Modal'
+import Modal from './Modal'
+import ButtonLoading from './ButtonLoading'
+
 import CheckboxShevron from 'public/checkbox-shevron.svg'
 
 function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
+  const [isSaving, setIsSaving] = useState(false)
 
   const {
     register,
@@ -17,6 +21,7 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   } = useForm()
 
   const handleAddLanguage = async (languageOptions) => {
+    setIsSaving(true)
     try {
       const { error } = await axios.post('/api/languages', languageOptions)
       if (error) throw error
@@ -26,6 +31,8 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
     } catch (error) {
       toast.error(t('common:SaveFailed'))
       console.log(error)
+    } finally {
+      setIsSaving(false)
     }
   }
   const inputs = [
@@ -113,7 +120,9 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
           </div>
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
-              <button className="btn-secondary">{t('Save')}</button>
+              <ButtonLoading className="relative btn-secondary" isLoading={isSaving}>
+                {t('Save')}
+              </ButtonLoading>
               <button type="button" className="btn-secondary" onClick={closeHandle}>
                 {t('Close')}
               </button>
