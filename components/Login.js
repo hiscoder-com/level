@@ -90,12 +90,17 @@ function Login() {
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
       )
   }
-  const handleSendLink = async () => {
+  const handleSendRecoveryLink = async () => {
+    const urlOrigin = typeof window !== 'undefined' ? window.location.origin : ''
+    if (!urlOrigin) {
+      return
+    }
     if (validateEmail(email)) {
       setIsSendingEmail(true)
       axios
         .post('/api/users/send_recovery_link', {
           email,
+          url: urlOrigin,
         })
         .then(() => {
           setErrorMessageSendLink('')
@@ -254,7 +259,7 @@ function Login() {
                 className="relative btn-secondary"
                 disabled={!email}
                 isLoading={isSendingEmail}
-                onClick={handleSendLink}
+                onClick={handleSendRecoveryLink}
               >
                 {t('Send')}
               </ButtonLoading>

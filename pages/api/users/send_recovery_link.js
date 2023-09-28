@@ -3,7 +3,7 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 export default async function sendRecoveryHandler(req, res) {
   const {
     method,
-    body: { email },
+    body: { email, url },
   } = req
   let data = ''
   const supabase = createPagesServerClient(
@@ -19,7 +19,12 @@ export default async function sendRecoveryHandler(req, res) {
   switch (method) {
     case 'POST':
       try {
-        const { data: dataSend, error } = await supabase.auth.resetPasswordForEmail(email)
+        const { data: dataSend, error } = await supabase.auth.resetPasswordForEmail(
+          email,
+          {
+            redirectTo: `${url}/password-recovery`,
+          }
+        )
         data = dataSend
         if (error) throw error
       } catch (error) {
