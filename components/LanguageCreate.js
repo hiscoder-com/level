@@ -103,10 +103,10 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
               <input
                 id="isGl"
                 type="checkbox"
-                className="w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-cyan-700 bg-white checked:bg-cyan-700 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
+                className="w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-th-secondary bg-th-secondary-background checked:bg-th-secondary transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
                 {...register('isGl', {})}
               />
-              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
+              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 transition-opacity peer-checked:opacity-100 stroke-th-secondary-background fill-th-secondary-background">
                 <CheckboxShevron />
               </div>
             </label>

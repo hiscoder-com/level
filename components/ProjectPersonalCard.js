@@ -111,7 +111,7 @@ function ProjectPersonalCard({ project, user }) {
             return (
               <div
                 key={i}
-                className="card bg-th-primary-background flex flex-col sm:flex-row gap-7 p-7 h-full"
+                className="card bg-th-tertiary-background flex flex-col sm:flex-row gap-7 p-7 h-full"
               >
                 {!isLoading && currentSteps && project ? (
                   <>
