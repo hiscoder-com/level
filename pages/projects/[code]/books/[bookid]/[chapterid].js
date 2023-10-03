@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import toast from 'react-hot-toast'
 
-import { Menu, Transition } from '@headlessui/react'
+import { Menu, Tab, Transition } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -106,13 +106,32 @@ function ChapterVersesPage() {
   }
 
   const [currentTranslator, setCurrentTranslator] = useState(null)
+  const [translatorsAssignChapter, setTranslatorsAssignChapter] = useState([])
   const [translators, setTranslators] = useState([])
   const [versesDivided, setVersesDivided] = useState([])
   const [isHighlight, setIsHighlight] = useState(false)
+  const [assignedTranslators, setAssignedTranslators] = useState([])
 
   const [_translators] = useTranslators({
     code,
   })
+  console.log(assignedTranslators)
+
+  useEffect(() => {
+    const getAssignedTranslators = async () => {
+      const { data: assigned, error: errorS } = await supabase
+        .from('verses')
+        .select('project_translator_id')
+        .eq('chapter_id', chapter?.id)
+        .gt('num', 200)
+        .not('project_translator_id', 'is', null)
+      setAssignedTranslators(assigned?.map((el) => el.project_translator_id))
+      mutateVerses()
+    }
+    if (chapter?.id) {
+      getAssignedTranslators()
+    }
+  }, [chapter, chapter?.id, mutateVerses, supabase])
 
   useEffect(() => {
     if (_translators) {
@@ -163,6 +182,7 @@ function ChapterVersesPage() {
   }
   const verseDividing = async () => {
     //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
+    console.log(versesDivided)
     const { error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,
       project_id: project?.id,
@@ -174,6 +194,29 @@ function ChapterVersesPage() {
       mutateVerses()
       toast.success(t('SaveSuccess'))
     }
+  }
+  const chapterAsigning = async () => {
+    const { error } = await supabase.rpc('chapter_assign', {
+      translators: assignedTranslators,
+      project_id: project?.id,
+      chapter: chapter.id,
+    })
+
+    if (error) {
+      toast.error(t('SaveFailed'))
+    } else {
+      mutateVerses()
+      toast.success(t('SaveSuccess'))
+    }
+  }
+  const translatorsSelecting = async (translator) => {
+    setAssignedTranslators((prev) => {
+      if (prev.includes(translator.id)) {
+        return prev.filter((el) => el !== translator.id)
+      } else {
+        return prev.concat(translator.id)
+      }
+    })
   }
   return (
     <div className="mx-auto max-w-7xl pb-10">
@@ -201,6 +244,7 @@ function ChapterVersesPage() {
             >
               {versesDivided.length > 0 ? (
                 versesDivided
+                  ?.filter((verse) => verse.num < 201)
                   ?.sort((a, b) => a.num > b.num)
                   .map((verse, index) => {
                     return (
@@ -278,79 +322,193 @@ function ChapterVersesPage() {
 
         <div className="hidden sm:block w-1/3">
           <div className="sticky top-7 flex flex-col gap-7">
-            <Card title={t('chapters:Assignment')}>
-              <div className="flex flex-col gap-3">
-                {translators.length > 0 ? (
-                  translators?.map((translator, index) => (
-                    <div key={index} className="flex">
-                      <div
-                        onClick={() => setCurrentTranslator(translator)}
-                        className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
-                          currentTranslator?.users?.login === translator.users.login
-                            ? `${translator.color.bg} text-white shadow-md`
-                            : `${translator.color.text} text-slate-900`
-                        } ${translator.color.border} border-2 cursor-pointer rounded-2xl`}
+            <Tab.Group>
+              <div
+                className="border-b border-slate-600"
+                onClick={() => {
+                  // setAssignedTranslators([])
+                  setCurrentTranslator(null)
+                }}
+              >
+                <Tab.List className={`flex  gap-4 mt-2 lg:text-lg font-bold text-center`}>
+                  {[{ label: 'Assignment' }, { label: 'AssignmentChapter' }].map(
+                    (tab) => (
+                      <Tab
+                        key={tab.label}
+                        className={({ selected }) =>
+                          `flex-1 ${selected ? 'tab-active truncate' : 'tab truncate'}`
+                        }
+                        // onClick={() =>
+                        //   replace(
+                        //     {
+                        //       query: { ...query, setting: tab.id },
+                        //     },
+                        //     undefined,
+                        //     { shallow: true }
+                        //   )
+                        // }
                       >
-                        <div className="avatar-block w-10 flex-grow-0">
-                          <div
-                            className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
-                          >
-                            {translator.users.login.slice(0, 1)}
-                          </div>
-                        </div>
-                        <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
-                          {translator.users.login} <br />
-                          {translator.users.email}
-                        </div>
-                        <div className="icon-block flex-grow-0">
-                          <div
-                            className={`p-2 bg-white rounded-full border-2 ${
-                              currentTranslator?.users?.login === translator.users.login
-                                ? `border-white shadow-md`
-                                : `${translator.color.border}`
-                            } ${translator.color.text}`}
-                          >
-                            <Plus className="w-5 h-5" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    {[...Array(4).keys()].map((el) => (
-                      <div role="status" className="w-full animate-pulse" key={el}>
-                        <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
-                      </div>
-                    ))}
-                  </>
-                )}
-                <hr className="border-gray-500" />
-                <Button
-                  onClick={verseDividing}
-                  text={t('Save')}
-                  color="green"
-                  icon={<Check className="w-5 h-5" />}
-                  disabled={!translators?.length}
-                />
-                <Button
-                  onClick={() =>
-                    setVersesDivided(
-                      verses?.map((verse) => ({
-                        ...verse,
-                        color: defaultColor,
-                        translator_name: '',
-                        project_translator_id: null,
-                      }))
+                        {t('chapters:' + tab.label)}
+                      </Tab>
                     )
-                  }
-                  text={t('Reset')}
-                  color="red"
-                  icon={<Trash className="w-5 h-5" />}
-                  disabled={!translators?.length}
-                />
+                  )}
+                </Tab.List>
               </div>
-            </Card>
+
+              <Tab.Panels>
+                <Tab.Panel>
+                  <Card title={t('chapters:Assignment')}>
+                    <div className="flex flex-col gap-3">
+                      {translators.length > 0 ? (
+                        translators?.map((translator, index) => (
+                          <div key={index} className="flex">
+                            <div
+                              onClick={() => setCurrentTranslator(translator)}
+                              className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
+                                currentTranslator?.users?.login === translator.users.login
+                                  ? `${translator.color.bg} text-white shadow-md`
+                                  : `${translator.color.text} text-slate-900`
+                              } ${
+                                translator.color.border
+                              } border-2 cursor-pointer rounded-2xl`}
+                            >
+                              <div className="avatar-block w-10 flex-grow-0">
+                                <div
+                                  className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
+                                >
+                                  {translator.users.login.slice(0, 1)}
+                                </div>
+                              </div>
+                              <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
+                                {translator.users.login} <br />
+                                {translator.users.email}
+                              </div>
+                              <div className="icon-block flex-grow-0">
+                                <div
+                                  className={`p-2 bg-white rounded-full border-2 ${
+                                    currentTranslator?.users?.login ===
+                                    translator.users.login
+                                      ? `border-white shadow-md`
+                                      : `${translator.color.border}`
+                                  } ${translator.color.text}`}
+                                >
+                                  <Plus className="w-5 h-5" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                          {[...Array(4).keys()].map((el) => (
+                            <div role="status" className="w-full animate-pulse" key={el}>
+                              <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      <hr className="border-gray-500" />
+                      <Button
+                        onClick={verseDividing}
+                        text={t('Save')}
+                        color="green"
+                        icon={<Check className="w-5 h-5" />}
+                        disabled={!translators?.length}
+                      />
+                      <Button
+                        onClick={() =>
+                          setVersesDivided(
+                            verses?.map((verse) => ({
+                              ...verse,
+                              color: defaultColor,
+                              translator_name: '',
+                              project_translator_id: null,
+                            }))
+                          )
+                        }
+                        text={t('Reset')}
+                        color="red"
+                        icon={<Trash className="w-5 h-5" />}
+                        disabled={!translators?.length}
+                      />
+                    </div>
+                  </Card>
+                </Tab.Panel>
+                <Tab.Panel>
+                  <Card title={t('chapters:AssignmentChapter')}>
+                    <div className="flex flex-col gap-3">
+                      {translators.length > 0 ? (
+                        translators?.map((translator, index) => (
+                          <div key={index} className="flex">
+                            <div
+                              onClick={() => {
+                                setCurrentTranslator(null)
+                                translatorsSelecting(translator)
+                              }}
+                              className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
+                                assignedTranslators?.includes(translator.id)
+                                  ? `${translator.color.bg} text-white shadow-md`
+                                  : `${translator.color.text} text-slate-900`
+                              } ${
+                                translator.color.border
+                              } border-2 cursor-pointer rounded-2xl`}
+                            >
+                              <div className="avatar-block w-10 flex-grow-0">
+                                <div
+                                  className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
+                                >
+                                  {translator.users.login.slice(0, 1)}
+                                </div>
+                              </div>
+                              <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
+                                {translator.users.login} <br />
+                                {translator.users.email}
+                              </div>
+                              <div className="icon-block flex-grow-0">
+                                <div
+                                  className={`p-2 bg-white rounded-full border-2 ${
+                                    currentTranslator?.users?.login ===
+                                    translator.users.login
+                                      ? `border-white shadow-md`
+                                      : `${translator.color.border}`
+                                  } ${translator.color.text}`}
+                                >
+                                  <Plus className="w-5 h-5" />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <>
+                          {[...Array(4).keys()].map((el) => (
+                            <div role="status" className="w-full animate-pulse" key={el}>
+                              <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                            </div>
+                          ))}
+                        </>
+                      )}
+                      <hr className="border-gray-500" />
+                      <Button
+                        onClick={chapterAsigning}
+                        text={t('Save')}
+                        color="green"
+                        icon={<Check className="w-5 h-5" />}
+                        disabled={!translators?.length}
+                      />
+                      <Button
+                        onClick={() => setAssignedTranslators([])}
+                        text={t('Reset')}
+                        color="red"
+                        icon={<Trash className="w-5 h-5" />}
+                        disabled={!translators?.length}
+                      />
+                    </div>
+                  </Card>
+                </Tab.Panel>
+              </Tab.Panels>
+            </Tab.Group>
+
             <div className="card flex flex-col gap-4">
               {!chapter?.finished_at &&
                 (!chapter?.started_at ? (

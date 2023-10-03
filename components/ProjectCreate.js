@@ -28,9 +28,29 @@ function ProjectCreate() {
   const { user } = useCurrentUser()
 
   const [_methods] = useMethod()
+
+  const checkMethods = (name, methods, ext = false) => {
+    let value
+    try {
+      value = JSON.parse(localStorage.getItem(name))
+    } catch (error) {
+      localStorage.setItem(name, JSON.stringify(methods))
+      return methods
+    }
+
+    if (value === null || (ext && !value[ext])) {
+      localStorage.setItem(name, JSON.stringify(methods))
+      return methods
+    } else if (methods.length !== value.lehgth) {
+      return methods
+    } else {
+      return value
+    }
+  }
+
   const router = useRouter()
   const [methods, setMethods] = useState(() => {
-    return checkLSVal('methods', _methods, 'object')
+    return checkMethods('methods', _methods, 'object')
   })
   const [method, setMethod] = useState({})
   const [isCreating, setIsCreating] = useState(false)

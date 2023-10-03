@@ -81,6 +81,7 @@ function Workspace({ stepConfig, reference, editable = false }) {
               tools={el.tools}
               resources={stepConfig.resources}
               reference={reference}
+              mainResource={stepConfig.resources[stepConfig.base_manifest]}
               targetResourceLink={`${
                 stepConfig.resources[stepConfig.base_manifest].owner
               }/${stepConfig.resources[stepConfig.base_manifest].repo}`}
@@ -104,14 +105,14 @@ function classNames(...classes) {
 function Panel({
   tools,
   resources,
+  reference,
+  mainResource,
   targetResourceLink,
   tnLink,
-  reference,
   wholeChapter,
   editable = false,
 }) {
   const { t } = useTranslation('common')
-
   return (
     <Tab.Group>
       <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-7 flex overflow-auto">
@@ -157,6 +158,7 @@ function Panel({
                   config={{
                     reference,
                     wholeChapter,
+                    mainResource,
                     config: tool.config,
                     resource: resources[tool.name]
                       ? resources[tool.name]
