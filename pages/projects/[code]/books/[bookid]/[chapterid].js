@@ -1,4 +1,4 @@
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -31,6 +31,7 @@ import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
 import Loading from 'public/progress.svg'
+import CheckboxShevron from 'public/checkbox-shevron.svg'
 
 const translatorColors = [
   { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
@@ -115,7 +116,13 @@ function ChapterVersesPage() {
   const [_translators] = useTranslators({
     code,
   })
-  console.log(assignedTranslators)
+  const assignedVerseTranslators = useMemo(
+    () =>
+      verses
+        ?.filter((verse) => verse.project_translator_id)
+        ?.map((verse) => verse.project_translator_id),
+    [verses]
+  )
 
   useEffect(() => {
     const getAssignedTranslators = async () => {
@@ -140,9 +147,22 @@ function ChapterVersesPage() {
         color: translatorColors[index % translatorColors.length],
       }))
       setTranslators(translators)
-      setCurrentTranslator(translators[0])
+
+      if (!currentTranslator) {
+        console.log(
+          'sds',
+          translators.filter(
+            (translator) => !assignedTranslators.includes(translator.id)
+          )[0]
+        )
+        setCurrentTranslator(
+          translators.filter(
+            (translator) => !assignedTranslators.includes(translator.id)
+          )[0]
+        )
+      }
     }
-  }, [_translators])
+  }, [_translators, assignedTranslators, currentTranslator])
 
   useEffect(() => {
     if (verses) {
@@ -182,7 +202,6 @@ function ChapterVersesPage() {
   }
   const verseDividing = async () => {
     //TODO сделать сравнение стейта до изменения и после - и если после изменения не нажали сохранить - проинформировать пользователя
-    console.log(versesDivided)
     const { error } = await supabase.rpc('divide_verses', {
       divider: versesDivided,
       project_id: project?.id,
@@ -221,7 +240,7 @@ function ChapterVersesPage() {
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
-        <div className="flex flex-col gap-7 w-full sm:w-2/3">
+        <div className="flex flex-col gap-7 w-full sm:w-3/5">
           <Breadcrumbs
             full
             links={[
@@ -234,6 +253,8 @@ function ChapterVersesPage() {
             ]}
           />
           <div className="card text-slate-900">
+            <button className="self-center  btn-primary">выбрать все стихи</button>
+
             <div
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
@@ -320,17 +341,125 @@ function ChapterVersesPage() {
           </div>
         </div>
 
-        <div className="hidden sm:block w-1/3">
+        <div className="hidden sm:block w-2/5">
           <div className="sticky top-7 flex flex-col gap-7">
-            <Tab.Group>
+            {/* <Tab.Group>
               <div
                 className="border-b border-slate-600"
                 onClick={() => {
                   // setAssignedTranslators([])
                   setCurrentTranslator(null)
                 }}
-              >
-                <Tab.List className={`flex  gap-4 mt-2 lg:text-lg font-bold text-center`}>
+              > */}
+            <Card title={t('chapters:Assignment')}>
+              <div className="flex flex-col gap-3">
+                <div className="self-end">чтение</div>
+                {translators.length > 0 ? (
+                  translators?.map((translator, index) => (
+                    <div key={index} className="flex">
+                      <div
+                        onClick={() => {
+                          if (!assignedTranslators?.includes(translator.id)) {
+                            setCurrentTranslator(translator)
+                          }
+                        }}
+                        className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
+                          currentTranslator?.users?.login === translator.users.login
+                            ? `${translator.color.bg} text-white shadow-md`
+                            : `${translator.color.text} text-slate-900`
+                        } ${translator.color.border} border-2 cursor-pointer rounded-2xl`}
+                      >
+                        <div className="avatar-block w-10 flex-grow-0">
+                          <div
+                            className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
+                          >
+                            {translator.users.login.slice(0, 1)}
+                          </div>
+                        </div>
+                        <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
+                          {translator.users.login} <br />
+                          {translator.users.email}
+                        </div>
+                        <div className="icon-block flex-grow-0">
+                          <div
+                            className={`p-2 bg-white rounded-full border-2 ${
+                              currentTranslator?.users?.login === translator.users.login
+                                ? `border-white shadow-md`
+                                : `${translator.color.border}`
+                            } ${translator.color.text}`}
+                          >
+                            <Plus className="w-5 h-5" />
+                          </div>
+                        </div>
+                      </div>
+                      <label
+                        className="relative flex cursor-pointer items-center rounded-full p-3"
+                        htmlFor={index}
+                        data-ripple-dark="true"
+                      >
+                        <input
+                          id={index}
+                          type="checkbox"
+                          className={`w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-slate-600 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:bg-cyan-500 before:opacity-0 before:transition-opacity hover:before:opacity-10  checked:bg-cyan-700 checked:border-cyan-700 checked:before:bg-cyan-700`}
+                          checked={assignedTranslators?.includes(translator.id)}
+                          onChange={() => {
+                            if (!assignedVerseTranslators?.includes(translator.id)) {
+                              translatorsSelecting(translator)
+                            }
+                            if (
+                              translator.id === currentTranslator?.id &&
+                              !assignedVerseTranslators?.includes(translator.id)
+                            ) {
+                              setCurrentTranslator(null)
+                            }
+                          }}
+                        />
+                        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
+                          <CheckboxShevron />
+                        </div>
+                      </label>
+                    </div>
+                  ))
+                ) : (
+                  <>
+                    {[...Array(4).keys()].map((el) => (
+                      <div role="status" className="w-full animate-pulse" key={el}>
+                        <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                      </div>
+                    ))}
+                  </>
+                )}
+                <hr className="border-gray-500" />
+                <Button
+                  onClick={() => {
+                    verseDividing()
+                    chapterAsigning()
+                  }}
+                  text={t('Save')}
+                  color="green"
+                  icon={<Check className="w-5 h-5" />}
+                  disabled={!translators?.length}
+                />
+                <Button
+                  onClick={() => {
+                    setVersesDivided(
+                      verses?.map((verse) => ({
+                        ...verse,
+                        color: defaultColor,
+                        translator_name: '',
+                        project_translator_id: null,
+                      }))
+                    )
+                    setAssignedTranslators([])
+                  }}
+                  text={t('Reset')}
+                  color="red"
+                  icon={<Trash className="w-5 h-5" />}
+                  disabled={!translators?.length}
+                />
+              </div>
+            </Card>
+            {/* <Tab.List className={`flex  gap-4 mt-2 lg:text-lg font-bold text-center`}>
                   {[{ label: 'Assignment' }, { label: 'AssignmentChapter' }].map(
                     (tab) => (
                       <Tab
@@ -357,82 +486,7 @@ function ChapterVersesPage() {
 
               <Tab.Panels>
                 <Tab.Panel>
-                  <Card title={t('chapters:Assignment')}>
-                    <div className="flex flex-col gap-3">
-                      {translators.length > 0 ? (
-                        translators?.map((translator, index) => (
-                          <div key={index} className="flex">
-                            <div
-                              onClick={() => setCurrentTranslator(translator)}
-                              className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
-                                currentTranslator?.users?.login === translator.users.login
-                                  ? `${translator.color.bg} text-white shadow-md`
-                                  : `${translator.color.text} text-slate-900`
-                              } ${
-                                translator.color.border
-                              } border-2 cursor-pointer rounded-2xl`}
-                            >
-                              <div className="avatar-block w-10 flex-grow-0">
-                                <div
-                                  className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
-                                >
-                                  {translator.users.login.slice(0, 1)}
-                                </div>
-                              </div>
-                              <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
-                                {translator.users.login} <br />
-                                {translator.users.email}
-                              </div>
-                              <div className="icon-block flex-grow-0">
-                                <div
-                                  className={`p-2 bg-white rounded-full border-2 ${
-                                    currentTranslator?.users?.login ===
-                                    translator.users.login
-                                      ? `border-white shadow-md`
-                                      : `${translator.color.border}`
-                                  } ${translator.color.text}`}
-                                >
-                                  <Plus className="w-5 h-5" />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <>
-                          {[...Array(4).keys()].map((el) => (
-                            <div role="status" className="w-full animate-pulse" key={el}>
-                              <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
-                            </div>
-                          ))}
-                        </>
-                      )}
-                      <hr className="border-gray-500" />
-                      <Button
-                        onClick={verseDividing}
-                        text={t('Save')}
-                        color="green"
-                        icon={<Check className="w-5 h-5" />}
-                        disabled={!translators?.length}
-                      />
-                      <Button
-                        onClick={() =>
-                          setVersesDivided(
-                            verses?.map((verse) => ({
-                              ...verse,
-                              color: defaultColor,
-                              translator_name: '',
-                              project_translator_id: null,
-                            }))
-                          )
-                        }
-                        text={t('Reset')}
-                        color="red"
-                        icon={<Trash className="w-5 h-5" />}
-                        disabled={!translators?.length}
-                      />
-                    </div>
-                  </Card>
+                 
                 </Tab.Panel>
                 <Tab.Panel>
                   <Card title={t('chapters:AssignmentChapter')}>
@@ -507,7 +561,7 @@ function ChapterVersesPage() {
                   </Card>
                 </Tab.Panel>
               </Tab.Panels>
-            </Tab.Group>
+            </Tab.Group> */}
 
             <div className="card flex flex-col gap-4">
               {!chapter?.finished_at &&

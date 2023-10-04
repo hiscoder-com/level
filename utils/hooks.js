@@ -189,7 +189,6 @@ export function useGetResource({ config, url }) {
     resource: { owner, repo, commit, bookPath },
   } = config
   const params = { owner, repo, commit, bookPath, book, chapter, verses }
-
   const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
   const { isLoading, data, error } = useSWR(
     url && owner && repo && commit && bookPath ? [url, params] : null,
@@ -199,7 +198,6 @@ export function useGetResource({ config, url }) {
       revalidateIfStale: false,
     }
   )
-
   return { isLoading, data, error }
 }
 

@@ -20,7 +20,9 @@ export default async function versesHandler(req, res) {
           .select(
             'id, projects!inner(code), num, text, current_step, project_translator_id'
           )
+          .lt('num', 200)
           .match({ 'projects.code': code, chapter_id })
+
         if (error) throw error
         data = verses
       } catch (error) {

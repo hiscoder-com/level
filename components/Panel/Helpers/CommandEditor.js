@@ -13,7 +13,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useGetChapter, useProject } from 'utils/hooks'
+import { useGetChapter, useGetResource, useProject } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 // moderatorOnly
@@ -29,7 +29,14 @@ function CommandEditor({ config }) {
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
-
+  // const { isLoading, data: versesFromResource } = useGetResource({
+  //   config: {
+  //     verses: [],
+  //     reference: { book, chapter: chapter_num },
+  //     resource: config.mainResource,
+  //   },
+  //   url: '/api/git/bible',
+  // })
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
 
@@ -39,6 +46,7 @@ function CommandEditor({ config }) {
     book_code: book,
     chapter_id: chapter_num,
   })
+
   useEffect(() => {
     const getLevel = async (user_id, project_id) => {
       const level = await supabase.rpc('authorize', {
@@ -67,9 +75,40 @@ function CommandEditor({ config }) {
           num: el.num,
           editable: verses.includes(el.verse_id),
         }))
-        setVerseObjects(result)
+        const versesFromDb = result.filter((verse) => verse.num < 201)
+        setVerseObjects(versesFromDb)
+        //TODO сделать проверку - если null хотя бы один из стихов - тогда заполнять всё
+        if (config.config.getFromResource) {
+          const { owner, repo, commit, bookPath } = config.mainResource
+          const params = {
+            verses: [],
+            book,
+            chapter: chapter_num,
+            owner,
+            repo,
+            commit,
+            bookPath,
+          }
+          try {
+            axios
+              .get('/api/git/bible', { params })
+              .then((versesFromResource) =>
+                copyVersesFromResource(versesFromDb, versesFromResource.data)
+              )
+          } catch (error) {
+            console.log(error)
+          }
+        }
       })
-  }, [book, chapter_num, config?.reference?.verses, project, supabase])
+  }, [
+    book,
+    chapter_num,
+    config.config.getFromResource,
+    config.mainResource,
+    config?.reference?.verses,
+    project,
+    supabase,
+  ])
 
   const updateVerseObject = (id, text) => {
     setVerseObjects((prev) => {
@@ -129,6 +168,25 @@ function CommandEditor({ config }) {
         })
       return [...prev]
     })
+  }
+  const copyVersesFromResource = async (versesFromDb, versesFromResource) => {
+    const verseMappings = versesFromResource?.verseObjects?.reduce((acc, el) => {
+      acc[el.verse] = el.text
+      return acc
+    }, {})
+    const versesToSave = versesFromDb.reduce((acc, verse) => {
+      acc[verse.verse_id] = verseMappings[verse.num]
+      return acc
+    }, {})
+    const { error: errorPost } = await supabase.rpc('save_verses_if_null', {
+      verses: versesToSave,
+    })
+    if (errorPost) {
+      toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
+        duration: 8000,
+      })
+      console.log(errorPost)
+    }
   }
 
   return (
