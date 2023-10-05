@@ -25,6 +25,12 @@ function FootNote({ props }) {
       document.removeEventListener('mousedown', handleClickOutside)
     }
   }, [])
+  const isRightPosition = useMemo(() => {
+    if (containerRef?.current) {
+      const ref = containerRef.current
+      return ref.offsetLeft - ref.parentNode.offsetLeft > ref.parentNode.offsetWidth / 2
+    }
+  }, [])
   return (
     <>
       <span className="relative" ref={containerRef}>
@@ -38,9 +44,9 @@ function FootNote({ props }) {
           fn
         </span>
         <span
-          className={`${
-            isOpen ? 'absolute' : 'hidden'
-          } left-full top-full p-2 z-5 bg-white rounded-lg border border-cyan-600`}
+          className={`${isOpen ? 'absolute ' : 'hidden'} ${
+            isRightPosition ? 'right-0' : 'left-0'
+          } top-full p-2 z-10 bg-white rounded-lg border border-cyan-600`}
         >
           {footnote}
         </span>
