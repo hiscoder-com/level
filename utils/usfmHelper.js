@@ -2,34 +2,8 @@ const getText = (verseObject) => {
   return verseObject.text || verseObject.nextChar || ''
 }
 
-/**
- * Function for extracting content from text using regular expressions
- * @param {string} text
- * @param {string} regular_expression
- *
- * @returns {null or string}
- */
-const getContentFromString = (text, pattern) => {
-  const match = text.match(pattern)
-  return match ? match[1] : null
-}
-
-/**
- * Function for getting the text of the footnote
- * @param {object} verseObject
- *
- * @returns {string}
- */
 const getFootnote = (verseObject) => {
-  const link = getContentFromString(verseObject.content, /\\fr (.*?) \\ft/)
-  const content = getContentFromString(verseObject.content, /\\ft (.*)/)
-  if (!link || !content) {
-    return '<sub>' + verseObject.content + '</sub>'
-  } else {
-    return `[^${link}]
-  [^${link}]: <sub>${content.replaceAll('\\xt', '')}</sub>
-    \\n`
-  }
+  return '<samp>' + verseObject.content + '</samp>'
 }
 
 const getMilestone = (verseObject, showUnsupported) => {
@@ -55,31 +29,19 @@ const getAlignedWords = (verseObjects) => {
     .join('')
 }
 
-/**
- * Function for processing the section
- * @param {object} verseObject
- *
- * @returns {string}
- */
 const getSection = (verseObject) => {
   if (!verseObject.tag) {
     return verseObject.content
   }
   switch (verseObject.tag) {
+    case 's':
     case 's1':
       return '<div align="center">' + verseObject.content + '</div>'
-
     default:
       return verseObject.content
   }
 }
 
-/**
- * Function for processing tags
- * @param {object} verseObject
- *
- * @returns {string}
- */
 const getTag = (verseObject) => {
   const { tag } = verseObject
   const text = verseObject.content || verseObject.text
@@ -99,12 +61,6 @@ const getTag = (verseObject) => {
   }
 }
 
-/**
- * Function for processing unsupported elements
- * @param {object} verseObject
- *
- * @returns {string}
- */
 const getUnsupported = (verseObject) => {
   if (verseObject.tag) {
     return getTag(verseObject)
