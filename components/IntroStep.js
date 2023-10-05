@@ -43,7 +43,7 @@ function IntroStep({ title, markdown, nextLink }) {
         className="mb-4 mx-auto py-6 px-6 lg:px-8 bg-white overflow-auto rounded-lg"
       >
         <h2 className="mb-4 text-3xl">{title}</h2>
-        <MarkdownExtended>{markdown}</MarkdownExtended>
+        <MarkdownExtended className="markdown-body">{markdown}</MarkdownExtended>
       </div>
       <Footer
         textButton={t('Next')}

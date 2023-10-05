@@ -22,7 +22,7 @@ function TNTWLContent({ setItem, item }) {
           <ReactMarkdown className="text-2xl mb-4">{item?.title}</ReactMarkdown>
         </div>
       )}
-      <MarkdownExtended>{item?.text}</MarkdownExtended>
+      <MarkdownExtended className="markdown-body">{item?.text}</MarkdownExtended>
     </div>
   )
 }
