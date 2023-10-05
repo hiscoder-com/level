@@ -1,3 +1,8 @@
+# Versión 0.7.1
+## Fecha: 10/05/2023
+
+### **Cambiado:**
+- soporte de etiquetas usfm
 # Versión 0.7.0
 ## Fecha: 09/26/2023
 

@@ -1,3 +1,8 @@
+# Version 0.7.1
+## Date: 10/05/2023
+
+### **Changed:**
+- support usfm tags
 # Version 0.7.0
 ## Date: 09/26/2023
 
