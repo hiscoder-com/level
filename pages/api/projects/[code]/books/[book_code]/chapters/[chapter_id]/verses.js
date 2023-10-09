@@ -22,6 +22,7 @@ export default async function versesHandler(req, res) {
           )
           .lt('num', 200)
           .match({ 'projects.code': code, chapter_id })
+          .order('num')
 
         if (error) throw error
         data = verses

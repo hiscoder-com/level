@@ -50,6 +50,7 @@ function ChapterList() {
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
     code,
     book_code: bookid,
+    revalidateIfStale: true,
   })
 
   const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({

@@ -30,10 +30,11 @@ function BlindEditor({ config }) {
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
 
   useEffect(() => {
-    setVerseObjects(config.reference.verses)
+    const verses = config.reference.verses?.filter((verse) => verse.num < 201)
+    setVerseObjects(verses)
     let updatedArray = []
-    const _verseObjects = config.reference.verses
-    config.reference.verses.forEach((el) => {
+    const _verseObjects = verses
+    verses.forEach((el) => {
       if (el.verse) {
         updatedArray.push(el.num.toString())
       }

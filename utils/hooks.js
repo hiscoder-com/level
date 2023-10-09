@@ -347,7 +347,12 @@ export function useGetBook({ code, book_code }) {
  * @param {string} book_code code of book
  * @returns {array}
  */
-export function useGetChapters({ code, book_code }) {
+export function useGetChapters({
+  code,
+  book_code,
+  revalidateIfStale = false,
+  revalidateOnFocus = false,
+}) {
   const {
     data: chapters,
     mutate,
@@ -357,8 +362,8 @@ export function useGetChapters({ code, book_code }) {
     code && book_code ? [`/api/projects/${code}/books/${book_code}/chapters`] : null,
     fetcher,
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
+      revalidateOnFocus,
+      revalidateIfStale,
     }
   )
   return [chapters, { mutate, error, isLoading }]

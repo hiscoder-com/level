@@ -31,6 +31,7 @@ function TWL({ config, url, toolName }) {
       })
       const finalData = {}
       words?.forEach((word) => {
+        if (!word) return word
         const {
           ID,
           Reference,

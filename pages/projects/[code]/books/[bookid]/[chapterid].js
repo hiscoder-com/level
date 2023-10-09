@@ -271,7 +271,7 @@ function ChapterVersesPage() {
           <div className="card text-slate-900">
             <div className="flex justify-center pb-4">
               <button
-                className="  btn-primary"
+                className="btn-primary"
                 onClick={() => {
                   setVersesDivided(
                     verses?.map((verse) => ({
