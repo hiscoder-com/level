@@ -7,7 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import AboutVersion from 'components/AboutVersion'
 import Login from 'components/Login'
 
-import OmbLogo from 'public/omb-logo.svg'
+import TtLogo from 'public/tt-logo.svg'
 import VcanaLogo from 'public/vcana-logo-color.svg'
 
 export default function Home() {
@@ -29,11 +29,10 @@ export default function Home() {
           <Login />
         </div>
         <div className="text-neutral-400 mb-4 text-center">{t('DevelopedBy')}</div>
-        <Link href="https://openmediabible.com/" target="_blank">
-          <OmbLogo className="logo mb-4" />
+        <Link href="https://texttree.org/" target="_blank">
+          <TtLogo className="mb-4 w-24 bg-th-secondary-icons hover:fill-th-secondary" />
         </Link>
       </div>
-
       <div className="hidden sm:flex">
         <div className="flex flex-col items-center justify-center w-1/2">
           <div className="flex flex-col items-center text-base xl:text-lg">
@@ -43,8 +42,8 @@ export default function Home() {
             </div>
             <h1 className="my-4 text-center">{t('PlatformForBibleTranslate')}</h1>
             <div className="text-neutral-400 mb-2 text-xs">{t('DevelopedBy')}</div>
-            <Link href="https://openmediabible.com/" target="_blank">
-              <OmbLogo className="logo" />
+            <Link href="https://texttree.org/" target="_blank">
+              <TtLogo className="w-24 bg-th-secondary-icons hover:fill-th-secondary" />
             </Link>
           </div>
         </div>

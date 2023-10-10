@@ -40,11 +40,12 @@
 }
 
 :root {
-  --primary: theme('colors.slate.600');
+  --primary: theme('colors.slate.550');
   --secondary: theme('colors.yellow.600');
-  --primary-background: theme('colors.gray.200');
-	--primary-hover-background: theme('colors.gray.100');
+  --primary-background: theme('colors.gray.150');
+	--primary-hover-background: theme('colors.neutral.400');
 	--secondary-background: theme('colors.white');
+	--tertiary-background: theme('colors.neutral.100');
 	--primary-icons:theme('colors.neutral.800');
 	--secondary-icons:theme('colors.white');
 	--primary-text:theme('colors.neutral.800');
@@ -56,14 +57,16 @@
 	--disabled-link:theme('colors.neutral.400');
 	--primary-border:theme('colors.slate.600');  
 	--secondary-border:theme('colors.gray.400');
-	--primary-modal-from:	theme('colors.slate.700');
-	--primary-modal-to:	theme('colors.teal.900');  
-	--primary-btn-background:	theme('colors.neutral.200');
+	--primary-modal-from:	theme('colors.slate.550');
+	--primary-modal-to:	theme('colors.slate.560');  
+	--primary-btn-background:	theme('colors.gray.250');
 	--primary-btn-hover: theme('colors.yellow.600');
 	--secondary-btn-background:	theme('colors.yellow.600');
-	--decondary-btn-hover: theme('colors.neutral.200');
-	--active-tab-from:	theme('colors.slate.600');
-	--active-tab-to:	theme('colors.slate.700');
+	--secondary-btn-hover: theme('colors.neutral.200');
+	--active-tab-from:	theme('colors.slate.550');
+	--active-tab-to:	theme('colors.slate.570');
+	--primary-blur-background:	theme('colors.zinc.500');
+
 }
 
 [data-theme='dark'] {
@@ -76,18 +79,11 @@
 }
 
 .step {
-	@apply inline-block w-3 h-3 rounded-full m-px bg-white;
-	border: 2px solid transparent;
-	box-shadow: 0px 0px 0px 1px #9ca3af;
+	@apply inline-block w-2.5 h-2.5 rounded-full m-px bg-white;
 }
 
-.step.passed {
-	@apply border-white bg-black;
-	box-shadow: 0px 0px 0px 1px black;
-}
-.step.active {
-	@apply border-white bg-cyan-700;
-	box-shadow: 0px 0px 0px 1px #0e7490;
+.step.active { 
+	@apply w-4 h-4 border-white bg-th-primary;	
 }
 
 .dash {
@@ -287,13 +283,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-blue-600;
 }
 
-.logo:hover path:nth-child(1) {
-	fill:#00A6FB;
-}
-.logo:hover path:nth-child(2) {
-	fill:#003554;
-}
-
 .verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2) {
   @apply flex;
 }
@@ -302,12 +291,15 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .tab {
-	@apply py-2 px-2 text-sm border-x border-t border-slate-600 rounded-t-2xl cursor-pointer
+	@apply py-2 px-2 text-sm border-x border-t border-th-primary rounded-t-2xl 
 }
 .tab-active {
 	@apply tab text-th-secondary-text bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to cursor-default focus:outline-none shadow
 }
 
+.tab-inactive {
+	@apply tab bg-th-secondary-background hover:bg-gradient-to-b hover:from-th-secondary-background hover:to-th-primary-hover-background cursor-pointer
+}
 .card {
   @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-border shadow-md;
 }

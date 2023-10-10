@@ -3,7 +3,7 @@ import Loading from 'public/progress.svg'
 function ButtonSave({ children, onClick, isSaving, disabled }) {
   return (
     <button
-      className={`relative btn-secondary w-fit disabled:opacity-25 disabled:cursor-default`}
+      className="relative btn-secondary w-fit disabled:opacity-25 disabled:cursor-default"
       onClick={onClick}
       disabled={isSaving || disabled}
     >

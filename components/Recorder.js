@@ -22,10 +22,10 @@ export default function Recorder() {
   const [mediaRec, setMediaRec] = useState()
   const [voice, setVoice] = useState([])
   const [buttonRecord, setButtonRecord] = useState(
-    <RecorderButton className="stroke-cyan-700 stroke-2" />
+    <RecorderButton className="stroke-th-primary stroke-2" />
   )
   const [buttonPlay, setButtonPlay] = useState(
-    <PlayButton className="stroke-gray-300 stroke-2" />
+    <PlayButton className="stroke-th-primary-background stroke-2" />
   )
   const audioRef = useRef(null)
 
@@ -33,11 +33,11 @@ export default function Recorder() {
     if (mediaRec?.state === 'inactive') {
       setVoice([])
       mediaRec.start()
-      setButtonRecord(<StopButton className="stroke-cyan-700 stroke-2" />)
+      setButtonRecord(<StopButton className="stroke-th-primary stroke-2" />)
       setInactive(true)
     } else if (mediaRec?.state === 'recording') {
       mediaRec.stop()
-      setButtonRecord(<RecorderButton className="stroke-cyan-700 stroke-2" />)
+      setButtonRecord(<RecorderButton className="stroke-th-primary stroke-2" />)
       setInactive(false)
     } else {
       setShowModal(true)

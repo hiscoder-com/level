@@ -49,7 +49,9 @@ function Account() {
                       {({ selected }) => (
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                            selected ? 'bg-th-primary text-th-secondary-text' : ''
+                            selected
+                              ? 'bg-th-primary text-th-secondary-text'
+                              : 'bg-gradient-to-b from-th-secondary-background to-th-primary-background'
                           }
                       `}
                         >
@@ -89,7 +91,7 @@ function Account() {
                       <Tab
                         key={tab}
                         className={({ selected }) =>
-                          `flex-1 ${selected ? 'tab-active' : 'tab'}`
+                          `flex-1 ${selected ? 'tab-active' : 'tab-inactive'}`
                         }
                       >
                         {t(tab)}
@@ -98,7 +100,7 @@ function Account() {
                 )}
               </Tab.List>
               <Tab.Panels className="pb-10">
-                <div className="bg-th-primary h-12 rounded-t-3xl px-10"></div>
+                <div className="bg-th-primary h-10 rounded-t-3xl px-10"></div>
                 <div className="bg-th-secondary-background px-10 border border-th-secondary-border rounded-b-2xl">
                   <Tab.Panel>
                     <Projects type={'account'} />
