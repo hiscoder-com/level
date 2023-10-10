@@ -13,14 +13,11 @@ function CommandEditor({ config }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const { t } = useTranslation(['common'])
-
   const {
     query: { project, book, chapter: chapter_num },
   } = useRouter()
-
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
-
   const [currentProject] = useProject({ code: project })
   const [chapter] = useGetChapter({
     code: project,
@@ -71,7 +68,6 @@ function CommandEditor({ config }) {
           chapter_num,
           book_code: book,
         })
-
         const verses = config?.reference?.verses?.map((v) => v.verse_id)
         const result = res.data.map((el) => ({
           verse_id: el.verse_id,
@@ -81,8 +77,7 @@ function CommandEditor({ config }) {
         }))
         const versesFromDb = result.filter((verse) => verse.num < 201)
         setVerseObjects(versesFromDb)
-
-        if (config.config.getFromResource) {
+        if (config.config.getFromResource && config.mainResource) {
           const { owner, repo, commit, bookPath } = config.mainResource
           const params = {
             verses: [],
@@ -93,8 +88,8 @@ function CommandEditor({ config }) {
             commit,
             bookPath,
           }
-          const response = await axios.get('/api/git/bible', { params })
-          copyVersesFromResource(versesFromDb, response.data)
+          const versesFromResource = await axios.get('/api/git/bible', { params })
+          copyVersesFromResource(versesFromDb, versesFromResource.data)
         }
       } catch (error) {
         console.log(error)

@@ -65,16 +65,28 @@ function ChapterVersesPage() {
     code,
     book_code: bookid,
   })
-
   const [verses, { mutate: mutateVerses }] = useGetVerses({
     code,
     book_code: bookid,
     chapter_id: chapter?.id,
   })
-
   const [isLoadingCancelStart, setIsLoadingCancelStart] = useState(false)
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
-
+  const [currentTranslator, setCurrentTranslator] = useState(null)
+  const [translators, setTranslators] = useState([])
+  const [versesDivided, setVersesDivided] = useState([])
+  const [isHighlight, setIsHighlight] = useState(false)
+  const [assignedTranslators, setAssignedTranslators] = useState(null)
+  const [_translators] = useTranslators({
+    code,
+  })
+  const assignedVerseTranslators = useMemo(
+    () =>
+      verses
+        ?.filter((verse) => verse.project_translator_id)
+        ?.map((verse) => verse.project_translator_id),
+    [verses]
+  )
   const changeStartChapter = () => {
     setIsLoadingCancelStart(true)
     supabase
@@ -105,31 +117,18 @@ function ChapterVersesPage() {
       .finally(() => setIsLoadingCancelFinish(false))
   }
 
-  const [currentTranslator, setCurrentTranslator] = useState(null)
-  const [translators, setTranslators] = useState([])
-  const [versesDivided, setVersesDivided] = useState([])
-  const [isHighlight, setIsHighlight] = useState(false)
-  const [assignedTranslators, setAssignedTranslators] = useState(null)
-
-  const [_translators] = useTranslators({
-    code,
-  })
-  const assignedVerseTranslators = useMemo(
-    () =>
-      verses
-        ?.filter((verse) => verse.project_translator_id)
-        ?.map((verse) => verse.project_translator_id),
-    [verses]
-  )
-
   useEffect(() => {
     const getAssignedTranslators = async () => {
-      const { data: assigned, error: errorS } = await supabase
+      const { data: assigned, error } = await supabase
         .from('verses')
         .select('project_translator_id')
-        .eq('chapter_id', chapter?.id)
+        .eq('chapter_id', chapter.id)
         .gt('num', 200)
         .not('project_translator_id', 'is', null)
+      if (error) {
+        console.log(error)
+        return
+      }
       setAssignedTranslators(assigned?.map((el) => el.project_translator_id))
       mutateVerses()
     }
@@ -163,7 +162,6 @@ function ChapterVersesPage() {
         const translator = translators.find(
           (element) => element.id === verse.project_translator_id
         )
-
         return {
           ...verse,
           color: translator ? translator.color : defaultColor,
@@ -217,41 +215,35 @@ function ChapterVersesPage() {
       project_id: project?.id,
       chapter: chapter.id,
     })
-    setVersesDivided((prev) =>
-      prev?.map((verse) => {
-        console.log(verse)
-        if (translators.includes(verse.project_translator_id)) {
-          return {
-            ...verse,
-            color: defaultColor,
-            translator_name: '',
-            project_translator_id: null,
-          }
-        } else {
-          return { ...verse }
-        }
-      })
-    )
-
     if (error) {
       toast.error(t('SaveFailed'))
+      console.log(error)
+      return
     } else {
+      setVersesDivided((prev) =>
+        prev?.map((verse) => {
+          if (translators.includes(verse.project_translator_id)) {
+            return {
+              ...verse,
+              color: defaultColor,
+              translator_name: '',
+              project_translator_id: null,
+            }
+          } else {
+            return verse
+          }
+        })
+      )
       mutateVerses()
       toast.success(t('SaveSuccess'))
     }
   }
   const translatorsSelecting = async (translator) => {
-    setAssignedTranslators((prev) => {
-      if (prev.includes(translator.id)) {
-        const _translators = prev.filter((el) => el !== translator.id)
-        chapterAsigning(_translators)
-        return _translators
-      } else {
-        const _translators = prev.concat(translator.id)
-        chapterAsigning(_translators)
-        return _translators
-      }
-    })
+    const translators = assignedTranslators.includes(translator.id)
+      ? assignedTranslators.filter((el) => el !== translator.id)
+      : assignedTranslators.concat(translator.id)
+    chapterAsigning(translators)
+    setAssignedTranslators(translators)
   }
   return (
     <div className="mx-auto max-w-7xl pb-10">
@@ -283,7 +275,7 @@ function ChapterVersesPage() {
                   )
                 }}
               >
-                выбрать все стихи
+                {t('chapters:SelectAllVerses')}
               </button>
             </div>
 
@@ -408,11 +400,11 @@ function ChapterVersesPage() {
                           {translator.users.email}
                         </div>
                         <div className="icon-block flex gap-2 flex-grow-0 items-center">
-                          <span className="text-sm">Режим чтения</span>
+                          <span className="text-sm">{t('ReadingMode')}</span>
                           <Switch
                             checked={assignedTranslators?.includes(translator.id)}
                             onClick={(e) => e.stopPropagation()}
-                            onChange={(e) => {
+                            onChange={() => {
                               if (!assignedVerseTranslators?.includes(translator.id)) {
                                 translatorsSelecting(translator)
                               }

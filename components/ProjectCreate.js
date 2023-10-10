@@ -20,38 +20,14 @@ import BriefEditQuestions from './BriefEditQuestions'
 import ButtonLoading from './ButtonLoading'
 
 import { useLanguages, useMethod } from 'utils/hooks'
-import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 
 function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const { user } = useCurrentUser()
-
   const [_methods] = useMethod()
-
-  const checkMethods = (name, methods, ext = false) => {
-    let value
-    try {
-      value = JSON.parse(localStorage.getItem(name))
-    } catch (error) {
-      localStorage.setItem(name, JSON.stringify(methods))
-      return methods
-    }
-
-    if (value === null || (ext && !value[ext])) {
-      localStorage.setItem(name, JSON.stringify(methods))
-      return methods
-    } else if (methods.length !== value.lehgth) {
-      return methods
-    } else {
-      return value
-    }
-  }
-
   const router = useRouter()
-  const [methods, setMethods] = useState(() => {
-    return checkMethods('methods', _methods, 'object')
-  })
+  const [methods, setMethods] = useState(_methods)
   const [method, setMethod] = useState({})
   const [isCreating, setIsCreating] = useState(false)
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
@@ -96,23 +72,10 @@ function ProjectCreate() {
   }, [_methods, methods])
 
   useEffect(() => {
-    if (methods) {
-      localStorage.setItem('methods', JSON.stringify(methods))
-    }
-  }, [methods])
-
-  useEffect(() => {
     setResourcesUrl({})
   }, [methodId])
 
-  const saveMethods = (methods) => {
-    localStorage.setItem('methods', JSON.stringify(methods))
-    setMethods(methods)
-  }
-
   const onSubmit = async (data) => {
-    saveMethods(_methods)
-
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
       return
@@ -131,7 +94,7 @@ function ProjectCreate() {
         resources: resourcesUrl,
       })
       .then((result) => {
-        saveMethods(_methods)
+        setMethods(_methods)
         const {
           status,
           headers: { location },
@@ -145,7 +108,6 @@ function ProjectCreate() {
       })
       .finally(() => setIsCreating(false))
   }
-
   const updateMethods = (methods, key, array) => {
     const _methods = methods.map((el) => {
       if (el.id === method.id) {
@@ -153,9 +115,8 @@ function ProjectCreate() {
       }
       return el
     })
-    saveMethods(_methods)
+    setMethods(_methods)
   }
-
   const updateBlock = ({ value, index, fieldName, block, setBlock, blockName }) => {
     block[index][fieldName] = value
     setBlock(block)
@@ -173,7 +134,6 @@ function ProjectCreate() {
       })
     }
   }
-
   const saveBrief = (array) => {
     updateMethods(methods, 'brief', array)
   }
