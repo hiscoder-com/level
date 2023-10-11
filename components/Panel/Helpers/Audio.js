@@ -20,7 +20,6 @@ export default function Audio() {
     const handleRouteChange = () => {
       setInactive(false)
     }
-
     router.events.on('routeChangeStart', handleRouteChange)
 
     return () => {
@@ -45,12 +44,17 @@ function MainAudio({ setAudioState }) {
   const { t } = useTranslation(['audio'])
   return (
     <div className="flex flex-col items-center gap-5 min-h-full justify-center">
-      <button onClick={() => setAudioState('Retell Partner')} className="btn-cyan">
+      <button
+        onClick={() => setAudioState('Retell Partner')}
+        className="btn-base bg-th-tertiary-btn-background text-th-secondary-text"
+      >
         {t('RetellPartner')}
       </button>
-      <p>{t('Title')}</p>
-
-      <button onClick={() => setAudioState('Retell Yourself')} className="btn-cyan">
+      <p>{t('NoWayToTellPartner')}</p>
+      <button
+        onClick={() => setAudioState('Retell Yourself')}
+        className="btn-base bg-th-tertiary-btn-background text-th-secondary-text"
+      >
         {t('RetellYourself')}
       </button>
     </div>
@@ -66,20 +70,29 @@ function RetellPartner({ setAudioState }) {
       <BackButtonComponent
         setAudioState={setAudioState}
         audioState={'Main Audio'}
-        className="border-0 w-4 h-4 absolute top-0 left-0"
+        className="w-5 h-5 absolute top-0 left-0"
       />
       {inactive ? (
-        <button className="btn-cyan mr-2" onClick={() => setInactive(false)}>
+        <button
+          className="btn-base bg-th-tertiary-btn-background text-th-secondary-text mr-2"
+          onClick={() => setInactive(false)}
+        >
           {t('Finished')}
         </button>
       ) : (
         <>
           <p>{t('StartRetelling')}</p>
           <div className="flex">
-            <button className="btn-cyan mr-2" onClick={() => setInactive(true)}>
+            <button
+              className="btn-base bg-th-tertiary-btn-background text-th-secondary-text mr-2"
+              onClick={() => setInactive(true)}
+            >
               {t('InOriginalLanguage')}
             </button>
-            <button className="btn-cyan" onClick={() => setInactive(true)}>
+            <button
+              className="btn-base bg-th-tertiary-btn-background text-th-secondary-text"
+              onClick={() => setInactive(true)}
+            >
               {t('InTargetLanguage')}
             </button>
           </div>
@@ -97,17 +110,18 @@ function RetellYourself({ setAudioState }) {
       <BackButtonComponent
         setAudioState={setAudioState}
         audioState={'Main Audio Component'}
-        className="border-0 w-4 h-4"
+        className="w-5 h-5 top-0 left-0"
       />
       <div className="flex justify-center flex-wrap mt-8">
-        <div className="w-full pb-4 px-2 mb-4 border-b-4">
-          <p className="mb-4">{t('OriginalRecording')}</p>
-          <Recorder />
-        </div>
-        <div className="w-full pb-4 px-2 mb-4 border-b-4">
-          <p className="mb-4">{t('TargetRecording')}</p>
-          <Recorder />
-        </div>
+        {['OriginalRecording', 'TargetRecording'].map((recorderType) => (
+          <div
+            key={recorderType}
+            className="w-full pb-4 px-2 mb-4 border-b-4 border-th-primary-background"
+          >
+            <p className="mb-4">{t(recorderType)}</p>
+            <Recorder />
+          </div>
+        ))}
       </div>
     </>
   )
@@ -124,7 +138,7 @@ function BackButtonComponent({ setAudioState, audioState, className }) {
       }}
       className={className}
     >
-      <BackButton className="stroke-cyan-700" />
+      <BackButton className="stroke-th-primary-stroke" />
     </button>
   )
 }

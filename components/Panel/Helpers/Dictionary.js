@@ -20,6 +20,7 @@ import RightArrow from 'public/right-arrow.svg'
 import LeftArrow from 'public/left-arrow.svg'
 import Close from 'public/close.svg'
 import Trash from 'public/trash.svg'
+import Plus from 'public/plus.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -40,7 +41,6 @@ function Dictionary() {
   const [currentPageWords, setCurrentPageWords] = useState(0)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [errorText, setErrorText] = useState(false)
   const [wordToDel, setWordToDel] = useState(null)
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
@@ -152,7 +152,7 @@ function Dictionary() {
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
       .then(() => saveCacheNote('dictionary', activeWord, user))
       .catch((err) => {
-        toast.error(t('SaveFailed'))
+        toast.error(t('SaveFailed')) //TODO в базе сделать ответ или исключение с чёткими кодами - , допустим "слово уже такое есть"
         console.log(err)
       })
       .finally(() => {
@@ -163,11 +163,8 @@ function Dictionary() {
 
   const showError = (err, placeholder) => {
     if (err?.response?.data?.error) {
-      setErrorText(`${t('WordExist')} "${placeholder}"`)
+      toast.error(`${t('WordExist')} "${placeholder}"`)
     }
-    setTimeout(() => {
-      setErrorText(null)
-    }, 2000)
   }
 
   const getPagination = (page, size) => {
@@ -202,7 +199,7 @@ function Dictionary() {
               t={t}
             />
             <input
-              className="input max-w-xs mt-2"
+              className="input max-w-xs mt-2 ml-2"
               value={searchQuery}
               onChange={(e) => {
                 setCurrentPageWords(0)
@@ -213,19 +210,9 @@ function Dictionary() {
           {isModeratorAccess && (
             <>
               <div className="absolute top-0 right-0">
-                <button
-                  className="mb-4 right-0 btn-cyan text-xl font-bold"
-                  onClick={addNote}
-                >
-                  +
+                <button className="btn-tertiary p-3" onClick={addNote}>
+                  <Plus className="w-6 h-6 stroke-th-secondary-icons stroke-2" />
                 </button>
-              </div>
-              <div
-                className={`${
-                  errorText ? 'block' : 'hidden'
-                } absolute top-11 right-0 p-3 bg-red-200`}
-              >
-                {errorText}
               </div>
             </>
           )}
@@ -239,13 +226,13 @@ function Dictionary() {
                 }}
                 setNoteId={setWordId}
                 classes={{
-                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-gray-200',
+                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-th-primary-background',
                   title: 'font-bold p-2 mr-4',
                   text: 'px-2 h-10 overflow-hidden',
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
                 }}
                 isShowDelBtn={isModeratorAccess}
-                delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
+                delBtnChildren={<Trash className={'w-4 h-4 stroke-th-primary-icons'} />}
               />
               {totalPageCount > 1 && (
                 <div className="flex justify-around bottom-0 left-0">
@@ -259,7 +246,7 @@ function Dictionary() {
                       })
                     }
                   >
-                    <LeftArrow />
+                    <LeftArrow className="w-5 h-5" />
                   </button>
                   <button
                     className="arrow"
@@ -271,7 +258,7 @@ function Dictionary() {
                       })
                     }}
                   >
-                    <RightArrow />
+                    <RightArrow className="w-5 h-5" />
                   </button>
                 </div>
               )}
@@ -295,9 +282,10 @@ function Dictionary() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-cyan-50 p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
+              title:
+                'bg-th-primary-background p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
               redactor:
-                'p-4 my-4 pb-20 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
+                'p-4 my-4 pb-20 bg-th-primary-background overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeWord}
             setActiveNote={setActiveWord}
@@ -337,7 +325,6 @@ function Dictionary() {
           </div>
         </div>
       </Modal>
-      <Toaster />
     </div>
   )
 }
@@ -356,14 +343,15 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
                 setCurrentPageWords(0)
                 setSearchQuery(el.toLowerCase())
               }}
-              className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-200"
+              className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-primary-background "
               key={el}
             >
               {el}
             </div>
           ))}
       <div
-        className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-200"
+        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-primary-background
+        "
         onClick={getAll}
       >
         {t('ShowAll')}

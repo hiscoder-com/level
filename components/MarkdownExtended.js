@@ -35,7 +35,7 @@ function MarkdownExtended({ children }) {
   return (
     <ReactMarkdown
       rehypePlugins={[rehypeRaw]}
-      className={`markdown-body`}
+      className="markdown-body"
       components={{
         a: convertYoutube,
       }}

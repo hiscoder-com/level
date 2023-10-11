@@ -120,8 +120,8 @@ function Panel({
             key={tool.name}
             className={({ selected }) =>
               classNames(
-                'btn text-xs p-1 lg:pb-3 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap',
-                selected ? 'btn-cyan' : 'btn-white'
+                'text-xs p-1 lg:pb-3 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap',
+                selected ? 'tab-active' : 'tab-inactive'
               )
             }
           >
@@ -149,7 +149,7 @@ function Panel({
         {tools.map((tool, index) => {
           return (
             <Tab.Panel key={index}>
-              <div className="flex flex-col bg-white rounded-lg h-full">
+              <div className="flex flex-col bg-th-secondary-background rounded-lg h-full">
                 <Tool
                   editable={editable}
                   targetResourceLink={targetResourceLink}

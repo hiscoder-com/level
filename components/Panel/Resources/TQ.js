@@ -42,13 +42,13 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
   })
 
   return (
-    <div className="divide-y divide-dashed divide-gray-800">
+    <div className="divide-y divide-dashed divide-th-primary-text">
       {data &&
         Object.keys(data)?.map((key) => {
           return (
             <div key={key} className="flex mx-4 p-4" id={'idtq' + key}>
               <div className="text-2xl">{key}</div>
-              <div className="pl-7 text-gray-700">
+              <div className="pl-7 text-th-primary-text">
                 <ul>
                   {data[key]?.map((item) => {
                     return (
@@ -80,8 +80,8 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
   return (
     <Disclosure>
       <Disclosure.Button
-        className={`w-fit text-left ${
-          highlightId === 'id' + item.id ? 'bg-gray-200' : ''
+        className={`p-2 w-fit text-left ${
+          highlightId === 'id' + item.id ? 'bg-th-primary-background rounded-lg' : ''
         }`}
         onClick={() => {
           if (viewAll) {
@@ -92,7 +92,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
       <Disclosure.Panel className="w-fit py-4 text-cyan-700">
-        <p>{item.text}</p>
+        <p className="ml-2">{item.text}</p>
       </Disclosure.Panel>
     </Disclosure>
   )

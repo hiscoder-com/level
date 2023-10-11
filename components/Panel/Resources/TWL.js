@@ -102,7 +102,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
 
   return (
     <div
-      className={`divide-y divide-gray-800 divide-dashed h-full overflow-auto ${
+      className={`divide-y divide-th-primary-text divide-dashed h-full overflow-auto ${
         isLoading ? 'px-4' : ''
       }`}
     >
@@ -118,7 +118,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
           return (
             <div key={verseIndex} className="p-4 flex mx-4" id={'idtwl' + verseNumber}>
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1">
+              <div className="pl-7 flex-1">
                 <ul>
                   {words?.map((item, index) => {
                     let itemFilter
@@ -132,7 +132,6 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                       case 'book':
                         itemFilter = item.isRepeatedInBook
                         break
-
                       default:
                         break
                     }
@@ -141,10 +140,10 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                       <li
                         key={index}
                         id={'id' + item.id}
-                        className={`p-2 cursor-pointer ${
-                          itemFilter ? 'text-gray-400' : ''
-                        } hover:bg-gray-200
-                      ${highlightId === 'id' + item.id ? 'bg-gray-200' : ''}
+                        className={`p-2 rounded-lg cursor-pointer ${
+                          itemFilter ? 'text-th-disabled-text' : ''
+                        } hover:bg-th-primary-background
+                      ${highlightId === 'id' + item.id ? 'bg-th-primary-background' : ''}
                       `}
                         onClick={() => {
                           handleSaveScroll(verseNumber, item.id)

@@ -80,15 +80,15 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               {stepConfig.title}
             </div>
             <div
-              className={`items-center gap-4 md:flex justify-center md:justify-start text-th-primary ${
+              className={`items-center gap-4 md:flex justify-center md:justify-start text-th-primary-text ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
-              <div className="flex row px-5 py-2.5 items-center gap-1 cursor-default bg-th-primary-background rounded-3xl">
-                <User className="w-5 h-5 stroke-th-primary-icons" />
+              <div className="flex row px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-background rounded-3xl">
+                <User className="w-4 h-4 stroke-th-primary-icons" />
                 {stepConfig.count_of_users}
               </div>
-              <div className="hidden md:flex px-5 py-2.5 bg-th-primary-background rounded-3xl">
+              <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-background rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
 
