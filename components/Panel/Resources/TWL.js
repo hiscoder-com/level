@@ -31,28 +31,30 @@ function TWL({ config, url, toolName }) {
       })
       const finalData = {}
       words?.forEach((word) => {
-        const {
-          ID,
-          Reference,
-          TWLink,
-          isRepeatedInBook,
-          isRepeatedInChapter,
-          isRepeatedInVerse,
-          text,
-          title,
-        } = word
-        const wordObject = {
-          id: ID,
-          title,
-          text,
-          url: TWLink,
-          isRepeatedInBook,
-          isRepeatedInChapter,
-          isRepeatedInVerse,
-        }
+        if (word) {
+          const {
+            ID,
+            Reference,
+            TWLink,
+            isRepeatedInBook,
+            isRepeatedInChapter,
+            isRepeatedInVerse,
+            text,
+            title,
+          } = word
+          const wordObject = {
+            id: ID,
+            title,
+            text,
+            url: TWLink,
+            isRepeatedInBook,
+            isRepeatedInChapter,
+            isRepeatedInVerse,
+          }
 
-        const [, verse] = Reference.split(':')
-        filterNotes(wordObject, verse, finalData)
+          const [, verse] = Reference.split(':')
+          filterNotes(wordObject, verse, finalData)
+        }
       })
       setIsLoadingTW(false)
       setWordObjects(finalData)
