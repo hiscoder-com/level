@@ -91,13 +91,15 @@ export default function ConfessionSteps() {
       <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
-            <LeftArrow />
+            <LeftArrow className="w-7 h-7" />
           </button>
         </div>
-        <div className="confession-text">{confessionSteps[page]}</div>
+        <div className="w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] text-xl bg-th-secondary-background rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none">
+          {confessionSteps[page]}
+        </div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
-            <RightArrow />
+            <RightArrow className="w-7 h-7" />
           </button>
         </div>
       </div>
@@ -115,7 +117,7 @@ export default function ConfessionSteps() {
           />
           <label htmlFor="cb">{t('users:Agree')}</label>
         </div>
-        <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
+        <button onClick={handleClick} className="btn-secondary w-28" disabled={!checked}>
           {t('common:Next')}
         </button>
       </div>

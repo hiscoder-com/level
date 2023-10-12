@@ -68,14 +68,14 @@ function Workspace({ stepConfig, reference, editable = false }) {
     }
   }, [reference?.book, stepConfig])
   return (
-    <div className="layout-step">
+    <div className="flex flex-col gap-3 items-center f-screen-appbar mx-auto lg:max-w-7xl lg:items-stretch lg:flex-row">
       {stepConfig.config.map((el, index) => {
         return (
           <div
             key={index}
-            className={`layout-step-col ${index === 0 && inactive ? 'inactive' : ''} ${
-              sizes[el.size]
-            }`}
+            className={`flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0 ${
+              index === 0 && inactive ? 'inactive' : ''
+            } ${sizes[el.size]}`}
           >
             <Panel
               tools={el.tools}

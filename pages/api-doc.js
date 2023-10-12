@@ -38,7 +38,7 @@ function ApiDoc() {
       <SwaggerUI spec={spec} />
       <div className="flex justify-center">
         <button
-          className="btn-cyan mb-10"
+          className="btn-primary mb-10"
           disabled={labelButton}
           onClick={() => copyToClipBoard(user?.access_token)}
         >

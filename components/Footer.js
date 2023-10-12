@@ -41,6 +41,7 @@ export default function Footer({
     <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-th-primary-background md:flex-row-reverse lg:px-0">
       <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
+          {/*TODO Перенести чекбокс в компонент*/}
           <div className="space-x-1.5 flex items-center">
             <label
               className="relative flex justify-center items-center p-3 cursor-pointer rounded-full"
@@ -54,7 +55,7 @@ export default function Footer({
                 checked={checked}
                 onChange={() => setChecked((prev) => !prev)}
               />
-              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2  opacity-0 transition-opacity peer-checked:opacity-100 stroke-th-secondary-icons fill-th-secondary-icons">
+              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 transition-opacity peer-checked:opacity-100 stroke-th-secondary-icons fill-th-secondary-icons">
                 <CheckboxShevron />
               </div>
             </label>
@@ -62,17 +63,12 @@ export default function Footer({
           </div>
           {href ? (
             <Link href={href} legacyBehavior>
-              <button className="btn-cyan !px-6" disabled={!checked}>
+              <button className="btn-secondary !px-6" disabled={!checked}>
                 {textButton}
               </button>
             </Link>
           ) : (
-            <ButtonSave
-              onClick={handleClick}
-              isSaving={loading}
-              disabled={!checked}
-              className
-            >
+            <ButtonSave onClick={handleClick} isSaving={loading} disabled={!checked}>
               {textButton}
             </ButtonSave>
           )}

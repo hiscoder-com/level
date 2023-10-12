@@ -57,7 +57,7 @@ function UserCreatePage() {
       />
       <br />
       <div className="text-red-500">{message}</div>
-      <button className={'btn btn-cyan'} onClick={handleSaveUser}>
+      <button className="btn-primary" onClick={handleSaveUser}>
         {t('common:Save')}
       </button>
     </div>

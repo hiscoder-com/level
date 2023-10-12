@@ -146,7 +146,7 @@ function Login() {
                 {t('Password')}
               </label>
               <span
-                className="eye"
+                className="absolute right-2 bottom-2 cursor-pointer stroke-2 stroke-th-primary-icons"
                 onClick={() => {
                   setShowPassword((prev) => !prev)
                 }}

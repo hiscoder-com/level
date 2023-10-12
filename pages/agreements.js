@@ -9,13 +9,23 @@ export default function Agreements() {
   return (
     <div className="layout-appbar">
       <div className="flex flex-col text-center space-y-2.5">
-        <Link href="/user-agreement" className="btn-white w-64">
+        {/*TODO Исправить логику ссылок или редиректа */}
+        <Link
+          href="/user-agreement"
+          className="btn-base bg-th-primary-btn-background hover:bg-th-primary hover:text-th-secondary-text w-64"
+        >
           {t('Agreement')}
         </Link>
-        <Link href="/confession" className="btn-white w-64">
+        <Link
+          href="/confession"
+          className="btn-base bg-th-primary-btn-background hover:bg-th-primary hover:text-th-secondary-text w-64"
+        >
           {t('Confession')}
         </Link>
-        <Link href="/user-agreement" className="btn-cyan w-64">
+        <Link
+          href="/user-agreement"
+          className="btn-base bg-th-primary-btn-background hover:bg-th-primary hover:text-th-secondary-text w-64"
+        >
           {t('common:Next')}
         </Link>
       </div>

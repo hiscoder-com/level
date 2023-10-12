@@ -63,6 +63,10 @@
 	--primary-btn-hover: theme('colors.yellow.600');
 	--secondary-btn-background:	theme('colors.yellow.600');
 	--secondary-btn-hover: theme('colors.neutral.200');
+	--tertiary-btn-background:	theme('colors.gray.450');
+	--tertiary-btn-hover: theme('colors.gray.350');
+	--quaternary-btn-background:	theme('colors.teal.350');
+	--quaternary-btn-hover: theme('colors.teal.200');
 	--active-tab-from:	theme('colors.slate.550');
 	--active-tab-to:	theme('colors.slate.570');
 	--primary-blur-background:	theme('colors.zinc.500');
@@ -73,123 +77,20 @@
   
 }
 
-
 .appbar {
 	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-th-primary sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
 }
 
-.step {
-	@apply inline-block w-2.5 h-2.5 rounded-full m-px bg-white;
-}
-
-.step.active { 
-	@apply w-4 h-4 border-white bg-th-primary;	
-}
-
-.dash {
-	width: 0.4rem;
-	height: 0.05rem;
-	margin: 0.1rem;
-	border: 0.05rem solid #9ca3af;
-	background-color: #9ca3af;
-}
-
-.dash.active {
-	border: 0.05rem solid black;
-	background-color: black;
-}
-
 .arrow {
 	@apply px-5 py-5 rounded-full duration-300
-	hover:bg-white
-	active:bg-gray-100
+	hover:bg-th-secondary-background
+	active:bg-th-primary-hover-background
 	disabled:opacity-30
 	disabled:hover:bg-transparent;
 }
 
-.btn {
-	@apply text-center border-2 rounded-md inline-block px-3 py-1 cursor-pointer
-disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white
-	disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400;
-}
-
-.btn-cyan-base {
-	@apply text-white bg-cyan-600 border-cyan-600
-	hover:bg-cyan-700 hover:border-cyan-700
-	active:bg-cyan-800 active:border-cyan-800
-	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300	fill-white;
-}
-
-.btn-blue-base {
-	@apply text-white bg-blue-600 border-blue-600
-	hover:bg-blue-700 hover:border-blue-700
-	active:bg-blue-800 active:border-blue-800
-	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300	fill-white;
-}
-
-.btn-red-base {
-	@apply text-white bg-red-500 border-red-600
-	hover:bg-red-700 hover:border-red-700
-	active:bg-red-800 active:border-red-800
-	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300;
-}
-
-.btn-gray-red-base {
-	@apply text-white bg-gray-500 border-gray-600
-	hover:bg-red-700 hover:border-red-700
-	active:bg-red-800 active:border-red-800
-	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300;
-}
-
-.btn-slate-base {
-	@apply text-white bg-slate-600 border-slate-600
-	hover:bg-slate-700 hover:border-slate-700
-	active:bg-slate-800 active:border-slate-800
-	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300 fill-white;
-}
-
-.btn-start {
-	@apply btn-cyan-base rounded-full duration-300 uppercase text-2xl font-medium cursor-pointer;
-}
-
-.btn-cyan {
-	@apply btn btn-cyan-base;
-}
-
-.btn-blue {
-	@apply btn btn-blue-base;
-}
-
-.btn-gray-red {
-	@apply btn btn-gray-red-base;
-}
-
-.btn-slate {
-	@apply btn-slate-base rounded-3xl py-2 px-7 text-center cursor-pointer;
-}
-
-.btn-white {
-	@apply btn bg-white text-cyan-600 border-cyan-600
-	hover:bg-cyan-50
-	active:bg-cyan-200
-	fill-cyan-600;
-}
-
-.confession-text {
-	@apply w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] text-xl bg-white rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none;
-}
-
-.eye {
-	@apply absolute right-2 bottom-2 cursor-pointer stroke-2 text-[#3C3C41];
-}
-
 .f-screen-appbar {
 	min-height: calc(100vh - 11.5rem);
-}
-
-.text-area {
-	@apply w-full text-sm rounded-md p-2 border text-gray-600 border-gray-200 bg-gray-100
-	focus:outline-none focus:border-gray-300;
 }
 
 .input-base {
@@ -201,42 +102,9 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	@apply input-base text-gray-600 placeholder-gray-400 border-gray-200 bg-gray-100
  focus:border-gray-300;
 }
-.input-blue {
-	@apply input-base text-blue-250 placeholder-gray-400 border-blue-250 bg-white
-	focus:border-blue-450;
-}
 
 .layout-appbar {
 	@apply flex flex-col gap-7 items-center px-5 f-screen-appbar font-sans sm:justify-center;
-}
-
-.layout-empty {
-	@apply flex flex-col justify-center font-sans min-h-screen;
-}
-
-.layout-step {
-	@apply flex flex-col gap-3 items-center f-screen-appbar mx-auto lg:max-w-7xl lg:items-stretch lg:flex-row;
-}
-
-.layout-step-col {
-	@apply flex flex-col gap-1 lg:gap-5 w-11/12 md:w-full md:px-4 lg:px-0;
-}
-
-.password-control {
-	background: url(/public/eyeIcon.svg) 0 0 no-repeat;
-}
-.password-control.view {
-	background: url(/public/eyeOffIcon.svg) 0 0 no-repeat;
-}
-
-.sidebar-link-a {
-	@apply flex transition transform px-4 py-3 text-[#3C3C41]
-	hover:-translate-x-0.5 hover:text-[#0E7490]
-	focus:outline-none;
-}
-
-.text-alignment {
-	@apply max-w-7xl pb-6 px-6 lg:px-8 bg-white rounded-lg;
 }
 
 .markdown-body img {
@@ -250,13 +118,6 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .markdown-body ul {
 	list-style: inherit;
-}
-
-.inactive {
-	filter: blur(6px) grayscale(1);
-	user-select: none;
-	pointer-events: none;
-	opacity: 0.5;
 }
 
 .adaptive-card {
@@ -311,16 +172,20 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 }
 
 .btn-base {
-  @apply px-5 py-2 border rounded-3xl cursor-pointer text-center text-sm md:text-base;
+  @apply px-5 py-2 rounded-3xl cursor-pointer text-center text-sm md:text-base;
 }
 
 .btn-primary {
-  @apply btn-base text-th-primary-text border-th-secondary-border bg-th-primary-btn-background hover:bg-th-primary-btn-hover hover:border-th-primary-btn-hover hover:text-th-secondary-text disabled:hover:bg-th-primary-btn-background  disabled:border-th-secondary-text 
+  @apply btn-base border text-th-primary-text border-th-secondary-border bg-th-primary-btn-background hover:bg-th-primary-btn-hover hover:border-th-primary-btn-hover hover:text-th-secondary-text disabled:hover:bg-th-primary-btn-background  disabled:border-th-secondary-text 
 	disabled:text-th-secondary-text disabled:cursor-default;
 }
 
 .btn-secondary {
   @apply btn-base text-th-secondary-text bg-th-secondary;
+}
+
+.btn-tertiary {
+	@apply mb-4 right-0 bg-th-tertiary-btn-background text-th-secondary-text  font-bold rounded-xl cursor-pointer hover:bg-th-tertiary-btn-hover
 }
 
 .btn-red {

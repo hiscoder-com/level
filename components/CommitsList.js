@@ -17,7 +17,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
       }
     }
   }, [methodId, methods])
-
+  //TODO colors жду ответа по инпутам
   const setResources = useMemo(() => {
     const listOfResources = []
     for (const resource in customResources) {

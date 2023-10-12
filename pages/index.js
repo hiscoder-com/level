@@ -14,7 +14,7 @@ export default function Home() {
   const { t } = useTranslation('common')
 
   return (
-    <main className="layout-empty bg-zinc-100">
+    <main className="flex flex-col justify-center font-sans min-h-screen bg-th-primary-background">
       <Head>
         <title>{t('V-CANA')}</title>
         <meta name="description" content="VCANA" />

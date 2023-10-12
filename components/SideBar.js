@@ -35,9 +35,9 @@ function SideBar({ setIsOpenSideBar, access }) {
           >
             {access &&
               (!open ? (
-                <Burger className="h-10 stroke-slate-600" />
+                <Burger className="h-10 stroke-th-secondary-icons" />
               ) : (
-                <Close className="h-10 stroke-slate-600" />
+                <Close className="h-10 stroke-th-secondary-icons" />
               ))}
           </Menu.Button>
           <Transition
@@ -51,7 +51,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               className="fixed flex flex-col w-full md:w-1/2 lg:w-[48%] xl:w-[27rem] gap-7 top-14 sm:top-20 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 lg:pr-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-gray-350 bg-white sm:rounded-2xl">
+              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th- bg-white sm:rounded-2xl">
                 <div className="flex items-center gap-2 pb-5 border-b cursor-default border-gray-300">
                   <div className="w-12 h-12 min-w-[3rem]">
                     <TranslatorImage item={{ users: user }} />
@@ -70,8 +70,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                       className="flex items-center justify-between gap-2 cursor-default"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
-                          <Localization className="w-5 h-5 min-w-[1.5rem] stroke-slate-600" />
+                        <div className="px-4 py-2 rounded-[23rem] bg-th-primary-background">
+                          <Localization className="w-5 h-5 min-w-[1.5rem] stroke-th-primary-icons" />
                         </div>
                         <span>{t('Language')}</span>
                       </div>
@@ -87,8 +87,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                         className="flex w-full items-center gap-4 cursor-pointer"
                         onClick={() => setVersionModalIsOpen((prev) => !prev)}
                       >
-                        <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
-                          <VersionLogo className="w-5 h-5 min-w-[1.5rem]" />
+                        <div className="px-4 py-2 rounded-[23rem] bg-th-primary-background">
+                          <VersionLogo className="w-5 h-5 min-w-[1.5rem] stroke-th-primary-icons" />
                         </div>
                         <AboutVersion isSidebar={true} />
                       </div>

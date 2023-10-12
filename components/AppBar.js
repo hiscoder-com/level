@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -45,6 +45,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
     }
   }, [supabase, user])
 
+  const logoLink = useMemo(() => {
+    return !user?.id ? '/login' : access ? '/account' : '/agreements'
+  }, [access, user])
   return (
     <div className={`bg-th-primary ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
@@ -55,7 +58,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               access && !isStepPage ? '-ml-10' : ''
             } md:ml-0`}
           >
-            <Link href="/account">
+            <Link href={logoLink}>
               <VCANA_logo className="h-6 fill-th-secondary-text" />
             </Link>
           </div>

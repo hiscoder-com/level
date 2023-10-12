@@ -24,7 +24,7 @@ export default function UsersPage() {
       <div className="mx-auto max-w-7xl">
         <div>{t('Users')}</div>
         <UsersList />
-        <Link href={'/users/create'} className="btn btn-filled">
+        <Link href={'/users/create'} className="btn-filled">
           {t('CreateNewUser')}
         </Link>
       </div>

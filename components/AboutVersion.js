@@ -88,7 +88,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
             <div className="flex justify-center pt-5 border-t border-th-secondary-border">
               <button
                 onClick={() => setShowAllUpdates((prev) => !prev)}
-                className={`${isMobileIndexPage ? 'btn-slate' : 'btn-primary'}`}
+                className={`${isMobileIndexPage ? 'btn-secondary' : 'btn-primary'}`}
               >
                 {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
               </button>
@@ -149,7 +149,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           <div className="flex justify-center mt-4">
             <button
               onClick={() => setShowAllUpdates((prev) => !prev)}
-              className={`${isMobileIndexPage ? 'btn-slate' : 'btn-secondary'}`}
+              className={`${isMobileIndexPage ? 'btn-primary' : 'btn-secondary'}`}
             >
               {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
             </button>
