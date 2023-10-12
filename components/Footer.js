@@ -6,10 +6,9 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useRecoilValue } from 'recoil'
 
-import ButtonSave from './ButtonSave'
-
 import Translators from 'components/Translators'
 import ProgressBar from 'components/ProgressBar'
+import ButtonLoading from './ButtonLoading'
 import CheckboxShevron from 'public/checkbox-shevron.svg'
 
 import { stepConfigState } from './state/atoms'
@@ -68,9 +67,14 @@ export default function Footer({
               </button>
             </Link>
           ) : (
-            <ButtonSave onClick={handleClick} isSaving={loading} disabled={!checked}>
+            <ButtonLoading
+              onClick={handleClick}
+              className="relative btn-cyan w-28 text-center"
+              disabled={!checked}
+              isLoading={loading}
+            >
               {textButton}
-            </ButtonSave>
+            </ButtonLoading>
           )}
         </div>
       </div>
@@ -83,7 +87,7 @@ export default function Footer({
             />
           </div>
           <div className="flex gap-2.5 items-center pb-3 md:pb-0">
-            <div>{t('Fulfilled')}:</div>
+            <div>{t('Participants')}:</div>
             <Translators
               projectCode={stepConfig.project_code}
               size="34px"

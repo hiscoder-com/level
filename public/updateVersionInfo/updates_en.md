@@ -1,5 +1,10 @@
+# Version 0.7.0
+## Date: 09/26/2023
+
+### **Added:**
+- recovery password
 # Version 0.6.0
-## Date: 09/04/2023
+## Date: 09/18/2023
 
 ### **Added:**
 - loading status for clicking on the internal link 

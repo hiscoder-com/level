@@ -3,10 +3,13 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
+
+import { toast } from 'react-hot-toast'
+
 import axios from 'axios'
 
 import CommitsList from 'components/CommitsList'
-import ButtonSave from 'components/ButtonSave'
+import ButtonLoading from 'components/ButtonLoading'
 
 import { useProject, useMethod, useGetProjectResources } from 'utils/hooks'
 
@@ -57,7 +60,7 @@ function ResourceSettings() {
         current_method: currentMethod,
         project_id: project.id,
       })
-      .then()
+      .then(() => toast.success(t('ResourcesUpdated')))
       .catch((error) => {
         setIsErrorCommit(true)
         console.log(error)
@@ -72,9 +75,9 @@ function ResourceSettings() {
         methodId={currentMethod?.id}
       />
       {isErrorCommit && <div className="mt-3">{t('WrongResource')}</div>}
-      <ButtonSave onClick={handleSaveCommits} isSaving={isSaving}>
+      <ButtonLoading onClick={handleSaveCommits} isLoading={isSaving}>
         {t('Save')}
-      </ButtonSave>
+      </ButtonLoading>
     </>
   )
 }

@@ -8,7 +8,7 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
-import { toast, Toaster } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -187,7 +187,6 @@ function TeamNotes() {
           </div>
         </div>
       </Modal>
-      <Toaster />
     </div>
   )
 }

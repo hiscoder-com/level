@@ -12,7 +12,7 @@ import axios from 'axios'
 
 import UpdateField from 'components/UpdateField'
 import BriefEditQuestions from 'components/BriefEditQuestions'
-import ButtonSave from 'components/ButtonSave'
+import ButtonLoading from 'components/ButtonLoading'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 
@@ -20,7 +20,6 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
-
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [editableMode, setEditableMode] = useState(false)
   const [hidden, setHidden] = useState(true)
@@ -29,9 +28,7 @@ function BriefBlock({ access, title = false }) {
     query: { code },
   } = useRouter()
   const [project] = useProject({ code })
-
   const { t } = useTranslation(['common', 'project-edit'])
-
   const [brief, { mutate }] = useGetBrief({
     project_id: project?.id,
   })
@@ -109,14 +106,12 @@ function BriefBlock({ access, title = false }) {
             {t('project-edit:EditBriefTitle')}
           </h3>
         )}
-
         <div className="flex flex-col items-end lg:flex-row gap-7 justify-end text-sm md:text-base">
           {access && (
             <div className="flex items-center">
               <span className="mr-3">
                 {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
               </span>
-
               <Switch
                 checked={brief?.is_enable || false}
                 onChange={handleSwitch}
@@ -209,7 +204,6 @@ function BriefBlock({ access, title = false }) {
                           )
                         })}
                       </div>
-
                       <div className="space-y-7">
                         <p className={hidden ? 'hidden' : 'text-lg font-bold mt-7'}>
                           {t('project-edit:Summary')}
@@ -242,16 +236,15 @@ function BriefBlock({ access, title = false }) {
               </div>
             </>
           )}
-
           {access && (
             <div>
-              <ButtonSave
-                className="btn-primary"
+              <ButtonLoading
+                className="relative btn-primary"
                 onClick={() => saveToDatabase(briefDataCollection, true)}
-                isSaving={isSaving}
+                isLoading={isSaving}
               >
                 {t('Save')}
-              </ButtonSave>
+              </ButtonLoading>
             </div>
           )}
         </div>

@@ -9,7 +9,6 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 export default function UserAgreement() {
   const supabase = useSupabaseClient()
-
   const router = useRouter()
   const { t } = useTranslation(['user-agreement', 'common', 'users'])
   const handleClick = async () => {
@@ -25,10 +24,10 @@ export default function UserAgreement() {
     <div className="layout-appbar">
       <div
         className="max-w-7xl pb-6 px-6 lg:px-8 bg-th-secondary-background rounded-lg text-justify overflow-auto text-th-primary-text"
-        style={{ height: 'calc(100vh - 11rem)' }}
+        style={{ height: 'calc(100vh - 15rem)' }}
       >
-        <h1 className="pt-4 text-4xl">{t('users:Agreement')}:</h1>
-        <div className="mt-7">
+        <h1 className="pt-4 text-2xl md:text-4xl">{t('users:Agreement')}:</h1>
+        <div className="mt-7 text-sm">
           <b className="font-bold">{t('License')}</b>
           <p
             dangerouslySetInnerHTML={{

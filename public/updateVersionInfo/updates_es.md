@@ -1,5 +1,10 @@
+# Versión 0.7.0
+## Fecha: 09/26/2023
+
+### **Añadido:**
+- contraseña de recuperación
 # Versión 0.6.0
-## Fecha: 09/04/2023
+## Fecha: 09/18/2023
 
 ### **Añadido:**
 - estado de la descarga al hacer clic en el enlace interno

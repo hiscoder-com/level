@@ -36,6 +36,7 @@ export default function Confession() {
     </div>
   )
 }
+
 Confession.backgroundColor = 'bg-white'
 
 export async function getStaticProps({ locale }) {

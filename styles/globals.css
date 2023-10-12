@@ -104,7 +104,7 @@
 }
 
 .layout-appbar {
-	@apply flex flex-col gap-7 items-center px-5 f-screen-appbar font-sans sm:justify-center;
+	@apply f-screen-appbar flex flex-col gap-5 md:gap-7 items-center px-2 md:px-5 pt-5 md:pt-0 font-sans;
 }
 
 .markdown-body img {
@@ -195,15 +195,19 @@
 .first-check path:nth-child(1) {
 	@apply fill-emerald-500
 }
+
 .second-check path:nth-child(2) {
 	@apply fill-teal-500
 }
+
 .third-check path:nth-child(3) {
 	@apply fill-cyan-700
 }
+
 .input-primary {
 	@apply px-4 py-2 w-full rounded-lg text-slate-900 border border-slate-900 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300
 }
+
 .input-invalid {
 	@apply p-2 w-full rounded-lg bg-white text-red-600 border border-red-500 placeholder-cyan-200 focus:border-red-700 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300;
 }
