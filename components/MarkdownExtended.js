@@ -5,8 +5,6 @@ import remarkGfm from 'remark-gfm'
 
 import 'github-markdown-css/github-markdown-light.css'
 
-import FootNote from './FootNote'
-
 function MarkdownExtended({ children, className }) {
   const content = (typeof children === 'string' ? children : '')
     .replace(/< *br *\/?>/gi, '\n')
@@ -33,16 +31,13 @@ function MarkdownExtended({ children, className }) {
       <span>{props.children}</span>
     )
   }
-  const convertFootNote = (props) => {
-    return <FootNote props={props} />
-  }
+
   return (
     <ReactMarkdown
       rehypePlugins={[rehypeRaw]}
       className={className}
       components={{
         a: convertYoutube,
-        samp: convertFootNote,
       }}
       remarkPlugins={[remarkGfm]}
     >

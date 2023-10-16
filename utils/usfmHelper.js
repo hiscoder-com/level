@@ -3,7 +3,14 @@ const getText = (verseObject) => {
 }
 
 const getFootnote = (verseObject) => {
-  return '<samp>' + verseObject.content + '</samp>'
+  const content = verseObject.content
+    .replace(/\\fqa\s(.*?)\\/g, '*$1*')
+    .replace(/\\fq(.*?)\\/g, '*$1*')
+    .replace(/\\ft\*|\\f\*|f\*|fq\*|fqa\*|\\ft|\\f|fq|fqa|ft|ft\*/g, '')
+    .replace(/\+/g, ' ')
+    .replaceAll('\\xt', '')
+    .trim()
+  return '[' + content + ']'
 }
 
 const getMilestone = (verseObject, showUnsupported) => {
@@ -57,7 +64,7 @@ const getTag = (verseObject) => {
     case 'sup':
       return '<sup>' + text + '</sup>'
     default:
-      return '***' + text + '***'
+      return text ? '***' + text + '***' : ''
   }
 }
 
@@ -79,6 +86,7 @@ const getVerseText = (verseObjects, showUnsupported = false) => {
 }
 
 const getObject = (verseObject, showUnsupported) => {
+  // console.log(verseObject)
   const { type } = verseObject
   switch (type) {
     case 'quote':
