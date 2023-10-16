@@ -12,7 +12,7 @@ const getFootnote = (verseObject) => {
       ''
     )
     .trim()
-  return '[' + content + ']'
+  return '<span style="color:gray"> [' + content + '] </span>'
 }
 
 const getMilestone = (verseObject, showUnsupported) => {
@@ -45,7 +45,11 @@ const getSection = (verseObject) => {
   switch (verseObject.tag) {
     case 's':
     case 's1':
-      return '<div align="center">' + verseObject.content + '</div>'
+      return (
+        '<span style="display:block;margin-top:8px;text-align:center">' +
+        verseObject.content +
+        '</span>'
+      )
     default:
       return verseObject.content
   }
@@ -88,7 +92,6 @@ const getVerseText = (verseObjects, showUnsupported = false) => {
 }
 
 const getObject = (verseObject, showUnsupported) => {
-  // console.log(verseObject)
   const { type } = verseObject
   switch (type) {
     case 'quote':
