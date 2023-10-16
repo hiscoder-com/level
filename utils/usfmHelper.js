@@ -6,9 +6,11 @@ const getFootnote = (verseObject) => {
   const content = verseObject.content
     .replace(/\\fqa\s(.*?)\\/g, '*$1*')
     .replace(/\\fq(.*?)\\/g, '*$1*')
-    .replace(/\\ft\*|\\f\*|f\*|fq\*|fqa\*|\\ft|\\f|fq|fqa|ft|ft\*/g, '')
-    .replace(/\+/g, ' ')
-    .replaceAll('\\xt', '')
+    .replace(/\\fr(.*?)\\/g, '')
+    .replace(
+      /\\ft\*|\\f\*|f\*|fq\*|fqa\*|\\ft|\\f|fq|fqa|ft|ft|\\fr|\\fr\*|fr\*|fr|\+|\*|\\xt|\\xt*/g,
+      ''
+    )
     .trim()
   return '[' + content + ']'
 }
