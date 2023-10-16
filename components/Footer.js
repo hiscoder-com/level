@@ -6,10 +6,10 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useRecoilValue } from 'recoil'
 
-import Translators from 'components/Translators'
-import ProgressBar from 'components/ProgressBar'
+import Translators from './Translators'
+import ProgressBar from './ProgressBar'
 import ButtonLoading from './ButtonLoading'
-import CheckboxShevron from 'public/checkbox-shevron.svg'
+import CheckBox from './CheckBox'
 
 import { stepConfigState } from './state/atoms'
 export default function Footer({
@@ -40,26 +40,17 @@ export default function Footer({
     <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-th-primary-background md:flex-row-reverse lg:px-0">
       <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
-          {/*TODO Перенести чекбокс в компонент*/}
-          <div className="space-x-1.5 flex items-center">
-            <label
-              className="relative flex justify-center items-center p-3 cursor-pointer rounded-full"
-              htmlFor="done"
-              data-ripple-dark="true"
-            >
-              <input
-                id="done"
-                type="checkbox"
-                className="w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-th-secondary bg-th-secondary-background checked:bg-th-secondary transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
-                checked={checked}
-                onChange={() => setChecked((prev) => !prev)}
-              />
-              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 transition-opacity peer-checked:opacity-100 stroke-th-secondary-icons fill-th-secondary-icons">
-                <CheckboxShevron />
-              </div>
-            </label>
-            <span className="ml-2">{textCheckbox}</span>
-          </div>
+          <CheckBox
+            onChange={() => setChecked((prev) => !prev)}
+            checked={checked}
+            className={{
+              accent:
+                'bg-th-secondary-background checked:bg-th-secondary checked:border-th-secondary checked:before:bg-th-secondary border-th-secondary',
+              cursor:
+                'fill-th-secondary-background text-th-secondary-background stroke-th-secondary-background',
+            }}
+            label={textCheckbox}
+          />
           {href ? (
             <Link href={href} legacyBehavior>
               <button className="btn-secondary !px-6" disabled={!checked}>

@@ -247,9 +247,7 @@ function Login() {
             <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
             <div className="flex gap-4">
               <input
-                className={`input-primary ${
-                  errorMessageSendLink ? '!border-red-500' : ''
-                }`}
+                className={errorMessageSendLink ? 'input-invalid' : 'input-primary'}
                 onChange={(e) => {
                   setErrorMessageSendLink('')
                   setEmail(e.target.value)

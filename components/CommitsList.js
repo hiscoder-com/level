@@ -32,9 +32,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
               {resource}:
             </div>
             <input
-              className={`p-2 w-full md:w-5/6 rounded-lg bg-white text-slate-900 border ${
-                resourcesUrl?.[resource] ? 'border-slate-900' : 'border-blue-200'
-              } placeholder-blue-200 focus:border-slate-900 focus:outline-none`}
+              className="input-primary"
               value={resourcesUrl?.[resource] ?? ''}
               onChange={(e) =>
                 setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))

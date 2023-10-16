@@ -10,9 +10,9 @@ import { useForm } from 'react-hook-form'
 
 import { Tab } from '@headlessui/react'
 
-import Brief from './Brief'
-import ResourceSettings from './ResourceSettings'
-import Participants from './Participants/Participants'
+import Brief from 'components/Brief'
+import ResourceSettings from 'components/ResourceSettings'
+import Participants from 'components/Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
 import Steps from '../Steps'
 import BasicInformation from '../BasicInformation'
@@ -301,7 +301,9 @@ function ProjectEdit() {
                   <Tab
                     key={tab.label}
                     className={({ selected }) =>
-                      `flex-1 ${selected ? 'tab-active truncate' : 'tab truncate'}`
+                      `flex-1 ${
+                        selected ? 'tab-active truncate' : 'tab-inactive truncate'
+                      }`
                     }
                     onClick={() =>
                       replace(
@@ -334,7 +336,7 @@ function ProjectEdit() {
             { title: t('Settings') },
           ]}
         />
-        <div className="space-y-7 divide-y divide-slate-900">
+        <div className="space-y-7 divide-y divide-th-primary-text">
           <div className="space-y-7">
             <h3 className="text-lg font-bold">{t('project-edit:BasicInformation')}</h3>
             <form className="space-y-7" onSubmit={handleSubmitSmall(saveBasicToDb)}>

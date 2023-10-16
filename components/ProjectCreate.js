@@ -192,7 +192,7 @@ function ProjectCreate() {
                   checked={isBriefEnable}
                   onChange={() => setIsBriefEnable((prev) => !prev)}
                   className={`${
-                    isBriefEnable ? 'bg-cyan-600' : 'bg-gray-300'
+                    isBriefEnable ? 'bg-th-primary-switch' : 'bg-gray-300'
                   } relative inline-flex h-6 w-11 items-center rounded-full`}
                 >
                   <span

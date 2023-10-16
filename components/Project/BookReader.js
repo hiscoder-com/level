@@ -91,7 +91,6 @@ function BookReader() {
         : [],
     [books]
   )
-  //TODO в брифе неработает ссылка
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
       <div className="static xl:sticky top-7 flex flex-col md:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
@@ -112,10 +111,10 @@ function BookReader() {
         </div>
       </div>
       <div className="w-full xl:w-2/3">
-        <div className="card flex flex-col gap-7">
+        <div className="card flex flex-col gap-7 bg-th-secondary-background">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
-            <Link href={'/projects/' + project?.code}>
-              <Left className="w-5 h-5 hover:text-gray-500" />
+            <Link href={'/projects/' + project?.code} className="p-3">
+              <Left className="w-5 h-5 stroke-th-primary-link hover:opacity-70" />
             </Link>
             <Navigation
               books={
@@ -198,7 +197,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               {isCoordinatorAccess && (
                 <div
                   className="flex gap-2
-                  text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
+                  text-th-primary-link hover:opacity-70 cursor-pointer"
                   onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
@@ -217,10 +216,10 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           )
         ) : (
           <div className="p-4 md:p-6 h-full animate-pulse">
-            <div className="mb-4 h-2.5 w-1/4 bg-gray-200 rounded-full"></div>
+            <div className="mb-4 h-2.5 w-1/4 bg-th-primary-background rounded-full"></div>
             {[...Array(22).keys()].map((el) => (
               <div key={el}>
-                <div className="h-2 mb-4 bg-gray-200 rounded-full"></div>
+                <div className="h-2 mb-4 bg-th-primary-background rounded-full"></div>
               </div>
             ))}
           </div>
@@ -257,15 +256,19 @@ function Navigation({ books, reference, setReference }) {
   return (
     <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3 z-10">
       <button
-        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
-          !prevChapter ? 'bg-gray-100 cursor-default' : 'bg-slate-200 cursor-pointer'
+        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-th-primary-background rounded-3xl ${
+          !prevChapter ? 'cursor-default' : 'bg-th-primary-background cursor-pointer'
         }
         }`}
         onClick={() =>
           prevChapter && setReference((prev) => ({ ...prev, chapter: prev.chapter - 1 }))
         }
       >
-        <Down className={`w-5 h-5 rotate-90 ${prevChapter ? '' : 'stroke-gray-400'}`} />
+        <Down
+          className={`w-5 h-5 rotate-90 ${
+            !prevChapter ? 'stroke-th-disabled-text' : 'stroke-th-primary-icons'
+          }`}
+        />
         <span className={`${prevChapter ? 'opacity-100' : 'opacity-0'}`}>
           {prevChapter}
         </span>
@@ -285,7 +288,7 @@ function Navigation({ books, reference, setReference }) {
           <div className="relative">
             <Listbox.Button>
               <div
-                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
+                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-th-primary-background ${
                   !Object.keys(selectedBook)?.length ? 'animate-pulse' : ''
                 } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
               >
@@ -300,7 +303,7 @@ function Navigation({ books, reference, setReference }) {
               </div>
             </Listbox.Button>
             <div className="flex justify-center">
-              <Listbox.Options className="absolute w-full max-h-[50vh] bg-slate-200 overflow-y-scroll rounded-b-2xl">
+              <Listbox.Options className="absolute w-full max-h-[50vh] bg-th-primary-background overflow-y-scroll rounded-b-2xl">
                 {books?.map((book) => (
                   <Listbox.Option
                     key={book?.id}
@@ -318,8 +321,8 @@ function Navigation({ books, reference, setReference }) {
                     {({ selected }) => (
                       <div
                         className={`${
-                          selected ? 'bg-slate-100' : 'bg-slate-200'
-                        } w-full px-3 py-1 hover:bg-slate-100 cursor-pointer`}
+                          selected ? 'opacity-70' : 'bg-th-primary-background'
+                        } w-full px-3 py-1 hover:opacity-70 cursor-pointer`}
                       >
                         {t('books:' + book?.code)}
                       </div>
@@ -333,8 +336,8 @@ function Navigation({ books, reference, setReference }) {
       </Listbox>
 
       <div
-        className={`w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
-          !isNextChapter ? 'cursor-default bg-gray-100' : 'cursor-pointer'
+        className={`w-2/5 sm:w-auto px-7 py-3 bg-th-primary-background rounded-3xl ${
+          !isNextChapter ? 'cursor-default' : 'cursor-pointer'
         }
         }`}
         onClick={() =>
@@ -343,7 +346,7 @@ function Navigation({ books, reference, setReference }) {
         }
       >
         <div
-          className={`flex justify-around gap-1 ${
+          className={`flex justify-around items-center gap-1 ${
             !Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'
           }`}
         >
@@ -354,7 +357,9 @@ function Navigation({ books, reference, setReference }) {
             className={`hidden sm:block ${isNextChapter ? 'opacity-100' : 'opacity-0'}`}
           >{`${t('Chapter')}`}</span>
           <Down
-            className={`w-5 h-5 -rotate-90 ${isNextChapter ? '' : 'stroke-gray-400'}`}
+            className={`w-5 h-5 -rotate-90 ${
+              isNextChapter ? 'stroke-th-primary-icons' : 'stroke-th-disabled-text'
+            }`}
           />
         </div>
       </div>
@@ -426,11 +431,11 @@ function BookListReader({ books, setReference, reference, project }) {
   }, [reference?.bookid])
   //TODO надо сделать скролл при нажатии на таб Ветхий завет или новый
   return (
-    <div className="card flex flex-col gap-7">
+    <div className="card flex flex-col gap-7 bg-th-secondary-background">
       <Tab.Group defaultIndex={defaultIndex}>
         <Tab.List
           as={'div'}
-          className={`grid grid-cols-2 gap-3 w-full font-bold border-b border-slate-900 ${
+          className={`grid grid-cols-2 gap-3 w-full font-bold border-b border-th-primary-border ${
             project?.type === 'obs' ? 'hidden' : 'flex'
           }`}
         >
@@ -466,8 +471,8 @@ function BookListReader({ books, setReference, reference, project }) {
                               { shallow: true }
                             )
                           }}
-                          className={`flex justify-between items-center py-2 w-full hover:text-gray-400 ${
-                            !open ? 'border-b border-gray-400' : ''
+                          className={`flex justify-between items-center py-2 w-full hover:opacity-70 ${
+                            !open ? 'border-b border-th-primary-border' : ''
                           }`}
                         >
                           <div className="flex items-center gap-4">
@@ -481,15 +486,15 @@ function BookListReader({ books, setReference, reference, project }) {
                           />
                         </Disclosure.Button>
                         <Disclosure.Panel>
-                          <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-gray-400">
+                          <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-th-primary-border">
                             {[...Array(Object.keys(book.chapters).length).keys()]
                               .map((el) => el + 1)
                               .map((index) => (
                                 <div
-                                  className={`flex justify-center items-center w-10 h-10 bg-slate-200 rounded-md cursor-pointer hover:bg-slate-100 ${
+                                  className={`flex justify-center items-center w-10 h-10 bg-th-primary-background rounded-md cursor-pointer hover:opacity-70 ${
                                     index === reference?.chapter
-                                      ? 'cursor-default bg-slate-100'
-                                      : 'bg-slate-200 cursor-pointer '
+                                      ? 'cursor-default bg-th-primary-background'
+                                      : 'bg-th-primary-background cursor-pointer '
                                   }`}
                                   key={index}
                                   onClick={() =>

@@ -182,12 +182,12 @@ function BriefBlock({ access, title = false }) {
                   return (
                     <li key={index} className="space-y-3 font-bold">
                       <div className="flex gap-7 center justify-between">
-                        <p className="font-bold">{briefItem.title}</p>
+                        <p>{briefItem.title}</p>
                       </div>
                       <div className={hidden ? 'hidden' : 'space-y-7'}>
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           return (
-                            <div key={blockIndex}>
+                            <div className="font-normal" key={blockIndex}>
                               <div className="space-y-3">
                                 <p>{questionAndAnswerPair.question}</p>
                                 <UpdateField
@@ -205,7 +205,7 @@ function BriefBlock({ access, title = false }) {
                         })}
                       </div>
                       <div className="space-y-7">
-                        <p className={hidden ? 'hidden' : 'text-lg font-bold mt-7'}>
+                        <p className={hidden ? 'hidden' : 'text-lg mt-7'}>
                           {t('project-edit:Summary')}
                         </p>
                         <UpdateField
@@ -213,7 +213,7 @@ function BriefBlock({ access, title = false }) {
                           updateValue={updateCollection}
                           index={index}
                           access={access}
-                          className="input-primary"
+                          className="input-primary font-normal"
                           editable={access}
                         />
                       </div>

@@ -63,7 +63,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                         {config.tools.map((tool) => (
                           <div
                             key={tool.name}
-                            className="btn-primary p-2 pointer-events-none rounded-md hover:bg-transparent"
+                            className="btn-base bg-th-primary-btn-background hover:bg-th-primary-btn-background pointer-events-none "
                           >
                             {t('common:' + tool.name)}
                           </div>
@@ -76,7 +76,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:TranslatorsCount')}
                   </span>
-                  <div className="btn-primary p-2 rounded-md pointer-events-none hover:bg-transparent hover:border-slate-600">
+                  <div className="btn-base bg-th-primary-btn-background hover:bg-th-primary-btn-background pointer-events-none">
                     {step?.count_of_users}
                   </div>
                 </div>
@@ -84,7 +84,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:ExecutionTime')}
                   </span>
-                  <div className="btn-primary p-2 rounded-md pointer-events-none hover:bg-transparent hover:border-slate-600">
+                  <div className="btn-base bg-th-primary-btn-background hover:bg-th-primary-btn-background pointer-events-none">
                     {step.time}
                   </div>
                 </div>

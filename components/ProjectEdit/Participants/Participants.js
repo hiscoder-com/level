@@ -7,10 +7,10 @@ import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 
 import Modal from 'components/Modal'
-import TranslatorsList from './TranslatorsList'
-import CoordinatorsList from './CoordinatorsList'
-import RemoveParticipant from './RemoveParticipant'
-import AssignParticipant from './AssignPartiсipant'
+import TranslatorsList from 'components/TranslatorsList'
+import CoordinatorsList from 'components/CoordinatorsList'
+import RemoveParticipant from 'components/RemoveParticipant'
+import AssignParticipant from 'components/AssignPartiсipant'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
@@ -100,7 +100,7 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
   }
   return (
     <>
-      <div className="hidden sm:block divide-y divide-black">
+      <div className="hidden sm:block divide-y divide-th-primary-text">
         <div className="flex flex-col gap-7 pb-5">
           <div className="flex justify-between items-center gap-2">
             <div>{t('projects:Coordinators')}</div>
@@ -181,7 +181,7 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
           </Modal>
         </div>
       </div>
-      <div className="block sm:hidden divide-y divide-black">
+      <div className="block sm:hidden divide-y divide-th-primary-text">
         <div className="flex flex-col gap-3 pb-5">
           <div className="flex justify-between items-center gap-2">
             <div>{t('Coordinator', { count: 0 })}</div>

@@ -18,7 +18,9 @@ function BasicInformation({
     {
       id: 1,
       title: t('Title'),
-      className: errors?.title ? 'input-invalid' : 'input-primary bg-white',
+      className: errors?.title
+        ? 'input-invalid'
+        : 'input-primary bg-th-secondary-background',
       placeholder: '',
       register: {
         ...register('title', {
@@ -30,7 +32,9 @@ function BasicInformation({
     {
       id: 2,
       title: t('OrigTitle'),
-      className: errors?.origtitle ? 'input-invalid' : 'input-primary bg-white',
+      className: errors?.origtitle
+        ? 'input-invalid'
+        : 'input-primary bg-th-secondary-background',
       placeholder: '',
       register: {
         ...register('origtitle', {
@@ -42,7 +46,9 @@ function BasicInformation({
     {
       id: 3,
       title: t('Code'),
-      className: errors?.code ? 'input-invalid' : 'input-primary bg-white',
+      className: errors?.code
+        ? 'input-invalid'
+        : 'input-primary bg-th-secondary-background',
       placeholder: '',
       register: {
         ...register('code', {
@@ -103,7 +109,7 @@ function BasicInformation({
           <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-primary bg-th-secondary-background flex items-center gap-2 truncate"
+              className="input-base text-th-primary-text border-th-primary-border bg-th-secondary-background flex items-center gap-2 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
               <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-primary-icons stroke-th-primary-icons rounded-full" />

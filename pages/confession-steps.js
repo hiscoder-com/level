@@ -5,6 +5,8 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import CheckBox from 'components/CheckBox'
+
 import useSupabaseClient from 'utils/supabaseClient'
 
 import LeftArrow from 'public/left-arrow.svg'
@@ -110,17 +112,17 @@ export default function ConfessionSteps() {
           page === 5 ? '' : 'hidden sm:flex sm:invisible'
         }`}
       >
-        <div className="space-x-1.5 items-center text-xl">
-          <input
-            id="cb"
-            type="checkbox"
-            checked={checked}
-            onChange={() => setChecked((prev) => !prev)}
-          />
-          <label htmlFor="cb" className="text-base">
-            {t('users:Agree')}
-          </label>
-        </div>
+        <CheckBox
+          onChange={() => setChecked((prev) => !prev)}
+          checked={checked}
+          className={{
+            accent:
+              'bg-th-secondary-background checked:bg-th-secondary checked:border-th-secondary checked:before:bg-th-secondary border-th-secondary',
+            cursor:
+              'fill-th-secondary-background text-th-secondary-background stroke-th-secondary-background',
+          }}
+          label={t('users:Agree')}
+        />
         <button onClick={handleClick} className="btn-secondary w-28" disabled={!checked}>
           {t('common:Next')}
         </button>

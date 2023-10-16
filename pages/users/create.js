@@ -5,10 +5,7 @@ import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { useCurrentUser } from 'lib/UserContext'
-
 function UserCreatePage() {
-  const { user } = useCurrentUser()
   const [email, setEmail] = useState('')
   const [message, setMessage] = useState('')
   const [password, setPassword] = useState('')
@@ -34,7 +31,7 @@ function UserCreatePage() {
       <p>{t('Explanation')}</p>
       <div>{t('Email')}</div>
       <input
-        className={'form'}
+        className={'input-primary'}
         type="text"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -42,7 +39,7 @@ function UserCreatePage() {
       <br />
       <div>{t('Password')}</div>
       <input
-        className={'form'}
+        className={'input-primary'}
         type="text"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -50,13 +47,13 @@ function UserCreatePage() {
       <br />
       <div>{t('Login')}</div>
       <input
-        className={'form'}
+        className={'input-primary'}
         type="text"
         value={login}
         onChange={(e) => setLogin(e.target.value)}
       />
       <br />
-      <div className="text-red-500">{message}</div>
+      <div className="text-th-secondary">{message}</div>
       <button className="btn-primary" onClick={handleSaveUser}>
         {t('common:Save')}
       </button>

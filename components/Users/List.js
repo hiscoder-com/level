@@ -8,15 +8,15 @@ function UsersList() {
   const { t } = useTranslation(['users'])
   const [users, { error, isLoading }] = useUsers()
   return (
-    <table className="table-auto bg-white">
+    <table className="table-auto bg-th-secondary-background">
       <thead>
-        <tr className="text-left bg-gray-100">
-          <th className="border-b p-2 border-slate-200">{t('Login')}</th>
-          <th className="border-b p-2 border-slate-200">{t('Email')}</th>
-          <th className="border-b p-2 border-slate-200">{t('IsAdmin')}</th>
-          <th className="border-b p-2 border-slate-200">{t('Agreement')}</th>
-          <th className="border-b p-2 border-slate-200">{t('Confession')}</th>
-          <th className="border-b p-2 border-slate-200">{t('Blocked')}</th>
+        <tr className="text-left bg-th-primary-background">
+          <th className="border-b p-2 border-th-primary-border">{t('Login')}</th>
+          <th className="border-b p-2 border-th-primary-border">{t('Email')}</th>
+          <th className="border-b p-2 border-th-primary-border">{t('IsAdmin')}</th>
+          <th className="border-b p-2 border-th-primary-border">{t('Agreement')}</th>
+          <th className="border-b p-2 border-th-primary-border">{t('Confession')}</th>
+          <th className="border-b p-2 border-th-primary-border">{t('Blocked')}</th>
         </tr>
       </thead>
       <tbody>
@@ -36,38 +36,38 @@ function UsersList() {
           users.map((user) => {
             return (
               <tr key={user.login}>
-                <td className="border-b p-2 border-slate-200">
+                <td className="border-b p-2 border-th-primary-border">
                   <Link href={'/users/' + user.id}>{user.login}</Link>
                 </td>
-                <td className="border-b p-2 border-slate-200">{user.email}</td>
+                <td className="border-b p-2 border-th-primary-border">{user.email}</td>
                 <td
                   className={
-                    'border-b p-2 border-slate-200 ' +
-                    (user.is_admin ? 'bg-green-50' : 'bg-red-50')
+                    'border-b p-2 border-th-primary-border ' +
+                    (user.is_admin ? 'bg-th-primary-switch' : 'bg-th-secondary')
                   }
                 >
                   {user.is_admin ? '+' : '-'}
                 </td>
                 <td
                   className={
-                    'border-b p-2 border-slate-200 ' +
-                    (user.agreement ? 'bg-green-50' : 'bg-red-50')
+                    'border-b p-2 border-th-primary-border ' +
+                    (user.agreement ? 'bg-th-primary-switch' : 'bg-th-secondary')
                   }
                 >
                   {user.agreement ? '+' : '-'}
                 </td>
                 <td
                   className={
-                    'border-b p-2 border-slate-200 ' +
-                    (user.confession ? 'bg-green-50' : 'bg-red-50')
+                    'border-b p-2 border-th-primary-border ' +
+                    (user.confession ? 'bg-th-primary-switch' : 'bg-th-secondary')
                   }
                 >
                   {user.confession ? '+' : '-'}
                 </td>
                 <td
                   className={
-                    'border-b p-2 border-slate-200 ' +
-                    (user.blocked ? 'bg-green-50' : 'bg-red-50')
+                    'border-b p-2 border-th-primary-border ' +
+                    (user.blocked ? 'bg-th-primary-switch' : 'bg-th-secondary')
                   }
                 >
                   {user.blocked ? '+' : '-'}

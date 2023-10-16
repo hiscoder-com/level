@@ -87,9 +87,8 @@ function PasswordRecovery() {
                 <p>{t('WriteNewPassword')}</p>
                 <div className="relative z-0 w-full">
                   <input
-                    name="floating_password"
-                    id="floating_password"
-                    className={`input-primary ${error ? '!border-red-500' : ''}`}
+                    name="floating_password_new"
+                    className={error ? 'input-invalid' : 'input-primary'}
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => {
@@ -100,7 +99,7 @@ function PasswordRecovery() {
                   />
 
                   <span
-                    className="eye"
+                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-primary-icons"
                     onClick={() => {
                       setShowPassword((prev) => !prev)
                     }}
@@ -111,9 +110,8 @@ function PasswordRecovery() {
                 <p>{t('RepeatNewPassword')}</p>
                 <div className="relative z-0 w-full">
                   <input
-                    name="floating_password"
-                    id="floating_password"
-                    className={`input-primary ${error ? '!border-red-500' : ''}`}
+                    name="floating_password_repeat"
+                    className={error ? 'input-invalid' : 'input-primary'}
                     type={showRepeatPassword ? 'text' : 'password'}
                     value={repeatPassword}
                     onChange={(e) => {
@@ -124,7 +122,7 @@ function PasswordRecovery() {
                   />
 
                   <span
-                    className="eye"
+                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-primary-icons"
                     onClick={() => setShowRepeatPassword((prev) => !prev)}
                   >
                     {showRepeatPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -149,7 +147,7 @@ function PasswordRecovery() {
               <div>{successResult}</div>
               <Link
                 href={'/'}
-                className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400"
+                className="mb-6 lg:mb-14 text-th-primary-link hover:opacity-70"
               >
                 {t('GoToLogin')}
               </Link>

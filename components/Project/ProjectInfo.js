@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import Card from './Card'
+import Card from 'components/Card'
 
 function ProjectInfo({ project, access }) {
   const { t } = useTranslation(['projects', 'common'])
@@ -21,13 +21,13 @@ function ProjectInfo({ project, access }) {
           {info.map((infoItem) => (
             <div
               key={infoItem.label}
-              className="flex gap-2 text-sm lg:text-lg text-slate-900"
+              className="flex gap-2 text-sm lg:text-lg text-th-primary-text"
             >
               <p className="w-1/2">
                 {t(infoItem.label)}
                 {':'}
               </p>
-              <p className="w-1/2 text-gray-400">{t(infoItem.value)}</p>
+              <p className="w-1/2 text-th-primary">{t(infoItem.value)}</p>
             </div>
           ))}
         </div>

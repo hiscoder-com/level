@@ -13,9 +13,9 @@ import { Tab } from '@headlessui/react'
 import Property from './Property'
 import ButtonLoading from 'components/ButtonLoading'
 import Breadcrumbs from 'components/Breadcrumbs'
+import CheckBox from 'components/CheckBox'
 
 import Reader from 'public/dictionary.svg'
-import CheckboxShevron from 'public/checkbox-shevron.svg'
 
 function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { query } = useRouter()
@@ -80,7 +80,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   }
 
   return (
-    <div className="flex flex-col gap-7 w-full">
+    <div className="flex flex-col w-full">
       <Breadcrumbs
         links={[
           { title: project?.title, href: '/projects/' + project?.code },
@@ -89,17 +89,18 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         full
       />
       <Tab.Group defaultIndex={query?.levels ? 1 : 0}>
-        <Tab.List className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 mt-2 font-bold text-center border-b border-slate-600">
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
+        <Tab.List className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 mt-9 px-5 font-bold text-center">
+          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab-inactive')}>
             {t('Properties')}
           </Tab>
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
+          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab-inactive')}>
             {t('LevelTranslationChecks')}
           </Tab>
         </Tab.List>
         <Tab.Panels>
+          <div className="bg-th-primary h-10 rounded-t-3xl px-10"></div>
           <Tab.Panel>
-            <div className="card flex flex-col py-7">
+            <div className="px-10 border border-th-secondary-border rounded-b-2xl bg-th-secondary-background flex flex-col py-7">
               <div className="flex flex-col gap-4">
                 {renderProperties}
                 <ButtonLoading onClick={handleSaveProperties} isLoading={isSaving}>
@@ -127,9 +128,9 @@ export default BookProperties
 
 function LevelChecks({ t, book, user, project, mutateBooks }) {
   const levelColor = [
-    'checked:bg-emerald-500 checked:border-emerald-500 checked:before:bg-emerald-500',
-    'checked:bg-teal-500 checked:border-teal-500 checked:before:bg-teal-500',
-    'checked:bg-cyan-700 checked:border-cyan-700 checked:before:bg-cyan-700',
+    'checked:bg-th-first-check checked:border-th-first-check checked:before:bg-th-first-check',
+    'checked:bg-th-second-check checked:border-th-second-check checked:before:bg-th-second-check',
+    'checked:bg-th-third-check checked:border-th-third-check checked:before:bg-th-third-check',
   ]
   const [translationLink, setTranslationLink] = useState()
   const [isSaving, setIsSaving] = useState(false)
@@ -165,7 +166,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
     }
   }, [book])
   return (
-    <div className="card flex flex-col gap-4 py-7">
+    <div className="px-10 border border-th-secondary-border rounded-b-2xl bg-th-secondary-background flex flex-col gap-4 py-7">
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-4">
           <div className="font-bold">{t('TranslationLink')}</div>
@@ -179,7 +180,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           />
           {book?.level_checks && (
             <div
-              className="flex gap-4 cursor-pointer hover:text-teal-500"
+              className="flex gap-4 cursor-pointer text-th-primary-link hover:opacity-70"
               onClick={() =>
                 push({
                   pathname: `/projects/${project?.code}/books/read`,
@@ -202,27 +203,19 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
               {[...Array(3).keys()]
                 .map((i) => i + 1)
                 .map((el, index) => (
-                  <div className="inline-flex items-center" key={el}>
-                    <label
-                      className="relative flex cursor-pointer items-center rounded-full p-3"
-                      htmlFor={el}
-                      data-ripple-dark="true"
-                    >
-                      <input
-                        id={el}
-                        type="checkbox"
-                        className={`w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-slate-600 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:bg-cyan-500 before:opacity-0 before:transition-opacity hover:before:opacity-10 ${levelColor[index]}`}
-                        checked={translationLink?.level === el || false}
-                        onChange={() =>
-                          setTranslationLink((prev) => ({ ...prev, level: el }))
-                        }
-                      />
-                      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
-                        <CheckboxShevron />
-                      </div>
-                    </label>
-                    <label htmlFor={el}>{el}</label>
-                  </div>
+                  <CheckBox
+                    key={el}
+                    onChange={() =>
+                      setTranslationLink((prev) => ({ ...prev, level: el }))
+                    }
+                    checked={translationLink?.level === el || false}
+                    className={{
+                      accent: levelColor[index],
+                      cursor:
+                        'fill-th-secondary-background stroke-th-secondary-background text-th-secondary-background',
+                    }}
+                    label={el}
+                  />
                 ))}
             </div>
           </div>

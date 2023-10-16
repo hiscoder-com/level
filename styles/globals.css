@@ -2,43 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-	html {
-		font-family: "Roboto", system-ui, sans-serif;
-	}
-
-	body {
-		@apply text-th-primary-text
-	} 
-
-	body.no-scrollbar {
-		scrollbar-width: none !important;
-	}
-
-	body.no-scrollbar::-webkit-scrollbar {
-		display: none !important;
-	}
-	
-	* {
-		scrollbar-width: thin;
-		scrollbar-color: #4D4D4D #DBDBDB;
-	}
-
-	*::-webkit-scrollbar {
-		width: 7px;
-	}
-
-	*::-webkit-scrollbar-track {
-		background: #DBDBDB;
-		border-radius: 10px;
-	}
-
-	*::-webkit-scrollbar-thumb {
-		background-color: #4D4D4D;
-		border-radius: 10px
-	}
-}
-
 :root {
   --primary: theme('colors.slate.550');
   --secondary: theme('colors.yellow.600');
@@ -69,9 +32,58 @@
 	--quaternary-btn-hover: theme('colors.teal.200');
 	--active-tab-from:	theme('colors.slate.550');
 	--active-tab-to:	theme('colors.slate.570');
-	--primary-blur-background:	theme('colors.zinc.500');
+	--primary-blur-background: theme('colors.zinc.500');
+	--primary-scroll: theme('colors.neutral.600');
+	--first-check: theme('colors.slate.550');
+	--second-check: theme('colors.slate.580');
+	--third-check: theme('colors.cyan.950');
+	--hover-chapter-from: theme('colors.teal.650');
+	--hover-chapter-to: theme('colors.slate.540');
+	--primary-switch: theme('colors.slate.540');
+	--invalid: theme('colors.red.500');
+	--input: theme('colors.gray.400');
+	--input-focus: theme('colors.slate.500')
 
 }
+
+@layer base {
+	html {
+		font-family: "Roboto", system-ui, sans-serif;
+	}
+
+	body {
+		@apply text-th-primary-text
+	} 
+
+	body.no-scrollbar {
+		scrollbar-width: none !important;
+	}
+
+	body.no-scrollbar::-webkit-scrollbar {
+		display: none !important;
+	}
+	
+	* {
+		scrollbar-width: thin;
+		scrollbar-color: var(--primary-scroll) var(--primary-background);
+	}
+
+	*::-webkit-scrollbar {
+		width: 7px;
+	}
+
+	*::-webkit-scrollbar-track {
+		background: var(--primary-background);
+		border-radius: 10px;
+	}
+
+	*::-webkit-scrollbar-thumb {
+		background-color: var(--primary-scroll);
+		border-radius: 10px
+	}
+}
+
+
 
 [data-theme='dark'] {
   
@@ -93,13 +105,8 @@
 	min-height: calc(100vh - 11.5rem);
 }
 
-.input-base {
-	@apply w-full text-sm rounded-md py-2 pl-2 border
-	focus:outline-none;
-}
-
 .input {
-	@apply input-base text-gray-600 placeholder-gray-400 border-gray-200 bg-gray-100
+	@apply input-base text-th-primary-text placeholder-th-disabled-text border-gray-200 bg-gray-100
  focus:border-gray-300;
 }
 
@@ -193,22 +200,28 @@
 }
 
 .first-check path:nth-child(1) {
-	@apply fill-emerald-500
+	@apply fill-th-first-check
 }
 
 .second-check path:nth-child(2) {
-	@apply fill-teal-500
+	@apply fill-th-second-check
 }
 
 .third-check path:nth-child(3) {
-	@apply fill-cyan-700
+	@apply fill-th-third-check
+}
+
+.input-base {
+	@apply px-4 py-2 w-full text-sm rounded-lg border
+ focus:outline-none;
 }
 
 .input-primary {
-	@apply px-4 py-2 w-full rounded-lg text-slate-900 border border-slate-900 placeholder-cyan-200 focus:border-slate-900 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300
+	@apply input-base text-th-input border-th-input focus:border-th-input-focus placeholder:text-th-primary-background
 }
 
 .input-invalid {
-	@apply p-2 w-full rounded-lg bg-white text-red-600 border border-red-500 placeholder-cyan-200 focus:border-red-700 focus:outline-none disabled:border-gray-300 placeholder-shown:border-cyan-300 disabled:placeholder-gray-300;
+	@apply input-base border-th-invalid text-th-input;
 }
 
+/*(className.*input-primary)|(input-primary.*className)*/

@@ -11,12 +11,12 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
   const { t } = useTranslation('common')
 
   return (
-    <div className="card flex flex-col gap-3 sm:gap-7 !pb-4">
+    <div className="card flex flex-col gap-3 sm:gap-7 bg-th-secondary-background !pb-4">
       <div className="flex justify-between items-start gap-7">
         <h3 className="text-lg sm:text-xl font-bold truncate">{title}</h3>
         {access && (
           <Link href={link} className="w-6 min-w-[1.5rem]">
-            <Gear />
+            <Gear className="stroke-th-primary-icons" />
           </Link>
         )}
       </div>
@@ -25,10 +25,12 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
           <>
             <Disclosure.Panel>{children}</Disclosure.Panel>
             <Disclosure.Button>
-              <div className="flex gap-1 justify-center w-full pt-3 border-t border-gray-350 text-gray-350">
+              <div className="flex gap-1 justify-center w-full pt-3 border-t border-th-primary-hover-background text-th-primary-hover-background">
                 <span>{t(open ? 'Hide' : 'Open')}</span>
                 <Down
-                  className={`w-6 max-w-[1.5rem] ${open ? 'rotate-180 transform' : ''}`}
+                  className={`w-6 max-w-[1.5rem] stroke-th-primary-hover-background ${
+                    open ? 'rotate-180 transform' : ''
+                  }`}
                 />
               </div>
             </Disclosure.Button>

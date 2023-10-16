@@ -121,7 +121,7 @@ function BriefEditQuestions({
                         index={index}
                         updateValue={updateTitleBlock}
                         fieldName={'title'}
-                        className={'input-primary bg-th-secondary-background'}
+                        className="input-primary bg-th-secondary-background"
                       />
                     </div>
                     <div className="font-bold">{t('common:Questions')}</div>
@@ -134,7 +134,7 @@ function BriefEditQuestions({
                             subIndex={idx}
                             updateValue={updateQuestion}
                             fieldName={'question'}
-                            className={'input-primary bg-th-secondary-background'}
+                            className="input-primary bg-th-secondary-background"
                           />
                           <button
                             type="button"

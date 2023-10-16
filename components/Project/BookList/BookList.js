@@ -6,8 +6,8 @@ import { Tab } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
 
-import Testament from './Testament'
-import BookProperties from './BookProperties/BookProperties'
+import Testament from 'components/Testament'
+import BookProperties from 'components/BookProperties/BookProperties'
 
 import { useGetBooks } from 'utils/hooks'
 
@@ -45,7 +45,7 @@ function BookList({ user, project, access }) {
             project &&
             (!propertiesBook ? (
               <>
-                <Tab.List className="flex p-1 w-full bg-white rounded-3xl shadow">
+                <Tab.List className="flex p-1 w-full bg-th-secondary-background rounded-3xl shadow">
                   {testaments[project?.type]?.map((testament) => (
                     <Tab
                       as={Fragment}
@@ -56,9 +56,9 @@ function BookList({ user, project, access }) {
                         <div
                           className={`w-full rounded-3xl p-2 text-center cursor-pointer ${
                             project?.type === 'obs'
-                              ? 'bg-white cursor-default'
+                              ? 'bg-th-secondary-background cursor-default'
                               : selected
-                              ? 'bg-slate-600 text-white'
+                              ? 'bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to text-th-secondary-text'
                               : ''
                           }
                       `}
@@ -69,7 +69,7 @@ function BookList({ user, project, access }) {
                     </Tab>
                   ))}
                 </Tab.List>
-                <Tab.Panels className="card">
+                <Tab.Panels className="card bg-th-secondary-background">
                   {testaments?.[project?.type]?.map((testament) => (
                     <Tab.Panel
                       key={testament.title}
@@ -102,7 +102,7 @@ function BookList({ user, project, access }) {
       </div>
       <div
         className={`hidden sm:flex sm:flex-row gap-7 h-full ${
-          !currentBook && propertiesBook ? '' : 'card'
+          !currentBook && propertiesBook ? '' : 'card bg-th-secondary-background'
         }`}
       >
         {user &&

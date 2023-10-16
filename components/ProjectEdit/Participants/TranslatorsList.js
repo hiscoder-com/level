@@ -43,18 +43,18 @@ function TranslatorsList({
                   checked={el.is_moderator}
                   onChange={() => setSelectedModerator(el.users)}
                   className={`${
-                    el.is_moderator ? 'bg-cyan-600' : 'bg-gray-200'
+                    el.is_moderator ? 'bg-th-primary-switch' : 'bg-th-primary-background'
                   } relative inline-flex h-7 w-12 items-center rounded-full`}
                 >
                   <span
                     className={`${
                       el.is_moderator ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                    } inline-block h-5 w-5 transform rounded-full bg-th-secondary-background transition`}
                   />
                 </Switch>
               )}
               {!access && el.is_moderator && (
-                <span className="h-5 w-5 rounded-full bg-cyan-600" />
+                <span className="h-5 w-5 rounded-full bg-th-primary-switch" />
               )}
             </div>
             <div className="flex justify-end w-auto sm:w-1/3 md:w-1/6">
@@ -95,7 +95,9 @@ function TranslatorsList({
                             checked={el.is_moderator}
                             onChange={() => setSelectedModerator(el.users)}
                             className={`relative inline-flex items-center h-6 w-12 rounded-full ${
-                              el.is_moderator ? 'bg-cyan-600' : 'bg-gray-200'
+                              el.is_moderator
+                                ? 'bg-th-primary-switch'
+                                : 'bg-th-primary-background'
                             }`}
                           >
                             <span
@@ -113,6 +115,7 @@ function TranslatorsList({
                       >
                         {t('Remove')}
                       </Menu.Item>
+                      {/*TODO разобраться с красными кнопками*/}
                     </Menu.Items>
                   </Transition>
                 </>

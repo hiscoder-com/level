@@ -30,8 +30,18 @@ module.exports = {
         'th-primary-blur-background': 'var(--primary-blur-background)',
         'th-tertiary-btn-background': 'var(--tertiary-btn-background)',
         'th-tertiary-btn-hover': 'var(--tertiary-btn-hover)',
-        'th-quaternary-btn-background': 'var(--tertiary-btn-background)',
-        'th-quaternary-btn-hover': 'var(--tertiary-btn-hover)',
+        'th-quaternary-btn-background': 'var(--quaternary-btn-background)',
+        'th-quaternary-btn-hover': 'var(--quaternary-btn-hover)',
+        'th-primary-scroll': 'var(--primary-scroll)',
+        'th-first-check': 'var(--first-check)',
+        'th-second-check': 'var(--second-check)',
+        'th-third-check': 'var(--third-check)',
+        'th-hover-chapter-from': 'var(--hover-chapter-from)',
+        'th-hover-chapter-to': 'var(--hover-chapter-to)',
+        'th-primary-switch': 'var(--primary-switch)',
+        'th-invalid': 'var(--invalid)',
+        'th-input': 'var(--input)',
+        'th-input-focus': 'var(--input-focus)',
 
         gray: {
           150: '#EDEDED',
@@ -41,8 +51,18 @@ module.exports = {
         },
         teal: {
           350: '#bdcccd',
+          650: '#247176',
         },
-        slate: { 550: '#3C6E71', 560: '#1E5053', 570: '#275356' },
+        cyan: {
+          950: '#23585B',
+        },
+        slate: {
+          540: '#519498',
+          550: '#3C6E71',
+          560: '#1E5053',
+          570: '#275356',
+          580: '#609295',
+        },
         blue: {
           150: '#DCE4E9',
           250: '#B7C9E5',

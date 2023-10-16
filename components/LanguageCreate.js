@@ -6,8 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import Modal from './Modal'
 import ButtonLoading from './ButtonLoading'
-
-import CheckboxShevron from 'public/checkbox-shevron.svg'
+import CheckBox from './CheckBox'
 
 function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -100,24 +99,16 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
               <div className="text-red-600">{el.errorMessage}</div>
             </div>
           ))}
-          <div className="flex items-center">
-            <label htmlFor={'isGl'}>{t('project-edit:GatewayLanguage')}</label>
-            <label
-              className="relative flex justify-center items-center p-3 cursor-pointer rounded-full"
-              htmlFor="isGl"
-              data-ripple-dark="true"
-            >
-              <input
-                id="isGl"
-                type="checkbox"
-                className="w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-th-secondary bg-th-secondary-background checked:bg-th-secondary transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
-                {...register('isGl', {})}
-              />
-              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 transition-opacity peer-checked:opacity-100 stroke-th-secondary-background fill-th-secondary-background">
-                <CheckboxShevron />
-              </div>
-            </label>
-          </div>
+          <CheckBox
+            className={{
+              accent:
+                'bg-th-second-check checked:bg-th-secondary-background checked:border-th-primary checked:before:bg-th-secondary-background border-th-primary-border',
+              cursor: 'fill-th-primary-text text-th-primary-text stroke-th-primary-text',
+              wrapper: 'flex-row-reverse justify-between',
+            }}
+            label={t('project-edit:GatewayLanguage')}
+            {...register('isGl', {})}
+          />
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
               <ButtonLoading className="relative btn-secondary" isLoading={isSaving}>
