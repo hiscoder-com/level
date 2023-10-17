@@ -12,9 +12,13 @@ function Info({ config, url }) {
         <Placeholder />
       ) : (
         <div>
-          <MarkdownExtended>{intro?.bookIntro}</MarkdownExtended>
+          <MarkdownExtended className="markdown-body">
+            {intro?.bookIntro}
+          </MarkdownExtended>
           <hr className="my-10" />
-          <MarkdownExtended>{intro?.chapterIntro}</MarkdownExtended>
+          <MarkdownExtended className="markdown-body">
+            {intro?.chapterIntro}
+          </MarkdownExtended>
         </div>
       )}
     </>
