@@ -6,11 +6,7 @@ CREATE FUNCTION PUBLIC.save_verses_if_null(verses JSON) RETURNS BOOLEAN
     new_verses RECORD;
     current_verse RECORD;
     BEGIN 
-      SELECT * FROM public.verses WHERE verses.id = verse_id INTO current_verse;
-      IF current_verse.project_translator_id IS NULL THEN
-        RETURN FALSE;
-      END IF;
-
+      
       IF authorize(auth.uid(), current_verse.project_id) IN ('user') THEN RETURN FALSE;
       END IF;
           

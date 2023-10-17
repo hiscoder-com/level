@@ -9,6 +9,12 @@ import { useCurrentUser } from 'lib/UserContext'
 import { useGetChapter, useProject } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
+// getFromResource - если true  - то все стихи копируются из главного ресурса в эдитор
+
+// moderatorOnly
+//              - TRUE видно все стихи, только модератор может вносить исправления
+//              - FALSE видно все стихи, исправлять можно только свои
+
 function CommandEditor({ config }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()

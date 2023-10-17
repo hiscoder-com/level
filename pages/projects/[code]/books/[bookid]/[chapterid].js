@@ -150,7 +150,7 @@ function ChapterVersesPage() {
     if (!currentTranslator && translators && assignedTranslators) {
       setCurrentTranslator(
         translators.filter(
-          (translator) => !assignedTranslators.includes(translator.id)
+          (translator) => !assignedTranslators?.includes(translator.id)
         )[0]
       )
     }
@@ -274,6 +274,7 @@ function ChapterVersesPage() {
                     }))
                   )
                 }}
+                disabled={_translators?.length <= assignedTranslators?.length}
               >
                 {t('chapters:SelectAllVerses')}
               </button>
@@ -382,7 +383,11 @@ function ChapterVersesPage() {
                             setCurrentTranslator(translator)
                           }
                         }}
-                        className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
+                        className={`flex flex-row w-full items-center p-2 ${
+                          assignedTranslators?.includes(translator.id)
+                            ? 'bg-gray-300'
+                            : ''
+                        } font-semibold text-xl ${
                           currentTranslator?.users?.login === translator.users.login
                             ? `${translator.color.bg} text-white shadow-md`
                             : `${translator.color.text} text-slate-900`
@@ -400,7 +405,7 @@ function ChapterVersesPage() {
                           {translator.users.email}
                         </div>
                         <div className="icon-block flex gap-2 flex-grow-0 items-center">
-                          <span className="text-sm">{t('ReadingMode')}</span>
+                          <span className="text-sm">{t('chapters:ReadingMode')}</span>
                           <Switch
                             checked={assignedTranslators?.includes(translator.id)}
                             onClick={(e) => e.stopPropagation()}
@@ -426,7 +431,11 @@ function ChapterVersesPage() {
                                 assignedTranslators?.includes(translator.id)
                                   ? 'translate-x-6'
                                   : 'translate-x-1'
-                              } inline-block h-4 w-4 transform rounded-full bg-black transition`}
+                              } inline-block h-4 w-4 transform rounded-full ${
+                                assignedVerseTranslators?.includes(translator.id)
+                                  ? 'bg-gray-500'
+                                  : 'bg-black'
+                              } transition`}
                             />
                           </Switch>
                         </div>
@@ -463,7 +472,7 @@ function ChapterVersesPage() {
                       }))
                     )
                     setAssignedTranslators([])
-                    if (assignedTranslators.length) {
+                    if (assignedTranslators?.length) {
                       chapterAsigning([])
                     }
                   }}

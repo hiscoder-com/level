@@ -82,9 +82,6 @@ function Workspace({ stepConfig, reference, editable = false }) {
               resources={stepConfig.resources}
               reference={reference}
               mainResource={stepConfig.resources[stepConfig.base_manifest]}
-              targetResourceLink={`${
-                stepConfig.resources[stepConfig.base_manifest].owner
-              }/${stepConfig.resources[stepConfig.base_manifest].repo}`}
               tnLink={tnLink}
               wholeChapter={stepConfig.whole_chapter}
               editable={editable}
@@ -107,7 +104,6 @@ function Panel({
   resources,
   reference,
   mainResource,
-  targetResourceLink,
   tnLink,
   wholeChapter,
   editable = false,
@@ -153,7 +149,6 @@ function Panel({
               <div className="flex flex-col bg-white rounded-lg h-full">
                 <Tool
                   editable={editable}
-                  targetResourceLink={targetResourceLink}
                   tnLink={tnLink}
                   config={{
                     reference,

@@ -90,6 +90,7 @@ function BlindEditor({ config }) {
     if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
       const focusIndex = textAreaRef?.current?.[index - 1] ? index - 1 : index
       textAreaRef?.current?.[focusIndex]?.focus()
+      return
     }
 
     setEnabledIcons((prev) => {

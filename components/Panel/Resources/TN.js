@@ -23,7 +23,9 @@ function TN({ config, url, toolName }) {
       link:
         (process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org') +
         '/' +
-        config.targetResourceLink,
+        config.mainResource.owner +
+        '/' +
+        config.mainResource.repo,
     },
   })
   useEffect(() => {

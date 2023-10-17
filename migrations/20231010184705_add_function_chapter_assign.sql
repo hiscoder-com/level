@@ -10,12 +10,10 @@
       IF authorize(auth.uid(), chapter_assign.project_id) NOT IN ('admin', 'coordinator') THEN
         RETURN FALSE;
       END IF; 
-      FOR i IN 201..220 LOOP
         UPDATE PUBLIC.verses 
-        SET project_translator_id = NULL WHERE verses.chapter_id = chapter AND verses.num = i;
-      END LOOP; 
-      num_verse = 201;
+        SET project_translator_id = NULL WHERE verses.chapter_id = chapter AND verses.num >200;
 
+      num_verse = 201;
       FOREACH x IN ARRAY translators LOOP
         UPDATE PUBLIC.verses 
         SET project_translator_id = x WHERE chapter_id = chapter AND num = num_verse;
