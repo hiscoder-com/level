@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -31,6 +31,13 @@ const ListOfNotes = dynamic(
   }
 )
 
+const TreeView = dynamic(
+  () => import('@texttree/notepad-rcl').then((mod) => mod.TreeView),
+  {
+    ssr: false,
+  }
+)
+
 function PersonalNotes() {
   const [noteId, setNoteId] = useState('')
   const [activeNote, setActiveNote] = useState(null)
@@ -41,6 +48,7 @@ function PersonalNotes() {
   const [notes, { mutate }] = usePersonalNotes({
     sort: 'changed_at',
   })
+  const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
 
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
@@ -58,16 +66,23 @@ function PersonalNotes() {
         console.log(err)
       })
   }
-  useEffect(() => {
-    const currentNote = notes?.find((el) => el.id === noteId)
-    setActiveNote(currentNote)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [noteId])
 
-  const addNote = () => {
+  const onDoubleClick = (nodeProps) => {
+    const currentNote = notes.find((el) => el.id === noteId)
+    setActiveNote(currentNote)
+  }
+
+  const addNode = (isFolder) => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    const title = isFolder ? 'new folder' : 'new note'
+    const isFolderValue = isFolder ? true : false
     axios
-      .post('/api/personal_notes', { id, user_id: user.id })
+      .post('/api/personal_notes', {
+        id,
+        user_id: user.id,
+        isFolderValue,
+        title,
+      })
       .then(() => mutate())
       .catch(console.log)
   }
@@ -81,6 +96,7 @@ function PersonalNotes() {
       })
       .catch(console.log)
   }
+
   useEffect(() => {
     if (!activeNote) {
       return
@@ -93,6 +109,7 @@ function PersonalNotes() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNote])
+
   const removeAllNote = () => {
     axios
       .delete(`/api/personal_notes`, { data: { user_id: user?.id } })
@@ -102,6 +119,24 @@ function PersonalNotes() {
       })
       .catch(console.log)
   }
+
+  function convertNotesToTree(notes, parentId = null) {
+    const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
+
+    filteredNotes?.sort((a, b) => a.sorting - b.sorting)
+    return filteredNotes?.map((note) => ({
+      id: note.id,
+      name: note.title,
+      ...(note.is_folder && {
+        children: convertNotesToTree(notes, note.id),
+      }),
+    }))
+  }
+
+  useEffect(() => {
+    setDataForTreeView(convertNotesToTree(notes))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notes])
 
   return (
     <div className="relative">
@@ -122,21 +157,22 @@ function PersonalNotes() {
               {t('RemoveAll')}
             </button>
           </div>
-          <ListOfNotes
-            notes={notes}
-            removeNote={(e) => {
-              setIsOpenModal(true)
-              setNoteToDel(notes?.find((el) => el.id === e))
-            }}
-            setNoteId={setNoteId}
+          <TreeView
+            data={dataForTreeView}
+            setSelectedNodeId={setNoteId}
+            nodeHeight={57}
+            onDoubleClick={onDoubleClick}
             classes={{
-              item: 'flex justify-between items-start group my-3 bg-cyan-50 rounded-lg cursor-pointer shadow-md',
-              title: 'p-2 mr-4 font-bold',
-              text: 'px-2 h-10 overflow-hidden',
-              delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
+              nodeWrapper:
+                'flex px-5 leading-[47px] cursor-pointer rounded-lg bg-gray-100 hover:bg-gray-200',
+              nodeTextBlock: 'items-center',
             }}
-            isShowDelBtn
-            delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
+            treeHeight={450}
+            fileIcon={fileIcon}
+            arrowDown={arrowDown}
+            arrowRight={arrowRight}
+            closeFolderIcon={closeFolderIcon}
+            openFolderIcon={openFolderIcon}
           />
         </div>
       ) : (

@@ -1,0 +1,13 @@
+ALTER TABLE personal_notes
+ADD COLUMN sorting INT;
+
+WITH numbered_notes AS (
+  SELECT
+    id,
+    ROW_NUMBER() OVER (ORDER BY id) - 1 AS sorting
+  FROM personal_notes
+)
+UPDATE personal_notes
+SET sorting = numbered_notes.sorting
+FROM numbered_notes
+WHERE personal_notes.id = numbered_notes.id;

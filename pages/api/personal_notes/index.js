@@ -24,7 +24,7 @@ export default async function notesHandler(req, res) {
       }
     case 'POST':
       try {
-        const { id, user_id } = body
+        const { id, user_id, isFolderValue, title } = body
         // TODO валидацию
         const { data, error } = await supabase
           .from('personal_notes')
@@ -32,11 +32,12 @@ export default async function notesHandler(req, res) {
             {
               id,
               user_id,
-              title: 'new note',
+              title,
               data: {
                 blocks: [],
                 version: '2.8.1',
               },
+              is_folder: isFolderValue,
             },
           ])
           .select()

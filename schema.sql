@@ -1426,7 +1426,8 @@ $$;
       changed_at TIMESTAMP DEFAULT NOW(),
       deleted_at TIMESTAMP DEFAULT NULL,
       is_folder BOOLEAN DEFAULT FALSE,
-      parent_id TEXT DEFAULT NULL
+      parent_id TEXT DEFAULT NULL,
+      sorting INT DEFAULT NULL
     );
     ALTER TABLE
       PUBLIC.personal_notes enable ROW LEVEL SECURITY;
