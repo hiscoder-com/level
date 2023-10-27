@@ -12,13 +12,21 @@ import ChecksIcon from './BookList/ChecksIcon'
 import Breadcrumbs from 'components/Breadcrumbs'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useAccess, useGetBooks, useGetResource, useProject } from 'utils/hooks'
+import {
+  useAccess,
+  useGetBooks,
+  useGetBooksIsNullCheckLevel,
+  useGetResource,
+  useProject,
+} from 'utils/hooks'
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
 import Gear from '/public/gear.svg'
 
+// Главный компонент
 function BookReader() {
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
@@ -29,6 +37,32 @@ function BookReader() {
     code,
   })
   const [project] = useProject({ code })
+
+  const [booksLevel] = useGetBooksIsNullCheckLevel({
+    code,
+  })
+  console.log(booksLevel, 38)
+  // const supabase = useSupabaseClient()
+
+  // useEffect(() => {
+  //   const isCheckLevel = async () => {
+  //     try {
+  //       const { data, error } = await supabase.rpc('check_level_checks', {
+  //         code_val: bookid,
+  //       })
+
+  //       if (error) console.error(error)
+  //       else console.log(data)
+  //       if (error) {
+  //         console.log(46)
+  //         throw error
+  //       }
+  //     } catch (error) {
+  //       return error
+  //     }
+  //   }
+  //   isCheckLevel()
+  // }, [supabase])
 
   const resource = useMemo(() => {
     if (reference?.checks) {
@@ -140,7 +174,7 @@ function BookReader() {
 }
 
 export default BookReader
-
+// Отображение книги и ее глав
 function Verses({ verseObjects, user, reference, isLoading }) {
   const {
     push,
