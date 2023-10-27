@@ -1,13 +1,48 @@
-ALTER TABLE personal_notes
-ADD COLUMN sorting INT;
+-- We add a sorting column and assign sorting values to the records in the table.
+  ALTER TABLE personal_notes
+  ADD COLUMN sorting INT;
 
-WITH numbered_notes AS (
-  SELECT
-    id,
-    ROW_NUMBER() OVER (ORDER BY id) - 1 AS sorting
-  FROM personal_notes
-)
-UPDATE personal_notes
-SET sorting = numbered_notes.sorting
-FROM numbered_notes
-WHERE personal_notes.id = numbered_notes.id;
+  WITH numbered_notes AS (
+    SELECT
+      id,
+      ROW_NUMBER() OVER (ORDER BY id) - 1 AS sorting
+    FROM personal_notes
+  )
+  UPDATE personal_notes
+  SET sorting = numbered_notes.sorting
+  FROM numbered_notes
+  WHERE personal_notes.id = numbered_notes.id;
+
+DROP TRIGGER IF EXISTS before_insert_set_sorting ON PUBLIC.personal_notes;
+
+DROP FUNCTION IF EXISTS PUBLIC.set_sorting_before_insert;
+DROP FUNCTION IF EXISTS PUBLIC.get_max_sorting;
+
+-- This function calculates the next available sorting value for root records in the personal_notes table
+  CREATE FUNCTION PUBLIC.get_max_sorting() RETURNS integer
+      LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+    max_sorting_value integer;
+  BEGIN
+    SELECT COALESCE(MAX(sorting), -1) INTO max_sorting_value
+    FROM personal_notes
+    WHERE parent_id IS NULL;
+
+    RETURN max_sorting_value + 1;
+  END;
+  $$;
+
+-- This function sets the sort value for a new entry in the personal_notes table
+  CREATE FUNCTION PUBLIC.set_sorting_before_insert() RETURNS TRIGGER
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    BEGIN
+      NEW.sorting := get_max_sorting();
+      RETURN NEW;
+    END;
+  $$;
+
+-- This trigger automatically sets the sorting when a new record is inserted.
+  CREATE TRIGGER before_insert_set_sorting BEFORE
+    INSERT
+      ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.set_sorting_before_insert();
+
