@@ -320,6 +320,19 @@ export function useGetBooks({ code }) {
   return [books, { mutate, error, isLoading }]
 }
 
+export function useGetBooksIsNullCheckLevel({ code }) {
+  const {
+    data: books,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(code ? [`/api/projects/${code}/books/level_checks`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [books, { mutate, error, isLoading }]
+}
+
 /**
  *hook returns information about specific book of specific project from table 'books'
  * @param {string} code code of project
