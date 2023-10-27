@@ -163,7 +163,7 @@
 
 -- getting all books with poems that are started and non-zero translation texts
     CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses(project_code text) 
-    RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_text text) AS $$
+    RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
       BEGIN
     RETURN QUERY
       SELECT
