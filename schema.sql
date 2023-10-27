@@ -143,6 +143,56 @@
       END;
     $$;
 
+  -- -- checking for the presence of the started verification levels
+  --   CREATE OR REPLACE FUNCTION PUBLIC.check_level_checks(code_val public.book_code) RETURNS BOOLEAN
+  --   LANGUAGE plpgsql SECURITY DEFINER AS $$
+  --     BEGIN
+  --       IF EXISTS (SELECT 1 FROM public.books WHERE code = code_val AND level_checks IS NOT NULL) THEN
+  --         RETURN TRUE; 
+  --       ELSE
+  --         RETURN FALSE;
+  --       END IF;
+  --     END;
+  --   $$;
+
+
+    CREATE OR REPLACE FUNCTION get_books_not_null_level_checks(project_code text)
+    RETURNS TABLE (book_code public.book_code, level_checks json) AS $$
+      BEGIN
+        RETURN QUERY
+      SELECT
+        b.code AS book_code,
+        b.level_checks
+        FROM
+        public.books b
+      INNER JOIN
+        public.projects p ON b.project_id = p.id
+      WHERE
+        p.code = project_code
+        AND b.level_checks IS NOT NULL;
+      END;
+    $$ LANGUAGE plpgsql;
+
+
+    CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses() 
+    RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_text text) AS $$
+      BEGIN
+         RETURN QUERY
+        SELECT
+          b.code AS book_code,
+          c.num AS chapter_num,
+          v.text AS verse_text
+        FROM
+          public.books b
+        INNER JOIN
+           public.chapters c ON b.id = c.book_id
+        INNER JOIN
+          public.verses v ON c.id = v.chapter_id
+        WHERE
+            c.started_at IS NOT NULL  AND v.text IS NOT NULL;
+      END;
+    $$ LANGUAGE plpgsql;
+
   -- conditions for the user to have access to the site: 2 checkboxes and the user was not blocked
     CREATE FUNCTION PUBLIC.has_access() RETURNS BOOLEAN
       LANGUAGE plpgsql SECURITY DEFINER AS $$
