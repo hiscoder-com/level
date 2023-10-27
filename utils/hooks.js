@@ -320,13 +320,18 @@ export function useGetBooks({ code }) {
   return [books, { mutate, error, isLoading }]
 }
 
-export function useGetBooksIsNullCheckLevel({ code }) {
+/**
+ *hook returns information about books with validation levels and poems with draft versions
+ * @param {string} code code of project
+ * @returns {array}
+ */
+export function useGetChaptersTranslate({ code }) {
   const {
     data: books,
     mutate,
     error,
     isLoading,
-  } = useSWR(code ? [`/api/projects/${code}/books/level_checks`] : null, fetcher, {
+  } = useSWR(code ? [`/api/projects/${code}/books/chapters_translate`] : null, fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })

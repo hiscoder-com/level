@@ -15,7 +15,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import {
   useAccess,
   useGetBooks,
-  useGetBooksIsNullCheckLevel,
+  useGetChaptersTranslate,
   useGetResource,
   useProject,
 } from 'utils/hooks'
@@ -38,31 +38,8 @@ function BookReader() {
   })
   const [project] = useProject({ code })
 
-  const [booksLevel] = useGetBooksIsNullCheckLevel({
-    code,
-  })
-  console.log(booksLevel, 38)
-  // const supabase = useSupabaseClient()
-
-  // useEffect(() => {
-  //   const isCheckLevel = async () => {
-  //     try {
-  //       const { data, error } = await supabase.rpc('check_level_checks', {
-  //         code_val: bookid,
-  //       })
-
-  //       if (error) console.error(error)
-  //       else console.log(data)
-  //       if (error) {
-  //         console.log(46)
-  //         throw error
-  //       }
-  //     } catch (error) {
-  //       return error
-  //     }
-  //   }
-  //   isCheckLevel()
-  // }, [supabase])
+  const [chapters] = useGetChaptersTranslate({ code })
+  console.log(chapters, 50)
 
   const resource = useMemo(() => {
     if (reference?.checks) {
