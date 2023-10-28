@@ -20,7 +20,6 @@ import {
   useProject,
 } from 'utils/hooks'
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
-import useSupabaseClient from 'utils/supabaseClient'
 
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
@@ -39,7 +38,21 @@ function BookReader() {
   const [project] = useProject({ code })
 
   const [chapters] = useGetChaptersTranslate({ code })
-  console.log(chapters, 50)
+
+  function getVerseObjectsByBookCode(bookCode, data) {
+    if (!data) {
+      return [] // Return an empty array or handle the case appropriately.
+    }
+
+    const verseObjects = data
+      .filter((item) => item.book_code === bookCode && item.verse_text)
+      .map((item) => ({
+        verse: item.verse_num || 0,
+        text: item.verse_text,
+      }))
+
+    return verseObjects
+  }
 
   const resource = useMemo(() => {
     if (reference?.checks) {
@@ -139,7 +152,7 @@ function BookReader() {
             />
           </div>
           <Verses
-            verseObjects={verseObjects}
+            verseObjects={getVerseObjectsByBookCode(reference?.bookid, chapters)}
             user={user}
             reference={reference}
             isLoading={isLoading}
@@ -182,10 +195,14 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           reference?.chapter
         }`}</div>
       )}
-      <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
+      <div
+        className={`flex flex-col gap-2 ${
+          !verseObjects || !verseObjects.length ? 'h-screen' : ''
+        }`}
+      >
         {!isLoading ? (
-          verseObjects ? (
-            verseObjects.verseObjects?.map((verseObject) => (
+          verseObjects && verseObjects.length > 0 ? (
+            verseObjects.map((verseObject) => (
               <div className="flex gap-2" key={verseObject.verse}>
                 {verseObject.verse > 0 && verseObject.verse < 200 && (
                   <sup className="mt-2">{verseObject.verse}</sup>
@@ -204,27 +221,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               </div>
             ))
           ) : (
-            <>
-              <p>{t('NoContent')}</p>
-              {isCoordinatorAccess && (
-                <div
-                  className="flex gap-2
-                  text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
-                  onClick={() =>
-                    push({
-                      pathname: `/projects/${project?.code}`,
-                      query: {
-                        properties: bookid,
-                        levels: true,
-                      },
-                    })
-                  }
-                >
-                  <span>{t('CheckLinkResource')}</span>
-                  <Gear className="w-6 min-w-[1.5rem]" />
-                </div>
-              )}
-            </>
+            <p>{t('NoContent')}</p>
           )
         ) : (
           <div className="p-4 md:p-6 h-full animate-pulse">
@@ -236,10 +233,28 @@ function Verses({ verseObjects, user, reference, isLoading }) {
             ))}
           </div>
         )}
+        {isCoordinatorAccess && (
+          <div
+            className="flex gap-2 text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
+            onClick={() =>
+              push({
+                pathname: `/projects/${project?.code}`,
+                query: {
+                  properties: bookid,
+                  levels: true,
+                },
+              })
+            }
+          >
+            <span>{t('CheckLinkResource')}</span>
+            <Gear className="w-6 min-w-[1.5rem]" />
+          </div>
+        )}
       </div>
     </div>
   )
 }
+
 function Navigation({ books, reference, setReference }) {
   const { query, replace } = useRouter()
   const [selectedBook, setSelectedBook] = useState({})
@@ -297,13 +312,19 @@ function Navigation({ books, reference, setReference }) {
             <Listbox.Button>
               <div
                 className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
-                  !Object.keys(selectedBook)?.length ? 'animate-pulse' : ''
+                  !selectedBook || !Object.keys(selectedBook)?.length
+                    ? 'animate-pulse'
+                    : ''
                 } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
               >
                 <div
                   className={`flex ${
                     books?.length > 1 ? 'justify-between' : 'justify-center'
-                  } ${!Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'}`}
+                  } ${
+                    !selectedBook || !Object.keys(selectedBook)?.length
+                      ? 'opacity-0'
+                      : 'opacity-auto'
+                  }`}
                 >
                   <span>{t('books:' + selectedBook?.code)}</span>
                   {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
@@ -355,7 +376,9 @@ function Navigation({ books, reference, setReference }) {
       >
         <div
           className={`flex justify-around gap-1 ${
-            !Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'
+            !selectedBook || !Object.keys(selectedBook).length
+              ? 'opacity-0'
+              : 'opacity-auto'
           }`}
         >
           <span
