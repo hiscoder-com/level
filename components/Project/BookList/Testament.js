@@ -11,7 +11,7 @@ import ChecksIcon from './ChecksIcon'
 import Modal from 'components/Modal'
 import Download from '../Download'
 
-import { useGetBooks } from 'utils/hooks'
+import { useGetBooks, useGetChaptersTranslate } from 'utils/hooks'
 
 import Gear from '/public/gear.svg'
 import Reader from '/public/dictionary.svg'
@@ -55,6 +55,25 @@ function Testament({
       })
     }
   }
+  const {
+    query: { code, bookid },
+  } = useRouter()
+
+  const [chapters] = useGetChaptersTranslate({ code })
+
+  function checkBookCodeExists(bookCode, data) {
+    if (!data) {
+      return
+    }
+
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].book_code === bookCode) {
+        return true
+      }
+    }
+    return false
+  }
+
   return (
     <>
       <div className="flex flex-col gap-7 sm:px-3">
@@ -140,7 +159,7 @@ function Testament({
                                 </button>
                               </Menu.Item>
                             )}
-                            {levelChecks?.[book] && (
+                            {checkBookCodeExists(book, chapters) && (
                               <Menu.Item>
                                 <button>
                                   <Reader
@@ -176,7 +195,7 @@ function Testament({
                         </>
                       )}
 
-                      {levelChecks?.[book] && (
+                      {checkBookCodeExists(book, chapters) && (
                         <Reader
                           className="w-6 min-w-[1.5rem] cursor-pointer"
                           onClick={() =>
