@@ -49,7 +49,7 @@ function PersonalNotes() {
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
   const [notes, { mutate }] = usePersonalNotes({
-    sort: 'changed_at',
+    sort: 'sorting',
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
 
@@ -104,7 +104,7 @@ function PersonalNotes() {
   }
 
   const removeNode = () => {
-    currentNodeProps.tree.delete(currentNodeProps.node.id)
+    currentNodeProps?.tree.delete(currentNodeProps.node.id)
   }
 
   const handleRemoveNode = ({ ids }) => {
@@ -294,7 +294,7 @@ function PersonalNotes() {
   }
 
   const handleRename = () => {
-    currentNodeProps.node.edit()
+    currentNodeProps?.node.edit()
   }
 
   const menuItems = [
@@ -323,7 +323,10 @@ function PersonalNotes() {
             </button>
             <button
               className="btn-gray-red mb-4 right-0"
-              onClick={() => setIsOpenModal(true)}
+              onClick={() => {
+                setCurrentNodeProps(null)
+                setIsOpenModal(true)
+              }}
               disabled={!notes?.length}
             >
               {t('RemoveAll')}
@@ -340,7 +343,7 @@ function PersonalNotes() {
                 'flex px-5 leading-[47px] cursor-pointer rounded-lg bg-gray-100 hover:bg-gray-200',
               nodeTextBlock: 'items-center',
             }}
-            treeHeight={450}
+            treeHeight={440}
             fileIcon={fileIcon}
             arrowDown={arrowDown}
             arrowRight={arrowRight}

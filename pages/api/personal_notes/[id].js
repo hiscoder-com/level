@@ -28,12 +28,30 @@ export default async function notesDeleteHandler(req, res) {
   switch (method) {
     case 'DELETE':
       try {
+        const { error: deleteChildrenError } = await supabase
+          .from('personal_notes')
+          .update({
+            deleted_at: new Date().toISOString().toLocaleString('en-US'),
+            parent_id: null,
+            sorting: null,
+          })
+          .match({ parent_id: id })
+
+        if (deleteChildrenError) throw deleteChildrenError
+
         const { data, error } = await supabase
           .from('personal_notes')
-          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
+          .update([
+            {
+              deleted_at: new Date().toISOString().toLocaleString('en-US'),
+              parent_id: null,
+              sorting: null,
+            },
+          ])
           .match({ id })
           .select()
         if (error) throw error
+
         return res.status(200).json(data)
       } catch (error) {
         return res.status(404).json({ error })
