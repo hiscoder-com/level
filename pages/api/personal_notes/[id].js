@@ -1,6 +1,6 @@
 import supabaseApi from 'utils/supabaseServer'
 import { supabaseService } from 'utils/supabaseService'
-import { validateNote } from 'utils/helper'
+import { validateNote, validateTitle } from 'utils/helper'
 
 const sendLog = async (log) => {
   const { data, error } = await supabaseService
@@ -41,23 +41,42 @@ export default async function notesDeleteHandler(req, res) {
 
     case 'PUT':
       try {
-        if (!validateNote(data_note)) {
-          await sendLog({
-            url: `api/personal_notes/${id}`,
-            type: 'update personal note',
-            error: 'wrong type of the note',
-            note: data_note,
-          })
-          throw { error: 'wrong type of the note' }
+        let updateData = {}
+
+        if (data_note) {
+          if (!validateNote(data_note)) {
+            await sendLog({
+              url: `api/personal_notes/${id}`,
+              type: 'update personal note',
+              error: 'wrong type of the note',
+              note: data_note,
+            })
+            throw { error: 'wrong type of the note' }
+          }
+
+          updateData = { data: data_note, title, parent_id }
+        } else if (title) {
+          if (!validateTitle(title)) {
+            await sendLog({
+              url: `api/personal_notes/${id}`,
+              type: 'rename personal note',
+              error: 'wrong type of the title',
+              title,
+            })
+            throw { error: 'wrong type of the title' }
+          }
+
+          updateData = { title }
         }
 
         const { data, error } = await supabase
           .from('personal_notes')
           // TODO заметку же папкой не сделать, по этому isFolder не надо передавать
-          .update([{ data: data_note, title, parent_id }])
+          .update([updateData])
           .match({ id })
           .select()
         if (error) throw error
+
         return res.status(200).json(data)
       } catch (error) {
         return res.status(404).json({ error })

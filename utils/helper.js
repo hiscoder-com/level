@@ -596,6 +596,10 @@ export const validateNote = (note) => {
   return true
 }
 
+export const validateTitle = (title) => {
+  return title && title.trim().length > 0
+}
+
 export const obsCheckAdditionalVerses = (numVerse) => {
   if (['0', '200'].includes(String(numVerse))) {
     return ''

@@ -15,7 +15,7 @@ import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
-import Trash from 'public/trash.svg'
+import Trash from 'public/trash.svg' // использовать!
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -45,7 +45,7 @@ function PersonalNotes() {
   const [noteId, setNoteId] = useState('')
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const [noteToDel, setNoteToDel] = useState(null)
+  const [currentNodeProps, setCurrentNodeProps] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
   const [notes, { mutate }] = usePersonalNotes({
@@ -90,11 +90,28 @@ function PersonalNotes() {
       .catch(console.log)
   }
 
-  const removeNote = (id) => {
+  const handleRenameNode = (newTitle, id) => {
     axios
-      .delete(`/api/personal_notes/${id}`)
+      .put(`/api/personal_notes/${id}`, { title: newTitle })
       .then(() => {
+        console.log('Note renamed successfully')
         removeCacheNote('personal_notes', id)
+        mutate()
+      })
+      .catch((error) => {
+        console.log('Failed to rename note:', error)
+      })
+  }
+
+  const removeNode = () => {
+    currentNodeProps.tree.delete(currentNodeProps.node.id)
+  }
+
+  const handleRemoveNode = ({ ids }) => {
+    axios
+      .delete(`/api/personal_notes/${ids[0]}`)
+      .then(() => {
+        removeCacheNote('personal_notes', ids[0])
         mutate()
       })
       .catch(console.log)
@@ -271,50 +288,20 @@ function PersonalNotes() {
     </svg>
   )
 
-  const removeIcon = (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      x="0px"
-      y="0px"
-      width="18"
-      height="18"
-      viewBox="0 0 48 48"
-    >
-      <path d="M 24 4 C 20.491685 4 17.570396 6.6214322 17.080078 10 L 10.238281 10 A 1.50015 1.50015 0 0 0 9.9804688 9.9785156 A 1.50015 1.50015 0 0 0 9.7578125 10 L 6.5 10 A 1.50015 1.50015 0 1 0 6.5 13 L 8.6386719 13 L 11.15625 39.029297 C 11.427329 41.835926 13.811782 44 16.630859 44 L 31.367188 44 C 34.186411 44 36.570826 41.836168 36.841797 39.029297 L 39.361328 13 L 41.5 13 A 1.50015 1.50015 0 1 0 41.5 10 L 38.244141 10 A 1.50015 1.50015 0 0 0 37.763672 10 L 30.919922 10 C 30.429604 6.6214322 27.508315 4 24 4 z M 24 7 C 25.879156 7 27.420767 8.2681608 27.861328 10 L 20.138672 10 C 20.579233 8.2681608 22.120844 7 24 7 z M 11.650391 13 L 36.347656 13 L 33.855469 38.740234 C 33.730439 40.035363 32.667963 41 31.367188 41 L 16.630859 41 C 15.331937 41 14.267499 40.033606 14.142578 38.740234 L 11.650391 13 z M 20.476562 17.978516 A 1.50015 1.50015 0 0 0 19 19.5 L 19 34.5 A 1.50015 1.50015 0 1 0 22 34.5 L 22 19.5 A 1.50015 1.50015 0 0 0 20.476562 17.978516 z M 27.476562 17.978516 A 1.50015 1.50015 0 0 0 26 19.5 L 26 34.5 A 1.50015 1.50015 0 1 0 29 34.5 L 29 19.5 A 1.50015 1.50015 0 0 0 27.476562 17.978516 z"></path>
-    </svg>
-  )
-
-  const renameIcon = (
-    <svg
-      width="17"
-      height="17"
-      viewBox="0 0 28 28"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        d="M11.75 2C11.3358 2 11 2.33579 11 2.75C11 3.16421 11.3358 3.5 11.75 3.5H13.25V24.5H11.75C11.3358 24.5 11 24.8358 11 25.25C11 25.6642 11.3358 26 11.75 26H16.25C16.6642 26 17 25.6642 17 25.25C17 24.8358 16.6642 24.5 16.25 24.5H14.75V3.5H16.25C16.6642 3.5 17 3.16421 17 2.75C17 2.33579 16.6642 2 16.25 2H11.75Z"
-        fill="#212121"
-      />
-      <path
-        d="M6.25 6.01958H12.25V7.51958H6.25C5.2835 7.51958 4.5 8.30308 4.5 9.26958V18.7696C4.5 19.7361 5.2835 20.5196 6.25 20.5196H12.25V22.0196H6.25C4.45507 22.0196 3 20.5645 3 18.7696V9.26958C3 7.47465 4.45507 6.01958 6.25 6.01958Z"
-        fill="#212121"
-      />
-      <path
-        d="M21.75 20.5196H15.75V22.0196H21.75C23.5449 22.0196 25 20.5645 25 18.7696V9.26958C25 7.47465 23.5449 6.01958 21.75 6.01958H15.75V7.51958H21.75C22.7165 7.51958 23.5 8.30308 23.5 9.26958V18.7696C23.5 19.7361 22.7165 20.5196 21.75 20.5196Z"
-        fill="#212121"
-      />
-    </svg>
-  )
-
   const handleContextMenu = (event) => {
     setNoteId(hoveredNodeId)
     setContextMenuEvent({ event })
   }
 
+  const handleRename = () => {
+    currentNodeProps.node.edit()
+  }
+
   const menuItems = [
-    { id: 'rename', label: '✏️ Rename' },
-    { id: 'delete', label: '🗑️ Delete' },
+    { id: 'adding_a_note', label: '+ add note', action: () => addNode(false) },
+    { id: 'adding_a_folder', label: '+ add folder', action: () => addNode(true) },
+    { id: 'rename', label: '✏️ Rename', action: handleRename },
+    { id: 'delete', label: '🗑️ Delete', action: () => setIsOpenModal(true) },
   ]
 
   return (
@@ -365,6 +352,9 @@ function PersonalNotes() {
             hoveredNodeId={hoveredNodeId}
             setHoveredNodeId={setHoveredNodeId}
             treeWidth={320}
+            getCurrentNodeProps={setCurrentNodeProps}
+            handleRenameNode={handleRenameNode}
+            handleTreeEventDelete={handleRemoveNode}
           />
           <ContextMenu
             setSelectedNodeId={setNoteId}
@@ -378,7 +368,7 @@ function PersonalNotes() {
               menuContainer:
                 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
               emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
-            }}        
+            }}
           />
         </div>
       ) : (
@@ -410,7 +400,11 @@ function PersonalNotes() {
           <div className="text-center text-2xl">
             {t('AreYouSureDelete') +
               ' ' +
-              t(noteToDel ? noteToDel?.title : t('AllNotes').toLowerCase()) +
+              t(
+                currentNodeProps
+                  ? currentNodeProps.node.data.name
+                  : t('AllNotes').toLowerCase()
+              ) +
               '?'}
           </div>
           <div className="flex gap-7 w-1/2">
@@ -418,9 +412,9 @@ function PersonalNotes() {
               className="btn-secondary flex-1"
               onClick={() => {
                 setIsOpenModal(false)
-                if (noteToDel) {
-                  removeNote(noteToDel.id)
-                  setNoteToDel(null)
+                if (currentNodeProps) {
+                  removeNode()
+                  setCurrentNodeProps(null)
                 } else {
                   removeAllNote()
                 }
@@ -433,7 +427,7 @@ function PersonalNotes() {
               onClick={() => {
                 setIsOpenModal(false)
                 setTimeout(() => {
-                  setNoteToDel(null)
+                  setCurrentNodeProps(null)
                 }, 1000)
               }}
             >
