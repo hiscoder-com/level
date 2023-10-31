@@ -192,7 +192,7 @@ function ProjectCreate() {
                   checked={isBriefEnable}
                   onChange={() => setIsBriefEnable((prev) => !prev)}
                   className={`${
-                    isBriefEnable ? 'bg-th-primary-switch' : 'bg-gray-300'
+                    isBriefEnable ? 'bg-th-primary-switch' : 'bg-th-primary-background'
                   } relative inline-flex h-6 w-11 items-center rounded-full`}
                 >
                   <span
@@ -210,7 +210,7 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="card-md bg-th-tertiary-background flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
+          <div className="card-md bg-th-tertiary-background flex flex-col gap-7 pb-7 mb-7 border-b border-th-primary-border">
             <h3 className="text-xl font-bold">{t('common:ListResources')}</h3>
             <CommitsList
               methodId={methodId}
@@ -219,9 +219,8 @@ function ProjectCreate() {
             />
             <div className="flex w-fit items-center justify-center">
               <ButtonLoading
-                className={`relative btn-secondary btn-filled ${
-                  isCreating ? '!text-gray-200 hover:!text-white' : ''
-                }`}
+                className={`relative btn-secondary btn-filled`}
+                disabled={isCreating}
                 value={t('CreateProject')}
                 isLoading={isCreating}
               >

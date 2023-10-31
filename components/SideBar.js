@@ -52,7 +52,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th- bg-white sm:rounded-2xl">
-                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-gray-300">
+                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-border">
                   <div className="w-12 h-12 min-w-[3rem]">
                     <TranslatorImage item={{ users: user }} />
                   </div>

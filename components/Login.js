@@ -140,7 +140,7 @@ function Login() {
             <div>
               {t('Email')} {user.email}
             </div>
-            <Link href={href ?? '/'} className="text-cyan-500 hover:text-gray-400">
+            <Link href={href ?? '/'} className="text-th-primary-link hover:opacity-70">
               {t('GoToAccount')}
             </Link>
           </div>
@@ -200,12 +200,12 @@ function Login() {
             <div className="flex items-center justify-between mb-4">
               {error && (
                 <>
-                  <p className="flex text-xs text-red-600">
+                  <p className="flex text-xs text-th-invalid">
                     <Report className="w-4 h-4" /> {t('WrongLoginPassword')}
                   </p>
                   <button
                     type="button"
-                    className="underline text-cyan-700 hover:text-gray-400"
+                    className="underline text-th-primary-link hover:opacity-70"
                     onClick={() => setIsOpenModal(true)}
                   >
                     {t('ForgotPassword')}?
@@ -226,7 +226,7 @@ function Login() {
               </ButtonLoading>
               <button
                 type="button"
-                className="text-sm lg:text-base text-cyan-700 hover:text-gray-400"
+                className="text-sm lg:text-base text-th-primary-link hover:opacity-70"
                 onClick={() => setIsOpenModal(true)}
               >
                 {t('RestoreAccess')}

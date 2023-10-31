@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import ChapterCreate from 'components/ChapterCreate'
+import ChapterCreate from './ChapterCreate'
 import Download from '../Download'
 import Modal from 'components/Modal'
 import Breadcrumbs from 'components/Breadcrumbs'

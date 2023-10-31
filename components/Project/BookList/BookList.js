@@ -6,8 +6,8 @@ import { Tab } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
 
-import Testament from 'components/Testament'
-import BookProperties from 'components/BookProperties/BookProperties'
+import Testament from './Testament'
+import BookProperties from './BookProperties/BookProperties'
 
 import { useGetBooks } from 'utils/hooks'
 

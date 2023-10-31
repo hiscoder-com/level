@@ -8,7 +8,7 @@ function UsersList() {
   const { t } = useTranslation(['users'])
   const [users, { error, isLoading }] = useUsers()
   return (
-    <table className="table-auto bg-th-secondary-background">
+    <table className="bg-th-secondary-background mb-4">
       <thead>
         <tr className="text-left bg-th-primary-background">
           <th className="border-b p-2 border-th-primary-border">{t('Login')}</th>

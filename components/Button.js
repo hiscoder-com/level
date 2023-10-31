@@ -1,21 +1,21 @@
 const colors = {
-  red: {
-    text: 'text-red-500',
-    active: 'active:bg-red-500',
-    hover: 'group-hover:bg-red-500',
-    border: 'border-red-500',
+  black: {
+    text: 'text-th-primary-text',
+    active: 'active:bg-th-primary-text',
+    hover: 'group-hover:bg-th-primary-text',
+    border: 'border-th-primary-text',
   },
   green: {
-    text: 'text-green-500',
-    active: 'active:bg-green-500',
-    hover: 'group-hover:bg-green-500',
-    border: 'border-green-500',
+    text: 'text-th-primary',
+    active: 'active:bg-th-primary',
+    hover: 'group-hover:bg-th-primary',
+    border: 'border-th-primary',
   },
-  amber: {
-    text: 'text-amber-500',
-    active: 'active:bg-amber-500',
-    hover: 'group-hover:bg-amber-500',
-    border: 'border-amber-500',
+  yellow: {
+    text: 'text-th-secondary',
+    active: 'active:bg-th-secondary',
+    hover: 'group-hover:bg-th-secondary',
+    border: 'border-th-secondary',
   },
 }
 function Button({ onClick, text, color, icon, disabled = false, avatar = '' }) {
@@ -23,7 +23,7 @@ function Button({ onClick, text, color, icon, disabled = false, avatar = '' }) {
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`group flex flex-row items-center w-full p-2 cursor-pointer ${colors[color].border} border-2 rounded-2xl font-semibold text-sm md:text-xl ${colors[color].text} hover:shadow-md active:text-white ${colors[color].active}`}
+      className={`group flex flex-row items-center w-full p-2 cursor-pointer ${colors[color].border} border-2 rounded-2xl font-semibold text-sm md:text-xl ${colors[color].text} hover:shadow-md active:text-th-secondary-background ${colors[color].active}`}
     >
       <div className="avatar-block w-0 md:w-10 flex-grow-0">{avatar}</div>
       <div className="text-block flex-auto ml-2 overflow-hidden text-left text-ellipsis">
@@ -31,7 +31,7 @@ function Button({ onClick, text, color, icon, disabled = false, avatar = '' }) {
       </div>
       <div className="icon-block flex-grow-0">
         <div
-          className={`p-2 ${colors[color].border} border-2 rounded-full ${colors[color].hover} group-hover:text-white group-active:border-white`}
+          className={`p-2 ${colors[color].border} border-2 rounded-full ${colors[color].hover} group-hover:text-th-secondary-background group-active:border-th-secontext-th-secondary-background`}
         >
           {icon}
         </div>

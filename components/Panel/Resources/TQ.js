@@ -91,7 +91,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
       >
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
-      <Disclosure.Panel className="w-fit py-4 text-cyan-700">
+      <Disclosure.Panel className="w-fit py-4 text-th-primary-text">
         <p className="ml-2">{item.text}</p>
       </Disclosure.Panel>
     </Disclosure>

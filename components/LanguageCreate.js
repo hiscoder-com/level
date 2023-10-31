@@ -96,7 +96,7 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
             <div key={el.id} className="space-y-2">
               <div>{el.title}</div>
               <input {...el.register} className={el.className} />
-              <div className="text-red-600">{el.errorMessage}</div>
+              <div className="text-th-invalid">{el.errorMessage}</div>
             </div>
           ))}
           <CheckBox

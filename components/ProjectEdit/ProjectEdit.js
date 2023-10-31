@@ -10,9 +10,9 @@ import { useForm } from 'react-hook-form'
 
 import { Tab } from '@headlessui/react'
 
-import Brief from 'components/Brief'
-import ResourceSettings from 'components/ResourceSettings'
-import Participants from 'components/Participants/Participants'
+import Brief from './Brief'
+import ResourceSettings from './ResourceSettings'
+import Participants from './Participants/Participants'
 import Breadcrumbs from '../Breadcrumbs'
 import Steps from '../Steps'
 import BasicInformation from '../BasicInformation'

@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next'
 
 import { Menu, Transition } from '@headlessui/react'
 
-import BookCreate from 'components/BookCreate'
-import ChecksIcon from 'components/ChecksIcon'
+import BookCreate from './BookCreate'
+import ChecksIcon from './ChecksIcon'
 import Modal from 'components/Modal'
 import Download from '../Download'
 

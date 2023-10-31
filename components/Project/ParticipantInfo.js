@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { useTranslation } from 'next-i18next'
 
 import TranslatorImage from 'components/TranslatorImage'
-import Card from 'components/Card'
+import Card from './Card'
 
 import { useCoordinators, useTranslators } from 'utils/hooks'
 
@@ -11,9 +11,11 @@ function ParticipantInfo({ project, access }) {
   const { t } = useTranslation()
   const [translators] = useTranslators({
     code: project?.code,
+    revalidateIfStale: true,
   })
   const [coordinators] = useCoordinators({
     code: project?.code,
+    revalidateIfStale: true,
   })
 
   const participants = useMemo(() => {
@@ -44,7 +46,7 @@ function ParticipantInfo({ project, access }) {
           {participants?.map((participant, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 px-4 py-1 border border-th-primary-hover-background rounded-3xl"
+              className="flex items-center gap-4 px-4 py-1 border border-th-primary-hover-background bg-th rounded-3xl"
             >
               <div className="w-7 h-7 min-w-[2rem]">
                 <TranslatorImage item={participant} />

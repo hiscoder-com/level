@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next'
 
-import Card from 'components/Card'
+import Card from './Card'
 
 function ProjectInfo({ project, access }) {
   const { t } = useTranslation(['projects', 'common'])

@@ -24,7 +24,7 @@ function TranslatorImage({ item, size, clickable }) {
         }
       }}
       className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
-        item.is_moderator ? 'border-blue-800 ' : ''
+        item.is_moderator ? 'border-th-secondary ' : ''
       } rounded-full select-none`}
     >
       {item.avatar ? (

@@ -61,8 +61,8 @@ function Dropdown({ description, user }) {
           >
             {/* TODO - нужен дизайн, ховер и остальное */}
             <button
-              className="px-4 py-2 rounded-t-lg	hover:bg-cyan-50
-			active:bg-cyan-200"
+              className="px-4 py-2 rounded-t-lg	hover:bg-th-primary-background
+			active:bg-th-primary-background"
               onClick={(e) => {
                 toggle()
                 setShowModalStepGoal(true)
@@ -73,8 +73,8 @@ function Dropdown({ description, user }) {
             </button>
 
             <button
-              className="px-4 py-2 rounded-b-lg hover:bg-cyan-50
-			active:bg-cyan-200"
+              className="px-4 py-2 rounded-b-lg hover:bg-th-primary-background
+			active:bg-th-primary-background"
               onClick={(e) => {
                 toggle()
                 setShowModalTranslationGoal(true)
@@ -97,7 +97,7 @@ function Dropdown({ description, user }) {
         closeModal={closeModal}
       />
 
-      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold border-2 border-cyan-600 rounded-md divide-x divide-solid md:hidden">
+      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold border-2 border-th-primary-border rounded-md divide-x divide-solid md:hidden">
         <button
           className="px-2 rounded-l-lg active:bg-cyan-50"
           onClick={(e) => {

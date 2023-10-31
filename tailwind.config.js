@@ -43,6 +43,16 @@ module.exports = {
         'th-input': 'var(--input)',
         'th-input-focus': 'var(--input-focus)',
 
+        'th-divide-verse1': 'var(--divide-verse1)',
+        'th-divide-verse2': 'var(--divide-verse2)',
+        'th-divide-verse3': 'var(--divide-verse3)',
+        'th-divide-verse4': 'var(--divide-verse4)',
+        'th-divide-verse5': 'var(--divide-verse5)',
+        'th-divide-verse6': 'var(--divide-verse6)',
+        'th-divide-verse7': 'var(--divide-verse7)',
+        'th-divide-verse8': 'var(--divide-verse8)',
+        'th-divide-verse9': 'var(--divide-verse9)',
+
         gray: {
           150: '#EDEDED',
           250: '#E3E3E3',

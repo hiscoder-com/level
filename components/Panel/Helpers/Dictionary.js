@@ -199,7 +199,7 @@ function Dictionary() {
               t={t}
             />
             <input
-              className="input max-w-xs mt-2 ml-2"
+              className="input-primary max-w-xs mt-2 ml-2"
               value={searchQuery}
               onChange={(e) => {
                 setCurrentPageWords(0)

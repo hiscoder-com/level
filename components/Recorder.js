@@ -55,7 +55,7 @@ export default function Recorder() {
         setMediaRec(mediaRecorder)
       })
       .catch((err) => {
-        setButtonRecord(<RecorderCrossedButton className="stroke-red-700 stroke-2" />)
+        setButtonRecord(<RecorderCrossedButton className="stroke-th-invalid stroke-2" />)
         console.error(`You have not given access to the microphone: ${err}`)
       })
   }, [])
