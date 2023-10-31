@@ -1,6 +1,58 @@
 import { supabaseService } from 'utils/supabaseService'
 import supabaseApi from 'utils/supabaseServer'
 
+function createCombinedData(uniqueBooks, booksData, chaptersData) {
+  //Быстрый доступ к информации о книгах по их кодам.
+  const bookInfoMap = booksData.reduce((acc, book) => {
+    acc[book.book_code] = book
+    return acc
+  }, {})
+
+  // Организация информации о главах книг по кодам книг и номерам глав.
+  const bookChaptersMap = chaptersData.reduce((acc, chapter) => {
+    const bookCode = chapter.book_code
+    const chapterNumber = chapter.chapter_num
+    const verseObject = {
+      verse: chapter.verse_num,
+      text: chapter.verse_text,
+    }
+
+    if (!acc[bookCode]) {
+      acc[bookCode] = {}
+    }
+
+    // Если нет главы, создаем ее
+    if (!acc[bookCode][chapterNumber]) {
+      acc[bookCode][chapterNumber] = {
+        verseObjects: [verseObject],
+      }
+    } else {
+      // Иначе, добавляем в существующий объект главы.
+      acc[bookCode][chapterNumber].verseObjects.push(verseObject)
+    }
+
+    return acc
+  }, {})
+
+  return uniqueBooks.map((bookCode) => {
+    const bookInfo = bookInfoMap[bookCode]
+    const bookChapters = bookChaptersMap[bookCode]
+    return createBookObject(bookCode, bookInfo, bookChapters)
+  })
+}
+
+function createBookObject(bookCode, bookInfo, bookChapters) {
+  const level_check = bookInfo?.level_checks
+    ? { level: bookInfo.level_checks.level, url: bookInfo.level_checks.url }
+    : null
+
+  return {
+    book_code: bookCode,
+    level_check,
+    chapters: bookChapters,
+  }
+}
+
 export default async function ChaptersTranslateHandler(req, res) {
   let supabase
   try {
@@ -34,39 +86,7 @@ export default async function ChaptersTranslateHandler(req, res) {
         }
 
         const uniqueBooks = [...new Set(chaptersData.map((chapter) => chapter.book_code))]
-
-        const combinedData = uniqueBooks.map((bookCode) => {
-          const bookInfo = booksData.find((book) => book.book_code === bookCode)
-
-          const bookChapters = chaptersData
-            .filter((chapter) => chapter.book_code === bookCode)
-            .map((chapter) => ({
-              verse_num: chapter.verse_num,
-              verse_text: chapter.verse_text,
-            }))
-
-          if (!bookInfo || !bookInfo.level_checks) {
-            return {
-              book_code: bookCode,
-              level_check: null,
-              chapters: Object.fromEntries(
-                bookChapters.map((chapter) => [chapter.verse_num, chapter])
-              ),
-            }
-          }
-
-          return {
-            book_code: bookCode,
-            level_check: {
-              level: bookInfo.level_checks.level,
-              url: bookInfo.level_checks.url,
-            },
-            chapters: Object.fromEntries(
-              bookChapters.map((chapter) => [chapter.verse_num, chapter])
-            ),
-          }
-        })
-
+        const combinedData = createCombinedData(uniqueBooks, booksData, chaptersData)
         return res.status(200).json(combinedData)
       } catch (error) {
         console.error('Error:', error)
