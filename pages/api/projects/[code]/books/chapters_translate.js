@@ -28,14 +28,48 @@ export default async function ChaptersTranslateHandler(req, res) {
             project_code: code,
           }
         )
+
         if (chaptersError || booksError) {
           return res.status(404).json({ booksError, chaptersError })
         }
 
-        const combinedData = [...booksData, ...chaptersData]
+        const uniqueBooks = [...new Set(chaptersData.map((chapter) => chapter.book_code))]
+
+        const combinedData = uniqueBooks.map((bookCode) => {
+          const bookInfo = booksData.find((book) => book.book_code === bookCode)
+
+          const bookChapters = chaptersData
+            .filter((chapter) => chapter.book_code === bookCode)
+            .map((chapter) => ({
+              verse_num: chapter.verse_num,
+              verse_text: chapter.verse_text,
+            }))
+
+          if (!bookInfo || !bookInfo.level_checks) {
+            return {
+              book_code: bookCode,
+              level_check: null,
+              chapters: Object.fromEntries(
+                bookChapters.map((chapter) => [chapter.verse_num, chapter])
+              ),
+            }
+          }
+
+          return {
+            book_code: bookCode,
+            level_check: {
+              level: bookInfo.level_checks.level,
+              url: bookInfo.level_checks.url,
+            },
+            chapters: Object.fromEntries(
+              bookChapters.map((chapter) => [chapter.verse_num, chapter])
+            ),
+          }
+        })
 
         return res.status(200).json(combinedData)
       } catch (error) {
+        console.error('Error:', error)
         return res.status(404).json({ error })
       }
     default:
