@@ -37,7 +37,7 @@ export default function Confession() {
   )
 }
 
-Confession.backgroundColor = 'bg-white'
+Confession.backgroundColor = 'bg-th-secondary-background'
 
 export async function getStaticProps({ locale }) {
   return {

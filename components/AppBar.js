@@ -13,11 +13,11 @@ import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-import VCANA_logo from 'public/vcana-logo.svg'
+import VcanaLogo from 'public/vcana-logo.svg'
 import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 
-export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) {
+export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -44,7 +44,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
   }, [supabase, user])
 
   const logoLink = useMemo(() => {
-    return !user?.id ? '/login' : access ? '/account' : '/agreements'
+    return !user?.id ? '/' : access ? '/account' : '/agreements'
   }, [access, user])
   return (
     <div className={`bg-th-primary ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
@@ -54,10 +54,10 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
           <div
             className={`flex justify-center w-full ${
               access && !isStepPage ? '-ml-10' : ''
-            } md:ml-0  ${!access ? 'pointer-events-none ' : ''}`}
+            } md:ml-0 `}
           >
             <Link href={logoLink}>
-              <VCANA_logo className="h-6 fill-th-secondary-text" />
+              <VcanaLogo className="h-6 fill-th-secondary-text" />
             </Link>
           </div>
 

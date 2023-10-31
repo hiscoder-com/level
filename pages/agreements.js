@@ -34,7 +34,6 @@ export default function Agreements() {
 }
 
 Agreements.backgroundColor = 'bg-white'
-Agreements.hideAppbar = true
 
 export async function getStaticProps({ locale }) {
   return {
