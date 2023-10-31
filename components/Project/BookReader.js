@@ -39,19 +39,28 @@ function BookReader() {
 
   const [chapters] = useGetChaptersTranslate({ code })
 
-  function getVerseObjectsByBookCode(bookCode, data) {
+  function checkBookCodeExists(bookCode, data) {
     if (!data) {
-      return [] // Return an empty array or handle the case appropriately.
+      return
     }
 
-    const verseObjects = data
-      .filter((item) => item.book_code === bookCode && item.verse_text)
-      .map((item) => ({
-        verse: item.verse_num || 0,
-        text: item.verse_text,
-      }))
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].book_code === bookCode) {
+        return true
+      }
+    }
+    return false
+  }
 
-    return verseObjects
+  function getVerseObjectsForBookAndChapter(chapters, bookCode, chapterNumber) {
+    if (chapters) {
+      const chapterData = chapters.find((chapter) => chapter.book_code === bookCode)
+      if (chapterData && chapterData.level_check === null) {
+        const verseObjects = chapterData.chapters[chapterNumber]
+        return verseObjects
+      }
+    }
+    return []
   }
 
   const resource = useMemo(() => {
@@ -73,6 +82,9 @@ function BookReader() {
     },
     url: `/api/git/${project?.type}`,
   })
+  const verseObjectsToUse =
+    verseObjects ||
+    getVerseObjectsForBookAndChapter(chapters, reference?.bookid, reference?.chapter)
   useEffect(() => {
     if (bookid && books) {
       const book = books.find((book) => book.code === bookid)
@@ -85,7 +97,9 @@ function BookReader() {
         ? books
             .filter((book) =>
               Object.keys(newTestamentList).some(
-                (nt) => nt === book.code && book?.level_checks
+                (nt) =>
+                  nt === book.code &&
+                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
               )
             )
             .sort((a, b) => {
@@ -103,7 +117,9 @@ function BookReader() {
         ? books
             .filter((book) =>
               Object.keys(oldTestamentList).some(
-                (ot) => ot === book.code && book?.level_checks
+                (ot) =>
+                  ot === book.code &&
+                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
               )
             )
             .sort((a, b) => {
@@ -152,7 +168,7 @@ function BookReader() {
             />
           </div>
           <Verses
-            verseObjects={getVerseObjectsByBookCode(reference?.bookid, chapters)}
+            verseObjects={verseObjectsToUse}
             user={user}
             reference={reference}
             isLoading={isLoading}
@@ -195,14 +211,10 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           reference?.chapter
         }`}</div>
       )}
-      <div
-        className={`flex flex-col gap-2 ${
-          !verseObjects || !verseObjects.length ? 'h-screen' : ''
-        }`}
-      >
+      <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
         {!isLoading ? (
-          verseObjects && verseObjects.length > 0 ? (
-            verseObjects.map((verseObject) => (
+          verseObjects ? (
+            verseObjects.verseObjects?.map((verseObject) => (
               <div className="flex gap-2" key={verseObject.verse}>
                 {verseObject.verse > 0 && verseObject.verse < 200 && (
                   <sup className="mt-2">{verseObject.verse}</sup>
@@ -221,7 +233,27 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               </div>
             ))
           ) : (
-            <p>{t('NoContent')}</p>
+            <>
+              <p>{t('NoContent')}</p>
+              {isCoordinatorAccess && (
+                <div
+                  className="flex gap-2
+                  text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
+                  onClick={() =>
+                    push({
+                      pathname: `/projects/${project?.code}`,
+                      query: {
+                        properties: bookid,
+                        levels: true,
+                      },
+                    })
+                  }
+                >
+                  <span>{t('CheckLinkResource')}</span>
+                  <Gear className="w-6 min-w-[1.5rem]" />
+                </div>
+              )}
+            </>
           )
         ) : (
           <div className="p-4 md:p-6 h-full animate-pulse">
@@ -231,23 +263,6 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                 <div className="h-2 mb-4 bg-gray-200 rounded-full"></div>
               </div>
             ))}
-          </div>
-        )}
-        {isCoordinatorAccess && (
-          <div
-            className="flex gap-2 text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
-            onClick={() =>
-              push({
-                pathname: `/projects/${project?.code}`,
-                query: {
-                  properties: bookid,
-                  levels: true,
-                },
-              })
-            }
-          >
-            <span>{t('CheckLinkResource')}</span>
-            <Gear className="w-6 min-w-[1.5rem]" />
           </div>
         )}
       </div>
@@ -312,7 +327,7 @@ function Navigation({ books, reference, setReference }) {
             <Listbox.Button>
               <div
                 className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
-                  !selectedBook || !Object.keys(selectedBook)?.length
+                  selectedBook && !Object.keys(selectedBook)?.length
                     ? 'animate-pulse'
                     : ''
                 } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
@@ -321,7 +336,7 @@ function Navigation({ books, reference, setReference }) {
                   className={`flex ${
                     books?.length > 1 ? 'justify-between' : 'justify-center'
                   } ${
-                    !selectedBook || !Object.keys(selectedBook)?.length
+                    selectedBook && !Object.keys(selectedBook)?.length
                       ? 'opacity-0'
                       : 'opacity-auto'
                   }`}
@@ -376,7 +391,7 @@ function Navigation({ books, reference, setReference }) {
       >
         <div
           className={`flex justify-around gap-1 ${
-            !selectedBook || !Object.keys(selectedBook).length
+            selectedBook && !Object.keys(selectedBook)?.length
               ? 'opacity-0'
               : 'opacity-auto'
           }`}
