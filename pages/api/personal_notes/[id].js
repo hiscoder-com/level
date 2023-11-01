@@ -28,31 +28,46 @@ export default async function notesDeleteHandler(req, res) {
   switch (method) {
     case 'DELETE':
       try {
-        const { error: deleteChildrenError } = await supabase
+        const deleteRecursive = async (parentId) => {
+          const { data: children, error: childrenError } = await supabase
+            .from('personal_notes')
+            .select('id')
+            .eq('parent_id', parentId)
+
+          if (childrenError) throw childrenError
+
+          if (children && children.length > 0) {
+            for (const child of children) {
+              await deleteRecursive(child.id)
+            }
+          }
+
+          const { error: deleteError } = await supabase
+            .from('personal_notes')
+            .update({
+              deleted_at: new Date().toISOString().toLocaleString('en-US'),
+              parent_id: null,
+              sorting: null,
+            })
+            .eq('parent_id', parentId)
+
+          if (deleteError) throw deleteError
+        }
+
+        await deleteRecursive(id)
+
+        const { error: deleteFolderError } = await supabase
           .from('personal_notes')
           .update({
             deleted_at: new Date().toISOString().toLocaleString('en-US'),
             parent_id: null,
             sorting: null,
           })
-          .match({ parent_id: id })
+          .eq('id', id)
 
-        if (deleteChildrenError) throw deleteChildrenError
+        if (deleteFolderError) throw deleteFolderError
 
-        const { data, error } = await supabase
-          .from('personal_notes')
-          .update([
-            {
-              deleted_at: new Date().toISOString().toLocaleString('en-US'),
-              parent_id: null,
-              sorting: null,
-            },
-          ])
-          .match({ id })
-          .select()
-        if (error) throw error
-
-        return res.status(200).json(data)
+        return res.status(200).json({ message: 'Успешно удалено' })
       } catch (error) {
         return res.status(404).json({ error })
       }

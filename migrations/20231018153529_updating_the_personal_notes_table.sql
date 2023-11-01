@@ -70,3 +70,54 @@ DROP FUNCTION IF EXISTS PUBLIC.update_sorting_on_delete;
   CREATE TRIGGER update_sorting_trigger AFTER
     UPDATE
       ON PUBLIC.personal_notes FOR each ROW EXECUTE FUNCTION PUBLIC.update_sorting_on_delete();
+
+-- Function for Drag and Drop node repositioning in the notes tree
+  DROP FUNCTION IF EXISTS PUBLIC.move_node;
+
+  CREATE FUNCTION PUBLIC.move_node(new_sorting_value INT, dragged_node_id VARCHAR, new_parent_id VARCHAR) RETURNS VOID
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+    old_sorting INT;
+    old_parent_id VARCHAR;
+  BEGIN
+    SELECT sorting, parent_id INTO old_sorting, old_parent_id
+    FROM PUBLIC.personal_notes
+    WHERE id = dragged_node_id;
+
+    IF old_sorting IS NOT NULL THEN
+      -- если новый сортинг равен старому, или больше старого на единицу и действие в общем родителе, то ничего не делаем
+      IF (new_sorting_value = old_sorting OR new_sorting_value = old_sorting + 1) AND (old_parent_id = new_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
+        RETURN;
+
+      -- если новый сортинг больше старого сортинга и действие в общем родителе
+      ELSIF new_sorting_value > old_sorting AND ( new_parent_id = old_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
+        new_sorting_value := new_sorting_value - 1;
+        UPDATE PUBLIC.personal_notes
+        SET sorting = sorting - 1
+        WHERE sorting > old_sorting AND sorting <= new_sorting_value AND (parent_id = new_parent_id OR (parent_id IS NULL AND new_parent_id IS NULL));
+
+      -- если новый сортинг меньше старого сортинга и действие в общем родителе
+      ELSIF new_sorting_value < old_sorting AND ( new_parent_id = old_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
+        UPDATE PUBLIC.personal_notes
+        SET sorting = sorting + 1
+        WHERE sorting < old_sorting AND sorting >= new_sorting_value AND (parent_id = new_parent_id OR (parent_id IS NULL AND new_parent_id IS NULL));
+
+      -- если перемещаем в новую папку, то в старой папке уменьшаем сортинг всех элементов, которые больше старого сортинга
+      ELSIF new_parent_id IS DISTINCT FROM old_parent_id THEN
+        UPDATE PUBLIC.personal_notes
+        SET sorting = sorting - 1
+        WHERE sorting > old_sorting AND (parent_id = old_parent_id OR (parent_id IS NULL AND old_parent_id IS NULL));
+
+        -- в новой папке увеличиваем сортинг всех элементов, сортинг которых равен, или больше новому сортингу
+        UPDATE PUBLIC.personal_notes
+        SET sorting = sorting + 1
+        WHERE sorting >= new_sorting_value AND (parent_id = new_parent_id OR (parent_id IS NULL AND new_parent_id IS NULL));
+      END IF;
+    END IF;
+
+    -- обновление перемещаемого узла
+    UPDATE PUBLIC.personal_notes
+    SET sorting = new_sorting_value, parent_id = new_parent_id
+    WHERE id = dragged_node_id;
+  END;
+  $$;

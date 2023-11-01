@@ -8,6 +8,7 @@ import axios from 'axios'
 import { toast } from 'react-hot-toast'
 
 import { useCurrentUser } from 'lib/UserContext'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import Modal from 'components/Modal'
 
@@ -304,6 +305,24 @@ function PersonalNotes() {
     { id: 'delete', label: '🗑️ Delete', action: () => setIsOpenModal(true) },
   ]
 
+  const supabase = useSupabaseClient()
+
+  const handleDragDrop = async ({ dragIds, parentId, index }) => {
+    const { error } = await supabase.rpc('move_node', {
+      new_sorting_value: index,
+      dragged_node_id: dragIds[0],
+      new_parent_id: parentId,
+    })
+
+    if (error) {
+      console.error('Ошибка при перемещении узла:', error)
+    } else {
+      console.log('Узел успешно перемещен!')
+      removeCacheAllNotes('personal-notes')
+      mutate()
+    }
+  }
+
   return (
     <div className="relative">
       {!activeNote ? (
@@ -358,6 +377,7 @@ function PersonalNotes() {
             getCurrentNodeProps={setCurrentNodeProps}
             handleRenameNode={handleRenameNode}
             handleTreeEventDelete={handleRemoveNode}
+            handleDragDrop={handleDragDrop}
           />
           <ContextMenu
             setSelectedNodeId={setNoteId}
