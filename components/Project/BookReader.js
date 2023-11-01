@@ -534,7 +534,8 @@ function BookListReader({ books, setReference, reference, project }) {
                             {[...Array(Object.keys(book.chapters).length).keys()]
                               .map((el) => el + 1)
                               .map((index) => (
-                                <div
+                                <button
+                                  // disabled=
                                   className={`flex justify-center items-center w-10 h-10 bg-slate-200 rounded-md cursor-pointer hover:bg-slate-100 ${
                                     index === reference?.chapter
                                       ? 'cursor-default bg-slate-100'
@@ -546,7 +547,7 @@ function BookListReader({ books, setReference, reference, project }) {
                                   }
                                 >
                                   {index}
-                                </div>
+                                </button>
                               ))}
                           </div>
                         </Disclosure.Panel>
