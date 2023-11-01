@@ -59,7 +59,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
     <>
       <div
         className={`${isMobileIndexPage ? 'ml-4' : ''} ${
-          !isSidebar ? 'text-xs cursor-pointer text-th-primary-text' : ''
+          !isSidebar ? 'text-xs cursor-pointer text-th-text-primary' : ''
         }`}
         onClick={() => {
           !isSidebar && setIsOpen(true)
@@ -71,7 +71,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
       {isSidebar ? (
         versionModalIsOpen && (
           <div
-            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-background border-th-secondary-border sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-background-secondary border-th-border-secondary sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 flex items-center justify-between py-6">
@@ -85,7 +85,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
             <ReactMarkdown className="mb-10 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
               {showAllUpdates ? fullAboutVersion : currentAboutVersion}
             </ReactMarkdown>
-            <div className="flex justify-center pt-5 border-t border-th-secondary-border">
+            <div className="flex justify-center pt-5 border-t border-th-border-secondary">
               <button
                 onClick={() => setShowAllUpdates((prev) => !prev)}
                 className={`${isMobileIndexPage ? 'btn-secondary' : 'btn-primary'}`}
@@ -102,11 +102,11 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           className={{
             dialogPanel: `w-full align-middle transform overflow-y-auto shadow-xl transition-all ${
               isMobileIndexPage
-                ? 'px-6 pb-6 bg-th-secondary-background text-th-primary-text h-screen w-screen'
-                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-gradient-to-r from-th-primary-modal-from to-th-primary-modal-to text-th-secondary-text'
+                ? 'px-6 pb-6 bg-th-background-secondary text-th-text-primary h-screen w-screen'
+                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-gradient-to-r from-th-modal-from to-th-modal-to text-th-text-secondary'
             }`,
             main: `z-50 ${isMobileIndexPage ? 'fixed flex inset-0' : 'relative'}`,
-            transitionChild: `inset-0 opacity-25 bg-th-primary-background ${
+            transitionChild: `inset-0 opacity-25 bg-th-background-primary ${
               isMobileIndexPage ? 'absolute' : 'fixed'
             }`,
             backdrop: `inset-0 ${
@@ -121,8 +121,8 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
           <div
             className={`sticky top-0 flex items-center justify-between py-6 ${
               isMobileIndexPage
-                ? 'bg-th-secondary-background'
-                : 'bg-gradient-to-r from-th-primary-modal-from to-th-primary-modal-to'
+                ? 'bg-th-background-secondary'
+                : 'bg-gradient-to-r from-th-modal-from to-th-modal-to'
             }`}
           >
             <p className="text-2xl font-bold text-left">
@@ -132,8 +132,8 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
               <Close
                 className={`h-8 ${
                   isMobileIndexPage
-                    ? 'stroke-th-primary-icons'
-                    : 'stroke-th-secondary-icons'
+                    ? 'stroke-th-icons-primary'
+                    : 'stroke-th-icons-secondary'
                 }`}
               />
             </button>

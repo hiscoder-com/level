@@ -41,7 +41,7 @@ function Account() {
         {user?.id && (
           <>
             <Tab.Group as="div" className="block sm:hidden">
-              <Tab.List className="flex p-1 w-full bg-th-secondary-background border border-th-secondary-border rounded-3xl shadow-md">
+              <Tab.List className="flex p-1 w-full bg-th-background-secondary border border-th-border-secondary rounded-3xl shadow-md">
                 {tabs
                   .filter((el) => el !== 'projects:CreateProject')
                   .map((tab) => (
@@ -50,8 +50,8 @@ function Account() {
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
                             selected
-                              ? 'bg-th-primary text-th-secondary-text'
-                              : 'bg-gradient-to-b from-th-secondary-background to-th-primary-background'
+                              ? 'bg-th-primary text-th-text-secondary'
+                              : 'bg-gradient-to-b from-th-background-secondary to-th-background-primary'
                           }
                       `}
                         >
@@ -101,7 +101,7 @@ function Account() {
               </Tab.List>
               <Tab.Panels className="pb-10">
                 <div className="bg-th-primary h-10 rounded-t-3xl px-10"></div>
-                <div className="bg-th-secondary-background px-10 border border-th-secondary-border rounded-b-2xl">
+                <div className="bg-th-background-secondary px-10 border border-th-border-secondary rounded-b-2xl">
                   <Tab.Panel>
                     <Projects type={'account'} />
                   </Tab.Panel>
@@ -122,7 +122,7 @@ function Account() {
           {({ open }) => (
             <>
               <div
-                className={`inset-0 bg-th-primary-background bg-opacity-25 backdrop-filter backdrop-blur ${
+                className={`inset-0 bg-th-background-primary bg-opacity-25 backdrop-filter backdrop-blur ${
                   open ? 'fixed' : 'hidden'
                 }`}
               ></div>
@@ -150,7 +150,7 @@ function Account() {
               >
                 <Menu.Items
                   className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md ${
-                    openInternalMenu ? 'bg-inherit' : 'bg-th-secondary-background'
+                    openInternalMenu ? 'bg-inherit' : 'bg-th-background-secondary'
                   }`}
                 >
                   <Menu.Item
@@ -160,7 +160,7 @@ function Account() {
                     <Menu>
                       <Menu.Button>
                         <div
-                          className={`py-2 px-7 text-center text-th-secondary-text cursor-pointer bg-th-primary rounded-3xl ${
+                          className={`py-2 px-7 text-center text-th-text-secondary cursor-pointer bg-th-primary rounded-3xl ${
                             openInternalMenu ? 'hidden' : 'block'
                           }`}
                           onClick={() => setOpenInternalMenu(true)}
@@ -183,7 +183,7 @@ function Account() {
         >
           <div className="flex justify-end">
             <button
-              className={`p-4 mt-4 stroke-th-secondary-text rounded-full bg-th-primary shadow-2xl ${
+              className={`p-4 mt-4 stroke-th-text-secondary rounded-full bg-th-primary shadow-2xl ${
                 openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}

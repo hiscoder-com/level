@@ -10,10 +10,10 @@ export default function PageNotFound() {
   return (
     <div className="relative layout-appbar bg-th-primary">
       <NotFound className="absolute max-w-xl lg:max-w-3xl xl:max-w-5xl top-16" />
-      <div className="text-th-primary-modal-to text-[152px] sm:text-[200px] md:text-[248px] lg:text-[296px] xl:text-[360px] font-semibold">
+      <div className="text-th-modal-to text-[152px] sm:text-[200px] md:text-[248px] lg:text-[296px] xl:text-[360px] font-semibold">
         404
       </div>
-      <div className="flex flex-col items-center mt-28 md:mt-0 lg:mt-12 xl:mt-16 justify-center text-2xl font-bold text-th-primary-modal-to text-center">
+      <div className="flex flex-col items-center mt-28 md:mt-0 lg:mt-12 xl:mt-16 justify-center text-2xl font-bold text-th-modal-to text-center">
         <h2>{t('PageNotFound')}</h2>
         <p>
           {t('GoTo')}

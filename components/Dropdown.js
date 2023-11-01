@@ -50,19 +50,19 @@ function Dropdown({ description, user }) {
         onClick={toggle}
         ref={toolsButton}
       >
-        <Tools className="fill-th-secondary-icons" />
+        <Tools className="fill-th-icons-secondary" />
       </div>
 
       {isOpen && (
         <>
           <div
             ref={dropdownMenu}
-            className="absolute flex flex-col justify-center right-5 xl:right-0 border border-th-primary-border divide-y divide-solid bg-th-secondary-background rounded-md shadow-md z-40"
+            className="absolute flex flex-col justify-center right-5 xl:right-0 border border-th-border-primary divide-y divide-solid bg-th-background-secondary rounded-md shadow-md z-40"
           >
             {/* TODO - нужен дизайн, ховер и остальное */}
             <button
-              className="px-4 py-2 rounded-t-lg	hover:bg-th-primary-background
-			active:bg-th-primary-background"
+              className="px-4 py-2 rounded-t-lg	hover:bg-th-background-primary
+			active:bg-th-background-primary"
               onClick={(e) => {
                 toggle()
                 setShowModalStepGoal(true)
@@ -73,8 +73,8 @@ function Dropdown({ description, user }) {
             </button>
 
             <button
-              className="px-4 py-2 rounded-b-lg hover:bg-th-primary-background
-			active:bg-th-primary-background"
+              className="px-4 py-2 rounded-b-lg hover:bg-th-background-primary
+			active:bg-th-background-primary"
               onClick={(e) => {
                 toggle()
                 setShowModalTranslationGoal(true)
@@ -97,7 +97,7 @@ function Dropdown({ description, user }) {
         closeModal={closeModal}
       />
 
-      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold border-2 border-th-primary-border rounded-md divide-x divide-solid md:hidden">
+      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold border-2 border-th-border-primary rounded-md divide-x divide-solid md:hidden">
         <button
           className="px-2 rounded-l-lg active:bg-cyan-50"
           onClick={(e) => {

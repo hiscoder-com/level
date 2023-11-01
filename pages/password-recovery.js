@@ -9,7 +9,7 @@ import PasswordRecovery from 'components/PasswordRecovery'
 export default function PasswordRecoveryPage() {
   const { t } = useTranslation('common')
   return (
-    <main className="layout-empty bg-th-primary-background">
+    <main className="layout-empty bg-th-background-primary">
       <Head>
         <title>{t('V-CANA')}</title>
         <meta name="description" content="VCANA" />

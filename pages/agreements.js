@@ -12,19 +12,19 @@ export default function Agreements() {
         {/*TODO Исправить логику ссылок или редиректа */}
         <Link
           href="/user-agreement"
-          className="btn-base bg-th-primary-btn-background hover:bg-th-primary hover:text-th-secondary-text w-64"
+          className="btn-base bg-th-btn-background-primary hover:bg-th-primary hover:text-th-text-secondary w-64"
         >
           {t('Agreement')}
         </Link>
         <Link
           href="/confession"
-          className="btn-base bg-th-primary-btn-background hover:bg-th-primary hover:text-th-secondary-text w-64"
+          className="btn-base bg-th-btn-background-primary hover:bg-th-primary hover:text-th-text-secondary w-64"
         >
           {t('Confession')}
         </Link>
         <Link
           href="/user-agreement"
-          className="btn-base bg-th-primary-btn-background hover:bg-th-primary hover:text-th-secondary-text w-64"
+          className="btn-base bg-th-btn-background-primary hover:bg-th-primary hover:text-th-text-secondary w-64"
         >
           {t('common:Next')}
         </Link>

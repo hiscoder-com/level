@@ -37,7 +37,7 @@ export default function Footer({
   }, [router.pathname])
 
   return (
-    <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-th-primary-background md:flex-row-reverse lg:px-0">
+    <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-th-background-primary md:flex-row-reverse lg:px-0">
       <div className="relative flex items-center h-12 md:h-16">
         <div className="flex flex-row items-center space-x-6">
           <CheckBox
@@ -45,9 +45,9 @@ export default function Footer({
             checked={checked}
             className={{
               accent:
-                'bg-th-secondary-background checked:bg-th-secondary checked:border-th-secondary checked:before:bg-th-secondary border-th-secondary',
+                'bg-th-background-secondary checked:bg-th-secondary checked:border-th-secondary checked:before:bg-th-secondary border-th-secondary',
               cursor:
-                'fill-th-secondary-background text-th-secondary-background stroke-th-secondary-background',
+                'fill-th-background-secondary text-th-background-secondary stroke-th-background-secondary',
             }}
             label={textCheckbox}
           />

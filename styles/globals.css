@@ -5,35 +5,29 @@
 :root {
   --primary: theme('colors.slate.550');
   --secondary: theme('colors.yellow.600');
-  --primary-background: theme('colors.gray.150');
-	--primary-hover-background: theme('colors.neutral.400');
-	--secondary-background: theme('colors.white');
-	--tertiary-background: theme('colors.neutral.100');
-	--primary-icons:theme('colors.neutral.800');
-	--secondary-icons:theme('colors.white');
-	--primary-text:theme('colors.neutral.800');
-	--secondary-text:theme('colors.white');
-	--disabled-text:theme('colors.neutral.400');
-	--additional-text:theme('colors.slate.600');
-	--primary-link:theme('colors.slate.600');
-	--hover-primary-link:theme('colors.slate.500');
-	--disabled-link:theme('colors.neutral.400');
-	--primary-border:theme('colors.slate.600');  
-	--secondary-border:theme('colors.gray.400');
-	--primary-modal-from:	theme('colors.slate.550');
-	--primary-modal-to:	theme('colors.slate.560');  
-	--primary-btn-background:	theme('colors.gray.250');
-	--primary-btn-hover: theme('colors.yellow.600');
-	--secondary-btn-background:	theme('colors.yellow.600');
-	--secondary-btn-hover: theme('colors.neutral.200');
-	--tertiary-btn-background:	theme('colors.gray.450');
-	--tertiary-btn-hover: theme('colors.gray.350');
-	--quaternary-btn-background:	theme('colors.teal.350');
-	--quaternary-btn-hover: theme('colors.teal.200');
+  --background-primary: theme('colors.gray.150');
+	--background-secondary: theme('colors.white');
+	--background-tertiary: theme('colors.neutral.100');
+	--background-hover: theme('colors.neutral.400');
+	--icons-primary:theme('colors.neutral.800');
+	--icons-secondary:theme('colors.white');
+	--text-primary:theme('colors.neutral.800');
+	--text-secondary:theme('colors.white');
+	--text-disabled:theme('colors.neutral.400');
+	--link:theme('colors.slate.600');
+	--link-hover:theme('colors.slate.500');
+	--border-primary:theme('colors.slate.600');  
+	--border-secondary:theme('colors.gray.400');
+	--modal-from:	theme('colors.slate.550');
+	--modal-to:	theme('colors.slate.560');  
+	--btn-background-primary:	theme('colors.gray.250');
+	--btn-background-secondary: theme('colors.yellow.600');	
+	--btn-background-tertiary:	theme('colors.gray.450');
+	--btn-background-quaternary:	theme('colors.teal.350');
 	--active-tab-from:	theme('colors.slate.550');
 	--active-tab-to:	theme('colors.slate.570');
-	--primary-blur-background: theme('colors.zinc.500');
-	--primary-scroll: theme('colors.neutral.600');
+	--blur-background: theme('colors.zinc.500');
+	--scroll: theme('colors.neutral.600');
 	--first-check: theme('colors.slate.550');
 	--second-check: theme('colors.slate.580');
 	--third-check: theme('colors.cyan.950');
@@ -43,8 +37,6 @@
 	--invalid: theme('colors.red.500');
 	--input: theme('colors.gray.400');
 	--input-focus: theme('colors.slate.500');
-
-
 	--divide-verse1: theme('colors.stone.400');
 	--divide-verse2: theme('colors.stone.300');
 	--divide-verse3: theme('colors.zinc.300');
@@ -63,7 +55,7 @@
 	}
 
 	body {
-		@apply text-th-primary-text
+		@apply text-th-text-primary
 	} 
 
 	body.no-scrollbar {
@@ -76,7 +68,7 @@
 	
 	* {
 		scrollbar-width: thin;
-		scrollbar-color: var(--primary-scroll) var(--primary-background);
+		scrollbar-color: var(--scroll) var(--background-primary);
 	}
 
 	*::-webkit-scrollbar {
@@ -84,12 +76,12 @@
 	}
 
 	*::-webkit-scrollbar-track {
-		background: var(--primary-background);
+		background: var(--background-primary);
 		border-radius: 10px;
 	}
 
 	*::-webkit-scrollbar-thumb {
-		background-color: var(--primary-scroll);
+		background-color: var(--scroll);
 		border-radius: 10px
 	}
 }
@@ -106,8 +98,8 @@
 
 .arrow {
 	@apply px-5 py-5 rounded-full duration-300
-	hover:bg-th-secondary-background
-	active:bg-th-primary-hover-background
+	hover:bg-th-background-secondary
+	active:bg-th-background-hover
 	disabled:opacity-30
 	disabled:hover:bg-transparent;
 }
@@ -150,11 +142,11 @@
 }
 
 .label {
-	@apply peer-focus:font-medium absolute text-base text-th-primary-text duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
+	@apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
 }
 
 .input-label {
-	@apply block py-2.5 px-0 w-full text-sm text-th-primary-text bg-transparent border-0 border-b-2 border-th-secondary-border appearance-none focus:outline-none focus:ring-0 focus:border-th-primary;
+	@apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-border-secondary appearance-none focus:outline-none focus:ring-0 focus:border-th-primary;
 }
 
 .verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2) {
@@ -168,19 +160,19 @@
 	@apply py-2 px-2 text-sm border-x border-t border-th-primary rounded-t-2xl 
 }
 .tab-active {
-	@apply tab text-th-secondary-text bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to cursor-default focus:outline-none shadow
+	@apply tab text-th-text-secondary bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to cursor-default focus:outline-none shadow
 }
 
 .tab-inactive {
-	@apply tab bg-th-secondary-background hover:bg-gradient-to-b hover:from-th-secondary-background hover:to-th-primary-hover-background cursor-pointer
+	@apply tab bg-th-background-secondary hover:bg-gradient-to-b hover:from-th-background-secondary hover:to-th-background-hover cursor-pointer
 }
 .card {
-  @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-border shadow-md;
+  @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-border-secondary shadow-md;
 }
 
 @screen sm {
   .card-md {
-	 @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-border shadow-md;
+	 @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-border-secondary shadow-md;
 }
 }
 
@@ -189,16 +181,16 @@
 }
 
 .btn-primary {
-  @apply btn-base border text-th-primary-text border-th-secondary-border bg-th-primary-btn-background hover:bg-th-primary-btn-hover hover:border-th-primary-btn-hover hover:text-th-secondary-text disabled:hover:bg-th-primary-btn-background  disabled:border-th-secondary-text 
-	disabled:text-th-secondary-text disabled:cursor-default;
+  @apply btn-base border text-th-text-primary border-th-border-secondary bg-th-btn-background-primary hover:bg-th-btn-background-secondary hover:border-th-btn-background-secondary hover:text-th-text-secondary disabled:hover:bg-th-btn-background-primary  disabled:border-th-text-secondary 
+	disabled:text-th-text-secondary disabled:cursor-default;
 }
 
 .btn-secondary {
-  @apply btn-base text-th-secondary-text bg-th-secondary;
+  @apply btn-base text-th-text-secondary bg-th-secondary;
 }
 
 .btn-tertiary {
-	@apply mb-4 right-0 bg-th-tertiary-btn-background text-th-secondary-text  font-bold rounded-xl cursor-pointer hover:bg-th-tertiary-btn-hover
+	@apply mb-4 right-0 bg-th-btn-background-tertiary text-th-text-secondary  font-bold rounded-xl cursor-pointer hover:opacity-70
 }
 
 .btn-red {
@@ -223,7 +215,7 @@
 }
 
 .input-primary {
-	@apply input-base text-th-input border-th-input focus:border-th-input-focus placeholder:text-th-primary-background
+	@apply input-base text-th-input border-th-input focus:border-th-input-focus placeholder:text-th-background-primary
 }
 
 .input-invalid {

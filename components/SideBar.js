@@ -35,9 +35,9 @@ function SideBar({ setIsOpenSideBar, access }) {
           >
             {access &&
               (!open ? (
-                <Burger className="h-10 stroke-th-secondary-icons" />
+                <Burger className="h-10 stroke-th-icons-secondary" />
               ) : (
-                <Close className="h-10 stroke-th-secondary-icons" />
+                <Close className="h-10 stroke-th-icons-secondary" />
               ))}
           </Menu.Button>
           <Transition
@@ -52,7 +52,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th- bg-white sm:rounded-2xl">
-                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-border">
+                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-border-secondary">
                   <div className="w-12 h-12 min-w-[3rem]">
                     <TranslatorImage item={{ users: user }} />
                   </div>
@@ -70,8 +70,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                       className="flex items-center justify-between gap-2 cursor-default"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="px-4 py-2 rounded-[23rem] bg-th-primary-background">
-                          <Localization className="w-5 h-5 min-w-[1.5rem] stroke-th-primary-icons" />
+                        <div className="px-4 py-2 rounded-[23rem] bg-th-background-primary">
+                          <Localization className="w-5 h-5 min-w-[1.5rem] stroke-th-icons-primary" />
                         </div>
                         <span>{t('Language')}</span>
                       </div>
@@ -87,8 +87,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                         className="flex w-full items-center gap-4 cursor-pointer"
                         onClick={() => setVersionModalIsOpen((prev) => !prev)}
                       >
-                        <div className="px-4 py-2 rounded-[23rem] bg-th-primary-background">
-                          <VersionLogo className="w-5 h-5 min-w-[1.5rem] stroke-th-primary-icons" />
+                        <div className="px-4 py-2 rounded-[23rem] bg-th-background-primary">
+                          <VersionLogo className="w-5 h-5 min-w-[1.5rem] stroke-th-icons-primary" />
                         </div>
                         <AboutVersion isSidebar={true} />
                       </div>

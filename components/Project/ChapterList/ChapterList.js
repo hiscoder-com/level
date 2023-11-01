@@ -101,7 +101,7 @@ function ChapterList() {
   }
   return (
     <div className="pb-10">
-      <div className="card bg-th-secondary-background mx-auto max-w-7xl">
+      <div className="card bg-th-background-secondary mx-auto max-w-7xl">
         <div className="flex flex-col gap-7 w-full">
           <Breadcrumbs
             links={[
@@ -134,10 +134,10 @@ function ChapterList() {
                           isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
                         } ${
                           finished_at
-                            ? 'bg-th-secondary border-th-secondary text-th-secondary-text'
+                            ? 'bg-th-secondary border-th-secondary text-th-text-secondary'
                             : isCreated
-                            ? 'text-th-secondary-text bg-th-third-check border-th-third-check'
-                            : 'bg-th-secondary-background border-th-third-check'
+                            ? 'text-th-text-secondary bg-th-third-check border-th-third-check'
+                            : 'bg-th-background-secondary border-th-third-check'
                         } border-2`}
                       >
                         <div className="flex justify-between">
@@ -146,7 +146,7 @@ function ChapterList() {
                             {started_at && (
                               <div
                                 className={`text-sm ${
-                                  !finished_at ? 'text-th-hover-primary-link' : ''
+                                  !finished_at ? 'text-th-link-hover' : ''
                                 }`}
                               >
                                 {readableDate(started_at, locale)}
@@ -155,7 +155,7 @@ function ChapterList() {
                             {finished_at && (
                               <div
                                 className={`text-sm ${
-                                  !finished_at ? 'text-th-hover-primary-link' : ''
+                                  !finished_at ? 'text-th-link-hover' : ''
                                 }`}
                               >
                                 {readableDate(finished_at, locale)}
@@ -189,7 +189,7 @@ function ChapterList() {
                         }}
                         onClick={() => setCreatingChapter(chapter)}
                       >
-                        <div className="w-10 h-10 p-2 shadow-md text-th-primary-text bg-th-secondary-background border-th-secondary-background border-2 rounded-full">
+                        <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-background-secondary border-th-background-secondary border-2 rounded-full">
                           <Plus className="w-5 h-5" />
                         </div>
                       </div>
@@ -216,7 +216,7 @@ function ChapterList() {
             closeHandle={() => setIsOpenDownloading(false)}
             className={{
               dialogPanel:
-                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-modal-from to-th-primary-modal-to text-th-secondary-text overflow-y-visible rounded-3xl',
+                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-modal-from to-th-modal-to text-th-text-secondary overflow-y-visible rounded-3xl',
             }}
           >
             <Download

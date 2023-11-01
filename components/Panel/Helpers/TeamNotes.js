@@ -108,7 +108,7 @@ function TeamNotes() {
         <div>
           {isModeratorAccess && (
             <button className="btn-tertiary p-3" onClick={addNote}>
-              <Plus className="w-6 h-6 stroke-th-secondary-icons stroke-2" />
+              <Plus className="w-6 h-6 stroke-th-icons-secondary stroke-2" />
             </button>
           )}
           <ListOfNotes
@@ -119,13 +119,13 @@ function TeamNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'flex justify-between items-start group my-3 bg-th-primary-background rounded-lg cursor-pointer',
+              item: 'flex justify-between items-start group my-3 bg-th-background-primary rounded-lg cursor-pointer',
               title: 'p-2 mr-4 font-bold',
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn={isModeratorAccess}
-            delBtnChildren={<Trash className={'w-4 h-4 stroke-th-primary-icons'} />}
+            delBtnChildren={<Trash className={'w-4 h-4 stroke-th-icons-primary'} />}
           />
         </div>
       ) : (
@@ -144,9 +144,9 @@ function TeamNotes() {
             classes={{
               wrapper: '',
               title:
-                'p-2 my-4 mr-12 font-bold bg-th-primary-background rounded-lg shadow-md',
+                'p-2 my-4 mr-12 font-bold bg-th-background-primary rounded-lg shadow-md',
               redactor:
-                'pb-20 pt-4 px-4 my-4 bg-th-primary-background overflow-hidden break-words rounded-lg shadow-md',
+                'pb-20 pt-4 px-4 my-4 bg-th-background-primary overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}

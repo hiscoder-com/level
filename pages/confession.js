@@ -20,7 +20,7 @@ export default function Confession() {
           <a
             href="https://texttree.org/"
             target={'_blank'}
-            className="underline text-th-primary-link hover:text-th-hover-primary-link"
+            className="underline text-th-link hover:text-th-link-hover"
             rel="noreferrer"
           >
             https://texttree.org/
@@ -28,7 +28,7 @@ export default function Confession() {
         </p>
         <Link
           href="/confession-steps"
-          className="btn-secondary hover:bg-th-primary-btn-background hover:text-th-primary-text"
+          className="btn-secondary hover:bg-th-btn-background-primary hover:text-th-text-primary"
         >
           {t('Start')}
         </Link>
@@ -37,7 +37,7 @@ export default function Confession() {
   )
 }
 
-Confession.backgroundColor = 'bg-th-secondary-background'
+Confession.backgroundColor = 'bg-th-background-secondary'
 
 export async function getStaticProps({ locale }) {
   return {

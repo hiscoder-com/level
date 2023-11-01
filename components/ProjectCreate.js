@@ -162,7 +162,7 @@ function ProjectCreate() {
     <>
       <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
         <form className="flex flex-col gap-0 md:gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card-md bg-th-tertiary-background py-7 space-y-7">
+          <div className="card-md bg-th-background-tertiary py-7 space-y-7">
             <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
             <BasicInformation
               t={t}
@@ -175,13 +175,13 @@ function ProjectCreate() {
               uniqueCheck
             />
           </div>
-          <div className="card-md bg-th-tertiary-background flex flex-col gap-7 py-7">
+          <div className="card-md bg-th-background-tertiary flex flex-col gap-7 py-7">
             <h3 className="text-xl font-bold">{t('project-edit:Steps')}</h3>
             <div className="flex flex-col gap-7 text-sm md:text-base">
               <Steps customSteps={customSteps} updateSteps={updateSteps} />
             </div>
           </div>
-          <div className="card-md bg-th-tertiary-background flex flex-col gap-7 py-7">
+          <div className="card-md bg-th-background-tertiary flex flex-col gap-7 py-7">
             <div className="flex justify-between">
               <h3 className="text-xl font-bold">{t('Brief')}</h3>
               <div className="flex items-center gap-2">
@@ -192,7 +192,7 @@ function ProjectCreate() {
                   checked={isBriefEnable}
                   onChange={() => setIsBriefEnable((prev) => !prev)}
                   className={`${
-                    isBriefEnable ? 'bg-th-primary-switch' : 'bg-th-primary-background'
+                    isBriefEnable ? 'bg-th-primary-switch' : 'bg-th-background-primary'
                   } relative inline-flex h-6 w-11 items-center rounded-full`}
                 >
                   <span
@@ -210,7 +210,7 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="card-md bg-th-tertiary-background flex flex-col gap-7 pb-7 mb-7 border-b border-th-primary-border">
+          <div className="card-md bg-th-background-tertiary flex flex-col gap-7 pb-7 mb-7 border-b border-th-border-primary">
             <h3 className="text-xl font-bold">{t('common:ListResources')}</h3>
             <CommitsList
               methodId={methodId}

@@ -8,7 +8,7 @@ function ChecksIcon({ levelCheck }) {
   }
 
   return (
-    <div className={`text-th-disabled-text ${classes[levelCheck?.level]?.join(' ')}`}>
+    <div className={`text-th-text-disabled ${classes[levelCheck?.level]?.join(' ')}`}>
       <Checking />
     </div>
   )

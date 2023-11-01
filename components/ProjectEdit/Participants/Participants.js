@@ -100,7 +100,7 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
   }
   return (
     <>
-      <div className="hidden sm:block divide-y divide-th-primary-text">
+      <div className="hidden sm:block divide-y divide-th-text-primary">
         <div className="flex flex-col gap-7 pb-5">
           <div className="flex justify-between items-center gap-2">
             <div>{t('projects:Coordinators')}</div>
@@ -181,7 +181,7 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
           </Modal>
         </div>
       </div>
-      <div className="block sm:hidden divide-y divide-th-primary-text">
+      <div className="block sm:hidden divide-y divide-th-text-primary">
         <div className="flex flex-col gap-3 pb-5">
           <div className="flex justify-between items-center gap-2">
             <div>{t('Coordinator', { count: 0 })}</div>

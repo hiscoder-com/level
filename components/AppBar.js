@@ -57,7 +57,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             } md:ml-0 `}
           >
             <Link href={logoLink}>
-              <VcanaLogo className="h-6 fill-th-secondary-text" />
+              <VcanaLogo className="h-6 fill-th-text-secondary" />
             </Link>
           </div>
 
@@ -74,22 +74,22 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         {isStepPage && (
           <>
             <div
-              className={`block md:flex text-center text-th-secondary-text ${
+              className={`block md:flex text-center text-th-text-secondary ${
                 showFullAppbar ? '' : 'hidden'
               }`}
             >
               {stepConfig.title}
             </div>
             <div
-              className={`items-center gap-4 md:flex justify-center md:justify-start text-th-primary-text ${
+              className={`items-center gap-4 md:flex justify-center md:justify-start text-th-text-primary ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
-              <div className="flex row px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-background rounded-3xl">
-                <User className="w-4 h-4 stroke-th-primary-icons" />
+              <div className="flex row px-5 py-2.5 items-center gap-1 cursor-default bg-th-background-secondary rounded-3xl">
+                <User className="w-4 h-4 stroke-th-icons-primary" />
                 {stepConfig.count_of_users}
               </div>
-              <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-background rounded-3xl">
+              <div className="hidden md:flex px-5 py-2.5 bg-th-background-secondary rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
               <Dropdown description={stepConfig?.description} user={user} />

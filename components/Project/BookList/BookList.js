@@ -45,7 +45,7 @@ function BookList({ user, project, access }) {
             project &&
             (!propertiesBook ? (
               <>
-                <Tab.List className="flex p-1 w-full bg-th-secondary-background rounded-3xl shadow">
+                <Tab.List className="flex p-1 w-full bg-th-background-secondary rounded-3xl shadow">
                   {testaments[project?.type]?.map((testament) => (
                     <Tab
                       as={Fragment}
@@ -56,9 +56,9 @@ function BookList({ user, project, access }) {
                         <div
                           className={`w-full rounded-3xl p-2 text-center cursor-pointer ${
                             project?.type === 'obs'
-                              ? 'bg-th-secondary-background cursor-default'
+                              ? 'bg-th-background-secondary cursor-default'
                               : selected
-                              ? 'bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to text-th-secondary-text'
+                              ? 'bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to text-th-text-secondary'
                               : ''
                           }
                       `}
@@ -69,7 +69,7 @@ function BookList({ user, project, access }) {
                     </Tab>
                   ))}
                 </Tab.List>
-                <Tab.Panels className="card bg-th-secondary-background">
+                <Tab.Panels className="card bg-th-background-secondary">
                   {testaments?.[project?.type]?.map((testament) => (
                     <Tab.Panel
                       key={testament.title}
@@ -102,7 +102,7 @@ function BookList({ user, project, access }) {
       </div>
       <div
         className={`hidden sm:flex sm:flex-row gap-7 h-full ${
-          !currentBook && propertiesBook ? '' : 'card bg-th-secondary-background'
+          !currentBook && propertiesBook ? '' : 'card bg-th-background-secondary'
         }`}
       >
         {user &&

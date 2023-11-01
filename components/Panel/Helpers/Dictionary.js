@@ -211,7 +211,7 @@ function Dictionary() {
             <>
               <div className="absolute top-0 right-0">
                 <button className="btn-tertiary p-3" onClick={addNote}>
-                  <Plus className="w-6 h-6 stroke-th-secondary-icons stroke-2" />
+                  <Plus className="w-6 h-6 stroke-th-icons-secondary stroke-2" />
                 </button>
               </div>
             </>
@@ -226,13 +226,13 @@ function Dictionary() {
                 }}
                 setNoteId={setWordId}
                 classes={{
-                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-th-primary-background',
+                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-th-background-primary',
                   title: 'font-bold p-2 mr-4',
                   text: 'px-2 h-10 overflow-hidden',
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
                 }}
                 isShowDelBtn={isModeratorAccess}
-                delBtnChildren={<Trash className={'w-4 h-4 stroke-th-primary-icons'} />}
+                delBtnChildren={<Trash className={'w-4 h-4 stroke-th-icons-primary'} />}
               />
               {totalPageCount > 1 && (
                 <div className="flex justify-around bottom-0 left-0">
@@ -283,9 +283,9 @@ function Dictionary() {
             classes={{
               wrapper: '',
               title:
-                'bg-th-primary-background p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
+                'bg-th-background-primary p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
               redactor:
-                'p-4 my-4 pb-20 bg-th-primary-background overflow-hidden break-words rounded-lg shadow-md',
+                'p-4 my-4 pb-20 bg-th-background-primary overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeWord}
             setActiveNote={setActiveWord}
@@ -343,14 +343,14 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
                 setCurrentPageWords(0)
                 setSearchQuery(el.toLowerCase())
               }}
-              className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-primary-background "
+              className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-background-primary "
               key={el}
             >
               {el}
             </div>
           ))}
       <div
-        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-primary-background
+        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-background-primary
         "
         onClick={getAll}
       >

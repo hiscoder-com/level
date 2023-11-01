@@ -23,7 +23,7 @@ function ProjectCard({ project, user }) {
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`} legacyBehavior>
-          <div className="card bg-th-tertiary-background flex justify-between items-start cursor-pointer h-full">
+          <div className="card bg-th-background-tertiary flex justify-between items-start cursor-pointer h-full">
             <div className="flex flex-col gap-9">
               <div className="text-xl font-bold">{project.title}</div>{' '}
               {briefResume === '' && (
@@ -37,7 +37,7 @@ function ProjectCard({ project, user }) {
               <div className="flex flex-col gap-5">
                 <div className="flex gap-3">
                   <p>{t('Language')}:</p>
-                  <p className="text-th-disabled-text">{project.languages.orig_name}</p>
+                  <p className="text-th-text-disabled">{project.languages.orig_name}</p>
                 </div>
                 <div className="flex gap-3">
                   <p>{t('common:Translator_other')}:</p>

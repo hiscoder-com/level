@@ -100,7 +100,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         <Tab.Panels>
           <div className="bg-th-primary h-10 rounded-t-3xl px-10"></div>
           <Tab.Panel>
-            <div className="px-10 border border-th-secondary-border rounded-b-2xl bg-th-secondary-background flex flex-col py-7">
+            <div className="px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary flex flex-col py-7">
               <div className="flex flex-col gap-4">
                 {renderProperties}
                 <ButtonLoading onClick={handleSaveProperties} isLoading={isSaving}>
@@ -166,7 +166,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
     }
   }, [book])
   return (
-    <div className="px-10 border border-th-secondary-border rounded-b-2xl bg-th-secondary-background flex flex-col gap-4 py-7">
+    <div className="px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary flex flex-col gap-4 py-7">
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-4">
           <div className="font-bold">{t('TranslationLink')}</div>
@@ -180,7 +180,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           />
           {book?.level_checks && (
             <div
-              className="flex gap-4 cursor-pointer text-th-primary-link hover:opacity-70"
+              className="flex gap-4 cursor-pointer text-th-link hover:text-th-link-hover"
               onClick={() =>
                 push({
                   pathname: `/projects/${project?.code}/books/read`,
@@ -212,7 +212,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                     className={{
                       accent: levelColor[index],
                       cursor:
-                        'fill-th-secondary-background stroke-th-secondary-background text-th-secondary-background',
+                        'fill-th-background-secondary stroke-th-background-secondary text-th-background-secondary',
                     }}
                     label={el}
                   />

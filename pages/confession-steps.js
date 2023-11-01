@@ -98,7 +98,7 @@ export default function ConfessionSteps() {
             <LeftArrow className="w-6" />
           </button>
         </div>
-        <div className="w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] text-xl bg-th-secondary-background rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none">
+        <div className="w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] text-xl bg-th-background-secondary rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none">
           {confessionSteps[page]}
         </div>
         <div className="flex items-center">
@@ -117,9 +117,9 @@ export default function ConfessionSteps() {
           checked={checked}
           className={{
             accent:
-              'bg-th-secondary-background checked:bg-th-secondary checked:border-th-secondary checked:before:bg-th-secondary border-th-secondary',
+              'bg-th-background-secondary checked:bg-th-secondary checked:border-th-secondary checked:before:bg-th-secondary border-th-secondary',
             cursor:
-              'fill-th-secondary-background text-th-secondary-background stroke-th-secondary-background',
+              'fill-th-background-secondary text-th-background-secondary stroke-th-background-secondary',
           }}
           label={t('users:Agree')}
         />

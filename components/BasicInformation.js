@@ -20,7 +20,7 @@ function BasicInformation({
       title: t('Title'),
       className: errors?.title
         ? 'input-invalid'
-        : 'input-primary bg-th-secondary-background',
+        : 'input-primary bg-th-background-secondary',
       placeholder: '',
       register: {
         ...register('title', {
@@ -34,7 +34,7 @@ function BasicInformation({
       title: t('OrigTitle'),
       className: errors?.origtitle
         ? 'input-invalid'
-        : 'input-primary bg-th-secondary-background',
+        : 'input-primary bg-th-background-secondary',
       placeholder: '',
       register: {
         ...register('origtitle', {
@@ -48,7 +48,7 @@ function BasicInformation({
       title: t('Code'),
       className: errors?.code
         ? 'input-invalid'
-        : 'input-primary bg-th-secondary-background',
+        : 'input-primary bg-th-background-secondary',
       placeholder: '',
       register: {
         ...register('code', {
@@ -91,7 +91,7 @@ function BasicInformation({
         <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-4/5">
           <div className="relative flex w-full md:w-3/4">
             <select
-              className="input-primary bg-th-secondary-background h-full appearance-none cursor-pointer"
+              className="input-primary bg-th-background-secondary h-full appearance-none cursor-pointer"
               placeholder={t('Language')}
               {...register('languageId')}
             >
@@ -109,10 +109,10 @@ function BasicInformation({
           <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-base text-th-primary-text border-th-primary-border bg-th-secondary-background flex items-center gap-2 truncate"
+              className="input-base text-th-text-primary border-th-border-primary bg-th-background-secondary flex items-center gap-2 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
-              <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-primary-icons stroke-th-primary-icons rounded-full" />
+              <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-icons-primary stroke-th-icons-primary rounded-full" />
               <span>{t('project-edit:AddLanguage')}</span>
             </button>
           </div>
@@ -125,7 +125,7 @@ function BasicInformation({
             <select
               placeholder={t('Method')}
               {...register('methodId')}
-              className="input-primary bg-th-secondary-background w-3/4 appearance-none cursor-pointer"
+              className="input-primary bg-th-background-secondary w-3/4 appearance-none cursor-pointer"
               defaultValue={methods?.[0]?.id}
             >
               {methods &&

@@ -46,14 +46,14 @@ function MainAudio({ setAudioState }) {
     <div className="flex flex-col items-center gap-5 min-h-full justify-center">
       <button
         onClick={() => setAudioState('Retell Partner')}
-        className="btn-base bg-th-tertiary-btn-background text-th-secondary-text"
+        className="btn-base bg-th-btn-background-tertiary text-th-text-secondary"
       >
         {t('RetellPartner')}
       </button>
       <p>{t('NoWayToTellPartner')}</p>
       <button
         onClick={() => setAudioState('Retell Yourself')}
-        className="btn-base bg-th-tertiary-btn-background text-th-secondary-text"
+        className="btn-base bg-th-btn-background-tertiary text-th-text-secondary"
       >
         {t('RetellYourself')}
       </button>
@@ -74,7 +74,7 @@ function RetellPartner({ setAudioState }) {
       />
       {inactive ? (
         <button
-          className="btn-base bg-th-tertiary-btn-background text-th-secondary-text mr-2"
+          className="btn-base bg-th-btn-background-tertiary text-th-text-secondary mr-2"
           onClick={() => setInactive(false)}
         >
           {t('Finished')}
@@ -84,13 +84,13 @@ function RetellPartner({ setAudioState }) {
           <p>{t('StartRetelling')}</p>
           <div className="flex">
             <button
-              className="btn-base bg-th-tertiary-btn-background text-th-secondary-text mr-2"
+              className="btn-base bg-th-btn-background-tertiary text-th-text-secondary mr-2"
               onClick={() => setInactive(true)}
             >
               {t('InOriginalLanguage')}
             </button>
             <button
-              className="btn-base bg-th-tertiary-btn-background text-th-secondary-text"
+              className="btn-base bg-th-btn-background-tertiary text-th-text-secondary"
               onClick={() => setInactive(true)}
             >
               {t('InTargetLanguage')}
@@ -116,7 +116,7 @@ function RetellYourself({ setAudioState }) {
         {['OriginalRecording', 'TargetRecording'].map((recorderType) => (
           <div
             key={recorderType}
-            className="w-full pb-4 px-2 mb-4 border-b-4 border-th-primary-background"
+            className="w-full pb-4 px-2 mb-4 border-b-4 border-th-background-primary"
           >
             <p className="mb-4">{t(recorderType)}</p>
             <Recorder />

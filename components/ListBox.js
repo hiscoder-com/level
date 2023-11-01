@@ -6,18 +6,18 @@ function ListBox({ options, selectedOption, setSelectedOption }) {
     <Listbox value={selectedOption} onChange={(e) => setSelectedOption(e)}>
       {({ open }) => (
         <>
-          <div className="relative text-th-primary-text">
-            <Listbox.Button className="relative flex justify-between px-5 py-3 w-full bg-th-secondary-background rounded-lg">
+          <div className="relative text-th-text-primary">
+            <Listbox.Button className="relative flex justify-between px-5 py-3 w-full bg-th-background-secondary rounded-lg">
               <span>
                 {options?.find((option) => option.value === selectedOption)?.label}
               </span>
               <Down className="w-6 h-6 min-w-[1.5rem]" />
             </Listbox.Button>
-            <div className={`-mt-2 pt-5 ${open ? 'bg-th-secondary-background' : ''}`}>
-              <Listbox.Options className="absolute w-full max-h-[40vh] bg-th-secondary-background rounded-b-lg overflow-y-scroll z-10">
+            <div className={`-mt-2 pt-5 ${open ? 'bg-th-background-secondary' : ''}`}>
+              <Listbox.Options className="absolute w-full max-h-[40vh] bg-th-background-secondary rounded-b-lg overflow-y-scroll z-10">
                 {options.map((el) => (
                   <Listbox.Option
-                    className="relative px-5 py-1 bg-th-secondary-background cursor-pointer last:pb-3 hover:bg-th-primary-background"
+                    className="relative px-5 py-1 bg-th-background-secondary cursor-pointer last:pb-3 hover:bg-th-background-primary"
                     key={el.value}
                     value={el.value}
                   >

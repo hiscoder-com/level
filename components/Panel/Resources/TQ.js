@@ -42,13 +42,13 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
   })
 
   return (
-    <div className="divide-y divide-dashed divide-th-primary-text">
+    <div className="divide-y divide-dashed divide-th-text-primary">
       {data &&
         Object.keys(data)?.map((key) => {
           return (
             <div key={key} className="flex mx-4 p-4" id={'idtq' + key}>
               <div className="text-2xl">{key}</div>
-              <div className="pl-7 text-th-primary-text">
+              <div className="pl-7 text-th-text-primary">
                 <ul>
                   {data[key]?.map((item) => {
                     return (
@@ -81,7 +81,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
     <Disclosure>
       <Disclosure.Button
         className={`p-2 w-fit text-left ${
-          highlightId === 'id' + item.id ? 'bg-th-primary-background rounded-lg' : ''
+          highlightId === 'id' + item.id ? 'bg-th-background-primary rounded-lg' : ''
         }`}
         onClick={() => {
           if (viewAll) {
@@ -91,7 +91,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
       >
         <ReactMarkdown>{item.title}</ReactMarkdown>
       </Disclosure.Button>
-      <Disclosure.Panel className="w-fit py-4 text-th-primary-text">
+      <Disclosure.Panel className="w-fit py-4 text-th-text-primary">
         <p className="ml-2">{item.text}</p>
       </Disclosure.Panel>
     </Disclosure>

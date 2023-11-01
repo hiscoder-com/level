@@ -43,13 +43,13 @@ function TranslatorsList({
                   checked={el.is_moderator}
                   onChange={() => setSelectedModerator(el.users)}
                   className={`${
-                    el.is_moderator ? 'bg-th-primary-switch' : 'bg-th-primary-background'
+                    el.is_moderator ? 'bg-th-primary-switch' : 'bg-th-background-primary'
                   } relative inline-flex h-7 w-12 items-center rounded-full`}
                 >
                   <span
                     className={`${
                       el.is_moderator ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-5 w-5 transform rounded-full bg-th-secondary-background transition`}
+                    } inline-block h-5 w-5 transform rounded-full bg-th-background-secondary transition`}
                   />
                 </Switch>
               )}
@@ -97,7 +97,7 @@ function TranslatorsList({
                             className={`relative inline-flex items-center h-6 w-12 rounded-full ${
                               el.is_moderator
                                 ? 'bg-th-primary-switch'
-                                : 'bg-th-primary-background'
+                                : 'bg-th-background-primary'
                             }`}
                           >
                             <span

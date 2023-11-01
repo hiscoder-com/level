@@ -16,10 +16,10 @@ function StartPage({ children }) {
           <VcanaLogo className="max-w-xs my-10 sm:max-w-md w-28" />
           <AboutVersion isMobileIndexPage={true} />
         </div>
-        <div className="bg-th-secondary-background w-[90vw] mb-10 rounded-lg shadow-lg">
+        <div className="bg-th-background-secondary w-[90vw] mb-10 rounded-lg shadow-lg">
           {children}
         </div>
-        <div className="text-th-disabled-text mb-4 text-center">{t('DevelopedBy')}</div>
+        <div className="text-th-text-disabled mb-4 text-center">{t('DevelopedBy')}</div>
         <Link href="https://openmediabible.com/" target="_blank">
           <OmbLogo className="logo mb-4" />
         </Link>
@@ -33,7 +33,7 @@ function StartPage({ children }) {
               <AboutVersion />
             </div>
             <h1 className="my-4 text-center">{t('PlatformForBibleTranslate')}</h1>
-            <div className="text-th-disabled-text mb-2 text-xs">{t('DevelopedBy')}</div>
+            <div className="text-th-text-disabled mb-2 text-xs">{t('DevelopedBy')}</div>
             <Link href="https://openmediabible.com/" target="_blank">
               <OmbLogo className="logo" />
             </Link>

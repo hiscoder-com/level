@@ -293,9 +293,9 @@ function Download({
                     checked={downloadSettings[key]}
                     className={{
                       accent:
-                        'bg-th-second-check checked:bg-th-secondary-background checked:border-th-primary checked:before:bg-th-secondary-background border-th-primary-border',
+                        'bg-th-second-check checked:bg-th-background-secondary checked:border-th-primary checked:before:bg-th-background-secondary border-th-border-primary',
                       cursor:
-                        'fill-th-primary-text text-th-primary-text stroke-th-primary-text',
+                        'fill-th-text-primary text-th-text-primary stroke-th-text-primary',
                       wrapper: 'flex-row-reverse justify-between',
                     }}
                     label={t(key)}

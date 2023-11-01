@@ -149,7 +149,7 @@ function Panel({
         {tools.map((tool, index) => {
           return (
             <Tab.Panel key={index}>
-              <div className="flex flex-col bg-th-secondary-background rounded-lg h-full">
+              <div className="flex flex-col bg-th-background-secondary rounded-lg h-full">
                 <Tool
                   editable={editable}
                   targetResourceLink={targetResourceLink}

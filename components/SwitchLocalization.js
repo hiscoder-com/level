@@ -13,12 +13,12 @@ function SwitchLocalization() {
     <div className="text-xs lg:text-sm font-bold relative">
       <Menu>
         <Menu.Button
-          className="px-4 py-2 text-sm bg-th-primary-background rounded-[9rem]"
+          className="px-4 py-2 text-sm bg-th-background-primary rounded-[9rem]"
           onClick={(e) => e.stopPropagation()}
         >
           {t(locale.toUpperCase())}
         </Menu.Button>
-        <Menu.Items className="absolute flex top-0 right-0 text-sm bg-th-primary-background rounded-2xl">
+        <Menu.Items className="absolute flex top-0 right-0 text-sm bg-th-background-primary rounded-2xl">
           <div className="flex flex-col">
             {supportedLngs.map((loc) => (
               <Menu.Item
@@ -29,7 +29,7 @@ function SwitchLocalization() {
                 }}
                 className="cursor-pointer px-4 py-2 hover:bg-th-primary-hover-backgroung last:rounded-b-2xl first:rounded-t-2xl"
               >
-                <div className={`${locale === loc ? 'text-th-disabled-text' : ''}`}>
+                <div className={`${locale === loc ? 'text-th-text-disabled' : ''}`}>
                   {t(loc.toUpperCase())}
                 </div>
               </Menu.Item>

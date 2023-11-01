@@ -41,7 +41,7 @@ function Layout({ backgroundColor, children }) {
             leave="transition-opacity duration-200"
           >
             {/**
-             * не получается bg-th-primary-blur-background применить к blur и opacity
+             * не получается bg-th-blur-background применить к blur и opacity
              */}
             <div
               className={

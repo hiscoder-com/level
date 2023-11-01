@@ -99,7 +99,7 @@ function PasswordRecovery() {
                   />
 
                   <span
-                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-primary-icons"
+                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-icons-primary"
                     onClick={() => {
                       setShowPassword((prev) => !prev)
                     }}
@@ -122,7 +122,7 @@ function PasswordRecovery() {
                   />
 
                   <span
-                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-primary-icons"
+                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-icons-primary"
                     onClick={() => setShowRepeatPassword((prev) => !prev)}
                   >
                     {showRepeatPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -147,7 +147,7 @@ function PasswordRecovery() {
               <div>{successResult}</div>
               <Link
                 href={'/'}
-                className="mb-6 lg:mb-14 text-th-primary-link hover:opacity-70"
+                className="mb-6 lg:mb-14 text-th-link hover:text-th-link-hover"
               >
                 {t('GoToLogin')}
               </Link>

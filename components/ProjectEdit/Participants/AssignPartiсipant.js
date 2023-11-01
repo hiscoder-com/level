@@ -23,7 +23,7 @@ function AssignParticipant({
       }}
       className={{
         dialogPanel:
-          'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-modal-from to-th-primary-modal-to text-th-secondary-text overflow-y-visible rounded-3xl',
+          'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-modal-from to-th-modal-to text-th-text-secondary overflow-y-visible rounded-3xl',
       }}
     >
       <div className="flex flex-col min-h-[15vh] gap-7">

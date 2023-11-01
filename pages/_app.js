@@ -25,7 +25,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <UserContextProvider supabaseClient={supabaseClient}>
       <RecoilRoot>
-        <Layout backgroundColor={Component.backgroundColor ?? 'bg-th-primary-background'}>
+        <Layout backgroundColor={Component.backgroundColor ?? 'bg-th-background-primary'}>
           <Component {...pageProps} />
         </Layout>
       </RecoilRoot>

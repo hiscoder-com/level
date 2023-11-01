@@ -105,7 +105,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
 
   return (
     <div
-      className={`divide-y divide-th-primary-text divide-dashed h-full overflow-auto ${
+      className={`divide-y divide-th-text-primary divide-dashed h-full overflow-auto ${
         isLoading ? 'px-4' : ''
       }`}
     >
@@ -144,9 +144,9 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                         key={index}
                         id={'id' + item.id}
                         className={`p-2 rounded-lg cursor-pointer ${
-                          itemFilter ? 'text-th-disabled-text' : ''
-                        } hover:bg-th-primary-background
-                      ${highlightId === 'id' + item.id ? 'bg-th-primary-background' : ''}
+                          itemFilter ? 'text-th-text-disabled' : ''
+                        } hover:bg-th-background-primary
+                      ${highlightId === 'id' + item.id ? 'bg-th-background-primary' : ''}
                       `}
                         onClick={() => {
                           handleSaveScroll(verseNumber, item.id)

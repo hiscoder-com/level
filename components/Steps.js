@@ -20,7 +20,7 @@ function Steps({ updateSteps, customSteps = [] }) {
           {({ open }) => (
             <div>
               <Disclosure.Button
-                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-th-secondary-background border-x border-t border-th-secondary-border ${
+                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-th-background-secondary border-x border-t border-th-border-secondary ${
                   open ? 'rounded-t-md' : 'rounded-md border-b'
                 }`}
               >
@@ -31,7 +31,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   } `}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="p-4 space-y-7 bg-th-secondary-background border-x border-b border-th-secondary-border rounded-b-md text-sm md:text-base">
+              <Disclosure.Panel className="p-4 space-y-7 bg-th-background-secondary border-x border-b border-th-border-secondary rounded-b-md text-sm md:text-base">
                 {fields.map((field) => (
                   <div
                     className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full"
@@ -45,7 +45,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                         textarea={field.textarea}
                         fieldName={field.name}
                         updateValue={updateSteps}
-                        className="input-primary bg-th-secondary-background"
+                        className="input-primary bg-th-background-secondary"
                       />
                     </div>
                   </div>
@@ -63,7 +63,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                         {config.tools.map((tool) => (
                           <div
                             key={tool.name}
-                            className="btn-base bg-th-primary-btn-background hover:bg-th-primary-btn-background pointer-events-none "
+                            className="btn-base bg-th-btn-background-primary hover:bg-th-btn-background-primary pointer-events-none "
                           >
                             {t('common:' + tool.name)}
                           </div>
@@ -76,7 +76,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:TranslatorsCount')}
                   </span>
-                  <div className="btn-base bg-th-primary-btn-background hover:bg-th-primary-btn-background pointer-events-none">
+                  <div className="btn-base bg-th-btn-background-primary hover:bg-th-btn-background-primary pointer-events-none">
                     {step?.count_of_users}
                   </div>
                 </div>
@@ -84,7 +84,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:ExecutionTime')}
                   </span>
-                  <div className="btn-base bg-th-primary-btn-background hover:bg-th-primary-btn-background pointer-events-none">
+                  <div className="btn-base bg-th-btn-background-primary hover:bg-th-btn-background-primary pointer-events-none">
                     {step.time}
                   </div>
                 </div>

@@ -40,7 +40,7 @@ function IntroStep({ title, markdown, nextLink }) {
     <div className="f-screen-appbar mb-4 w-full max-w-3xl">
       <div
         style={{ height: 'calc(100vh - 11rem)' }}
-        className="mb-4 mx-auto py-6 px-6 lg:px-8 bg-th-secondary-background overflow-auto rounded-lg"
+        className="mb-4 mx-auto py-6 px-6 lg:px-8 bg-th-background-secondary overflow-auto rounded-lg"
       >
         <h2 className="mb-4 text-3xl">{title}</h2>
         <MarkdownExtended>{markdown}</MarkdownExtended>

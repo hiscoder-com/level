@@ -163,7 +163,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:Basic',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
               <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
@@ -182,7 +182,7 @@ function ProjectEdit() {
           access: isTranslatorAccess,
           label: 'project-edit:Brief',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
               <Brief access={isCoordinatorAccess} title />
             </div>
           ),
@@ -192,7 +192,7 @@ function ProjectEdit() {
           access: isModeratorAccess,
           label: 'Participants',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
               <h3 className="text-xl font-bold">{t('Participants')}</h3>
               <Participants
                 users={users}
@@ -206,7 +206,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'Resources',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
               <h3 className="text-lg md:text-xl font-bold">{t('ListResources')}</h3>
               <ResourceSettings />
             </div>
@@ -217,7 +217,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:Steps',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-border shadow-md bg-th-secondary-background rounded-t-none  rounded-b-2xl space-y-7">
+            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
               <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
               <div className="space-y-7">
                 <Steps customSteps={customSteps} updateSteps={updateSteps} />
@@ -329,14 +329,14 @@ function ProjectEdit() {
           </Tab.Group>
         )}
       </div>
-      <div className="flex sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 flex-col gap-7 bg-th-secondary-background">
+      <div className="flex sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 flex-col gap-7 bg-th-background-secondary">
         <Breadcrumbs
           links={[
             { title: project?.title, href: '/projects/' + code },
             { title: t('Settings') },
           ]}
         />
-        <div className="space-y-7 divide-y divide-th-primary-text">
+        <div className="space-y-7 divide-y divide-th-text-primary">
           <div className="space-y-7">
             <h3 className="text-lg font-bold">{t('project-edit:BasicInformation')}</h3>
             <form className="space-y-7" onSubmit={handleSubmitSmall(saveBasicToDb)}>
