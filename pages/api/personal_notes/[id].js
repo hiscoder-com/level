@@ -67,7 +67,7 @@ export default async function notesDeleteHandler(req, res) {
 
         if (deleteFolderError) throw deleteFolderError
 
-        return res.status(200).json({ message: 'Успешно удалено' })
+        return res.status(200).json({ message: 'Successfully deleted' })
       } catch (error) {
         return res.status(404).json({ error })
       }
@@ -104,7 +104,6 @@ export default async function notesDeleteHandler(req, res) {
 
         const { data, error } = await supabase
           .from('personal_notes')
-          // TODO заметку же папкой не сделать, по этому isFolder не надо передавать
           .update([updateData])
           .match({ id })
           .select()

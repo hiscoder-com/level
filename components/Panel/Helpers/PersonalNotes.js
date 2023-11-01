@@ -16,7 +16,9 @@ import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Close from 'public/close.svg'
-import Trash from 'public/trash.svg' // использовать!
+import Trash from 'public/trash.svg'
+import FileIcon from 'public/fileIcon.svg'
+import CloseFolderIcon from 'public/closeFolder.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -315,9 +317,8 @@ function PersonalNotes() {
     })
 
     if (error) {
-      console.error('Ошибка при перемещении узла:', error)
+      console.error('Error when moving node:', error)
     } else {
-      console.log('Узел успешно перемещен!')
       removeCacheAllNotes('personal-notes')
       mutate()
     }
@@ -327,28 +328,22 @@ function PersonalNotes() {
     <div className="relative">
       {!activeNote ? (
         <div>
-          <div className="flex justify-end">
+          <div className="flex">
             <button
-              className="btn-cyan mb-4 mr-4 right-0 text-xl font-bold"
-              onClick={() => addNode(false)}
-            >
-              +
-            </button>
-            <button
-              className="btn-gray-red mb-4 mr-4 right-0 text-xl font-bold"
-              onClick={() => addNode(true)}
-            >
-              +
-            </button>
-            <button
-              className="btn-gray-red mb-4 right-0"
+              className="btn-gray-red mb-4 mr-2 right-0"
               onClick={() => {
                 setCurrentNodeProps(null)
                 setIsOpenModal(true)
               }}
               disabled={!notes?.length}
             >
-              {t('RemoveAll')}
+              <Trash className={'w-4 mb-1 inline'} /> {t('RemoveAll')}
+            </button>
+            <button className="btn-gray mb-4 mr-2" onClick={() => addNode(false)}>
+              <FileIcon className={'w-4 my-2'} />
+            </button>
+            <button className="btn-gray mb-4" onClick={() => addNode(true)}>
+              <CloseFolderIcon className={'w-4'} />
             </button>
           </div>
           <TreeView
@@ -408,9 +403,9 @@ function PersonalNotes() {
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 mr-12 bg-cyan-50 font-bold rounded-lg shadow-md',
+              title: 'p-2 my-4 mr-12 bg-gray-100 font-bold rounded-lg shadow-md', //
               redactor:
-                'pb-20 pt-4 my-4 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
+                'pb-20 pt-4 my-4 bg-gray-100 overflow-hidden break-words rounded-lg shadow-md', //
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}

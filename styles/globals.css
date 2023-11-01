@@ -80,7 +80,7 @@
 }
 
 .btn {
-	@apply text-center border-2 rounded-md inline-block px-3 py-1 cursor-pointer
+	@apply text-center border-2 rounded-lg inline-block px-3 py-1 cursor-pointer
 disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disabled:active:bg-white
 	disabled:cursor-not-allowed disabled:border-gray-300 disabled:text-gray-400;
 }
@@ -106,8 +106,14 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300;
 }
 
+.btn-gray-base {
+	@apply text-white bg-gray-500 border-gray-500
+	hover:bg-gray-700 hover:border-gray-700
+	active:bg-gray-800 active:border-gray-800
+}
+
 .btn-gray-red-base {
-	@apply text-white bg-gray-500 border-gray-600
+	@apply text-white bg-gray-500 border-gray-500
 	hover:bg-red-700 hover:border-red-700
 	active:bg-red-800 active:border-red-800
 	disabled:bg-gray-300 disabled:hover:bg-gray-300 disabled:active:bg-gray-300;
@@ -130,6 +136,10 @@ disabled:bg-white disabled:hover:border-gray-300 disabled:hover:bg-white disable
 
 .btn-blue {
 	@apply btn btn-blue-base;
+}
+
+.btn-gray {
+	@apply btn btn-gray-base;
 }
 
 .btn-gray-red {
