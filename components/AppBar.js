@@ -62,10 +62,12 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
           </div>
 
           {isStepPage && (
-            <div className="flex gap-7 md:hidden">
-              <Timer time={stepConfig.time} />
+            <div className="flex md:hidden items-center gap-7">
+              <div className="px-5 py-2.5 bg-th-background-secondary rounded-3xl">
+                <Timer time={stepConfig.time} />
+              </div>
               <Down
-                className="w-6 h-6"
+                className="w-6 h-6 stroke-th-icons-secondary"
                 onClick={() => setShowFullAppbar((prev) => !prev)}
               />
             </div>

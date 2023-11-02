@@ -71,7 +71,7 @@ function ChapterCreate({
       className={{
         dialogPanel: `w-full max-w-md align-middle p-6 rounded-3xl ${
           isCreated
-            ? 'bg-th-background-hover text-th-background-secondary'
+            ? 'bg-th-modal-secondary text-th-background-secondary'
             : 'bg-gradient-to-r from-th-modal-from to-th-modal-to text-th-text-secondary'
         }`,
       }}

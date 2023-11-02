@@ -180,7 +180,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           />
           {book?.level_checks && (
             <div
-              className="flex gap-4 cursor-pointer text-th-link hover:text-th-link-hover"
+              className="flex gap-4 cursor-pointer text-th-link hover:opacity-70"
               onClick={() =>
                 push({
                   pathname: `/projects/${project?.code}/books/read`,

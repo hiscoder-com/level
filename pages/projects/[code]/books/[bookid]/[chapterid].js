@@ -74,7 +74,7 @@ const translatorColors = [
 
 const defaultColor = {
   border: 'border-th-border-primary',
-  bg: 'bg-white',
+  bg: 'bg-th-background-secondary',
   text: 'text-th-border-primary',
 }
 
@@ -284,9 +284,9 @@ function ChapterVersesPage() {
                         >
                           <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-background-secondary border-th-seconbg-th-background-secondary border-2 rounded-full">
                             {verse.translator_name ? (
-                              <Minus className="w-5 h-5" />
+                              <Minus className="w-5 h-5 stroke-th-icons-primary" />
                             ) : (
-                              <Plus className="w-5 h-5" />
+                              <Plus className="w-5 h-5 stroke-th-icons-primary" />
                             )}
                           </div>
                         </div>
@@ -423,9 +423,9 @@ function ChapterVersesPage() {
                   color={!chapter?.finished_at ? 'yellow' : 'black'}
                   icon={
                     !chapter?.finished_at ? (
-                      <Sparkles className="w-5 h-5" />
+                      <Sparkles className="w-5 h-5 stroke-th-icons-primary" />
                     ) : (
-                      <Trash className="w-5 h-5" />
+                      <Trash className="w-5 h-5 stroke-th-icons-primary" />
                     )
                   }
                   disabled={isValidating}
@@ -479,7 +479,7 @@ function ChapterVersesPage() {
                     <div className="flex gap-2 items-center">
                       <div className="p-4 text-xl font-bold">{t('Participants')}</div>
                       <Link href={`/projects/${project?.code}/edit?setting=participants`}>
-                        <Gear className="w-6 h-6 min-w-[1.5rem]" />
+                        <Gear className="w-6 h-6 min-w-[1.5rem] stroke-th-icons-primary" />
                       </Link>
                     </div>
 

@@ -118,7 +118,7 @@ function ProjectPersonalCard({ project, user }) {
                     <div className="flex flex-col gap-7 w-auto lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
-                          className="text-xl font-bold text-th-link hover:text-th-link-hover cursor-pointer"
+                          className="text-xl font-bold text-th-link hover:opacity-70 cursor-pointer"
                           href={`/projects/${project.code}/books/${book}`}
                         >
                           {t(`books:${book}`)}
@@ -130,7 +130,7 @@ function ProjectPersonalCard({ project, user }) {
                         })})`}</div>
                         {levelChecks?.[book] && (
                           <Reader
-                            className="w-6 min-w-[1.5rem] text-th-link hover:text-th-link-hover  cursor-pointer"
+                            className="w-6 min-w-[1.5rem] text-th-link hover:opacity-70  cursor-pointer"
                             onClick={() =>
                               push({
                                 pathname: `/projects/${project?.code}/books/read`,
@@ -148,7 +148,7 @@ function ProjectPersonalCard({ project, user }) {
                           <p>{t('projects:Project')}:</p>
                           <Link
                             href={`/projects/${project.code}`}
-                            className="text-th-link hover:text-th-link-hover "
+                            className="text-th-link hover:opacity-70"
                           >
                             {project?.title}
                           </Link>

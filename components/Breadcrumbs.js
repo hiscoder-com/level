@@ -33,14 +33,14 @@ function Breadcrumbs({ links = [], full }) {
         ) : (
           <>
             <Link href={arrowLink}>
-              <LeftArrow className="h-5 w-5 min-w-[1.25rem] text-th-link hover:text-link-hover" />
+              <LeftArrow className="h-5 w-5 min-w-[1.25rem] text-th-link hover:opacity-70" />
             </Link>
             {links?.map((link, index) => (
               <Fragment key={index}>
                 {index === links.length - 1 ? (
                   <h3 className="cursor-default">{link.title}</h3>
                 ) : (
-                  <Link href={link.href} className="text-th-link hover:text-link-hover">
+                  <Link href={link.href} className="text-th-link hover:opacity-70">
                     {link.title}
                   </Link>
                 )}

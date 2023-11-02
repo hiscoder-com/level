@@ -11,7 +11,7 @@ function ListBox({ options, selectedOption, setSelectedOption }) {
               <span>
                 {options?.find((option) => option.value === selectedOption)?.label}
               </span>
-              <Down className="w-6 h-6 min-w-[1.5rem]" />
+              <Down className="w-6 h-6 min-w-[1.5rem] stroke-th-icons-primary" />
             </Listbox.Button>
             <div className={`-mt-2 pt-5 ${open ? 'bg-th-background-secondary' : ''}`}>
               <Listbox.Options className="absolute w-full max-h-[40vh] bg-th-background-secondary rounded-b-lg overflow-y-scroll z-10">

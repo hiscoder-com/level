@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next'
 
 import AboutVersion from './AboutVersion'
 
-import VcanaLogo from 'public/vcana-logo.svg'
-import OmbLogo from 'public/omb-logo.svg'
+import VcanaLogo from 'public/vcana-logo-color.svg'
+import TtLogo from 'public/tt-logo.svg'
 
 function StartPage({ children }) {
   const { t } = useTranslation('common')
@@ -20,8 +20,8 @@ function StartPage({ children }) {
           {children}
         </div>
         <div className="text-th-text-disabled mb-4 text-center">{t('DevelopedBy')}</div>
-        <Link href="https://openmediabible.com/" target="_blank">
-          <OmbLogo className="logo mb-4" />
+        <Link href="https://texttree.org/" target="_blank">
+          <TtLogo className="mb-4 h-7 logo text-th-text-disabled" />
         </Link>
       </div>
 
@@ -34,9 +34,11 @@ function StartPage({ children }) {
             </div>
             <h1 className="my-4 text-center">{t('PlatformForBibleTranslate')}</h1>
             <div className="text-th-text-disabled mb-2 text-xs">{t('DevelopedBy')}</div>
-            <Link href="https://openmediabible.com/" target="_blank">
-              <OmbLogo className="logo" />
-            </Link>
+            <div className="p-2 text-th-text-disabled">
+              <Link href="https://texttree.org/" target="_blank">
+                <TtLogo className="h-10 logo" />
+              </Link>
+            </div>
           </div>
         </div>
         <div className="flex justify-center items-center my-4 w-1/2 min-h-[90vh] bg-[url('../public/login_image.jpg')] bg-cover bg-no-repeat rounded-l-lg lg:rounded-l-[48px] xl:rounded-l-[72px] 2xl:rounded-l-[120px]">

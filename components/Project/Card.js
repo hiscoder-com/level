@@ -25,10 +25,10 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
           <>
             <Disclosure.Panel>{children}</Disclosure.Panel>
             <Disclosure.Button>
-              <div className="flex gap-1 justify-center w-full pt-3 border-t border-th-background-hover text-th-background-hover">
+              <div className="flex gap-1 justify-center w-full pt-3 border-t border-th-border-secondary text-th-border-secondary">
                 <span>{t(open ? 'Hide' : 'Open')}</span>
                 <Down
-                  className={`w-6 max-w-[1.5rem] stroke-th-background-hover ${
+                  className={`w-6 max-w-[1.5rem] stroke-th-border-secondary ${
                     open ? 'rotate-180 transform' : ''
                   }`}
                 />

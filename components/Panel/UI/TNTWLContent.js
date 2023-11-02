@@ -15,7 +15,7 @@ function TNTWLContent({ setItem, item }) {
         className="absolute flex top-0 right-0 w-12 pr-4 cursor-pointer"
         onClick={() => setItem(null)}
       >
-        <Close />
+        <Close className="stroke-th-icons-primary" />
       </div>
       {!['intro', 'front'].includes(item?.title) && (
         <div className=" font-bold text-xl mb-2">

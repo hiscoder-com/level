@@ -57,7 +57,7 @@ function Dropdown({ description, user }) {
         <>
           <div
             ref={dropdownMenu}
-            className="absolute flex flex-col justify-center right-5 xl:right-0 border border-th-border-primary divide-y divide-solid bg-th-background-secondary rounded-md shadow-md z-40"
+            className="absolute flex flex-col justify-center right-5 xl:right-0 border border-th-primary-border divide-y divide-solid bg-th-background-secondary rounded-md shadow-md z-40"
           >
             {/* TODO - нужен дизайн, ховер и остальное */}
             <button
@@ -97,9 +97,9 @@ function Dropdown({ description, user }) {
         closeModal={closeModal}
       />
 
-      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold border-2 border-th-border-primary rounded-md divide-x divide-solid md:hidden">
+      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold rounded-md divide-x divide-solid md:hidden bg-th-background-secondary">
         <button
-          className="px-2 rounded-l-lg active:bg-cyan-50"
+          className="px-2 rounded-l-lg hover:opacity-70"
           onClick={(e) => {
             setShowModalStepGoal(true)
             e.stopPropagation()
@@ -107,9 +107,8 @@ function Dropdown({ description, user }) {
         >
           {t('AboutStep').toUpperCase()}
         </button>
-
         <button
-          className="px-2 rounded-r-lg active:bg-cyan-50"
+          className="px-2 rounded-r-lg hover:opacity-70"
           onClick={(e) => {
             setShowModalTranslationGoal(true)
             e.stopPropagation()

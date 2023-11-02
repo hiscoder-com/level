@@ -219,7 +219,7 @@ function ProjectCreate() {
             />
             <div className="flex w-fit items-center justify-center">
               <ButtonLoading
-                className={`relative btn-secondary btn-filled`}
+                className={`relative btn-primary`}
                 disabled={isCreating}
                 value={t('CreateProject')}
                 isLoading={isCreating}

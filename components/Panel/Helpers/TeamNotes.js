@@ -138,7 +138,7 @@ function TeamNotes() {
               setNoteId(null)
             }}
           >
-            <Close />
+            <Close className="stroke-th-icons-primary" />
           </div>
           <Redactor
             classes={{

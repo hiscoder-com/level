@@ -104,12 +104,12 @@ function BasicInformation({
                   )
                 })}
             </select>
-            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 pointer-events-none" />
+            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 stroke-th-icons-primary pointer-events-none" />
           </div>
           <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-base text-th-text-primary border-th-border-primary bg-th-background-secondary flex items-center gap-2 truncate"
+              className="input-base text-th-text-primary border-th-input bg-th-background-secondary flex items-center gap-2 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
               <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-icons-primary stroke-th-icons-primary rounded-full" />
@@ -137,7 +137,7 @@ function BasicInformation({
                   )
                 })}
             </select>
-            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 pointer-events-none" />
+            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 stroke-th-icons-primary pointer-events-none" />
           </div>
         </div>
       )}

@@ -26,7 +26,7 @@ function Steps({ updateSteps, customSteps = [] }) {
               >
                 <span>{step.title}</span>
                 <Down
-                  className={`w-5 h-5 transition-transform duration-200 ${
+                  className={`w-5 h-5 transition-transform duration-200 stroke-th-icons-primary ${
                     open ? 'rotate-180' : 'rotate-0'
                   } `}
                 />

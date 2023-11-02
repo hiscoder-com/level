@@ -2,7 +2,7 @@ import TranslatorImage from 'components/TranslatorImage'
 
 import { useTranslators } from 'utils/hooks'
 
-function Translators({ projectCode, size, clickable = false }) {
+function Translators({ projectCode, size, clickable = false, className, showModerator }) {
   const [translators] = useTranslators({
     code: projectCode,
   })
@@ -13,8 +13,13 @@ function Translators({ projectCode, size, clickable = false }) {
         <>
           {translators.map((item, key) => {
             return (
-              <div key={key} className="-mx-1">
-                <TranslatorImage clickable={clickable} item={item} size={size} />
+              <div key={key} className={className}>
+                <TranslatorImage
+                  clickable={clickable}
+                  item={item}
+                  size={size}
+                  showModerator={showModerator}
+                />
               </div>
             )
           })}

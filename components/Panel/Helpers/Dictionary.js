@@ -246,7 +246,7 @@ function Dictionary() {
                       })
                     }
                   >
-                    <LeftArrow className="w-5 h-5" />
+                    <LeftArrow className="w-5 h-5 stroke-th-icons-primary" />
                   </button>
                   <button
                     className="arrow"
@@ -258,7 +258,7 @@ function Dictionary() {
                       })
                     }}
                   >
-                    <RightArrow className="w-5 h-5" />
+                    <RightArrow className="w-5 h-5 stroke-th-icons-primary" />
                   </button>
                 </div>
               )}
@@ -277,7 +277,7 @@ function Dictionary() {
               setWordId(null)
             }}
           >
-            <Close />
+            <Close className="stroke-th-icons-primary" />
           </div>
           <Redactor
             classes={{

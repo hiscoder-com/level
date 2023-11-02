@@ -138,7 +138,7 @@ function BackButtonComponent({ setAudioState, audioState, className }) {
       }}
       className={className}
     >
-      <BackButton className="stroke-th-primary-stroke" />
+      <BackButton className="stroke-th-icons-primary" />
     </button>
   )
 }

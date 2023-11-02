@@ -65,14 +65,14 @@ function TranslatorsList({
                 {t('Remove')}
               </button>
               {el.is_moderator && (
-                <Security className="block sm:hidden w-6 h-6 min-h-[1.5rem]" />
+                <Security className="block sm:hidden w-6 h-6 min-h-[1.5rem] stroke-th-icons-primary" />
               )}
             </div>
             <Menu as="div" className="relative flex items-center overflow-hidden">
               {({ open }) => (
                 <>
                   <Menu.Button>
-                    <Elipsis className="block sm:hidden w-6 h-6 min-w-[1.5rem]" />
+                    <Elipsis className="block sm:hidden w-6 h-6 min-w-[1.5rem] stroke-th-icons-primary" />
                   </Menu.Button>
                   <Transition
                     as={Fragment}

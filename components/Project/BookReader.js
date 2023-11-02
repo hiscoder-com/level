@@ -114,7 +114,7 @@ function BookReader() {
         <div className="card flex flex-col gap-7 bg-th-background-secondary">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code} className="p-3">
-              <Left className="w-5 h-5 stroke-th-link hover:stroke-th-link-hover" />
+              <Left className="w-5 h-5 stroke-th-link hover:opacity-70" />
             </Link>
             <Navigation
               books={
@@ -197,7 +197,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               {isCoordinatorAccess && (
                 <div
                   className="flex gap-2
-                  text-th-link hover:text-th-link-hover cursor-pointer"
+                  text-th-link hover:opacity-70 cursor-pointer"
                   onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,

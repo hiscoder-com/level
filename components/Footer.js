@@ -60,7 +60,7 @@ export default function Footer({
           ) : (
             <ButtonLoading
               onClick={handleClick}
-              className="relative btn-cyan w-28 text-center"
+              className="relative btn-quaternary w-28 text-center"
               disabled={!checked}
               isLoading={loading}
             >

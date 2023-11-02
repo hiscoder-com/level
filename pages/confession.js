@@ -20,7 +20,7 @@ export default function Confession() {
           <a
             href="https://texttree.org/"
             target={'_blank'}
-            className="underline text-th-link hover:text-th-link-hover"
+            className="underline text-th-link hover:opacity-70"
             rel="noreferrer"
           >
             https://texttree.org/

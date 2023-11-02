@@ -8,18 +8,17 @@
   --background-primary: theme('colors.gray.150');
 	--background-secondary: theme('colors.white');
 	--background-tertiary: theme('colors.neutral.100');
-	--background-hover: theme('colors.neutral.400');
 	--icons-primary:theme('colors.neutral.800');
 	--icons-secondary:theme('colors.white');
 	--text-primary:theme('colors.neutral.800');
 	--text-secondary:theme('colors.white');
 	--text-disabled:theme('colors.neutral.400');
 	--link:theme('colors.slate.600');
-	--link-hover:theme('colors.slate.500');
 	--border-primary:theme('colors.slate.600');  
 	--border-secondary:theme('colors.gray.400');
 	--modal-from:	theme('colors.slate.550');
-	--modal-to:	theme('colors.slate.560');  
+	--modal-to:	theme('colors.slate.560');
+	--modal-secondary:	theme('colors.neutral.400');   
 	--btn-background-primary:	theme('colors.gray.250');
 	--btn-background-secondary: theme('colors.yellow.600');	
 	--btn-background-tertiary:	theme('colors.gray.450');
@@ -99,7 +98,7 @@
 .arrow {
 	@apply px-5 py-5 rounded-full duration-300
 	hover:bg-th-background-secondary
-	active:bg-th-background-hover
+	active:bg-th-modal-secondary
 	disabled:opacity-30
 	disabled:hover:bg-transparent;
 }
@@ -164,7 +163,7 @@
 }
 
 .tab-inactive {
-	@apply tab bg-th-background-secondary hover:bg-gradient-to-b hover:from-th-background-secondary hover:to-th-background-hover cursor-pointer
+	@apply tab bg-th-background-secondary hover:bg-gradient-to-b hover:from-th-background-secondary hover:to-th-modal-secondary cursor-pointer
 }
 .card {
   @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-border-secondary shadow-md;
@@ -186,15 +185,19 @@
 }
 
 .btn-secondary {
-  @apply btn-base text-th-text-secondary bg-th-secondary;
+  @apply btn-base text-th-text-primary bg-th-background-secondary hover:opacity-70;
 }
 
 .btn-tertiary {
 	@apply mb-4 right-0 bg-th-btn-background-tertiary text-th-text-secondary  font-bold rounded-xl cursor-pointer hover:opacity-70
 }
 
+.btn-quaternary {
+  @apply btn-base text-th-text-secondary bg-th-secondary hover:bg-th-btn-background-primary  border border-th-secondary disabled:cursor-auto hover:border-th-border-primary hover:text-th-text-primary disabled:opacity-50 disabled:hover:bg-th-secondary  disabled:hover:border-th-secondary disabled:hover:text-th-text-secondary;
+}
+
 .btn-red {
-  @apply btn-base text-red-500 border-red-500 hover:bg-red-500 hover:text-white;
+  @apply btn-base text-th-invalid border-th-invalid border  hover:bg-th-invalid hover:text-th-text-secondary;
 }
 
 .first-check path:nth-child(1) {
@@ -220,6 +223,10 @@
 
 .input-invalid {
 	@apply input-base border-th-invalid text-th-input;
+}
+
+.logo :hover {
+ @apply odd:fill-th-secondary even:fill-th-text-primary
 }
 
 /*(className.*input-primary)|(input-primary.*className)*/

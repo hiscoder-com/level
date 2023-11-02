@@ -22,7 +22,7 @@ function Property({ t, property, content, type, updateProperty }) {
             href={additionalLinks[property]}
             title={additionalLinks[property]}
             target="_blank"
-            className="text-th-link hover:text-th-link-hover"
+            className="text-th-link hover:opacity-70"
           >
             ?
           </Link>

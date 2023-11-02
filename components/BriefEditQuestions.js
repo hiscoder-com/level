@@ -107,7 +107,7 @@ function BriefEditQuestions({
                     <span>{blockQuestion.title}</span>
                     <div className="flex gap-7 items-center">
                       <Down
-                        className={`w-5 h-5 transition-transform duration-200 ${
+                        className={`w-5 h-5 transition-transform duration-200 stroke-th-icons-primary ${
                           open ? 'rotate-180' : 'rotate-0'
                         } `}
                       />
@@ -161,7 +161,7 @@ function BriefEditQuestions({
                         })
                       }
                     >
-                      <Plus className="w-6 h-6 stroke-2 border-2 border-th-icons-primary rounded-full" />
+                      <Plus className="w-6 h-6 stroke-2 border-2 border-th-icons-primary stroke-th-icons-primary rounded-full" />
                       <div>{t('project-edit:AddQuestion')}</div>
                     </button>
                   </Disclosure.Panel>
@@ -184,7 +184,7 @@ function BriefEditQuestions({
         className="flex justify-center items-center gap-2 py-2 px-4 text-sm md:text-base bg-th-background-secondary border border-th-icons-primary rounded-md"
         onClick={() => addBlock(customBriefQuestions)}
       >
-        <Plus className="w-6 h-6 stroke-2 border-2 border-th-icons-primary rounded-full" />
+        <Plus className="w-6 h-6 stroke-2 border-2 border-th-icons-primary stroke-th-icons-primary rounded-full" />
         <div>{t('project-edit:AddBlock')}</div>
       </button>
     </>

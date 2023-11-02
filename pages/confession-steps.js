@@ -95,7 +95,7 @@ export default function ConfessionSteps() {
       <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
-            <LeftArrow className="w-6" />
+            <LeftArrow className="w-6 stroke-th-icons-primary" />
           </button>
         </div>
         <div className="w-full min-h-[30rem] md:min-h-[23rem] lg:min-h-[18rem] text-xl bg-th-background-secondary rounded-lg sm:mb-0 py-6 px-10 flex flex-col justify-center order-first sm:order-none">

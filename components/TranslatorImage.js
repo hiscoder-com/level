@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 
 const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9D27AE']
 
-function TranslatorImage({ item, size, clickable }) {
+function TranslatorImage({ item, size, clickable, showModerator = false }) {
   const {
     push,
     query: { project, book, chapter, step, translator },
@@ -23,8 +23,8 @@ function TranslatorImage({ item, size, clickable }) {
           push(`/translate/${project}/${book}/${chapter}/${step}/${item?.users?.login}`)
         }
       }}
-      className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
-        item.is_moderator ? 'border-th-secondary ' : ''
+      className={`relative ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
+        showModerator && item.is_moderator ? 'border-th-secondary border-2' : ''
       } rounded-full select-none`}
     >
       {item.avatar ? (

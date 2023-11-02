@@ -1,4 +1,4 @@
-import Checking from '/public/checking.svg'
+import Checking from 'public/checking.svg'
 
 function ChecksIcon({ levelCheck }) {
   const classes = {

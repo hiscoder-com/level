@@ -134,7 +134,7 @@ function PasswordRecovery() {
                 </div>
                 <ButtonLoading
                   type="button"
-                  className="btn-cyan relative self-center w-1/2 text-sm lg:text-base"
+                  className="btn-primary relative self-center w-1/2 text-sm lg:text-base"
                   onClick={handleRecovery}
                   isLoading={isRecovering}
                 >
@@ -145,10 +145,7 @@ function PasswordRecovery() {
           ) : (
             <>
               <div>{successResult}</div>
-              <Link
-                href={'/'}
-                className="mb-6 lg:mb-14 text-th-link hover:text-th-link-hover"
-              >
+              <Link href={'/'} className="mb-6 lg:mb-14 text-th-link hover:opacity-70">
                 {t('GoToLogin')}
               </Link>
             </>

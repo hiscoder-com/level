@@ -127,7 +127,7 @@ function Account() {
                 }`}
               ></div>
               <Menu.Button
-                className={`block md:hidden p-4 translate-y-1/2 right-5 text-th-secondary rounded-full bg-th-primary transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`block md:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary rounded-full bg-th-primary transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}
@@ -183,7 +183,7 @@ function Account() {
         >
           <div className="flex justify-end">
             <button
-              className={`p-4 mt-4 stroke-th-text-secondary rounded-full bg-th-primary shadow-2xl ${
+              className={`p-4 mt-4 text-th-text-secondary rounded-full bg-th-primary shadow-2xl ${
                 openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}

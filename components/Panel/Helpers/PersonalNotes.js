@@ -148,7 +148,7 @@ function PersonalNotes() {
               setNoteId(null)
             }}
           >
-            <Close />
+            <Close className="stroke-th-icons-primary" />
           </div>
           <Redactor
             classes={{

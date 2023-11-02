@@ -58,7 +58,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   return (
     <>
       <div
-        className={`${isMobileIndexPage ? 'ml-4' : ''} ${
+        className={`hover:opacity-70 ${isMobileIndexPage ? 'ml-4' : ''} ${
           !isSidebar ? 'text-xs cursor-pointer text-th-text-primary' : ''
         }`}
         onClick={() => {

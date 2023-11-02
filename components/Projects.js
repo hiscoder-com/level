@@ -14,7 +14,7 @@ export default function Projects({ type }) {
     case 'projects':
       CurrentCard = ProjectCard
       className =
-        'grid grid-cols-2 gap-3 py-10 auto-rows-fr md:grid-cols-2 xl:grid-cols-3 sm:gap-7 md:py-10'
+        'grid grid-cols-1 gap-3 py-10 auto-rows-fr md:grid-cols-2 xl:grid-cols-3 sm:gap-7 md:py-10'
       break
     case 'account':
       CurrentCard = ProjectPersonalCard

@@ -22,7 +22,7 @@ import { readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
 
-import Plus from '/public/plus.svg'
+import Plus from 'public/plus.svg'
 
 function ChapterList() {
   const { user } = useCurrentUser()
@@ -145,18 +145,14 @@ function ChapterList() {
                           <div>
                             {started_at && (
                               <div
-                                className={`text-sm ${
-                                  !finished_at ? 'text-th-link-hover' : ''
-                                }`}
+                                className={`text-sm ${!finished_at ? 'opacity-70' : ''}`}
                               >
                                 {readableDate(started_at, locale)}
                               </div>
                             )}
                             {finished_at && (
                               <div
-                                className={`text-sm ${
-                                  !finished_at ? 'text-th-link-hover' : ''
-                                }`}
+                                className={`text-sm ${!finished_at ? 'opacity-70' : ''}`}
                               >
                                 {readableDate(finished_at, locale)}
                               </div>
