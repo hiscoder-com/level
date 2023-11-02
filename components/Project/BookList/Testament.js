@@ -12,13 +12,13 @@ import Modal from 'components/Modal'
 import Download from '../Download'
 
 import { useGetBooks, useGetChaptersTranslate } from 'utils/hooks'
+import { checkBookCodeExists } from 'utils/helper'
 
 import Gear from '/public/gear.svg'
 import Reader from '/public/dictionary.svg'
 import DownloadIcon from '/public/download.svg'
 import Play from '/public/play.svg'
 import Elipsis from '/public/elipsis.svg'
-import { checkBookCodeExists } from 'utils/helper'
 
 function Testament({
   bookList,
@@ -57,7 +57,7 @@ function Testament({
     }
   }
   const {
-    query: { code, bookid },
+    query: { code },
   } = useRouter()
 
   const [chapters] = useGetChaptersTranslate({ code })
