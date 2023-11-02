@@ -83,6 +83,8 @@ export default function Footer({
               projectCode={stepConfig.project_code}
               size="34px"
               clickable={true}
+              className="mx-0.5"
+              showModerator
             />
           </div>
         </>

@@ -8,7 +8,7 @@ function Translators({ projectCode, size, clickable = false, className, showMode
   })
 
   return (
-    <div className="flex">
+    <div className="flex items-center">
       {translators && translators.length > 0 && (
         <>
           {translators.map((item, key) => {

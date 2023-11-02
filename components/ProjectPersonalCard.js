@@ -155,7 +155,11 @@ function ProjectPersonalCard({ project, user }) {
                         </div>
                         <div className="flex flex-wrap gap-3">
                           <p>{t('Translator_other')}:</p>
-                          <Translators projectCode={project?.code} size="25px" />
+                          <Translators
+                            projectCode={project?.code}
+                            size="25px"
+                            className="-mx-0.5"
+                          />
                         </div>
                         <div className="flex gap-3">
                           <p>

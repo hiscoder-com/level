@@ -41,7 +41,11 @@ function ProjectCard({ project, user }) {
                 </div>
                 <div className="flex gap-3">
                   <p>{t('common:Translator_other')}:</p>
-                  <Translators projectCode={project.code} size="25px" />
+                  <Translators
+                    projectCode={project.code}
+                    size="25px"
+                    className="-mx-0.5"
+                  />
                 </div>
               </div>
             </div>
