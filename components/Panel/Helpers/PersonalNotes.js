@@ -22,6 +22,7 @@ import CloseFolder from 'public/closeFolder.svg'
 import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
+import Rename from 'public/rename.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -174,10 +175,25 @@ function PersonalNotes() {
   }
 
   const menuItems = [
-    { id: 'adding_a_note', label: '+ add note', action: () => addNode(false) },
-    { id: 'adding_a_folder', label: '+ add folder', action: () => addNode(true) },
-    { id: 'rename', label: '✏️ Rename', action: handleRename },
-    { id: 'delete', label: '🗑️ Delete', action: () => setIsOpenModal(true) },
+    {
+      id: 'adding_a_note',
+      icon: <FileIcon />,
+      label: 'add note',
+      action: () => addNode(false),
+    },
+    {
+      id: 'adding_a_folder',
+      icon: <CloseFolder />,
+      label: 'add folder',
+      action: () => addNode(true),
+    },
+    { id: 'rename', icon: <Rename />, label: 'Rename', action: handleRename },
+    {
+      id: 'delete',
+      icon: <Trash className={'w-4'} />,
+      label: 'Delete',
+      action: () => setIsOpenModal(true),
+    },
   ]
 
   const supabase = useSupabaseClient()
@@ -246,15 +262,17 @@ function PersonalNotes() {
             handleRenameNode={handleRenameNode}
             handleTreeEventDelete={handleRemoveNode}
             handleDragDrop={handleDragDrop}
+            openByDefault={false}
           />
           <ContextMenu
             setSelectedNodeId={setNoteId}
             selectedNodeId={noteId}
+            nodeProps={currentNodeProps}
             data={contextMenuEvent}
             menuItems={menuItems}
-            treeRef={treeRef}
             classes={{
-              menuItem: 'py-1 pr-7 pl-2.5 cursor-pointer bg-gray-100 hover:bg-gray-200',
+              menuItem:
+                'gap-2.5 py-1 pr-7 pl-2.5 cursor-pointer bg-gray-100 hover:bg-gray-200',
               menuWrapper: 'fixed z-50',
               menuContainer:
                 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
