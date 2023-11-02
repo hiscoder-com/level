@@ -181,6 +181,8 @@ function Verses({ verseObjects, user, reference, isLoading }) {
     () => getVerseCount(books, bookid, reference?.chapter),
     [books, bookid, reference?.chapter]
   )
+  console.log(verseCount, 184)
+  console.log(verseObjects, 185)
 
   return (
     <div className="flex flex-col gap-5">
@@ -204,7 +206,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           verseObjects ? (
             Array.from({ length: verseCount }).map((_, index) => {
               const verseIndex = verseObjects.verseObjects.findIndex(
-                (verse) => verse.verse === index + 1
+                (verse) => parseInt(verse.verse) === index + 1
               )
               const text =
                 verseIndex !== -1 ? verseObjects.verseObjects[verseIndex].text : ' '
@@ -224,7 +226,8 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
                 <div
-                  className="flex gap-2 text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
+                  className="flex gap-2
+                  text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
                   onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
