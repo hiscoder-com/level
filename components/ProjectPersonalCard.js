@@ -70,17 +70,6 @@ function ProjectPersonalCard({ project, user }) {
   const [books] = useGetBooks({
     code: project?.code,
   })
-  const levelChecks = useMemo(() => {
-    if (books) {
-      const _books = {}
-      books.forEach((book) => {
-        if (book.level_checks) {
-          _books[book.code] = book.level_checks
-        }
-      })
-      return _books
-    }
-  }, [books])
 
   const countChaptersVerses = useMemo(() => {
     if (books) {
