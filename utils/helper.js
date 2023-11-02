@@ -709,12 +709,8 @@ export const stepsValidation = (steps) => {
 
 export function checkBookCodeExists(bookCode, data) {
   if (!data) {
-    console.log(data, 715)
-
     return
   }
-  console.log(bookCode, 714)
-  console.log(data, 715)
 
   for (let i = 0; i < data.length; i++) {
     if (data[i].book_code === bookCode) {
@@ -742,4 +738,27 @@ export function checkChapterVersesExist(bookCode, chapterNumber, data) {
     }
   }
   return false
+}
+
+export function getVerseObjectsForBookAndChapter(chapters, bookCode, chapterNumber) {
+  if (chapters) {
+    const chapterData = chapters.find((chapter) => chapter.book_code === bookCode)
+    if (chapterData && chapterData.level_check === null) {
+      const verseObjects = chapterData.chapters[chapterNumber]
+      return verseObjects
+    }
+  }
+  return []
+}
+
+export function getVerseCount(books, bookCode, chapterNumber) {
+  for (let i = 0; i < books?.length; i++) {
+    if (books[i].code === bookCode) {
+      const chapters = books[i].chapters
+      if (chapters.hasOwnProperty(chapterNumber)) {
+        return chapters[chapterNumber]
+      }
+    }
+  }
+  return null
 }
