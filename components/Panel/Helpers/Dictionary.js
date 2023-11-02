@@ -190,32 +190,35 @@ function Dictionary() {
     <div className="relative">
       {!activeWord ? (
         <>
-          <div className="mr-11">
-            <Alphabet
-              alphabet={project?.dictionaries_alphabet}
-              getAll={getAll}
-              setSearchQuery={setSearchQuery}
-              setCurrentPageWords={setCurrentPageWords}
-              t={t}
-            />
-            <input
-              className="input-primary max-w-xs mt-2 ml-2"
-              value={searchQuery}
-              onChange={(e) => {
-                setCurrentPageWords(0)
-                setSearchQuery(e.target.value)
-              }}
-            />
+          <div className="flex gap-4 items-start">
+            {isModeratorAccess && (
+              <>
+                <div className="top-0 right-0">
+                  <button className="btn-tertiary p-3" onClick={addNote}>
+                    <Plus className="w-6 h-6 stroke-th-icons-secondary stroke-2" />
+                  </button>
+                </div>
+              </>
+            )}
+            <div>
+              <Alphabet
+                alphabet={project?.dictionaries_alphabet}
+                getAll={getAll}
+                setSearchQuery={setSearchQuery}
+                setCurrentPageWords={setCurrentPageWords}
+                t={t}
+              />
+              <input
+                className="input-primary max-w-xs mt-2 ml-2"
+                value={searchQuery}
+                onChange={(e) => {
+                  setCurrentPageWords(0)
+                  setSearchQuery(e.target.value)
+                }}
+              />
+            </div>
           </div>
-          {isModeratorAccess && (
-            <>
-              <div className="absolute top-0 right-0">
-                <button className="btn-tertiary p-3" onClick={addNote}>
-                  <Plus className="w-6 h-6 stroke-th-icons-secondary stroke-2" />
-                </button>
-              </div>
-            </>
-          )}
+
           {words?.data.length ? (
             <div className="mt-2">
               <ListOfNotes
