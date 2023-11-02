@@ -19,14 +19,20 @@ import {
   useGetResource,
   useProject,
 } from 'utils/hooks'
+
+import {
+  checkBookCodeExists,
+  checkChapterVersesExist,
+  getVerseCount,
+  getVerseObjectsForBookAndChapter,
+} from 'utils/helper'
+
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
 
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
 import Gear from '/public/gear.svg'
-import { checkBookCodeExists, checkChapterVersesExist } from 'utils/helper'
 
-// Главный компонент
 function BookReader() {
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
@@ -39,30 +45,6 @@ function BookReader() {
   const [project] = useProject({ code })
 
   const [chapters] = useGetChaptersTranslate({ code })
-
-  function checkBookCodeExists(bookCode, data) {
-    if (!data) {
-      return
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].book_code === bookCode) {
-        return true
-      }
-    }
-    return false
-  }
-
-  function getVerseObjectsForBookAndChapter(chapters, bookCode, chapterNumber) {
-    if (chapters) {
-      const chapterData = chapters.find((chapter) => chapter.book_code === bookCode)
-      if (chapterData && chapterData.level_check === null) {
-        const verseObjects = chapterData.chapters[chapterNumber]
-        return verseObjects
-      }
-    }
-    return []
-  }
 
   const resource = useMemo(() => {
     if (reference?.checks) {
@@ -181,7 +163,6 @@ function BookReader() {
 }
 
 export default BookReader
-// Отображение книги и ее глав
 function Verses({ verseObjects, user, reference, isLoading }) {
   const {
     push,
@@ -194,6 +175,12 @@ function Verses({ verseObjects, user, reference, isLoading }) {
   })
   const [project] = useProject({ code })
   const { t } = useTranslation()
+  const [books] = useGetBooks({ code })
+
+  const verseCount = useMemo(
+    () => getVerseCount(books, bookid, reference?.chapter),
+    [books, bookid, reference?.chapter]
+  )
 
   return (
     <div className="flex flex-col gap-5">
@@ -215,31 +202,29 @@ function Verses({ verseObjects, user, reference, isLoading }) {
       <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
         {!isLoading ? (
           verseObjects ? (
-            verseObjects.verseObjects?.map((verseObject) => (
-              <div className="flex gap-2" key={verseObject.verse}>
-                {verseObject.verse > 0 && verseObject.verse < 200 && (
-                  <sup className="mt-2">{verseObject.verse}</sup>
-                )}
-                <p
-                  className={
-                    verseObject.verse === '0'
-                      ? 'font-bold'
-                      : '' || verseObject.verse === '200'
-                      ? 'italic'
-                      : ''
-                  }
+            Array.from({ length: verseCount }).map((_, index) => {
+              const verseIndex = verseObjects.verseObjects.findIndex(
+                (verse) => verse.verse === index + 1
+              )
+              const text =
+                verseIndex !== -1 ? verseObjects.verseObjects[verseIndex].text : ' '
+              return (
+                <div
+                  className={`flex gap-2 ${text === ' ' ? 'mb-2' : ''}`}
+                  key={index + 1}
                 >
-                  {verseObject.text}
-                </p>
-              </div>
-            ))
+                  {' '}
+                  <sup className="mt-2">{index + 1}</sup>
+                  <p>{text}</p>
+                </div>
+              )
+            })
           ) : (
             <>
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
                 <div
-                  className="flex gap-2
-                  text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
+                  className="flex gap-2 text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
                   onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
