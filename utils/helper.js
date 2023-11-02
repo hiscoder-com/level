@@ -706,3 +706,40 @@ export const stepsValidation = (steps) => {
   }
   return { error: null }
 }
+
+export function checkBookCodeExists(bookCode, data) {
+  if (!data) {
+    console.log(data, 715)
+
+    return
+  }
+  console.log(bookCode, 714)
+  console.log(data, 715)
+
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].book_code === bookCode) {
+      return true
+    }
+  }
+  return false
+}
+
+export function checkChapterVersesExist(bookCode, chapterNumber, data) {
+  if (!data) {
+    return false
+  }
+
+  for (let i = 0; i < data.length; i++) {
+    if (data[i].book_code === bookCode) {
+      const bookData = data[i].chapters
+      if (
+        bookData &&
+        bookData[chapterNumber] &&
+        bookData[chapterNumber].verseObjects.length > 0
+      ) {
+        return true
+      }
+    }
+  }
+  return false
+}

@@ -24,6 +24,7 @@ import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
 import Gear from '/public/gear.svg'
+import { checkBookCodeExists, checkChapterVersesExist } from 'utils/helper'
 
 // Главный компонент
 function BookReader() {
@@ -414,10 +415,14 @@ function Navigation({ books, reference, setReference }) {
 function BookListReader({ books, setReference, reference, project }) {
   const [createdOldTestamentBooks, createdNewTestamentBooks] = books
   const [currentBook, setCurrentBook] = useState(null)
-
   const { query, replace } = useRouter()
   const { t } = useTranslation(['common', 'books'])
   const refs = useRef([])
+  const {
+    query: { code, bookid },
+  } = useRouter()
+  const [chapters] = useGetChaptersTranslate({ code })
+
   const scrollRefs = useRef({})
   const handleClose = (index) => {
     refs.current.map((closeFunction, refIndex) => {
@@ -431,7 +436,6 @@ function BookListReader({ books, setReference, reference, project }) {
       verseRef(scrollRefs.current[bookid])
     }
   }
-
   const scrollTo = (currentBook, position) => {
     let offset = 0
     const top = currentBook.offsetTop - 95
@@ -535,11 +539,17 @@ function BookListReader({ books, setReference, reference, project }) {
                               .map((el) => el + 1)
                               .map((index) => (
                                 <button
-                                  // disabled=
-                                  className={`flex justify-center items-center w-10 h-10 bg-slate-200 rounded-md cursor-pointer hover:bg-slate-100 ${
-                                    index === reference?.chapter
-                                      ? 'cursor-default bg-slate-100'
-                                      : 'bg-slate-200 cursor-pointer '
+                                  disabled={
+                                    !checkChapterVersesExist(book.code, index, chapters)
+                                  }
+                                  className={`flex justify-center items-center w-10 h-10 bg-slate-200 rounded-md ${
+                                    checkChapterVersesExist(book.code, index, chapters)
+                                      ? 'cursor-pointer'
+                                      : 'cursor-default bg-slate-400 disabled'
+                                  } ${
+                                    !checkChapterVersesExist(book.code, index, chapters)
+                                      ? ''
+                                      : 'hover:bg-slate-100'
                                   }`}
                                   key={index}
                                   onClick={() =>

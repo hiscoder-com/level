@@ -18,6 +18,7 @@ import Reader from '/public/dictionary.svg'
 import DownloadIcon from '/public/download.svg'
 import Play from '/public/play.svg'
 import Elipsis from '/public/elipsis.svg'
+import { checkBookCodeExists } from 'utils/helper'
 
 function Testament({
   bookList,
@@ -60,19 +61,6 @@ function Testament({
   } = useRouter()
 
   const [chapters] = useGetChaptersTranslate({ code })
-
-  function checkBookCodeExists(bookCode, data) {
-    if (!data) {
-      return
-    }
-
-    for (let i = 0; i < data.length; i++) {
-      if (data[i].book_code === bookCode) {
-        return true
-      }
-    }
-    return false
-  }
 
   return (
     <>
