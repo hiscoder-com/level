@@ -24,6 +24,7 @@ import {
   checkBookCodeExists,
   checkChapterVersesExist,
   getVerseCount,
+  getVerseCountOBS,
   getVerseObjectsForBookAndChapter,
 } from 'utils/helper'
 
@@ -178,11 +179,17 @@ function Verses({ verseObjects, user, reference, isLoading }) {
   const [books] = useGetBooks({ code })
 
   const verseCount = useMemo(
-    () => getVerseCount(books, bookid, reference?.chapter),
-    [books, bookid, reference?.chapter]
+    // () => getVerseCount(books, bookid, reference?.chapter),
+    // [books, bookid, reference?.chapter]
+
+    () => getVerseCountOBS(books, reference?.chapter),
+    [books, reference?.chapter]
   )
+
+  // console.log(books, 183)
+  // console.log(project, 183)
   console.log(verseCount, 184)
-  console.log(verseObjects, 185)
+  // console.log(reference?.chapter, 188)
 
   return (
     <div className="flex flex-col gap-5">
