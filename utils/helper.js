@@ -762,3 +762,17 @@ export function getVerseCount(books, bookCode, chapterNumber) {
   }
   return null
 }
+
+export function getVerseCountOBS(chaptersData, chapterNumber) {
+  const chapterData = chaptersData?.[0].chapters
+  if (!chapterData) {
+    return
+  }
+
+  chapterNumber = chapterNumber < 10 ? `0${chapterNumber}` : `${chapterNumber}`
+  if (chapterNumber in chapterData) {
+    return chapterData[chapterNumber]
+  } else {
+    return 0
+  }
+}
