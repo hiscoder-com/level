@@ -74,7 +74,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
             className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-background-secondary border-th-border-secondary sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="sticky top-0 flex items-center justify-between py-6">
+            <div className="sticky top-0 flex items-center justify-between py-6 bg-th-background-secondary">
               <p className="text-left text-2xl font-bold">
                 {t('Version')} {packageJson.version}
               </p>
