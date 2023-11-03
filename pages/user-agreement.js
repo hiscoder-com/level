@@ -6,17 +6,20 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from 'components/Footer'
 
 import useSupabaseClient from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 
 export default function UserAgreement() {
   const supabase = useSupabaseClient()
   const router = useRouter()
+  const { getUser } = useCurrentUser()
   const { t } = useTranslation(['user-agreement', 'common', 'users'])
   const handleClick = async () => {
     const { error } = await supabase.rpc('check_agreement')
     if (error) {
       console.error(error)
     } else {
-      router.push(`/confession`)
+      getUser()
+      router.push('/agreements')
     }
   }
 
@@ -55,6 +58,7 @@ export default function UserAgreement() {
         textButton={t('common:Next')}
         textCheckbox={t('users:Agree')}
         handleClick={handleClick}
+        className={{ button: 'btn-primary' }}
       />
     </div>
   )

@@ -90,7 +90,7 @@ function ChapterList() {
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
               onClick={(e) => e.stopPropagation()}
-              className="text-sm xl:text-lg"
+              className="w-fit text-sm xl:text-lg"
             >
               {step.step} {t('Step').toLowerCase()}
             </Link>

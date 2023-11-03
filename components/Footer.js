@@ -18,6 +18,7 @@ export default function Footer({
   handleClick,
   textButton,
   href,
+  className = { button: 'relative btn-quaternary w-28 text-center' },
 }) {
   const [isStepPage, setIsStepPage] = useState(false)
   const [checked, setChecked] = useState(false)
@@ -53,14 +54,14 @@ export default function Footer({
           />
           {href ? (
             <Link href={href} legacyBehavior>
-              <button className="btn-secondary !px-6" disabled={!checked}>
+              <button className={className.button} disabled={!checked}>
                 {textButton}
               </button>
             </Link>
           ) : (
             <ButtonLoading
               onClick={handleClick}
-              className="relative btn-quaternary w-28 text-center"
+              className={className.button}
               disabled={!checked}
               isLoading={loading}
             >
