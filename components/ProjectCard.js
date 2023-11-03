@@ -23,7 +23,7 @@ function ProjectCard({ project, user }) {
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`} legacyBehavior>
-          <div className="card bg-th-background-tertiary flex justify-between items-start cursor-pointer h-full">
+          <div className="card bg-th-background-secondary sm:bg-th-background-tertiary flex justify-between items-start cursor-pointer h-full">
             <div className="flex flex-col gap-9">
               <div className="text-xl font-bold">{project.title}</div>{' '}
               {briefResume === '' && (

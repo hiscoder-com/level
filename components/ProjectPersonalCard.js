@@ -111,11 +111,11 @@ function ProjectPersonalCard({ project, user }) {
             return (
               <div
                 key={i}
-                className="card bg-th-background-tertiary flex flex-col sm:flex-row gap-7 p-7 h-full"
+                className="card bg-th-background-secondary sm:bg-th-background-tertiary flex flex-col sm:flex-row gap-7 p-7 h-full"
               >
                 {!isLoading && currentSteps && project ? (
                   <>
-                    <div className="flex flex-col gap-7 w-auto lg:w-1/3">
+                    <div className="flex flex-col gap-7 w-auto sm:w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
                           className="text-xl font-bold text-th-link hover:opacity-70 cursor-pointer"
@@ -177,22 +177,15 @@ function ProjectPersonalCard({ project, user }) {
                         </div>
                       </div>
                     </div>
-                    <div className="sm:flex sm:flex-wrap gap-1 sm:gap-3 grid grid-cols-1 content-start w-3/4 sm:w-1/2 lg:w-2/3 text-sm">
+                    <div className="flex flex-wrap content-start text-center w-auto sm:w-1/2 lg:w-2/3 gap-1">
                       {chapters[book].map((step, index) => {
                         const stepLink = (
                           <>
-                            <span>
-                              {step.chapter} {t('Ch').toLowerCase()}
-                            </span>
-                            <span>|</span>
-                            <span>
-                              {countChaptersVerses?.[book]?.chapters[step.chapter]}{' '}
-                              {t('Ver').toLowerCase()}
-                            </span>
-                            <span>|</span>
-                            <span>
-                              {step?.step} {t('Step').toLowerCase()}
-                            </span>
+                            {step.chapter} {t('Ch').toLowerCase()}
+                            {' | '}
+                            {countChaptersVerses?.[book]?.chapters[step.chapter]}
+                            {t('Ver').toLowerCase()} {' | '}
+                            {step?.step} {t('Step').toLowerCase()}
                           </>
                         )
 
@@ -207,14 +200,14 @@ function ProjectPersonalCard({ project, user }) {
                                 ? '/intro'
                                 : ''
                             }`}
-                            className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base"
+                            className="step-link w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
                           >
                             {stepLink}
                           </Link>
                         ) : (
                           <button
                             key={index}
-                            className="btn-primary flex justify-center gap-1 sm:gap-2"
+                            className="step-link w-[47%] text-xs"
                             disabled
                           >
                             {stepLink}

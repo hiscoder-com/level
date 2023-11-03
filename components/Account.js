@@ -49,9 +49,7 @@ function Account() {
                       {({ selected }) => (
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                            selected
-                              ? 'bg-th-primary text-th-text-secondary'
-                              : 'bg-gradient-to-b from-th-background-secondary to-th-background-primary'
+                            selected ? 'bg-th-primary text-th-text-secondary' : ''
                           }
                       `}
                         >
