@@ -9,7 +9,7 @@ import Recorder from 'components/Recorder'
 
 import { inactiveState } from '../../state/atoms'
 
-import BackButton from 'public/left-arrow.svg'
+import BackButton from 'public/arrow-left.svg'
 
 export default function Audio() {
   const [audioState, setAudioState] = useState('Main Audio')

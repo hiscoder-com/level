@@ -2,7 +2,7 @@ import ReactMarkdown from 'react-markdown'
 
 import MarkdownExtended from 'components/MarkdownExtended'
 
-import Close from 'public/close.svg'
+import Back from 'public/left.svg'
 
 function TNTWLContent({ setItem, item }) {
   return (
@@ -15,7 +15,7 @@ function TNTWLContent({ setItem, item }) {
         className="absolute flex top-0 right-0 w-12 pr-4 cursor-pointer"
         onClick={() => setItem(null)}
       >
-        <Close className="stroke-th-icons-primary" />
+        <Back className="stroke-th-icons-primary" />
       </div>
       {!['intro', 'front'].includes(item?.title) && (
         <div className=" font-bold text-xl mb-2">

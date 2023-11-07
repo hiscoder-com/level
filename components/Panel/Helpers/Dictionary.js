@@ -17,8 +17,8 @@ import { useAccess, useProject } from 'utils/hooks'
 import Modal from 'components/Modal'
 
 import RightArrow from 'public/right-arrow.svg'
-import LeftArrow from 'public/left-arrow.svg'
-import Close from 'public/close.svg'
+import LeftArrow from 'public/arrow-left.svg'
+import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
 
@@ -273,14 +273,14 @@ function Dictionary() {
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 pr-3 w-10 cursor-pointer"
+            className="absolute top-1 right-0 pr-3 w-10 cursor-pointer"
             onClick={() => {
               saveWord()
               setActiveWord(null)
               setWordId(null)
             }}
           >
-            <Close className="stroke-th-icons-primary" />
+            <Back className="stroke-th-icons-primary" />
           </div>
           <Redactor
             classes={{

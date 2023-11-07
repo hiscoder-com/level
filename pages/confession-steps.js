@@ -10,7 +10,7 @@ import CheckBox from 'components/CheckBox'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-import LeftArrow from 'public/left-arrow.svg'
+import LeftArrow from 'public/arrow-left.svg'
 
 export default function ConfessionSteps() {
   const supabase = useSupabaseClient()

@@ -17,7 +17,7 @@ import Modal from 'components/Modal'
 import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
-import Close from 'public/close.svg'
+import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
 
@@ -131,14 +131,14 @@ function TeamNotes() {
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute top-1 right-0 w-10 pr-3 cursor-pointer"
             onClick={() => {
               saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}
           >
-            <Close className="stroke-th-icons-primary" />
+            <Back className="stroke-th-icons-primary" />
           </div>
           <Redactor
             classes={{

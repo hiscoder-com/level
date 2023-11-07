@@ -5,6 +5,7 @@ import { Disclosure } from '@headlessui/react'
 import { Placeholder } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
+import Down from 'public/arrow-down.svg'
 
 function TQ({ config, url, toolName }) {
   const { isLoading, data } = useGetResource({ config, url })
@@ -79,21 +80,30 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
 function Answer({ item, reduceQuestions, viewAll, highlightId }) {
   return (
     <Disclosure>
-      <Disclosure.Button
-        className={`p-2 w-fit text-left ${
-          highlightId === 'id' + item.id ? 'bg-th-background-primary rounded-lg' : ''
-        }`}
-        onClick={() => {
-          if (viewAll) {
-            reduceQuestions()
-          }
-        }}
-      >
-        <ReactMarkdown>{item.title}</ReactMarkdown>
-      </Disclosure.Button>
-      <Disclosure.Panel className="w-fit py-4 text-th-text-primary">
-        <p className="ml-2">{item.text}</p>
-      </Disclosure.Panel>
+      {({ open }) => (
+        <>
+          <Disclosure.Button
+            className={`flex items-center gap-2 p-2 w-fit text-left ${
+              highlightId === 'id' + item.id ? 'bg-th-background-primary rounded-lg' : ''
+            }`}
+            onClick={() => {
+              if (viewAll) {
+                reduceQuestions()
+              }
+            }}
+          >
+            <ReactMarkdown>{item.title}</ReactMarkdown>
+            <Down
+              className={`w-5 h-5 min-w-[1.25rem] stroke-th-icons-primary ${
+                open ? 'rotate-180' : ''
+              }`}
+            />
+          </Disclosure.Button>
+          <Disclosure.Panel className="w-fit py-4 text-th-text-primary">
+            <p className="ml-2">{item.text}</p>
+          </Disclosure.Panel>
+        </>
+      )}
     </Disclosure>
   )
 }
