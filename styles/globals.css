@@ -85,8 +85,6 @@
 	}
 }
 
-
-
 .appbar {
 	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-th-primary sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
 }
