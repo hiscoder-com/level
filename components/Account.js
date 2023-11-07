@@ -177,7 +177,7 @@ function Account() {
       {openInternalMenu && (
         <div
           className="fixed px-5 pb-4 mt-14
-          inset-0 min-h-screen overflow-y-scroll bg-white"
+          inset-0 min-h-screen overflow-y-scroll bg-th-background-secondary"
         >
           <div className="flex justify-end">
             <button

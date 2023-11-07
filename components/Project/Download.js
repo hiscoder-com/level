@@ -266,7 +266,7 @@ function Download({
           }
         />
       )}
-      <div className="flex flex-col gap-7 text-white">
+      <div className="flex flex-col gap-7 text-th-background-secondary">
         <div className="text-xl font-bold">{t('Download')}</div>
         <ListBox
           options={options}

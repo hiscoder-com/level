@@ -101,7 +101,7 @@ function TranslatorsList({
                             }`}
                           >
                             <span
-                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                              className={`inline-block h-4 w-4 transform rounded-full bg-th-background-secondary transition ${
                                 el.is_moderator ? 'translate-x-6' : 'translate-x-1'
                               }`}
                             />
