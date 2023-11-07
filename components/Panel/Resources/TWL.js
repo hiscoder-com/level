@@ -32,7 +32,7 @@ function TWL({ config, url, toolName }) {
       const finalData = {}
       words?.forEach((word) => {
         if (!word) {
-          return
+          return null
         }
         const {
           ID,
@@ -177,18 +177,20 @@ function FilterRepeated({ setFilter, filter }) {
 
   return (
     <div className="flex items-center justify-center">
-      <div className="">{t('FilterRepeatedWords')}</div>
-      <select
-        className="input-primary m-2 !w-auto"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      >
-        {options?.map((option) => (
-          <option value={option.value} key={option.value}>
-            {option.name}
-          </option>
-        ))}
-      </select>
+      <div className="w-2/3">{t('FilterRepeatedWords')}</div>
+      <div className="w-1/3 mr-2">
+        <select
+          className="input-primary"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          {options?.map((option) => (
+            <option value={option.value} key={option.value}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+      </div>
     </div>
   )
 }

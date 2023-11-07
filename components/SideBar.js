@@ -51,7 +51,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               className="fixed flex flex-col w-full md:w-1/2 lg:w-[48%] xl:w-[27rem] gap-7 top-14 sm:top-20 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 lg:pr-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th- bg-th-background-secondary sm:rounded-2xl">
+              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-border-primary bg-th-background-secondary sm:rounded-2xl">
                 <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-border-secondary">
                   <div className="w-12 h-12 min-w-[3rem]">
                     <TranslatorImage item={{ users: user }} />

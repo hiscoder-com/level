@@ -12,7 +12,6 @@ function ParticipantInfo({ project, access }) {
   const [translators] = useTranslators({
     code: project?.code,
     revalidateIfStale: true,
-    revalidateOnFocus: true,
   })
   const [coordinators] = useCoordinators({
     code: project?.code,

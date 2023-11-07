@@ -152,7 +152,7 @@ function Dictionary() {
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
       .then(() => saveCacheNote('dictionary', activeWord, user))
       .catch((err) => {
-        toast.error(t('SaveFailed')) //TODO в базе сделать ответ или исключение с чёткими кодами - , допустим "слово уже такое есть"
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
       .finally(() => {
@@ -346,7 +346,7 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
                 setCurrentPageWords(0)
                 setSearchQuery(el.toLowerCase())
               }}
-              className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-background-primary "
+              className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-background-primary"
               key={el}
             >
               {el}

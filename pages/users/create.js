@@ -31,7 +31,7 @@ function UserCreatePage() {
       <p>{t('Explanation')}</p>
       <div>{t('Email')}</div>
       <input
-        className={'input-primary max-w-sm'}
+        className="input-primary max-w-sm"
         type="text"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -39,7 +39,7 @@ function UserCreatePage() {
       <br />
       <div>{t('Password')}</div>
       <input
-        className={'input-primary max-w-sm'}
+        className="input-primary max-w-sm"
         type="text"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -47,7 +47,7 @@ function UserCreatePage() {
       <br />
       <div>{t('Login')}</div>
       <input
-        className={'input-primary max-w-sm'}
+        className="input-primary max-w-sm"
         type="text"
         value={login}
         onChange={(e) => setLogin(e.target.value)}

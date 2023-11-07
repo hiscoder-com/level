@@ -6,10 +6,10 @@ import Link from 'next/link'
 import { useTranslation } from 'next-i18next'
 import { useRecoilValue } from 'recoil'
 
-import Translators from './Translators'
-import ProgressBar from './ProgressBar'
-import ButtonLoading from './ButtonLoading'
-import CheckBox from './CheckBox'
+import Translators from 'components/Translators'
+import ProgressBar from 'components/ProgressBar'
+import ButtonLoading from 'components/ButtonLoading'
+import CheckBox from 'components/CheckBox'
 
 import { stepConfigState } from './state/atoms'
 export default function Footer({

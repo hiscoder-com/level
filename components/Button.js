@@ -1,21 +1,21 @@
 const colors = {
-  black: {
+  primary: {
     text: 'text-th-text-primary',
     active: 'active:bg-th-text-primary',
     hover: 'group-hover:bg-th-text-primary',
     border: 'border-th-text-primary',
   },
-  green: {
-    text: 'text-th-primary',
-    active: 'active:bg-th-primary',
-    hover: 'group-hover:bg-th-primary',
-    border: 'border-th-primary',
-  },
-  yellow: {
+  secondary: {
     text: 'text-th-secondary',
     active: 'active:bg-th-secondary',
     hover: 'group-hover:bg-th-secondary',
     border: 'border-th-secondary',
+  },
+  tertiary: {
+    text: 'text-th-primary',
+    active: 'active:bg-th-primary',
+    hover: 'group-hover:bg-th-primary',
+    border: 'border-th-primary',
   },
 }
 function Button({ onClick, text, color, icon, disabled = false, avatar = '' }) {

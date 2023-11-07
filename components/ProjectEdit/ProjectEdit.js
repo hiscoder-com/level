@@ -163,7 +163,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:Basic',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
+            <>
               <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
@@ -174,31 +174,27 @@ function ProjectEdit() {
                 />
                 <ButtonLoading isLoading={isSavingBasic}>{t('Save')}</ButtonLoading>
               </form>
-            </div>
+            </>
           ),
         },
         {
           id: 'brief',
           access: isTranslatorAccess,
           label: 'project-edit:Brief',
-          panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
-              <Brief access={isCoordinatorAccess} title />
-            </div>
-          ),
+          panel: <Brief access={isCoordinatorAccess} title />,
         },
         {
           id: 'participants',
           access: isModeratorAccess,
           label: 'Participants',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
+            <>
               <h3 className="text-xl font-bold">{t('Participants')}</h3>
               <Participants
                 users={users}
                 access={{ isCoordinatorAccess, isAdminAccess }}
               />
-            </div>
+            </>
           ),
         },
         {
@@ -206,10 +202,10 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'Resources',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
+            <>
               <h3 className="text-lg md:text-xl font-bold">{t('ListResources')}</h3>
               <ResourceSettings />
-            </div>
+            </>
           ),
         },
         {
@@ -217,7 +213,7 @@ function ProjectEdit() {
           access: isAdminAccess,
           label: 'project-edit:Steps',
           panel: (
-            <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none  rounded-b-2xl space-y-7">
+            <>
               <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
               <div className="space-y-7">
                 <Steps customSteps={customSteps} updateSteps={updateSteps} />
@@ -228,7 +224,7 @@ function ProjectEdit() {
               >
                 {t('Save')}
               </ButtonLoading>
-            </div>
+            </>
           ),
         },
       ].filter((el) => el.access),
@@ -320,16 +316,20 @@ function ProjectEdit() {
                 ))}
               </Tab.List>
             </div>
-            <div className="bg-th-primary h-12 rounded-t-3xl px-5" />
+            <div className="px-5 h-12 bg-th-primary rounded-t-3xl" />
             <Tab.Panels>
               {tabs.map((tab, idx) => (
-                <Tab.Panel key={idx}>{tab.panel}</Tab.Panel>
+                <Tab.Panel key={idx}>
+                  <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none rounded-b-2xl space-y-7">
+                    {tab.panel}
+                  </div>
+                </Tab.Panel>
               ))}
             </Tab.Panels>
           </Tab.Group>
         )}
       </div>
-      <div className="flex sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 flex-col gap-7 bg-th-background-secondary">
+      <div className="flex flex-col sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 gap-7 bg-th-background-secondary">
         <Breadcrumbs
           links={[
             { title: project?.title, href: '/projects/' + code },

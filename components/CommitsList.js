@@ -4,20 +4,17 @@ import { useMethod } from 'utils/hooks'
 
 function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
   const [customResources, setCustomResources] = useState({})
-
   const [methods] = useMethod()
   useEffect(() => {
     if (methods && methodId) {
       const selectedMethod = methods.find(
         (el) => el.id.toString() === methodId.toString()
       )
-
       if (selectedMethod) {
         setCustomResources(selectedMethod.resources)
       }
     }
   }, [methodId, methods])
-  //TODO colors жду ответа по инпутам
   const setResources = useMemo(() => {
     const listOfResources = []
     for (const resource in customResources) {

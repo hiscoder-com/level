@@ -98,8 +98,8 @@ function Account() {
                 )}
               </Tab.List>
               <Tab.Panels className="pb-10">
-                <div className="bg-th-primary h-10 rounded-t-3xl px-10"></div>
-                <div className="bg-th-background-secondary px-10 border border-th-border-secondary rounded-b-2xl">
+                <div className="px-10 h-10 bg-th-primary rounded-t-3xl"></div>
+                <div className="px-10 border border-th-border-secondary bg-th-background-secondary rounded-b-2xl">
                   <Tab.Panel>
                     <Projects type={'account'} />
                   </Tab.Panel>

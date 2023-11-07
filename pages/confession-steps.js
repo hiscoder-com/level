@@ -103,7 +103,7 @@ export default function ConfessionSteps() {
         </div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
-            <LeftArrow className="w-6 rotate-180" />
+            <LeftArrow className="w-6 rotate-180 stroke-th-icons-primary" />
           </button>
         </div>
       </div>

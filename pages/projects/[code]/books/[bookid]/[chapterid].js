@@ -355,7 +355,7 @@ function ChapterVersesPage() {
                 <Button
                   onClick={verseDividing}
                   text={t('Save')}
-                  color="green"
+                  color="tertiary"
                   icon={<Check className="w-5 h-5" />}
                   disabled={!translators?.length}
                 />
@@ -371,7 +371,7 @@ function ChapterVersesPage() {
                     )
                   }
                   text={t('Reset')}
-                  color="black"
+                  color="primary"
                   icon={<Trash className="w-5 h-5" />}
                   disabled={!translators?.length}
                 />
@@ -383,7 +383,7 @@ function ChapterVersesPage() {
                   <Button
                     onClick={changeStartChapter}
                     text={t('chapters:StartChapter')}
-                    color={'green'}
+                    color={'tertiary'}
                     icon={<Check className="w-5 h-5" />}
                     disabled={
                       chapter?.finished_at || isValidating || translators?.length === 0
@@ -400,7 +400,7 @@ function ChapterVersesPage() {
                   <Button
                     onClick={changeStartChapter}
                     text={t('chapters:CancelStartChapter')}
-                    color={'black'}
+                    color={'primary'}
                     icon={<Trash className="w-5 h-5" />}
                     disabled={chapter?.finished_at || isValidating}
                     avatar={
@@ -420,7 +420,7 @@ function ChapterVersesPage() {
                       ? t('chapters:FinishedChapter')
                       : t('chapters:CancelFinishedChapter')
                   }
-                  color={!chapter?.finished_at ? 'yellow' : 'black'}
+                  color={!chapter?.finished_at ? 'secondary' : 'primary'}
                   icon={
                     !chapter?.finished_at ? (
                       <Sparkles className="w-5 h-5 stroke-th-icons-primary" />
@@ -534,7 +534,7 @@ function ChapterVersesPage() {
                           <Button
                             onClick={verseDividing}
                             text={t('Save')}
-                            color="green"
+                            color="tertiary"
                             icon={<Check className="w-5 h-5" />}
                           />
                           <Button
@@ -549,7 +549,7 @@ function ChapterVersesPage() {
                               )
                             }
                             text={t('Reset')}
-                            color="black"
+                            color="primary"
                             icon={<Trash className="w-5 h-5" />}
                           />
                           {!chapter?.finished_at &&
@@ -557,7 +557,7 @@ function ChapterVersesPage() {
                               <Button
                                 onClick={changeStartChapter}
                                 text={t('chapters:StartChapter')}
-                                color={'green'}
+                                color={'tertiary'}
                                 icon={<Check className="w-5 h-5" />}
                                 disabled={chapter?.finished_at || isValidating}
                                 avatar={
@@ -572,7 +572,7 @@ function ChapterVersesPage() {
                               <Button
                                 onClick={changeStartChapter}
                                 text={t('chapters:CancelStartChapter')}
-                                color={'black'}
+                                color={'primary'}
                                 icon={<Trash className="w-5 h-5" />}
                                 disabled={chapter?.finished_at || isValidating}
                                 avatar={
@@ -592,7 +592,7 @@ function ChapterVersesPage() {
                                   ? t('chapters:FinishedChapter')
                                   : t('chapters:CancelFinishedChapter')
                               }
-                              color={!chapter?.finished_at ? 'yellow' : 'black'}
+                              color={!chapter?.finished_at ? 'secondary' : 'primary'}
                               icon={
                                 !chapter?.finished_at ? (
                                   <Sparkles className="w-5 h-5" />

@@ -15,13 +15,10 @@ function Dropdown({ description, user }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-
   const dropdownMenu = useRef(null)
   const toolsButton = useRef(null)
   const { t } = useTranslation(['common'])
-
   const toggle = () => setIsOpen((prev) => !prev)
-
   const closeModal = () => {
     setShowModalStepGoal(false)
     setShowModalTranslationGoal(false)
@@ -59,10 +56,8 @@ function Dropdown({ description, user }) {
             ref={dropdownMenu}
             className="absolute flex flex-col justify-center right-5 xl:right-0 border border-th-primary-border divide-y divide-solid bg-th-background-secondary rounded-md shadow-md z-40"
           >
-            {/* TODO - нужен дизайн, ховер и остальное */}
             <button
-              className="px-4 py-2 rounded-t-lg	hover:bg-th-background-primary
-			active:bg-th-background-primary"
+              className="px-4 py-2 rounded-t-lg	hover:bg-th-background-primary active:bg-th-background-primary"
               onClick={(e) => {
                 toggle()
                 setShowModalStepGoal(true)
@@ -71,7 +66,6 @@ function Dropdown({ description, user }) {
             >
               {t('AboutStep').toUpperCase()}
             </button>
-
             <button
               className="px-4 py-2 rounded-b-lg hover:bg-th-background-primary
 			active:bg-th-background-primary"
@@ -96,7 +90,6 @@ function Dropdown({ description, user }) {
         user={user}
         closeModal={closeModal}
       />
-
       <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold rounded-md divide-x divide-solid md:hidden bg-th-background-secondary">
         <button
           className="px-2 rounded-l-lg hover:opacity-70"

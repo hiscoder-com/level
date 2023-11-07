@@ -100,7 +100,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         <Tab.Panels>
           <div className="bg-th-primary h-10 rounded-t-3xl px-10"></div>
           <Tab.Panel>
-            <div className="px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary flex flex-col py-7">
+            <div className="flex flex-col py-7 px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary">
               <div className="flex flex-col gap-4">
                 {renderProperties}
                 <ButtonLoading onClick={handleSaveProperties} isLoading={isSaving}>
@@ -166,7 +166,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
     }
   }, [book])
   return (
-    <div className="px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary flex flex-col gap-4 py-7">
+    <div className="flex flex-col gap-4 py-7 px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary">
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-4">
           <div className="font-bold">{t('TranslationLink')}</div>

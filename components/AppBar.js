@@ -83,11 +83,11 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               {stepConfig.title}
             </div>
             <div
-              className={`items-center gap-4 md:flex justify-center md:justify-start text-th-text-primary ${
+              className={`block md:flex items-center gap-4 justify-center md:justify-start text-th-text-primary ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
-              <div className="flex row px-5 py-2.5 items-center gap-1 cursor-default bg-th-background-secondary rounded-3xl">
+              <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-background-secondary rounded-3xl">
                 <User className="w-4 h-4 stroke-th-icons-primary" />
                 {stepConfig.count_of_users}
               </div>

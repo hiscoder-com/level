@@ -175,7 +175,7 @@ function BlindEditor({ config }) {
                   ref={(el) => (textAreaRef.current[index] = el)}
                   autoFocus
                   rows={1}
-                  className="mt-3 resize-none focus:outline-none focus:inline-none w-full"
+                  className="mt-3 w-full resize-none focus:outline-none focus:inline-none"
                   onChange={(e) => {
                     e.target.style.height = 'inherit'
                     e.target.style.height = `${e.target.scrollHeight}px`

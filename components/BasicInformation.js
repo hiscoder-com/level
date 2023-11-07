@@ -18,9 +18,7 @@ function BasicInformation({
     {
       id: 1,
       title: t('Title'),
-      className: errors?.title
-        ? 'input-invalid'
-        : 'input-primary bg-th-background-secondary',
+      errorCondition: errors?.title,
       placeholder: '',
       register: {
         ...register('title', {
@@ -32,9 +30,7 @@ function BasicInformation({
     {
       id: 2,
       title: t('OrigTitle'),
-      className: errors?.origtitle
-        ? 'input-invalid'
-        : 'input-primary bg-th-background-secondary',
+      errorCondition: errors?.origtitle,
       placeholder: '',
       register: {
         ...register('origtitle', {
@@ -46,9 +42,7 @@ function BasicInformation({
     {
       id: 3,
       title: t('Code'),
-      className: errors?.code
-        ? 'input-invalid'
-        : 'input-primary bg-th-background-secondary',
+      errorCondition: errors?.code,
       placeholder: '',
       register: {
         ...register('code', {
@@ -78,7 +72,11 @@ function BasicInformation({
           <div className="w-auto md:w-1/5 font-bold">{input.title}</div>
           <div className="flex flex-col gap-2 w-full md:w-4/5">
             <input
-              className={`${input.className}`}
+              className={
+                input?.errorCondition
+                  ? 'input-invalid'
+                  : 'input-primary bg-th-background-secondary'
+              }
               placeholder={input.placeholder}
               {...input.register}
             />
@@ -109,7 +107,7 @@ function BasicInformation({
           <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-base text-th-text-primary border-th-input bg-th-background-secondary flex items-center gap-2 truncate"
+              className="input-base flex items-center gap-2 text-th-text-primary border-th-input bg-th-background-secondary truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
               <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-icons-primary stroke-th-icons-primary rounded-full" />
@@ -125,7 +123,7 @@ function BasicInformation({
             <select
               placeholder={t('Method')}
               {...register('methodId')}
-              className="input-primary bg-th-background-secondary w-3/4 appearance-none cursor-pointer"
+              className="input-primary w-3/4 bg-th-background-secondary appearance-none cursor-pointer"
               defaultValue={methods?.[0]?.id}
             >
               {methods &&

@@ -79,7 +79,7 @@ function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) 
           <div
             key={verseObject.verse}
             onClick={() => handleSaveScroll(verseObject.verse)}
-            className={`my-3 flex items-start select-none rounded-lg ${
+            className={`flex items-start my-3 select-none rounded-lg ${
               'id' + currentScrollVerse === 'id' + verseObject.verse
                 ? 'bg-th-background-primary'
                 : ''
@@ -110,9 +110,7 @@ function Blur({ verse }) {
     [verse]
   )
   return (
-    <ReactMarkdown
-      className={`ml-2 bg-th-background-primary text-th-background-primary rounded-lg select-none`}
-    >
+    <ReactMarkdown className="ml-2 bg-th-background-primary text-th-background-primary rounded-lg select-none">
       {text}
     </ReactMarkdown>
   )

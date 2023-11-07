@@ -4,9 +4,9 @@ import toast from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'next-i18next'
 
-import Modal from './Modal'
-import ButtonLoading from './ButtonLoading'
-import CheckBox from './CheckBox'
+import Modal from 'components/Modal'
+import ButtonLoading from 'components/ButtonLoading'
+import CheckBox from 'components/CheckBox'
 
 function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -92,11 +92,11 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
     <Modal isOpen={isOpen} closeHandle={closeHandle}>
       <form onSubmit={handleSubmit(handleAddLanguage)}>
         <div className="space-y-4">
-          {inputs.map((el) => (
-            <div key={el.id} className="space-y-2">
-              <div>{el.title}</div>
-              <input {...el.register} className={el.className} />
-              <div className="text-th-invalid">{el.errorMessage}</div>
+          {inputs.map((input) => (
+            <div key={input.id} className="space-y-2">
+              <div>{input.title}</div>
+              <input {...input.register} className={input.className} />
+              <div className="text-th-invalid">{input.errorMessage}</div>
             </div>
           ))}
           <CheckBox

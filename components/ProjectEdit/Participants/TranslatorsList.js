@@ -115,7 +115,6 @@ function TranslatorsList({
                       >
                         {t('Remove')}
                       </Menu.Item>
-                      {/*TODO разобраться с красными кнопками*/}
                     </Menu.Items>
                   </Transition>
                 </>

@@ -1,5 +1,6 @@
-import CheckboxShevron from 'public/checkbox-shevron.svg'
 import { forwardRef } from 'react'
+
+import CheckboxShevron from 'public/checkbox-shevron.svg'
 
 const CheckBox = forwardRef(
   (

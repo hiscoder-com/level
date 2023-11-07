@@ -100,15 +100,13 @@ function PasswordRecovery() {
 
                   <span
                     className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-icons-primary"
-                    onClick={() => {
-                      setShowPassword((prev) => !prev)
-                    }}
+                    onClick={() => setShowPassword((prev) => !prev)}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </span>
                 </div>
                 <p>{t('RepeatNewPassword')}</p>
-                <div className="relative z-0 w-full">
+                <div className="relative w-full z-0">
                   <input
                     name="floating_password_repeat"
                     className={error ? 'input-invalid' : 'input-primary'}
