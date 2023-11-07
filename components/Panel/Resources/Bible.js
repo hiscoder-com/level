@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import { useRecoilValue } from 'recoil'
 
 import { Placeholder } from '../UI'
+import MarkdownExtended from 'components/MarkdownExtended'
 
 import { checkedVersesBibleState } from '../../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
@@ -59,9 +60,9 @@ function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
             handleSaveScroll(String(verseObject.verse))
           }}
         >
-          <ReactMarkdown>
+          <MarkdownExtended>
             {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
-          </ReactMarkdown>
+          </MarkdownExtended>
         </div>
       ))}
     </>
