@@ -177,7 +177,7 @@ function PersonalNotes() {
     {
       id: 'adding_a_note',
       buttonContent: (
-        <span className={'flex items-center gap-2.5'}>
+        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
           <FileIcon /> {t('NewDocument')}
         </span>
       ),
@@ -186,7 +186,7 @@ function PersonalNotes() {
     {
       id: 'adding_a_folder',
       buttonContent: (
-        <span className={'flex items-center gap-2.5'}>
+        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2'}>
           <CloseFolder /> {t('NewFolder')}
         </span>
       ),
@@ -195,7 +195,7 @@ function PersonalNotes() {
     {
       id: 'rename',
       buttonContent: (
-        <span className={'flex items-center gap-2.5'}>
+        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
           <Rename /> {t('Rename')}
         </span>
       ),
@@ -204,7 +204,7 @@ function PersonalNotes() {
     {
       id: 'delete',
       buttonContent: (
-        <span className={'flex items-center gap-2.5'}>
+        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
           <Trash className={'w-4'} /> {t('Delete')}
         </span>
       ),
@@ -287,8 +287,7 @@ function PersonalNotes() {
             menuItems={menuItems}
             clickMenuEvent={contextMenuEvent}
             classes={{
-              menuItem:
-                'gap-2.5 py-1 pr-7 pl-2.5 cursor-pointer bg-gray-100 hover:bg-gray-200',
+              menuItem: 'cursor-pointer bg-gray-100 hover:bg-gray-200',
               menuContainer:
                 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
               emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
