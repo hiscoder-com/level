@@ -140,7 +140,7 @@ function Login() {
             <div>
               {t('Email')} {user.email}
             </div>
-            <Link href={href ?? '/'} className="text-th-link hover:opacity-70">
+            <Link href={href ?? '/'} className="text-th-primary-200 hover:opacity-70">
               {t('GoToAccount')}
             </Link>
           </div>
@@ -189,7 +189,7 @@ function Login() {
                 {t('Password')}
               </label>
               <span
-                className="absolute right-2 bottom-2 cursor-pointer stroke-2 stroke-th-icons-primary"
+                className="absolute right-2 bottom-2 cursor-pointer stroke-2 stroke-th-text-primary"
                 onClick={() => {
                   setShowPassword((prev) => !prev)
                 }}
@@ -205,7 +205,7 @@ function Login() {
                   </p>
                   <button
                     type="button"
-                    className="underline text-th-link hover:opacity-70"
+                    className="underline text-th-primary-200 hover:opacity-70"
                     onClick={() => setIsOpenModal(true)}
                   >
                     {t('ForgotPassword')}?
@@ -226,7 +226,7 @@ function Login() {
               </ButtonLoading>
               <button
                 type="button"
-                className="text-sm lg:text-base text-th-link hover:opacity-70"
+                className="text-sm lg:text-base text-th-primary-200 hover:opacity-70"
                 onClick={() => setIsOpenModal(true)}
               >
                 {t('RestoreAccess')}

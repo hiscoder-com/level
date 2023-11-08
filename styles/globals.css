@@ -3,39 +3,17 @@
 @tailwind utilities;
 
 :root {
-  --primary: theme('colors.slate.550');
-  --secondary: theme('colors.yellow.600');
-  --background-primary: theme('colors.gray.150');
-	--background-secondary: theme('colors.white');
-	--background-tertiary: theme('colors.neutral.100');
-	--icons-primary:theme('colors.neutral.800');
-	--icons-secondary:theme('colors.white');
+  --primary-100: theme('colors.slate.550');
+	--primary-200:theme('colors.slate.600');
+	--primary-300: theme('colors.slate.580');
+	--secondary-10: theme('colors.white');
+  --secondary-100: theme('colors.gray.150');
+	--secondary-200:	theme('colors.gray.250');
+	--secondary-300:	theme('colors.gray.450');
+  --secondary-400: theme('colors.yellow.650');	
 	--text-primary:theme('colors.neutral.800');
 	--text-secondary:theme('colors.white');
-	--text-disabled:theme('colors.neutral.400');
-	--link:theme('colors.slate.600');
-	--border-primary:theme('colors.slate.600');  
-	--border-secondary:theme('colors.gray.400');
-	--modal-from:	theme('colors.slate.550');
-	--modal-to:	theme('colors.slate.560');
-	--modal-secondary:	theme('colors.neutral.400');   
-	--btn-background-primary:	theme('colors.gray.250');
-	--btn-background-secondary: theme('colors.yellow.600');	
-	--btn-background-tertiary:	theme('colors.gray.450');
-	--btn-background-quaternary:	theme('colors.teal.350');
-	--active-tab-from:	theme('colors.slate.550');
-	--active-tab-to:	theme('colors.slate.570');
-	--blur-background: theme('colors.zinc.500');
-	--scroll: theme('colors.neutral.600');
-	--first-check: theme('colors.slate.550');
-	--second-check: theme('colors.slate.580');
-	--third-check: theme('colors.cyan.950');
-	--hover-chapter-from: theme('colors.teal.650');
-	--hover-chapter-to: theme('colors.slate.540');
-	--primary-switch: theme('colors.slate.540');
 	--invalid: theme('colors.red.500');
-	--input: theme('colors.gray.400');
-	--input-focus: theme('colors.slate.500');
 	--divide-verse1: theme('colors.stone.400');
 	--divide-verse2: theme('colors.stone.300');
 	--divide-verse3: theme('colors.zinc.300');
@@ -86,13 +64,13 @@
 }
 
 .appbar {
-	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-th-primary sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
+	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-th-primary-100 sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
 }
 
 .arrow {
 	@apply px-5 py-5 rounded-full duration-300
-	hover:bg-th-background-secondary
-	active:bg-th-modal-secondary
+	hover:bg-th-secondary-10
+	active:bg-th-secondary-300
 	disabled:opacity-30
 	disabled:hover:bg-transparent;
 }
@@ -135,11 +113,11 @@
 }
 
 .label {
-	@apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
+	@apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
 }
 
 .input-label {
-	@apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-border-secondary appearance-none focus:outline-none focus:ring-0 focus:border-th-primary;
+	@apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-secondary-300 appearance-none focus:outline-none focus:ring-0 focus:border-th-primary-100;
 }
 
 .verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2) {
@@ -150,22 +128,22 @@
 }
 
 .tab {
-	@apply py-2 px-2 text-sm border-x border-t border-th-primary rounded-t-2xl 
+	@apply py-2 px-2 text-sm border-x border-t border-th-primary-100 rounded-t-2xl 
 }
 .tab-active {
-	@apply tab text-th-text-secondary bg-gradient-to-b from-th-active-tab-from to-th-active-tab-to cursor-default focus:outline-none shadow
+	@apply tab text-th-text-secondary bg-gradient-to-b from-th-primary-100 to-th-primary-100 cursor-default focus:outline-none shadow
 }
 
 .tab-inactive {
-	@apply tab bg-th-background-secondary hover:bg-gradient-to-b hover:from-th-background-secondary hover:to-th-modal-secondary cursor-pointer
+	@apply tab bg-th-secondary-10 hover:bg-gradient-to-b hover:from-th-secondary-10 hover:to-th-secondary-300 cursor-pointer
 }
 .card {
-  @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-border-secondary shadow-md;
+  @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-300 shadow-md;
 }
 
 @screen sm {
   .card-md {
-	 @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-border-secondary shadow-md;
+	 @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-300 shadow-md;
 }
 }
 
@@ -174,20 +152,20 @@
 }
 
 .btn-primary {
-  @apply btn-base border text-th-text-primary border-th-border-secondary bg-th-btn-background-primary hover:bg-th-btn-background-secondary hover:border-th-btn-background-secondary hover:text-th-text-secondary disabled:hover:bg-th-btn-background-primary  disabled:border-th-text-secondary 
+  @apply btn-base border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary 
 	disabled:text-th-text-secondary disabled:cursor-default;
 }
 
 .btn-secondary {
-  @apply btn-base text-th-text-primary bg-th-background-secondary hover:opacity-70;
+  @apply btn-base text-th-text-primary bg-th-secondary-10 hover:opacity-70;
 }
 
 .btn-tertiary {
-	@apply mb-4 right-0 bg-th-btn-background-tertiary text-th-text-secondary font-bold rounded-xl cursor-pointer hover:opacity-70
+	@apply mb-4 right-0 bg-th-secondary-300 text-th-text-secondary font-bold rounded-xl cursor-pointer hover:opacity-70
 }
 
 .btn-quaternary {
-  @apply btn-base text-th-text-secondary bg-th-secondary hover:bg-th-btn-background-primary  border border-th-secondary disabled:cursor-auto hover:border-th-border-primary hover:text-th-text-primary disabled:opacity-50 disabled:hover:bg-th-secondary  disabled:hover:border-th-secondary disabled:hover:text-th-text-secondary;
+  @apply btn-base text-th-text-secondary bg-th-secondary-400 hover:bg-th-secondary-200  border border-th-secondary-400 disabled:cursor-auto hover:border-th-secondary-300 hover:text-th-text-primary disabled:opacity-50 disabled:hover:bg-th-secondary-400  disabled:hover:border-th-secondary-400 disabled:hover:text-th-text-secondary;
 }
 
 .btn-red {
@@ -195,20 +173,20 @@
 }
 
 .step-link {
-  @apply py-2 border text-th-text-primary border-th-border-secondary bg-th-btn-background-primary rounded-3xl cursor-pointer text-center hover:bg-th-btn-background-secondary hover:border-th-btn-background-secondary hover:text-th-text-secondary disabled:hover:bg-th-btn-background-primary  disabled:border-th-text-secondary 
+  @apply py-2 border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 rounded-3xl cursor-pointer text-center hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary 
 	disabled:text-th-text-secondary disabled:cursor-default;
 }
 
 .first-check path:nth-child(1) {
-	@apply fill-th-first-check
+	@apply opacity-60
 }
 
 .second-check path:nth-child(2) {
-	@apply fill-th-second-check
+	@apply opacity-80
 }
 
 .third-check path:nth-child(3) {
-	@apply fill-th-third-check
+	@apply opacity-100
 }
 
 .input-base {
@@ -216,15 +194,15 @@
 }
 
 .input-primary {
-	@apply input-base text-th-input border-th-input focus:border-th-input-focus placeholder:text-th-background-primary
+	@apply input-base text-th-secondary-300 border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-100
 }
 
 .input-invalid {
-	@apply input-base border-th-invalid text-th-input;
+	@apply input-base border-th-invalid text-th-secondary-300;
 }
 
 .logo :hover {
- @apply odd:fill-th-secondary even:fill-th-text-primary
+ @apply odd:fill-th-secondary-400 even:fill-th-text-primary
 }
 
 /*(className.*input-primary)|(input-primary.*className)*/

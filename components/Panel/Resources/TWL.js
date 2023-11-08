@@ -144,9 +144,9 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                         key={index}
                         id={'id' + item.id}
                         className={`p-2 rounded-lg cursor-pointer ${
-                          itemFilter ? 'text-th-text-disabled' : ''
-                        } hover:bg-th-background-primary
-                      ${highlightId === 'id' + item.id ? 'bg-th-background-primary' : ''}
+                          itemFilter ? 'text-th-secondary-300' : ''
+                        } hover:bg-th-secondary-100
+                      ${highlightId === 'id' + item.id ? 'bg-th-secondary-100' : ''}
                       `}
                         onClick={() => {
                           handleSaveScroll(verseNumber, item.id)

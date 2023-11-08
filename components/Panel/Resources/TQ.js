@@ -84,7 +84,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
         <>
           <Disclosure.Button
             className={`flex items-center gap-2 p-2 w-fit text-left ${
-              highlightId === 'id' + item.id ? 'bg-th-background-primary rounded-lg' : ''
+              highlightId === 'id' + item.id ? 'bg-th-secondary-100 rounded-lg' : ''
             }`}
             onClick={() => {
               if (viewAll) {
@@ -94,7 +94,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
           >
             <ReactMarkdown>{item.title}</ReactMarkdown>
             <Down
-              className={`w-5 h-5 min-w-[1.25rem] stroke-th-icons-primary ${
+              className={`w-5 h-5 min-w-[1.25rem] stroke-th-text-primary ${
                 open ? 'rotate-180' : ''
               }`}
             />

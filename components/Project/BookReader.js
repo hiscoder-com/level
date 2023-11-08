@@ -111,10 +111,10 @@ function BookReader() {
         </div>
       </div>
       <div className="w-full xl:w-2/3">
-        <div className="card flex flex-col gap-7 bg-th-background-secondary">
+        <div className="card flex flex-col gap-7 bg-th-secondary-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code} className="p-3">
-              <Left className="w-5 h-5 stroke-th-link hover:opacity-70" />
+              <Left className="w-5 h-5 stroke-th-primary-200 hover:opacity-70" />
             </Link>
             <Navigation
               books={
@@ -197,7 +197,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               {isCoordinatorAccess && (
                 <div
                   className="flex gap-2
-                  text-th-link hover:opacity-70 cursor-pointer"
+                  text-th-primary-200 hover:opacity-70 cursor-pointer"
                   onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
@@ -216,10 +216,10 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           )
         ) : (
           <div className="p-4 md:p-6 h-full animate-pulse">
-            <div className="mb-4 h-2.5 w-1/4 bg-th-background-primary rounded-full"></div>
+            <div className="mb-4 h-2.5 w-1/4 bg-th-secondary-100 rounded-full"></div>
             {[...Array(22).keys()].map((el) => (
               <div key={el}>
-                <div className="h-2 mb-4 bg-th-background-primary rounded-full"></div>
+                <div className="h-2 mb-4 bg-th-secondary-100 rounded-full"></div>
               </div>
             ))}
           </div>
@@ -256,8 +256,8 @@ function Navigation({ books, reference, setReference }) {
   return (
     <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3 z-10">
       <button
-        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-th-background-primary rounded-3xl ${
-          !prevChapter ? 'cursor-default' : 'bg-th-background-primary cursor-pointer'
+        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-th-secondary-100 rounded-3xl ${
+          !prevChapter ? 'cursor-default' : 'bg-th-secondary-100 cursor-pointer'
         }
         }`}
         onClick={() =>
@@ -266,7 +266,7 @@ function Navigation({ books, reference, setReference }) {
       >
         <Down
           className={`w-5 h-5 rotate-90 ${
-            !prevChapter ? 'stroke-th-text-disabled' : 'stroke-th-icons-primary'
+            !prevChapter ? 'stroke-th-secondary-300' : 'stroke-th-text-primary'
           }`}
         />
         <span className={`${prevChapter ? 'opacity-100' : 'opacity-0'}`}>
@@ -288,7 +288,7 @@ function Navigation({ books, reference, setReference }) {
           <div className="relative">
             <Listbox.Button>
               <div
-                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-th-background-primary ${
+                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-th-secondary-100 ${
                   !Object.keys(selectedBook)?.length ? 'animate-pulse' : ''
                 } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
               >
@@ -303,7 +303,7 @@ function Navigation({ books, reference, setReference }) {
               </div>
             </Listbox.Button>
             <div className="flex justify-center">
-              <Listbox.Options className="absolute w-full max-h-[50vh] bg-th-background-primary overflow-y-scroll rounded-b-2xl">
+              <Listbox.Options className="absolute w-full max-h-[50vh] bg-th-secondary-100 overflow-y-scroll rounded-b-2xl">
                 {books?.map((book) => (
                   <Listbox.Option
                     key={book?.id}
@@ -321,7 +321,7 @@ function Navigation({ books, reference, setReference }) {
                     {({ selected }) => (
                       <div
                         className={`${
-                          selected ? 'opacity-70' : 'bg-th-background-primary'
+                          selected ? 'opacity-70' : 'bg-th-secondary-100'
                         } w-full px-3 py-1 hover:opacity-70 cursor-pointer`}
                       >
                         {t('books:' + book?.code)}
@@ -336,7 +336,7 @@ function Navigation({ books, reference, setReference }) {
       </Listbox>
 
       <div
-        className={`w-2/5 sm:w-auto px-7 py-3 bg-th-background-primary rounded-3xl ${
+        className={`w-2/5 sm:w-auto px-7 py-3 bg-th-secondary-100 rounded-3xl ${
           !isNextChapter ? 'cursor-default' : 'cursor-pointer'
         }
         }`}
@@ -358,7 +358,7 @@ function Navigation({ books, reference, setReference }) {
           >{`${t('Chapter')}`}</span>
           <Down
             className={`w-5 h-5 -rotate-90 ${
-              isNextChapter ? 'stroke-th-icons-primary' : 'stroke-th-text-disabled'
+              isNextChapter ? 'stroke-th-text-primary' : 'stroke-th-secondary-300'
             }`}
           />
         </div>
@@ -431,11 +431,11 @@ function BookListReader({ books, setReference, reference, project }) {
   }, [reference?.bookid])
   //TODO надо сделать скролл при нажатии на таб Ветхий завет или новый
   return (
-    <div className="card flex flex-col gap-7 bg-th-background-secondary">
+    <div className="card flex flex-col gap-7 bg-th-secondary-10">
       <Tab.Group defaultIndex={defaultIndex}>
         <Tab.List
           as={'div'}
-          className={`grid grid-cols-2 gap-3 w-full font-bold border-b border-th-border-primary ${
+          className={`grid grid-cols-2 gap-3 w-full font-bold border-b border-th-secondary-300 ${
             project?.type === 'obs' ? 'hidden' : 'flex'
           }`}
         >
@@ -472,7 +472,7 @@ function BookListReader({ books, setReference, reference, project }) {
                             )
                           }}
                           className={`flex justify-between items-center py-2 w-full hover:opacity-70 ${
-                            !open ? 'border-b border-th-border-primary' : ''
+                            !open ? 'border-b border-th-secondary-300' : ''
                           }`}
                         >
                           <div className="flex items-center gap-4">
@@ -486,15 +486,15 @@ function BookListReader({ books, setReference, reference, project }) {
                           />
                         </Disclosure.Button>
                         <Disclosure.Panel>
-                          <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-th-border-primary">
+                          <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-th-secondary-300">
                             {[...Array(Object.keys(book.chapters).length).keys()]
                               .map((el) => el + 1)
                               .map((index) => (
                                 <div
-                                  className={`flex justify-center items-center w-10 h-10 bg-th-background-primary rounded-md cursor-pointer hover:opacity-70 ${
+                                  className={`flex justify-center items-center w-10 h-10 bg-th-secondary-100 rounded-md cursor-pointer hover:opacity-70 ${
                                     index === reference?.chapter
-                                      ? 'cursor-default bg-th-background-primary'
-                                      : 'bg-th-background-primary cursor-pointer '
+                                      ? 'cursor-default bg-th-secondary-100'
+                                      : 'bg-th-secondary-100 cursor-pointer '
                                   }`}
                                   key={index}
                                   onClick={() =>

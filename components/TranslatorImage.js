@@ -34,7 +34,7 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
         }
       }}
       className={`relative ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
-        showModerator && item.is_moderator ? 'border-th-secondary border-2' : ''
+        showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
       } rounded-full select-none`}
     >
       {item.avatar ? (

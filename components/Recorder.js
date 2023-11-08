@@ -22,10 +22,10 @@ export default function Recorder() {
   const [mediaRec, setMediaRec] = useState()
   const [voice, setVoice] = useState([])
   const [buttonRecord, setButtonRecord] = useState(
-    <RecorderButton className="stroke-th-icons-primary stroke-2" />
+    <RecorderButton className="stroke-th-text-primary stroke-2" />
   )
   const [buttonPlay, setButtonPlay] = useState(
-    <PlayButton className="stroke-th-icons-primary stroke-2" />
+    <PlayButton className="stroke-th-text-primary stroke-2" />
   )
   const audioRef = useRef(null)
 
@@ -33,11 +33,11 @@ export default function Recorder() {
     if (mediaRec?.state === 'inactive') {
       setVoice([])
       mediaRec.start()
-      setButtonRecord(<StopButton className="stroke-th-icons-primary stroke-2" />)
+      setButtonRecord(<StopButton className="stroke-th-text-primary stroke-2" />)
       setInactive(true)
     } else if (mediaRec?.state === 'recording') {
       mediaRec.stop()
-      setButtonRecord(<RecorderButton className="stroke-th-icons-primary stroke-2" />)
+      setButtonRecord(<RecorderButton className="stroke-th-text-primary stroke-2" />)
       setInactive(false)
     } else {
       setShowModal(true)
@@ -62,27 +62,27 @@ export default function Recorder() {
 
   useEffect(() => {
     if (voice.length > 0) {
-      setButtonPlay(<PlayButton className="stroke-th-icons-primary stroke-2" />)
+      setButtonPlay(<PlayButton className="stroke-th-text-primary stroke-2" />)
       const blobUrl = window.URL.createObjectURL(
         new Blob(voice, { type: 'audio/webm;codecs=opus' })
       )
       audioRef.current.src = blobUrl
     } else if (audioRef.current) {
-      setButtonPlay(<PlayButton className="stroke-th-text-disabled stroke-2" />)
+      setButtonPlay(<PlayButton className="stroke-th-secondary-300 stroke-2" />)
       audioRef.current.src = ''
     }
     audioRef.current.onended = () => {
-      setButtonPlay(<PlayButton className="stroke-th-icons-primary stroke-2" />)
+      setButtonPlay(<PlayButton className="stroke-th-text-primary stroke-2" />)
     }
   }, [voice])
 
   const playPause = () => {
     if (audioRef.current.paused) {
       audioRef.current.play()
-      setButtonPlay(<PauseButton className="stroke-th-icons-primary stroke-2" />)
+      setButtonPlay(<PauseButton className="stroke-th-text-primary stroke-2" />)
     } else {
       audioRef.current.pause()
-      setButtonPlay(<PlayButton className="stroke-th-icons-primary stroke-2" />)
+      setButtonPlay(<PlayButton className="stroke-th-text-primary stroke-2" />)
     }
   }
 
@@ -103,7 +103,7 @@ export default function Recorder() {
       >
         <TrashButton
           className={`stroke-2 ${
-            voice.length > 0 ? 'stroke-th-icons-primary' : 'stroke-th-text-disabled'
+            voice.length > 0 ? 'stroke-th-text-primary' : 'stroke-th-secondary-300'
           }`}
         />
       </button>

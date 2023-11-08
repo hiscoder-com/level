@@ -316,11 +316,11 @@ function ProjectEdit() {
                 ))}
               </Tab.List>
             </div>
-            <div className="px-5 h-12 bg-th-primary rounded-t-3xl" />
+            <div className="px-5 h-12 bg-th-primary-100 rounded-t-3xl" />
             <Tab.Panels>
               {tabs.map((tab, idx) => (
                 <Tab.Panel key={idx}>
-                  <div className="p-3 sm:py-5 sm:px-8 border border-th-border-secondary shadow-md bg-th-background-secondary rounded-t-none rounded-b-2xl space-y-7">
+                  <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-300 shadow-md bg-th-secondary-10 rounded-t-none rounded-b-2xl space-y-7">
                     {tab.panel}
                   </div>
                 </Tab.Panel>
@@ -329,7 +329,7 @@ function ProjectEdit() {
           </Tab.Group>
         )}
       </div>
-      <div className="flex flex-col sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 gap-7 bg-th-background-secondary">
+      <div className="flex flex-col sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 gap-7 bg-th-secondary-10">
         <Breadcrumbs
           links={[
             { title: project?.title, href: '/projects/' + code },

@@ -107,7 +107,7 @@ function TranslatorPage({ last_step }) {
         t('Loading')
       )}
 
-      <div className="flex justify-end px-6 lg:px-0 mx-auto w-full max-w-7xl bg-th-background-primary">
+      <div className="flex justify-end px-6 lg:px-0 mx-auto w-full max-w-7xl bg-th-secondary-100">
         <Link href={`/translate/${project}/${book}/${chapter}/${step}`} legacyBehavior>
           <button className="my-4 btn-quaternary !px-6">{t('BackTo')}</button>
         </Link>

@@ -116,13 +116,13 @@ function BriefBlock({ access, title = false }) {
                 checked={brief?.is_enable || false}
                 onChange={handleSwitch}
                 className={`${
-                  brief?.is_enable ? 'bg-th-primary' : 'bg-th-background-primary'
+                  brief?.is_enable ? 'bg-th-primary-100' : 'bg-th-secondary-100'
                 } relative inline-flex h-7 w-12 items-center rounded-full`}
               >
                 <span
                   className={`${
                     brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-th-background-secondary transition`}
+                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
                 />
               </Switch>
             </div>
@@ -136,13 +136,13 @@ function BriefBlock({ access, title = false }) {
                 setHidden((prev) => !prev)
               }}
               className={`${
-                !hidden && !editableMode ? 'bg-th-primary' : 'bg-th-background-primary'
+                !hidden && !editableMode ? 'bg-th-primary-100' : 'bg-th-secondary-100'
               } relative inline-flex h-7 w-12 items-center rounded-full`}
             >
               <span
                 className={`${
                   !hidden ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-5 w-5 transform rounded-full bg-th-background-secondary transition`}
+                } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
               />
             </Switch>
           </div>
@@ -155,13 +155,13 @@ function BriefBlock({ access, title = false }) {
                   setEditableMode((prev) => !prev)
                 }}
                 className={`${
-                  editableMode ? 'bg-th-primary' : 'bg-th-background-primary'
+                  editableMode ? 'bg-th-primary-100' : 'bg-th-secondary-100'
                 } relative inline-flex h-7 w-12 items-center rounded-full`}
               >
                 <span
                   className={`${
                     editableMode ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-th-background-secondary transition`}
+                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
                 />
               </Switch>
             </div>
@@ -229,7 +229,7 @@ function BriefBlock({ access, title = false }) {
                   {[3, 7, 3, 4, 9, 6, 3, 10, 8].map((width, index) => (
                     <div
                       key={index}
-                      className={`h-7 w-${width}/12 mt-4 bg-th-background-primary rounded-full`}
+                      className={`h-7 w-${width}/12 mt-4 bg-th-secondary-100 rounded-full`}
                     ></div>
                   ))}
                 </div>

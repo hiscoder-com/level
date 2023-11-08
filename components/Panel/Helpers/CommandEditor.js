@@ -143,7 +143,7 @@ function CommandEditor({ config }) {
                   : !verseObject.editable
               )
                 ? 'font-bold'
-                : 'text-th-primary'
+                : 'text-th-primary-100'
             }
           >
             {obsCheckAdditionalVerses(verseObject.num)}

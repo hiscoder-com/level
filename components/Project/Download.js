@@ -266,7 +266,7 @@ function Download({
           }
         />
       )}
-      <div className="flex flex-col gap-7 text-th-background-secondary">
+      <div className="flex flex-col gap-7 text-th-secondary-10">
         <div className="text-xl font-bold">{t('Download')}</div>
         <ListBox
           options={options}
@@ -293,7 +293,7 @@ function Download({
                     checked={downloadSettings[key]}
                     className={{
                       accent:
-                        'bg-th-second-check checked:bg-th-background-secondary checked:border-th-primary checked:before:bg-th-background-secondary border-th-border-primary',
+                        'bg-th-primary-300 checked:bg-th-secondary-10 checked:border-th-primary-100 checked:before:bg-th-secondary-10 border-th-secondary-300',
                       cursor:
                         'fill-th-text-primary text-th-text-primary stroke-th-text-primary',
                       wrapper: 'flex-row-reverse justify-between',

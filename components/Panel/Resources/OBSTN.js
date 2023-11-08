@@ -59,9 +59,9 @@ function TNList({ setItem, data, toolName, isLoading }) {
                       <li
                         key={note.id}
                         id={'idtn' + note.id}
-                        className={`p-2 cursor-pointer hover:bg-th-background-primary ${
+                        className={`p-2 cursor-pointer hover:bg-th-secondary-100 ${
                           highlightId === 'id' + note.id
-                            ? 'bg-th-background-primary rounded-lg'
+                            ? 'bg-th-secondary-100 rounded-lg'
                             : ''
                         }`}
                         onClick={() => {

@@ -95,15 +95,15 @@ export default function ConfessionSteps() {
       <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4 text-sm sm:text-base lg:text-lg xl:text-xl">
         <div className="flex items-center">
           <button disabled={page < 1} onClick={prevPage} className="arrow">
-            <LeftArrow className="w-6 stroke-th-icons-primary" />
+            <LeftArrow className="w-6 stroke-th-text-primary" />
           </button>
         </div>
-        <div className="flex flex-col w-full min-h-[30rem] bg-th-background-secondary rounded-lg sm:mb-0 py-6 px-10 justify-center order-first sm:order-none">
+        <div className="flex flex-col w-full min-h-[30rem] bg-th-secondary-10 rounded-lg sm:mb-0 py-6 px-10 justify-center order-first sm:order-none">
           {confessionSteps[page]}
         </div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
-            <LeftArrow className="w-6 rotate-180 stroke-th-icons-primary" />
+            <LeftArrow className="w-6 rotate-180 stroke-th-text-primary" />
           </button>
         </div>
       </div>
@@ -117,9 +117,8 @@ export default function ConfessionSteps() {
           checked={checked}
           className={{
             accent:
-              'bg-th-background-secondary checked:bg-th-secondary checked:border-th-secondary checked:before:bg-th-secondary border-th-secondary',
-            cursor:
-              'fill-th-background-secondary text-th-background-secondary stroke-th-background-secondary',
+              'bg-th-secondary-10 checked:bg-th-secondary-400 checked:border-th-secondary-400 checked:before:bg-th-secondary-400 border-th-secondary',
+            cursor: 'fill-th-secondary-10 text-th-secondary-10 stroke-th-secondary-10',
           }}
           label={t('users:Agree')}
         />

@@ -90,8 +90,8 @@ function TNList({ setItem, data, toolName, isLoading }) {
                       <li
                         key={note.ID}
                         id={'idtn' + note.ID}
-                        className={`p-2 cursor-pointer rounded-lg hover:bg-th-background-primary ${
-                          highlightId === 'id' + note.ID ? 'bg-th-background-primary' : ''
+                        className={`p-2 cursor-pointer rounded-lg hover:bg-th-secondary-100 ${
+                          highlightId === 'id' + note.ID ? 'bg-th-secondary-100' : ''
                         }`}
                         onClick={() => {
                           handleSaveScroll(verseNumber, note.ID)

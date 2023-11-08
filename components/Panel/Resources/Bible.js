@@ -53,7 +53,7 @@ function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
           id={'id' + verseObject.verse}
           className={`p-2 rounded-lg ${
             'id' + currentScrollVerse === 'id' + verseObject.verse
-              ? 'bg-th-background-primary'
+              ? 'bg-th-secondary-100'
               : ''
           }`}
           onClick={() => {
@@ -81,7 +81,7 @@ function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) 
             onClick={() => handleSaveScroll(verseObject.verse)}
             className={`flex items-start my-3 select-none rounded-lg ${
               'id' + currentScrollVerse === 'id' + verseObject.verse
-                ? 'bg-th-background-primary'
+                ? 'bg-th-secondary-100'
                 : ''
             }`}
           >
@@ -110,7 +110,7 @@ function Blur({ verse }) {
     [verse]
   )
   return (
-    <ReactMarkdown className="ml-2 bg-th-background-primary text-th-background-primary rounded-lg select-none">
+    <ReactMarkdown className="ml-2 bg-th-secondary-100 text-th-secondary-100 rounded-lg select-none">
       {text}
     </ReactMarkdown>
   )

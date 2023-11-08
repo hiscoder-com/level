@@ -110,14 +110,14 @@ function PersonalNotes() {
         <div>
           <div className="flex gap-2">
             <button className="btn-tertiary p-3" onClick={addNote}>
-              <Plus className="w-6 h-6 stroke-th-icons-secondary stroke-2" />
+              <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
             </button>
             <div
               className="btn-tertiary px-5 py-3 flex gap-2 items-center"
               onClick={() => setIsOpenModal(true)}
               disabled={!notes?.length}
             >
-              <Trash className="w-5 h-5 stroke-th-icons-secondary" />
+              <Trash className="w-5 h-5 stroke-th-text-secondary" />
               <span>{t('RemoveAll')}</span>
             </div>
           </div>
@@ -129,13 +129,13 @@ function PersonalNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'flex justify-between items-start group my-3 bg-th-background-primary rounded-lg cursor-pointer shadow-md',
+              item: 'flex justify-between items-start group my-3 bg-th-secondary-100 rounded-lg cursor-pointer shadow-md',
               title: 'p-2 mr-4 font-bold',
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn
-            delBtnChildren={<Trash className="w-4 h-4 stroke-th-icons-primary" />}
+            delBtnChildren={<Trash className="w-4 h-4 stroke-th-text-primary" />}
           />
         </div>
       ) : (
@@ -148,14 +148,13 @@ function PersonalNotes() {
               setNoteId(null)
             }}
           >
-            <Back className="stroke-th-icons-primary" />
+            <Back className="stroke-th-text-primary" />
           </div>
           <Redactor
             classes={{
-              title:
-                'p-2 my-4 mr-12 bg-th-background-primary font-bold rounded-lg shadow-md',
+              title: 'p-2 my-4 mr-12 bg-th-secondary-100 font-bold rounded-lg shadow-md',
               redactor:
-                'pb-20 pt-4 my-4 bg-th-background-primary overflow-hidden break-words rounded-lg shadow-md',
+                'pb-20 pt-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
@@ -173,7 +172,7 @@ function PersonalNotes() {
           </div>
           <div className="flex gap-7 w-1/2 text-th-text-primary">
             <button
-              className="btn-base flex-1 bg-th-background-secondary hover:bg-th-btn-background-quaternary"
+              className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
                 if (noteToDel) {
@@ -187,7 +186,7 @@ function PersonalNotes() {
               {t('Yes')}
             </button>
             <button
-              className="btn-base flex-1 bg-th-background-secondary hover:bg-th-btn-background-quaternary"
+              className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
                 setTimeout(() => {

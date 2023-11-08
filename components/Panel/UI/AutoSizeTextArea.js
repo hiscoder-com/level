@@ -23,8 +23,8 @@ function AutoSizeTextArea({ disabled = false, updateVerse, index, verseObject })
           updateVerse(index, e.target.innerText.trim())
         }
       }}
-      className={`block w-full mx-3 focus:outline-none focus:inline-none whitespace-pre-line focus:bg-th-background-secondary ${
-        verseObject.verse || disabled ? '' : 'bg-th-background-primary'
+      className={`block w-full mx-3 focus:outline-none focus:inline-none whitespace-pre-line focus:bg-th-secondary-10 ${
+        verseObject.verse || disabled ? '' : 'bg-th-secondary-100'
       }`}
       // eslint-disable-next-line prettier/prettier
     >{startValue}</div>

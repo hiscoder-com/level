@@ -74,7 +74,7 @@ function Testament({
                     className={
                       isBookCreated
                         ? 'text-th-text-primary cursor-pointer truncate'
-                        : 'text-th-text-disabled'
+                        : 'text-th-secondary-300'
                     }
                     onClick={() => handleOpenBook(book, isBookCreated)}
                   >
@@ -85,7 +85,7 @@ function Testament({
                   {({ open }) => (
                     <>
                       <Menu.Button className="relative flex duration-200">
-                        <Elipsis className="block sm:hidden h-6 min-h-[1.5rem] transition stroke-th-icons-primary" />
+                        <Elipsis className="block sm:hidden h-6 min-h-[1.5rem] transition stroke-th-text-primary" />
                       </Menu.Button>
                       <Transition
                         as={Fragment}
@@ -101,9 +101,9 @@ function Testament({
                           <div className="flex gap-2">
                             {isCoordinatorAccess && isBookCreated && (
                               <Menu.Item>
-                                <button className="">
+                                <button>
                                   <Gear
-                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-icons-primary"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() =>
                                       push({
                                         pathname: `/projects/${project?.code}`,
@@ -121,7 +121,7 @@ function Testament({
                               <Menu.Item>
                                 <button>
                                   <Play
-                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-icons-primary"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() => setBookCodeCreating(book)}
                                   />
                                 </button>
@@ -131,7 +131,7 @@ function Testament({
                               <Menu.Item>
                                 <button>
                                   <DownloadIcon
-                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-icons-primary"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() => {
                                       setIsOpenDownloading(true)
                                       setDownloadingBook(book)
@@ -144,7 +144,7 @@ function Testament({
                               <Menu.Item>
                                 <button>
                                   <Reader
-                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-icons-primary"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() =>
                                       push({
                                         pathname: `/projects/${project?.code}/books/read`,
@@ -170,7 +170,7 @@ function Testament({
                       {!isBookCreated && isCoordinatorAccess && (
                         <>
                           <Play
-                            className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-icons-primary"
+                            className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                             onClick={() => setBookCodeCreating(book)}
                           />
                         </>
@@ -178,7 +178,7 @@ function Testament({
 
                       {levelChecks?.[book] && (
                         <Reader
-                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-icons-primary"
+                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                           onClick={() =>
                             push({
                               pathname: `/projects/${project?.code}/books/read`,
@@ -192,7 +192,7 @@ function Testament({
                       )}
                       {isModeratorAccess && isBookCreated && (
                         <DownloadIcon
-                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-icons-primary"
+                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                           onClick={() => {
                             setIsOpenDownloading(true)
                             setDownloadingBook(book)
@@ -203,7 +203,7 @@ function Testament({
                         <>
                           {isBookCreated && (
                             <Gear
-                              className="w-6 min-w-[1.5rem] stroke-th-icons-primary cursor-pointer"
+                              className="w-6 min-w-[1.5rem] stroke-th-text-primary cursor-pointer"
                               onClick={() =>
                                 push({
                                   pathname: `/projects/${project?.code}`,
@@ -221,7 +221,7 @@ function Testament({
                   </>
                 ) : (
                   <div role="status" className="h-4 w-1/4 animate-pulse">
-                    <div className="h-full w-full bg-th-background-primary rounded-2xl"></div>
+                    <div className="h-full w-full bg-th-secondary-100 rounded-2xl"></div>
                   </div>
                 )}
               </div>
@@ -241,7 +241,7 @@ function Testament({
         closeHandle={() => setIsOpenDownloading(false)}
         className={{
           dialogPanel:
-            'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-modal-from to-th-modal-to text-th-text-secondary overflow-y-visible rounded-3xl',
+            'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-100 to-th-primary-100 text-th-text-secondary overflow-y-visible rounded-3xl',
         }}
       >
         <Download

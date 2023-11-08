@@ -26,7 +26,7 @@ export default function UserAgreement() {
   return (
     <div className="layout-appbar">
       <div
-        className="max-w-7xl pb-6 px-6 lg:px-8 bg-th-background-secondary rounded-lg text-justify overflow-auto text-th-text-primary"
+        className="max-w-7xl pb-6 px-6 lg:px-8 bg-th-secondary-10 rounded-lg text-justify overflow-auto text-th-text-primary"
         style={{ height: 'calc(100vh - 15rem)' }}
       >
         <h1 className="pt-4 text-2xl md:text-4xl">{t('users:Agreement')}:</h1>

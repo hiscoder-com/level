@@ -6,8 +6,7 @@ const CheckBox = forwardRef(
   (
     {
       className = {
-        cursor:
-          'text-th-background-secondary stroke-th-background-secondary fill-th-background-secondary',
+        cursor: 'text-th-secondary-10 stroke-th-secondary-10 fill-th-secondary-10',
         accent: '',
         wrapper: '',
       },
@@ -25,7 +24,7 @@ const CheckBox = forwardRef(
         <input
           id={id}
           type="checkbox"
-          className={`w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-th-border-primary transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10 ${className.accent}`}
+          className={`w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-th-secondary-300 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10 ${className.accent}`}
           ref={ref}
           {...props}
         />

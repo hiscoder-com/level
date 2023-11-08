@@ -47,7 +47,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
     return !user?.id ? '/' : access ? '/account' : '/agreements'
   }, [access, user])
   return (
-    <div className={`bg-th-primary ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
+    <div className={`bg-th-primary-100 ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
@@ -63,11 +63,11 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
 
           {isStepPage && (
             <div className="flex md:hidden items-center gap-7">
-              <div className="px-5 py-2.5 bg-th-background-secondary rounded-3xl">
+              <div className="px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
               <Down
-                className="w-6 h-6 stroke-th-icons-secondary"
+                className="w-6 h-6 stroke-th-text-secondary"
                 onClick={() => setShowFullAppbar((prev) => !prev)}
               />
             </div>
@@ -87,11 +87,11 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
-              <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-background-secondary rounded-3xl">
-                <User className="w-4 h-4 stroke-th-icons-primary" />
+              <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-10 rounded-3xl">
+                <User className="w-4 h-4 stroke-th-text-primary" />
                 {stepConfig.count_of_users}
               </div>
-              <div className="hidden md:flex px-5 py-2.5 bg-th-background-secondary rounded-3xl">
+              <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
               <Dropdown description={stepConfig?.description} user={user} />

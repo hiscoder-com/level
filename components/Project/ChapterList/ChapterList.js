@@ -101,7 +101,7 @@ function ChapterList() {
   }
   return (
     <div className="pb-10">
-      <div className="card bg-th-background-secondary mx-auto max-w-7xl">
+      <div className="card bg-th-secondary-10 mx-auto max-w-7xl">
         <div className="flex flex-col gap-7 w-full">
           <Breadcrumbs
             links={[
@@ -134,10 +134,10 @@ function ChapterList() {
                           isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
                         } ${
                           finished_at
-                            ? 'bg-th-secondary border-th-secondary text-th-text-secondary'
+                            ? 'bg-th-secondary-400 border-th-secondary-400 text-th-text-secondary'
                             : isCreated
-                            ? 'text-th-text-secondary bg-th-third-check border-th-third-check'
-                            : 'bg-th-background-secondary border-th-third-check'
+                            ? 'text-th-text-secondary bg-th-primary-100 border-th-primary-100'
+                            : 'bg-th-secondary-10 border-th-primary-100'
                         } border-2`}
                       >
                         <div className="flex justify-between">
@@ -181,11 +181,11 @@ function ChapterList() {
                         } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer`}
                         style={{
                           background:
-                            'linear-gradient(90deg, var(--hover-chapter-from) 1%, var(--hover-chapter-to) 98%)',
+                            'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
                         }}
                         onClick={() => setCreatingChapter(chapter)}
                       >
-                        <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-background-secondary border-th-background-secondary border-2 rounded-full">
+                        <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secondary-10 border-2 rounded-full">
                           <Plus className="w-5 h-5" />
                         </div>
                       </div>
@@ -212,7 +212,7 @@ function ChapterList() {
             closeHandle={() => setIsOpenDownloading(false)}
             className={{
               dialogPanel:
-                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-modal-from to-th-modal-to text-th-text-secondary overflow-y-visible rounded-3xl',
+                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-100 to-th-primary-100 text-th-text-secondary overflow-y-visible rounded-3xl',
             }}
           >
             <Download

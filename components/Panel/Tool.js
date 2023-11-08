@@ -167,7 +167,7 @@ function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }
   }
   return (
     <>
-      <div className="pt-2.5 px-4 h-10 font-bold bg-th-primary text-th-text-secondary text-center rounded-t-lg truncate">
+      <div className="pt-2.5 px-4 h-10 font-bold bg-th-primary-100 text-th-text-secondary text-center rounded-t-lg truncate">
         {![
           'translate',
           'commandTranslate',

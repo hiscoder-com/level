@@ -111,14 +111,14 @@ function ProjectPersonalCard({ project, user }) {
             return (
               <div
                 key={i}
-                className="card flex flex-col sm:flex-row gap-7 p-7 h-full bg-th-background-secondary sm:bg-th-background-tertiary"
+                className="card flex flex-col sm:flex-row gap-7 p-7 h-full bg-th-secondary-10 sm:bg-th-secondary-100"
               >
                 {!isLoading && currentSteps && project ? (
                   <>
                     <div className="flex flex-col gap-7 w-auto sm:w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
-                          className="text-xl font-bold text-th-link hover:opacity-70 cursor-pointer"
+                          className="text-xl font-bold text-th-primary-200 hover:opacity-70 cursor-pointer"
                           href={`/projects/${project.code}/books/${book}`}
                         >
                           {t(`books:${book}`)}
@@ -130,7 +130,7 @@ function ProjectPersonalCard({ project, user }) {
                         })})`}</div>
                         {levelChecks?.[book] && (
                           <Reader
-                            className="w-6 min-w-[1.5rem] text-th-link hover:opacity-70  cursor-pointer"
+                            className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70  cursor-pointer"
                             onClick={() =>
                               push({
                                 pathname: `/projects/${project?.code}/books/read`,
@@ -148,7 +148,7 @@ function ProjectPersonalCard({ project, user }) {
                           <p>{t('projects:Project')}:</p>
                           <Link
                             href={`/projects/${project.code}`}
-                            className="text-th-link hover:opacity-70"
+                            className="text-th-primary-200 hover:opacity-70"
                           >
                             {project?.title}
                           </Link>
@@ -229,11 +229,11 @@ function ProjectPersonalCard({ project, user }) {
                     role="status"
                     className="flex flex-col gap-4 h-full w-full animate-pulse"
                   >
-                    <div className="h-3 bg-th-background-primary rounded-2xl w-1/4" />
-                    <div className="h-3 bg-th-background-primary rounded-2xl w-1/2" />
-                    <div className="h-3 bg-th-background-primary rounded-2xl w-full" />
-                    <div className="h-3 bg-th-background-primary rounded-2xl w-full" />
-                    <div className="h-3 bg-th-background-primary rounded-2xl w-full" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-1/4" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-1/2" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
                   </div>
                 )}
               </div>

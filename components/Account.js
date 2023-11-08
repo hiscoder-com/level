@@ -41,7 +41,7 @@ function Account() {
         {user?.id && (
           <>
             <Tab.Group as="div" className="block sm:hidden">
-              <Tab.List className="flex p-1 w-full bg-th-background-secondary border border-th-border-secondary rounded-3xl shadow-md">
+              <Tab.List className="flex p-1 w-full bg-th-secondary-10 border border-th-secondary-300 rounded-3xl shadow-md">
                 {tabs
                   .filter((el) => el !== 'projects:CreateProject')
                   .map((tab) => (
@@ -49,7 +49,7 @@ function Account() {
                       {({ selected }) => (
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                            selected ? 'bg-th-primary text-th-text-secondary' : ''
+                            selected ? 'bg-th-primary-100 text-th-text-secondary' : ''
                           }
                       `}
                         >
@@ -98,8 +98,8 @@ function Account() {
                 )}
               </Tab.List>
               <Tab.Panels className="pb-10">
-                <div className="px-10 h-10 bg-th-primary rounded-t-3xl"></div>
-                <div className="px-10 border border-th-border-secondary bg-th-background-secondary rounded-b-2xl">
+                <div className="px-10 h-10 bg-th-primary-100 rounded-t-3xl"></div>
+                <div className="px-10 border border-th-secondary-300 bg-th-secondary-10 rounded-b-2xl">
                   <Tab.Panel>
                     <Projects type={'account'} />
                   </Tab.Panel>
@@ -120,12 +120,12 @@ function Account() {
           {({ open }) => (
             <>
               <div
-                className={`inset-0 bg-th-background-primary bg-opacity-25 backdrop-filter backdrop-blur ${
+                className={`inset-0 bg-th-secondary-100 bg-opacity-25 backdrop-filter backdrop-blur ${
                   open ? 'fixed' : 'hidden'
                 }`}
               ></div>
               <Menu.Button
-                className={`block md:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary rounded-full bg-th-primary transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`block md:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary rounded-full bg-th-primary-100 transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}
@@ -148,7 +148,7 @@ function Account() {
               >
                 <Menu.Items
                   className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md ${
-                    openInternalMenu ? 'bg-inherit' : 'bg-th-background-secondary'
+                    openInternalMenu ? 'bg-inherit' : 'bg-th-secondary-10'
                   }`}
                 >
                   <Menu.Item
@@ -158,7 +158,7 @@ function Account() {
                     <Menu>
                       <Menu.Button>
                         <div
-                          className={`py-2 px-7 text-center text-th-text-secondary cursor-pointer bg-th-primary rounded-3xl ${
+                          className={`py-2 px-7 text-center text-th-text-secondary cursor-pointer bg-th-primary-100 rounded-3xl ${
                             openInternalMenu ? 'hidden' : 'block'
                           }`}
                           onClick={() => setOpenInternalMenu(true)}
@@ -177,11 +177,11 @@ function Account() {
       {openInternalMenu && (
         <div
           className="fixed px-5 pb-4 mt-14
-          inset-0 min-h-screen overflow-y-scroll bg-th-background-secondary"
+          inset-0 min-h-screen overflow-y-scroll bg-th-secondary-10"
         >
           <div className="flex justify-end">
             <button
-              className={`p-4 mt-4 text-th-text-secondary rounded-full bg-th-primary shadow-2xl ${
+              className={`p-4 mt-4 text-th-text-secondary rounded-full bg-th-primary-100 shadow-2xl ${
                 openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}

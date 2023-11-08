@@ -150,20 +150,20 @@ function BlindEditor({ config }) {
                   })
                 }
                 className={`p-3 rounded-2xl ${
-                  isTranslating ? 'bg-th-primary cursor-auto' : 'bg-th-background-primary'
+                  isTranslating ? 'bg-th-primary-100 cursor-auto' : 'bg-th-secondary-100'
                 }`}
                 disabled={disabledButton}
               >
                 {isTranslated ? (
-                  <Check className="w-5 h-5 stroke-2 stroke-th-text-disabled" />
+                  <Check className="w-5 h-5 stroke-2 stroke-th-secondary-300" />
                 ) : (
                   <Pencil
                     className={`w-5 h-5 stroke-2 ${
                       disabledButton
-                        ? 'stroke-th-text-disabled'
+                        ? 'stroke-th-secondary-300'
                         : !isTranslating
-                        ? 'fill-th-background-primary'
-                        : 'stroke-th-icons-secondary'
+                        ? 'fill-th-secondary-100'
+                        : 'stroke-th-text-secondary'
                     }`}
                   />
                 )}
@@ -202,7 +202,7 @@ function BlindEditor({ config }) {
               setEnabledInputs([])
               sendToDb(verseObjects.length - 1)
             }}
-            className="btn-base bg-th-btn-background-tertiary text-th-text-secondary hover:opacity-70"
+            className="btn-base bg-th-secondary-300 text-th-text-secondary hover:opacity-70"
           >
             {t('Save')}
           </button>

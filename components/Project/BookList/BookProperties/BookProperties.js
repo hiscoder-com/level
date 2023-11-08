@@ -98,9 +98,9 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
           </Tab>
         </Tab.List>
         <Tab.Panels>
-          <div className="bg-th-primary h-10 rounded-t-3xl px-10"></div>
+          <div className="bg-th-primary-100 h-10 rounded-t-3xl px-10"></div>
           <Tab.Panel>
-            <div className="flex flex-col py-7 px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary">
+            <div className="flex flex-col py-7 px-10 border border-th-secondary-300 rounded-b-2xl bg-th-secondary-10">
               <div className="flex flex-col gap-4">
                 {renderProperties}
                 <ButtonLoading onClick={handleSaveProperties} isLoading={isSaving}>
@@ -128,9 +128,9 @@ export default BookProperties
 
 function LevelChecks({ t, book, user, project, mutateBooks }) {
   const levelColor = [
-    'checked:bg-th-first-check checked:border-th-first-check checked:before:bg-th-first-check',
-    'checked:bg-th-second-check checked:border-th-second-check checked:before:bg-th-second-check',
-    'checked:bg-th-third-check checked:border-th-third-check checked:before:bg-th-third-check',
+    'checked:bg-th-primary-100 checked:border-th-primary-100 checked:before:bg-th-primary-100',
+    'checked:bg-th-primary-300 checked:border-th-primary-300 checked:before:bg-th-primary-300',
+    'checked:bg-th-primary-100 checked:border-th-primary-100 checked:before:bg-th-primary-100',
   ]
   const [translationLink, setTranslationLink] = useState()
   const [isSaving, setIsSaving] = useState(false)
@@ -166,7 +166,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
     }
   }, [book])
   return (
-    <div className="flex flex-col gap-4 py-7 px-10 border border-th-border-secondary rounded-b-2xl bg-th-background-secondary">
+    <div className="flex flex-col gap-4 py-7 px-10 border border-th-secondary-300 rounded-b-2xl bg-th-secondary-10">
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-4">
           <div className="font-bold">{t('TranslationLink')}</div>
@@ -180,7 +180,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           />
           {book?.level_checks && (
             <div
-              className="flex gap-4 cursor-pointer text-th-link hover:opacity-70"
+              className="flex gap-4 cursor-pointer text-th-primary-200 hover:opacity-70"
               onClick={() =>
                 push({
                   pathname: `/projects/${project?.code}/books/read`,
@@ -212,7 +212,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                     className={{
                       accent: levelColor[index],
                       cursor:
-                        'fill-th-background-secondary stroke-th-background-secondary text-th-background-secondary',
+                        'fill-th-secondary-10 stroke-th-secondary-10 text-th-secondary-10',
                     }}
                     label={el}
                   />

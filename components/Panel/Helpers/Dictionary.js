@@ -195,7 +195,7 @@ function Dictionary() {
               <>
                 <div className="top-0 right-0">
                   <button className="btn-tertiary p-3" onClick={addNote}>
-                    <Plus className="w-6 h-6 stroke-th-icons-secondary stroke-2" />
+                    <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>
                 </div>
               </>
@@ -229,13 +229,13 @@ function Dictionary() {
                 }}
                 setNoteId={setWordId}
                 classes={{
-                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-th-background-primary',
+                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-th-secondary-100',
                   title: 'font-bold p-2 mr-4',
                   text: 'px-2 h-10 overflow-hidden',
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
                 }}
                 isShowDelBtn={isModeratorAccess}
-                delBtnChildren={<Trash className={'w-4 h-4 stroke-th-icons-primary'} />}
+                delBtnChildren={<Trash className={'w-4 h-4 stroke-th-text-primary'} />}
               />
               {totalPageCount > 1 && (
                 <div className="flex justify-around bottom-0 left-0">
@@ -249,7 +249,7 @@ function Dictionary() {
                       })
                     }
                   >
-                    <LeftArrow className="w-5 h-5 stroke-th-icons-primary" />
+                    <LeftArrow className="w-5 h-5 stroke-th-text-primary" />
                   </button>
                   <button
                     className="arrow"
@@ -261,7 +261,7 @@ function Dictionary() {
                       })
                     }}
                   >
-                    <RightArrow className="w-5 h-5 stroke-th-icons-primary" />
+                    <RightArrow className="w-5 h-5 stroke-th-text-primary" />
                   </button>
                 </div>
               )}
@@ -280,15 +280,14 @@ function Dictionary() {
               setWordId(null)
             }}
           >
-            <Back className="stroke-th-icons-primary" />
+            <Back className="stroke-th-text-primary" />
           </div>
           <Redactor
             classes={{
               wrapper: '',
-              title:
-                'bg-th-background-primary p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
+              title: 'bg-th-secondary-100 p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
               redactor:
-                'p-4 my-4 pb-20 bg-th-background-primary overflow-hidden break-words rounded-lg shadow-md',
+                'p-4 my-4 pb-20 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeWord}
             setActiveNote={setActiveWord}
@@ -346,14 +345,14 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
                 setCurrentPageWords(0)
                 setSearchQuery(el.toLowerCase())
               }}
-              className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-background-primary"
+              className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
               key={el}
             >
               {el}
             </div>
           ))}
       <div
-        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-background-primary
+        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100
         "
         onClick={getAll}
       >

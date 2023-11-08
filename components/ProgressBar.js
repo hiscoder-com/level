@@ -12,8 +12,8 @@ export default function ProgressBar({ amountSteps, currentStep }) {
                 key={step}
                 className={`inline-block m-px rounded-full ${
                   step === currentStep - 1
-                    ? 'w-4 h-4 bg-th-primary'
-                    : 'w-2.5 h-2.5 bg-th-background-secondary'
+                    ? 'w-4 h-4 bg-th-primary-100'
+                    : 'w-2.5 h-2.5 bg-th-secondary-10'
                 }`}
               ></div>
             )
