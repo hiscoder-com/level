@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -46,7 +46,6 @@ const TreeView = dynamic(
 )
 
 function PersonalNotes() {
-  const treeRef = useRef(null)
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
   const [noteId, setNoteId] = useState('')
@@ -177,21 +176,38 @@ function PersonalNotes() {
   const menuItems = [
     {
       id: 'adding_a_note',
-      icon: <FileIcon />,
-      label: 'add note',
+      buttonContent: (
+        <span className={'flex items-center gap-2.5'}>
+          <FileIcon /> {t('NewDocument')}
+        </span>
+      ),
       action: () => addNode(false),
     },
     {
       id: 'adding_a_folder',
-      icon: <CloseFolder />,
-      label: 'add folder',
+      buttonContent: (
+        <span className={'flex items-center gap-2.5'}>
+          <CloseFolder /> {t('NewFolder')}
+        </span>
+      ),
       action: () => addNode(true),
     },
-    { id: 'rename', icon: <Rename />, label: 'Rename', action: handleRename },
+    {
+      id: 'rename',
+      buttonContent: (
+        <span className={'flex items-center gap-2.5'}>
+          <Rename /> {t('Rename')}
+        </span>
+      ),
+      action: handleRename,
+    },
     {
       id: 'delete',
-      icon: <Trash className={'w-4'} />,
-      label: 'Delete',
+      buttonContent: (
+        <span className={'flex items-center gap-2.5'}>
+          <Trash className={'w-4'} /> {t('Delete')}
+        </span>
+      ),
       action: () => setIsOpenModal(true),
     },
   ]
@@ -211,6 +227,14 @@ function PersonalNotes() {
       removeCacheAllNotes('personal-notes')
       mutate()
     }
+  }
+
+  const icons = {
+    file: <FileIcon className={'w-6 h-6'} />,
+    arrowDown: <ArrowDown className={'stroke-2'} />,
+    arrowRight: <ArrowRight className={'stroke-2'} />,
+    openFolder: <OpenFolder className={'w-6 h-6 stroke-[1.7]'} />,
+    closeFolder: <CloseFolder className={'w-6 h-6'} />,
   }
 
   return (
@@ -236,31 +260,23 @@ function PersonalNotes() {
             </button>
           </div>
           <TreeView
-            data={dataForTreeView}
-            setSelectedNodeId={setNoteId}
-            nodeHeight={57}
-            treeRef={treeRef}
-            onDoubleClick={onDoubleClick}
+            handleDeleteNode={handleRemoveNode}
             classes={{
               nodeWrapper:
                 'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-gray-100 hover:bg-gray-200',
               nodeTextBlock: 'items-center',
             }}
-            treeHeight={440}
-            fileIcon={<FileIcon className={'w-6 h-6'} />}
-            arrowDown={<ArrowDown className={'stroke-2'} />}
-            arrowRight={<ArrowRight className={'stroke-2'} />}
-            closeFolderIcon={<CloseFolder className={'w-6 h-6'} />}
-            openFolderIcon={<OpenFolder className={'w-6 h-6 stroke-[1.7]'} />}
-            handleContextMenu={handleContextMenu}
+            data={dataForTreeView}
+            setSelectedNodeId={setNoteId}
             selectedNodeId={noteId}
-            customContextMenu={true}
+            treeWidth={'w-full'}
+            icons={icons}
+            handleDoubleClick={onDoubleClick}
+            handleContextMenu={handleContextMenu}
             hoveredNodeId={hoveredNodeId}
             setHoveredNodeId={setHoveredNodeId}
-            treeWidth={320}
             getCurrentNodeProps={setCurrentNodeProps}
             handleRenameNode={handleRenameNode}
-            handleTreeEventDelete={handleRemoveNode}
             handleDragDrop={handleDragDrop}
             openByDefault={false}
           />
@@ -268,12 +284,11 @@ function PersonalNotes() {
             setSelectedNodeId={setNoteId}
             selectedNodeId={noteId}
             nodeProps={currentNodeProps}
-            data={contextMenuEvent}
             menuItems={menuItems}
+            clickMenuEvent={contextMenuEvent}
             classes={{
               menuItem:
                 'gap-2.5 py-1 pr-7 pl-2.5 cursor-pointer bg-gray-100 hover:bg-gray-200',
-              menuWrapper: 'fixed z-50',
               menuContainer:
                 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
               emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
