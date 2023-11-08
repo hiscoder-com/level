@@ -215,6 +215,7 @@ function BriefBlock({ access, title = false }) {
                           access={access}
                           className="input-primary font-normal"
                           editable={access}
+                          textarea
                         />
                       </div>
                     </li>

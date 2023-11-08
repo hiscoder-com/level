@@ -109,7 +109,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
         isLoading ? 'px-4' : ''
       }`}
     >
-      <div className="text-center">
+      <div className="text-center mb-2">
         {<FilterRepeated filter={filter} setFilter={setFilter} />}
       </div>
       {isLoading ? (

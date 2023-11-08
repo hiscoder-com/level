@@ -254,7 +254,6 @@ function Download({
     }
     setIsSaving(false)
   }
-
   return (
     <div className="flex flex-col gap-7">
       {breadcrumbs && (
@@ -274,7 +273,11 @@ function Download({
           selectedOption={downloadType}
         />
         <div className="flex gap-7 items-end">
-          <div className="flex flex-col w-full">
+          <div
+            className={`flex flex-col w-full ${
+              downloadType === 'pdf' ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
             {Object.keys(downloadSettings)
               .filter(
                 (key) =>

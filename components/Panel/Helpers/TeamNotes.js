@@ -142,7 +142,6 @@ function TeamNotes() {
           </div>
           <Redactor
             classes={{
-              wrapper: '',
               title: 'p-2 my-4 mr-12 font-bold bg-th-secondary-100 rounded-lg shadow-md',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',

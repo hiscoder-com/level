@@ -112,10 +112,10 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
               <ButtonLoading className="relative btn-secondary" isLoading={isSaving}>
-                {t('Save')}
+                {t('common:Save')}
               </ButtonLoading>
               <button type="button" className="btn-secondary" onClick={closeHandle}>
-                {t('Close')}
+                {t('common:Close')}
               </button>
             </div>
           </div>

@@ -6,10 +6,10 @@ const colors = {
     border: 'border-th-text-primary',
   },
   secondary: {
-    text: 'text-th-secondary',
-    active: 'active:bg-th-secondary',
-    hover: 'group-hover:bg-th-secondary',
-    border: 'border-th-secondary',
+    text: 'text-th-secondary-400',
+    active: 'active:bg-th-secondary-400',
+    hover: 'group-hover:bg-th-secondary-400',
+    border: 'border-th-secondary-400',
   },
   tertiary: {
     text: 'text-th-primary-100',
@@ -31,7 +31,7 @@ function Button({ onClick, text, color, icon, disabled = false, avatar = '' }) {
       </div>
       <div className="icon-block flex-grow-0">
         <div
-          className={`p-2 ${colors[color].border} border-2 rounded-full ${colors[color].hover} group-hover:text-th-secondary-10 group-active:border-th-secontext-th-secondary-10`}
+          className={`p-2 ${colors[color].border} border-2 rounded-full ${colors[color].hover} group-hover:text-th-secondary-100 group-active:border-th-secondary-10 stroke-th-text-primary`}
         >
           {icon}
         </div>

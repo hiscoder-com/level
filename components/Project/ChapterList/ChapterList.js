@@ -90,7 +90,7 @@ function ChapterList() {
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
               onClick={(e) => e.stopPropagation()}
-              className="w-fit text-sm xl:text-lg"
+              className="w-fit text-sm xl:text-lg hover:opacity-70"
             >
               {step.step} {t('Step').toLowerCase()}
             </Link>
@@ -169,7 +169,9 @@ function ChapterList() {
                               }
                             }}
                           >
-                            <p className="text-sm xl:text-lg">{t('Download')}</p>
+                            <p className="text-sm xl:text-lg hover:opacity-70">
+                              {t('Download')}
+                            </p>
                           </div>
                         ) : (
                           getCurrentStep(chapter)

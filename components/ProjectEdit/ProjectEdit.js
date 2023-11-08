@@ -287,35 +287,32 @@ function ProjectEdit() {
       <div className="hidden sm:flex flex-col">
         {user?.id && (
           <Tab.Group defaultIndex={tabs.length ? index : 0}>
-            <div className="">
-              <Tab.List
-                className={`flex px-5 ${
-                  sizeTabs[tabs.length]
-                } gap-4 mt-2 lg:text-lg font-bold text-center`}
-              >
-                {tabs.map((tab) => (
-                  <Tab
-                    key={tab.label}
-                    className={({ selected }) =>
-                      `flex-1 ${
-                        selected ? 'tab-active truncate' : 'tab-inactive truncate'
-                      }`
-                    }
-                    onClick={() =>
-                      replace(
-                        {
-                          query: { ...query, setting: tab.id },
-                        },
-                        undefined,
-                        { shallow: true }
-                      )
-                    }
-                  >
-                    {t(tab.label)}
-                  </Tab>
-                ))}
-              </Tab.List>
-            </div>
+            <Tab.List
+              className={`flex px-5 ${
+                sizeTabs[tabs.length]
+              } gap-4 mt-2 lg:text-lg font-bold text-center`}
+            >
+              {tabs.map((tab) => (
+                <Tab
+                  key={tab.label}
+                  className={({ selected }) =>
+                    `flex-1 ${selected ? 'tab-active truncate' : 'tab-inactive truncate'}`
+                  }
+                  onClick={() =>
+                    replace(
+                      {
+                        query: { ...query, setting: tab.id },
+                      },
+                      undefined,
+                      { shallow: true }
+                    )
+                  }
+                >
+                  {t(tab.label)}
+                </Tab>
+              ))}
+            </Tab.List>
+
             <div className="px-5 h-12 bg-th-primary-100 rounded-t-3xl" />
             <Tab.Panels>
               {tabs.map((tab, idx) => (

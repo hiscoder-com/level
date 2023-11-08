@@ -73,7 +73,7 @@ const translatorColors = [
 ]
 
 const defaultColor = {
-  border: 'border-th-secondary-300',
+  border: 'border-th-primary-100',
   bg: 'bg-th-secondary-10',
   text: 'text-th-secondary-300',
 }
@@ -282,7 +282,7 @@ function ChapterVersesPage() {
                               : 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
                           }}
                         >
-                          <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-seconbg-th-secondary-10 border-2 rounded-full">
+                          <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
                             {verse.translator_name ? (
                               <Minus className="w-5 h-5 stroke-th-text-primary" />
                             ) : (
@@ -297,7 +297,7 @@ function ChapterVersesPage() {
                 <>
                   {[...Array(21).keys()].map((el) => (
                     <div role="status" className="h-24 animate-pulse" key={el}>
-                      <div className="h-full bg-th-secondary-100 rounded-2xl w-full"></div>
+                      <div className="h-full w-full bg-th-secondary-100 rounded-2xl"></div>
                     </div>
                   ))}
                 </>
@@ -423,9 +423,9 @@ function ChapterVersesPage() {
                   color={!chapter?.finished_at ? 'secondary' : 'primary'}
                   icon={
                     !chapter?.finished_at ? (
-                      <Sparkles className="w-5 h-5 stroke-th-text-primary" />
+                      <Sparkles className="w-5 h-5" />
                     ) : (
-                      <Trash className="w-5 h-5 stroke-th-text-primary" />
+                      <Trash className="w-5 h-5" />
                     )
                   }
                   disabled={isValidating}
@@ -530,7 +530,7 @@ function ChapterVersesPage() {
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 pt-2border-t border-th-secondary-300">
+                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-300">
                           <Button
                             onClick={verseDividing}
                             text={t('Save')}

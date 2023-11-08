@@ -116,6 +116,13 @@
 	@apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
 }
 
+.inactive {
+	filter: blur(6px) grayscale(1);
+	user-select: none;
+	pointer-events: none;
+	opacity: 0.5;
+}
+
 .input-label {
 	@apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-secondary-300 appearance-none focus:outline-none focus:ring-0 focus:border-th-primary-100;
 }
@@ -194,15 +201,17 @@
 }
 
 .input-primary {
-	@apply input-base text-th-secondary-300 border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-100
+	@apply input-base text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
 }
 
 .input-invalid {
-	@apply input-base border-th-invalid text-th-secondary-300;
+	@apply input-base border-th-invalid text-th-invalid;
 }
 
-.logo :hover {
- @apply odd:fill-th-secondary-400 even:fill-th-text-primary
+.logo:hover path:first-of-type {
+  fill: #ffb703; 
 }
 
-/*(className.*input-primary)|(input-primary.*className)*/
+.logo:hover path:last-of-type {
+  fill: #023047; 
+}

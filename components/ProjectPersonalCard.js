@@ -181,9 +181,10 @@ function ProjectPersonalCard({ project, user }) {
                       {chapters[book].map((step, index) => {
                         const stepLink = (
                           <>
-                            {step.chapter} {t('Ch').toLowerCase()}
+                            {step.chapter}
+                            {' ' + t('Ch').toLowerCase()}
                             {' | '}
-                            {countChaptersVerses?.[book]?.chapters[step.chapter]}
+                            {countChaptersVerses?.[book]?.chapters[step.chapter] + ' '}
                             {t('Ver').toLowerCase()} {' | '}
                             {step?.step} {t('Step').toLowerCase()}
                           </>
@@ -207,7 +208,7 @@ function ProjectPersonalCard({ project, user }) {
                         ) : (
                           <button
                             key={index}
-                            className="step-link w-[47%] text-xs"
+                            className="step-link w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
                             disabled
                           >
                             {stepLink}

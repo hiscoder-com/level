@@ -21,7 +21,7 @@ function StartPage({ children }) {
         </div>
         <div className="text-th-secondary-300 mb-4 text-center">{t('DevelopedBy')}</div>
         <Link href="https://texttree.org/" target="_blank">
-          <TtLogo className="mb-4 h-7 logo text-th-secondary-300" />
+          <TtLogo className="logo mb-4 h-7 text-th-secondary-300" />
         </Link>
       </div>
 
@@ -34,9 +34,9 @@ function StartPage({ children }) {
             </div>
             <h1 className="my-4 text-center">{t('PlatformForBibleTranslate')}</h1>
             <div className="text-th-secondary-300 mb-2 text-xs">{t('DevelopedBy')}</div>
-            <div className="p-2 text-th-secondary-300">
+            <div className="logo p-2 text-th-secondary-300">
               <Link href="https://texttree.org/" target="_blank">
-                <TtLogo className="h-10 logo" />
+                <TtLogo className="h-10" />
               </Link>
             </div>
           </div>

@@ -127,11 +127,6 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
 export default BookProperties
 
 function LevelChecks({ t, book, user, project, mutateBooks }) {
-  const levelColor = [
-    'checked:bg-th-primary-100 checked:border-th-primary-100 checked:before:bg-th-primary-100',
-    'checked:bg-th-primary-300 checked:border-th-primary-300 checked:before:bg-th-primary-300',
-    'checked:bg-th-primary-100 checked:border-th-primary-100 checked:before:bg-th-primary-100',
-  ]
   const [translationLink, setTranslationLink] = useState()
   const [isSaving, setIsSaving] = useState(false)
   const {
@@ -170,7 +165,6 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-4">
           <div className="font-bold">{t('TranslationLink')}</div>
-
           <input
             className="input-primary"
             value={translationLink?.url || ''}
@@ -195,22 +189,23 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
             </div>
           )}
         </div>
-
         <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-7 sm:gap-0">
           <div className="flex flex-col gap-4">
             <div className="font-bold">{t('LevelChecks')}</div>
             <div className="flex gap-5">
               {[...Array(3).keys()]
                 .map((i) => i + 1)
-                .map((el, index) => (
+                .map((el) => (
                   <CheckBox
+                    id={el}
                     key={el}
                     onChange={() =>
                       setTranslationLink((prev) => ({ ...prev, level: el }))
                     }
                     checked={translationLink?.level === el || false}
                     className={{
-                      accent: levelColor[index],
+                      accent:
+                        'checked:bg-th-primary-100 checked:border-th-primary-100 checked:before:bg-th-primary-100',
                       cursor:
                         'fill-th-secondary-10 stroke-th-secondary-10 text-th-secondary-10',
                     }}

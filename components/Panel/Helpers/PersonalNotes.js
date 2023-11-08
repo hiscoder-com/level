@@ -154,7 +154,7 @@ function PersonalNotes() {
             classes={{
               title: 'p-2 my-4 mr-12 bg-th-secondary-100 font-bold rounded-lg shadow-md',
               redactor:
-                'pb-20 pt-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
+                'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}

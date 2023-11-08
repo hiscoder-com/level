@@ -56,9 +56,7 @@ function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
               ? 'bg-th-secondary-100'
               : ''
           }`}
-          onClick={() => {
-            handleSaveScroll(String(verseObject.verse))
-          }}
+          onClick={() => handleSaveScroll(String(verseObject.verse))}
         >
           <MarkdownExtended>
             {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
@@ -91,7 +89,7 @@ function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) 
             {checkedCurrent ? (
               <Blur verse={verseObject.text} />
             ) : (
-              <ReactMarkdown className={`ml-2`}>{verseObject.text}</ReactMarkdown>
+              <ReactMarkdown className="ml-2">{verseObject.text}</ReactMarkdown>
             )}
           </div>
         )
