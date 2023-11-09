@@ -20,7 +20,7 @@ function Steps({ updateSteps, customSteps = [] }) {
           {({ open }) => (
             <div>
               <Disclosure.Button
-                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-th-secondary-10 border-x border-t border-th-secondary-300 ${
+                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-th-secondary-100 border-x border-t border-th-secondary-300 ${
                   open ? 'rounded-t-md' : 'rounded-md border-b'
                 }`}
               >
@@ -31,7 +31,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   } `}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="p-4 space-y-7 bg-th-secondary-10 border-x border-b border-th-secondary-300 rounded-b-md text-sm md:text-base">
+              <Disclosure.Panel className="p-4 space-y-7 bg-th-secondary-100 border-x border-b border-th-secondary-300 rounded-b-md text-sm md:text-base">
                 {fields.map((field) => (
                   <div
                     className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full"
@@ -45,7 +45,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                         textarea={field.textarea}
                         fieldName={field.name}
                         updateValue={updateSteps}
-                        className="input-primary bg-th-secondary-10"
+                        className="input-primary bg-th-secondary-100"
                       />
                     </div>
                   </div>

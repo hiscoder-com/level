@@ -7,6 +7,7 @@ module.exports = {
         'th-primary-100': 'var(--primary-100)',
         'th-primary-200': 'var(--primary-200)',
         'th-primary-300': 'var(--primary-300)',
+        'th-primary-400': 'var(--primary-400)',
         'th-secondary-10': 'var(--secondary-10)',
         'th-secondary-100': 'var(--secondary-100)',
         'th-secondary-200': 'var(--secondary-200)',
@@ -36,6 +37,7 @@ module.exports = {
         slate: {
           550: '#3C6E71',
           580: '#609295',
+          650: '#1E5053',
         },
       },
     },

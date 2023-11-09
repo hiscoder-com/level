@@ -6,6 +6,7 @@
   --primary-100: theme('colors.slate.550');
 	--primary-200:theme('colors.slate.600');
 	--primary-300: theme('colors.slate.580');
+	--primary-400: theme('colors.slate.650');
 	--secondary-10: theme('colors.white');
   --secondary-100: theme('colors.gray.150');
 	--secondary-200:	theme('colors.gray.250');
@@ -138,7 +139,8 @@
 	@apply py-2 px-2 text-sm border-x border-t border-th-primary-100 rounded-t-2xl 
 }
 .tab-active {
-	@apply tab text-th-text-secondary bg-gradient-to-b from-th-primary-100 to-th-primary-100 cursor-default focus:outline-none shadow
+	@apply tab text-th-text-secondary bg-gradient-to-b from-th-primary-100 
+	to-th-primary-400 cursor-default focus:outline-none shadow
 }
 
 .tab-inactive {

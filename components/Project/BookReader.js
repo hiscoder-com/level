@@ -491,10 +491,11 @@ function BookListReader({ books, setReference, reference, project }) {
                               .map((el) => el + 1)
                               .map((index) => (
                                 <div
-                                  className={`flex justify-center items-center w-10 h-10 bg-th-secondary-100 rounded-md cursor-pointer hover:opacity-70 ${
-                                    index === reference?.chapter
-                                      ? 'cursor-default bg-th-secondary-100'
-                                      : 'bg-th-secondary-100 cursor-pointer '
+                                  className={`flex justify-center items-center w-10 h-10
+                                  text-th-text-secondary rounded-md cursor-pointer hover:opacity-70 ${
+                                    index == reference?.chapter
+                                      ? 'cursor-default bg-th-primary-300'
+                                      : 'bg-th-secondary-200 cursor-pointer '
                                   }`}
                                   key={index}
                                   onClick={() =>

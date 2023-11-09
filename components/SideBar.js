@@ -24,7 +24,7 @@ function SideBar({ setIsOpenSideBar, access }) {
   const setVersionModalIsOpen = useSetRecoilState(aboutVersionModalIsOpen)
   return (
     <Menu>
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <Menu.Button
             onClick={() => {
@@ -95,7 +95,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                     </Menu.Item>
                   </div>
 
-                  <div className="flex justify-center cursor-pointer">
+                  <div
+                    className="flex justify-center cursor-pointer"
+                    onClick={() => {
+                      setVersionModalIsOpen(false)
+                      setIsOpenSideBar((prev) => !prev)
+                      close()
+                    }}
+                  >
                     <SignOut />
                   </div>
                 </div>

@@ -16,8 +16,8 @@ import { useAccess, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
 
-import RightArrow from 'public/right-arrow.svg'
-import LeftArrow from 'public/arrow-left.svg'
+import ArrowRight from 'public/arrow-left.svg'
+import ArrowLeft from 'public/arrow-left.svg'
 import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
@@ -249,7 +249,7 @@ function Dictionary() {
                       })
                     }
                   >
-                    <LeftArrow className="w-5 h-5 stroke-th-text-primary" />
+                    <ArrowLeft className="w-5 h-5 stroke-th-text-primary" />
                   </button>
                   <button
                     className="arrow"
@@ -261,7 +261,7 @@ function Dictionary() {
                       })
                     }}
                   >
-                    <RightArrow className="w-5 h-5 stroke-th-text-primary" />
+                    <ArrowRight className="w-5 h-5 stroke-th-text-primary" />
                   </button>
                 </div>
               )}

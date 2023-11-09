@@ -41,8 +41,8 @@ export default function Agreements() {
                 className={`absolute top-0 right-0 w-0 h-0 border-[24px] border-solid border-transparent 
               ${
                 agreement.done
-                  ? 'border-b-th-primary-100 border-l-th-primary-100'
-                  : 'border-b-th-text-primary border-l-th-text-primary'
+                  ? 'border-b-th-primary-400 border-l-th-primary-400'
+                  : 'border-b-th-secondary-300 border-l-th-secondary-300'
               } rounded-bl-lg`}
               />
               <div className="absolute top-0 right-0 w-0 h-0 border-[24px] border-solid border-transparent border-t-th-secondary-10 border-r-th-secondary-10" />

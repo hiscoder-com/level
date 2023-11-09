@@ -214,7 +214,7 @@ function ChapterList() {
             closeHandle={() => setIsOpenDownloading(false)}
             className={{
               dialogPanel:
-                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-100 to-th-primary-100 text-th-text-secondary overflow-y-visible rounded-3xl',
+                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-100 to-th-primary-400 text-th-text-secondary overflow-y-visible rounded-3xl',
             }}
           >
             <Download

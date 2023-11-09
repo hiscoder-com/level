@@ -58,7 +58,7 @@ function BookList({ user, project, access }) {
                             project?.type === 'obs'
                               ? 'bg-th-secondary-10 cursor-default'
                               : selected
-                              ? 'bg-gradient-to-b from-th-primary-100 to-th-primary-100 text-th-text-secondary'
+                              ? 'bg-gradient-to-b from-th-primary-100 to-th-primary-400 text-th-text-secondary'
                               : ''
                           }
                       `}
