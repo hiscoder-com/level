@@ -178,18 +178,13 @@ function Verses({ verseObjects, user, reference, isLoading }) {
   const { t } = useTranslation()
   const [books] = useGetBooks({ code })
 
-  const verseCount = useMemo(
-    // () => getVerseCount(books, bookid, reference?.chapter),
-    // [books, bookid, reference?.chapter]
-
-    () => getVerseCountOBS(books, reference?.chapter),
-    [books, reference?.chapter]
-  )
-
-  // console.log(books, 183)
-  // console.log(project, 183)
-  console.log(verseCount, 184)
-  // console.log(reference?.chapter, 188)
+  const verseCount = useMemo(() => {
+    if (project?.type === 'obs') {
+      return getVerseCountOBS(books, reference?.chapter)
+    } else {
+      return getVerseCount(books, bookid, reference?.chapter)
+    }
+  }, [books, project?.type, bookid, reference?.chapter])
 
   return (
     <div className="flex flex-col gap-5">
@@ -211,23 +206,30 @@ function Verses({ verseObjects, user, reference, isLoading }) {
       <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
         {!isLoading ? (
           verseObjects ? (
-            Array.from({ length: verseCount }).map((_, index) => {
-              const verseIndex = verseObjects.verseObjects.findIndex(
-                (verse) => parseInt(verse.verse) === index + 1
-              )
-              const text =
-                verseIndex !== -1 ? verseObjects.verseObjects[verseIndex].text : ' '
-              return (
-                <div
-                  className={`flex gap-2 ${text === ' ' ? 'mb-2' : ''}`}
-                  key={index + 1}
-                >
-                  {' '}
-                  <sup className="mt-2">{index + 1}</sup>
-                  <p>{text}</p>
+            <>
+              {Array.from({ length: verseCount + 1 }).map((_, index) => {
+                const verseIndex = verseObjects?.verseObjects?.findIndex(
+                  (verse) => parseInt(verse.verse) === index
+                )
+                const text =
+                  verseObjects?.verseObjects && verseIndex !== -1
+                    ? verseObjects.verseObjects[verseIndex].text
+                    : ' '
+
+                return (
+                  <div className={`flex gap-2 ${text === ' ' ? 'mb-2' : ''}`} key={index}>
+                    {' '}
+                    {index !== 0 && <sup className="mt-2">{index}</sup>}
+                    <p>{text}</p>
+                  </div>
+                )
+              })}
+              {verseObjects?.verseObjects && (
+                <div className="flex gap-2 mb-2">
+                  {verseObjects.verseObjects.find((verse) => verse.verse === 200)?.text}
                 </div>
-              )
-            })
+              )}
+            </>
           ) : (
             <>
               <p>{t('NoContent')}</p>
