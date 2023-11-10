@@ -5,7 +5,7 @@ import UpdateField from './UpdateField'
 
 import Down from 'public/arrow-down.svg'
 
-function Steps({ updateSteps, customSteps = [] }) {
+function Steps({ updateSteps, customSteps = [], className = 'bg-th-secondary-10' }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
 
   const fields = [
@@ -20,18 +20,20 @@ function Steps({ updateSteps, customSteps = [] }) {
           {({ open }) => (
             <div>
               <Disclosure.Button
-                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start bg-blue-150 ${
-                  open ? 'rounded-t-md' : 'rounded-md'
-                }`}
+                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start  border-x border-t border-th-secondary-300
+                ${className} 
+                ${open ? 'rounded-t-md' : 'rounded-md border-b'}`}
               >
                 <span>{step.title}</span>
                 <Down
-                  className={`w-5 h-5 transition-transform duration-200 ${
+                  className={`w-5 h-5 transition-transform duration-200 stroke-th-text-primary ${
                     open ? 'rotate-180' : 'rotate-0'
                   } `}
                 />
               </Disclosure.Button>
-              <Disclosure.Panel className="p-4 space-y-7 bg-blue-150 rounded-b-md text-sm md:text-base">
+              <Disclosure.Panel
+                className={`p-4 space-y-7 border-x border-b border-th-secondary-300 rounded-b-md text-sm md:text-base ${className}`}
+              >
                 {fields.map((field) => (
                   <div
                     className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full"
@@ -45,7 +47,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                         textarea={field.textarea}
                         fieldName={field.name}
                         updateValue={updateSteps}
-                        className="input-primary bg-blue-150"
+                        className={`input-primary ${className}`}
                       />
                     </div>
                   </div>
@@ -58,12 +60,12 @@ function Steps({ updateSteps, customSteps = [] }) {
                     {step?.config?.map((config, idx_config) => (
                       <div
                         key={idx_config}
-                        className="flex flex-wrap gap-2 pr-2 border-r border-slate-900 last:border-r-0"
+                        className="flex flex-wrap gap-2 pr-2 border-r last:border-r-0"
                       >
                         {config.tools.map((tool) => (
                           <div
                             key={tool.name}
-                            className="btn-primary p-2 pointer-events-none rounded-md hover:bg-transparent hover:border-slate-600"
+                            className="btn-base bg-th-secondary-200 hover:bg-th-secondary-200 pointer-events-none "
                           >
                             {t('common:' + tool.name)}
                           </div>
@@ -76,7 +78,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:TranslatorsCount')}
                   </span>
-                  <div className="btn-primary p-2 rounded-md pointer-events-none hover:bg-transparent hover:border-slate-600">
+                  <div className="btn-base bg-th-secondary-200 hover:bg-th-secondary-200 pointer-events-none">
                     {step?.count_of_users}
                   </div>
                 </div>
@@ -84,7 +86,7 @@ function Steps({ updateSteps, customSteps = [] }) {
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:ExecutionTime')}
                   </span>
-                  <div className="btn-primary p-2 rounded-md pointer-events-none hover:bg-transparent hover:border-slate-600">
+                  <div className="btn-base bg-th-secondary-200 hover:bg-th-secondary-200 pointer-events-none">
                     {step.time}
                   </div>
                 </div>
