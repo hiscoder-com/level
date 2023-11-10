@@ -103,7 +103,7 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
       <div className="hidden sm:block divide-y divide-th-text-primary">
         <div className="flex flex-col gap-7 pb-5">
           <div className="flex justify-between items-center gap-2">
-            <div>{t('projects:Coordinators')}</div>
+            <div className="font-bold">{t('projects:Coordinators')}</div>
             {isAdminAccess && (
               <button
                 onClick={() => {
@@ -124,7 +124,7 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
         </div>
         <div className="flex flex-col gap-7 pt-5">
           <div className="flex justify-between items-center">
-            <div>{t('projects:Translators')}</div>
+            <div className="font-bold">{t('projects:Translators')}</div>
             <button
               onClick={() => {
                 setOpenModalAssignTranslator(true)

@@ -16,9 +16,9 @@ const CheckBox = forwardRef(
     },
     ref
   ) => (
-    <div className={`flex items-center ${className.wrapper}`}>
+    <div className={`flex gap-3 items-center ${className.wrapper}`}>
       <label
-        className="relative flex cursor-pointer items-center rounded-full p-3"
+        className="relative flex cursor-pointer items-center rounded-full"
         htmlFor={id}
       >
         <input

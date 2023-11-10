@@ -15,8 +15,8 @@ import Plus from 'public/plus.svg'
 
 const sizeTabs = {
   1: 'w-1/6',
-  2: 'w-2/6',
-  3: 'w-3/6',
+  2: 'w-full lg:w-3/6',
+  3: 'w-full lg:w-4/6 ',
   4: 'w-4/6',
   5: 'w-5/6',
   6: 'w-full',
@@ -69,7 +69,6 @@ function Account() {
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
-
             <Tab.Group as="div" className="hidden sm:block">
               <Tab.List
                 className={`flex px-5 ${
@@ -99,7 +98,7 @@ function Account() {
               </Tab.List>
               <Tab.Panels className="pb-10">
                 <div className="px-10 h-10 bg-th-primary-100 rounded-t-3xl"></div>
-                <div className="px-10 border border-th-secondary-300 bg-th-secondary-10 rounded-b-2xl">
+                <div className="px-5 border border-th-secondary-300 bg-th-secondary-10 rounded-b-2xl">
                   <Tab.Panel>
                     <Projects type={'account'} />
                   </Tab.Panel>
@@ -125,7 +124,7 @@ function Account() {
                 }`}
               ></div>
               <Menu.Button
-                className={`block md:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary rounded-full bg-th-primary-100 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`block sm:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary rounded-full bg-th-primary-100 transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}

@@ -12,13 +12,13 @@ function TNTWLContent({ setItem, item }) {
       } z-10`}
     >
       <div
-        className="absolute flex top-0 right-0 w-12 pr-4 cursor-pointer"
+        className="absolute flex top-0 left-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
         onClick={() => setItem(null)}
       >
-        <Back className="stroke-th-text-primary" />
+        <Back className="w-8 stroke-th-primary-200" />
       </div>
       {!['intro', 'front'].includes(item?.title) && (
-        <div className=" font-bold text-xl mb-2">
+        <div className="font-bold text-xl mt-2">
           <ReactMarkdown className="text-2xl mb-4 bg-th-secondary-10">
             {item?.title}
           </ReactMarkdown>

@@ -36,11 +36,34 @@ export default function Footer({
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
-
   return (
-    <div className="flex flex-col justify-between items-center px-4 mx-auto w-full max-w-7xl bg-th-secondary-100 md:flex-row-reverse lg:px-0">
-      <div className="relative flex items-center h-12 md:h-16">
-        <div className="flex flex-row items-center space-x-6">
+    <div className="flex flex-col justify-between items-center py-4 md:py-0 mx-auto md:w-full max-w-7xl bg-th-secondary-100 md:flex-row lg:px-4 xl:px-0">
+      {isStepPage && (
+        <>
+          <div className="hidden lg:block pb-3 md:pb-0 translate-y-1/3">
+            <ProgressBar
+              amountSteps={stepConfig.last_step}
+              currentStep={stepConfig.current_step}
+            />
+          </div>
+          <div className="flex gap-2.5 items-center justify-between pb-5 md:pb-0 w-full md:w-auto lg:order-first">
+            <div>{t('Participants')}:</div>
+            <Translators
+              projectCode={stepConfig.project_code}
+              size="34px"
+              clickable={true}
+              className="mx-0.5"
+              showModerator
+            />
+          </div>
+        </>
+      )}
+      <div
+        className={`relative flex items-center h-12 md:h-14 w-full md:w-auto ${
+          !isStepPage ? 'ml-auto' : ''
+        }`}
+      >
+        <div className="flex flex-row justify-between w-full items-center space-x-6">
           <CheckBox
             onChange={() => setChecked((prev) => !prev)}
             checked={checked}
@@ -69,26 +92,6 @@ export default function Footer({
           )}
         </div>
       </div>
-      {isStepPage && (
-        <>
-          <div className="pb-3 md:pb-0">
-            <ProgressBar
-              amountSteps={stepConfig.last_step}
-              currentStep={stepConfig.current_step}
-            />
-          </div>
-          <div className="flex gap-2.5 items-center pb-3 md:pb-0">
-            <div>{t('Participants')}:</div>
-            <Translators
-              projectCode={stepConfig.project_code}
-              size="34px"
-              clickable={true}
-              className="mx-0.5"
-              showModerator
-            />
-          </div>
-        </>
-      )}
     </div>
   )
 }

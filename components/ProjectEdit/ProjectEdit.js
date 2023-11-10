@@ -216,7 +216,11 @@ function ProjectEdit() {
             <>
               <p className="text-xl font-bold">{t('project-edit:Steps')}</p>
               <div className="space-y-7">
-                <Steps customSteps={customSteps} updateSteps={updateSteps} />
+                <Steps
+                  customSteps={customSteps}
+                  updateSteps={updateSteps}
+                  className="bg-th-secondary-100"
+                />
               </div>
               <ButtonLoading
                 onClick={() => saveStepsToDb({ steps: customSteps })}

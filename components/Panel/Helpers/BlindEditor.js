@@ -202,7 +202,7 @@ function BlindEditor({ config }) {
               setEnabledInputs([])
               sendToDb(verseObjects.length - 1)
             }}
-            className="btn-base bg-th-secondary-300 text-th-text-secondary hover:opacity-70"
+            className="btn-base bg-th-primary-100 text-th-text-secondary hover:opacity-70"
           >
             {t('Save')}
           </button>

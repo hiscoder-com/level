@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -18,6 +18,7 @@ import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
 import Gear from '/public/gear.svg'
+import Card from './Card'
 
 function BookReader() {
   const { user } = useCurrentUser()
@@ -410,6 +411,11 @@ function BookListReader({ books, setReference, reference, project }) {
       ),
     [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid]
   )
+  const tabs = useMemo(
+    () =>
+      project?.type === 'obs' ? ['OpenBibleStories'] : ['NewTestament', 'OldTestament'],
+    [project?.type]
+  )
 
   const verseRef = useCallback((node) => {
     if (node !== null) {
@@ -431,91 +437,102 @@ function BookListReader({ books, setReference, reference, project }) {
   }, [reference?.bookid])
   //TODO надо сделать скролл при нажатии на таб Ветхий завет или новый
   return (
-    <div className="card flex flex-col gap-7 bg-th-secondary-10">
-      <Tab.Group defaultIndex={defaultIndex}>
-        <Tab.List
-          as={'div'}
-          className={`grid grid-cols-2 gap-3 w-full font-bold border-b border-th-secondary-300 ${
-            project?.type === 'obs' ? 'hidden' : 'flex'
-          }`}
-        >
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
-            {t('NewTestament')}
-          </Tab>
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
-            {t('OldTestament')}
-          </Tab>
-        </Tab.List>
-        <Tab.Panels className="text-sm font-bold">
-          {[createdNewTestamentBooks, createdOldTestamentBooks].map((list, idx) => (
-            <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
-              {list?.map((book, index) => (
-                <Disclosure
-                  as={'div'}
-                  key={book.code}
-                  defaultOpen={query?.bookid === book.code}
-                  ref={(ref) => (scrollRefs.current[book.code] = ref)}
-                >
-                  {({ open, close }) => {
-                    return (
-                      <>
-                        <Disclosure.Button
-                          ref={() => (refs.current[index] = close)}
-                          onClick={() => {
-                            handleClose(index)
-                            replace(
-                              {
-                                query: { ...query, bookid: book.code },
-                              },
-                              undefined,
-                              { shallow: true }
-                            )
-                          }}
-                          className={`flex justify-between items-center py-2 w-full hover:opacity-70 ${
-                            !open ? 'border-b border-th-secondary-300' : ''
-                          }`}
-                        >
-                          <div className="flex items-center gap-4">
-                            <ChecksIcon levelCheck={book?.level_checks} />
-                            <div>{t('books:' + book.code)}</div>
-                          </div>
-                          <Down
-                            className={`w-6 max-w-[1.5rem] ${
-                              open ? 'rotate-180 transform' : ''
+    <Card>
+      <div className="flex flex-col gap-7 bg-th-secondary-10">
+        <Tab.Group defaultIndex={defaultIndex}>
+          <Tab.List className="flex p-1 w-full -mt-6 bg-th-secondary-10 border border-th-secondary-300 rounded-3xl shadow-md">
+            {tabs.map((tab) => (
+              <Tab as={Fragment} key={tab}>
+                {({ selected }) => (
+                  <div
+                    className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
+                      selected
+                        ? 'bg-gradient-to-r from-th-primary-100 to-th-primary-400 text-th-text-secondary'
+                        : ''
+                    }
+                      `}
+                  >
+                    {t(tab)}
+                  </div>
+                )}
+              </Tab>
+            ))}
+          </Tab.List>
+
+          <Tab.Panels className="text-sm font-bold">
+            {[createdNewTestamentBooks, createdOldTestamentBooks].map((list, idx) => (
+              <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
+                {list?.map((book, index) => (
+                  <Disclosure
+                    as={'div'}
+                    key={book.code}
+                    defaultOpen={query?.bookid === book.code}
+                    ref={(ref) => (scrollRefs.current[book.code] = ref)}
+                  >
+                    {({ open, close }) => {
+                      return (
+                        <>
+                          <Disclosure.Button
+                            ref={() => (refs.current[index] = close)}
+                            onClick={() => {
+                              handleClose(index)
+                              replace(
+                                {
+                                  query: { ...query, bookid: book.code },
+                                },
+                                undefined,
+                                { shallow: true }
+                              )
+                            }}
+                            className={`flex justify-between items-center py-2 w-full hover:opacity-70 ${
+                              !open ? 'border-b border-th-secondary-300' : ''
                             }`}
-                          />
-                        </Disclosure.Button>
-                        <Disclosure.Panel>
-                          <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-th-secondary-300">
-                            {[...Array(Object.keys(book.chapters).length).keys()]
-                              .map((el) => el + 1)
-                              .map((index) => (
-                                <div
-                                  className={`flex justify-center items-center w-10 h-10
+                          >
+                            <div className="flex items-center gap-4 text-base">
+                              <ChecksIcon levelCheck={book?.level_checks} />
+                              <div>{t('books:' + book.code)}</div>
+                            </div>
+                            <Down
+                              className={`w-6 max-w-[1.5rem] ${
+                                open ? 'rotate-180 transform' : ''
+                              }`}
+                            />
+                          </Disclosure.Button>
+                          <Disclosure.Panel>
+                            <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-th-secondary-300">
+                              {[...Array(Object.keys(book.chapters).length).keys()]
+                                .map((el) => el + 1)
+                                .map((index) => (
+                                  <div
+                                    className={`flex justify-center items-center w-10 h-10
                                   text-th-text-secondary rounded-md cursor-pointer hover:opacity-70 ${
                                     index == reference?.chapter
                                       ? 'cursor-default bg-th-primary-300'
                                       : 'bg-th-secondary-200 cursor-pointer '
                                   }`}
-                                  key={index}
-                                  onClick={() =>
-                                    setReference((prev) => ({ ...prev, chapter: index }))
-                                  }
-                                >
-                                  {index}
-                                </div>
-                              ))}
-                          </div>
-                        </Disclosure.Panel>
-                      </>
-                    )
-                  }}
-                </Disclosure>
-              ))}
-            </Tab.Panel>
-          ))}
-        </Tab.Panels>
-      </Tab.Group>
-    </div>
+                                    key={index}
+                                    onClick={() =>
+                                      setReference((prev) => ({
+                                        ...prev,
+                                        chapter: index,
+                                      }))
+                                    }
+                                  >
+                                    {index}
+                                  </div>
+                                ))}
+                            </div>
+                          </Disclosure.Panel>
+                        </>
+                      )
+                    }}
+                  </Disclosure>
+                ))}
+              </Tab.Panel>
+            ))}
+          </Tab.Panels>
+        </Tab.Group>
+      </div>
+    </Card>
   )
 }

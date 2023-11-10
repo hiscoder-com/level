@@ -49,7 +49,7 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
           return (
             <div key={key} className="flex mx-4 p-4" id={'idtq' + key}>
               <div className="text-2xl">{key}</div>
-              <div className="pl-7 text-th-text-primary">
+              <div className="pl-7 w-full text-th-text-primary">
                 <ul>
                   {data[key]?.map((item) => {
                     return (
@@ -83,7 +83,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
       {({ open }) => (
         <>
           <Disclosure.Button
-            className={`flex items-center gap-2 p-2 w-fit text-left ${
+            className={`flex items-center w-full p-2 text-left gap-2 justify-between ${
               highlightId === 'id' + item.id ? 'bg-th-secondary-100 rounded-lg' : ''
             }`}
             onClick={() => {

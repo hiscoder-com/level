@@ -9,6 +9,7 @@ import { Placeholder, TNTWLContent } from '../UI'
 import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal, filterNotes, getWords } from 'utils/helper'
 import { getFile } from 'utils/apiHelper'
+import Down from 'public/arrow-down.svg'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
@@ -176,20 +177,22 @@ function FilterRepeated({ setFilter, filter }) {
   ]
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-2/3">{t('FilterRepeatedWords')}</div>
-      <div className="w-1/3 mr-2">
+    <div className="flex items-center justify-center gap-2">
+      <div className="hidden sm:block md:w-1/2">{t('FilterRepeatedWords')}</div>
+      <div className="relative w-full sm:w-1/2 mr-2">
         <select
-          className="input-primary"
+          className="input-primary appearance-none truncate"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
+          style={{ padding: '10px' }}
         >
           {options?.map((option) => (
-            <option value={option.value} key={option.value}>
+            <option className="mr-2" value={option.value} key={option.value}>
               {option.name}
             </option>
           ))}
         </select>
+        <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 stroke-th-text-primary pointer-events-none" />
       </div>
     </div>
   )

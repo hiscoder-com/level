@@ -160,8 +160,8 @@ function ProjectCreate() {
 
   return (
     <>
-      <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
-        <form className="flex flex-col gap-0 md:gap-4" onSubmit={handleSubmit(onSubmit)}>
+      <div className="pt-0 pb-8 sm:py-5" onClick={(e) => e.stopPropagation()}>
+        <form className="flex flex-col gap-0 md:gap-7" onSubmit={handleSubmit(onSubmit)}>
           <div className="card-md py-7 space-y-7 bg-transparent sm:bg-th-secondary-100">
             <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
             <BasicInformation
@@ -210,7 +210,7 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 pb-7 mb-7 border-b border-th-secondary-300">
+          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 pb-7 border-b border-th-secondary-300">
             <h3 className="text-xl font-bold">{t('common:ListResources')}</h3>
             <CommitsList
               methodId={methodId}

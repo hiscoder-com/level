@@ -136,15 +136,16 @@
 }
 
 .tab {
-	@apply py-2 px-2 text-sm border-x border-t border-th-primary-100 rounded-t-2xl 
+	@apply py-2 px-2 text-base border-x border-t border-th-primary-100 rounded-t-2xl 
 }
 .tab-active {
 	@apply tab text-th-text-secondary bg-gradient-to-b from-th-primary-100 
-	to-th-primary-400 cursor-default focus:outline-none shadow
+	to-th-primary-400  cursor-default focus:outline-none shadow
 }
 
 .tab-inactive {
-	@apply tab bg-th-secondary-10 hover:bg-gradient-to-b hover:from-th-secondary-10 hover:to-th-secondary-300 cursor-pointer
+	@apply tab bg-th-secondary-10
+	text-th-primary-100 hover:bg-gradient-to-b hover:from-th-secondary-10 hover:to-th-secondary-300 cursor-pointer
 }
 .card {
   @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-300 shadow-md;
@@ -152,7 +153,7 @@
 
 @screen sm {
   .card-md {
-	 @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-300 shadow-md;
+	 @apply p-3 sm:p-5 rounded-2xl border border-th-secondary-300 shadow-md;
 }
 }
 
@@ -182,24 +183,33 @@
 }
 
 .step-link {
-  @apply py-2 border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 rounded-3xl cursor-pointer text-center hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary 
+  @apply py-3 border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 rounded-3xl cursor-pointer text-center hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary 
 	disabled:text-th-text-secondary disabled:cursor-default;
 }
 
-.first-check path:nth-child(1) {
-	@apply opacity-60
+.first-check path:nth-child(1),
+.second-check path:nth-child(1),
+.third-check path:nth-child(1) {
+  @apply opacity-60;
 }
 
-.second-check path:nth-child(2) {
-	@apply opacity-80
+.second-check path:nth-child(2),
+.third-check path:nth-child(2) {
+  @apply opacity-80;
 }
 
 .third-check path:nth-child(3) {
-	@apply opacity-100
+  @apply opacity-100;
+}
+
+.first-check path:not(:first-child),
+.second-check path:nth-child(3),
+.third-check path:not(:first-child):not(:nth-child(2)):not(:nth-child(3)) {
+  @apply text-th-secondary-300;
 }
 
 .input-base {
-	@apply px-4 py-2 w-full text-sm rounded-lg border focus:outline-none;
+	@apply px-4 py-2 w-full text-sm md:text-base rounded-lg border focus:outline-none;
 }
 
 .input-primary {

@@ -46,14 +46,14 @@ function MainAudio({ setAudioState }) {
     <div className="flex flex-col items-center gap-5 min-h-full justify-center">
       <button
         onClick={() => setAudioState('Retell Partner')}
-        className="btn-base bg-th-secondary-300 text-th-text-secondary"
+        className="btn-base bg-th-secondary-300 text-th-text-secondary hover:opacity-70"
       >
         {t('RetellPartner')}
       </button>
       <p>{t('NoWayToTellPartner')}</p>
       <button
         onClick={() => setAudioState('Retell Yourself')}
-        className="btn-base bg-th-secondary-300 text-th-text-secondary"
+        className="btn-base bg-th-secondary-300 text-th-text-secondary hover:opacity-70"
       >
         {t('RetellYourself')}
       </button>
@@ -74,7 +74,7 @@ function RetellPartner({ setAudioState }) {
       />
       {inactive ? (
         <button
-          className="btn-base bg-th-secondary-300 text-th-text-secondary mr-2"
+          className="btn-base bg-th-secondary-300 text-th-text-secondary mr-2 hover:opacity-70"
           onClick={() => setInactive(false)}
         >
           {t('Finished')}
@@ -84,13 +84,13 @@ function RetellPartner({ setAudioState }) {
           <p>{t('StartRetelling')}</p>
           <div className="flex">
             <button
-              className="btn-base bg-th-secondary-300 text-th-text-secondary mr-2"
+              className="btn-base bg-th-secondary-300 text-th-text-secondary mr-2 hover:opacity-70"
               onClick={() => setInactive(true)}
             >
               {t('InOriginalLanguage')}
             </button>
             <button
-              className="btn-base bg-th-secondary-300 text-th-text-secondary"
+              className="btn-base bg-th-secondary-300 text-th-text-secondary hover:opacity-70"
               onClick={() => setInactive(true)}
             >
               {t('InTargetLanguage')}

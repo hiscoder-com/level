@@ -115,7 +115,7 @@ function ProjectPersonalCard({ project, user }) {
               >
                 {!isLoading && currentSteps && project ? (
                   <>
-                    <div className="flex flex-col gap-7 w-auto sm:w-1/2 lg:w-1/3">
+                    <div className="flex flex-col gap-6 w-auto sm:w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
                           className="text-xl font-bold text-th-primary-200 hover:opacity-70 cursor-pointer"
@@ -162,32 +162,38 @@ function ProjectPersonalCard({ project, user }) {
                           />
                         </div>
                         <div className="flex gap-3">
-                          <p>
-                            {t('projects:Begin')}:{' '}
-                            {chapters &&
-                              readableDate(
-                                Math.min(
-                                  ...chapters?.[book].map((el) =>
-                                    Date.parse(el.started_at)
-                                  )
-                                ),
-                                locale
-                              )}
+                          <p className="flex gap-2">
+                            <span>{t('projects:Begin')}: </span>
+                            <span className="text-th-secondary-300">
+                              {chapters &&
+                                readableDate(
+                                  Math.min(
+                                    ...chapters?.[book].map((el) =>
+                                      Date.parse(el.started_at)
+                                    )
+                                  ),
+                                  locale
+                                )}
+                            </span>
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap content-start text-center w-auto sm:w-1/2 lg:w-2/3 gap-1">
+                    <div className="flex flex-wrap justify-center sm:justify-start content-start text-center w-auto sm:w-1/2 lg:w-2/3 gap-1 sm:gap-3">
                       {chapters[book].map((step, index) => {
                         const stepLink = (
-                          <>
-                            {step.chapter}
-                            {' ' + t('Ch').toLowerCase()}
-                            {' | '}
-                            {countChaptersVerses?.[book]?.chapters[step.chapter] + ' '}
-                            {t('Ver').toLowerCase()} {' | '}
-                            {step?.step} {t('Step').toLowerCase()}
-                          </>
+                          <p className="space-x-1">
+                            <span>{step.chapter}</span>
+                            <span>{t('Ch').toLowerCase()}</span>
+                            <span>{' | '}</span>
+                            <span>
+                              {countChaptersVerses?.[book]?.chapters[step.chapter]}
+                            </span>
+                            <span>{t('Ver').toLowerCase()}</span>
+                            <span>{' | '}</span>
+                            <span>{step?.step}</span>
+                            <span>{t('Step').toLowerCase()}</span>
+                          </p>
                         )
 
                         return !isBrief || briefResume ? (
@@ -208,7 +214,7 @@ function ProjectPersonalCard({ project, user }) {
                         ) : (
                           <button
                             key={index}
-                            className="step-link w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
+                            className="step-link px-5 w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
                             disabled
                           >
                             {stepLink}

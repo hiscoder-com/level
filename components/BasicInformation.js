@@ -63,7 +63,7 @@ function BasicInformation({
     },
   ]
   return (
-    <div className="flex flex-col gap-3 text-sm md:text-base">
+    <div className="flex flex-col gap-3 text-base">
       {inputs.map((input) => (
         <div
           className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 md:gap-2"
@@ -111,7 +111,9 @@ function BasicInformation({
               onClick={() => setIsOpenLanguageCreate(true)}
             >
               <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-text-primary stroke-th-text-primary rounded-full" />
-              <span>{t('project-edit:AddLanguage')}</span>
+              <span className="text-sm md:text-base">
+                {t('project-edit:AddLanguage')}
+              </span>
             </button>
           </div>
         </div>

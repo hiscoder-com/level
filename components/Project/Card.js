@@ -13,7 +13,7 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
   return (
     <div className="card flex flex-col gap-3 sm:gap-7 bg-th-secondary-10 !pb-4">
       <div className="flex justify-between items-start gap-7">
-        <h3 className="text-lg sm:text-xl font-bold truncate">{title}</h3>
+        <div className="text-lg sm:text-xl font-bold truncate">{title}</div>
         {access && (
           <Link href={link} className="w-6 min-w-[1.5rem]">
             <Gear className="stroke-th-text-primary" />
