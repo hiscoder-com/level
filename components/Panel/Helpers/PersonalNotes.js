@@ -14,8 +14,9 @@ import Modal from 'components/Modal'
 import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
-import Close from 'public/close.svg'
+import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
+import Plus from 'public/plus.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -107,20 +108,18 @@ function PersonalNotes() {
     <div className="relative">
       {!activeNote ? (
         <div>
-          <div className="flex justify-end">
-            <button
-              className="btn-cyan mb-4 mr-4 right-0 text-xl font-bold"
-              onClick={addNote}
-            >
-              +
+          <div className="flex gap-2">
+            <button className="btn-tertiary p-3" onClick={addNote}>
+              <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
             </button>
-            <button
-              className="btn-gray-red mb-4 right-0"
+            <div
+              className="btn-tertiary px-5 py-3 flex gap-2 items-center"
               onClick={() => setIsOpenModal(true)}
               disabled={!notes?.length}
             >
-              {t('RemoveAll')}
-            </button>
+              <Trash className="w-5 h-5 stroke-th-text-secondary" />
+              <span>{t('RemoveAll')}</span>
+            </div>
           </div>
           <ListOfNotes
             notes={notes}
@@ -130,32 +129,32 @@ function PersonalNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'flex justify-between items-start group my-3 bg-cyan-50 rounded-lg cursor-pointer shadow-md',
+              item: 'flex justify-between items-start group my-3 bg-th-secondary-100 rounded-lg cursor-pointer shadow-md',
               title: 'p-2 mr-4 font-bold',
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn
-            delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
+            delBtnChildren={<Trash className="w-4 h-4 stroke-th-text-primary" />}
           />
         </div>
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute top-1 right-0 w-10 pr-3 cursor-pointer"
             onClick={() => {
               saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}
           >
-            <Close />
+            <Back className="stroke-th-text-primary" />
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 mr-12 bg-cyan-50 font-bold rounded-lg shadow-md',
+              title: 'p-2 my-4 mr-12 bg-th-secondary-100 font-bold rounded-lg shadow-md',
               redactor:
-                'pb-20 pt-4 my-4 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
+                'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
@@ -171,9 +170,9 @@ function PersonalNotes() {
               t(noteToDel ? noteToDel?.title : t('AllNotes').toLowerCase()) +
               '?'}
           </div>
-          <div className="flex gap-7 w-1/2">
+          <div className="flex gap-7 w-1/2 text-th-text-primary">
             <button
-              className="btn-secondary flex-1"
+              className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
                 if (noteToDel) {
@@ -187,7 +186,7 @@ function PersonalNotes() {
               {t('Yes')}
             </button>
             <button
-              className="btn-secondary flex-1"
+              className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
                 setTimeout(() => {

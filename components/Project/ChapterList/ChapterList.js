@@ -22,7 +22,7 @@ import { readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
 
-import Plus from '/public/plus.svg'
+import Plus from 'public/plus.svg'
 
 function ChapterList() {
   const { user } = useCurrentUser()
@@ -90,7 +90,7 @@ function ChapterList() {
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
               onClick={(e) => e.stopPropagation()}
-              className="text-sm xl:text-lg"
+              className="w-fit text-sm xl:text-lg hover:opacity-70"
             >
               {step.step} {t('Step').toLowerCase()}
             </Link>
@@ -101,7 +101,7 @@ function ChapterList() {
   }
   return (
     <div className="pb-10">
-      <div className="card mx-auto max-w-7xl">
+      <div className="card bg-th-secondary-10 mx-auto max-w-7xl">
         <div className="flex flex-col gap-7 w-full">
           <Breadcrumbs
             links={[
@@ -134,10 +134,10 @@ function ChapterList() {
                           isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
                         } ${
                           finished_at
-                            ? 'bg-yellow-400 border-yellow-400'
+                            ? 'bg-th-secondary-400 border-th-secondary-400 text-th-text-secondary'
                             : isCreated
-                            ? 'text-white bg-slate-600 border-slate-600'
-                            : 'bg-white border-slate-600'
+                            ? 'text-th-text-secondary bg-th-primary-100 border-th-primary-100'
+                            : 'bg-th-secondary-10 border-th-primary-100'
                         } border-2`}
                       >
                         <div className="flex justify-between">
@@ -145,18 +145,14 @@ function ChapterList() {
                           <div>
                             {started_at && (
                               <div
-                                className={`text-sm ${
-                                  !finished_at ? 'text-slate-400' : ''
-                                }`}
+                                className={`text-sm ${!finished_at ? 'opacity-70' : ''}`}
                               >
                                 {readableDate(started_at, locale)}
                               </div>
                             )}
                             {finished_at && (
                               <div
-                                className={`text-sm ${
-                                  !finished_at ? 'text-slate-400' : ''
-                                }`}
+                                className={`text-sm ${!finished_at ? 'opacity-70' : ''}`}
                               >
                                 {readableDate(finished_at, locale)}
                               </div>
@@ -173,7 +169,9 @@ function ChapterList() {
                               }
                             }}
                           >
-                            <p className="text-sm xl:text-lg">{t('Download')}</p>
+                            <p className="text-sm xl:text-lg hover:opacity-70">
+                              {t('Download')}
+                            </p>
                           </div>
                         ) : (
                           getCurrentStep(chapter)
@@ -184,11 +182,12 @@ function ChapterList() {
                           isCreated ? 'hidden' : 'hidden hover:block'
                         } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer`}
                         style={{
-                          background: 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
+                          background:
+                            'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
                         }}
                         onClick={() => setCreatingChapter(chapter)}
                       >
-                        <div className="w-10 h-10 p-2 shadow-md text-slate-900 bg-white border-white border-2 rounded-full">
+                        <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secondary-10 border-2 rounded-full">
                           <Plus className="w-5 h-5" />
                         </div>
                       </div>
@@ -215,7 +214,7 @@ function ChapterList() {
             closeHandle={() => setIsOpenDownloading(false)}
             className={{
               dialogPanel:
-                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 overflow-y-visible rounded-3xl',
+                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-100 to-th-primary-400 text-th-text-secondary overflow-y-visible rounded-3xl',
             }}
           >
             <Download
