@@ -744,8 +744,7 @@ export function getVerseObjectsForBookAndChapter(chapters, bookCode, chapterNumb
   if (chapters) {
     const chapterData = chapters.find((chapter) => chapter.book_code === bookCode)
     if (chapterData && chapterData.level_check === null) {
-      const verseObjects = chapterData.chapters[chapterNumber]
-      return verseObjects
+      return chapterData.chapters[chapterNumber]
     }
   }
   return []
