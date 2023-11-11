@@ -161,7 +161,7 @@
       END;
     $$ LANGUAGE plpgsql;
 
--- getting all books with poems that are started and non-zero translation texts
+-- getting all books with verses that are started and non-zero translation texts
     CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses(project_code text) 
     RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
       BEGIN
@@ -877,7 +877,7 @@ $$;
       -- find out the id of the translator on the project
       -- find out the ID of the chapter we are translating, make sure that the translation is still in progress
       -- in a loop update the text of the verses, taking into account the id of the translator and the chapter
-      -- Maybe take the chapter number here. Get the IDs of all the poems that this user has. And then in the cycle to compare these IDs
+      -- Maybe take the chapter number here. Get the IDs of all the verse that this user has. And then in the cycle to compare these IDs
       -- TODO correct necessarily
       FOR new_verses IN SELECT * FROM json_each_text(save_verses.verses)
       LOOP
@@ -1427,7 +1427,7 @@ $$;
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    -- We create poems automatically, so no one can add
+    -- We create verses automatically, so no one can add
 
     -- Direct editing is also forbidden. We can edit only two fields, the current step and the text of the verse
 

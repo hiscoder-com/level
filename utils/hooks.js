@@ -321,7 +321,7 @@ export function useGetBooks({ code }) {
 }
 
 /**
- *hook returns information about books with validation levels and poems with draft versions
+ *hook returns information about books with validation levels and verse with draft versions
  * @param {string} code code of project
  * @returns {array}
  */
