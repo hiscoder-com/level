@@ -725,28 +725,26 @@ export function checkChapterVersesExist(bookCode, chapterNumber, data) {
     return false
   }
 
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].book_code === bookCode) {
-      const bookData = data[i].chapters
-      if (
-        bookData &&
-        bookData[chapterNumber] &&
-        bookData[chapterNumber].verseObjects.length > 0
-      ) {
-        return true
-      }
-    }
-  }
-  return false
+  return data.some(
+    (book) =>
+      book.book_code === bookCode &&
+      book.chapters &&
+      book.chapters[chapterNumber] &&
+      book.chapters[chapterNumber].verseObjects.length > 0
+  )
 }
 
 export function getVerseObjectsForBookAndChapter(chapters, bookCode, chapterNumber) {
-  if (chapters) {
-    const chapterData = chapters.find((chapter) => chapter.book_code === bookCode)
-    if (chapterData && chapterData.level_check === null) {
+  if (chapters && Array.isArray(chapters)) {
+    const chapterData = chapters.find(
+      (chapter) => chapter.book_code === bookCode && chapter.level_check === null
+    )
+
+    if (chapterData) {
       return chapterData.chapters[chapterNumber]
     }
   }
+
   return []
 }
 
