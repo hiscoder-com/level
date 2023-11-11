@@ -218,7 +218,6 @@ function Verses({ verseObjects, user, reference, isLoading }) {
 
                 return (
                   <div className={`flex gap-2 ${text === ' ' ? 'mb-2' : ''}`} key={index}>
-                    {' '}
                     {index !== 0 && <sup className="mt-2">{index}</sup>}
                     <p>{text}</p>
                   </div>
