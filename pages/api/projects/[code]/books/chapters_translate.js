@@ -10,11 +10,16 @@ function createCombinedData(uniqueBooks, booksData, chaptersData) {
 
   // Организация информации о главах книг по кодам книг и номерам глав.
   const bookChaptersMap = chaptersData.reduce((acc, chapter) => {
-    const bookCode = chapter.book_code
-    const chapterNumber = chapter.chapter_num
+    const {
+      book_code: bookCode,
+      chapter_num: chapterNumber,
+      verse_num,
+      verse_text,
+    } = chapter
+
     const verseObject = {
-      verse: chapter.verse_num,
-      text: chapter.verse_text,
+      verse: verse_num,
+      text: verse_text,
     }
 
     if (!acc[bookCode]) {

@@ -769,9 +769,5 @@ export function getVerseCountOBS(chaptersData, chapterNumber) {
   }
 
   chapterNumber = chapterNumber < 10 ? `0${chapterNumber}` : `${chapterNumber}`
-  if (chapterNumber in chapterData) {
-    return chapterData[chapterNumber]
-  } else {
-    return 0
-  }
+  return chapterNumber in chapterData ? chapterData[chapterNumber] : 0
 }
