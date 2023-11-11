@@ -164,28 +164,32 @@
 -- getting all books with verses that are started and non-zero translation texts
     CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses(project_code text) 
     RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
-      BEGIN
-    RETURN QUERY
-      SELECT
-        b.code AS book_code,
-        c.num AS chapter_num,
-        v.num AS verse_num,
-        v.text AS verse_text
-      FROM
-        public.books b
-      INNER JOIN
-        public.chapters c ON b.id = c.book_id
-      INNER JOIN
-        public.verses v ON c.id = v.chapter_id
-      INNER JOIN
-        public.projects p ON b.project_id = p.id
-      WHERE
-        c.started_at IS NOT NULL
-        AND v.text IS NOT NULL
-        AND p.code = project_code;
-      END;
+    BEGIN
+    IF authorize(auth.uid(), get_project_id_by_code(project_code)) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
+        RETURN;
+    END IF;
 
+    RETURN QUERY
+        SELECT
+            b.code AS book_code,
+            c.num AS chapter_num,
+            v.num AS verse_num,
+            v.text AS verse_text
+        FROM
+            public.books b
+        INNER JOIN
+            public.chapters c ON b.id = c.book_id
+        INNER JOIN
+            public.verses v ON c.id = v.chapter_id
+        INNER JOIN
+            public.projects p ON b.project_id = p.id
+        WHERE
+            c.started_at IS NOT NULL
+            AND v.text IS NOT NULL
+            AND p.code = project_code;
+        END;
       $$ LANGUAGE plpgsql;
+
 
   -- conditions for the user to have access to the site: 2 checkboxes and the user was not blocked
     CREATE FUNCTION PUBLIC.has_access() RETURNS BOOLEAN
