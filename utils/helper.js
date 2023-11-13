@@ -708,16 +708,7 @@ export const stepsValidation = (steps) => {
 }
 
 export function checkBookCodeExists(bookCode, data) {
-  if (!data) {
-    return
-  }
-
-  for (let i = 0; i < data.length; i++) {
-    if (data[i].book_code === bookCode) {
-      return true
-    }
-  }
-  return false
+  return Array.isArray(data) && data.some((book) => book.book_code === bookCode)
 }
 
 export function checkChapterVersesExist(bookCode, chapterNumber, data) {
