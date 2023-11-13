@@ -548,13 +548,25 @@ function BookListReader({ books, setReference, reference, project }) {
                               {[...Array(Object.keys(book.chapters).length).keys()]
                                 .map((el) => el + 1)
                                 .map((index) => (
-                                  <div
-                                    className={`flex justify-center items-center w-10 h-10
-                                  text-th-text-secondary rounded-md cursor-pointer hover:opacity-70 ${
-                                    index == reference?.chapter
-                                      ? 'cursor-default bg-th-primary-300'
-                                      : 'bg-th-secondary-200 cursor-pointer '
-                                  }`}
+                                  <button
+                                    disabled={
+                                      !checkChapterVersesExist(book.code, index, chapters)
+                                    }
+                                    className={`flex justify-center items-center w-10 h-10 rounded-md ${
+                                      checkChapterVersesExist(book.code, index, chapters)
+                                        ? 'cursor-pointer bg-th-primary-300 text-th-text-secondary'
+                                        : 'cursor-default bg-th-secondary-200 disabled text-white'
+                                    } ${
+                                      index === reference?.chapter
+                                        ? 'cursor-default bg-th-primary-300 text-th-secondary-10'
+                                        : checkChapterVersesExist(
+                                            book.code,
+                                            index,
+                                            chapters
+                                          )
+                                        ? 'hover:opacity-70 bg-th-secondary-200 text-black'
+                                        : ''
+                                    }`}
                                     key={index}
                                     onClick={() =>
                                       setReference((prev) => ({
@@ -564,7 +576,7 @@ function BookListReader({ books, setReference, reference, project }) {
                                     }
                                   >
                                     {index}
-                                  </div>
+                                  </button>
                                 ))}
                             </div>
                           </Disclosure.Panel>
