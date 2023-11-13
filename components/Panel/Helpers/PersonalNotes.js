@@ -45,6 +45,27 @@ const TreeView = dynamic(
   }
 )
 
+const icons = {
+  file: <FileIcon className={'w-6 h-6'} />,
+  arrowDown: <ArrowDown className={'stroke-2'} />,
+  arrowRight: <ArrowRight className={'stroke-2'} />,
+  openFolder: <OpenFolder className={'w-6 h-6 stroke-[1.7]'} />,
+  closeFolder: <CloseFolder className={'w-6 h-6'} />,
+}
+
+function convertNotesToTree(notes, parentId = null) {
+  const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
+
+  filteredNotes?.sort((a, b) => a.sorting - b.sorting)
+  return filteredNotes?.map((note) => ({
+    id: note.id,
+    name: note.title,
+    ...(note.is_folder && {
+      children: convertNotesToTree(notes, note.id),
+    }),
+  }))
+}
+
 function PersonalNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
@@ -58,6 +79,7 @@ function PersonalNotes() {
     sort: 'sorting',
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
+  const supabase = useSupabaseClient()
 
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
@@ -85,6 +107,7 @@ function PersonalNotes() {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     const title = isFolder ? 'new folder' : 'new note'
     const isFolderValue = isFolder ? true : false
+
     axios
       .post('/api/personal_notes', {
         id,
@@ -136,6 +159,11 @@ function PersonalNotes() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeNote])
 
+  useEffect(() => {
+    setDataForTreeView(convertNotesToTree(notes))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [notes])
+
   const removeAllNote = () => {
     axios
       .delete(`/api/personal_notes`, { data: { user_id: user?.id } })
@@ -146,24 +174,6 @@ function PersonalNotes() {
       .catch(console.log)
   }
 
-  function convertNotesToTree(notes, parentId = null) {
-    const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
-
-    filteredNotes?.sort((a, b) => a.sorting - b.sorting)
-    return filteredNotes?.map((note) => ({
-      id: note.id,
-      name: note.title,
-      ...(note.is_folder && {
-        children: convertNotesToTree(notes, note.id),
-      }),
-    }))
-  }
-
-  useEffect(() => {
-    setDataForTreeView(convertNotesToTree(notes))
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [notes])
-
   const handleContextMenu = (event) => {
     setNoteId(hoveredNodeId)
     setContextMenuEvent({ event })
@@ -171,6 +181,21 @@ function PersonalNotes() {
 
   const handleRename = () => {
     currentNodeProps?.node.edit()
+  }
+
+  const handleDragDrop = async ({ dragIds, parentId, index }) => {
+    const { error } = await supabase.rpc('move_node', {
+      new_sorting_value: index,
+      dragged_node_id: dragIds[0],
+      new_parent_id: parentId,
+      table_name: 'personal_notes',
+    })
+
+    if (error) {
+      console.error('Error when moving node:', error)
+    } else {
+      mutate()
+    }
   }
 
   const menuItems = [
@@ -211,32 +236,6 @@ function PersonalNotes() {
       action: () => setIsOpenModal(true),
     },
   ]
-
-  const supabase = useSupabaseClient()
-
-  const handleDragDrop = async ({ dragIds, parentId, index }) => {
-    const { error } = await supabase.rpc('move_node', {
-      new_sorting_value: index,
-      dragged_node_id: dragIds[0],
-      new_parent_id: parentId,
-    })
-
-    if (error) {
-      console.error('Error when moving node:', error)
-    } else {
-      removeCacheAllNotes('personal-notes')
-      mutate()
-    }
-  }
-
-  const icons = {
-    file: <FileIcon className={'w-6 h-6'} />,
-    arrowDown: <ArrowDown className={'stroke-2'} />,
-    arrowRight: <ArrowRight className={'stroke-2'} />,
-    openFolder: <OpenFolder className={'w-6 h-6 stroke-[1.7]'} />,
-    closeFolder: <CloseFolder className={'w-6 h-6'} />,
-  }
-
   return (
     <div className="relative">
       {!activeNote ? (
