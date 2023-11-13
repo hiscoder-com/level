@@ -51,12 +51,12 @@ function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
         <div
           key={verseObject.verse}
           id={'id' + verseObject.verse}
-          className={`p-2 ${
-            'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
+          className={`p-2 rounded-lg ${
+            'id' + currentScrollVerse === 'id' + verseObject.verse
+              ? 'bg-th-secondary-100'
+              : ''
           }`}
-          onClick={() => {
-            handleSaveScroll(String(verseObject.verse))
-          }}
+          onClick={() => handleSaveScroll(String(verseObject.verse))}
         >
           <MarkdownExtended>
             {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
@@ -77,8 +77,10 @@ function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) 
           <div
             key={verseObject.verse}
             onClick={() => handleSaveScroll(verseObject.verse)}
-            className={`my-3 flex items-start select-none ${
-              'id' + currentScrollVerse === 'id' + verseObject.verse ? 'bg-gray-200' : ''
+            className={`flex items-start my-3 select-none rounded-lg ${
+              'id' + currentScrollVerse === 'id' + verseObject.verse
+                ? 'bg-th-secondary-100'
+                : ''
             }`}
           >
             <div id={'id' + verseObject.verse} className={`ml-2`}>
@@ -87,7 +89,7 @@ function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) 
             {checkedCurrent ? (
               <Blur verse={verseObject.text} />
             ) : (
-              <ReactMarkdown className={`ml-2`}>{verseObject.text}</ReactMarkdown>
+              <ReactMarkdown className="ml-2">{verseObject.text}</ReactMarkdown>
             )}
           </div>
         )
@@ -106,7 +108,7 @@ function Blur({ verse }) {
     [verse]
   )
   return (
-    <ReactMarkdown className={`ml-2 bg-blue-350 text-blue-350 select-none`}>
+    <ReactMarkdown className="ml-2 bg-th-secondary-100 text-th-secondary-100 rounded-lg select-none">
       {text}
     </ReactMarkdown>
   )

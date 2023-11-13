@@ -5,6 +5,7 @@ import { Disclosure } from '@headlessui/react'
 import { Placeholder } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
+import Down from 'public/arrow-down.svg'
 
 function TQ({ config, url, toolName }) {
   const { isLoading, data } = useGetResource({ config, url })
@@ -42,13 +43,13 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
   })
 
   return (
-    <div className="divide-y divide-dashed divide-gray-800">
+    <div className="divide-y divide-dashed divide-th-text-primary">
       {data &&
         Object.keys(data)?.map((key) => {
           return (
             <div key={key} className="flex mx-4 p-4" id={'idtq' + key}>
               <div className="text-2xl">{key}</div>
-              <div className="pl-7 text-gray-700">
+              <div className="pl-7 w-full text-th-text-primary">
                 <ul>
                   {data[key]?.map((item) => {
                     return (
@@ -79,21 +80,30 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
 function Answer({ item, reduceQuestions, viewAll, highlightId }) {
   return (
     <Disclosure>
-      <Disclosure.Button
-        className={`w-fit text-left ${
-          highlightId === 'id' + item.id ? 'bg-gray-200' : ''
-        }`}
-        onClick={() => {
-          if (viewAll) {
-            reduceQuestions()
-          }
-        }}
-      >
-        <ReactMarkdown>{item.title}</ReactMarkdown>
-      </Disclosure.Button>
-      <Disclosure.Panel className="w-fit py-4 text-cyan-700">
-        <p>{item.text}</p>
-      </Disclosure.Panel>
+      {({ open }) => (
+        <>
+          <Disclosure.Button
+            className={`flex items-center w-full p-2 text-left gap-2 justify-between ${
+              highlightId === 'id' + item.id ? 'bg-th-secondary-100 rounded-lg' : ''
+            }`}
+            onClick={() => {
+              if (viewAll) {
+                reduceQuestions()
+              }
+            }}
+          >
+            <ReactMarkdown>{item.title}</ReactMarkdown>
+            <Down
+              className={`w-5 h-5 min-w-[1.25rem] stroke-th-text-primary ${
+                open ? 'rotate-180' : ''
+              }`}
+            />
+          </Disclosure.Button>
+          <Disclosure.Panel className="w-fit py-4 text-th-text-primary">
+            <p className="ml-2">{item.text}</p>
+          </Disclosure.Panel>
+        </>
+      )}
     </Disclosure>
   )
 }

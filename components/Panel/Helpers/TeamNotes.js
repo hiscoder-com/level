@@ -17,8 +17,9 @@ import Modal from 'components/Modal'
 import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
-import Close from 'public/close.svg'
+import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
+import Plus from 'public/plus.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -106,14 +107,9 @@ function TeamNotes() {
       {!activeNote ? (
         <div>
           {isModeratorAccess && (
-            <div className="flex justify-end">
-              <button
-                className="btn-cyan mb-4 right-0 text-xl font-bold"
-                onClick={addNote}
-              >
-                +
-              </button>
-            </div>
+            <button className="btn-tertiary p-3" onClick={addNote}>
+              <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+            </button>
           )}
           <ListOfNotes
             notes={notes}
@@ -123,33 +119,32 @@ function TeamNotes() {
             }}
             setNoteId={setNoteId}
             classes={{
-              item: 'flex justify-between items-start group my-3 bg-cyan-50 rounded-lg cursor-pointer shadow-md',
+              item: 'flex justify-between items-start group my-3 bg-th-secondary-100 rounded-lg cursor-pointer',
               title: 'p-2 mr-4 font-bold',
               text: 'px-2 h-10 overflow-hidden',
               delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             isShowDelBtn={isModeratorAccess}
-            delBtnChildren={<Trash className={'w-4 h-4 text-cyan-800'} />}
+            delBtnChildren={<Trash className={'w-4 h-4 stroke-th-text-primary'} />}
           />
         </div>
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute top-1 right-0 w-10 pr-3 cursor-pointer"
             onClick={() => {
               saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}
           >
-            <Close />
+            <Back className="stroke-th-text-primary" />
           </div>
           <Redactor
             classes={{
-              wrapper: '',
-              title: 'p-2 my-4 mr-12 font-bold bg-cyan-50 rounded-lg shadow-md',
+              title: 'p-2 my-4 mr-12 font-bold bg-th-secondary-100 rounded-lg shadow-md',
               redactor:
-                'pb-20 pt-4 px-4 my-4 bg-cyan-50 overflow-hidden break-words rounded-lg shadow-md',
+                'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}

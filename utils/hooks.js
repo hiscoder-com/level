@@ -134,15 +134,15 @@ export function useCoordinators({ code }) {
  * @param {string} code code of project
  * @returns {array}
  */
-export function useTranslators({ code }) {
+export function useTranslators({ code, revalidateIfStale, revalidateOnFocus }) {
   const {
     data: translators,
     mutate,
     error,
     isLoading,
   } = useSWR(code ? [`/api/projects/${code}/translators`] : null, fetcher, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
+    revalidateOnFocus,
+    revalidateIfStale,
   })
 
   return [translators, { mutate, error, isLoading }]

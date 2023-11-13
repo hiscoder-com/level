@@ -30,7 +30,7 @@ export default function SignOut() {
     <ButtonLoading
       isLoading={loading}
       onClick={handleLogout}
-      className="relative bg-gray-200 w-full py-2 rounded-lg text-slate-600 text-lg font-bold"
+      className="btn-primary w-full"
     >
       {t('users:SignOut')}
     </ButtonLoading>

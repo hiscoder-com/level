@@ -18,7 +18,7 @@ function BasicInformation({
     {
       id: 1,
       title: t('Title'),
-      className: errors?.title ? 'input-invalid' : 'input-primary bg-white',
+      errorCondition: errors?.title,
       placeholder: '',
       register: {
         ...register('title', {
@@ -30,7 +30,7 @@ function BasicInformation({
     {
       id: 2,
       title: t('OrigTitle'),
-      className: errors?.origtitle ? 'input-invalid' : 'input-primary bg-white',
+      errorCondition: errors?.origtitle,
       placeholder: '',
       register: {
         ...register('origtitle', {
@@ -42,7 +42,7 @@ function BasicInformation({
     {
       id: 3,
       title: t('Code'),
-      className: errors?.code ? 'input-invalid' : 'input-primary bg-white',
+      errorCondition: errors?.code,
       placeholder: '',
       register: {
         ...register('code', {
@@ -63,7 +63,7 @@ function BasicInformation({
     },
   ]
   return (
-    <div className="flex flex-col gap-3 text-sm md:text-base">
+    <div className="flex flex-col gap-3 text-base">
       {inputs.map((input) => (
         <div
           className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 md:gap-2"
@@ -72,7 +72,11 @@ function BasicInformation({
           <div className="w-auto md:w-1/5 font-bold">{input.title}</div>
           <div className="flex flex-col gap-2 w-full md:w-4/5">
             <input
-              className={`${input.className}`}
+              className={
+                input?.errorCondition
+                  ? 'input-invalid'
+                  : 'input-primary bg-th-secondary-10'
+              }
               placeholder={input.placeholder}
               {...input.register}
             />
@@ -85,7 +89,7 @@ function BasicInformation({
         <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-4/5">
           <div className="relative flex w-full md:w-3/4">
             <select
-              className="input-primary bg-white h-full appearance-none cursor-pointer"
+              className="input-primary bg-th-secondary-10 h-full appearance-none cursor-pointer"
               placeholder={t('Language')}
               {...register('languageId')}
             >
@@ -98,17 +102,18 @@ function BasicInformation({
                   )
                 })}
             </select>
-            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 pointer-events-none" />
+            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 stroke-th-text-primary pointer-events-none" />
           </div>
           <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-primary bg-white flex items-center gap-2 truncate"
+              className="input-base flex items-center gap-2 text-th-text-primary border-th-secondary-300 bg-th-secondary-10 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
-              <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-slate-900 rounded-full" />
-
-              <span>{t('project-edit:AddLanguage')}</span>
+              <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-text-primary stroke-th-text-primary rounded-full" />
+              <span className="text-sm md:text-base">
+                {t('project-edit:AddLanguage')}
+              </span>
             </button>
           </div>
         </div>
@@ -120,7 +125,7 @@ function BasicInformation({
             <select
               placeholder={t('Method')}
               {...register('methodId')}
-              className="input-primary bg-white w-3/4 appearance-none cursor-pointer"
+              className="input-primary w-3/4 bg-th-secondary-10 appearance-none cursor-pointer"
               defaultValue={methods?.[0]?.id}
             >
               {methods &&
@@ -132,7 +137,7 @@ function BasicInformation({
                   )
                 })}
             </select>
-            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 pointer-events-none" />
+            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 stroke-th-text-primary pointer-events-none" />
           </div>
         </div>
       )}

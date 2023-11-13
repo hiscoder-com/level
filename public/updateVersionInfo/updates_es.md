@@ -1,3 +1,17 @@
+# Versión 0.8.0
+## Fecha: 11/09/2023
+
+### **Cambiado:**
+- página 404
+- página del acuerdo de usuario
+- esquema de color del sitio
+- página de edición corta
+- página de cuenta personal
+- página de traducción
+- página de configuración del proyecto
+
+### **Arreglado:**
+- errores en el diseño y la funcionalidad
 # Versión 0.7.1
 ## Fecha: 10/05/2023
 

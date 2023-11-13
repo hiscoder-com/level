@@ -1,3 +1,17 @@
+# Version 0.8.0
+## Date: 11/09/2023
+
+### **Changed:**
+- page 404
+- user agreement page
+- color scheme of the site
+- brief editing page
+- personal account page
+- translation page
+- project settings page
+
+### **Fixed:**
+- bugs in the layout and functionality
 # Version 0.7.1
 ## Date: 10/05/2023
 

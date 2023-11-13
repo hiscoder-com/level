@@ -140,7 +140,7 @@ function Login() {
             <div>
               {t('Email')} {user.email}
             </div>
-            <Link href={href ?? '/'} className="text-cyan-500 hover:text-gray-400">
+            <Link href={href ?? '/'} className="text-th-primary-200 hover:opacity-70">
               {t('GoToAccount')}
             </Link>
           </div>
@@ -151,7 +151,7 @@ function Login() {
         </div>
       ) : (
         <div className="flex flex-col p-5 lg:py-10 xl:px-8">
-          <div className="flex justify-between mb-6">
+          <div className="flex justify-between mb-6 z-10">
             <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold">{t('SignIn')}</h1>
             <SwitchLocalization />
           </div>
@@ -189,7 +189,7 @@ function Login() {
                 {t('Password')}
               </label>
               <span
-                className="eye"
+                className="absolute right-2 bottom-2 cursor-pointer stroke-2 stroke-th-text-primary"
                 onClick={() => {
                   setShowPassword((prev) => !prev)
                 }}
@@ -200,12 +200,12 @@ function Login() {
             <div className="flex items-center justify-between mb-4">
               {error && (
                 <>
-                  <p className="flex text-xs text-red-600">
+                  <p className="flex text-xs text-th-invalid">
                     <Report className="w-4 h-4" /> {t('WrongLoginPassword')}
                   </p>
                   <button
                     type="button"
-                    className="underline text-cyan-700 hover:text-gray-400"
+                    className="underline text-th-primary-200 hover:opacity-70"
                     onClick={() => setIsOpenModal(true)}
                   >
                     {t('ForgotPassword')}?
@@ -219,14 +219,14 @@ function Login() {
                 onClick={handleLogin}
                 isLoading={isLoadingLogin}
                 className={`relative w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold ${
-                  loading || isLoadingLogin ? 'btn' : 'btn-cyan'
+                  loading || isLoadingLogin ? 'btn' : 'btn-primary border-0'
                 } `}
               >
                 {t('SignIn')}
               </ButtonLoading>
               <button
                 type="button"
-                className="text-sm lg:text-base text-cyan-700 hover:text-gray-400"
+                className="text-sm lg:text-base text-th-primary-200 hover:opacity-70"
                 onClick={() => setIsOpenModal(true)}
               >
                 {t('RestoreAccess')}
@@ -247,9 +247,7 @@ function Login() {
             <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
             <div className="flex gap-4">
               <input
-                className={`input-primary ${
-                  errorMessageSendLink ? '!border-red-500' : ''
-                }`}
+                className={errorMessageSendLink ? 'input-invalid' : 'input-primary'}
                 onChange={(e) => {
                   setErrorMessageSendLink('')
                   setEmail(e.target.value)

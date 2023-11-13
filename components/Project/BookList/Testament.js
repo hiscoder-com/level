@@ -14,11 +14,11 @@ import Download from '../Download'
 import { useGetBooks, useGetChaptersTranslate } from 'utils/hooks'
 import { checkBookCodeExists } from 'utils/helper'
 
-import Gear from '/public/gear.svg'
-import Reader from '/public/dictionary.svg'
-import DownloadIcon from '/public/download.svg'
-import Play from '/public/play.svg'
-import Elipsis from '/public/elipsis.svg'
+import Gear from 'public/gear.svg'
+import Reader from 'public/dictionary.svg'
+import DownloadIcon from 'public/download.svg'
+import Play from 'public/play.svg'
+import Elipsis from 'public/elipsis.svg'
 
 function Testament({
   bookList,
@@ -80,8 +80,8 @@ function Testament({
                   <div
                     className={
                       isBookCreated
-                        ? 'text-slate-900 cursor-pointer truncate'
-                        : 'text-gray-400'
+                        ? 'text-th-text-primary cursor-pointer truncate'
+                        : 'text-th-secondary-300'
                     }
                     onClick={() => handleOpenBook(book, isBookCreated)}
                   >
@@ -92,7 +92,7 @@ function Testament({
                   {({ open }) => (
                     <>
                       <Menu.Button className="relative flex duration-200">
-                        <Elipsis className="block sm:hidden h-6 min-h-[1.5rem] transition" />
+                        <Elipsis className="block sm:hidden h-6 min-h-[1.5rem] transition stroke-th-text-primary" />
                       </Menu.Button>
                       <Transition
                         as={Fragment}
@@ -108,9 +108,9 @@ function Testament({
                           <div className="flex gap-2">
                             {isCoordinatorAccess && isBookCreated && (
                               <Menu.Item>
-                                <button className="">
+                                <button>
                                   <Gear
-                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() =>
                                       push({
                                         pathname: `/projects/${project?.code}`,
@@ -128,7 +128,7 @@ function Testament({
                               <Menu.Item>
                                 <button>
                                   <Play
-                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() => setBookCodeCreating(book)}
                                   />
                                 </button>
@@ -138,7 +138,7 @@ function Testament({
                               <Menu.Item>
                                 <button>
                                   <DownloadIcon
-                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() => {
                                       setIsOpenDownloading(true)
                                       setDownloadingBook(book)
@@ -151,7 +151,7 @@ function Testament({
                               <Menu.Item>
                                 <button>
                                   <Reader
-                                    className="w-6 min-w-[1.5rem] cursor-pointer"
+                                    className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                                     onClick={() =>
                                       push({
                                         pathname: `/projects/${project?.code}/books/read`,
@@ -177,7 +177,7 @@ function Testament({
                       {!isBookCreated && isCoordinatorAccess && (
                         <>
                           <Play
-                            className="w-6 min-w-[1.5rem] cursor-pointer"
+                            className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                             onClick={() => setBookCodeCreating(book)}
                           />
                         </>
@@ -185,7 +185,7 @@ function Testament({
 
                       {checkBookCodeExists(book, chapters) && (
                         <Reader
-                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                           onClick={() =>
                             push({
                               pathname: `/projects/${project?.code}/books/read`,
@@ -199,7 +199,7 @@ function Testament({
                       )}
                       {isModeratorAccess && isBookCreated && (
                         <DownloadIcon
-                          className="w-6 min-w-[1.5rem] cursor-pointer"
+                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                           onClick={() => {
                             setIsOpenDownloading(true)
                             setDownloadingBook(book)
@@ -210,7 +210,7 @@ function Testament({
                         <>
                           {isBookCreated && (
                             <Gear
-                              className="w-6 min-w-[1.5rem] cursor-pointer"
+                              className="w-6 min-w-[1.5rem] stroke-th-text-primary cursor-pointer"
                               onClick={() =>
                                 push({
                                   pathname: `/projects/${project?.code}`,
@@ -228,7 +228,7 @@ function Testament({
                   </>
                 ) : (
                   <div role="status" className="h-4 w-1/4 animate-pulse">
-                    <div className="h-full bg-gray-200 rounded-2xl w-full"></div>
+                    <div className="h-full w-full bg-th-secondary-100 rounded-2xl"></div>
                   </div>
                 )}
               </div>
@@ -248,7 +248,7 @@ function Testament({
         closeHandle={() => setIsOpenDownloading(false)}
         className={{
           dialogPanel:
-            'w-full max-w-md align-middle p-6 bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250 overflow-y-visible rounded-3xl',
+            'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-100 to-th-primary-400 text-th-text-secondary overflow-y-visible rounded-3xl',
         }}
       >
         <Download

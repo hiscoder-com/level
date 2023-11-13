@@ -4,7 +4,7 @@ import { useGetInfo } from 'utils/hooks'
 import MarkdownExtended from 'components/MarkdownExtended'
 
 function Info({ config, url }) {
-  const { isLoading, data: intro, error } = useGetInfo({ config, url })
+  const { isLoading, data: intro } = useGetInfo({ config, url })
 
   return (
     <>
