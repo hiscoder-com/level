@@ -43,18 +43,18 @@ function TranslatorsList({
                   checked={el.is_moderator}
                   onChange={() => setSelectedModerator(el.users)}
                   className={`${
-                    el.is_moderator ? 'bg-cyan-600' : 'bg-gray-200'
+                    el.is_moderator ? 'bg-th-primary-100' : 'bg-th-secondary-100'
                   } relative inline-flex h-7 w-12 items-center rounded-full`}
                 >
                   <span
                     className={`${
                       el.is_moderator ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                    } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
                   />
                 </Switch>
               )}
               {!access && el.is_moderator && (
-                <span className="h-5 w-5 rounded-full bg-cyan-600" />
+                <span className="h-5 w-5 rounded-full bg-th-primary-100" />
               )}
             </div>
             <div className="flex justify-end w-auto sm:w-1/3 md:w-1/6">
@@ -65,14 +65,14 @@ function TranslatorsList({
                 {t('Remove')}
               </button>
               {el.is_moderator && (
-                <Security className="block sm:hidden w-6 h-6 min-h-[1.5rem]" />
+                <Security className="block sm:hidden w-6 h-6 min-h-[1.5rem] stroke-th-text-primary" />
               )}
             </div>
             <Menu as="div" className="relative flex items-center overflow-hidden">
               {({ open }) => (
                 <>
                   <Menu.Button>
-                    <Elipsis className="block sm:hidden w-6 h-6 min-w-[1.5rem]" />
+                    <Elipsis className="block sm:hidden w-6 h-6 min-w-[1.5rem] stroke-th-text-primary" />
                   </Menu.Button>
                   <Transition
                     as={Fragment}
@@ -95,11 +95,13 @@ function TranslatorsList({
                             checked={el.is_moderator}
                             onChange={() => setSelectedModerator(el.users)}
                             className={`relative inline-flex items-center h-6 w-12 rounded-full ${
-                              el.is_moderator ? 'bg-cyan-600' : 'bg-gray-200'
+                              el.is_moderator
+                                ? 'bg-th-primary-100'
+                                : 'bg-th-secondary-100'
                             }`}
                           >
                             <span
-                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition ${
+                              className={`inline-block h-4 w-4 transform rounded-full bg-th-secondary-10 transition ${
                                 el.is_moderator ? 'translate-x-6' : 'translate-x-1'
                               }`}
                             />

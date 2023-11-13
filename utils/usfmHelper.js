@@ -2,15 +2,21 @@ const getText = (verseObject) => {
   return verseObject.text || verseObject.nextChar || ''
 }
 
-// +
 const getFootnote = (verseObject) => {
-  return '<sup>' + verseObject.content + '</sup>' //TODO переделать
+  const content = verseObject.content
+    .replace(/\\fqa\s(.*?)\\/g, '*$1*')
+    .replace(/\\fq(.*?)\\/g, '*$1*')
+    .replace(/\\fr(.*?)\\/g, '')
+    .replace(
+      /\\ft\*|\\f\*|f\*|fq\*|fqa\*|\\ft|\\f|fq|fqa|ft|ft|\\fr|\\fr\*|fr\*|fr|\+|\*|\\xt|\\xt*/g,
+      ''
+    )
+    .trim()
+  return '<span style="color:gray"> [' + content + '] </span>'
 }
 
-// +
 const getMilestone = (verseObject, showUnsupported) => {
   const { tag, children } = verseObject
-
   switch (tag) {
     case 'k':
       return children.map((child) => getObject(child, showUnsupported)).join(' ')
@@ -24,8 +30,6 @@ const getMilestone = (verseObject, showUnsupported) => {
       return ''
   }
 }
-
-// +
 const getAlignedWords = (verseObjects) => {
   return verseObjects
     .map((verseObject) => {
@@ -34,20 +38,53 @@ const getAlignedWords = (verseObjects) => {
     .join('')
 }
 
-// +
 const getSection = (verseObject) => {
-  return verseObject.content
+  if (!verseObject.tag) {
+    return verseObject.content
+  }
+  switch (verseObject.tag) {
+    case 's':
+    case 's1':
+      return (
+        '<span style="display:block;margin-top:8px;text-align:center">' +
+        verseObject.content +
+        '</span>'
+      )
+    default:
+      return verseObject.content
+  }
 }
 
-// +
+const getTag = (verseObject) => {
+  const { tag } = verseObject
+  const text = verseObject.content || verseObject.text
+  switch (tag) {
+    case 'it':
+      return '*' + text + '*'
+    case 'bd':
+      return '**' + text + '**'
+    case 'no':
+      return text
+    case 'sc':
+      return '<sub>' + text + '</sub>'
+    case 'sup':
+      return '<sup>' + text + '</sup>'
+    default:
+      return text ? '***' + text + '***' : ''
+  }
+}
+
 const getUnsupported = (verseObject) => {
+  if (verseObject.tag) {
+    return getTag(verseObject)
+  }
   return '***' + (verseObject.content || verseObject.text) + '***'
 }
 
-// +
 const getWord = (verseObject) => {
   return verseObject.text || verseObject.content
 }
+
 const getVerseText = (verseObjects, showUnsupported = false) => {
   return verseObjects
     .map((verseObject) => getObject(verseObject, showUnsupported))
@@ -82,12 +119,13 @@ const getObject = (verseObject, showUnsupported) => {
       }
   }
 }
+
 export const parseChapter = (chapter, verses) => {
   let resultChapter = Object.entries(chapter)
   if (verses && verses.length > 0) {
     resultChapter = resultChapter.filter((el) => verses.includes(el[0]))
   }
   return resultChapter.map((el) => {
-    return { verse: el[0], text: getVerseText(el[1].verseObjects, false) }
+    return { verse: el[0], text: getVerseText(el[1].verseObjects, true) }
   })
 }

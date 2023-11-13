@@ -26,7 +26,6 @@ function BlindEditor({ config }) {
   const [firstStepRef, setFirstStepRef] = useState({})
   const { t } = useTranslation(['common'])
   const textAreaRef = useRef([])
-
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
 
   useEffect(() => {
@@ -88,6 +87,7 @@ function BlindEditor({ config }) {
       })
     }
   }
+
   const saveVerse = (ref) => {
     const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
     if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
@@ -98,7 +98,6 @@ function BlindEditor({ config }) {
       }
       return
     }
-
     setEnabledIcons((prev) => {
       return [
         ...prev,
@@ -106,16 +105,15 @@ function BlindEditor({ config }) {
       ].filter((el) => el !== prevNumVerse)
     })
     setCheckedVersesBible((prev) => [...prev, currentNumVerse])
-
     setEnabledInputs((prev) =>
       [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
     )
     if (index === 0) {
       return
     }
-
     sendToDb(index - 1)
   }
+
   const handleSaveVerse = (ref) => {
     if (ref.index === 0 && !ref.isTranslating) {
       setIsOpenModal(true)
@@ -151,31 +149,33 @@ function BlindEditor({ config }) {
                     isTranslating,
                   })
                 }
-                className={`${isTranslating ? 'btn-cyan' : 'btn-white'}`}
+                className={`p-3 rounded-2xl ${
+                  isTranslating ? 'bg-th-primary-100 cursor-auto' : 'bg-th-secondary-100'
+                }`}
                 disabled={disabledButton}
               >
                 {isTranslated ? (
-                  <Check className="w-4 h-4 stroke-2" />
+                  <Check className="w-5 h-5 stroke-2 stroke-th-secondary-300" />
                 ) : (
                   <Pencil
                     className={`w-5 h-5 stroke-2 ${
                       disabledButton
-                        ? 'fill-gray-200'
+                        ? 'stroke-th-secondary-300'
                         : !isTranslating
-                        ? 'fill-cyan-600'
-                        : 'fill-white'
+                        ? 'fill-th-secondary-100'
+                        : 'stroke-th-text-secondary'
                     }`}
                   />
                 )}
               </button>
 
-              <div className="mx-4">{obsCheckAdditionalVerses(verseObject.num)}</div>
+              <div className="mx-4 mt-3">{obsCheckAdditionalVerses(verseObject.num)}</div>
               {isTranslating ? (
                 <textarea
                   ref={(el) => (textAreaRef.current[index] = el)}
                   autoFocus
                   rows={1}
-                  className="resize-none focus:outline-none focus:inline-none w-full"
+                  className="mt-3 w-full resize-none focus:outline-none focus:inline-none"
                   onChange={(e) => {
                     e.target.style.height = 'inherit'
                     e.target.style.height = `${e.target.scrollHeight}px`
@@ -190,7 +190,7 @@ function BlindEditor({ config }) {
                   defaultValue={verseObject.verse ?? ''}
                 />
               ) : (
-                <div className="whitespace-pre-line">{verseObject.verse}</div>
+                <div className="mt-3 whitespace-pre-line">{verseObject.verse}</div>
               )}
             </div>
           )
@@ -202,7 +202,7 @@ function BlindEditor({ config }) {
               setEnabledInputs([])
               sendToDb(verseObjects.length - 1)
             }}
-            className="btn-white"
+            className="btn-base bg-th-primary-100 text-th-text-secondary hover:opacity-70"
           >
             {t('Save')}
           </button>

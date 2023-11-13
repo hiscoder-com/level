@@ -11,9 +11,11 @@ function ParticipantInfo({ project, access }) {
   const { t } = useTranslation()
   const [translators] = useTranslators({
     code: project?.code,
+    revalidateIfStale: true,
   })
   const [coordinators] = useCoordinators({
     code: project?.code,
+    revalidateIfStale: true,
   })
 
   const participants = useMemo(() => {
@@ -44,9 +46,9 @@ function ParticipantInfo({ project, access }) {
           {participants?.map((participant, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 px-4 py-1 border border-gray-350 rounded-3xl"
+              className="flex items-center gap-4 px-4 py-1 border border-th-primary-100-hover-background rounded-3xl"
             >
-              <div className="w-8 h-8 min-h-[2rem]">
+              <div className="w-7 h-7 min-w-[2rem]">
                 <TranslatorImage item={participant} />
               </div>
               <div>

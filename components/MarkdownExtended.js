@@ -5,7 +5,7 @@ import remarkGfm from 'remark-gfm'
 
 import 'github-markdown-css/github-markdown-light.css'
 
-function MarkdownExtended({ children }) {
+function MarkdownExtended({ children, className }) {
   const content = (typeof children === 'string' ? children : '')
     .replace(/< *br *\/?>/gi, '\n')
     .replaceAll('\\n', '\n')
@@ -35,7 +35,7 @@ function MarkdownExtended({ children }) {
   return (
     <ReactMarkdown
       rehypePlugins={[rehypeRaw]}
-      className={`markdown-body`}
+      className={className}
       components={{
         a: convertYoutube,
       }}

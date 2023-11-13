@@ -18,7 +18,7 @@ import Modal from 'components/Modal'
 import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
-import Close from 'public/close.svg'
+import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
 import FileIcon from 'public/fileIcon.svg'
 import CloseFolder from 'public/closeFolder.svg'
@@ -236,10 +236,14 @@ function TeamNotes() {
         <div>
           {isModeratorAccess && (
             <div className="flex">
-              <button className="btn-gray mb-4 mr-2" onClick={() => addNode(false)}>
-                <FileIcon className={'my-2'} />
+              {/* p-3 */}
+              <button className="btn-tertiary mb-4 mr-2" onClick={() => addNode(false)}>
+                <FileIcon
+                  className={'my-2'}
+                  // className="w-6 h-6 stroke-th-text-secondary stroke-2"
+                />
               </button>
-              <button className="btn-gray mb-4" onClick={() => addNode(true)}>
+              <button className="btn-tertiary mb-4" onClick={() => addNode(true)}>
                 <CloseFolder className={'w-4'} />
               </button>
             </div>
@@ -250,6 +254,10 @@ function TeamNotes() {
               nodeWrapper:
                 'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-gray-100 hover:bg-gray-200',
               nodeTextBlock: 'items-center',
+              // item: 'flex justify-between items-start group my-3 bg-th-secondary-100 rounded-lg cursor-pointer',
+              // title: 'p-2 mr-4 font-bold',
+              // text: 'px-2 h-10 overflow-hidden',
+              // delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             data={dataForTreeView}
             setSelectedNodeId={setNoteId}
@@ -284,20 +292,20 @@ function TeamNotes() {
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute top-1 right-0 w-10 pr-3 cursor-pointer"
             onClick={() => {
               saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}
           >
-            <Close />
+            <Back className="stroke-th-text-primary" />
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 mr-12 font-bold bg-gray-100 rounded-lg shadow-md',
+              title: 'p-2 my-4 mr-12 font-bold bg-th-secondary-100 rounded-lg shadow-md',
               redactor:
-                'pb-20 pt-4 px-4 my-4 bg-gray-100 overflow-hidden break-words rounded-lg shadow-md',
+                'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}

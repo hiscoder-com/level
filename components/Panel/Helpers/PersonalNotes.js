@@ -15,7 +15,7 @@ import Modal from 'components/Modal'
 import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
-import Close from 'public/close.svg'
+import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
 import FileIcon from 'public/fileIcon.svg'
 import CloseFolder from 'public/closeFolder.svg'
@@ -240,19 +240,31 @@ function PersonalNotes() {
     <div className="relative">
       {!activeNote ? (
         <div>
-          <div className="flex">
+          <div className="flex gap-2">
             <button
               className="btn-gray-red mb-4 mr-2 right-0"
+              //               className="btn-tertiary px-5 py-3 flex gap-2 items-center"
               onClick={() => {
                 setCurrentNodeProps(null)
                 setIsOpenModal(true)
               }}
               disabled={!notes?.length}
             >
-              <Trash className={'w-4 mb-1 inline'} /> {t('RemoveAll')}
+              <Trash
+                className={'w-4 mb-1 inline'}
+                // className="w-5 h-5 stroke-th-text-secondary"
+              />{' '}
+              {t('RemoveAll')}
             </button>
-            <button className="btn-gray mb-4 mr-2" onClick={() => addNode(false)}>
-              <FileIcon className={'my-2'} />
+            <button
+              className="btn-gray mb-4 mr-2"
+              // className="btn-tertiary p-3"
+              onClick={() => addNode(false)}
+            >
+              <FileIcon
+                className={'my-2'}
+                // className="w-6 h-6 stroke-th-text-secondary stroke-2"
+              />
             </button>
             <button className="btn-gray mb-4" onClick={() => addNode(true)}>
               <CloseFolder className={'w-4'} />
@@ -290,26 +302,32 @@ function PersonalNotes() {
               menuContainer:
                 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
               emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
+              // item: 'flex justify-between items-start group my-3 bg-th-secondary-100 rounded-lg cursor-pointer shadow-md',
+              // title: 'p-2 mr-4 font-bold',
+              // text: 'px-2 h-10 overflow-hidden',
+              // delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
           />
         </div>
       ) : (
         <>
           <div
-            className="absolute top-0 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute top-1 right-0 w-10 pr-3 cursor-pointer"
             onClick={() => {
               saveNote()
               setActiveNote(null)
               setNoteId(null)
             }}
           >
-            <Close />
+            <Back className="stroke-th-text-primary" />
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 mr-12 bg-gray-100 font-bold rounded-lg shadow-md', //
+              title: 'p-2 my-4 mr-12 bg-th-secondary-100 font-bold rounded-lg shadow-md', //
               redactor:
-                'pb-20 pt-4 my-4 bg-gray-100 overflow-hidden break-words rounded-lg shadow-md', //
+                'pb-20 pt-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md', //
+              // redactor:
+              // 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
@@ -329,9 +347,9 @@ function PersonalNotes() {
               ) +
               '?'}
           </div>
-          <div className="flex gap-7 w-1/2">
+          <div className="flex gap-7 w-1/2 text-th-text-primary">
             <button
-              className="btn-secondary flex-1"
+              className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
                 if (currentNodeProps) {
@@ -345,7 +363,7 @@ function PersonalNotes() {
               {t('Yes')}
             </button>
             <button
-              className="btn-secondary flex-1"
+              className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
                 setTimeout(() => {

@@ -15,8 +15,8 @@ import Plus from 'public/plus.svg'
 
 const sizeTabs = {
   1: 'w-1/6',
-  2: 'w-2/6',
-  3: 'w-3/6',
+  2: 'w-full lg:w-3/6',
+  3: 'w-full lg:w-4/6 ',
   4: 'w-4/6',
   5: 'w-5/6',
   6: 'w-full',
@@ -41,7 +41,7 @@ function Account() {
         {user?.id && (
           <>
             <Tab.Group as="div" className="block sm:hidden">
-              <Tab.List className="flex p-1 w-full bg-white border border-gray-350 rounded-3xl shadow-md">
+              <Tab.List className="flex p-1 w-full bg-th-secondary-10 border border-th-secondary-300 rounded-3xl shadow-md">
                 {tabs
                   .filter((el) => el !== 'projects:CreateProject')
                   .map((tab) => (
@@ -49,7 +49,7 @@ function Account() {
                       {({ selected }) => (
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                            selected ? 'bg-slate-600 text-white' : ''
+                            selected ? 'bg-th-primary-100 text-th-text-secondary' : ''
                           }
                       `}
                         >
@@ -69,47 +69,46 @@ function Account() {
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
-
             <Tab.Group as="div" className="hidden sm:block">
-              <div className="border-b border-slate-600">
-                <Tab.List
-                  className={`flex ${
-                    sizeTabs[
-                      tabs.filter(
-                        (tab) =>
-                          (user?.is_admin && tab === 'projects:CreateProject') ||
-                          tab !== 'projects:CreateProject'
-                      ).length
-                    ]
-                  } gap-4 mt-2 text-center font-bold`}
-                >
-                  {tabs.map(
-                    (tab) =>
-                      ((user?.is_admin && tab === 'projects:CreateProject') ||
-                        tab !== 'projects:CreateProject') && (
-                        <Tab
-                          key={tab}
-                          className={({ selected }) =>
-                            `flex-1 ${selected ? 'tab-active ' : 'tab'}`
-                          }
-                        >
-                          {t(tab)}
-                        </Tab>
-                      )
-                  )}
-                </Tab.List>
-              </div>
-
-              <Tab.Panels>
-                <Tab.Panel>
-                  <Projects type={'account'} />
-                </Tab.Panel>
-                <Tab.Panel>
-                  <Projects type={'projects'} />
-                </Tab.Panel>
-                <Tab.Panel>
-                  <ProjectCreate />
-                </Tab.Panel>
+              <Tab.List
+                className={`flex px-5 ${
+                  sizeTabs[
+                    tabs.filter(
+                      (tab) =>
+                        (user?.is_admin && tab === 'projects:CreateProject') ||
+                        tab !== 'projects:CreateProject'
+                    ).length
+                  ]
+                } gap-4 mt-2 text-center font-bold`}
+              >
+                {tabs.map(
+                  (tab) =>
+                    ((user?.is_admin && tab === 'projects:CreateProject') ||
+                      tab !== 'projects:CreateProject') && (
+                      <Tab
+                        key={tab}
+                        className={({ selected }) =>
+                          `flex-1 ${selected ? 'tab-active' : 'tab-inactive'}`
+                        }
+                      >
+                        {t(tab)}
+                      </Tab>
+                    )
+                )}
+              </Tab.List>
+              <Tab.Panels className="pb-10">
+                <div className="px-10 h-10 bg-th-primary-100 rounded-t-3xl"></div>
+                <div className="px-5 border border-th-secondary-300 bg-th-secondary-10 rounded-b-2xl">
+                  <Tab.Panel>
+                    <Projects type={'account'} />
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <Projects type={'projects'} />
+                  </Tab.Panel>
+                  <Tab.Panel>
+                    <ProjectCreate />
+                  </Tab.Panel>
+                </div>
               </Tab.Panels>
             </Tab.Group>
           </>
@@ -120,12 +119,12 @@ function Account() {
           {({ open }) => (
             <>
               <div
-                className={`inset-0 bg-gray-300 bg-opacity-25 backdrop-filter backdrop-blur ${
+                className={`inset-0 bg-th-secondary-100 bg-opacity-25 backdrop-filter backdrop-blur ${
                   open ? 'fixed' : 'hidden'
                 }`}
               ></div>
               <Menu.Button
-                className={`block md:hidden p-4 translate-y-1/2 right-5 text-white rounded-full bg-slate-600 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`block sm:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary rounded-full bg-th-primary-100 transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}
@@ -148,7 +147,7 @@ function Account() {
               >
                 <Menu.Items
                   className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md ${
-                    openInternalMenu ? 'bg-inherit' : 'bg-white'
+                    openInternalMenu ? 'bg-inherit' : 'bg-th-secondary-10'
                   }`}
                 >
                   <Menu.Item
@@ -158,7 +157,7 @@ function Account() {
                     <Menu>
                       <Menu.Button>
                         <div
-                          className={`py-2 px-7 text-center text-white cursor-pointer bg-slate-600 rounded-3xl ${
+                          className={`py-2 px-7 text-center text-th-text-secondary cursor-pointer bg-th-primary-100 rounded-3xl ${
                             openInternalMenu ? 'hidden' : 'block'
                           }`}
                           onClick={() => setOpenInternalMenu(true)}
@@ -177,11 +176,11 @@ function Account() {
       {openInternalMenu && (
         <div
           className="fixed px-5 pb-4 mt-14
-          inset-0 min-h-screen overflow-y-scroll bg-white"
+          inset-0 min-h-screen overflow-y-scroll bg-th-secondary-10"
         >
           <div className="flex justify-end">
             <button
-              className={`p-4 mt-4 text-white rounded-full bg-slate-600 shadow-2xl ${
+              className={`p-4 mt-4 text-th-text-secondary rounded-full bg-th-primary-100 shadow-2xl ${
                 openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}

@@ -40,7 +40,7 @@ function Timer({ time }) {
 
   return (
     <div className="flex items-center gap-1 cursor-default">
-      <Time onClick={handleReset} className="w-5 text-cyan-600" />
+      <Time onClick={handleReset} className="w-5 stroke-th-text-primary" />
       <div onClick={isCounting ? handleStop : handleStart}>
         <span>{minutes}</span>
         <span className={isCounting ? 'separator' : ''}>:</span>

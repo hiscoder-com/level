@@ -5,10 +5,12 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import useSupabaseClient from 'utils/supabaseClient'
+import CheckBox from 'components/CheckBox'
 
-import LeftArrow from 'public/left-arrow.svg'
+import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
+
+import LeftArrow from 'public/arrow-left.svg'
 
 export default function ConfessionSteps() {
   const supabase = useSupabaseClient()
@@ -83,23 +85,25 @@ export default function ConfessionSteps() {
       console.error(error)
     } else {
       getUser()
-      router.push(`/account`)
+      router.push(`/agreements`)
     }
   }
 
   return (
     <div className="layout-appbar">
       <h1 className="text-2xl md:text-4xl text-center">{t('users:Confession')}:</h1>
-      <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4">
+      <div className="flex flex-row h-full flex-wrap sm:flex-nowrap justify-evenly sm:justify-center w-full xl:w-4/5 max-w-7xl gap-4 text-sm sm:text-base lg:text-lg xl:text-xl">
         <div className="flex items-center">
-          <button disabled={page < 1} onClick={prevPage} className={`arrow`}>
-            <LeftArrow className="w-6" />
+          <button disabled={page < 1} onClick={prevPage} className="arrow">
+            <LeftArrow className="w-6 stroke-th-text-primary" />
           </button>
         </div>
-        <div className="confession-text">{confessionSteps[page]}</div>
+        <div className="flex flex-col w-full min-h-[30rem] bg-th-secondary-10 rounded-lg sm:mb-0 py-6 px-10 justify-center order-first sm:order-none">
+          {confessionSteps[page]}
+        </div>
         <div className="flex items-center">
           <button disabled={page > 4} onClick={nextPage} className="arrow">
-            <LeftArrow className="w-6 rotate-180" />
+            <LeftArrow className="w-6 rotate-180 stroke-th-text-primary" />
           </button>
         </div>
       </div>
@@ -108,18 +112,17 @@ export default function ConfessionSteps() {
           page === 5 ? '' : 'hidden sm:flex sm:invisible'
         }`}
       >
-        <div className="space-x-1.5 items-center text-xl">
-          <input
-            id="cb"
-            type="checkbox"
-            checked={checked}
-            onChange={() => setChecked((prev) => !prev)}
-          />
-          <label htmlFor="cb" className="text-base">
-            {t('users:Agree')}
-          </label>
-        </div>
-        <button onClick={handleClick} className="btn-cyan w-28" disabled={!checked}>
+        <CheckBox
+          onChange={() => setChecked((prev) => !prev)}
+          checked={checked}
+          className={{
+            accent:
+              'bg-th-secondary-10 checked:bg-th-secondary-400 checked:border-th-secondary-400 checked:before:bg-th-secondary-400 border-th-secondary',
+            cursor: 'fill-th-secondary-10 text-th-secondary-10 stroke-th-secondary-10',
+          }}
+          label={t('users:Agree')}
+        />
+        <button onClick={handleClick} className="btn-primary w-28" disabled={!checked}>
           {t('common:Next')}
         </button>
       </div>
