@@ -32,7 +32,6 @@ function TWL({ config, url, toolName }) {
       })
       const finalData = {}
       words?.forEach((word) => {
-
         if (!word) {
           return null
         }
@@ -56,9 +55,8 @@ function TWL({ config, url, toolName }) {
           isRepeatedInVerse,
         }
 
-          const [, verse] = Reference.split(':')
-          filterNotes(wordObject, verse, finalData)
-        }
+        const [, verse] = Reference.split(':')
+        filterNotes(wordObject, verse, finalData)
       })
       setIsLoadingTW(false)
       setWordObjects(finalData)

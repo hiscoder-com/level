@@ -235,16 +235,12 @@ function TeamNotes() {
       {!activeNote ? (
         <div>
           {isModeratorAccess && (
-            <div className="flex">
-              {/* p-3 */}
-              <button className="btn-tertiary mb-4 mr-2" onClick={() => addNode(false)}>
-                <FileIcon
-                  className={'my-2'}
-                  // className="w-6 h-6 stroke-th-text-secondary stroke-2"
-                />
+            <div className="flex gap-2">
+              <button className="btn-tertiary p-3" onClick={() => addNode(false)}>
+                <FileIcon className="w-6 h-6 stroke-th-text-secondary" />
               </button>
-              <button className="btn-tertiary mb-4" onClick={() => addNode(true)}>
-                <CloseFolder className={'w-4'} />
+              <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
+                <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
               </button>
             </div>
           )}
@@ -252,12 +248,8 @@ function TeamNotes() {
             handleDeleteNode={handleRemoveNode}
             classes={{
               nodeWrapper:
-                'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-gray-100 hover:bg-gray-200',
+                'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200',
               nodeTextBlock: 'items-center',
-              // item: 'flex justify-between items-start group my-3 bg-th-secondary-100 rounded-lg cursor-pointer',
-              // title: 'p-2 mr-4 font-bold',
-              // text: 'px-2 h-10 overflow-hidden',
-              // delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
             }}
             data={dataForTreeView}
             setSelectedNodeId={setNoteId}
@@ -281,7 +273,7 @@ function TeamNotes() {
               menuItems={menuItems}
               clickMenuEvent={contextMenuEvent}
               classes={{
-                menuItem: 'cursor-pointer bg-gray-100 hover:bg-gray-200',
+                menuItem: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
                 menuContainer:
                   'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
                 emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
