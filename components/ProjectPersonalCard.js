@@ -71,6 +71,18 @@ function ProjectPersonalCard({ project, user }) {
     code: project?.code,
   })
 
+  const levelChecks = useMemo(() => {
+    if (books) {
+      const _books = {}
+      books.forEach((book) => {
+        if (book.level_checks) {
+          _books[book.code] = book.level_checks
+        }
+      })
+      return _books
+    }
+  }, [books])
+
   const countChaptersVerses = useMemo(() => {
     if (books) {
       const count = {}
@@ -124,7 +136,8 @@ function ProjectPersonalCard({ project, user }) {
                         })} ${t('Verse', {
                           count: countChaptersVerses?.[book]?.countVerses,
                         })})`}</div>
-                        {checkBookCodeExists(book, chaptersArray) && (
+                        {(checkBookCodeExists(book, chaptersArray) ||
+                          levelChecks?.[book]) && (
                           <Reader
                             className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70  cursor-pointer"
                             onClick={() =>

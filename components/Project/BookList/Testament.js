@@ -183,7 +183,7 @@ function Testament({
                         </>
                       )}
 
-                      {checkBookCodeExists(book, chapters) && (
+                      {(checkBookCodeExists(book, chapters) || levelChecks?.[book]) && (
                         <Reader
                           className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                           onClick={() =>
