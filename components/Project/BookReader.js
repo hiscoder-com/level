@@ -207,7 +207,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
         {!isLoading ? (
           verseObjects ? (
             <>
-              {Array.from({ length: verseCount + 1 }).map((_, index) => {
+              {Array.from({ length: Math.min(verseCount + 1, 200) }).map((_, index) => {
                 const verseIndex = verseObjects?.verseObjects?.findIndex(
                   (verse) => parseInt(verse.verse) === index
                 )
