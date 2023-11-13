@@ -177,17 +177,21 @@ function TeamNotes() {
   }
 
   const handleDragDrop = async ({ dragIds, parentId, index }) => {
-    const { error } = await supabase.rpc('move_node', {
-      new_sorting_value: index,
-      dragged_node_id: dragIds[0],
-      new_parent_id: parentId,
-      table_name: 'team_notes',
-    })
+    if (isModeratorAccess) {
+      const { error } = await supabase.rpc('move_node', {
+        new_sorting_value: index,
+        dragged_node_id: dragIds[0],
+        new_parent_id: parentId,
+        table_name: 'team_notes',
+      })
 
-    if (error) {
-      console.error('Error when moving node:', error)
+      if (error) {
+        console.error('Error when moving node:', error)
+      } else {
+        mutate()
+      }
     } else {
-      mutate()
+      console.log('Moderator access not granted. Skipping code execution.')
     }
   }
 

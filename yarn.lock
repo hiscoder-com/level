@@ -2544,10 +2544,10 @@
     ow "^0.28.2"
     slugify "^1.6.6"
 
-"@texttree/notepad-rcl@^2.1.1":
-  version "2.1.1"
-  resolved "https://registry.yarnpkg.com/@texttree/notepad-rcl/-/notepad-rcl-2.1.1.tgz#65874228afd6098b815bb780be973f2b14b89f21"
-  integrity sha512-GiABXTOXiNOFqRnejrWIMEosVu7/vt8mzyqVzMkk64Y6xHZs+NxQcU/UNbtAFo/2VuypW+HYNaMyTRNq4gz0kQ==
+"@texttree/notepad-rcl@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@texttree/notepad-rcl/-/notepad-rcl-2.1.2.tgz#c61dd4557bdc02c7b370b98961ecfae5eaaa5261"
+  integrity sha512-8RjTsq2GRYudVsFMqm/X2ZHWQCPWfD6WjkTcMxa4/dp//owVp49iMOQIHvD8SGNikv0o/uGcjPYHnvz7Ol7nbQ==
   dependencies:
     "@editorjs/editorjs" "^2.27.2"
     "@editorjs/paragraph" "^2.9.0"

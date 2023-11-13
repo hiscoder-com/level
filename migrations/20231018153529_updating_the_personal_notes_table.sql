@@ -35,7 +35,7 @@
   DROP FUNCTION IF EXISTS PUBLIC.set_sorting_before_insert;
 
   -- This function calculates the next available sorting value for root records in the personal_notes & team_notes table
-    CREATE FUNCTION PUBLIC.get_max_sorting(table_name TEXT) RETURNS integer
+  CREATE FUNCTION PUBLIC.get_max_sorting(table_name TEXT) RETURNS integer
       LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       max_sorting_value integer;
@@ -47,10 +47,10 @@
 
       RETURN max_sorting_value + 1;
     END;
-    $$;
+  $$;
 
   -- This function sets the sort value for a new entry in the personal_notes & team_notes table
-    CREATE FUNCTION PUBLIC.set_sorting_before_insert() RETURNS TRIGGER
+  CREATE FUNCTION PUBLIC.set_sorting_before_insert() RETURNS TRIGGER
       LANGUAGE plpgsql SECURITY DEFINER AS $$
     BEGIN
       IF TG_TABLE_NAME = 'personal_notes' THEN
@@ -60,7 +60,7 @@
       END IF;
       RETURN NEW;
     END;
-    $$;
+  $$;
 
   -- This trigger automatically sets the sorting when a new record is inserted.
     CREATE TRIGGER before_insert_set_sorting_personal_notes BEFORE
@@ -108,61 +108,61 @@
   DROP FUNCTION IF EXISTS PUBLIC.move_node;
 
   CREATE FUNCTION PUBLIC.move_node(new_sorting_value INT, dragged_node_id VARCHAR, new_parent_id VARCHAR, table_name TEXT) RETURNS VOID
-  LANGUAGE plpgsql SECURITY DEFINER AS $$
-  DECLARE
-    old_sorting INT;
-    old_parent_id VARCHAR;
-  BEGIN
-    EXECUTE format('
-      SELECT sorting, parent_id
-      FROM PUBLIC.%I
-      WHERE id = $1', table_name) INTO old_sorting, old_parent_id
-    USING dragged_node_id;
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE
+      old_sorting INT;
+      old_parent_id VARCHAR;
+    BEGIN
+      EXECUTE format('
+        SELECT sorting, parent_id
+        FROM PUBLIC.%I
+        WHERE id = $1', table_name) INTO old_sorting, old_parent_id
+      USING dragged_node_id;
 
-    IF old_sorting IS NOT NULL THEN
-      -- if the new sorting is equal to the old one, or greater than the old one by one and the action is in the common parent, then we do nothing
-      IF (new_sorting_value = old_sorting OR new_sorting_value = old_sorting + 1) AND (old_parent_id = new_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
-        RETURN;
+      IF old_sorting IS NOT NULL THEN
+        -- if the new sorting is equal to the old one, or greater than the old one by one and the action is in the common parent, then we do nothing
+        IF (new_sorting_value = old_sorting OR new_sorting_value = old_sorting + 1) AND (old_parent_id = new_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
+          RETURN;
 
-      -- if the new sorting is greater than the old sorting and the action is in a common parent
-      ELSIF new_sorting_value > old_sorting AND (new_parent_id = old_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
-        new_sorting_value := new_sorting_value - 1;
-        EXECUTE format('
-          UPDATE PUBLIC.%I
-          SET sorting = sorting - 1
-          WHERE sorting > $1 AND sorting <= $2 AND (parent_id = $3 OR (parent_id IS NULL AND $4 IS NULL))', table_name)
-        USING old_sorting, new_sorting_value, new_parent_id, new_parent_id;
+        -- if the new sorting is greater than the old sorting and the action is in a common parent
+        ELSIF new_sorting_value > old_sorting AND (new_parent_id = old_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
+          new_sorting_value := new_sorting_value - 1;
+          EXECUTE format('
+            UPDATE PUBLIC.%I
+            SET sorting = sorting - 1
+            WHERE sorting > $1 AND sorting <= $2 AND (parent_id = $3 OR (parent_id IS NULL AND $4 IS NULL))', table_name)
+          USING old_sorting, new_sorting_value, new_parent_id, new_parent_id;
 
-      -- if the new sorting is smaller than the old sorting and the action is in the common parent
-      ELSIF new_sorting_value < old_sorting AND (new_parent_id = old_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
-        EXECUTE format('
-          UPDATE PUBLIC.%I
-          SET sorting = sorting + 1
-          WHERE sorting < $1 AND sorting >= $2 AND (parent_id = $3 OR (parent_id IS NULL AND $4 IS NULL))', table_name)
-        USING old_sorting, new_sorting_value, new_parent_id, new_parent_id;
+        -- if the new sorting is smaller than the old sorting and the action is in the common parent
+        ELSIF new_sorting_value < old_sorting AND (new_parent_id = old_parent_id OR (old_parent_id IS NULL AND new_parent_id IS NULL)) THEN
+          EXECUTE format('
+            UPDATE PUBLIC.%I
+            SET sorting = sorting + 1
+            WHERE sorting < $1 AND sorting >= $2 AND (parent_id = $3 OR (parent_id IS NULL AND $4 IS NULL))', table_name)
+          USING old_sorting, new_sorting_value, new_parent_id, new_parent_id;
 
-      -- if we move to a new folder, then in the old folder we reduce the sorting of all elements that are larger than the old sorting
-      ELSIF new_parent_id IS DISTINCT FROM old_parent_id THEN
-        EXECUTE format('
-          UPDATE PUBLIC.%I
-          SET sorting = sorting - 1
-          WHERE sorting > $1 AND (parent_id = $2 OR (parent_id IS NULL AND $3 IS NULL))', table_name)
-        USING old_sorting, old_parent_id, old_parent_id;
+        -- if we move to a new folder, then in the old folder we reduce the sorting of all elements that are larger than the old sorting
+        ELSIF new_parent_id IS DISTINCT FROM old_parent_id THEN
+          EXECUTE format('
+            UPDATE PUBLIC.%I
+            SET sorting = sorting - 1
+            WHERE sorting > $1 AND (parent_id = $2 OR (parent_id IS NULL AND $3 IS NULL))', table_name)
+          USING old_sorting, old_parent_id, old_parent_id;
 
-        -- in the new folder we increase the sorting of all elements whose sorting is equal to or greater than the new sorting
-        EXECUTE format('
-          UPDATE PUBLIC.%I
-          SET sorting = sorting + 1
-          WHERE sorting >= $1 AND (parent_id = $2 OR (parent_id IS NULL AND $3 IS NULL))', table_name)
-        USING new_sorting_value, new_parent_id, new_parent_id;
+          -- in the new folder we increase the sorting of all elements whose sorting is equal to or greater than the new sorting
+          EXECUTE format('
+            UPDATE PUBLIC.%I
+            SET sorting = sorting + 1
+            WHERE sorting >= $1 AND (parent_id = $2 OR (parent_id IS NULL AND $3 IS NULL))', table_name)
+          USING new_sorting_value, new_parent_id, new_parent_id;
+        END IF;
       END IF;
-    END IF;
 
-    -- update the moved node
-    EXECUTE format('
-        UPDATE PUBLIC.%I
-        SET sorting = $1, parent_id = $2
-        WHERE id = $3', table_name)
-      USING new_sorting_value, new_parent_id, dragged_node_id;
-  END;
+      -- update the moved node
+      EXECUTE format('
+          UPDATE PUBLIC.%I
+          SET sorting = $1, parent_id = $2
+          WHERE id = $3', table_name)
+        USING new_sorting_value, new_parent_id, dragged_node_id;
+    END;
   $$;
