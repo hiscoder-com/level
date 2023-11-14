@@ -550,21 +550,29 @@ function BookListReader({ books, setReference, reference, project }) {
                                 .map((index) => (
                                   <button
                                     disabled={
-                                      !checkChapterVersesExist(book.code, index, chapters)
+                                      !checkChapterVersesExist(
+                                        book.code,
+                                        index,
+                                        chapters
+                                      ) && !reference?.checks
                                     }
-                                    className={`flex justify-center items-center w-10 h-10 rounded-md ${
-                                      checkChapterVersesExist(book.code, index, chapters)
-                                        ? 'cursor-pointer bg-th-primary-300 text-th-text-secondary'
-                                        : 'cursor-default bg-th-secondary-200 disabled text-white'
+                                    className={`flex justify-center items-center w-10 h-10 rounded-md${
+                                      checkChapterVersesExist(
+                                        book.code,
+                                        index,
+                                        chapters
+                                      ) || reference?.checks
+                                        ? 'cursor-pointer bg-th-primary-300'
+                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary'
                                     } ${
                                       index === reference?.chapter
-                                        ? 'cursor-default bg-th-primary-300 text-th-secondary-10'
+                                        ? 'cursor-default bg-th-primary-300 text-th-text-secondary'
                                         : checkChapterVersesExist(
                                             book.code,
                                             index,
                                             chapters
-                                          )
-                                        ? 'hover:opacity-70 bg-th-secondary-200 text-black'
+                                          ) || reference?.checks
+                                        ? 'hover:opacity-70 bg-th-secondary-200'
                                         : ''
                                     }`}
                                     key={index}
