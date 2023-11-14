@@ -8,15 +8,19 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
+import { useRecoilValue } from 'recoil'
+
 import { toast } from 'react-hot-toast'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import Modal from 'components/Modal'
+import { projectIdState } from 'components/state/atoms'
 
 import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
+import { convertNotesToTree } from 'utils/helper'
 
 import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
@@ -54,19 +58,6 @@ const icons = {
   arrowRight: <ArrowRight className={'stroke-2'} />,
   openFolder: <OpenFolder className={'w-6 h-6 stroke-[1.7]'} />,
   closeFolder: <CloseFolder className={'w-6 h-6'} />,
-}
-
-function convertNotesToTree(notes, parentId = null) {
-  const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
-
-  filteredNotes?.sort((a, b) => a.sorting - b.sorting)
-  return filteredNotes?.map((note) => ({
-    id: note.id,
-    name: note.title,
-    ...(note.is_folder && {
-      children: convertNotesToTree(notes, note.id),
-    }),
-  }))
 }
 
 function TeamNotes() {
@@ -110,13 +101,17 @@ function TeamNotes() {
     setActiveNote(currentNote)
   }
 
-  const addNode = (isFolder) => {
+  const addNode = (isFolder = false) => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     const title = isFolder ? 'new folder' : 'new note'
-    const isFolderValue = isFolder ? true : false
 
     axios
-      .post('/api/team_notes', { id, project_id: project?.id, isFolderValue, title })
+      .post('/api/team_notes', {
+        id,
+        project_id: project?.id,
+        isFolder: isFolder === true,
+        title,
+      })
       .then(() => mutate())
       .catch(console.log)
   }
@@ -176,8 +171,11 @@ function TeamNotes() {
     currentNodeProps?.node.edit()
   }
 
+  const projectId = useRecoilValue(projectIdState)
+
   const handleDragDrop = async ({ dragIds, parentId, index }) => {
     const { error } = await supabase.rpc('move_node', {
+      project_id: projectId,
       new_sorting_value: index,
       dragged_node_id: dragIds[0],
       new_parent_id: parentId,
@@ -199,7 +197,7 @@ function TeamNotes() {
           <FileIcon /> {t('NewDocument')}
         </span>
       ),
-      action: () => addNode(false),
+      action: () => addNode(),
     },
     {
       id: 'adding_a_folder',
@@ -236,7 +234,7 @@ function TeamNotes() {
         <div>
           {isModeratorAccess && (
             <div className="flex gap-2">
-              <button className="btn-tertiary p-3" onClick={() => addNode(false)}>
+              <button className="btn-tertiary p-3" onClick={() => addNode()}>
                 <FileIcon className="w-6 h-6 fill-th-text-secondary" />
               </button>
               <button className="btn-tertiary p-3" onClick={() => addNode(true)}>

@@ -107,12 +107,14 @@
 -- Function for Drag and Drop node repositioning in the notes tree
   DROP FUNCTION IF EXISTS PUBLIC.move_node;
 
-  CREATE FUNCTION PUBLIC.move_node(new_sorting_value INT, dragged_node_id VARCHAR, new_parent_id VARCHAR, table_name TEXT) RETURNS VOID
+  CREATE FUNCTION PUBLIC.move_node(new_sorting_value INT, dragged_node_id VARCHAR, new_parent_id VARCHAR, table_name TEXT, project_id BIGINT) RETURNS VOID
     LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       old_sorting INT;
       old_parent_id VARCHAR;
     BEGIN
+      IF authorize(auth.uid(), project_id) NOT IN ('moderator','admin', 'coordinator') THEN RETURN;
+      END IF;
       EXECUTE format('
         SELECT sorting, parent_id
         FROM PUBLIC.%I

@@ -4,13 +4,17 @@ import dynamic from 'next/dynamic'
 
 import { useTranslation } from 'next-i18next'
 
+import { useRecoilValue } from 'recoil'
+
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
+import { convertNotesToTree } from 'utils/helper'
 
 import Modal from 'components/Modal'
+import { projectIdState } from 'components/state/atoms'
 
 import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
@@ -53,19 +57,6 @@ const icons = {
   closeFolder: <CloseFolder className="w-6 h-6" />,
 }
 
-function convertNotesToTree(notes, parentId = null) {
-  const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
-
-  filteredNotes?.sort((a, b) => a.sorting - b.sorting)
-  return filteredNotes?.map((note) => ({
-    id: note.id,
-    name: note.title,
-    ...(note.is_folder && {
-      children: convertNotesToTree(notes, note.id),
-    }),
-  }))
-}
-
 function PersonalNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
@@ -103,16 +94,15 @@ function PersonalNotes() {
     setActiveNote(currentNote)
   }
 
-  const addNode = (isFolder) => {
+  const addNode = (isFolder = false) => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
     const title = isFolder ? 'new folder' : 'new note'
-    const isFolderValue = isFolder ? true : false
 
     axios
       .post('/api/personal_notes', {
         id,
         user_id: user.id,
-        isFolderValue,
+        isFolder: isFolder === true,
         title,
       })
       .then(() => mutate())
@@ -183,8 +173,11 @@ function PersonalNotes() {
     currentNodeProps?.node.edit()
   }
 
+  const projectId = useRecoilValue(projectIdState)
+
   const handleDragDrop = async ({ dragIds, parentId, index }) => {
     const { error } = await supabase.rpc('move_node', {
+      project_id: projectId,
       new_sorting_value: index,
       dragged_node_id: dragIds[0],
       new_parent_id: parentId,
@@ -206,7 +199,7 @@ function PersonalNotes() {
           <FileIcon /> {t('NewDocument')}
         </span>
       ),
-      action: () => addNode(false),
+      action: () => addNode(),
     },
     {
       id: 'adding_a_folder',
@@ -252,7 +245,7 @@ function PersonalNotes() {
               <Trash className="w-5 h-5 stroke-th-text-secondary" />
               {t('RemoveAll')}
             </button>
-            <button className="btn-tertiary p-3" onClick={() => addNode(false)}>
+            <button className="btn-tertiary p-3" onClick={() => addNode()}>
               <FileIcon className="w-6 h-6 fill-th-text-secondary" />
             </button>
             <button className="btn-tertiary p-3" onClick={() => addNode(true)}>

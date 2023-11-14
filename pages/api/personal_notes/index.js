@@ -24,19 +24,19 @@ export default async function notesHandler(req, res) {
       }
     case 'POST':
       try {
-        const { id, user_id, isFolderValue, title } = body
+        const { id, user_id, isFolder, title } = body
         // TODO валидацию
         let insertData = {
           id,
           user_id,
           title,
-          is_folder: isFolderValue,
+          is_folder: isFolder,
         }
 
-        if (!isFolderValue) {
+        if (!isFolder) {
           insertData.data = {
             blocks: [],
-            version: '2.8.1',
+            version: '2.27.2',
           }
         }
 

@@ -710,3 +710,16 @@ export const stepsValidation = (steps) => {
   }
   return { error: null }
 }
+
+export const convertNotesToTree = (notes, parentId = null) => {
+  const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
+
+  filteredNotes?.sort((a, b) => a.sorting - b.sorting)
+  return filteredNotes?.map((note) => ({
+    id: note.id,
+    name: note.title,
+    ...(note.is_folder && {
+      children: convertNotesToTree(notes, note.id),
+    }),
+  }))
+}
