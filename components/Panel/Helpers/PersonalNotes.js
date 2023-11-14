@@ -17,8 +17,8 @@ import { removeCacheNote, saveCacheNote } from 'utils/helper'
 
 import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
-import FileIcon from 'public/fileIcon.svg'
-import CloseFolder from 'public/closeFolder.svg'
+import FileIcon from 'public/file-icon.svg'
+import CloseFolder from 'public/close-folder.svg'
 import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
@@ -253,7 +253,7 @@ function PersonalNotes() {
               {t('RemoveAll')}
             </button>
             <button className="btn-tertiary p-3" onClick={() => addNode(false)}>
-              <FileIcon className="w-6 h-6 stroke-th-text-secondary" />
+              <FileIcon className="w-6 h-6 fill-th-text-secondary" />
             </button>
             <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
