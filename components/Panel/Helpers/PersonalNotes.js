@@ -46,11 +46,11 @@ const TreeView = dynamic(
 )
 
 const icons = {
-  file: <FileIcon className={'w-6 h-6'} />,
-  arrowDown: <ArrowDown className={'stroke-2'} />,
-  arrowRight: <ArrowRight className={'stroke-2'} />,
-  openFolder: <OpenFolder className={'w-6 h-6 stroke-[1.7]'} />,
-  closeFolder: <CloseFolder className={'w-6 h-6'} />,
+  file: <FileIcon className="w-6 h-6" />,
+  arrowDown: <ArrowDown className="stroke-2" />,
+  arrowRight: <ArrowRight className="stroke-2" />,
+  openFolder: <OpenFolder className="w-6 h-6 stroke-[1.7]" />,
+  closeFolder: <CloseFolder className="w-6 h-6" />,
 }
 
 function convertNotesToTree(notes, parentId = null) {
@@ -202,7 +202,7 @@ function PersonalNotes() {
     {
       id: 'adding_a_note',
       buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
+        <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
           <FileIcon /> {t('NewDocument')}
         </span>
       ),
@@ -211,7 +211,7 @@ function PersonalNotes() {
     {
       id: 'adding_a_folder',
       buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2'}>
+        <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2">
           <CloseFolder /> {t('NewFolder')}
         </span>
       ),
@@ -220,7 +220,7 @@ function PersonalNotes() {
     {
       id: 'rename',
       buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
+        <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
           <Rename /> {t('Rename')}
         </span>
       ),
@@ -229,8 +229,8 @@ function PersonalNotes() {
     {
       id: 'delete',
       buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Trash className={'w-4'} /> {t('Delete')}
+        <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <Trash className="w-4" /> {t('Delete')}
         </span>
       ),
       action: () => setIsOpenModal(true),

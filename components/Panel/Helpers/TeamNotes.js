@@ -177,21 +177,17 @@ function TeamNotes() {
   }
 
   const handleDragDrop = async ({ dragIds, parentId, index }) => {
-    if (isModeratorAccess) {
-      const { error } = await supabase.rpc('move_node', {
-        new_sorting_value: index,
-        dragged_node_id: dragIds[0],
-        new_parent_id: parentId,
-        table_name: 'team_notes',
-      })
+    const { error } = await supabase.rpc('move_node', {
+      new_sorting_value: index,
+      dragged_node_id: dragIds[0],
+      new_parent_id: parentId,
+      table_name: 'team_notes',
+    })
 
-      if (error) {
-        console.error('Error when moving node:', error)
-      } else {
-        mutate()
-      }
+    if (error) {
+      console.error('Error when moving node:', error)
     } else {
-      console.log('Moderator access not granted. Skipping code execution.')
+      mutate()
     }
   }
 
@@ -266,7 +262,7 @@ function TeamNotes() {
             setHoveredNodeId={setHoveredNodeId}
             getCurrentNodeProps={setCurrentNodeProps}
             handleRenameNode={handleRenameNode}
-            handleDragDrop={handleDragDrop}
+            handleDragDrop={isModeratorAccess ? handleDragDrop : null}
             openByDefault={false}
           />
           {isModeratorAccess && (
