@@ -571,10 +571,10 @@ function BookListReader({ books, setReference, reference, project }) {
                                         chapters
                                       ) || reference?.checks
                                         ? 'cursor-pointer bg-th-primary-300'
-                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary'
+                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary rounded-md'
                                     } ${
                                       index === reference?.chapter
-                                        ? 'cursor-default bg-th-primary-300 text-th-text-secondary'
+                                        ? 'cursor-default bg-th-primary-300 text-th-text-secondary rounded-md'
                                         : checkChapterVersesExist(
                                             book.code,
                                             index,
