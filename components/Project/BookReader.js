@@ -449,13 +449,14 @@ function BookListReader({ books, setReference, reference, project }) {
     currentBook.parentNode.scrollTo({ left: 0, top: top + offset, behavior: 'smooth' })
   }
 
-  const defaultIndex = useMemo(
-    () =>
-      [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex((list) =>
-        list?.find((el) => el.code === query.bookid)
-      ),
-    [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid]
-  )
+  const defaultIndex = useMemo(() => {
+    const index = [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex(
+      (list) => list?.find((el) => el.code === query.bookid)
+    )
+
+    return index === -1 ? 0 : index
+  }, [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid])
+
   const tabs = useMemo(
     () =>
       project?.type === 'obs' ? ['OpenBibleStories'] : ['NewTestament', 'OldTestament'],
@@ -505,7 +506,14 @@ function BookListReader({ books, setReference, reference, project }) {
           </Tab.List>
 
           <Tab.Panels className="text-sm font-bold">
-            {[createdNewTestamentBooks, createdOldTestamentBooks].map((list, idx) => (
+            {[
+              ...(createdNewTestamentBooks !== undefined
+                ? [createdNewTestamentBooks]
+                : []),
+              ...(createdOldTestamentBooks !== undefined
+                ? [createdOldTestamentBooks]
+                : []),
+            ].map((list, idx) => (
               <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
                 {list?.map((book, index) => (
                   <Disclosure
