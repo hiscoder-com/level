@@ -260,7 +260,7 @@ function PersonalNotes() {
             handleDragDrop={handleDragDrop}
             openByDefault={false}
           /> */}
-          <Tree data={dataForTreeView} />
+          <Tree initialData={dataForTreeView} />
         </div>
       ) : (
         <>
