@@ -27,28 +27,14 @@ import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
-import { TreeView } from '@texttree/notepad-rcl/dist/components'
+import { TreeView } from '@texttree/notepad-rcl'
 
-// const Redactor = dynamic(
-//   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
-//   {
-//     ssr: false,
-//   }
-// )
-
-// const ContextMenu = dynamic(
-//   () => import('@texttree/notepad-rcl').then((mod) => mod.ContextMenu),
-//   {
-//     ssr: false,
-//   }
-// )
-
-// const TreeView = dynamic(
-//   () => import('@texttree/notepad-rcl').then((mod) => mod.TreeView),
-//   {
-//     ssr: false,
-//   }
-// )
+const Redactor = dynamic(
+  () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
+  {
+    ssr: false,
+  }
+)
 
 const icons = {
   file: <FileIcon className="w-6 h-6" />,
@@ -274,19 +260,6 @@ function PersonalNotes() {
             handleDragDrop={handleDragDrop}
             openByDefault={false}
           />
-          {/* <ContextMenu
-            setSelectedNodeId={setNoteId}
-            selectedNodeId={noteId}
-            nodeProps={currentNodeProps}
-            menuItems={menuItems}
-            clickMenuEvent={contextMenuEvent}
-            classes={{
-              menuItem: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
-              menuContainer:
-                'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
-              emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
-            }}
-          /> */}
         </div>
       ) : (
         <>
@@ -300,7 +273,7 @@ function PersonalNotes() {
           >
             <Back className="stroke-th-text-primary" />
           </div>
-          {/* <Redactor
+          <Redactor
             classes={{
               title: 'p-2 my-4 mr-12 bg-th-secondary-100 font-bold rounded-lg shadow-md',
               redactor:
@@ -309,7 +282,7 @@ function PersonalNotes() {
             activeNote={activeNote}
             setActiveNote={setActiveNote}
             placeholder={t('TextNewNote')}
-          /> */}
+          />
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
