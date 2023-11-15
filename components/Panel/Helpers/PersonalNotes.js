@@ -27,7 +27,6 @@ import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
-import { Tree } from 'react-arborist'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -35,6 +34,10 @@ const Redactor = dynamic(
     ssr: false,
   }
 )
+
+const Tree = dynamic(() => import('react-arborist').then((mod) => mod.Tree), {
+  ssr: false,
+})
 
 const icons = {
   file: <FileIcon className="w-6 h-6" />,

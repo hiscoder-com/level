@@ -38,19 +38,9 @@ const Redactor = dynamic(
   }
 )
 
-const ContextMenu = dynamic(
-  () => import('@texttree/notepad-rcl').then((mod) => mod.ContextMenu),
-  {
-    ssr: false,
-  }
-)
-
-const TreeView = dynamic(
-  () => import('@texttree/notepad-rcl').then((mod) => mod.TreeView),
-  {
-    ssr: false,
-  }
-)
+const Tree = dynamic(() => import('react-arborist').then((mod) => mod.Tree), {
+  ssr: false,
+})
 
 const icons = {
   file: <FileIcon className={'w-6 h-6'} />,
@@ -242,42 +232,7 @@ function TeamNotes() {
               </button>
             </div>
           )}
-          <TreeView
-            handleDeleteNode={handleRemoveNode}
-            classes={{
-              nodeWrapper:
-                'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200',
-              nodeTextBlock: 'items-center',
-            }}
-            data={dataForTreeView}
-            setSelectedNodeId={setNoteId}
-            selectedNodeId={noteId}
-            treeWidth={'w-full'}
-            icons={icons}
-            handleDoubleClick={onDoubleClick}
-            handleContextMenu={handleContextMenu}
-            hoveredNodeId={hoveredNodeId}
-            setHoveredNodeId={setHoveredNodeId}
-            getCurrentNodeProps={setCurrentNodeProps}
-            handleRenameNode={handleRenameNode}
-            handleDragDrop={isModeratorAccess ? handleDragDrop : null}
-            openByDefault={false}
-          />
-          {isModeratorAccess && (
-            <ContextMenu
-              setSelectedNodeId={setNoteId}
-              selectedNodeId={noteId}
-              nodeProps={currentNodeProps}
-              menuItems={menuItems}
-              clickMenuEvent={contextMenuEvent}
-              classes={{
-                menuItem: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
-                menuContainer:
-                  'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
-                emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
-              }}
-            />
-          )}
+          <Tree initialData={dataForTreeView} />
         </div>
       ) : (
         <>
