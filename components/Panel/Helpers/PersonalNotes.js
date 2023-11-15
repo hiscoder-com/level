@@ -60,7 +60,9 @@ const icons = {
 function PersonalNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
-  const [noteId, setNoteId] = useState('')
+  const [noteId, setNoteId] = useState(
+    localStorage.getItem('selectedPersonalNoteId') || ''
+  )
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
@@ -135,6 +137,10 @@ function PersonalNotes() {
       })
       .catch(console.log)
   }
+
+  useEffect(() => {
+    localStorage.setItem('selectedPersonalNoteId', noteId)
+  }, [noteId])
 
   useEffect(() => {
     if (!activeNote) {
@@ -253,6 +259,7 @@ function PersonalNotes() {
             </button>
           </div>
           <TreeView
+            selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{
               nodeWrapper:
@@ -294,7 +301,6 @@ function PersonalNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
-              setNoteId(null)
             }}
           >
             <Back className="stroke-th-text-primary" />

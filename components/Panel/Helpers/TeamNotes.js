@@ -64,7 +64,7 @@ function TeamNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
-  const [noteId, setNoteId] = useState('test_noteId')
+  const [noteId, setNoteId] = useState(localStorage.getItem('selectedTeamNoteId') || '')
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const { t } = useTranslation(['common'])
@@ -162,6 +162,10 @@ function TeamNotes() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [notes])
 
+  useEffect(() => {
+    localStorage.setItem('selectedTeamNoteId', noteId)
+  }, [noteId])
+
   const handleContextMenu = (event) => {
     setNoteId(hoveredNodeId)
     setContextMenuEvent({ event })
@@ -243,6 +247,7 @@ function TeamNotes() {
             </div>
           )}
           <TreeView
+            selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{
               nodeWrapper:
@@ -286,7 +291,6 @@ function TeamNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
-              setNoteId(null)
             }}
           >
             <Back className="stroke-th-text-primary" />
