@@ -8827,6 +8827,17 @@ react-arborist@^3.2.0:
     redux "^4.1.1"
     use-sync-external-store "^1.2.0"
 
+react-arborist@^3.3.0-rc.1:
+  version "3.3.0-rc.1"
+  resolved "https://registry.yarnpkg.com/react-arborist/-/react-arborist-3.3.0-rc.1.tgz#fa7998e37a0d4e76f0faa2d685a828455ea5392d"
+  integrity sha512-fpad1xvNDcP3puaMoD9E3DCfTeEkrQZ1SUAdn2jwmR1Xaj7VzjNKqcL/pvbkOl3o/PBDh5at5+c1pplhnfMmBw==
+  dependencies:
+    react-dnd "^14.0.3"
+    react-dnd-html5-backend "^14.0.1"
+    react-window "^1.8.6"
+    redux "^4.1.1"
+    use-sync-external-store "^1.2.0"
+
 react-copy-to-clipboard@5.1.0:
   version "5.1.0"
   resolved "https://registry.npmjs.org/react-copy-to-clipboard/-/react-copy-to-clipboard-5.1.0.tgz"
