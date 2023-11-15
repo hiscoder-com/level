@@ -35,19 +35,19 @@ const Redactor = dynamic(
   }
 )
 
-const ContextMenu = dynamic(
-  () => import('@texttree/notepad-rcl').then((mod) => mod.ContextMenu),
-  {
-    ssr: false,
-  }
-)
+// const ContextMenu = dynamic(
+//   () => import('@texttree/notepad-rcl').then((mod) => mod.ContextMenu),
+//   {
+//     ssr: false,
+//   }
+// )
 
-const TreeView = dynamic(
-  () => import('@texttree/notepad-rcl').then((mod) => mod.TreeView),
-  {
-    ssr: false,
-  }
-)
+// const TreeView = dynamic(
+//   () => import('@texttree/notepad-rcl').then((mod) => mod.TreeView),
+//   {
+//     ssr: false,
+//   }
+// )
 
 const icons = {
   file: <FileIcon className="w-6 h-6" />,
@@ -252,7 +252,7 @@ function PersonalNotes() {
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>
-          <TreeView
+          {/* <TreeView
             handleDeleteNode={handleRemoveNode}
             classes={{
               nodeWrapper:
@@ -272,8 +272,8 @@ function PersonalNotes() {
             handleRenameNode={handleRenameNode}
             handleDragDrop={handleDragDrop}
             openByDefault={false}
-          />
-          <ContextMenu
+          /> */}
+          {/* <ContextMenu
             setSelectedNodeId={setNoteId}
             selectedNodeId={noteId}
             nodeProps={currentNodeProps}
@@ -285,7 +285,7 @@ function PersonalNotes() {
                 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
               emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
             }}
-          />
+          /> */}
         </div>
       ) : (
         <>

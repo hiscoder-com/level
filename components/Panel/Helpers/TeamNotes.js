@@ -38,12 +38,12 @@ const Redactor = dynamic(
   }
 )
 
-const ContextMenu = dynamic(
-  () => import('@texttree/notepad-rcl').then((mod) => mod.ContextMenu),
-  {
-    ssr: false,
-  }
-)
+// const ContextMenu = dynamic(
+//   () => import('@texttree/notepad-rcl').then((mod) => mod.ContextMenu),
+//   {
+//     ssr: false,
+//   }
+// )
 
 const TreeView = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.TreeView),
@@ -263,7 +263,7 @@ function TeamNotes() {
             handleDragDrop={isModeratorAccess ? handleDragDrop : null}
             openByDefault={false}
           />
-          {isModeratorAccess && (
+          {/* {isModeratorAccess && (
             <ContextMenu
               setSelectedNodeId={setNoteId}
               selectedNodeId={noteId}
@@ -277,7 +277,7 @@ function TeamNotes() {
                 emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
               }}
             />
-          )}
+          )} */}
         </div>
       ) : (
         <>
