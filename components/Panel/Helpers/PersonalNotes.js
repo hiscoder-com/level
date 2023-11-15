@@ -27,13 +27,14 @@ import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
+import { TreeView } from '@texttree/notepad-rcl/dist/components'
 
-const Redactor = dynamic(
-  () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
-  {
-    ssr: false,
-  }
-)
+// const Redactor = dynamic(
+//   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
+//   {
+//     ssr: false,
+//   }
+// )
 
 // const ContextMenu = dynamic(
 //   () => import('@texttree/notepad-rcl').then((mod) => mod.ContextMenu),
@@ -252,7 +253,7 @@ function PersonalNotes() {
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>
-          {/* <TreeView
+          <TreeView
             handleDeleteNode={handleRemoveNode}
             classes={{
               nodeWrapper:
@@ -272,7 +273,7 @@ function PersonalNotes() {
             handleRenameNode={handleRenameNode}
             handleDragDrop={handleDragDrop}
             openByDefault={false}
-          /> */}
+          />
           {/* <ContextMenu
             setSelectedNodeId={setNoteId}
             selectedNodeId={noteId}
@@ -299,7 +300,7 @@ function PersonalNotes() {
           >
             <Back className="stroke-th-text-primary" />
           </div>
-          <Redactor
+          {/* <Redactor
             classes={{
               title: 'p-2 my-4 mr-12 bg-th-secondary-100 font-bold rounded-lg shadow-md',
               redactor:
@@ -308,7 +309,7 @@ function PersonalNotes() {
             activeNote={activeNote}
             setActiveNote={setActiveNote}
             placeholder={t('TextNewNote')}
-          />
+          /> */}
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
