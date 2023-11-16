@@ -1,5 +1,5 @@
 # Version 0.9.0
-## Date: 16.11.2023
+## Date: 11/16/2023
 
 ### **Changed:**
 - reading mode is now also available if there are draft texts in the database
