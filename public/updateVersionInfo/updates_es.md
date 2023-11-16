@@ -1,3 +1,15 @@
+# Versión 0.9.0
+## Fecha: 16.11.2023
+
+### * * Modificado:**
+- el modo de lectura ahora también está disponible cuando hay borradores de texto en la base de datos
+### * * Corregido:**
+- Mostrar la lista de historias al actualizar la página
+### **Agregado:**
+- posibilidad de Leer textos borrados guardados en la base de datos
+- visualización del modo de lectura en el área personal
+- visualización del modo de lectura en la lista de libros del proyecto
+
 # Versión 0.8.0
 ## Fecha: 11/09/2023
 

@@ -1,3 +1,15 @@
+# Version 0.9.0
+## Date: 16.11.2023
+
+### **Changed:**
+- reading mode is now also available if there are draft texts in the database
+### **Fixed:**
+- displaying a list of stories when the page is refreshed
+### **Added:**
+- ability to read draft texts stored in the database
+- display of the reading mode in the personal account
+- display of the reading mode in the list of books of the project
+
 # Version 0.8.0
 ## Date: 11/09/2023
 
