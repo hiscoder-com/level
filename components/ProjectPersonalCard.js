@@ -7,8 +7,14 @@ import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
 
-import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
-import { readableDate } from 'utils/helper'
+import {
+  useGetChaptersTranslate,
+  useBriefState,
+  useGetBooks,
+  useAccess,
+} from 'utils/hooks'
+
+import { checkBookCodeExists, readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import Reader from '/public/dictionary.svg'
@@ -26,6 +32,7 @@ function ProjectPersonalCard({ project, user }) {
     code: project?.code,
   })
 
+  const [chaptersArray] = useGetChaptersTranslate({ code: project.code })
   useEffect(() => {
     supabase
       .rpc('get_current_steps', { project_id: project.id })
@@ -63,6 +70,7 @@ function ProjectPersonalCard({ project, user }) {
   const [books] = useGetBooks({
     code: project?.code,
   })
+
   const levelChecks = useMemo(() => {
     if (books) {
       const _books = {}
@@ -128,7 +136,8 @@ function ProjectPersonalCard({ project, user }) {
                         })} ${t('Verse', {
                           count: countChaptersVerses?.[book]?.countVerses,
                         })})`}</div>
-                        {levelChecks?.[book] && (
+                        {(checkBookCodeExists(book, chaptersArray) ||
+                          levelChecks?.[book]) && (
                           <Reader
                             className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70  cursor-pointer"
                             onClick={() =>

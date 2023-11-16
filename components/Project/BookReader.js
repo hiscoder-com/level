@@ -12,7 +12,22 @@ import ChecksIcon from './BookList/ChecksIcon'
 import Breadcrumbs from 'components/Breadcrumbs'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useAccess, useGetBooks, useGetResource, useProject } from 'utils/hooks'
+import {
+  useAccess,
+  useGetBooks,
+  useGetChaptersTranslate,
+  useGetResource,
+  useProject,
+} from 'utils/hooks'
+
+import {
+  checkBookCodeExists,
+  checkChapterVersesExist,
+  getVerseCount,
+  getVerseCountOBS,
+  getVerseObjectsForBookAndChapter,
+} from 'utils/helper'
+
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
 
 import Down from '/public/arrow-down.svg'
@@ -30,6 +45,8 @@ function BookReader() {
     code,
   })
   const [project] = useProject({ code })
+
+  const [chapters] = useGetChaptersTranslate({ code })
 
   const resource = useMemo(() => {
     if (reference?.checks) {
@@ -50,6 +67,9 @@ function BookReader() {
     },
     url: `/api/git/${project?.type}`,
   })
+  const verseObjectsToUse =
+    verseObjects ||
+    getVerseObjectsForBookAndChapter(chapters, reference?.bookid, reference?.chapter)
   useEffect(() => {
     if (bookid && books) {
       const book = books.find((book) => book.code === bookid)
@@ -62,7 +82,9 @@ function BookReader() {
         ? books
             .filter((book) =>
               Object.keys(newTestamentList).some(
-                (nt) => nt === book.code && book?.level_checks
+                (nt) =>
+                  nt === book.code &&
+                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
               )
             )
             .sort((a, b) => {
@@ -80,7 +102,9 @@ function BookReader() {
         ? books
             .filter((book) =>
               Object.keys(oldTestamentList).some(
-                (ot) => ot === book.code && book?.level_checks
+                (ot) =>
+                  ot === book.code &&
+                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
               )
             )
             .sort((a, b) => {
@@ -128,7 +152,7 @@ function BookReader() {
             />
           </div>
           <Verses
-            verseObjects={verseObjects}
+            verseObjects={verseObjectsToUse}
             user={user}
             reference={reference}
             isLoading={isLoading}
@@ -140,7 +164,6 @@ function BookReader() {
 }
 
 export default BookReader
-
 function Verses({ verseObjects, user, reference, isLoading }) {
   const {
     push,
@@ -153,6 +176,15 @@ function Verses({ verseObjects, user, reference, isLoading }) {
   })
   const [project] = useProject({ code })
   const { t } = useTranslation()
+  const [books] = useGetBooks({ code })
+
+  const verseCount = useMemo(() => {
+    if (project?.type === 'obs') {
+      return getVerseCountOBS(books, reference?.chapter)
+    } else {
+      return getVerseCount(books, bookid, reference?.chapter)
+    }
+  }, [books, project?.type, bookid, reference?.chapter])
 
   return (
     <div className="flex flex-col gap-5">
@@ -174,24 +206,29 @@ function Verses({ verseObjects, user, reference, isLoading }) {
       <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
         {!isLoading ? (
           verseObjects ? (
-            verseObjects.verseObjects?.map((verseObject) => (
-              <div className="flex gap-2" key={verseObject.verse}>
-                {verseObject.verse > 0 && verseObject.verse < 200 && (
-                  <sup className="mt-2">{verseObject.verse}</sup>
-                )}
-                <p
-                  className={
-                    verseObject.verse === '0'
-                      ? 'font-bold'
-                      : '' || verseObject.verse === '200'
-                      ? 'italic'
-                      : ''
-                  }
-                >
-                  {verseObject.text}
-                </p>
-              </div>
-            ))
+            <>
+              {Array.from({ length: Math.min(verseCount + 1, 200) }).map((_, index) => {
+                const verseIndex = verseObjects?.verseObjects?.findIndex(
+                  (verse) => parseInt(verse.verse) === index
+                )
+                const text =
+                  verseObjects?.verseObjects && verseIndex !== -1
+                    ? verseObjects.verseObjects[verseIndex].text
+                    : ' '
+
+                return (
+                  <div className={`flex gap-2 ${text === ' ' ? 'mb-2' : ''}`} key={index}>
+                    {index !== 0 && <sup className="mt-2">{index}</sup>}
+                    <p>{text}</p>
+                  </div>
+                )
+              })}
+              {verseObjects?.verseObjects && (
+                <div className="flex gap-2 mb-2">
+                  {verseObjects.verseObjects.find((verse) => verse.verse === 200)?.text}
+                </div>
+              )}
+            </>
           ) : (
             <>
               <p>{t('NoContent')}</p>
@@ -229,6 +266,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
     </div>
   )
 }
+
 function Navigation({ books, reference, setReference }) {
   const { query, replace } = useRouter()
   const [selectedBook, setSelectedBook] = useState({})
@@ -296,7 +334,11 @@ function Navigation({ books, reference, setReference }) {
                 <div
                   className={`flex ${
                     books?.length > 1 ? 'justify-between' : 'justify-center'
-                  } ${!Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'}`}
+                  } ${
+                    selectedBook && !Object.keys(selectedBook)?.length
+                      ? 'opacity-0'
+                      : 'opacity-auto'
+                  }`}
                 >
                   <span>{t('books:' + selectedBook?.code)}</span>
                   {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
@@ -371,10 +413,14 @@ function Navigation({ books, reference, setReference }) {
 function BookListReader({ books, setReference, reference, project }) {
   const [createdOldTestamentBooks, createdNewTestamentBooks] = books
   const [currentBook, setCurrentBook] = useState(null)
-
   const { query, replace } = useRouter()
   const { t } = useTranslation(['common', 'books'])
   const refs = useRef([])
+  const {
+    query: { code, bookid },
+  } = useRouter()
+  const [chapters] = useGetChaptersTranslate({ code })
+
   const scrollRefs = useRef({})
   const handleClose = (index) => {
     refs.current.map((closeFunction, refIndex) => {
@@ -388,7 +434,6 @@ function BookListReader({ books, setReference, reference, project }) {
       verseRef(scrollRefs.current[bookid])
     }
   }
-
   const scrollTo = (currentBook, position) => {
     let offset = 0
     const top = currentBook.offsetTop - 95
@@ -404,13 +449,14 @@ function BookListReader({ books, setReference, reference, project }) {
     currentBook.parentNode.scrollTo({ left: 0, top: top + offset, behavior: 'smooth' })
   }
 
-  const defaultIndex = useMemo(
-    () =>
-      [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex((list) =>
-        list?.find((el) => el.code === query.bookid)
-      ),
-    [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid]
-  )
+  const defaultIndex = useMemo(() => {
+    const index = [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex(
+      (list) => list?.find((el) => el.code === query.bookid)
+    )
+
+    return index === -1 ? 0 : index
+  }, [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid])
+
   const tabs = useMemo(
     () =>
       project?.type === 'obs' ? ['OpenBibleStories'] : ['NewTestament', 'OldTestament'],
@@ -460,7 +506,14 @@ function BookListReader({ books, setReference, reference, project }) {
           </Tab.List>
 
           <Tab.Panels className="text-sm font-bold">
-            {[createdNewTestamentBooks, createdOldTestamentBooks].map((list, idx) => (
+            {[
+              ...(createdNewTestamentBooks !== undefined
+                ? [createdNewTestamentBooks]
+                : []),
+              ...(createdOldTestamentBooks !== undefined
+                ? [createdOldTestamentBooks]
+                : []),
+            ].map((list, idx) => (
               <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
                 {list?.map((book, index) => (
                   <Disclosure
@@ -503,13 +556,33 @@ function BookListReader({ books, setReference, reference, project }) {
                               {[...Array(Object.keys(book.chapters).length).keys()]
                                 .map((el) => el + 1)
                                 .map((index) => (
-                                  <div
-                                    className={`flex justify-center items-center w-10 h-10
-                                  text-th-text-secondary rounded-md cursor-pointer hover:opacity-70 ${
-                                    index == reference?.chapter
-                                      ? 'cursor-default bg-th-primary-300'
-                                      : 'bg-th-secondary-200 cursor-pointer '
-                                  }`}
+                                  <button
+                                    disabled={
+                                      !checkChapterVersesExist(
+                                        book.code,
+                                        index,
+                                        chapters
+                                      ) && !reference?.checks
+                                    }
+                                    className={`flex justify-center items-center w-10 h-10 rounded-md${
+                                      checkChapterVersesExist(
+                                        book.code,
+                                        index,
+                                        chapters
+                                      ) || reference?.checks
+                                        ? 'cursor-pointer bg-th-primary-300'
+                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary rounded-md'
+                                    } ${
+                                      index === reference?.chapter
+                                        ? 'cursor-default bg-th-primary-300 text-th-text-secondary rounded-md'
+                                        : checkChapterVersesExist(
+                                            book.code,
+                                            index,
+                                            chapters
+                                          ) || reference?.checks
+                                        ? 'hover:opacity-70 bg-th-secondary-200'
+                                        : ''
+                                    }`}
                                     key={index}
                                     onClick={() =>
                                       setReference((prev) => ({
@@ -519,7 +592,7 @@ function BookListReader({ books, setReference, reference, project }) {
                                     }
                                   >
                                     {index}
-                                  </div>
+                                  </button>
                                 ))}
                             </div>
                           </Disclosure.Panel>

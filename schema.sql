@@ -143,6 +143,76 @@
       END;
     $$;
 
+-- getting all the books that specify the levels of checks
+    CREATE OR REPLACE FUNCTION get_books_not_null_level_checks(project_code text)
+    RETURNS TABLE (book_code public.book_code, level_checks json) AS $$
+      DECLARE
+        project_id bigint;
+    BEGIN
+        SELECT id INTO project_id FROM public.projects WHERE code = project_code;
+
+      IF project_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
+        RETURN;
+      END IF;
+
+      RETURN QUERY
+        SELECT
+            b.code AS book_code,
+            b.level_checks
+        FROM
+            public.books b
+        INNER JOIN
+            public.projects p ON b.project_id = p.id
+        WHERE
+            p.code = project_code
+            AND b.level_checks IS NOT NULL;
+      END;
+    $$ LANGUAGE plpgsql;
+
+
+-- getting all books with verses that are started and non-zero translation texts
+    CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses(project_code text)
+    RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
+    DECLARE
+        project_id bigint;
+      BEGIN
+      SELECT id INTO project_id FROM public.projects WHERE code = project_code;
+
+      IF project_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
+        RETURN;
+      END IF;
+
+      RETURN QUERY
+        SELECT
+            b.code AS book_code,
+            c.num AS chapter_num,
+            v.num AS verse_num,
+            v.text AS verse_text
+        FROM
+            public.books b
+        INNER JOIN
+            public.chapters c ON b.id = c.book_id
+        INNER JOIN
+            public.verses v ON c.id = v.chapter_id
+        INNER JOIN
+            public.projects p ON b.project_id = p.id
+        WHERE
+            c.started_at IS NOT NULL
+            AND v.text IS NOT NULL
+            AND p.code = project_code;
+        END;
+      $$ LANGUAGE plpgsql;
+
+
+
   -- conditions for the user to have access to the site: 2 checkboxes and the user was not blocked
     CREATE FUNCTION PUBLIC.has_access() RETURNS BOOLEAN
       LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -833,7 +903,7 @@ $$;
       -- find out the id of the translator on the project
       -- find out the ID of the chapter we are translating, make sure that the translation is still in progress
       -- in a loop update the text of the verses, taking into account the id of the translator and the chapter
-      -- Maybe take the chapter number here. Get the IDs of all the poems that this user has. And then in the cycle to compare these IDs
+      -- Maybe take the chapter number here. Get the IDs of all the verse that this user has. And then in the cycle to compare these IDs
       -- TODO correct necessarily
       FOR new_verses IN SELECT * FROM json_each_text(save_verses.verses)
       LOOP
@@ -1383,7 +1453,7 @@ $$;
     SELECT
       TO authenticated USING (authorize(auth.uid(), project_id) != 'user');
 
-    -- We create poems automatically, so no one can add
+    -- We create verses automatically, so no one can add
 
     -- Direct editing is also forbidden. We can edit only two fields, the current step and the text of the verse
 
