@@ -1,26 +1,21 @@
 import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
-
 import dynamic from 'next/dynamic'
 
 import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
-
+import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 
-import { toast } from 'react-hot-toast'
+import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-
-import Modal from 'components/Modal'
-import { projectIdState } from 'components/state/atoms'
-
+import { convertNotesToTree } from 'utils/helper'
 import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
-import { convertNotesToTree } from 'utils/helper'
+import { projectIdState } from 'components/state/atoms'
 
 import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
@@ -238,7 +233,7 @@ function TeamNotes() {
         <div>
           {isModeratorAccess && (
             <div className="flex gap-2">
-              <button className="btn-tertiary p-3" onClick={() => addNode()}>
+              <button className="btn-tertiary p-3" onClick={addNode}>
                 <FileIcon className="w-6 h-6 fill-th-text-secondary" />
               </button>
               <button className="btn-tertiary p-3" onClick={() => addNode(true)}>

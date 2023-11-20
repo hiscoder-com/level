@@ -3,21 +3,18 @@ import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 
 import { useTranslation } from 'next-i18next'
-
-import { useRecoilValue } from 'recoil'
-
 import axios from 'axios'
 import { toast } from 'react-hot-toast'
+import { useRecoilValue } from 'recoil'
+
+import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 import { convertNotesToTree } from 'utils/helper'
-
-import Modal from 'components/Modal'
-import { projectIdState } from 'components/state/atoms'
-
 import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
+import { projectIdState } from 'components/state/atoms'
 
 import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
@@ -251,7 +248,7 @@ function PersonalNotes() {
               <Trash className="w-5 h-5 stroke-th-text-secondary" />
               {t('RemoveAll')}
             </button>
-            <button className="btn-tertiary p-3" onClick={() => addNode()}>
+            <button className="btn-tertiary p-3" onClick={addNode}>
               <FileIcon className="w-6 h-6 fill-th-text-secondary" />
             </button>
             <button className="btn-tertiary p-3" onClick={() => addNode(true)}>

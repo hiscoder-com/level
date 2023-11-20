@@ -1,8 +1,8 @@
-# Versión 0.9.0
-## Fecha: 11/15/2023
+# Versión 0.10.0
+## Fecha: 11/20/2023
 
 ### **Añadido:**
-- estructura de árbol de notas personales y de equipo
+- lista de árbol de notas personales y de equipo
 
 # Versión 0.8.0
 ## Fecha: 11/09/2023
