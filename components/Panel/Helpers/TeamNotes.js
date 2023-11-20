@@ -98,7 +98,7 @@ function TeamNotes() {
 
   const addNode = (isFolder = false) => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    const title = isFolder ? 'new folder' : 'new note'
+    const title = isFolder ? t('NewFolder') : t('NewNote')
 
     axios
       .post('/api/team_notes', {
@@ -112,6 +112,9 @@ function TeamNotes() {
   }
 
   const handleRenameNode = (newTitle, id) => {
+    if (!newTitle.trim()) {
+      newTitle = t('EmptyTitle')
+    }
     axios
       .put(`/api/team_notes/${id}`, { title: newTitle })
       .then(() => {
@@ -233,7 +236,7 @@ function TeamNotes() {
         <div>
           {isModeratorAccess && (
             <div className="flex gap-2">
-              <button className="btn-tertiary p-3" onClick={addNode}>
+              <button className="btn-tertiary p-3" onClick={() => addNode()}>
                 <FileIcon className="w-6 h-6 fill-th-text-secondary" />
               </button>
               <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
@@ -247,7 +250,7 @@ function TeamNotes() {
             classes={{
               nodeWrapper:
                 'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200',
-              nodeTextBlock: 'items-center',
+              nodeTextBlock: 'items-center truncate',
             }}
             data={dataForTreeView}
             setSelectedNodeId={setNoteId}
@@ -300,6 +303,7 @@ function TeamNotes() {
             setActiveNote={setActiveNote}
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('TextNewNote') : ''}
+            emptyTitle={t('EmptyTitle')}
           />
         </>
       )}

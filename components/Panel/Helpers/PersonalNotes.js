@@ -95,8 +95,7 @@ function PersonalNotes() {
 
   const addNode = (isFolder = false) => {
     const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    const title = isFolder ? 'new folder' : 'new note'
-
+    const title = isFolder ? t('NewFolder') : t('NewNote')
     axios
       .post('/api/personal_notes', {
         id,
@@ -109,6 +108,9 @@ function PersonalNotes() {
   }
 
   const handleRenameNode = (newTitle, id) => {
+    if (!newTitle.trim()) {
+      newTitle = t('EmptyTitle')
+    }
     axios
       .put(`/api/personal_notes/${id}`, { title: newTitle })
       .then(() => {
@@ -248,7 +250,7 @@ function PersonalNotes() {
               <Trash className="w-5 h-5 stroke-th-text-secondary" />
               {t('RemoveAll')}
             </button>
-            <button className="btn-tertiary p-3" onClick={addNode}>
+            <button className="btn-tertiary p-3" onClick={() => addNode()}>
               <FileIcon className="w-6 h-6 fill-th-text-secondary" />
             </button>
             <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
@@ -261,7 +263,7 @@ function PersonalNotes() {
             classes={{
               nodeWrapper:
                 'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200',
-              nodeTextBlock: 'items-center',
+              nodeTextBlock: 'items-center truncate',
             }}
             data={dataForTreeView}
             setSelectedNodeId={setNoteId}
@@ -311,6 +313,7 @@ function PersonalNotes() {
             activeNote={activeNote}
             setActiveNote={setActiveNote}
             placeholder={t('TextNewNote')}
+            emptyTitle={t('EmptyTitle')}
           />
         </>
       )}
