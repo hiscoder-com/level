@@ -711,7 +711,6 @@ export const stepsValidation = (steps) => {
   return { error: null }
 }
 
-
 export const convertNotesToTree = (notes, parentId = null) => {
   const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
 
@@ -723,7 +722,7 @@ export const convertNotesToTree = (notes, parentId = null) => {
       children: convertNotesToTree(notes, note.id),
     }),
   }))
-  }
+}
 
 export function checkBookCodeExists(bookCode, data) {
   return Array.isArray(data) && data.some((book) => book.book_code === bookCode)
@@ -777,5 +776,4 @@ export function getVerseCountOBS(chaptersData, chapterNumber) {
 
   chapterNumber = chapterNumber < 10 ? `0${chapterNumber}` : `${chapterNumber}`
   return chapterNumber in chapterData ? chapterData[chapterNumber] : 0
-
-
+}
