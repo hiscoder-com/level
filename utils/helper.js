@@ -711,6 +711,7 @@ export const stepsValidation = (steps) => {
   return { error: null }
 }
 
+
 export const convertNotesToTree = (notes, parentId = null) => {
   const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
 
@@ -722,4 +723,59 @@ export const convertNotesToTree = (notes, parentId = null) => {
       children: convertNotesToTree(notes, note.id),
     }),
   }))
+  }
+
+export function checkBookCodeExists(bookCode, data) {
+  return Array.isArray(data) && data.some((book) => book.book_code === bookCode)
 }
+
+export function checkChapterVersesExist(bookCode, chapterNumber, data) {
+  if (!data) {
+    return false
+  }
+
+  return data.some(
+    (book) =>
+      book.book_code === bookCode &&
+      book.chapters &&
+      book.chapters[chapterNumber] &&
+      book.chapters[chapterNumber].verseObjects.length > 0
+  )
+}
+
+export function getVerseObjectsForBookAndChapter(chapters, bookCode, chapterNumber) {
+  if (chapters && Array.isArray(chapters)) {
+    const chapterData = chapters.find(
+      (chapter) => chapter.book_code === bookCode && chapter.level_check === null
+    )
+
+    if (chapterData) {
+      return chapterData.chapters[chapterNumber]
+    }
+  }
+
+  return []
+}
+
+export function getVerseCount(books, bookCode, chapterNumber) {
+  for (let i = 0; i < books?.length; i++) {
+    if (books[i].code === bookCode) {
+      const chapters = books[i].chapters
+      if (chapters.hasOwnProperty(chapterNumber)) {
+        return chapters[chapterNumber]
+      }
+    }
+  }
+  return null
+}
+
+export function getVerseCountOBS(chaptersData, chapterNumber) {
+  const chapterData = chaptersData?.[0].chapters
+  if (!chapterData) {
+    return
+  }
+
+  chapterNumber = chapterNumber < 10 ? `0${chapterNumber}` : `${chapterNumber}`
+  return chapterNumber in chapterData ? chapterData[chapterNumber] : 0
+
+

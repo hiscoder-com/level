@@ -321,6 +321,24 @@ export function useGetBooks({ code }) {
 }
 
 /**
+ *hook returns information about books with validation levels and verse with draft versions
+ * @param {string} code code of project
+ * @returns {array}
+ */
+export function useGetChaptersTranslate({ code }) {
+  const {
+    data: books,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(code ? [`/api/projects/${code}/books/chapters_translate`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [books, { mutate, error, isLoading }]
+}
+
+/**
  *hook returns information about specific book of specific project from table 'books'
  * @param {string} code code of project
  * @param {string} book_code code of book
