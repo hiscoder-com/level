@@ -1,3 +1,12 @@
+# Versión 0.10.1
+## Fecha: 11/21/2023
+
+### **Modificado:**
+- ruta para cargar imágenes en OBS al exportar a PDF en la versión de intranet
+- portada pdf
+### **Eliminado:**
+- componente de audio en versión intranet
+
 # Versión 0.10.0
 ## Fecha: 11/20/2023
 
@@ -7,15 +16,14 @@
 # Versión 0.9.0
 ## Fecha: 11/16/2023
 
-### * * Modificado:**
+### **Modificado:**
 - el modo de lectura ahora también está disponible cuando hay borradores de texto en la base de datos
-### * * Corregido:**
+### **Corregido:**
 - mostrar la lista de historias al actualizar la página
 ### **Agregado:**
 - posibilidad de Leer textos borrados guardados en la base de datos
 - visualización del modo de lectura en el área personal
 - visualización del modo de lectura en la lista de libros del proyecto
-
 
 # Versión 0.8.0
 ## Fecha: 11/09/2023
