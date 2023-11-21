@@ -51,7 +51,7 @@ function MainAudio({ setAudioState }) {
       >
         {t('RetellPartner')}
       </button>
-      {isIntranet && (
+      {!isIntranet && (
         <>
           <p>{t('NoWayToTellPartner')}</p>
           <button
