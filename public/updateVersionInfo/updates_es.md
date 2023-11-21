@@ -1,3 +1,9 @@
+# Versión 0.10.0
+## Fecha: 11/20/2023
+
+### **Añadido:**
+- lista de árbol de notas personales y de equipo
+
 # Versión 0.9.0
 ## Fecha: 11/16/2023
 
@@ -9,6 +15,7 @@
 - posibilidad de Leer textos borrados guardados en la base de datos
 - visualización del modo de lectura en el área personal
 - visualización del modo de lectura en la lista de libros del proyecto
+
 
 # Versión 0.8.0
 ## Fecha: 11/09/2023

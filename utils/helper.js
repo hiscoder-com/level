@@ -596,6 +596,10 @@ export const validateNote = (note) => {
   return true
 }
 
+export const validateTitle = (title) => {
+  return title && title.trim().length > 0
+}
+
 export const obsCheckAdditionalVerses = (numVerse) => {
   if (['0', '200'].includes(String(numVerse))) {
     return ''
@@ -705,6 +709,19 @@ export const stepsValidation = (steps) => {
     }
   }
   return { error: null }
+}
+
+export const convertNotesToTree = (notes, parentId = null) => {
+  const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
+
+  filteredNotes?.sort((a, b) => a.sorting - b.sorting)
+  return filteredNotes?.map((note) => ({
+    id: note.id,
+    name: note.title,
+    ...(note.is_folder && {
+      children: convertNotesToTree(notes, note.id),
+    }),
+  }))
 }
 
 export function checkBookCodeExists(bookCode, data) {

@@ -34,7 +34,7 @@
 
 	body {
 		@apply text-th-text-primary
-	} 
+	}
 
 	body.no-scrollbar {
 		scrollbar-width: none !important;
@@ -43,7 +43,7 @@
 	body.no-scrollbar::-webkit-scrollbar {
 		display: none !important;
 	}
-	
+
 	* {
 		scrollbar-width: thin;
 		scrollbar-color: var(--scroll) var(--background-primary);

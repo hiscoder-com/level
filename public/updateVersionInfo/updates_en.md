@@ -1,3 +1,9 @@
+# Version 0.10.0
+## Date: 11/20/2023
+
+### **Added:**
+- tree list of personal and team notes
+
 # Version 0.9.0
 ## Date: 11/16/2023
 

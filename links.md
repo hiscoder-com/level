@@ -135,7 +135,7 @@ pg_dump postgresql://postgres:postgres@localhost:64322/postgres --a --inserts -n
         TRUE,
         NULL,
         FALSE
-      ),   
+      ),
       (
         '1dfaa269-2eda-41c4-9a71-72db8cbd6db2',
         'admin',
@@ -179,11 +179,11 @@ pg_dump postgresql://postgres:postgres@localhost:64322/postgres --a --inserts -n
         TRUE,
         NULL,
         FALSE
-      ),     
+      ),
       (
-        '302f0053-435f-43dd-b2fd-0bbd38d8c2fc',
+        '883a6d93-1c72-4cc5-94fd-554b4357094d',
         'Brawn_A',
-        'adminbrawn@mail.com',
+        'admin@mail.com',
         TRUE,
         TRUE,
         NULL,
