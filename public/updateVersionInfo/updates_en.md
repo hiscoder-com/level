@@ -1,3 +1,12 @@
+# Version 0.10.1
+## Date: 11/21/2023
+
+### **Changed:**
+- path for loading pictures into OBS when exporting to PDF in intranet version
+- cover PDF
+### **Deleted:**
+- audio component in intranet version
+
 # Version 0.10.0
 ## Date: 11/20/2023
 
