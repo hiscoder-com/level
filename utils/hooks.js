@@ -217,6 +217,37 @@ export function usePersonalNotes() {
   return [notes, { mutate, error, isLoading }]
 }
 
+/**
+ *hook returns information about books with validation levels and verse with draft versions
+ * @param {string} user user
+ * @returns {object}
+ */
+export function useGetPersonalNotes({ user_id }) {
+  const {
+    data: personalNotes,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(user_id ? [`/api/personal_notes/export/${user_id}`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+
+  if (error) {
+    console.error('Error fetching data:', error)
+  }
+
+  if (!personalNotes) {
+    console.log('Data is not available yet.')
+  }
+  return {
+    personalNotes,
+    actions: { mutate },
+    error,
+    isLoading,
+  }
+}
+
 export function useTeamNotes({ project_id }) {
   const {
     data: notes,
