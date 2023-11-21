@@ -42,7 +42,7 @@ export default function Audio() {
 
 function MainAudio({ setAudioState }) {
   const { t } = useTranslation(['audio'])
-  const intranet = process.env.INTRANET ?? false
+  const isIntranet = process.env.INTRANET ?? false
   return (
     <div className="flex flex-col items-center gap-5 min-h-full justify-center">
       <button
@@ -51,7 +51,7 @@ function MainAudio({ setAudioState }) {
       >
         {t('RetellPartner')}
       </button>
-      {intranet && (
+      {isIntranet && (
         <>
           <p>{t('NoWayToTellPartner')}</p>
           <button
