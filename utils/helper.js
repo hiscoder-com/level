@@ -300,7 +300,6 @@ export const downloadPdf = async ({
   pdfOptions = obs
     ? createPdfOptionsObs(chapters, downloadSettings, book)
     : createPdfOptionsBible(chapters, downloadSettings, book)
-  console.log(pdfOptions)
   try {
     await JsonToPdf(pdfOptions)
   } catch (error) {
