@@ -42,6 +42,7 @@ export default function Audio() {
 
 function MainAudio({ setAudioState }) {
   const { t } = useTranslation(['audio'])
+  const intranet = process.env.INTRANET ?? false
   return (
     <div className="flex flex-col items-center gap-5 min-h-full justify-center">
       <button
@@ -50,13 +51,17 @@ function MainAudio({ setAudioState }) {
       >
         {t('RetellPartner')}
       </button>
-      <p>{t('NoWayToTellPartner')}</p>
-      <button
-        onClick={() => setAudioState('Retell Yourself')}
-        className="btn-base bg-th-secondary-300 text-th-text-secondary hover:opacity-70"
-      >
-        {t('RetellYourself')}
-      </button>
+      {intranet && (
+        <>
+          <p>{t('NoWayToTellPartner')}</p>
+          <button
+            onClick={() => setAudioState('Retell Yourself')}
+            className="btn-base bg-th-secondary-300 text-th-text-secondary hover:opacity-70"
+          >
+            {t('RetellYourself')}
+          </button>
+        </>
+      )}
     </div>
   )
 }

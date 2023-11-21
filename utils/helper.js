@@ -192,7 +192,6 @@ export const downloadPdf = async ({
     if (!fileName.endsWith('.pdf')) {
       fileName += '.pdf'
     }
-
     pdfOptions = {
       styles,
       fileName,
@@ -202,13 +201,16 @@ export const downloadPdf = async ({
         SubtitlePageTitle: title,
         back: ' ', // to display the page headers
       },
+      imageUrl: `${
+        process.env.INTRANET ? process.env.NODE_HOST : 'https://cdn.door43.org'
+      }/obs/jpg/360px/`,
     }
 
     if (downloadSettings?.withFront) {
       pdfOptions.bookPropertiesObs = {
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
-        copyright: 'unfoldingWord®',
+        copyright: 'TextTree Movement®',
         projectLanguage,
       }
     }
@@ -269,7 +271,7 @@ export const downloadPdf = async ({
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
         projectLanguage,
-        copyright: 'unfoldingWord®',
+        copyright: 'TextTree Movement®',
       }
     }
 
@@ -298,7 +300,7 @@ export const downloadPdf = async ({
   pdfOptions = obs
     ? createPdfOptionsObs(chapters, downloadSettings, book)
     : createPdfOptionsBible(chapters, downloadSettings, book)
-
+  console.log(pdfOptions)
   try {
     await JsonToPdf(pdfOptions)
   } catch (error) {
