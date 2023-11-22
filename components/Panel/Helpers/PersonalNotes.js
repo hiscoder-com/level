@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -12,7 +12,7 @@ import Modal from 'components/Modal'
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 import { convertNotesToTree } from 'utils/helper'
-import { useGetPersonalNotes, usePersonalNotes } from 'utils/hooks'
+import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
 
@@ -74,11 +74,6 @@ function PersonalNotes() {
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
-  const { personalNotes } = useGetPersonalNotes({ user_id: user.id })
-
-  useEffect(() => {
-    console.log('Data:', personalNotes)
-  }, [personalNotes])
 
   const saveNote = () => {
     axios
