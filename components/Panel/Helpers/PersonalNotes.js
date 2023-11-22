@@ -11,7 +11,11 @@ import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
+import {
+  convertNotesToTree,
+  formationJSONToTree,
+  parseNotesWithTopFolder,
+} from 'utils/helper'
 import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
@@ -25,6 +29,7 @@ import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
 import Export from 'public/export.svg'
+import Import from 'public/import.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -74,6 +79,29 @@ function PersonalNotes() {
 
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
+  }
+  const importNotes = async () => {
+    try {
+      const fileInput = document.createElement('input')
+      fileInput.type = 'file'
+      fileInput.accept = '.json'
+      fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0]
+        if (!file) {
+          throw new Error('No file selected')
+        }
+
+        const fileContents = await file.text()
+        const importedData = JSON.parse(fileContents)
+
+        const parsedNotes = parseNotesWithTopFolder(importedData, user.id)
+        console.log('Imported data:', parsedNotes)
+      })
+
+      fileInput.click()
+    } catch (error) {
+      console.error('Error importing notes:', error.message)
+    }
   }
 
   function exportNotes() {
@@ -283,6 +311,9 @@ function PersonalNotes() {
             </button>
             <button className="btn-tertiary p-3" onClick={() => exportNotes()}>
               <Export className="w-6 h-6 stroke-th-text-secondary" />
+            </button>
+            <button className="btn-tertiary p-3" onClick={() => importNotes()}>
+              <Import className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>
           <TreeView
