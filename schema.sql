@@ -218,37 +218,6 @@
         END;
       $$ LANGUAGE plpgsql;
 
-
-    -- getting personal notes for user_id
-    CREATE OR REPLACE FUNCTION get_personal_notes(user_id UUID)
-    RETURNS JSONB AS
-    $$
-    DECLARE
-      result_json JSONB;
-    BEGIN
-      SELECT jsonb_agg(
-             jsonb_build_object(
-               'id', id,
-               'title', title,
-               'data', data,
-               'created_at', created_at,
-               'changed_at', changed_at,
-               'deleted_at', deleted_at,
-               'is_folder', is_folder,
-               'parent_id', parent_id,
-               'sorting', sorting
-             )
-           ) INTO result_json
-      FROM public.personal_notes
-      WHERE user_id = user_id AND deleted_at IS NULL;
-
-      RETURN result_json;
-    END;
-    $$
-    LANGUAGE plpgsql;
-
-
-
   -- conditions for the user to have access to the site: 2 checkboxes and the user was not blocked
     CREATE FUNCTION PUBLIC.has_access() RETURNS BOOLEAN
       LANGUAGE plpgsql SECURITY DEFINER AS $$
