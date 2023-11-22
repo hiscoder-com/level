@@ -11,7 +11,7 @@ import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { convertNotesToTree } from 'utils/helper'
+import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
 import { usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
@@ -24,6 +24,7 @@ import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
+import Export from 'public/export.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -73,6 +74,30 @@ function PersonalNotes() {
 
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
+  }
+
+  function exportNotes() {
+    const transformedData = formationJSONToTree(notes)
+    const jsonContent = JSON.stringify(transformedData, null, 2)
+
+    const blob = new Blob([jsonContent], { type: 'application/json' })
+
+    const downloadLink = document.createElement('a')
+    const currentDate = new Date()
+    const formattedDate = currentDate.toISOString().split('T')[0]
+
+    const fileName = `personal_notes_${formattedDate}.json`
+
+    const url = URL.createObjectURL(blob)
+
+    downloadLink.href = url
+    downloadLink.download = fileName
+
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    document.body.removeChild(downloadLink)
+
+    URL.revokeObjectURL(url)
   }
 
   const saveNote = () => {
@@ -255,6 +280,9 @@ function PersonalNotes() {
             </button>
             <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
+            </button>
+            <button className="btn-tertiary p-3" onClick={() => exportNotes()}>
+              <Export className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>
           <TreeView
