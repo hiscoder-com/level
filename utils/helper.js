@@ -777,3 +777,55 @@ export function getVerseCountOBS(chaptersData, chapterNumber) {
   chapterNumber = chapterNumber < 10 ? `0${chapterNumber}` : `${chapterNumber}`
   return chapterNumber in chapterData ? chapterData[chapterNumber] : 0
 }
+
+function buildTree(items) {
+  if (!items) {
+    return
+  }
+
+  const tree = []
+  const itemMap = {}
+
+  items.forEach((item) => {
+    item.children = []
+    itemMap[item.id] = item
+  })
+
+  items.forEach((item) => {
+    if (item.parent_id) {
+      itemMap[item.parent_id].children.push(item)
+    } else {
+      tree.push(item)
+    }
+  })
+
+  return tree
+}
+
+function removeIdsFromTree(tree) {
+  function removeIdsFromItem(item) {
+    delete item.id
+    delete item.parent_id
+    delete item.user_id
+
+    if (item.data && item.data.blocks) {
+      item.data.blocks.forEach((block) => delete block.id)
+    }
+    item.children.forEach((child) => removeIdsFromItem(child))
+  }
+
+  if (!tree) {
+    return
+  }
+
+  tree.forEach((item) => removeIdsFromItem(item))
+
+  return tree
+}
+
+export function formationJSONToTree(data) {
+  const treeData = buildTree(data)
+  const transformedData = removeIdsFromTree(treeData)
+
+  return transformedData
+}
