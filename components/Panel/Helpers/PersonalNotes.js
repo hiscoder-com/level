@@ -95,7 +95,10 @@ function PersonalNotes() {
         const importedData = JSON.parse(fileContents)
 
         const parsedNotes = parseNotesWithTopFolder(importedData, user.id)
-        console.log('Imported data:', parsedNotes)
+
+        for (const note of parsedNotes) {
+          bulkNode(note)
+        }
       })
 
       fileInput.click()
@@ -144,6 +147,15 @@ function PersonalNotes() {
   const onDoubleClick = () => {
     const currentNote = notes.find((el) => el.id === noteId)
     setActiveNote(currentNote)
+  }
+
+  const bulkNode = (note) => {
+    axios
+      .post('/api/personal_notes/bulk_insert', {
+        note: note,
+      })
+      .then(() => mutate())
+      .catch(console.log)
   }
 
   const addNode = (isFolder = false) => {
