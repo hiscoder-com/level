@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
@@ -11,12 +11,8 @@ import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import {
-  convertNotesToTree,
-  formationJSONToTree,
-  parseNotesWithTopFolder,
-} from 'utils/helper'
-import { usePersonalNotes } from 'utils/hooks'
+import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
+import { useAllPersonalNotes, usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
 
@@ -71,6 +67,8 @@ function PersonalNotes() {
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
+  const [allNotes] = useAllPersonalNotes()
+
   const [notes, { mutate }] = usePersonalNotes({
     sort: 'sorting',
   })
@@ -80,6 +78,75 @@ function PersonalNotes() {
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
+
+  function generateUniqueId(existingIds) {
+    let newId
+    do {
+      newId = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    } while (existingIds.includes(newId))
+    return newId
+  }
+
+  function parseNotesWithTopFolder(notes, user_id) {
+    const exportFolderId = generateUniqueId(allNotes)
+    const exportFolderDate = new Date().toISOString().split('T')[0]
+
+    const exportFolder = {
+      id: exportFolderId,
+      user_id: user_id,
+      title: `export-${exportFolderDate}`,
+      data: null,
+      created_at: new Date().toISOString(),
+      changed_at: new Date().toISOString(),
+      deleted_at: null,
+      is_folder: true,
+      parent_id: null,
+      sorting: 0,
+    }
+
+    const parsedNotes = parseNotes(notes, user_id, exportFolderId)
+    return [exportFolder, ...parsedNotes]
+  }
+
+  function parseNotes(notes, user_id, parentId = null) {
+    return notes.reduce((acc, note) => {
+      const id = generateUniqueId(allNotes)
+      const parsedNote = {
+        id: id,
+        user_id: user_id,
+        title: note.title,
+        data: parseData(note.data),
+        created_at: note.created_at,
+        changed_at: new Date().toISOString(),
+        deleted_at: note.deleted_at,
+        is_folder: note.is_folder,
+        parent_id: parentId,
+        sorting: note.sorting,
+      }
+
+      acc.push(parsedNote)
+
+      if (note.children && note.children.length > 0) {
+        const childNotes = parseNotes(note.children, user_id, id)
+        acc = acc.concat(childNotes)
+      }
+
+      return acc
+    }, [])
+  }
+
+  function parseData(data) {
+    if (!data) {
+      return null
+    }
+
+    return {
+      blocks: data.blocks || [],
+      version: data.version,
+      time: data.time,
+    }
+  }
+
   const importNotes = async () => {
     try {
       const fileInput = document.createElement('input')
