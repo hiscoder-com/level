@@ -37,6 +37,24 @@ export function useLanguages() {
 
   return [languages, { mutate, isLoading, error }]
 }
+
+/**
+ *hook returns all personal notes
+ * @returns {array}
+ */
+export function useAllPersonalNotes() {
+  const {
+    data: allNotes,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(['/api/personal_notes/all_notes'], fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [allNotes, { mutate, isLoading, error }]
+}
+
 /**
  *hook returns information about all users
  * @returns {array}
