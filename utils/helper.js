@@ -186,7 +186,7 @@ export const downloadPdf = async ({
     ? { ...commonStyles, ...obsStyles }
     : { ...commonStyles, ...bibleStyles }
 
-  let pdfOptions
+  let pdfOptions  
 
   const createPdfOptionsObs = (chapters, downloadSettings, book) => {
     if (!fileName.endsWith('.pdf')) {
@@ -201,9 +201,8 @@ export const downloadPdf = async ({
         SubtitlePageTitle: title,
         back: ' ', // to display the page headers
       },
-      imageUrl: `${
-        process.env.INTRANET ? process.env.NODE_HOST : 'https://cdn.door43.org'
-      }/obs/jpg/360px/`,
+      imageUrl: `${process.env.NEXT_PUBLIC_INTRANET ? process.env.NEXT_PUBLIC_NODE_HOST : 'https://cdn.door43.org'
+        }/obs/jpg/360px/`,
     }
 
     if (downloadSettings?.withFront) {
@@ -330,9 +329,8 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
   const headers = [
     {
       tag: 'id',
-      content: `${book?.code.toUpperCase()} ${project?.code.toUpperCase()} ${
-        project?.language.code
-      }_${capitalize(project?.language?.orig_name)}_${project?.title} ${Date()} v-cana`,
+      content: `${book?.code.toUpperCase()} ${project?.code.toUpperCase()} ${project?.language.code
+        }_${capitalize(project?.language?.orig_name)}_${project?.title} ${Date()} v-cana`,
     },
     {
       tag: 'usfm',
