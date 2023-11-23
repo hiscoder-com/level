@@ -56,6 +56,23 @@ export function useAllPersonalNotes() {
 }
 
 /**
+ *hook returns all team notes
+ * @returns {array}
+ */
+export function useAllTeamlNotes() {
+  const {
+    data: allNotes,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(['/api/team_notes/all_notes'], fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [allNotes, { mutate, isLoading, error }]
+}
+
+/**
  *hook returns information about all users
  * @returns {array}
  */
