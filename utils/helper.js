@@ -186,7 +186,7 @@ export const downloadPdf = async ({
     ? { ...commonStyles, ...obsStyles }
     : { ...commonStyles, ...bibleStyles }
 
-  let pdfOptions  
+  let pdfOptions
 
   const createPdfOptionsObs = (chapters, downloadSettings, book) => {
     if (!fileName.endsWith('.pdf')) {
