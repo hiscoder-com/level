@@ -12,8 +12,8 @@ import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { convertNotesToTree } from 'utils/helper'
-import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
+import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
+import { useTeamNotes, useProject, useAccess, useAllTeamlNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
 
@@ -25,6 +25,8 @@ import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
+import Export from 'public/export.svg'
+import Import from 'public/import.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -64,6 +66,8 @@ function TeamNotes() {
   const [isOpenModal, setIsOpenModal] = useState(false)
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
+  const [allNotes] = useAllTeamlNotes()
+
   const {
     query: { project: code },
   } = useRouter()
@@ -77,6 +81,138 @@ function TeamNotes() {
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const supabase = useSupabaseClient()
+
+  useEffect(() => {
+    console.log(notes, 82)
+  }, [notes])
+
+  function generateUniqueId(existingIds) {
+    let newId
+    do {
+      newId = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    } while (existingIds.includes(newId))
+    return newId
+  }
+
+  function parseNotesWithTopFolder(notes, project_id) {
+    const exportFolderId = generateUniqueId(allNotes)
+    const exportFolderDate = new Date().toISOString().split('T')[0]
+
+    const exportFolder = {
+      id: exportFolderId,
+      project_id: project_id,
+      title: `export-${exportFolderDate}`,
+      data: null,
+      created_at: new Date().toISOString(),
+      changed_at: new Date().toISOString(),
+      deleted_at: null,
+      is_folder: true,
+      parent_id: null,
+      sorting: 0,
+    }
+
+    const parsedNotes = parseNotes(notes, project_id, exportFolderId)
+    return [exportFolder, ...parsedNotes]
+  }
+
+  function parseNotes(notes, project_id, parentId = null) {
+    return notes.reduce((acc, note) => {
+      const id = generateUniqueId(allNotes)
+      const parsedNote = {
+        id: id,
+        project_id: project_id,
+        title: note.title,
+        data: parseData(note.data),
+        created_at: note.created_at,
+        changed_at: new Date().toISOString(),
+        deleted_at: note.deleted_at,
+        is_folder: note.is_folder,
+        parent_id: parentId,
+        sorting: note.sorting,
+      }
+
+      acc.push(parsedNote)
+
+      if (note.children && note.children.length > 0) {
+        const childNotes = parseNotes(note.children, project_id, id)
+        acc = acc.concat(childNotes)
+      }
+
+      return acc
+    }, [])
+  }
+
+  function parseData(data) {
+    if (!data) {
+      return null
+    }
+
+    return {
+      blocks: data.blocks || [],
+      version: data.version,
+      time: data.time,
+    }
+  }
+
+  const importNotes = async () => {
+    try {
+      const fileInput = document.createElement('input')
+      fileInput.type = 'file'
+      fileInput.accept = '.json'
+      fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0]
+        if (!file) {
+          throw new Error('No file selected')
+        }
+
+        const fileContents = await file.text()
+        const importedData = JSON.parse(fileContents)
+
+        const parsedNotes = parseNotesWithTopFolder(importedData, project.id)
+
+        for (const note of parsedNotes) {
+          bulkNode(note)
+        }
+      })
+
+      fileInput.click()
+    } catch (error) {
+      console.error('Error importing notes:', error.message)
+    }
+  }
+
+  function exportNotes() {
+    const transformedData = formationJSONToTree(notes)
+    const jsonContent = JSON.stringify(transformedData, null, 2)
+
+    const blob = new Blob([jsonContent], { type: 'application/json' })
+
+    const downloadLink = document.createElement('a')
+    const currentDate = new Date()
+    const formattedDate = currentDate.toISOString().split('T')[0]
+
+    const fileName = `team_notes_${formattedDate}.json`
+
+    const url = URL.createObjectURL(blob)
+
+    downloadLink.href = url
+    downloadLink.download = fileName
+
+    document.body.appendChild(downloadLink)
+    downloadLink.click()
+    document.body.removeChild(downloadLink)
+
+    URL.revokeObjectURL(url)
+  }
+
+  const bulkNode = (note) => {
+    axios
+      .post('/api/team_notes/bulk_insert', {
+        note: note,
+      })
+      .then(() => mutate())
+      .catch(console.log)
+  }
 
   const saveNote = () => {
     axios
@@ -236,11 +372,33 @@ function TeamNotes() {
         <div>
           {isModeratorAccess && (
             <div className="flex gap-2">
-              <button className="btn-tertiary p-3" onClick={() => addNode()}>
+              <button
+                className="btn-tertiary p-3"
+                onClick={() => addNode()}
+                title={t('NewNote')}
+              >
                 <FileIcon className="w-6 h-6 fill-th-text-secondary" />
               </button>
-              <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
+              <button
+                className="btn-tertiary p-3"
+                onClick={() => addNode(true)}
+                title={t('NewFolder')}
+              >
                 <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
+              </button>
+              <button
+                className="btn-tertiary p-3"
+                onClick={() => exportNotes()}
+                title={t('Download')}
+              >
+                <Export className="w-6 h-6 stroke-th-text-secondary" />
+              </button>
+              <button
+                className="btn-tertiary p-3"
+                onClick={() => importNotes()}
+                title={t('Unload')}
+              >
+                <Import className="w-6 h-6 stroke-th-text-secondary" />
               </button>
             </div>
           )}

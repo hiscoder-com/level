@@ -382,16 +382,32 @@ function PersonalNotes() {
               <Trash className="w-5 h-5 stroke-th-text-secondary" />
               {t('RemoveAll')}
             </button>
-            <button className="btn-tertiary p-3" onClick={() => addNode()}>
+            <button
+              className="btn-tertiary p-3"
+              onClick={() => addNode()}
+              title={t('NewNote')}
+            >
               <FileIcon className="w-6 h-6 fill-th-text-secondary" />
             </button>
-            <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
+            <button
+              className="btn-tertiary p-3"
+              onClick={() => addNode(true)}
+              title={t('NewFolder')}
+            >
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
             </button>
-            <button className="btn-tertiary p-3" onClick={() => exportNotes()}>
+            <button
+              className="btn-tertiary p-3"
+              onClick={() => exportNotes()}
+              title={t('Download')}
+            >
               <Export className="w-6 h-6 stroke-th-text-secondary" />
             </button>
-            <button className="btn-tertiary p-3" onClick={() => importNotes()}>
+            <button
+              className="btn-tertiary p-3"
+              onClick={() => importNotes()}
+              title={t('Unload')}
+            >
               <Import className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>

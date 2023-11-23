@@ -21,6 +21,8 @@ import ArrowLeft from 'public/arrow-left.svg'
 import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
+import Export from 'public/export.svg'
+import Import from 'public/import.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -193,9 +195,29 @@ function Dictionary() {
           <div className="flex gap-4 items-start">
             {isModeratorAccess && (
               <>
-                <div className="top-0 right-0">
-                  <button className="btn-tertiary p-3" onClick={addNote}>
+                <div className="flex gap-2">
+                  <button
+                    className="btn-tertiary p-3"
+                    onClick={addNote}
+                    title="Добавить заметку"
+                  >
                     <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                  </button>
+
+                  <button
+                    className="btn-tertiary p-3"
+                    onClick={addNote}
+                    title={t('Download')}
+                  >
+                    <Export className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                  </button>
+
+                  <button
+                    className="btn-tertiary p-3"
+                    onClick={addNote}
+                    title={t('Unload')}
+                  >
+                    <Import className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>
                 </div>
               </>
