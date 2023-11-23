@@ -792,8 +792,15 @@ function buildTree(items) {
   })
 
   items.forEach((item) => {
-    if (item.parent_id) {
-      itemMap[item.parent_id].children.push(item)
+    if (item?.parent_id) {
+      const parentItem = itemMap[item.parent_id]
+      if (parentItem) {
+        parentItem.children.push(item)
+      } else {
+        console.error(
+          `Parent item with id ${item.parent_id} not found for item with id ${item.id}`
+        )
+      }
     } else {
       tree.push(item)
     }
@@ -806,7 +813,8 @@ function removeIdsFromTree(tree) {
   function removeIdsFromItem(item) {
     delete item.id
     delete item.parent_id
-    delete item.user_id
+    delete item?.user_id
+    delete item?.project_id
 
     if (item.data && item.data.blocks) {
       item.data.blocks.forEach((block) => delete block.id)
