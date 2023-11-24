@@ -1,6 +1,6 @@
 /** @type {import('next').NextConfig} */
 const { i18n } = require('./next-i18next.config')
-const intranetOption = process.env.INTRANET ? { output: 'standalone' } : {}
+const intranetOption = process.env.NEXT_PUBLIC_INTRANET ? { output: 'standalone' } : {}
 const nextConfig = {
   reactStrictMode: true,
   ...intranetOption,
