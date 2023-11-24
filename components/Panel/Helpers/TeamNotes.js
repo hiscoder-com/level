@@ -82,10 +82,6 @@ function TeamNotes() {
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const supabase = useSupabaseClient()
 
-  useEffect(() => {
-    console.log(notes, 82)
-  }, [notes])
-
   function generateUniqueId(existingIds) {
     let newId
     do {
