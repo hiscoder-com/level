@@ -42,7 +42,7 @@ export default function Audio() {
 
 function MainAudio({ setAudioState }) {
   const { t } = useTranslation(['audio'])
-  const isIntranet = process.env.INTRANET ?? false
+  const isIntranet = process.env.NEXT_PUBLIC_INTRANET ?? false
   return (
     <div className="flex flex-col items-center gap-5 min-h-full justify-center">
       <button

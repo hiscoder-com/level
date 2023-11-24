@@ -202,7 +202,9 @@ export const downloadPdf = async ({
         back: ' ', // to display the page headers
       },
       imageUrl: `${
-        process.env.INTRANET ? process.env.NODE_HOST : 'https://cdn.door43.org'
+        process.env.NEXT_PUBLIC_INTRANET
+          ? process.env.NEXT_PUBLIC_NODE_HOST
+          : 'https://cdn.door43.org'
       }/obs/jpg/360px/`,
     }
 
