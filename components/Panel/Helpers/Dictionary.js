@@ -12,7 +12,7 @@ import toast from 'react-hot-toast'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { useAccess, useProject } from 'utils/hooks'
+import { useAccess, useAllWords, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
 
@@ -62,13 +62,16 @@ function Dictionary() {
     query: { project: code },
   } = useRouter()
 
-  const [project, { mutate }] = useProject({
+  const [project] = useProject({
     code,
   })
   const [{ isModeratorAccess }] = useAccess({
     user_id: user?.id,
     code,
   })
+
+  const [allWords, { mutate, isLoading, error }] = useAllWords('', 1, project?.id)
+
   const getAll = () => {
     setCurrentPageWords(0)
     setSearchQuery('')
@@ -77,6 +80,7 @@ function Dictionary() {
 
   const getWords = async (searchQuery = '', count = 0) => {
     const { from, to } = getPagination(count, CountWordsOnPage)
+    console.log(from, to, 80)
     if (project?.id) {
       const { data, count: wordsCount } = await supabase
         .from('dictionaries')
@@ -96,6 +100,10 @@ function Dictionary() {
     getWords()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id])
+
+  useEffect(() => {
+    console.log(allWords, 102)
+  }, [allWords])
 
   useEffect(() => {
     const timer = setTimeout(() => {
