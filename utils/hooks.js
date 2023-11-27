@@ -73,6 +73,28 @@ export function useAllTeamlNotes() {
 }
 
 /**
+ *hook returns words from dictionarie
+ * @returns {array}
+ */
+export function useAllWords(searchQuery = '', count = 0, projectId) {
+  const {
+    data: allWords,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(
+    `/api/dictionaries/getWords?searchQuery=${searchQuery}&count=${count}&project_id=${projectId}`,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  console.log(allWords, 93)
+  return [allWords, { mutate, isLoading, error }]
+}
+
+/**
  *hook returns information about all users
  * @returns {array}
  */
