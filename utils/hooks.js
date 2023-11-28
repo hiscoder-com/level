@@ -83,8 +83,13 @@ export function useAllTeamlNotes() {
  * @returns {array}
  */
 // hooks/useAllWords.js
-export function useAllWords(searchQuery = '', count = 0, project_id_param) {
-  const apiUrl = `/api/dictionaries/getWords?searchQuery=${searchQuery}&count=${count}&project_id_param=${project_id_param}`
+export function useAllWords(
+  searchQuery = '',
+  wordsPerPage = 10,
+  pageNumber = 1,
+  project_id_param
+) {
+  const apiUrl = `/api/dictionaries/getWords?searchQuery=${searchQuery}&wordsPerPage=${wordsPerPage}&pageNumber=${pageNumber}&project_id_param=${project_id_param}`
   console.log('API URL:', apiUrl)
 
   const {
