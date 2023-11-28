@@ -7,18 +7,24 @@ import { useRecoilState } from 'recoil'
 
 import { currentVerse } from '../components/state/atoms'
 
-const fetcher = async ([url]) => {
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: new Headers({ 'Content-Type': 'application/json' }),
-    credentials: 'same-origin',
-  })
-  if (!res.ok) {
-    const error = await res.json()
-    error.status = res.status
+const fetcher = async (url) => {
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+    })
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw { status: res.status, ...data }
+    }
+
+    return data
+  } catch (error) {
+    console.error('Fetch Error:', error)
     throw error
   }
-  return res.json()
 }
 /**
  *hook returns information about all languages from table ''
@@ -76,21 +82,28 @@ export function useAllTeamlNotes() {
  *hook returns words from dictionarie
  * @returns {array}
  */
-export function useAllWords(searchQuery = '', count = 0, projectId) {
+// hooks/useAllWords.js
+export function useAllWords(searchQuery = '', count = 0, project_id_param) {
+  const apiUrl = `/api/dictionaries/getWords?searchQuery=${searchQuery}&count=${count}&project_id_param=${project_id_param}`
+  console.log('API URL:', apiUrl)
+
   const {
     data: allWords,
     mutate,
     error,
     isLoading,
-  } = useSWR(
-    `/api/dictionaries/getWords?searchQuery=${searchQuery}&count=${count}&project_id=${projectId}`,
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
-    }
-  )
-  console.log(allWords, 93)
+  } = useSWR(apiUrl, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+
+  if (error) {
+    console.error('API Error Details:', error)
+  }
+
+  console.log('Loading:', isLoading)
+  console.log('allWords:', allWords)
+
   return [allWords, { mutate, isLoading, error }]
 }
 
