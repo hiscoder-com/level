@@ -5,20 +5,26 @@ export default async function handler(req, res) {
     let supabase
     try {
       supabase = await supabaseApi({ req, res })
-      console.log(req, 12)
     } catch (error) {
       return res.status(401).json({ error })
     }
-    const { searchQuery = '', count = 0, project_id: projectId } = req.query
 
-    if (!projectId) {
+    const {
+      searchQuery = '',
+      wordsPerPage = 10,
+      pageNumber = 1,
+      project_id_param: project_id_param,
+    } = req.query
+
+    if (!project_id_param) {
       return res.status(400).json({ message: 'Missing project ID' })
     }
 
-    const { data, error } = await supabase.rpc('get_words', {
+    const { data, error } = await supabase.rpc('get_words_page', {
       search_query: searchQuery,
-      count: count,
-      project_id_param: projectId,
+      words_per_page: wordsPerPage,
+      page_number: pageNumber,
+      project_id_param: project_id_param,
     })
 
     if (error) throw error
