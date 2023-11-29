@@ -369,21 +369,20 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
       {alphabet &&
         alphabet
           ?.sort((a, b) => a.localeCompare(b))
-          .map((el) => (
+          .map((el, index) => (
             <div
+              key={`${el}_${index}`}
               onClick={() => {
                 setCurrentPageWords(0)
                 setSearchQuery(el.toLowerCase())
               }}
               className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
-              key={el}
             >
               {el}
             </div>
           ))}
       <div
-        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100
-        "
+        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
         onClick={getAll}
       >
         {t('ShowAll')}
