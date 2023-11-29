@@ -364,11 +364,13 @@ function Dictionary() {
 export default Dictionary
 
 function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) {
+  const uniqueAlphabet = [...new Set(alphabet)]
+
   return (
     <div className="flex flex-wrap">
-      {alphabet &&
-        alphabet
-          ?.sort((a, b) => a.localeCompare(b))
+      {uniqueAlphabet &&
+        uniqueAlphabet
+          .sort((a, b) => a.localeCompare(b))
           .map((el, index) => (
             <div
               key={`${el}_${index}`}
