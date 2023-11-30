@@ -3231,6 +3231,8 @@ CREATE OR REPLACE FUNCTION get_words_page(
   dict_project_id BIGINT,
   dict_title TEXT,
   dict_data JSON,
+  dict_created_at TIMESTAMP,
+  dict_changed_at TIMESTAMP,
   dict_deleted_at TIMESTAMP,
   total_records BIGINT
 ) AS $$
@@ -3245,6 +3247,8 @@ BEGIN
         project_id AS dict_project_id,
         title AS dict_title,
         data AS dict_data,
+        created_at AS dict_created_at,
+        changed_at AS dict_changed_at,
         deleted_at AS dict_deleted_at,
         COUNT(*) OVER() AS total_records
       FROM dictionaries
@@ -3262,6 +3266,8 @@ BEGIN
         project_id AS dict_project_id,
         title AS dict_title,
         data AS dict_data,
+        created_at AS dict_created_at,
+        changed_at AS dict_changed_at,
         deleted_at AS dict_deleted_at,
         COUNT(*) OVER() AS total_records
       FROM dictionaries
