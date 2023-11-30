@@ -71,6 +71,14 @@ function Dictionary() {
 
   const [allWords, { mutate }] = useAllWords('', CountWordsOnPage, -1, project?.id)
 
+  useEffect(() => {
+    mutate()
+  }, [mutate])
+
+  useEffect(() => {
+    mutateProject()
+  }, [mutateProject])
+
   const getAll = () => {
     setCurrentPageWords(0)
     setSearchQuery('')
@@ -241,7 +249,7 @@ function Dictionary() {
   }
 
   function addNote() {
-    const placeholder = t('NewWord').toLowerCase()
+    const placeholder = checkAndAppendNewTitle(t('NewWord').toLowerCase(), allWords)
     const id = generateUniqueId(allWords)
     axios
       .post('/api/dictionaries', {
@@ -281,6 +289,7 @@ function Dictionary() {
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
       .then(() => {
         saveCacheNote('dictionary', activeWord, user)
+        mutate()
         mutateProject()
         setAlphabetProject(project?.dictionaries_alphabet)
       })
