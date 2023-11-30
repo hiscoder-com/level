@@ -79,6 +79,10 @@ function PersonalNotes() {
     localStorage.removeItem(key)
   }
 
+  useEffect(() => {
+    mutate()
+  }, [mutate])
+
   function generateUniqueId(existingIds) {
     let newId
     do {
@@ -226,7 +230,7 @@ function PersonalNotes() {
   }
 
   const addNode = (isFolder = false) => {
-    const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    const id = generateUniqueId(allNotes)
     const title = isFolder ? t('NewFolder') : t('NewNote')
     axios
       .post('/api/personal_notes', {
