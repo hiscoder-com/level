@@ -11,8 +11,7 @@ import toast from 'react-hot-toast'
 
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import useSupabaseClient from 'utils/supabaseClient'
-import { useAccess, useAllWords, useProject } from 'utils/hooks'
+import { useAccess, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
 
@@ -48,8 +47,6 @@ function Dictionary() {
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
 
-  const supabase = useSupabaseClient()
-
   const totalPageCount = useMemo(
     () => Math.ceil(words?.count / CountWordsOnPage),
     [words]
@@ -70,8 +67,6 @@ function Dictionary() {
     code,
   })
 
-  const [allWords, { mutate, isLoading, error }] = useAllWords('', 1, project?.id)
-
   const getAll = () => {
     setCurrentPageWords(0)
     setSearchQuery('')
@@ -79,20 +74,39 @@ function Dictionary() {
   }
 
   const getWords = async (searchQuery = '', count = 0) => {
-    const { from, to } = getPagination(count, CountWordsOnPage)
-    console.log(from, to, 80)
-    if (project?.id) {
-      const { data, count: wordsCount } = await supabase
-        .from('dictionaries')
-        .select('id,project_id,title,data,deleted_at', { count: 'exact' })
-        .eq('project_id', project?.id)
-        .is('deleted_at', null)
-        .ilike('title', `${searchQuery}%`)
-        .order('title', { ascending: true })
-        .range(from, to)
-      if (data?.length) {
-        setWords({ data, count: wordsCount })
+    const apiUrl = '/api/dictionaries/getWords'
+
+    try {
+      if (project?.id) {
+        const response = await axios.get(apiUrl, {
+          params: {
+            searchQuery,
+            wordsPerPage: CountWordsOnPage,
+            pageNumber: count,
+            project_id_param: project?.id,
+          },
+        })
+
+        const dataTemp = response.data
+
+        if (dataTemp?.length) {
+          const data = dataTemp.map((word) => {
+            return {
+              id: word.dict_id,
+              project_id: word.dict_project_id,
+              title: word.dict_title,
+              data: word.dict_data,
+              deleted_at: word.dict_deleted_at,
+              total_records: word.total_records,
+            }
+          })
+          if (data?.length) {
+            setWords({ data, count: data[0].total_records })
+          }
+        }
       }
+    } catch (error) {
+      console.error('Error fetching words:', error)
     }
   }
 
@@ -100,10 +114,6 @@ function Dictionary() {
     getWords()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project?.id])
-
-  useEffect(() => {
-    console.log(allWords, 102)
-  }, [allWords])
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -167,7 +177,6 @@ function Dictionary() {
       })
       .finally(() => {
         getWords(searchQuery, currentPageWords)
-        mutate()
       })
   }
 
@@ -175,12 +184,6 @@ function Dictionary() {
     if (err?.response?.data?.error) {
       toast.error(`${t('WordExist')} "${placeholder}"`)
     }
-  }
-
-  const getPagination = (page, size) => {
-    const from = page ? page * size : 0
-    const to = page ? from + size - 1 : size - 1
-    return { from, to }
   }
 
   useEffect(() => {
@@ -249,7 +252,7 @@ function Dictionary() {
             </div>
           </div>
 
-          {words?.data.length ? (
+          {words && words.data && words.data.length ? (
             <div className="mt-2">
               <ListOfNotes
                 notes={words?.data}
