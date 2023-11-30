@@ -3231,43 +3231,30 @@ CREATE OR REPLACE FUNCTION get_words_page(
   dict_project_id BIGINT,
   dict_title TEXT,
   dict_data JSON,
-  dict_deleted_at TIMESTAMP
+  dict_deleted_at TIMESTAMP,
+  total_records BIGINT
 ) AS $$
 DECLARE
   from_offset INT;
   to_offset INT;
 BEGIN
-  IF page_number = 0 THEN
-    RETURN QUERY
-      SELECT
-        id AS dict_id,
-        project_id AS dict_project_id,
-        title AS dict_title,
-        data AS dict_data,
-        deleted_at AS dict_deleted_at
-      FROM dictionaries
-      WHERE project_id = project_id_param
-        AND deleted_at IS NULL
-        AND title ILIKE (search_query || '%')
-      ORDER BY title ASC;
-  ELSE
-    from_offset := (page_number - 1) * words_per_page;
-    to_offset := page_number * words_per_page - 1;
+  from_offset := page_number * words_per_page;
+  to_offset := (page_number + 1) * words_per_page;
 
-    RETURN QUERY
-      SELECT
-        id AS dict_id,
-        project_id AS dict_project_id,
-        title AS dict_title,
-        data AS dict_data,
-        deleted_at AS dict_deleted_at
-      FROM dictionaries
-      WHERE project_id = project_id_param
-        AND deleted_at IS NULL
-        AND title ILIKE (search_query || '%')
-      ORDER BY title ASC
-      LIMIT words_per_page
-      OFFSET from_offset;
-  END IF;
+  RETURN QUERY
+    SELECT
+      id AS dict_id,
+      project_id AS dict_project_id,
+      title AS dict_title,
+      data AS dict_data,
+      deleted_at AS dict_deleted_at,
+      COUNT(*) OVER() AS total_records
+    FROM dictionaries
+    WHERE project_id = project_id_param
+      AND deleted_at IS NULL
+      AND title ILIKE (search_query || '%')
+    ORDER BY title ASC
+    LIMIT words_per_page
+    OFFSET from_offset;
 END;
 $$ LANGUAGE plpgsql;
