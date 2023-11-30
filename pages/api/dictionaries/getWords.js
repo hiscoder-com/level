@@ -12,7 +12,7 @@ export default async function handler(req, res) {
     const {
       searchQuery = '',
       wordsPerPage = 10,
-      pageNumber = 1,
+      pageNumber = 0,
       project_id_param: project_id_param,
     } = req.query
 
