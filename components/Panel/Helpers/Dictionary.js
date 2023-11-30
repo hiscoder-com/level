@@ -180,7 +180,6 @@ function Dictionary() {
           }
         })
 
-        console.log(words, 178)
         for (const word of words) {
           bulkNode(word)
         }
