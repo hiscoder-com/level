@@ -90,7 +90,6 @@ export function useAllWords(
   project_id_param
 ) {
   const apiUrl = `/api/dictionaries/getWords?searchQuery=${searchQuery}&wordsPerPage=${wordsPerPage}&pageNumber=${pageNumber}&project_id_param=${project_id_param}`
-  console.log('API URL:', apiUrl)
 
   const {
     data: allWords,
@@ -105,9 +104,6 @@ export function useAllWords(
   if (error) {
     console.error('API Error Details:', error)
   }
-
-  console.log('Loading:', isLoading)
-  console.log('allWords:', allWords)
 
   return [allWords, { mutate, isLoading, error }]
 }
