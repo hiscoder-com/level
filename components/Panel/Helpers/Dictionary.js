@@ -11,7 +11,7 @@ import toast from 'react-hot-toast'
 
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import { useAccess, useProject } from 'utils/hooks'
+import { useAccess, useAllWords, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
 
@@ -59,13 +59,17 @@ function Dictionary() {
     query: { project: code },
   } = useRouter()
 
-  const [project] = useProject({
+  const [project, { mutate: mutateProject }] = useProject({
     code,
   })
   const [{ isModeratorAccess }] = useAccess({
     user_id: user?.id,
     code,
   })
+
+  const [alphabetProject, setAlphabetProject] = useState(project?.dictionaries_alphabet)
+
+  const [allWords, { mutate }] = useAllWords('', CountWordsOnPage, -1, project?.id)
 
   const getAll = () => {
     setCurrentPageWords(0)
@@ -134,16 +138,120 @@ function Dictionary() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wordId])
 
+  function generateUniqueId(existingIds) {
+    let newId
+    do {
+      newId = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    } while (existingIds.includes(newId))
+    return newId
+  }
+
+  const importWords = async () => {
+    try {
+      const fileInput = document.createElement('input')
+      fileInput.type = 'file'
+      fileInput.accept = '.json'
+      fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0]
+        if (!file) {
+          throw new Error('No file selected')
+        }
+
+        const fileContents = await file.text()
+        const importedData = JSON.parse(fileContents)
+
+        const words = importedData.map((word) => {
+          return {
+            id: generateUniqueId(allWords),
+            project_id: project?.id,
+            title: checkAndAppendNewTitle(word.title, allWords),
+            data: word.data,
+            created_at: word.created_at,
+            changed_at: word.changed_at,
+            deleted_at: word.deleted_at,
+          }
+        })
+
+        console.log(words, 178)
+        for (const word of words) {
+          bulkNode(word)
+        }
+        getAll()
+        mutateProject()
+        setAlphabetProject(project?.dictionaries_alphabet)
+      })
+
+      fileInput.click()
+    } catch (error) {
+      console.error('Error importing notes:', error.message)
+    }
+  }
+
+  function exportWords() {
+    if (!allWords || !allWords.length) {
+      console.error('No data to export')
+      return
+    }
+
+    const data = allWords.map((word) => {
+      return {
+        title: word.dict_title,
+        data: word.dict_data,
+        created_at: word.dict_created_at,
+        changed_at: word.dict_changed_at,
+        deleted_at: word.dict_deleted_at,
+      }
+    })
+
+    const jsonString = JSON.stringify(data, null, 2)
+    const blob = new Blob([jsonString], { type: 'application/json' })
+
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+
+    const currentDate = new Date()
+    const formattedDate = currentDate.toISOString().split('T')[0]
+
+    const fileName = `dictionary_${formattedDate}.json`
+
+    link.download = fileName
+    document.body.appendChild(link)
+    link.click()
+
+    document.body.removeChild(link)
+  }
+
+  function checkAndAppendNewTitle(title, allWords) {
+    const existingTitles = allWords?.map((word) => word.dict_title.toLowerCase())
+    let newTitle = title.toLowerCase()
+
+    do {
+      newTitle += '_new'
+    } while (existingTitles && existingTitles.includes(newTitle))
+    return newTitle
+  }
+
+  const bulkNode = (word) => {
+    axios
+      .post('/api/dictionaries/bulk_insert', {
+        word: word,
+      })
+      .then(() => mutate())
+      .catch(console.log)
+  }
+
   function addNote() {
     const placeholder = t('NewWord').toLowerCase()
-    const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    const id = generateUniqueId(allWords)
     axios
       .post('/api/dictionaries', {
         id,
         project_id: project?.id,
         placeholder,
       })
-      .then((res) => setActiveWord(res.data[0]))
+      .then((res) => {
+        setActiveWord(res.data[0])
+      })
       .catch((err) => showError(err, placeholder))
   }
 
@@ -168,9 +276,14 @@ function Dictionary() {
     if (!isModeratorAccess) {
       return
     }
+
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
-      .then(() => saveCacheNote('dictionary', activeWord, user))
+      .then(() => {
+        saveCacheNote('dictionary', activeWord, user)
+        mutateProject()
+        setAlphabetProject(project?.dictionaries_alphabet)
+      })
       .catch((err) => {
         toast.error(t('SaveFailed'))
         console.log(err)
@@ -199,6 +312,10 @@ function Dictionary() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWord, isModeratorAccess])
 
+  useEffect(() => {
+    setAlphabetProject(project?.dictionaries_alphabet)
+  }, [project])
+
   return (
     <div className="relative">
       {!activeWord ? (
@@ -217,7 +334,7 @@ function Dictionary() {
 
                   <button
                     className="btn-tertiary p-3"
-                    onClick={addNote}
+                    onClick={exportWords}
                     title={t('Download')}
                   >
                     <Export className="w-6 h-6 stroke-th-text-secondary stroke-2" />
@@ -225,7 +342,7 @@ function Dictionary() {
 
                   <button
                     className="btn-tertiary p-3"
-                    onClick={addNote}
+                    onClick={importWords}
                     title={t('Unload')}
                   >
                     <Import className="w-6 h-6 stroke-th-text-secondary stroke-2" />
@@ -235,7 +352,7 @@ function Dictionary() {
             )}
             <div>
               <Alphabet
-                alphabet={project?.dictionaries_alphabet}
+                alphabet={alphabetProject}
                 getAll={getAll}
                 setSearchQuery={setSearchQuery}
                 setCurrentPageWords={setCurrentPageWords}
