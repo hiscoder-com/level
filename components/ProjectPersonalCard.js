@@ -14,7 +14,7 @@ import {
   useAccess,
 } from 'utils/hooks'
 
-import { checkBookCodeExists, readableDate } from 'utils/helper'
+import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import Reader from '/public/dictionary.svg'
@@ -146,15 +146,14 @@ function ProjectPersonalCard({ project, user }) {
                           >
                             {project?.title}
                           </Link>
-                          {(checkBookCodeExists(book, chaptersArray) ||
-                            levelChecks?.[book]) && (
+                          {(chaptersArray || levelChecks?.[book]) && (
                             <Reader
                               className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70  cursor-pointer"
                               onClick={() =>
                                 push({
                                   pathname: `/projects/${project?.code}/books/read`,
                                   query: {
-                                    bookid: book,
+                                    bookid: chaptersArray[0].book_code || book,
                                   },
                                   shallow: true,
                                 })
