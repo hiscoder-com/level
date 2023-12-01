@@ -136,21 +136,6 @@ function ProjectPersonalCard({ project, user }) {
                         })} ${t('Verse', {
                           count: countChaptersVerses?.[book]?.countVerses,
                         })})`}</div>
-                        {(checkBookCodeExists(book, chaptersArray) ||
-                          levelChecks?.[book]) && (
-                          <Reader
-                            className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70  cursor-pointer"
-                            onClick={() =>
-                              push({
-                                pathname: `/projects/${project?.code}/books/read`,
-                                query: {
-                                  bookid: book,
-                                },
-                                shallow: true,
-                              })
-                            }
-                          />
-                        )}
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
@@ -161,6 +146,21 @@ function ProjectPersonalCard({ project, user }) {
                           >
                             {project?.title}
                           </Link>
+                          {(checkBookCodeExists(book, chaptersArray) ||
+                            levelChecks?.[book]) && (
+                            <Reader
+                              className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70  cursor-pointer"
+                              onClick={() =>
+                                push({
+                                  pathname: `/projects/${project?.code}/books/read`,
+                                  query: {
+                                    bookid: book,
+                                  },
+                                  shallow: true,
+                                })
+                              }
+                            />
+                          )}
                         </div>
                         <div className="flex flex-wrap gap-3">
                           <p>{t('Translator_other')}:</p>
