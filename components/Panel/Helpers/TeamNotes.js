@@ -104,7 +104,7 @@ function TeamNotes() {
       data: null,
       created_at: new Date().toISOString(),
       changed_at: new Date().toISOString(),
-      deleted_at: null,
+      deleted_at: deleted_at,
       is_folder: true,
       parent_id: null,
       sorting: 0,
@@ -181,7 +181,7 @@ function TeamNotes() {
   }
 
   function exportNotes() {
-    const transformedData = formationJSONToTree(notes)
+    const transformedData = formationJSONToTree(allNotes)
     const jsonContent = JSON.stringify(transformedData, null, 2)
 
     const blob = new Blob([jsonContent], { type: 'application/json' })
