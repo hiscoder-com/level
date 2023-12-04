@@ -148,7 +148,7 @@ function ProjectPersonalCard({ project, user }) {
                           </Link>
                           {(chaptersArray || levelChecks?.[book]) && (
                             <Reader
-                              className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70  cursor-pointer"
+                              className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70 cursor-pointer"
                               onClick={() =>
                                 push({
                                   pathname: `/projects/${project?.code}/books/read`,
