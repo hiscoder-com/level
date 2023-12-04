@@ -36,7 +36,7 @@ const ListOfNotes = dynamic(
     ssr: false,
   }
 )
-const CountWordsOnPage = 10
+const countWordsOnPage = 10
 
 function Dictionary() {
   const [currentPageWords, setCurrentPageWords] = useState(0)
@@ -48,7 +48,7 @@ function Dictionary() {
   const [words, setWords] = useState(null)
 
   const totalPageCount = useMemo(
-    () => Math.ceil(words?.count / CountWordsOnPage),
+    () => Math.ceil(words?.count / countWordsOnPage),
     [words]
   )
 
@@ -69,7 +69,7 @@ function Dictionary() {
 
   const [alphabetProject, setAlphabetProject] = useState(project?.dictionaries_alphabet)
 
-  const [allWords, { mutate }] = useAllWords('', CountWordsOnPage, -1, project?.id)
+  const [allWords, { mutate }] = useAllWords('', countWordsOnPage, -1, project?.id)
 
   useEffect(() => {
     mutate()
@@ -93,7 +93,7 @@ function Dictionary() {
         const response = await axios.get(apiUrl, {
           params: {
             searchQuery,
-            wordsPerPage: CountWordsOnPage,
+            wordsPerPage: countWordsOnPage,
             pageNumber: count,
             project_id_param: project?.id,
           },
@@ -142,7 +142,9 @@ function Dictionary() {
       return
     }
     const currentNote = words?.data?.find((el) => el.id === wordId)
-    setActiveWord(currentNote)
+    if (currentNote) {
+      setActiveWord(currentNote)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wordId])
 
@@ -168,8 +170,8 @@ function Dictionary() {
         const fileContents = await file.text()
         const importedData = JSON.parse(fileContents)
 
-        const words = importedData.map((word) => {
-          return {
+        for (const word of importedData) {
+          const newWord = {
             id: generateUniqueId(allWords),
             project_id: project?.id,
             title: checkAndAppendNewTitle(word.title, allWords),
@@ -178,11 +180,10 @@ function Dictionary() {
             changed_at: word.changed_at,
             deleted_at: word.deleted_at,
           }
-        })
 
-        for (const word of words) {
-          bulkNode(word)
+          bulkNode(newWord)
         }
+
         getAll()
         mutateProject()
         setAlphabetProject(project?.dictionaries_alphabet)
@@ -234,7 +235,7 @@ function Dictionary() {
 
     do {
       newTitle += '_new'
-    } while (existingTitles && existingTitles.includes(newTitle))
+    } while (existingTitles?.includes(newTitle))
     return newTitle
   }
 
