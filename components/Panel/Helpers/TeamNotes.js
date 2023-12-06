@@ -91,8 +91,8 @@ function TeamNotes() {
       })
   }
 
-  const onDoubleClick = () => {
-    const currentNote = notes.find((el) => el.id === noteId)
+  const changeNode = () => {
+    const currentNote = notes.find((el) => el.id === hoveredNodeId)
     setActiveNote(currentNote)
   }
 
@@ -257,7 +257,7 @@ function TeamNotes() {
             selectedNodeId={noteId}
             treeWidth={'w-full'}
             icons={icons}
-            handleDoubleClick={onDoubleClick}
+            handleOnClick={changeNode}
             handleContextMenu={handleContextMenu}
             hoveredNodeId={hoveredNodeId}
             setHoveredNodeId={setHoveredNodeId}
