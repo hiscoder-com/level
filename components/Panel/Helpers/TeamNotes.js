@@ -289,6 +289,7 @@ function TeamNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
+              setNoteId(null)
             }}
           >
             <Back className="stroke-th-text-primary" />
@@ -317,22 +318,14 @@ function TeamNotes() {
               className="btn-secondary flex-1"
               onClick={() => {
                 setIsOpenModal(false)
-                if (currentNodeProps) {
-                  removeNode()
-                  setCurrentNodeProps(null)
-                }
+                removeNode()
               }}
             >
               {t('Yes')}
             </button>
             <button
               className="btn-secondary flex-1"
-              onClick={() => {
-                setIsOpenModal(false)
-                setTimeout(() => {
-                  setCurrentNodeProps(null)
-                }, 1000)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
               {t('No')}
             </button>

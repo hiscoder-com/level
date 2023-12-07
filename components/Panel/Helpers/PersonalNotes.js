@@ -234,6 +234,7 @@ function PersonalNotes() {
       action: () => setIsOpenModal(true),
     },
   ]
+
   return (
     <div className="relative">
       {!activeNote ? (
@@ -300,6 +301,7 @@ function PersonalNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
+              setNoteId(null)
             }}
           >
             <Back className="stroke-th-text-primary" />
@@ -334,24 +336,14 @@ function PersonalNotes() {
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
-                if (currentNodeProps) {
-                  removeNode()
-                  setCurrentNodeProps(null)
-                } else {
-                  removeAllNote()
-                }
+                currentNodeProps ? removeNode() : removeAllNote()
               }}
             >
               {t('Yes')}
             </button>
             <button
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
-              onClick={() => {
-                setIsOpenModal(false)
-                setTimeout(() => {
-                  setCurrentNodeProps(null)
-                }, 1000)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
               {t('No')}
             </button>
