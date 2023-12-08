@@ -161,7 +161,7 @@ function TeamNotes() {
   }, [notes])
 
   useEffect(() => {
-    localStorage.setItem('selectedTeamNoteId', noteId)
+    noteId && localStorage.setItem('selectedTeamNoteId', noteId)
   }, [noteId])
 
   const handleContextMenu = (event) => {
@@ -289,7 +289,7 @@ function TeamNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
-              setNoteId(null)
+              setNoteId(localStorage.getItem('selectedTeamNoteId') || '')
             }}
           >
             <Back className="stroke-th-text-primary" />

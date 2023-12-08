@@ -74,7 +74,6 @@ function PersonalNotes() {
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
-
   const saveNote = () => {
     axios
       .put(`/api/personal_notes/${noteId}`, activeNote)
@@ -138,7 +137,7 @@ function PersonalNotes() {
   }
 
   useEffect(() => {
-    localStorage.setItem('selectedPersonalNoteId', noteId)
+    noteId && localStorage.setItem('selectedPersonalNoteId', noteId)
   }, [noteId])
 
   useEffect(() => {
@@ -301,7 +300,7 @@ function PersonalNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
-              setNoteId(null)
+              setNoteId(localStorage.getItem('selectedPersonalNoteId') || '')
             }}
           >
             <Back className="stroke-th-text-primary" />
