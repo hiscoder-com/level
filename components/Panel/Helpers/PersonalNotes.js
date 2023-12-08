@@ -69,6 +69,7 @@ function PersonalNotes() {
     sort: 'sorting',
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
+  const [term, setTerm] = useState('')
   const supabase = useSupabaseClient()
 
   const removeCacheAllNotes = (key) => {
@@ -257,7 +258,14 @@ function PersonalNotes() {
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>
+          <input
+            className="input-primary mb-4"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder={t('Search')}
+          />
           <TreeView
+            term={term}
             selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{

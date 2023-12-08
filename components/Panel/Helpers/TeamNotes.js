@@ -62,6 +62,7 @@ function TeamNotes() {
   const [noteId, setNoteId] = useState(localStorage.getItem('selectedTeamNoteId') || '')
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
+  const [term, setTerm] = useState('')
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
   const {
@@ -244,7 +245,14 @@ function TeamNotes() {
               </button>
             </div>
           )}
+          <input
+            className="input-primary mb-4"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder={t('Search')}
+          />
           <TreeView
+            term={term}
             selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{
