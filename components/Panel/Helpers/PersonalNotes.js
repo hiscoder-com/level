@@ -296,13 +296,13 @@ function PersonalNotes() {
       ) : (
         <>
           <div
-            className="absolute top-1 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute flex top-0 right-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
             }}
           >
-            <Back className="stroke-th-text-primary" />
+            <Back className="w-8 stroke-th-primary-200" />
           </div>
           <Redactor
             classes={{
