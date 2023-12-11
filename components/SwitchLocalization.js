@@ -9,6 +9,9 @@ function SwitchLocalization() {
   const { locale, asPath, push } = useRouter()
   const { t } = useTranslation('common')
   const supportedLngs = i18nextConfig.i18n.locales
+
+  const sortedLngs = [locale, ...supportedLngs.filter((lng) => lng !== locale)]
+
   return (
     <div className="text-xs lg:text-sm font-bold relative">
       <Menu>
@@ -20,7 +23,7 @@ function SwitchLocalization() {
         </Menu.Button>
         <Menu.Items className="absolute flex top-0 right-0 text-sm bg-th-secondary-100 rounded-2xl">
           <div className="flex flex-col">
-            {supportedLngs.map((loc) => (
+            {sortedLngs.map((loc) => (
               <Menu.Item
                 key={loc}
                 as="div"
