@@ -336,7 +336,7 @@ function Dictionary() {
                   <button
                     className="btn-tertiary p-3"
                     onClick={addNote}
-                    title="Добавить заметку"
+                    title={t('AddWord')}
                   >
                     <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>
