@@ -398,17 +398,11 @@ export const parseManifests = async ({ resources, current_method }) => {
       urlArray[2]
     }/raw/commit/${urlArray[4]}`
 
-  const getManifestUrl = (urlArray) =>
-    `${process.env.NODE_HOST ?? 'https://git.door43.org'}/${urlArray[1]}/${
-      urlArray[2]
-    }/raw/commit/${urlArray[4]}/manifest.yaml`
-
   const promises = Object.keys(resources).map(async (el) => {
     const { pathname } = new URL(resources[el])
     const urlArray = pathname.split('/')
     const url = getBaseResourceUrl(urlArray)
-    const manifestUrl = getManifestUrl(urlArray)
-
+    const manifestUrl = getBaseResourceUrl(urlArray) + '/manifest.yaml'
     const { data } = await axios.get(manifestUrl)
     const manifest = jsyaml.load(data, { json: true })
 
