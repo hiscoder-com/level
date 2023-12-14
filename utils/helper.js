@@ -392,12 +392,18 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
 
 export const parseManifests = async ({ resources, current_method }) => {
   let baseResource = {}
+
+  const getBaseResourceUrl = (urlArray) =>
+    `${process.env.NODE_HOST ?? 'https://git.door43.org'}/${urlArray[1]}/${
+      urlArray[2]
+    }/raw/commit/${urlArray[4]}`
+
   const promises = Object.keys(resources).map(async (el) => {
     const { pathname } = new URL(resources[el])
-    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
-    const manifestUrl = url.replace('/src/', '/raw/') + '/manifest.yaml'
+    const urlArray = pathname.split('/')
+    const url = getBaseResourceUrl(urlArray)
+    const manifestUrl = getBaseResourceUrl(urlArray) + '/manifest.yaml'
     const { data } = await axios.get(manifestUrl)
-
     const manifest = jsyaml.load(data, { json: true })
 
     if (current_method.resources[el]) {
@@ -425,10 +431,12 @@ export const parseManifests = async ({ resources, current_method }) => {
   })
   baseResource.books = baseResource.books.map((el) => {
     const { pathname } = new URL(resources[baseResource.name])
-    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
+    const urlArray = pathname.split('/')
+    const url = getBaseResourceUrl(urlArray)
+
     return {
       name: el.identifier,
-      link: url.replace('/src/', '/raw/') + el.path.substring(1),
+      link: url + el.path.substring(1),
     }
   })
   return { baseResource, newResources }
