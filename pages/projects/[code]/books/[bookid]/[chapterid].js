@@ -106,18 +106,22 @@ function ChapterVersesPage() {
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
 
   const changeStartChapter = () => {
-    setIsLoadingCancelStart(true)
-    supabase
-      .rpc('change_start_chapter', {
-        chapter_id: chapter?.id,
-        project_id: project?.id,
-      })
-      .then(() => {
-        mutateChapter()
-        mutateChapters()
-      })
-      .catch(console.log)
-      .finally(() => setIsLoadingCancelStart(false))
+    if (verses.some((item) => item.project_translator_id === null)) {
+      toast.error(t('ErrorStartChapter'))
+    } else {
+      setIsLoadingCancelStart(true)
+      supabase
+        .rpc('change_start_chapter', {
+          chapter_id: chapter?.id,
+          project_id: project?.id,
+        })
+        .then(() => {
+          mutateChapter()
+          mutateChapters()
+        })
+        .catch(console.log)
+        .finally(() => setIsLoadingCancelStart(false))
+    }
   }
 
   const changeFinishChapter = () => {

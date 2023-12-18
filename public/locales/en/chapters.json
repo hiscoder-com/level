@@ -6,5 +6,6 @@
   "FinishedAt": "Finished at",
   "FinishedChapter": "Finish the chapter",
   "StartChapter": "Start the chapter",
-  "StartedAt": "Started at"
+  "StartedAt": "Started at",
+  "ErrorStartChapter": "Error at the beginning of the chapter"
 }
