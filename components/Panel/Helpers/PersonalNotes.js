@@ -57,6 +57,7 @@ const icons = {
 function PersonalNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
+  const [isShowMenu, setIsShowMenu] = useState(false)
   const [noteId, setNoteId] = useState(
     localStorage.getItem('selectedPersonalNoteId') || ''
   )
@@ -170,7 +171,7 @@ function PersonalNotes() {
   }
 
   const handleContextMenu = (event) => {
-    setNoteId(hoveredNodeId)
+    setIsShowMenu(true)
     setContextMenuEvent({ event })
   }
 
@@ -288,8 +289,8 @@ function PersonalNotes() {
             openByDefault={false}
           />
           <ContextMenu
-            setSelectedNodeId={setNoteId}
-            selectedNodeId={noteId}
+            setIsVisible={setIsShowMenu}
+            isVisible={isShowMenu}
             nodeProps={currentNodeProps}
             menuItems={menuItems}
             clickMenuEvent={contextMenuEvent}
@@ -308,7 +309,7 @@ function PersonalNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
-              setNoteId(localStorage.getItem('selectedPersonalNoteId') || '')
+              setIsShowMenu(false)
             }}
           >
             <Back className="w-8 stroke-th-primary-200" />

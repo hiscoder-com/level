@@ -59,6 +59,7 @@ function TeamNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
+  const [isShowMenu, setIsShowMenu] = useState(false)
   const [noteId, setNoteId] = useState(localStorage.getItem('selectedTeamNoteId') || '')
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
@@ -166,7 +167,7 @@ function TeamNotes() {
   }, [noteId])
 
   const handleContextMenu = (event) => {
-    setNoteId(hoveredNodeId)
+    setIsShowMenu(true)
     setContextMenuEvent({ event })
   }
 
@@ -276,8 +277,8 @@ function TeamNotes() {
           />
           {isModeratorAccess && (
             <ContextMenu
-              setSelectedNodeId={setNoteId}
-              selectedNodeId={noteId}
+              setIsVisible={setIsShowMenu}
+              isVisible={isShowMenu}
               nodeProps={currentNodeProps}
               menuItems={menuItems}
               clickMenuEvent={contextMenuEvent}
@@ -297,7 +298,7 @@ function TeamNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
-              setNoteId(localStorage.getItem('selectedTeamNoteId') || '')
+              setIsShowMenu(false)
             }}
           >
             <Back className="w-8 stroke-th-primary-200" />
