@@ -352,7 +352,7 @@ function Dictionary() {
                   <button
                     className="btn-tertiary p-3"
                     onClick={importWords}
-                    title={t('Unload')}
+                    title={t('Upload')}
                   >
                     <Import className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>

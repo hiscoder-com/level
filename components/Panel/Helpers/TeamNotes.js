@@ -395,7 +395,7 @@ function TeamNotes() {
               <button
                 className="btn-tertiary p-3"
                 onClick={() => importNotes()}
-                title={t('Unload')}
+                title={t('Upload')}
               >
                 <Import className="w-6 h-6 stroke-th-text-secondary" />
               </button>
