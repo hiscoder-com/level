@@ -89,7 +89,9 @@ export function useAllWords(
   pageNumber = 1,
   project_id_param
 ) {
-  const apiUrl = `/api/dictionaries/getWords?searchQuery=${searchQuery}&wordsPerPage=${wordsPerPage}&pageNumber=${pageNumber}&project_id_param=${project_id_param}`
+  const apiUrl = project_id_param
+    ? `/api/dictionaries/getWords?searchQuery=${searchQuery}&wordsPerPage=${wordsPerPage}&pageNumber=${pageNumber}&project_id_param=${project_id_param}`
+    : null
 
   const {
     data: allWords,
@@ -100,6 +102,10 @@ export function useAllWords(
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
+
+  if (!project_id_param) {
+    return [null, { mutate, isLoading, error }]
+  }
 
   if (error) {
     console.error('API Error Details:', error)
