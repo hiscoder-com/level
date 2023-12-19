@@ -52,3 +52,8 @@ export const aboutVersionModalIsOpen = atom({
   key: 'aboutVersionModalIsOpen',
   default: false,
 })
+
+export const avatarSelectorModalIsOpen = atom({
+  key: 'avatarSelectorModalIsOpen',
+  default: false,
+})

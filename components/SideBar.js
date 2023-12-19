@@ -7,10 +7,12 @@ import { Menu, Transition } from '@headlessui/react'
 import { useSetRecoilState } from 'recoil'
 
 import AboutVersion from 'components/AboutVersion'
+import AvatarSelector from './AvatarSelector'
 import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
-import { aboutVersionModalIsOpen } from './state/atoms'
+import { aboutVersionModalIsOpen, avatarSelectorModalIsOpen } from './state/atoms'
+
 import { useCurrentUser } from 'lib/UserContext'
 
 import Localization from 'public/localization.svg'
@@ -21,14 +23,32 @@ import Close from 'public/close.svg'
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation('projects')
+
   const setVersionModalIsOpen = useSetRecoilState(aboutVersionModalIsOpen)
+  const setSelectorModalIsOpen = useSetRecoilState(avatarSelectorModalIsOpen)
+
+  const openModal = (modalType) => {
+    if (modalType === 'aboutVersion') {
+      setSelectorModalIsOpen(false)
+      setVersionModalIsOpen((prev) => !prev)
+    } else if (modalType === 'avatarSelector') {
+      setVersionModalIsOpen(false)
+      setSelectorModalIsOpen((prev) => !prev)
+    }
+  }
+
+  const closeModal = () => {
+    setVersionModalIsOpen(false)
+    setSelectorModalIsOpen(false)
+  }
+
   return (
     <Menu>
       {({ open, close }) => (
         <>
           <Menu.Button
             onClick={() => {
-              setVersionModalIsOpen(false)
+              closeModal()
               setIsOpenSideBar((prev) => !prev)
             }}
             className="z-30"
@@ -53,7 +73,10 @@ function SideBar({ setIsOpenSideBar, access }) {
             >
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl">
                 <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-300">
-                  <div className="w-12 h-12 min-w-[3rem]">
+                  <div
+                    className="w-12 h-12 min-w-[3rem]"
+                    onClick={() => openModal('avatarSelector')}
+                  >
                     <TranslatorImage item={{ users: user }} />
                   </div>
 
@@ -62,6 +85,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                     <div>{user?.email}</div>
                   </div>
                 </div>
+
                 <div className="f-screen-appbar flex flex-col justify-between sm:min-h-[60vh]">
                   <div className="flex flex-col gap-7">
                     <Menu.Item
@@ -85,7 +109,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                     >
                       <div
                         className="flex w-full items-center gap-4 cursor-pointer"
-                        onClick={() => setVersionModalIsOpen((prev) => !prev)}
+                        onClick={() => openModal('aboutVersion')}
                       >
                         <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
                           <VersionLogo className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
@@ -95,10 +119,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                     </Menu.Item>
                   </div>
 
+                  <AvatarSelector />
+
                   <div
                     className="flex justify-center cursor-pointer"
                     onClick={() => {
-                      setVersionModalIsOpen(false)
+                      closeModal()
                       setIsOpenSideBar((prev) => !prev)
                       close()
                     }}
