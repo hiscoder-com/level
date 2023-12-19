@@ -91,7 +91,7 @@ function PersonalNotes() {
     return newId
   }
 
-  function parseNotesWithTopFolder(notes, user_id) {
+  function parseNotesWithTopFolder(notes, user_id, deleted_at) {
     const exportFolderId = generateUniqueId(allNotes)
     const exportFolderDate = new Date().toISOString().split('T')[0]
 
@@ -165,7 +165,11 @@ function PersonalNotes() {
         const fileContents = await file.text()
         const importedData = JSON.parse(fileContents)
 
-        const parsedNotes = parseNotesWithTopFolder(importedData, user.id)
+        const parsedNotes = parseNotesWithTopFolder(
+          importedData,
+          user.id,
+          user.deleted_at
+        )
 
         for (const note of parsedNotes) {
           bulkNode(note)
