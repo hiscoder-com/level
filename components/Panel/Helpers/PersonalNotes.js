@@ -57,6 +57,7 @@ const icons = {
 function PersonalNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
+  const [isShowMenu, setIsShowMenu] = useState(false)
   const [noteId, setNoteId] = useState(
     localStorage.getItem('selectedPersonalNoteId') || ''
   )
@@ -69,12 +70,12 @@ function PersonalNotes() {
     sort: 'sorting',
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
+  const [term, setTerm] = useState('')
   const supabase = useSupabaseClient()
 
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
-
   const saveNote = () => {
     axios
       .put(`/api/personal_notes/${noteId}`, activeNote)
@@ -88,8 +89,8 @@ function PersonalNotes() {
       })
   }
 
-  const onDoubleClick = () => {
-    const currentNote = notes.find((el) => el.id === noteId)
+  const changeNode = () => {
+    const currentNote = notes.find((el) => el.id === hoveredNodeId)
     setActiveNote(currentNote)
   }
 
@@ -138,7 +139,7 @@ function PersonalNotes() {
   }
 
   useEffect(() => {
-    localStorage.setItem('selectedPersonalNoteId', noteId)
+    noteId && localStorage.setItem('selectedPersonalNoteId', noteId)
   }, [noteId])
 
   useEffect(() => {
@@ -170,7 +171,7 @@ function PersonalNotes() {
   }
 
   const handleContextMenu = (event) => {
-    setNoteId(hoveredNodeId)
+    setIsShowMenu(true)
     setContextMenuEvent({ event })
   }
 
@@ -234,6 +235,7 @@ function PersonalNotes() {
       action: () => setIsOpenModal(true),
     },
   ]
+
   return (
     <div className="relative">
       {!activeNote ? (
@@ -257,7 +259,14 @@ function PersonalNotes() {
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>
+          <input
+            className="input-primary mb-4"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder={t('Search')}
+          />
           <TreeView
+            term={term}
             selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{
@@ -270,7 +279,7 @@ function PersonalNotes() {
             selectedNodeId={noteId}
             treeWidth={'w-full'}
             icons={icons}
-            handleDoubleClick={onDoubleClick}
+            handleOnClick={changeNode}
             handleContextMenu={handleContextMenu}
             hoveredNodeId={hoveredNodeId}
             setHoveredNodeId={setHoveredNodeId}
@@ -280,8 +289,8 @@ function PersonalNotes() {
             openByDefault={false}
           />
           <ContextMenu
-            setSelectedNodeId={setNoteId}
-            selectedNodeId={noteId}
+            setIsVisible={setIsShowMenu}
+            isVisible={isShowMenu}
             nodeProps={currentNodeProps}
             menuItems={menuItems}
             clickMenuEvent={contextMenuEvent}
@@ -300,6 +309,7 @@ function PersonalNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
+              setIsShowMenu(false)
             }}
           >
             <Back className="w-8 stroke-th-primary-200" />
@@ -334,24 +344,14 @@ function PersonalNotes() {
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {
                 setIsOpenModal(false)
-                if (currentNodeProps) {
-                  removeNode()
-                  setCurrentNodeProps(null)
-                } else {
-                  removeAllNote()
-                }
+                currentNodeProps ? removeNode() : removeAllNote()
               }}
             >
               {t('Yes')}
             </button>
             <button
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
-              onClick={() => {
-                setIsOpenModal(false)
-                setTimeout(() => {
-                  setCurrentNodeProps(null)
-                }, 1000)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
               {t('No')}
             </button>
