@@ -171,13 +171,17 @@ function TeamNotes() {
         }
 
         const importedData = JSON.parse(fileContents)
+        if (importedData.type !== 'team_notes') {
+          throw new Error('This not team notes')
+        }
         const parsedNotes = parseNotesWithTopFolder(
-          importedData,
+          importedData.data,
           project.id,
           project.deleted_at
         )
 
         for (const note of parsedNotes) {
+          console.log(note)
           bulkNode(note)
         }
       } catch (error) {
@@ -194,8 +198,11 @@ function TeamNotes() {
         throw new Error('No data to export')
       }
       const transformedData = formationJSONToTree(notes)
-      const jsonContent = JSON.stringify(transformedData, null, 2)
-
+      const jsonContent = JSON.stringify(
+        { type: 'team_notes', data: transformedData },
+        null,
+        2
+      )
       const blob = new Blob([jsonContent], { type: 'application/json' })
 
       const downloadLink = document.createElement('a')

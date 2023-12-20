@@ -169,9 +169,11 @@ function PersonalNotes() {
         }
 
         const importedData = JSON.parse(fileContents)
-
+        if (importedData.type !== 'personal_notes') {
+          throw new Error('This not personal notes')
+        }
         const parsedNotes = parseNotesWithTopFolder(
-          importedData,
+          importedData.data,
           user.id,
           user.deleted_at
         )
@@ -193,7 +195,11 @@ function PersonalNotes() {
         throw new Error('No data to export')
       }
       const transformedData = formationJSONToTree(notes)
-      const jsonContent = JSON.stringify(transformedData, null, 2)
+      const jsonContent = JSON.stringify(
+        { type: 'personal_notes', data: transformedData },
+        null,
+        2
+      )
 
       const blob = new Blob([jsonContent], { type: 'application/json' })
 

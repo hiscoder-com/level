@@ -183,8 +183,11 @@ function Dictionary() {
         }
 
         const importedData = JSON.parse(fileContents)
+        if (importedData.type !== 'dictionary') {
+          throw new Error('This not dictionary')
+        }
 
-        for (const word of importedData) {
+        for (const word of importedData.data) {
           const newWord = {
             id: generateUniqueId(allWords),
             project_id: project?.id,
@@ -226,7 +229,8 @@ function Dictionary() {
         }
       })
 
-      const jsonString = JSON.stringify(data, null, 2)
+      const jsonString = JSON.stringify({ type: 'dictionary', data }, null, 2)
+
       const blob = new Blob([jsonString], { type: 'application/json' })
 
       const link = document.createElement('a')
