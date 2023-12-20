@@ -13,7 +13,7 @@ import { filterNotes } from 'utils/helper'
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const [tnotes, setTnotes] = useState([])
-  const { isLoading, data, error } = useGetResource({ config, url })
+  const { isLoading, data } = useGetResource({ config, url })
 
   const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
     domain: process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org',
@@ -79,21 +79,21 @@ function TNList({ setItem, data, toolName, isLoading }) {
   }, [data])
 
   return (
-    <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
+    <div className="divide-y divide-th-text-primary divide-dashed h-full overflow-auto">
       {data &&
         verses.map(([verseNumber, notes], index) => {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1" id={'idtn' + verseNumber}>
+              <div className="pl-7 flex-1" id={'idtn' + verseNumber}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.ID}
                         id={'idtn' + note.ID}
-                        className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                          highlightId === 'id' + note.ID ? 'bg-gray-200' : ''
+                        className={`p-2 cursor-pointer rounded-lg hover:bg-th-secondary-100 ${
+                          highlightId === 'id' + note.ID ? 'bg-th-secondary-100' : ''
                         }`}
                         onClick={() => {
                           handleSaveScroll(verseNumber, note.ID)

@@ -87,9 +87,8 @@ function PasswordRecovery() {
                 <p>{t('WriteNewPassword')}</p>
                 <div className="relative z-0 w-full">
                   <input
-                    name="floating_password"
-                    id="floating_password"
-                    className={`input-primary ${error ? '!border-red-500' : ''}`}
+                    name="floating_password_new"
+                    className={error ? 'input-invalid' : 'input-primary'}
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={(e) => {
@@ -100,20 +99,17 @@ function PasswordRecovery() {
                   />
 
                   <span
-                    className="eye"
-                    onClick={() => {
-                      setShowPassword((prev) => !prev)
-                    }}
+                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-text-primary"
+                    onClick={() => setShowPassword((prev) => !prev)}
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </span>
                 </div>
                 <p>{t('RepeatNewPassword')}</p>
-                <div className="relative z-0 w-full">
+                <div className="relative w-full z-0">
                   <input
-                    name="floating_password"
-                    id="floating_password"
-                    className={`input-primary ${error ? '!border-red-500' : ''}`}
+                    name="floating_password_repeat"
+                    className={error ? 'input-invalid' : 'input-primary'}
                     type={showRepeatPassword ? 'text' : 'password'}
                     value={repeatPassword}
                     onChange={(e) => {
@@ -124,7 +120,7 @@ function PasswordRecovery() {
                   />
 
                   <span
-                    className="eye"
+                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-text-primary"
                     onClick={() => setShowRepeatPassword((prev) => !prev)}
                   >
                     {showRepeatPassword ? <EyeOffIcon /> : <EyeIcon />}
@@ -136,7 +132,7 @@ function PasswordRecovery() {
                 </div>
                 <ButtonLoading
                   type="button"
-                  className="btn-cyan relative self-center w-1/2 text-sm lg:text-base"
+                  className="btn-primary relative self-center w-1/2 text-sm lg:text-base"
                   onClick={handleRecovery}
                   isLoading={isRecovering}
                 >
@@ -149,7 +145,7 @@ function PasswordRecovery() {
               <div>{successResult}</div>
               <Link
                 href={'/'}
-                className="mb-6 lg:mb-14 text-cyan-700 hover:text-gray-400"
+                className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70"
               >
                 {t('GoToLogin')}
               </Link>

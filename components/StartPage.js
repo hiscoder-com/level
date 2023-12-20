@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next'
 
 import AboutVersion from './AboutVersion'
 
-import VcanaLogo from 'public/vcana-logo.svg'
-import OmbLogo from 'public/omb-logo.svg'
+import VcanaLogo from 'public/vcana-logo-color.svg'
+import TtLogo from 'public/tt-logo.svg'
 
 function StartPage({ children }) {
   const { t } = useTranslation('common')
@@ -16,10 +16,12 @@ function StartPage({ children }) {
           <VcanaLogo className="max-w-xs my-10 sm:max-w-md w-28" />
           <AboutVersion isMobileIndexPage={true} />
         </div>
-        <div className="bg-white w-[90vw] mb-10 rounded-lg shadow-lg">{children}</div>
-        <div className="text-neutral-400 mb-4 text-center">{t('DevelopedBy')}</div>
-        <Link href="https://openmediabible.com/" target="_blank">
-          <OmbLogo className="logo mb-4" />
+        <div className="bg-th-secondary-10 w-[90vw] mb-10 rounded-lg shadow-lg">
+          {children}
+        </div>
+        <div className="text-th-secondary-300 mb-4 text-center">{t('DevelopedBy')}</div>
+        <Link href="https://texttree.org/" target="_blank">
+          <TtLogo className="logo mb-4 h-7 text-th-secondary-300" />
         </Link>
       </div>
 
@@ -31,14 +33,16 @@ function StartPage({ children }) {
               <AboutVersion />
             </div>
             <h1 className="my-4 text-center">{t('PlatformForBibleTranslate')}</h1>
-            <div className="text-neutral-400 mb-2 text-xs">{t('DevelopedBy')}</div>
-            <Link href="https://openmediabible.com/" target="_blank">
-              <OmbLogo className="logo" />
-            </Link>
+            <div className="text-th-secondary-300 mb-2 text-xs">{t('DevelopedBy')}</div>
+            <div className="logo p-2 text-th-secondary-300">
+              <Link href="https://texttree.org/" target="_blank">
+                <TtLogo className="h-10" />
+              </Link>
+            </div>
           </div>
         </div>
         <div className="flex justify-center items-center my-4 w-1/2 min-h-[90vh] bg-[url('../public/login_image.jpg')] bg-cover bg-no-repeat rounded-l-lg lg:rounded-l-[48px] xl:rounded-l-[72px] 2xl:rounded-l-[120px]">
-          <div className="w-5/6 xl:w-3/4 2xl:w-3/5 bg-white rounded-lg shadow-lg">
+          <div className="w-5/6 xl:w-3/4 2xl:w-3/5 bg-th-secondary-10 rounded-lg shadow-lg">
             {children}
           </div>
         </div>

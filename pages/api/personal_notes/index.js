@@ -24,21 +24,25 @@ export default async function notesHandler(req, res) {
       }
     case 'POST':
       try {
-        const { id, user_id } = body
+        const { id, user_id, isFolder, title } = body
         // TODO валидацию
+        let insertData = {
+          id,
+          user_id,
+          title,
+          is_folder: isFolder,
+        }
+
+        if (!isFolder) {
+          insertData.data = {
+            blocks: [],
+            version: '2.27.2',
+          }
+        }
+
         const { data, error } = await supabase
           .from('personal_notes')
-          .insert([
-            {
-              id,
-              user_id,
-              title: 'new note',
-              data: {
-                blocks: [],
-                version: '2.8.1',
-              },
-            },
-          ])
+          .insert([insertData])
           .select()
         if (error) throw error
         return res.status(200).json(data)
@@ -50,7 +54,13 @@ export default async function notesHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('personal_notes')
-          .update([{ deleted_at: new Date().toISOString().toLocaleString('en-US') }])
+          .update([
+            {
+              deleted_at: new Date().toISOString().toLocaleString('en-US'),
+              parent_id: null,
+              sorting: null,
+            },
+          ])
           .match({ user_id })
           .select()
 

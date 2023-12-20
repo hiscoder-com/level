@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -13,11 +13,11 @@ import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-import VCANA_logo from 'public/vcana-logo.svg'
+import VcanaLogo from 'public/vcana-logo.svg'
 import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 
-export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) {
+export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -43,26 +43,31 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
     }
   }, [supabase, user])
 
+  const logoLink = useMemo(() => {
+    return !user?.id ? '/' : access ? '/account' : '/agreements'
+  }, [access, user])
   return (
-    <div className={`bg-white ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
+    <div className={`bg-th-primary-100 ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <div
             className={`flex justify-center w-full ${
               access && !isStepPage ? '-ml-10' : ''
-            } md:ml-0  ${!access ? 'pointer-events-none ' : ''}`}
+            } md:ml-0 `}
           >
-            <Link href="/account">
-              <VCANA_logo className="h-6" />
+            <Link href={logoLink}>
+              <VcanaLogo className="h-6 fill-th-text-secondary" />
             </Link>
           </div>
 
           {isStepPage && (
-            <div className="flex gap-7 md:hidden">
-              <Timer time={stepConfig.time} />
+            <div className="flex md:hidden items-center gap-7">
+              <div className="px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
+                <Timer time={stepConfig.time} />
+              </div>
               <Down
-                className="w-6 h-6"
+                className="w-6 h-6 stroke-th-text-secondary"
                 onClick={() => setShowFullAppbar((prev) => !prev)}
               />
             </div>
@@ -71,20 +76,22 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar, hideAppbar }) 
         {isStepPage && (
           <>
             <div
-              className={`block md:flex text-center ${showFullAppbar ? '' : 'hidden'}`}
+              className={`block md:flex text-center text-th-text-secondary ${
+                showFullAppbar ? '' : 'hidden'
+              }`}
             >
               {stepConfig.title}
             </div>
             <div
-              className={`items-center gap-4 md:flex justify-center md:justify-start ${
+              className={`block md:flex items-center gap-4 justify-center md:justify-start text-th-text-primary ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
-              <div className="flex row items-center gap-1 cursor-default">
-                <User className="w-5 text-cyan-600" />
+              <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-10 rounded-3xl">
+                <User className="w-4 h-4 stroke-th-text-primary" />
                 {stepConfig.count_of_users}
               </div>
-              <div className="hidden md:flex">
+              <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
               <Dropdown description={stepConfig?.description} user={user} />

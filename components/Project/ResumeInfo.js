@@ -7,7 +7,6 @@ function ResumeInfo({ project }) {
   const [brief] = useGetBrief({
     project_id: project?.id,
   })
-
   return (
     <Card
       title={`${t('TranslationGoal')} / ${t('projects:Resume')}`}

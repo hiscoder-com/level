@@ -7,12 +7,13 @@ WORKDIR /app
 
 # Install dependencies
 COPY package.json yarn.lock* ./
+COPY node_modules ./node_modules
 # Omit --production flag for TypeScript devDependencies
-RUN \
-  if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  # Allow install without lockfile, so example works even without Node.js installed locally
-  else echo "Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
-  fi
+# RUN \
+#   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
+#   # Allow install without lockfile, so example works even without Node.js installed locally
+#   else echo "Lockfile not found. It is recommended to commit lockfiles to version control." && yarn install; \
+#   fi
 
 COPY components ./components
 COPY images ./images
@@ -43,6 +44,7 @@ ENV SUPABASE_SERVICE_KEY $SUPABASE_SERVICE_KEY
 ENV CREATE_USERS all
 ENV NEXT_PUBLIC_NODE_HOST $DCS_HOST
 ENV NODE_HOST http://dcs:4008
+ENV NEXT_PUBLIC_INTRANET true
 
 # Build Next.js
 RUN yarn build

@@ -2,9 +2,19 @@ import { useMemo } from 'react'
 
 import { useRouter } from 'next/router'
 
-const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9D27AE']
+const defaultColor = [
+  'fill-th-divide-verse1',
+  'fill-th-divide-verse2',
+  'fill-th-divide-verse3',
+  'fill-th-divide-verse4',
+  'fill-th-divide-verse5',
+  'fill-th-divide-verse6',
+  'fill-th-divide-verse7',
+  'fill-th-divide-verse8',
+  'fill-th-divide-verse9',
+]
 
-function TranslatorImage({ item, size, clickable }) {
+function TranslatorImage({ item, size, clickable, showModerator = false }) {
   const {
     push,
     query: { project, book, chapter, step, translator },
@@ -23,8 +33,8 @@ function TranslatorImage({ item, size, clickable }) {
           push(`/translate/${project}/${book}/${chapter}/${step}/${item?.users?.login}`)
         }
       }}
-      className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
-        item.is_moderator ? 'border-blue-800 ' : ''
+      className={`relative ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
+        showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
       } rounded-full select-none`}
     >
       {item.avatar ? (
@@ -37,23 +47,20 @@ function TranslatorImage({ item, size, clickable }) {
           className={`relative rounded-full bg-contain bg-center bg-no-repeat`}
         ></div>
       ) : (
-        <svg
-          viewBox="0 0 168 168"
-          fill="white"
-          width={size}
-          xmlns="http://www.w3.org/2000/svg"
-        >
+        <svg viewBox="0 0 168 168" width={size} xmlns="http://www.w3.org/2000/svg">
           <circle
             cx="84"
             cy="84"
             r="84"
-            fill={defaultColor[item?.users?.login.length % 6]}
+            className={
+              defaultColor[item?.users?.login.length % 6] ?? 'fill-th-divide-verse1'
+            }
           />
           <text
             x="84"
             y="110"
             textAnchor="middle"
-            className="text-7xl text-white font-bold"
+            className="text-7xl fill-th-text-primary font-bold"
           >
             {item?.users?.login.toUpperCase().slice(0, 2)}
           </text>

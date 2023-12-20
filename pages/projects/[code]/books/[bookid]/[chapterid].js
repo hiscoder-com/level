@@ -31,21 +31,51 @@ import Minus from 'public/minus.svg'
 import Trash from 'public/trash.svg'
 import Check from 'public/check.svg'
 import Loading from 'public/progress.svg'
+import TranslatorImage from 'components/TranslatorImage'
 
 const translatorColors = [
-  { border: 'border-emerald-500', bg: 'bg-emerald-500', text: 'text-emerald-500' },
-  { border: 'border-teal-500', bg: 'bg-teal-500', text: 'text-teal-500' },
-  { border: 'border-cyan-500', bg: 'bg-cyan-500', text: 'text-cyan-500' },
-  { border: 'border-sky-500', bg: 'bg-sky-500', text: 'text-sky-500' },
-  { border: 'border-emerald-700', bg: 'bg-emerald-700', text: 'text-emerald-700' },
-  { border: 'border-teal-700', bg: 'bg-teal-700', text: 'text-teal-700' },
-  { border: 'border-cyan-700', bg: 'bg-cyan-700', text: 'text-cyan-700' },
-  { border: 'border-sky-700', bg: 'bg-sky-700', text: 'text-sky-700' },
+  {
+    border: 'border-th-divide-verse1',
+    bg: 'bg-th-divide-verse1',
+  },
+  {
+    border: 'border-th-divide-verse2',
+    bg: 'bg-th-divide-verse2',
+  },
+  {
+    border: 'border-th-divide-verse3',
+    bg: 'bg-th-divide-verse3',
+  },
+  {
+    border: 'border-th-divide-verse4',
+    bg: 'bg-th-divide-verse4',
+  },
+  {
+    border: 'border-th-divide-verse5',
+    bg: 'bg-th-divide-verse5',
+  },
+  {
+    border: 'border-th-divide-verse6',
+    bg: 'bg-th-divide-verse6',
+  },
+  {
+    border: 'border-th-divide-verse7',
+    bg: 'bg-th-divide-verse7',
+  },
+  {
+    border: 'border-th-divide-verse8',
+    bg: 'bg-th-divide-verse8',
+  },
+  {
+    border: 'border-th-divide-verse9',
+    bg: 'bg-th-divide-verse9',
+  },
 ]
+
 const defaultColor = {
-  border: 'border-slate-900',
-  bg: 'bg-white',
-  text: 'text-slate-900',
+  border: 'border-th-primary-100',
+  bg: 'bg-th-secondary-10',
+  text: 'text-th-secondary-300',
 }
 
 function ChapterVersesPage() {
@@ -260,26 +290,7 @@ function ChapterVersesPage() {
               { title: `${t('Chapter')} ${chapter?.num}` },
             ]}
           />
-          <div className="card text-slate-900">
-            <div className="flex justify-center pb-4">
-              <button
-                className="btn-primary"
-                onClick={() => {
-                  setVersesDivided(
-                    verses?.map((verse) => ({
-                      ...verse,
-                      translator_name: currentTranslator?.users?.login,
-                      project_translator_id: currentTranslator?.id,
-                      color: currentTranslator?.color,
-                    }))
-                  )
-                }}
-                disabled={_translators?.length <= assignedTranslators?.length}
-              >
-                {t('chapters:SelectAllVerses')}
-              </button>
-            </div>
-
+          <div className="card bg-th-secondary-10">
             <div
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
@@ -315,9 +326,9 @@ function ChapterVersesPage() {
                         key={index}
                       >
                         <div
-                          className={`${verse.color?.bg} ${
-                            verse.color?.bg === 'bg-white' ? '' : 'text-white'
-                          } ${verse.color?.border} border-2 truncate rounded-2xl ${
+                          className={`${verse.color?.bg}  ${
+                            verse.color?.border
+                          } border-2 truncate rounded-2xl ${
                             currentTranslator ? '' : 'flex'
                           } w-full h-full flex-col p-4 justify-between`}
                         >
@@ -342,15 +353,15 @@ function ChapterVersesPage() {
                           } w-full h-full rounded-2xl justify-center p-1 items-center`}
                           style={{
                             background: verse.translator_name
-                              ? 'linear-gradient(90deg, #2E4057 1%, #596B84 98%)'
-                              : 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
+                              ? 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)'
+                              : 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
                           }}
                         >
-                          <div className="w-10 h-10 p-2 shadow-md text-slate-900 bg-white border-white border-2 rounded-full">
+                          <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
                             {verse.translator_name ? (
-                              <Minus className="w-5 h-5" />
+                              <Minus className="w-5 h-5 stroke-th-text-primary" />
                             ) : (
-                              <Plus className="w-5 h-5" />
+                              <Plus className="w-5 h-5 stroke-th-text-primary" />
                             )}
                           </div>
                         </div>
@@ -361,7 +372,7 @@ function ChapterVersesPage() {
                 <>
                   {[...Array(21).keys()].map((el) => (
                     <div role="status" className="h-24 animate-pulse" key={el}>
-                      <div className="h-full bg-gray-200 rounded-2xl w-full"></div>
+                      <div className="h-full w-full bg-th-secondary-100 rounded-2xl"></div>
                     </div>
                   ))}
                 </>
@@ -389,16 +400,12 @@ function ChapterVersesPage() {
                             : ''
                         } font-semibold text-xl ${
                           currentTranslator?.users?.login === translator.users.login
-                            ? `${translator.color.bg} text-white shadow-md`
-                            : `${translator.color.text} text-slate-900`
+                            ? `${translator.color.bg} shadow-md`
+                            : `${translator.color.text} text-th-text-primary`
                         } ${translator.color.border} border-2 cursor-pointer rounded-2xl`}
                       >
                         <div className="avatar-block w-10 flex-grow-0">
-                          <div
-                            className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
-                          >
-                            {translator.users.login.slice(0, 1)}
-                          </div>
+                          <TranslatorImage item={translator} />
                         </div>
                         <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
                           {translator.users.login} <br />
@@ -446,18 +453,18 @@ function ChapterVersesPage() {
                   <>
                     {[...Array(4).keys()].map((el) => (
                       <div role="status" className="w-full animate-pulse" key={el}>
-                        <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                        <div className="h-[68px] bg-th-secondary-100 rounded-2xl w-full"></div>
                       </div>
                     ))}
                   </>
                 )}
-                <hr className="border-gray-500" />
+                <hr className="border-th-secondary-300" />
                 <Button
                   onClick={() => {
                     verseDividing()
                   }}
                   text={t('Save')}
-                  color="green"
+                  color="tertiary"
                   icon={<Check className="w-5 h-5" />}
                   disabled={!translators?.length}
                 />
@@ -477,19 +484,19 @@ function ChapterVersesPage() {
                     }
                   }}
                   text={t('Reset')}
-                  color="red"
+                  color="primary"
                   icon={<Trash className="w-5 h-5" />}
                   disabled={!translators?.length}
                 />
               </div>
             </Card>
-            <div className="card flex flex-col gap-4">
+            <div className="card flex flex-col gap-4 bg-th-secondary-10">
               {!chapter?.finished_at &&
                 (!chapter?.started_at ? (
                   <Button
                     onClick={changeStartChapter}
                     text={t('chapters:StartChapter')}
-                    color={'green'}
+                    color={'tertiary'}
                     icon={<Check className="w-5 h-5" />}
                     disabled={
                       chapter?.finished_at || isValidating || translators?.length === 0
@@ -506,7 +513,7 @@ function ChapterVersesPage() {
                   <Button
                     onClick={changeStartChapter}
                     text={t('chapters:CancelStartChapter')}
-                    color={'red'}
+                    color={'primary'}
                     icon={<Trash className="w-5 h-5" />}
                     disabled={chapter?.finished_at || isValidating}
                     avatar={
@@ -526,7 +533,7 @@ function ChapterVersesPage() {
                       ? t('chapters:FinishedChapter')
                       : t('chapters:CancelFinishedChapter')
                   }
-                  color={!chapter?.finished_at ? 'amber' : 'red'}
+                  color={!chapter?.finished_at ? 'secondary' : 'primary'}
                   icon={
                     !chapter?.finished_at ? (
                       <Sparkles className="w-5 h-5" />
@@ -552,14 +559,14 @@ function ChapterVersesPage() {
         {({ open }) => (
           <>
             <div
-              className={`inset-0 bg-black opacity-50 backdrop-filter ${
+              className={`inset-0 bg-zink-500 bg-opacity-10 backdrop-blur backdrop-filter ${
                 open ? 'fixed' : 'hidden'
               } `}
             ></div>
             <Menu.Button
               className={`fixed sm:hidden p-4 translate-y-1/2
                bottom-[60vh]
-               right-5 z-10 rounded-full bg-slate-600 text-white transition-all duration-700 shadow-2xl`}
+               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary transition-all duration-700 shadow-2xl`}
             >
               <Plus
                 className={`w-7 h-7 transition-all duration-700 ${
@@ -578,14 +585,14 @@ function ChapterVersesPage() {
               leaveTo="translate-y-full"
             >
               <div
-                className={`fixed bottom-0 left-0 w-full min-h-[60vh] overflow-y-auto rounded-t-2xl shadow-md bg-white`}
+                className={`fixed bottom-0 left-0 w-full min-h-[60vh] overflow-y-auto rounded-t-2xl shadow-md bg-th-secondary-10`}
               >
                 {open && (
                   <Menu.Items>
                     <div className="flex gap-2 items-center">
                       <div className="p-4 text-xl font-bold">{t('Participants')}</div>
                       <Link href={`/projects/${project?.code}/edit?setting=participants`}>
-                        <Gear className="w-6 h-6 min-w-[1.5rem]" />
+                        <Gear className="w-6 h-6 min-w-[1.5rem] stroke-th-text-primary" />
                       </Link>
                     </div>
 
@@ -604,18 +611,14 @@ function ChapterVersesPage() {
                                   className={`flex flex-row w-full items-center p-2 font-semibold text-xl ${
                                     currentTranslator?.users?.login ===
                                     translator.users.login
-                                      ? `${translator.color.bg} text-white shadow-md`
-                                      : `${translator.color.text} text-slate-900`
+                                      ? `${translator.color.bg}  shadow-md`
+                                      : 'text-th-text-primary'
                                   } ${
                                     translator.color.border
                                   } border-2 cursor-pointer rounded-2xl`}
                                 >
                                   <div className="avatar-block w-10 flex-grow-0">
-                                    <div
-                                      className={`flex items-center justify-center w-10 h-10 uppercase text-white ${translator.color.bg} border-2 border-white rounded-full`}
-                                    >
-                                      {translator.users.login.slice(0, 1)}
-                                    </div>
+                                    <TranslatorImage item={translator} />
                                   </div>
                                   <div className="text-block flex-auto ml-2 overflow-hidden text-base font-normal text-left text-ellipsis">
                                     {translator.users.login} <br />
@@ -633,18 +636,18 @@ function ChapterVersesPage() {
                                   className="w-full animate-pulse"
                                   key={el}
                                 >
-                                  <div className="h-[68px] bg-gray-200 rounded-2xl w-full"></div>
+                                  <div className="h-[68px] bg-th-secondary-100 rounded-2xl w-full"></div>
                                 </div>
                               ))}
                             </>
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 pt-2border-t border-gray-400">
+                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-300">
                           <Button
                             onClick={verseDividing}
                             text={t('Save')}
-                            color="green"
+                            color="tertiary"
                             icon={<Check className="w-5 h-5" />}
                           />
                           <Button
@@ -659,7 +662,7 @@ function ChapterVersesPage() {
                               )
                             }
                             text={t('Reset')}
-                            color="red"
+                            color="primary"
                             icon={<Trash className="w-5 h-5" />}
                           />
                           {!chapter?.finished_at &&
@@ -667,7 +670,7 @@ function ChapterVersesPage() {
                               <Button
                                 onClick={changeStartChapter}
                                 text={t('chapters:StartChapter')}
-                                color={'green'}
+                                color={'tertiary'}
                                 icon={<Check className="w-5 h-5" />}
                                 disabled={chapter?.finished_at || isValidating}
                                 avatar={
@@ -682,7 +685,7 @@ function ChapterVersesPage() {
                               <Button
                                 onClick={changeStartChapter}
                                 text={t('chapters:CancelStartChapter')}
-                                color={'red'}
+                                color={'primary'}
                                 icon={<Trash className="w-5 h-5" />}
                                 disabled={chapter?.finished_at || isValidating}
                                 avatar={
@@ -702,7 +705,7 @@ function ChapterVersesPage() {
                                   ? t('chapters:FinishedChapter')
                                   : t('chapters:CancelFinishedChapter')
                               }
-                              color={!chapter?.finished_at ? 'amber' : 'red'}
+                              color={!chapter?.finished_at ? 'secondary' : 'primary'}
                               icon={
                                 !chapter?.finished_at ? (
                                   <Sparkles className="w-5 h-5" />

@@ -134,15 +134,15 @@ export function useCoordinators({ code }) {
  * @param {string} code code of project
  * @returns {array}
  */
-export function useTranslators({ code }) {
+export function useTranslators({ code, revalidateIfStale, revalidateOnFocus }) {
   const {
     data: translators,
     mutate,
     error,
     isLoading,
   } = useSWR(code ? [`/api/projects/${code}/translators`] : null, fetcher, {
-    revalidateOnFocus: false,
-    revalidateIfStale: false,
+    revalidateOnFocus,
+    revalidateIfStale,
   })
 
   return [translators, { mutate, error, isLoading }]
@@ -312,6 +312,24 @@ export function useGetBooks({ code }) {
     error,
     isLoading,
   } = useSWR(code ? [`/api/projects/${code}/books`] : null, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [books, { mutate, error, isLoading }]
+}
+
+/**
+ *hook returns information about books with validation levels and verse with draft versions
+ * @param {string} code code of project
+ * @returns {array}
+ */
+export function useGetChaptersTranslate({ code }) {
+  const {
+    data: books,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(code ? [`/api/projects/${code}/books/chapters_translate`] : null, fetcher, {
     revalidateOnFocus: false,
     revalidateIfStale: false,
   })
