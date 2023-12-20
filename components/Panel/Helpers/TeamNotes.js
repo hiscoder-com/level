@@ -154,17 +154,22 @@ function TeamNotes() {
   }
 
   const importNotes = async () => {
-    try {
-      const fileInput = document.createElement('input')
-      fileInput.type = 'file'
-      fileInput.accept = '.json'
-      fileInput.addEventListener('change', async (event) => {
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.json'
+
+    fileInput.addEventListener('change', async (event) => {
+      try {
         const file = event.target.files[0]
         if (!file) {
           throw new Error('No file selected')
         }
 
         const fileContents = await file.text()
+        if (!fileContents.trim()) {
+          throw new Error('Empty file content')
+        }
+
         const importedData = JSON.parse(fileContents)
         const parsedNotes = parseNotesWithTopFolder(
           importedData,
@@ -175,36 +180,43 @@ function TeamNotes() {
         for (const note of parsedNotes) {
           bulkNode(note)
         }
-      })
+      } catch (error) {
+        toast.error(error.message)
+      }
+    })
 
-      fileInput.click()
-    } catch (error) {
-      console.error('Error importing notes:', error.message)
-    }
+    fileInput.click()
   }
 
   function exportNotes() {
-    const transformedData = formationJSONToTree(notes)
-    const jsonContent = JSON.stringify(transformedData, null, 2)
+    try {
+      if (!notes || !notes.length) {
+        throw new Error('No data to export')
+      }
+      const transformedData = formationJSONToTree(notes)
+      const jsonContent = JSON.stringify(transformedData, null, 2)
 
-    const blob = new Blob([jsonContent], { type: 'application/json' })
+      const blob = new Blob([jsonContent], { type: 'application/json' })
 
-    const downloadLink = document.createElement('a')
-    const currentDate = new Date()
-    const formattedDate = currentDate.toISOString().split('T')[0]
+      const downloadLink = document.createElement('a')
+      const currentDate = new Date()
+      const formattedDate = currentDate.toISOString().split('T')[0]
 
-    const fileName = `team_notes_${formattedDate}.json`
+      const fileName = `team_notes_${formattedDate}.json`
 
-    const url = URL.createObjectURL(blob)
+      const url = URL.createObjectURL(blob)
 
-    downloadLink.href = url
-    downloadLink.download = fileName
+      downloadLink.href = url
+      downloadLink.download = fileName
 
-    document.body.appendChild(downloadLink)
-    downloadLink.click()
-    document.body.removeChild(downloadLink)
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
 
-    URL.revokeObjectURL(url)
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   const bulkNode = (note) => {

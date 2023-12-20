@@ -165,17 +165,23 @@ function Dictionary() {
   }
 
   const importWords = async () => {
-    try {
-      const fileInput = document.createElement('input')
-      fileInput.type = 'file'
-      fileInput.accept = '.json'
-      fileInput.addEventListener('change', async (event) => {
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.json'
+
+    fileInput.addEventListener('change', async (event) => {
+      try {
         const file = event.target.files[0]
         if (!file) {
           throw new Error('No file selected')
         }
 
         const fileContents = await file.text()
+
+        if (!fileContents.trim()) {
+          throw new Error('Empty file content')
+        }
+
         const importedData = JSON.parse(fileContents)
 
         for (const word of importedData) {
@@ -196,46 +202,49 @@ function Dictionary() {
         mutate()
         mutateProject()
         setAlphabetProject(project?.dictionaries_alphabet)
-      })
-
-      fileInput.click()
-    } catch (error) {
-      console.error('Error importing notes:', error.message)
-    }
-  }
-
-  function exportWords() {
-    if (!allWords || !allWords.length) {
-      console.error('No data to export')
-      return
-    }
-
-    const data = allWords.map((word) => {
-      return {
-        title: word.dict_title,
-        data: word.dict_data,
-        created_at: word.dict_created_at,
-        changed_at: word.dict_changed_at,
-        deleted_at: word.dict_deleted_at,
+      } catch (error) {
+        toast.error(error.message)
       }
     })
 
-    const jsonString = JSON.stringify(data, null, 2)
-    const blob = new Blob([jsonString], { type: 'application/json' })
+    fileInput.click()
+  }
 
-    const link = document.createElement('a')
-    link.href = URL.createObjectURL(blob)
+  function exportWords() {
+    try {
+      if (!allWords || !allWords.length) {
+        throw new Error('No data to export')
+      }
 
-    const currentDate = new Date()
-    const formattedDate = currentDate.toISOString().split('T')[0]
+      const data = allWords.map((word) => {
+        return {
+          title: word.dict_title,
+          data: word.dict_data,
+          created_at: word.dict_created_at,
+          changed_at: word.dict_changed_at,
+          deleted_at: word.dict_deleted_at,
+        }
+      })
 
-    const fileName = `dictionary_${formattedDate}.json`
+      const jsonString = JSON.stringify(data, null, 2)
+      const blob = new Blob([jsonString], { type: 'application/json' })
 
-    link.download = fileName
-    document.body.appendChild(link)
-    link.click()
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
 
-    document.body.removeChild(link)
+      const currentDate = new Date()
+      const formattedDate = currentDate.toISOString().split('T')[0]
+
+      const fileName = `dictionary_${formattedDate}.json`
+
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
+
+      document.body.removeChild(link)
+    } catch (error) {
+      toast.error(error.message)
+    }
   }
 
   function checkAndAppendNewTitle(title, allWords) {
