@@ -120,9 +120,7 @@ function Dictionary() {
               total_records: word.total_records,
             }
           })
-          if (data?.length) {
-            setWords({ data, count: data[0].total_records })
-          }
+          setWords({ data, count: data[0].total_records })
         }
       }
     } catch (error) {
