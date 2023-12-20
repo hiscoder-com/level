@@ -93,18 +93,18 @@ function TeamNotes() {
     return newId
   }
 
-  function parseNotesWithTopFolder(notes, project_id) {
+  function parseNotesWithTopFolder(notes, project_id, deleted_at) {
     const exportFolderId = generateUniqueId(allNotes)
     const exportFolderDate = new Date().toISOString().split('T')[0]
 
     const exportFolder = {
       id: exportFolderId,
-      project_id: project_id,
+      project_id,
       title: `export-${exportFolderDate}`,
       data: null,
       created_at: new Date().toISOString(),
       changed_at: new Date().toISOString(),
-      deleted_at: deleted_at,
+      deleted_at,
       is_folder: true,
       parent_id: null,
       sorting: 0,
@@ -119,7 +119,7 @@ function TeamNotes() {
       const id = generateUniqueId(allNotes)
       const parsedNote = {
         id: id,
-        project_id: project_id,
+        project_id,
         title: note.title,
         data: parseData(note.data),
         created_at: note.created_at,
@@ -166,8 +166,11 @@ function TeamNotes() {
 
         const fileContents = await file.text()
         const importedData = JSON.parse(fileContents)
-
-        const parsedNotes = parseNotesWithTopFolder(importedData, project.id)
+        const parsedNotes = parseNotesWithTopFolder(
+          importedData,
+          project.id,
+          project.deleted_at
+        )
 
         for (const note of parsedNotes) {
           bulkNode(note)
@@ -181,7 +184,7 @@ function TeamNotes() {
   }
 
   function exportNotes() {
-    const transformedData = formationJSONToTree(allNotes)
+    const transformedData = formationJSONToTree(notes)
     const jsonContent = JSON.stringify(transformedData, null, 2)
 
     const blob = new Blob([jsonContent], { type: 'application/json' })
@@ -386,15 +389,18 @@ function TeamNotes() {
                 <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
               </button>
               <button
-                className="btn-tertiary p-3"
-                onClick={() => exportNotes()}
+                className={`btn-tertiary p-3 ${
+                  notes?.length === 0 ? 'disabled opacity-70' : ''
+                }`}
+                onClick={exportNotes}
                 title={t('Download')}
+                disabled={!notes?.length}
               >
                 <Export className="w-6 h-6 stroke-th-text-secondary" />
               </button>
               <button
                 className="btn-tertiary p-3"
-                onClick={() => importNotes()}
+                onClick={importNotes}
                 title={t('Upload')}
               >
                 <Import className="w-6 h-6 stroke-th-text-secondary" />

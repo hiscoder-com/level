@@ -36,7 +36,6 @@ const ListOfNotes = dynamic(
     ssr: false,
   }
 )
-const countWordsOnPage = 10
 
 function Dictionary() {
   const [currentPageWords, setCurrentPageWords] = useState(0)
@@ -46,11 +45,6 @@ function Dictionary() {
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
-
-  const totalPageCount = useMemo(
-    () => Math.ceil(words?.count / countWordsOnPage),
-    [words]
-  )
 
   const { t } = useTranslation(['common'])
   const { user } = useCurrentUser()
@@ -69,7 +63,21 @@ function Dictionary() {
 
   const [alphabetProject, setAlphabetProject] = useState(project?.dictionaries_alphabet)
 
-  const [allWords, { mutate }] = useAllWords('', countWordsOnPage, -1, project?.id)
+  const countWordsOnPage = 10
+
+  const queryWords = {
+    searchQuery: '',
+    wordsPerPage: countWordsOnPage,
+    pageNumber: -1,
+    project_id_param: project?.id,
+  }
+
+  const [allWords, { mutate }] = useAllWords(queryWords)
+
+  const totalPageCount = useMemo(
+    () => Math.ceil(words?.count / countWordsOnPage),
+    [words]
+  )
 
   useEffect(() => {
     mutate()
@@ -185,6 +193,7 @@ function Dictionary() {
         }
 
         getAll()
+        mutate()
         mutateProject()
         setAlphabetProject(project?.dictionaries_alphabet)
       })
@@ -231,7 +240,7 @@ function Dictionary() {
 
   function checkAndAppendNewTitle(title, allWords) {
     const existingTitles = allWords?.map((word) => word.dict_title.toLowerCase())
-    let newTitle = title.toLowerCase()
+    let newTitle = title
 
     do {
       newTitle += '_new'
@@ -276,6 +285,7 @@ function Dictionary() {
           }
         })
         mutate()
+        mutateProject()
       })
       .catch(console.log)
   }
@@ -342,9 +352,12 @@ function Dictionary() {
                   </button>
 
                   <button
-                    className="btn-tertiary p-3"
+                    className={`btn-tertiary p-3 ${
+                      allWords?.length === 0 ? 'disabled opacity-70' : ''
+                    }`}
                     onClick={exportWords}
                     title={t('Download')}
+                    disabled={!allWords?.length}
                   >
                     <Export className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>

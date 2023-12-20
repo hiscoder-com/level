@@ -83,12 +83,9 @@ export function useAllTeamlNotes() {
  * @returns {array}
  */
 // hooks/useAllWords.js
-export function useAllWords(
-  searchQuery = '',
-  wordsPerPage = 10,
-  pageNumber = 1,
-  project_id_param
-) {
+export function useAllWords(queryWords) {
+  const { searchQuery, wordsPerPage, pageNumber, project_id_param } = queryWords
+
   const apiUrl = project_id_param
     ? `/api/dictionaries/getWords?searchQuery=${searchQuery}&wordsPerPage=${wordsPerPage}&pageNumber=${pageNumber}&project_id_param=${project_id_param}`
     : null

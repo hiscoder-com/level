@@ -97,12 +97,12 @@ function PersonalNotes() {
 
     const exportFolder = {
       id: exportFolderId,
-      user_id: user_id,
+      user_id,
       title: `export-${exportFolderDate}`,
       data: null,
       created_at: new Date().toISOString(),
       changed_at: new Date().toISOString(),
-      deleted_at: deleted_at,
+      deleted_at,
       is_folder: true,
       parent_id: null,
       sorting: 0,
@@ -117,7 +117,7 @@ function PersonalNotes() {
       const id = generateUniqueId(allNotes)
       const parsedNote = {
         id: id,
-        user_id: user_id,
+        user_id,
         title: note.title,
         data: parseData(note.data),
         created_at: note.created_at,
@@ -183,7 +183,7 @@ function PersonalNotes() {
   }
 
   function exportNotes() {
-    const transformedData = formationJSONToTree(allNotes)
+    const transformedData = formationJSONToTree(notes)
     const jsonContent = JSON.stringify(transformedData, null, 2)
 
     const blob = new Blob([jsonContent], { type: 'application/json' })
@@ -380,7 +380,9 @@ function PersonalNotes() {
         <div>
           <div className="flex gap-2">
             <button
-              className="btn-tertiary px-5 py-3 flex gap-2 items-center"
+              className={`btn-tertiary px-5 py-3 flex gap-2 items-center ${
+                notes?.length === 0 ? 'disabled opacity-70' : ''
+              }`}
               onClick={() => {
                 setCurrentNodeProps(null)
                 setIsOpenModal(true)
@@ -405,15 +407,18 @@ function PersonalNotes() {
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
             </button>
             <button
-              className="btn-tertiary p-3"
-              onClick={() => exportNotes()}
+              className={`btn-tertiary p-3 ${
+                !notes || notes.length === 0 ? 'disabled opacity-70' : ''
+              }`}
+              onClick={exportNotes}
               title={t('Download')}
+              disabled={!notes?.length}
             >
               <Export className="w-6 h-6 stroke-th-text-secondary" />
             </button>
             <button
               className="btn-tertiary p-3"
-              onClick={() => importNotes()}
+              onClick={importNotes}
               title={t('Upload')}
             >
               <Import className="w-6 h-6 stroke-th-text-secondary" />
