@@ -1,35 +1,68 @@
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 
+import axios from 'axios'
+
 import { useRecoilState } from 'recoil'
 
 import { avatarSelectorModalIsOpen } from './state/atoms'
 
 import Close from 'public/close.svg'
 
-function AvatarSelector() {
+function AvatarSelector({ id, userAvatar }) {
   const { t } = useTranslation('common')
   const [modalIsOpen, setModalIsOpen] = useRecoilState(avatarSelectorModalIsOpen)
-
   const [avatarUrlArr, setAvatarUrlArr] = useState([])
+
+  const handleAvatarClick = async (userId, avatarUrl) => {
+    try {
+      await axios.post('/api/user_avatars', {
+        id: userId,
+        avatar_url: avatarUrl,
+      })
+
+      console.log('User avatar updated successfully!')
+
+      // setAvatarUrlArr((prevAvatars) =>
+      //   prevAvatars.map((avatar) =>
+      //     avatar.url === avatarUrl ? { ...avatar, selected: true } : avatar
+      //   )
+      // )
+      setAvatarUrlArr((prevAvatars) =>
+        prevAvatars.map((avatar) =>
+          avatar.url === avatarUrl
+            ? { ...avatar, selected: true }
+            : { ...avatar, selected: false }
+        )
+      )
+    } catch (error) {
+      console.error('Error updating user avatar:', error)
+    }
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('/api/get_avatars')
-        if (!response.ok) {
+        const response = await axios.get('/api/user_avatars')
+
+        if (response.status !== 200) {
           throw new Error('Failed to fetch avatars')
         }
 
-        const data = await response.json()
-        setAvatarUrlArr(data.data)
+        // setAvatarUrlArr(response.data.data)
+        const avatarsData = response.data.data.map((avatar) => ({
+          ...avatar,
+          selected: userAvatar === avatar.url,
+        }))
+
+        setAvatarUrlArr(avatarsData)
       } catch (error) {
         console.error('Error fetching avatars:', error)
       }
     }
 
     fetchData()
-  }, [])
+  }, [userAvatar])
 
   return (
     <>
@@ -44,12 +77,18 @@ function AvatarSelector() {
               <Close className="h-8 stroke-th-primary-100" />
             </button>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {avatarUrlArr.map((avatarUrl, index) => (
-              <div key={index} className="w-12 h-12">
+          <div className="flex flex-wrap gap-2 items-center mt-2">
+            {avatarUrlArr?.map((avatar, index) => (
+              <div
+                key={index}
+                className={`border-4 rounded-full overflow-hidden ${
+                  avatar.selected ? 'border-th-primary' : 'border-transparent'
+                }`}
+                onClick={() => handleAvatarClick(id, avatar.url)}
+              >
                 <img
-                  src={avatarUrl}
-                  alt={`Avatar ${index + 1}`}
+                  src={avatar.url}
+                  alt={avatar.name}
                   className="rounded-full w-full h-full object-cover"
                 />
               </div>
