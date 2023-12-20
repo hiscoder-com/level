@@ -121,6 +121,8 @@ function Dictionary() {
             }
           })
           setWords({ data, count: data[0].total_records })
+        } else {
+          setWords({ data: null, count: 0 })
         }
       }
     } catch (error) {
