@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 import { useRecoilState } from 'recoil'
-
 import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
 
 import Close from 'public/close.svg'
@@ -15,13 +15,13 @@ function AvatarSelector({ id, userAvatarUrl }) {
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatarUrlArr, setAvatarUrlArr] = useState([])
 
-  const handleAvatarClick = async (userId, avatarUrl) => {
+  const updateAvatar = async (userId, avatarUrl) => {
     try {
       await axios.post('/api/user_avatars', {
         id: userId,
         avatar_url: avatarUrl,
       })
-      console.log('User avatar updated successfully!')
+      toast.success(t('SaveSuccess'))
       setUserAvatar({ id, url: avatarUrl })
 
       setAvatarUrlArr((prevAvatars) =>
@@ -32,12 +32,13 @@ function AvatarSelector({ id, userAvatarUrl }) {
         )
       )
     } catch (error) {
+      toast.error(t('SaveFailed'))
       console.error('Error updating user avatar:', error)
     }
   }
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchAvatarData = async () => {
       try {
         const response = await axios.get('/api/user_avatars')
         const currentAvatarUrl = userAvatar.url || userAvatarUrl
@@ -57,7 +58,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
       }
     }
 
-    fetchData()
+    fetchAvatarData()
   }, [userAvatarUrl, userAvatar.url])
 
   return (
@@ -80,7 +81,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
                 className={`border-4 rounded-full overflow-hidden ${
                   avatar.selected ? 'border-th-primary' : 'border-transparent'
                 }`}
-                onClick={() => handleAvatarClick(id, avatar.url)}
+                onClick={() => updateAvatar(id, avatar.url)}
               >
                 <img
                   src={avatar.url}

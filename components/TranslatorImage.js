@@ -18,7 +18,7 @@ const defaultColor = [
 ]
 
 function TranslatorImage({ item, size, clickable, showModerator = false }) {
-  const [testAvatar, setTestAvatar] = useState(item.users.avatar_url || '')
+  const [userAvatarUrl, setUserAvatarUrl] = useState(item.users.avatar_url || '')
   const userAvatar = useRecoilValue(userAvatarState)
 
   const {
@@ -34,7 +34,7 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
   useEffect(() => {
     userAvatar.url !== null &&
       userAvatar.id === item.users.id &&
-      setTestAvatar(userAvatar.url)
+      setUserAvatarUrl(userAvatar.url)
   }, [item.users.id, userAvatar])
 
   return (
@@ -49,9 +49,9 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
         showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
       } rounded-full select-none`}
     >
-      {testAvatar ? (
+      {userAvatarUrl ? (
         <img
-          src={testAvatar}
+          src={userAvatarUrl}
           alt={`${item?.users?.login} avatar`}
           className="rounded-full"
           width={size}
