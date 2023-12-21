@@ -9,6 +9,11 @@
 - búsqueda agregada por notas
 - notas: error en el menú contextual corregido
 - lista de notas: un clic en un elemento del árbol abre una nota/carpeta, dos clics abren el árbol completo y tres clics comienzan a cambiar el nombre
+- se corrigió la visualización del alfabeto al agregar y eliminar palabras 
+- se corrigió la visualización de la lista de diccionario en ausencia de palabras filtro
+
+### **Añadido:**
+- importación y exportación de notas personales, notas de equipo y diccionario
 
 # Versión 0.10.1
 ## Fecha: 11/21/2023

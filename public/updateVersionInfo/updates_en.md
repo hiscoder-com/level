@@ -9,6 +9,11 @@
 - added search by notes
 - notes: fixed context menu bug
 - list of notes: one click on a tree element opens a note/folder, two clicks open the entire tree, and three clicks start renaming
+- fixed the display of the alphabet when adding and deleting words
+- fixed the display of the dictionary list in the absence of words to the filter 
+
+### **Added:**
+- import and export personal notes, team notes and dictionary
 
 # Version 0.10.1
 ## Date: 11/21/2023
