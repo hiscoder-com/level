@@ -53,7 +53,7 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
         <img
           src={userAvatarUrl}
           alt={`${item?.users?.login} avatar`}
-          className="rounded-full"
+          className="rounded-full shadow-lg"
           width={size}
           height={size}
         />

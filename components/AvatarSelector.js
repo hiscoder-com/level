@@ -74,19 +74,19 @@ function AvatarSelector({ id, userAvatarUrl }) {
               <Close className="h-8 stroke-th-primary-100" />
             </button>
           </div>
-          <div className="flex flex-wrap gap-2 items-center">
+          <div className="flex flex-wrap gap-4 justify-center">
             {avatarUrlArr?.map((avatar, index) => (
               <div
                 key={index}
                 className={`border-4 rounded-full overflow-hidden shadow-lg ${
-                  avatar.selected ? 'border-th-primary' : 'border-transparent'
+                  avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
                 }`}
                 onClick={() => updateAvatar(id, avatar.url)}
               >
                 <img
                   src={avatar.url}
                   alt={avatar.name}
-                  style={{ width: '34px', height: '34px', objectFit: 'cover' }}
+                  className="w-16 h-16 object-cover"
                 />
               </div>
             ))}

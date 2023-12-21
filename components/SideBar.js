@@ -74,7 +74,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl">
                 <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-300">
                   <div
-                    className="w-12 h-12 min-w-[3rem]"
+                    className="w-16 h-16 min-w-[3rem]"
                     onClick={() => openModal('avatarSelector')}
                   >
                     <TranslatorImage item={{ users: user }} />
