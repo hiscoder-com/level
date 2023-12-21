@@ -68,17 +68,17 @@ function AvatarSelector({ id, userAvatarUrl }) {
           className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="sticky top-0 flex items-center justify-between py-6 bg-th-secondary-10">
+          <div className="sticky top-0 flex items-center justify-between py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
             <p className="text-left text-2xl font-bold">{t('AvatarSelection')}</p>
             <button className="text-right" onClick={() => setModalIsOpen(false)}>
               <Close className="h-8 stroke-th-primary-100" />
             </button>
           </div>
-          <div className="flex flex-wrap gap-2 items-center mt-2">
+          <div className="flex flex-wrap gap-2 items-center">
             {avatarUrlArr?.map((avatar, index) => (
               <div
                 key={index}
-                className={`border-4 rounded-full overflow-hidden ${
+                className={`border-4 rounded-full overflow-hidden shadow-lg ${
                   avatar.selected ? 'border-th-primary' : 'border-transparent'
                 }`}
                 onClick={() => updateAvatar(id, avatar.url)}
@@ -86,7 +86,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
                 <img
                   src={avatar.url}
                   alt={avatar.name}
-                  className="rounded-full w-full h-full object-cover"
+                  style={{ width: '34px', height: '34px', objectFit: 'cover' }}
                 />
               </div>
             ))}
