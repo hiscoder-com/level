@@ -1,6 +1,9 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
+
+import { useRecoilValue } from 'recoil'
+import { userAvatarState } from './state/atoms'
 
 const defaultColor = [
   'fill-th-divide-verse1',
@@ -15,6 +18,9 @@ const defaultColor = [
 ]
 
 function TranslatorImage({ item, size, clickable, showModerator = false }) {
+  const [testAvatar, setTestAvatar] = useState(item.users.avatar_url || '')
+  const userAvatar = useRecoilValue(userAvatarState)
+
   const {
     push,
     query: { project, book, chapter, step, translator },
@@ -24,6 +30,12 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
     () => clickable && (!translator || translator !== item.users?.login),
     [clickable, item.users?.login, translator]
   )
+
+  useEffect(() => {
+    userAvatar.url !== null &&
+      userAvatar.id === item.users.id &&
+      setTestAvatar(userAvatar.url)
+  }, [item.users.id, userAvatar])
 
   return (
     <div
@@ -37,15 +49,14 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
         showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
       } rounded-full select-none`}
     >
-      {item.avatar ? (
-        <div
-          style={{
-            backgroundImage: 'url(' + item?.url + ')',
-            width: size,
-            height: size,
-          }}
-          className={`relative rounded-full bg-contain bg-center bg-no-repeat`}
-        ></div>
+      {testAvatar ? (
+        <img
+          src={testAvatar}
+          alt={`${item?.users?.login} avatar`}
+          className="rounded-full"
+          width={size}
+          height={size}
+        />
       ) : (
         <svg viewBox="0 0 168 168" width={size} xmlns="http://www.w3.org/2000/svg">
           <circle

@@ -5,13 +5,14 @@ import axios from 'axios'
 
 import { useRecoilState } from 'recoil'
 
-import { avatarSelectorModalIsOpen } from './state/atoms'
+import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
 
 import Close from 'public/close.svg'
 
-function AvatarSelector({ id, userAvatar }) {
+function AvatarSelector({ id, userAvatarUrl }) {
   const { t } = useTranslation('common')
   const [modalIsOpen, setModalIsOpen] = useRecoilState(avatarSelectorModalIsOpen)
+  const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatarUrlArr, setAvatarUrlArr] = useState([])
 
   const handleAvatarClick = async (userId, avatarUrl) => {
@@ -20,14 +21,9 @@ function AvatarSelector({ id, userAvatar }) {
         id: userId,
         avatar_url: avatarUrl,
       })
-
       console.log('User avatar updated successfully!')
+      setUserAvatar({ id, url: avatarUrl })
 
-      // setAvatarUrlArr((prevAvatars) =>
-      //   prevAvatars.map((avatar) =>
-      //     avatar.url === avatarUrl ? { ...avatar, selected: true } : avatar
-      //   )
-      // )
       setAvatarUrlArr((prevAvatars) =>
         prevAvatars.map((avatar) =>
           avatar.url === avatarUrl
@@ -44,15 +40,15 @@ function AvatarSelector({ id, userAvatar }) {
     const fetchData = async () => {
       try {
         const response = await axios.get('/api/user_avatars')
+        const currentAvatarUrl = userAvatar.url || userAvatarUrl
 
         if (response.status !== 200) {
           throw new Error('Failed to fetch avatars')
         }
 
-        // setAvatarUrlArr(response.data.data)
         const avatarsData = response.data.data.map((avatar) => ({
           ...avatar,
-          selected: userAvatar === avatar.url,
+          selected: currentAvatarUrl === avatar.url,
         }))
 
         setAvatarUrlArr(avatarsData)
@@ -62,7 +58,7 @@ function AvatarSelector({ id, userAvatar }) {
     }
 
     fetchData()
-  }, [userAvatar])
+  }, [userAvatarUrl, userAvatar.url])
 
   return (
     <>

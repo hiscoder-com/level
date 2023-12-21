@@ -119,7 +119,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                     </Menu.Item>
                   </div>
 
-                  <AvatarSelector id={user?.id} userAvatar={user?.avatar_url} />
+                  <AvatarSelector id={user?.id} userAvatarUrl={user?.avatar_url} />
 
                   <div
                     className="flex justify-center cursor-pointer"
