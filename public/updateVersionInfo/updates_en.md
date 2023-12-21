@@ -1,3 +1,24 @@
+# Version 0.11.0
+## Date: 12/20/2023
+
+### **Changed:**
+- in the section of auxiliary materials, such as tnotes, the "BACK" button is fixed
+- the "BACK" button has been brought to a general form in auxiliary materials, notepad and dictionary
+- fixed a bug when displaying a list of languages when switching languages
+- when using commits, we use one type of URL (exclude '/src/')
+- added search by notes
+- notes: fixed context menu bug
+- list of notes: one click on a tree element opens a note/folder, two clicks open the entire tree, and three clicks start renaming
+
+# Version 0.10.1
+## Date: 11/21/2023
+
+### **Changed:**
+- path for loading pictures into OBS when exporting to PDF in intranet version
+- cover PDF
+### **Deleted:**
+- audio component in intranet version
+
 # Version 0.10.0
 ## Date: 11/20/2023
 

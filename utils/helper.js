@@ -192,7 +192,6 @@ export const downloadPdf = async ({
     if (!fileName.endsWith('.pdf')) {
       fileName += '.pdf'
     }
-
     pdfOptions = {
       styles,
       fileName,
@@ -202,13 +201,18 @@ export const downloadPdf = async ({
         SubtitlePageTitle: title,
         back: ' ', // to display the page headers
       },
+      imageUrl: `${
+        process.env.NEXT_PUBLIC_INTRANET
+          ? process.env.NEXT_PUBLIC_NODE_HOST
+          : 'https://cdn.door43.org'
+      }/obs/jpg/360px/`,
     }
 
     if (downloadSettings?.withFront) {
       pdfOptions.bookPropertiesObs = {
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
-        copyright: 'unfoldingWord®',
+        copyright: 'TextTree Movement®',
         projectLanguage,
       }
     }
@@ -269,7 +273,7 @@ export const downloadPdf = async ({
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
         projectLanguage,
-        copyright: 'unfoldingWord®',
+        copyright: 'TextTree Movement®',
       }
     }
 
@@ -298,7 +302,6 @@ export const downloadPdf = async ({
   pdfOptions = obs
     ? createPdfOptionsObs(chapters, downloadSettings, book)
     : createPdfOptionsBible(chapters, downloadSettings, book)
-
   try {
     await JsonToPdf(pdfOptions)
   } catch (error) {
@@ -389,12 +392,18 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
 
 export const parseManifests = async ({ resources, current_method }) => {
   let baseResource = {}
+
+  const getBaseResourceUrl = (urlArray) =>
+    `${process.env.NODE_HOST ?? 'https://git.door43.org'}/${urlArray[1]}/${
+      urlArray[2]
+    }/raw/commit/${urlArray[4]}`
+
   const promises = Object.keys(resources).map(async (el) => {
     const { pathname } = new URL(resources[el])
-    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
-    const manifestUrl = url.replace('/src/', '/raw/') + '/manifest.yaml'
+    const urlArray = pathname.split('/')
+    const url = getBaseResourceUrl(urlArray)
+    const manifestUrl = getBaseResourceUrl(urlArray) + '/manifest.yaml'
     const { data } = await axios.get(manifestUrl)
-
     const manifest = jsyaml.load(data, { json: true })
 
     if (current_method.resources[el]) {
@@ -422,10 +431,12 @@ export const parseManifests = async ({ resources, current_method }) => {
   })
   baseResource.books = baseResource.books.map((el) => {
     const { pathname } = new URL(resources[baseResource.name])
-    const url = (process.env.NODE_HOST ?? 'https://git.door43.org') + pathname
+    const urlArray = pathname.split('/')
+    const url = getBaseResourceUrl(urlArray)
+
     return {
       name: el.identifier,
-      link: url.replace('/src/', '/raw/') + el.path.substring(1),
+      link: url + el.path.substring(1),
     }
   })
   return { baseResource, newResources }
