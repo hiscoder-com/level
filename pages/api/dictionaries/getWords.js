@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       searchQuery = '',
       wordsPerPage = 10,
       pageNumber = 0,
-      project_id_param: project_id_param,
+      project_id_param,
     } = req.query
 
     if (!project_id_param) {
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
       search_query: searchQuery,
       words_per_page: wordsPerPage,
       page_number: pageNumber,
-      project_id_param: project_id_param,
+      project_id_param,
     })
 
     if (error) throw error

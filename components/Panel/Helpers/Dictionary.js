@@ -149,7 +149,7 @@ function Dictionary() {
     if (!words?.data) {
       return
     }
-    const currentNote = words?.data?.find((el) => el.id === wordId)
+    const currentNote = words?.data?.find((letter) => letter.id === wordId)
     if (currentNote) {
       setActiveWord(currentNote)
     }
@@ -407,13 +407,13 @@ function Dictionary() {
             </div>
           </div>
 
-          {words && words.data && words.data.length ? (
+          {words?.data?.length ? (
             <div className="mt-2">
               <ListOfNotes
                 notes={words?.data}
                 removeNote={(e) => {
                   setIsOpenModal(true)
-                  setWordToDel(words?.data?.find((el) => el.id === e))
+                  setWordToDel(words?.data?.find((letter) => letter.id === e))
                 }}
                 setNoteId={setWordId}
                 classes={{
@@ -532,16 +532,16 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
       {uniqueAlphabet &&
         uniqueAlphabet
           .sort((a, b) => a.localeCompare(b))
-          .map((el, index) => (
+          .map((letter, index) => (
             <div
-              key={`${el}_${index}`}
+              key={`${letter}_${index}`}
               onClick={() => {
                 setCurrentPageWords(0)
-                setSearchQuery(el.toLowerCase())
+                setSearchQuery(letter.toLowerCase())
               }}
               className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
             >
-              {el}
+              {letter}
             </div>
           ))}
       <div

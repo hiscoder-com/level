@@ -134,7 +134,7 @@ function TeamNotes() {
 
       acc.push(parsedNote)
 
-      if (note.children && note.children.length > 0) {
+      if (note.children?.length > 0) {
         const childNotes = parseNotes(note.children, project_id, id)
         acc = acc.concat(childNotes)
       }

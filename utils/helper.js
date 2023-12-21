@@ -827,9 +827,7 @@ function removeIdsFromTree(tree) {
     delete item?.user_id
     delete item?.project_id
 
-    if (item.data && item.data.blocks) {
-      item.data.blocks.forEach((block) => delete block.id)
-    }
+    item?.data?.blocks?.forEach((block) => delete block.id)
     item.children.forEach((child) => removeIdsFromItem(child))
   }
 

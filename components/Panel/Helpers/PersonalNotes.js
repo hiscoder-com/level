@@ -132,7 +132,7 @@ function PersonalNotes() {
 
       acc.push(parsedNote)
 
-      if (note.children && note.children.length > 0) {
+      if (note.children?.length > 0) {
         const childNotes = parseNotes(note.children, user_id, id)
         acc = acc.concat(childNotes)
       }
