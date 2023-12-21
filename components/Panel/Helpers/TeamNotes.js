@@ -65,10 +65,8 @@ function TeamNotes() {
   const [noteId, setNoteId] = useState(localStorage.getItem('selectedTeamNoteId') || '')
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
-  
   const { t } = useTranslation(['common, error'])
   const [term, setTerm] = useState('')
-  
   const { user } = useCurrentUser()
   const [allNotes] = useAllTeamlNotes()
 
