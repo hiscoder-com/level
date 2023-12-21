@@ -1,4 +1,5 @@
--- return words from pages dict
+DROP FUNCTION IF EXISTS PUBLIC.get_words_page;
+
 CREATE OR REPLACE FUNCTION get_words_page(
   search_query TEXT,
   words_per_page INT,
@@ -13,7 +14,8 @@ CREATE OR REPLACE FUNCTION get_words_page(
   dict_changed_at TIMESTAMP,
   dict_deleted_at TIMESTAMP,
   total_records BIGINT
-) AS $$
+)  
+LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
   from_offset INT;
   to_offset INT;
@@ -56,5 +58,4 @@ BEGIN
       LIMIT words_per_page
       OFFSET from_offset;
   END IF;
-END;
-$$ LANGUAGE plpgsql;
+END $$;
