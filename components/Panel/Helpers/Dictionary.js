@@ -46,7 +46,7 @@ function Dictionary() {
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
 
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
 
   const {
@@ -173,18 +173,18 @@ function Dictionary() {
       try {
         const file = event.target.files[0]
         if (!file) {
-          throw new Error('No file selected')
+          throw new Error(t('error:NoFileSelected'))
         }
 
         const fileContents = await file.text()
 
         if (!fileContents.trim()) {
-          throw new Error('Empty file content')
+          throw new Error(t('error:EmptyFileContent'))
         }
 
         const importedData = JSON.parse(fileContents)
         if (importedData.type !== 'dictionary') {
-          throw new Error('This not dictionary')
+          throw new Error(t('error:ContentError'))
         }
 
         for (const word of importedData.data) {
@@ -216,7 +216,7 @@ function Dictionary() {
   function exportWords() {
     try {
       if (!allWords || !allWords.length) {
-        throw new Error('No data to export')
+        throw new Error(t('error:NoData'))
       }
 
       const data = allWords.map((word) => {
@@ -271,7 +271,10 @@ function Dictionary() {
   }
 
   function addNote() {
-    const placeholder = checkAndAppendNewTitle(t('NewWord').toLowerCase(), allWords)
+    const placeholder = checkAndAppendNewTitle(
+      t('common:NewWord').toLowerCase(),
+      allWords
+    )
     const id = generateUniqueId(allWords)
     axios
       .post('/api/dictionaries', {
@@ -317,7 +320,7 @@ function Dictionary() {
         setAlphabetProject(project?.dictionaries_alphabet)
       })
       .catch((err) => {
-        toast.error(t('SaveFailed'))
+        toast.error(t('common:SaveFailed'))
         console.log(err)
       })
       .finally(() => {
@@ -327,7 +330,7 @@ function Dictionary() {
 
   const showError = (err, placeholder) => {
     if (err?.response?.data?.error) {
-      toast.error(`${t('WordExist')} "${placeholder}"`)
+      toast.error(`${t('common:WordExist')} "${placeholder}"`)
     }
   }
 
@@ -359,7 +362,7 @@ function Dictionary() {
                   <button
                     className="btn-tertiary p-3"
                     onClick={addNote}
-                    title={t('AddWord')}
+                    title={t('common:AddWord')}
                   >
                     <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>
@@ -369,7 +372,7 @@ function Dictionary() {
                       allWords?.length === 0 ? 'disabled opacity-70' : ''
                     }`}
                     onClick={exportWords}
-                    title={t('Download')}
+                    title={t('common:Download')}
                     disabled={!allWords?.length}
                   >
                     <Export className="w-6 h-6 stroke-th-text-secondary stroke-2" />
@@ -378,7 +381,7 @@ function Dictionary() {
                   <button
                     className="btn-tertiary p-3"
                     onClick={importWords}
-                    title={t('Upload')}
+                    title={t('common:Upload')}
                   >
                     <Import className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>
@@ -452,7 +455,7 @@ function Dictionary() {
               )}
             </div>
           ) : (
-            <div className="mt-2">{t('NoMatches')}</div>
+            <div className="mt-2">{t('common:NoMatches')}</div>
           )}
         </>
       ) : (
@@ -477,7 +480,7 @@ function Dictionary() {
             activeNote={activeWord}
             setActiveNote={setActiveWord}
             readOnly={!isModeratorAccess}
-            placeholder={isModeratorAccess ? t('TextDescriptionWord') : ''}
+            placeholder={isModeratorAccess ? t('common:TextDescriptionWord') : ''}
           />
         </>
       )}
@@ -485,7 +488,10 @@ function Dictionary() {
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('AreYouSureDelete') + ' ' + t(wordToDel?.title).toLowerCase() + '?'}
+            {t('common:AreYouSureDelete') +
+              ' ' +
+              t(`common:${wordToDel?.title}`).toLowerCase() +
+              '?'}
           </div>
           <div className="flex w-1/2 gap-7">
             <button
@@ -498,7 +504,7 @@ function Dictionary() {
                 }
               }}
             >
-              {t('Yes')}
+              {t('common:Yes')}
             </button>
             <button
               className="btn-secondary flex-1"
@@ -507,7 +513,7 @@ function Dictionary() {
                 setIsOpenModal(false)
               }}
             >
-              {t('No')}
+              {t('common:No')}
             </button>
           </div>
         </div>
@@ -542,7 +548,7 @@ function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) 
         className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
         onClick={getAll}
       >
-        {t('ShowAll')}
+        {t('common:ShowAll')}
       </div>
     </div>
   )

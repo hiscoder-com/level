@@ -65,7 +65,7 @@ function PersonalNotes() {
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
   const [allNotes] = useAllPersonalNotes()
 
@@ -160,17 +160,17 @@ function PersonalNotes() {
       try {
         const file = event.target.files[0]
         if (!file) {
-          throw new Error('No file selected')
+          throw new Error(t('error:NoFileSelected'))
         }
 
         const fileContents = await file.text()
         if (!fileContents.trim()) {
-          throw new Error('Empty file content')
+          throw new Error(t('error:EmptyFileContent'))
         }
 
         const importedData = JSON.parse(fileContents)
         if (importedData.type !== 'personal_notes') {
-          throw new Error('This not personal notes')
+          throw new Error(t('error:ContentError'))
         }
         const parsedNotes = parseNotesWithTopFolder(
           importedData.data,
@@ -192,7 +192,7 @@ function PersonalNotes() {
   function exportNotes() {
     try {
       if (!notes || !notes.length) {
-        throw new Error('No data to export')
+        throw new Error(t('error:NoData'))
       }
       const transformedData = formationJSONToTree(notes)
       const jsonContent = JSON.stringify(
@@ -232,7 +232,7 @@ function PersonalNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('SaveFailed'))
+        toast.error(t('common:SaveFailed'))
         console.log(err)
       })
   }
@@ -253,7 +253,7 @@ function PersonalNotes() {
 
   const addNode = (isFolder = false) => {
     const id = generateUniqueId(allNotes)
-    const title = isFolder ? t('NewFolder') : t('NewNote')
+    const title = isFolder ? t('common:NewFolder') : t('common:NewNote')
     axios
       .post('/api/personal_notes', {
         id,
@@ -267,7 +267,7 @@ function PersonalNotes() {
 
   const handleRenameNode = (newTitle, id) => {
     if (!newTitle.trim()) {
-      newTitle = t('EmptyTitle')
+      newTitle = t('common:EmptyTitle')
     }
     axios
       .put(`/api/personal_notes/${id}`, { title: newTitle })
@@ -359,7 +359,7 @@ function PersonalNotes() {
       id: 'adding_a_note',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-          <FileIcon /> {t('NewDocument')}
+          <FileIcon /> {t('common:NewDocument')}
         </span>
       ),
       action: () => addNode(),
@@ -368,7 +368,7 @@ function PersonalNotes() {
       id: 'adding_a_folder',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2">
-          <CloseFolder /> {t('NewFolder')}
+          <CloseFolder /> {t('common:NewFolder')}
         </span>
       ),
       action: () => addNode(true),
@@ -377,7 +377,7 @@ function PersonalNotes() {
       id: 'rename',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-          <Rename /> {t('Rename')}
+          <Rename /> {t('common:Rename')}
         </span>
       ),
       action: handleRename,
@@ -386,7 +386,7 @@ function PersonalNotes() {
       id: 'delete',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-          <Trash className="w-4" /> {t('Delete')}
+          <Trash className="w-4" /> {t('common:Delete')}
         </span>
       ),
       action: () => setIsOpenModal(true),
@@ -408,19 +408,19 @@ function PersonalNotes() {
               disabled={!notes?.length}
             >
               <Trash className="w-5 h-5 stroke-th-text-secondary" />
-              {t('RemoveAll')}
+              {t('common:RemoveAll')}
             </button>
             <button
               className="btn-tertiary p-3"
               onClick={() => addNode()}
-              title={t('NewNote')}
+              title={t('common:NewNote')}
             >
               <FileIcon className="w-6 h-6 fill-th-text-secondary" />
             </button>
             <button
               className="btn-tertiary p-3"
               onClick={() => addNode(true)}
-              title={t('NewFolder')}
+              title={t('common:NewFolder')}
             >
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
             </button>
@@ -429,7 +429,7 @@ function PersonalNotes() {
                 !notes || notes.length === 0 ? 'disabled opacity-70' : ''
               }`}
               onClick={exportNotes}
-              title={t('Download')}
+              title={t('common:Download')}
               disabled={!notes?.length}
             >
               <Export className="w-6 h-6 stroke-th-text-secondary" />
@@ -437,7 +437,7 @@ function PersonalNotes() {
             <button
               className="btn-tertiary p-3"
               onClick={importNotes}
-              title={t('Upload')}
+              title={t('common:Upload')}
             >
               <Import className="w-6 h-6 stroke-th-text-secondary" />
             </button>
@@ -497,20 +497,20 @@ function PersonalNotes() {
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            placeholder={t('TextNewNote')}
-            emptyTitle={t('EmptyTitle')}
+            placeholder={t('common:TextNewNote')}
+            emptyTitle={t('common:EmptyTitle')}
           />
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('AreYouSureDelete') +
+            {t('common:AreYouSureDelete') +
               ' ' +
               t(
                 currentNodeProps
                   ? currentNodeProps.node.data.name
-                  : t('AllNotes').toLowerCase()
+                  : t('common:AllNotes').toLowerCase()
               ) +
               '?'}
           </div>
@@ -527,7 +527,7 @@ function PersonalNotes() {
                 }
               }}
             >
-              {t('Yes')}
+              {t('common:Yes')}
             </button>
             <button
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
@@ -538,7 +538,7 @@ function PersonalNotes() {
                 }, 1000)
               }}
             >
-              {t('No')}
+              {t('common:No')}
             </button>
           </div>
         </div>
