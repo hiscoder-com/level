@@ -449,7 +449,7 @@ function PersonalNotes() {
             className="input-primary mb-4"
             value={term}
             onChange={(event) => setTerm(event.target.value)}
-            placeholder={t('Search')}
+            placeholder={t('common:Search')}
           />
           <TreeView
             term={term}

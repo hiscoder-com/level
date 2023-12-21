@@ -373,7 +373,7 @@ function TeamNotes() {
       id: 'rename',
       buttonContent: (
         <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Rename /> {t('Rename')}
+          <Rename /> {t('common:Rename')}
         </span>
       ),
       action: handleRename,
@@ -432,7 +432,7 @@ function TeamNotes() {
             className="input-primary mb-4"
             value={term}
             onChange={(event) => setTerm(event.target.value)}
-            placeholder={t('Search')}
+            placeholder={t('common:Search')}
           />
           <TreeView
             term={term}
