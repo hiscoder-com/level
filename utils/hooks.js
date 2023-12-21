@@ -550,7 +550,6 @@ export function useGetSteps({ code }) {
 /**
  *hook returns information about books and started chapters from table 'chapters' by project_code
  * @param {string} code code of project
- *
  * @returns {array}
  */
 export function useGetBooksWithStartedChapters(code) {
