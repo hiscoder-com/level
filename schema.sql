@@ -76,6 +76,9 @@
     DROP FUNCTION IF EXISTS PUBLIC.set_sorting_before_insert;
     DROP FUNCTION IF EXISTS PUBLIC.correct_sorting_on_deletion;
     DROP FUNCTION IF EXISTS PUBLIC.move_node;
+    DROP FUNCTION IF EXISTS PUBLIC.get_books_not_null_level_checks;
+    DROP FUNCTION IF EXISTS PUBLIC.find_books_with_chapters_and_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.get_words_page;
 
   -- END DROP FUNCTION
 
@@ -110,14 +113,13 @@
 -- CREATE FUNCTION
 
 -- return words from pages dict
-DROP FUNCTION IF EXISTS PUBLIC.get_words_page;
-
-CREATE OR REPLACE FUNCTION get_words_page(
-  search_query TEXT,
-  words_per_page INT,
-  page_number INT,
-  project_id_param BIGINT
-) RETURNS TABLE (
+CREATE FUNCTION get_words_page(
+    search_query TEXT,  
+    words_per_page INT,  
+    page_number INT,  
+    project_id_param BIGINT
+  ) 
+  RETURNS TABLE (
   dict_id TEXT,
   dict_project_id BIGINT,
   dict_title TEXT,
@@ -126,15 +128,15 @@ CREATE OR REPLACE FUNCTION get_words_page(
   dict_changed_at TIMESTAMP,
   dict_deleted_at TIMESTAMP,
   total_records BIGINT
-)  
-LANGUAGE plpgsql SECURITY DEFINER AS $$
-DECLARE
+  )  
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
   from_offset INT;
   to_offset INT;
-BEGIN
-  IF page_number = -1 THEN
-    RETURN QUERY
-      SELECT
+  BEGIN
+    IF page_number = -1 THEN
+      RETURN QUERY
+       SELECT
         id AS dict_id,
         project_id AS dict_project_id,
         title AS dict_title,
@@ -148,34 +150,35 @@ BEGIN
         AND deleted_at IS NULL
         AND title ILIKE (search_query || '%')
       ORDER BY title ASC;
-  ELSE
-    from_offset := page_number * words_per_page;
-    to_offset := (page_number + 1) * words_per_page;
+    ELSE
+      from_offset := page_number * words_per_page;
+      to_offset := (page_number + 1) * words_per_page;
 
-    RETURN QUERY
-      SELECT
-        id AS dict_id,
-        project_id AS dict_project_id,
-        title AS dict_title,
-        data AS dict_data,
-        created_at AS dict_created_at,
-        changed_at AS dict_changed_at,
-        deleted_at AS dict_deleted_at,
-        COUNT(*) OVER() AS total_records
-      FROM dictionaries
-      WHERE project_id = project_id_param
+      RETURN QUERY
+        SELECT
+          id AS dict_id,
+          project_id AS dict_project_id,
+          title AS dict_title,
+          data AS dict_data,
+          created_at AS dict_created_at,
+          changed_at AS dict_changed_at,
+          deleted_at AS dict_deleted_at,
+          COUNT(*) OVER() AS total_records
+        FROM dictionaries
+        WHERE project_id = project_id_param
         AND deleted_at IS NULL
         AND title ILIKE (search_query || '%')
-      ORDER BY title ASC
-      LIMIT words_per_page
-      OFFSET from_offset;
-  END IF;
-END $$;
+        ORDER BY title ASC
+        LIMIT words_per_page
+        OFFSET from_offset;
+    END IF;
+  END 
+$$;
 
 
 
   -- function returns your maximum role on the project
-    CREATE FUNCTION PUBLIC.authorize(
+  CREATE FUNCTION PUBLIC.authorize(
         user_id uuid,
         project_id BIGINT
       ) RETURNS TEXT
@@ -217,40 +220,41 @@ END $$;
     $$;
 
 -- getting all the books that specify the levels of checks
-    CREATE OR REPLACE FUNCTION get_books_not_null_level_checks(project_code text)
-    RETURNS TABLE (book_code public.book_code, level_checks json) AS $$
-      DECLARE
-        project_id bigint;
-    BEGIN
-        SELECT id INTO project_id FROM public.projects WHERE code = project_code;
+CREATE FUNCTION get_books_not_null_level_checks(project_code text) 
+  RETURNS TABLE (book_code public.book_code, level_checks json) 
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+  project_id bigint;
+  BEGIN
+    SELECT id INTO project_id FROM public.projects WHERE code = project_code;
 
-      IF project_id IS NULL THEN
-        RETURN;
-      END IF;
+    IF project_id IS NULL THEN
+      RETURN;
+    END IF;
 
-      IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
-        RETURN;
-      END IF;
+    IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
+     RETURN;
+    END IF;
 
-      RETURN QUERY
-        SELECT
-            b.code AS book_code,
-            b.level_checks
-        FROM
-            public.books b
-        INNER JOIN
-            public.projects p ON b.project_id = p.id
-        WHERE
-            p.code = project_code
-            AND b.level_checks IS NOT NULL;
-      END;
-    $$ LANGUAGE plpgsql;
+    RETURN QUERY
+     SELECT
+        b.code AS book_code,
+        b.level_checks
+      FROM
+        public.books b
+      INNER JOIN
+        public.projects p ON b.project_id = p.id
+      WHERE
+        p.code = project_code
+        AND b.level_checks IS NOT NULL;
+  END;
+$$;
+
 
 
 -- getting all books with verses that are started and non-zero translation texts
-    CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses(project_code text)
-    RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
-    DECLARE
+CREATE FUNCTION find_books_with_chapters_and_verses(project_code text)RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
+  DECLARE
         project_id bigint;
       BEGIN
       SELECT id INTO project_id FROM public.projects WHERE code = project_code;
@@ -923,7 +927,7 @@ END $$;
   END;
 $$;
 
-  CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
+CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       chapter JSONB;
