@@ -120,14 +120,14 @@ CREATE FUNCTION get_words_page(
     project_id_param BIGINT
   ) 
   RETURNS TABLE (
-  dict_id TEXT,
-  dict_project_id BIGINT,
-  dict_title TEXT,
-  dict_data JSON,
-  dict_created_at TIMESTAMP,
-  dict_changed_at TIMESTAMP,
-  dict_deleted_at TIMESTAMP,
-  total_records BIGINT
+    dict_id TEXT,
+    dict_project_id BIGINT,
+    dict_title TEXT,
+    dict_data JSON,
+    dict_created_at TIMESTAMP,
+    dict_changed_at TIMESTAMP,
+    dict_deleted_at TIMESTAMP,
+    total_records BIGINT
   )  
   LANGUAGE plpgsql SECURITY DEFINER AS $$
   DECLARE
