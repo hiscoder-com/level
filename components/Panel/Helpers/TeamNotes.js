@@ -95,12 +95,12 @@ function TeamNotes() {
 
   function parseNotesWithTopFolder(notes, project_id, deleted_at) {
     const exportFolderId = generateUniqueId(allNotes)
-    const exportFolderDate = new Date().toISOString().split('T')[0]
+    const exportFolderDateTime = new Date().toISOString().replace(/[:.]/g, '-')
 
     const exportFolder = {
       id: exportFolderId,
       project_id,
-      title: `export-${exportFolderDate}`,
+      title: `export-${exportFolderDateTime}`,
       data: null,
       created_at: new Date().toISOString(),
       changed_at: new Date().toISOString(),

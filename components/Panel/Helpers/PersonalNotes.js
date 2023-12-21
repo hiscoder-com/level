@@ -93,12 +93,12 @@ function PersonalNotes() {
 
   function parseNotesWithTopFolder(notes, user_id, deleted_at) {
     const exportFolderId = generateUniqueId(allNotes)
-    const exportFolderDate = new Date().toISOString().split('T')[0]
+    const exportFolderDateTime = new Date().toISOString().replace(/[:.]/g, '-')
 
     const exportFolder = {
       id: exportFolderId,
       user_id,
-      title: `export-${exportFolderDate}`,
+      title: `export-${exportFolderDateTime}`,
       data: null,
       created_at: new Date().toISOString(),
       changed_at: new Date().toISOString(),
