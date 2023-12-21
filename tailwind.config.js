@@ -1,6 +1,6 @@
 module.exports = {
   content: ['./pages/**/*.{js,jsx}', './components/**/*.{js,jsx}'],
-  darkMode: false,
+  darkMode: 'media',
   theme: {
     extend: {
       colors: {

@@ -863,7 +863,7 @@ $$;
       chapter JSONB;
     BEGIN
       IF (NEW.finished_at IS NOT NULL) THEN
-        SELECT jsonb_object_agg(num, "text" ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id INTO chapter;
+        SELECT jsonb_object_agg(num, "text" ORDER BY num ASC) FROM PUBLIC.verses WHERE project_id = OLD.project_id AND chapter_id = OLD.id AND num < 201 INTO chapter;
         NEW.text=chapter;
       END IF;
       RETURN NEW;

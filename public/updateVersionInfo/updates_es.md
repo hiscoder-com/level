@@ -1,3 +1,24 @@
+# Versión 0.11.0
+## Fecha: 12/20/2023
+
+### **Modificado:**
+- en la sección de materiales auxiliares, como notas, el botón "ATRÁS" está fijo
+- el botón "ATRÁS" se ha generalizado en materiales auxiliares, bloc de notas y diccionario
+- se corrigió un error al mostrar una lista de idiomas al cambiar de idioma
+- cuando utilizamos confirmaciones, utilizamos un tipo de URL (excluimos '/src/')
+- búsqueda agregada por notas
+- notas: error en el menú contextual corregido
+- lista de notas: un clic en un elemento del árbol abre una nota/carpeta, dos clics abren el árbol completo y tres clics comienzan a cambiar el nombre
+
+# Versión 0.10.1
+## Fecha: 11/21/2023
+
+### **Modificado:**
+- ruta para cargar imágenes en OBS al exportar a PDF en la versión de intranet
+- portada pdf
+### **Eliminado:**
+- componente de audio en versión intranet
+
 # Versión 0.10.0
 ## Fecha: 11/20/2023
 
@@ -7,15 +28,14 @@
 # Versión 0.9.0
 ## Fecha: 11/16/2023
 
-### * * Modificado:**
+### **Modificado:**
 - el modo de lectura ahora también está disponible cuando hay borradores de texto en la base de datos
-### * * Corregido:**
+### **Corregido:**
 - mostrar la lista de historias al actualizar la página
 ### **Agregado:**
 - posibilidad de Leer textos borrados guardados en la base de datos
 - visualización del modo de lectura en el área personal
 - visualización del modo de lectura en la lista de libros del proyecto
-
 
 # Versión 0.8.0
 ## Fecha: 11/09/2023

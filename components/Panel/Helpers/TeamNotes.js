@@ -61,10 +61,14 @@ function TeamNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
+  const [isShowMenu, setIsShowMenu] = useState(false)
   const [noteId, setNoteId] = useState(localStorage.getItem('selectedTeamNoteId') || '')
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
+  
   const { t } = useTranslation(['common, error'])
+  const [term, setTerm] = useState('')
+  
   const { user } = useCurrentUser()
   const [allNotes] = useAllTeamlNotes()
 
@@ -248,8 +252,8 @@ function TeamNotes() {
       })
   }
 
-  const onDoubleClick = () => {
-    const currentNote = notes.find((el) => el.id === noteId)
+  const changeNode = () => {
+    const currentNote = notes.find((el) => el.id === hoveredNodeId)
     setActiveNote(currentNote)
   }
 
@@ -318,11 +322,11 @@ function TeamNotes() {
   }, [notes])
 
   useEffect(() => {
-    localStorage.setItem('selectedTeamNoteId', noteId)
+    noteId && localStorage.setItem('selectedTeamNoteId', noteId)
   }, [noteId])
 
   const handleContextMenu = (event) => {
-    setNoteId(hoveredNodeId)
+    setIsShowMenu(true)
     setContextMenuEvent({ event })
   }
 
@@ -426,7 +430,14 @@ function TeamNotes() {
               </button>
             </div>
           )}
+          <input
+            className="input-primary mb-4"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder={t('Search')}
+          />
           <TreeView
+            term={term}
             selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{
@@ -439,7 +450,7 @@ function TeamNotes() {
             selectedNodeId={noteId}
             treeWidth={'w-full'}
             icons={icons}
-            handleDoubleClick={onDoubleClick}
+            handleOnClick={changeNode}
             handleContextMenu={handleContextMenu}
             hoveredNodeId={hoveredNodeId}
             setHoveredNodeId={setHoveredNodeId}
@@ -450,8 +461,8 @@ function TeamNotes() {
           />
           {isModeratorAccess && (
             <ContextMenu
-              setSelectedNodeId={setNoteId}
-              selectedNodeId={noteId}
+              setIsVisible={setIsShowMenu}
+              isVisible={isShowMenu}
               nodeProps={currentNodeProps}
               menuItems={menuItems}
               clickMenuEvent={contextMenuEvent}
@@ -467,13 +478,14 @@ function TeamNotes() {
       ) : (
         <>
           <div
-            className="absolute top-1 right-0 w-10 pr-3 cursor-pointer"
+            className="absolute flex top-0 right-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
+              setIsShowMenu(false)
             }}
           >
-            <Back className="stroke-th-text-primary" />
+            <Back className="w-8 stroke-th-primary-200" />
           </div>
           <Redactor
             classes={{
@@ -502,22 +514,14 @@ function TeamNotes() {
               className="btn-secondary flex-1"
               onClick={() => {
                 setIsOpenModal(false)
-                if (currentNodeProps) {
-                  removeNode()
-                  setCurrentNodeProps(null)
-                }
+                removeNode()
               }}
             >
               {t('common:Yes')}
             </button>
             <button
               className="btn-secondary flex-1"
-              onClick={() => {
-                setIsOpenModal(false)
-                setTimeout(() => {
-                  setCurrentNodeProps(null)
-                }, 1000)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
               {t('common:No')}
             </button>
