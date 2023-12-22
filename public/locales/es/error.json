@@ -1,5 +1,9 @@
 {
+  "ContentError": "Content error",
+  "EmptyFileContent": "Empty file content",
   "GoTo": "Go to ",
   "Homepage": "Homepage",
+  "NoData": "No data",
+  "NoFileSelected": "No file selected",
   "PageNotFound": "Page not found."
 }
