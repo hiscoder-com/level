@@ -105,12 +105,8 @@ function ChapterVersesPage() {
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
   const [isChapterStarted, setIsChapterStarted] = useState(false)
 
-  const checkChapterStarted = () => {
-    setIsChapterStarted(!!chapter?.started_at)
-  }
-
   useEffect(() => {
-    checkChapterStarted()
+    setIsChapterStarted(!!chapter?.started_at)
   }, [chapter])
 
   const changeStartChapter = () => {
