@@ -41,9 +41,9 @@ function Button({
       disabled={disabled}
       className={`group flex flex-row items-center w-full p-2 cursor-pointer ${
         colors[color].border
-      } border-2 rounded-2xl font-semibold text-sm md:text-xl ${
-        colors[color].text
-      } hover:shadow-md ${!disabled ? colors[color].hover : ''} ${
+      } border-2 rounded-2xl font-semibold text-sm md:text-xl ${colors[color].text} ${
+        disabled ? '' : 'hover:shadow-md'
+      } ${!disabled ? colors[color].hover : ''} ${
         !disabled ? 'active:text-th-secondary-10' : ''
       } ${!disabled ? colors[color].active : ''}`}
     >
