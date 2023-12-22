@@ -104,24 +104,20 @@ function ChapterVersesPage() {
 
   const [isLoadingCancelStart, setIsLoadingCancelStart] = useState(false)
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
+  const [isChapterStarted, setIsChapterStarted] = useState(false)
 
   const changeStartChapter = () => {
-    if (verses.some((item) => item.project_translator_id === null)) {
-      toast.error(t('ErrorStartChapter'))
-    } else {
-      setIsLoadingCancelStart(true)
-      supabase
-        .rpc('change_start_chapter', {
-          chapter_id: chapter?.id,
-          project_id: project?.id,
-        })
-        .then(() => {
-          mutateChapter()
-          mutateChapters()
-        })
-        .catch(console.log)
-        .finally(() => setIsLoadingCancelStart(false))
-    }
+    supabase
+      .rpc('change_start_chapter', {
+        chapter_id: chapter?.id,
+        project_id: project?.id,
+      })
+      .then(() => {
+        mutateChapter()
+        mutateChapters()
+        setIsChapterStarted(true)
+      })
+      .catch(console.log)
   }
 
   const changeFinishChapter = () => {
@@ -362,6 +358,7 @@ function ChapterVersesPage() {
                   color="tertiary"
                   icon={<Check className="w-5 h-5" />}
                   disabled={!translators?.length}
+                  hidden={isChapterStarted}
                 />
                 <Button
                   onClick={() =>
@@ -378,6 +375,7 @@ function ChapterVersesPage() {
                   color="primary"
                   icon={<Trash className="w-5 h-5" />}
                   disabled={!translators?.length}
+                  hidden={isChapterStarted}
                 />
               </div>
             </Card>
@@ -387,10 +385,16 @@ function ChapterVersesPage() {
                   <Button
                     onClick={changeStartChapter}
                     text={t('chapters:StartChapter')}
-                    color={'tertiary'}
+                    color={
+                      verses?.some((item) => item.project_translator_id === null)
+                        ? 'disable'
+                        : 'tertiary'
+                    }
                     icon={<Check className="w-5 h-5" />}
                     disabled={
-                      chapter?.finished_at || isValidating || translators?.length === 0
+                      chapter?.finished_at ||
+                      isValidating ||
+                      verses?.some((item) => item.project_translator_id === null)
                     }
                     avatar={
                       isValidating || isLoading ? (
@@ -401,20 +405,7 @@ function ChapterVersesPage() {
                     }
                   />
                 ) : (
-                  <Button
-                    onClick={changeStartChapter}
-                    text={t('chapters:CancelStartChapter')}
-                    color={'primary'}
-                    icon={<Trash className="w-5 h-5" />}
-                    disabled={chapter?.finished_at || isValidating}
-                    avatar={
-                      isLoadingCancelStart ? (
-                        <Loading className="w-5 h-5 animate-spin" />
-                      ) : (
-                        ''
-                      )
-                    }
-                  />
+                  ''
                 ))}
               {chapter?.started_at && (
                 <Button
@@ -573,20 +564,7 @@ function ChapterVersesPage() {
                                 }
                               />
                             ) : (
-                              <Button
-                                onClick={changeStartChapter}
-                                text={t('chapters:CancelStartChapter')}
-                                color={'primary'}
-                                icon={<Trash className="w-5 h-5" />}
-                                disabled={chapter?.finished_at || isValidating}
-                                avatar={
-                                  isLoadingCancelStart ? (
-                                    <Loading className="w-5 h-5 animate-spin" />
-                                  ) : (
-                                    ''
-                                  )
-                                }
-                              />
+                              ''
                             ))}
                           {chapter?.started_at && (
                             <Button
