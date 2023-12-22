@@ -45,7 +45,7 @@ function ResourceSettings() {
       for (const [key, value] of Object.entries(resources)) {
         _resources[key] = `${
           process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
-        }/${value.owner}/${value.repo}/src/commit/${value.commit}`
+        }/${value.owner}/${value.repo}/commit/${value.commit}`
       }
       setResourcesUrl(_resources)
     }

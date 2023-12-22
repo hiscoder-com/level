@@ -11,8 +11,7 @@ import toast from 'react-hot-toast'
 
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import useSupabaseClient from 'utils/supabaseClient'
-import { useAccess, useProject } from 'utils/hooks'
+import { useAccess, useAllWords, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
 
@@ -21,6 +20,8 @@ import ArrowLeft from 'public/arrow-left.svg'
 import Back from 'public/left.svg'
 import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
+import Export from 'public/export.svg'
+import Import from 'public/import.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -35,7 +36,6 @@ const ListOfNotes = dynamic(
     ssr: false,
   }
 )
-const CountWordsOnPage = 10
 
 function Dictionary() {
   const [currentPageWords, setCurrentPageWords] = useState(0)
@@ -46,27 +46,47 @@ function Dictionary() {
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
 
-  const supabase = useSupabaseClient()
-
-  const totalPageCount = useMemo(
-    () => Math.ceil(words?.count / CountWordsOnPage),
-    [words]
-  )
-
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
 
   const {
     query: { project: code },
   } = useRouter()
 
-  const [project, { mutate }] = useProject({
+  const [project, { mutate: mutateProject }] = useProject({
     code,
   })
   const [{ isModeratorAccess }] = useAccess({
     user_id: user?.id,
     code,
   })
+
+  const [alphabetProject, setAlphabetProject] = useState(project?.dictionaries_alphabet)
+
+  const countWordsOnPage = 10
+
+  const queryWords = {
+    searchQuery: '',
+    wordsPerPage: countWordsOnPage,
+    pageNumber: -1,
+    project_id_param: project?.id,
+  }
+
+  const [allWords, { mutate }] = useAllWords(queryWords)
+
+  const totalPageCount = useMemo(
+    () => Math.ceil(words?.count / countWordsOnPage),
+    [words]
+  )
+
+  useEffect(() => {
+    mutate()
+  }, [mutate])
+
+  useEffect(() => {
+    mutateProject()
+  }, [mutateProject])
+
   const getAll = () => {
     setCurrentPageWords(0)
     setSearchQuery('')
@@ -74,19 +94,39 @@ function Dictionary() {
   }
 
   const getWords = async (searchQuery = '', count = 0) => {
-    const { from, to } = getPagination(count, CountWordsOnPage)
-    if (project?.id) {
-      const { data, count: wordsCount } = await supabase
-        .from('dictionaries')
-        .select('id,project_id,title,data,deleted_at', { count: 'exact' })
-        .eq('project_id', project?.id)
-        .is('deleted_at', null)
-        .ilike('title', `${searchQuery}%`)
-        .order('title', { ascending: true })
-        .range(from, to)
-      if (data?.length) {
-        setWords({ data, count: wordsCount })
+    const apiUrl = '/api/dictionaries/getWords'
+
+    try {
+      if (project?.id) {
+        const response = await axios.get(apiUrl, {
+          params: {
+            searchQuery,
+            wordsPerPage: countWordsOnPage,
+            pageNumber: count,
+            project_id_param: project?.id,
+          },
+        })
+
+        const dataTemp = response.data
+
+        if (dataTemp?.length) {
+          const data = dataTemp.map((word) => {
+            return {
+              id: word.dict_id,
+              project_id: word.dict_project_id,
+              title: word.dict_title,
+              data: word.dict_data,
+              deleted_at: word.dict_deleted_at,
+              total_records: word.total_records,
+            }
+          })
+          setWords({ data, count: data[0].total_records })
+        } else {
+          setWords({ data: null, count: 0 })
+        }
       }
+    } catch (error) {
+      console.error('Error fetching words:', error)
     }
   }
 
@@ -109,21 +149,142 @@ function Dictionary() {
     if (!words?.data) {
       return
     }
-    const currentNote = words?.data?.find((el) => el.id === wordId)
-    setActiveWord(currentNote)
+    const currentNote = words?.data?.find((letter) => letter.id === wordId)
+    if (currentNote) {
+      setActiveWord(currentNote)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wordId])
 
+  function generateUniqueId(existingIds) {
+    let newId
+    do {
+      newId = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    } while (existingIds.includes(newId))
+    return newId
+  }
+
+  const importWords = async () => {
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.json'
+
+    fileInput.addEventListener('change', async (event) => {
+      try {
+        const file = event.target.files[0]
+        if (!file) {
+          throw new Error(t('error:NoFileSelected'))
+        }
+
+        const fileContents = await file.text()
+
+        if (!fileContents.trim()) {
+          throw new Error(t('error:EmptyFileContent'))
+        }
+
+        const importedData = JSON.parse(fileContents)
+        if (importedData.type !== 'dictionary') {
+          throw new Error(t('error:ContentError'))
+        }
+
+        for (const word of importedData.data) {
+          const newWord = {
+            id: generateUniqueId(allWords),
+            project_id: project?.id,
+            title: checkAndAppendNewTitle(word.title, allWords),
+            data: word.data,
+            created_at: word.created_at,
+            changed_at: word.changed_at,
+            deleted_at: word.deleted_at,
+          }
+
+          bulkNode(newWord)
+        }
+
+        getAll()
+        mutate()
+        mutateProject()
+        setAlphabetProject(project?.dictionaries_alphabet)
+      } catch (error) {
+        toast.error(error.message)
+      }
+    })
+
+    fileInput.click()
+  }
+
+  function exportWords() {
+    try {
+      if (!allWords || !allWords.length) {
+        throw new Error(t('error:NoData'))
+      }
+
+      const data = allWords.map((word) => {
+        return {
+          title: word.dict_title,
+          data: word.dict_data,
+          created_at: word.dict_created_at,
+          changed_at: word.dict_changed_at,
+          deleted_at: word.dict_deleted_at,
+        }
+      })
+
+      const jsonString = JSON.stringify({ type: 'dictionary', data }, null, 2)
+
+      const blob = new Blob([jsonString], { type: 'application/json' })
+
+      const link = document.createElement('a')
+      link.href = URL.createObjectURL(blob)
+
+      const currentDate = new Date()
+      const formattedDate = currentDate.toISOString().split('T')[0]
+
+      const fileName = `dictionary_${formattedDate}.json`
+
+      link.download = fileName
+      document.body.appendChild(link)
+      link.click()
+
+      document.body.removeChild(link)
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  function checkAndAppendNewTitle(title, allWords) {
+    const existingTitles = allWords?.map((word) => word.dict_title.toLowerCase())
+    let newTitle = title
+
+    do {
+      newTitle += '_new'
+    } while (existingTitles?.includes(newTitle))
+    return newTitle
+  }
+
+  const bulkNode = (word) => {
+    axios
+      .post('/api/dictionaries/bulk_insert', {
+        word: word,
+      })
+      .then(() => mutate())
+      .catch(console.log)
+  }
+
   function addNote() {
-    const placeholder = t('NewWord').toLowerCase()
-    const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    const placeholder = checkAndAppendNewTitle(
+      t('common:NewWord').toLowerCase(),
+      allWords
+    )
+    const id = generateUniqueId(allWords)
     axios
       .post('/api/dictionaries', {
         id,
         project_id: project?.id,
         placeholder,
       })
-      .then((res) => setActiveWord(res.data[0]))
+      .then((res) => {
+        setActiveWord(res.data[0])
+      })
       .catch((err) => showError(err, placeholder))
   }
 
@@ -140,6 +301,7 @@ function Dictionary() {
           }
         })
         mutate()
+        mutateProject()
       })
       .catch(console.log)
   }
@@ -148,29 +310,28 @@ function Dictionary() {
     if (!isModeratorAccess) {
       return
     }
+
     axios
       .put(`/api/dictionaries/${activeWord?.id}`, activeWord)
-      .then(() => saveCacheNote('dictionary', activeWord, user))
+      .then(() => {
+        saveCacheNote('dictionary', activeWord, user)
+        mutate()
+        mutateProject()
+        setAlphabetProject(project?.dictionaries_alphabet)
+      })
       .catch((err) => {
-        toast.error(t('SaveFailed'))
+        toast.error(t('common:SaveFailed'))
         console.log(err)
       })
       .finally(() => {
         getWords(searchQuery, currentPageWords)
-        mutate()
       })
   }
 
   const showError = (err, placeholder) => {
     if (err?.response?.data?.error) {
-      toast.error(`${t('WordExist')} "${placeholder}"`)
+      toast.error(`${t('common:WordExist')} "${placeholder}"`)
     }
-  }
-
-  const getPagination = (page, size) => {
-    const from = page ? page * size : 0
-    const to = page ? from + size - 1 : size - 1
-    return { from, to }
   }
 
   useEffect(() => {
@@ -186,6 +347,10 @@ function Dictionary() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeWord, isModeratorAccess])
 
+  useEffect(() => {
+    setAlphabetProject(project?.dictionaries_alphabet)
+  }, [project])
+
   return (
     <div className="relative">
       {!activeWord ? (
@@ -193,16 +358,39 @@ function Dictionary() {
           <div className="flex gap-4 items-start">
             {isModeratorAccess && (
               <>
-                <div className="top-0 right-0">
-                  <button className="btn-tertiary p-3" onClick={addNote}>
+                <div className="flex gap-2">
+                  <button
+                    className="btn-tertiary p-3"
+                    onClick={addNote}
+                    title={t('common:AddWord')}
+                  >
                     <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                  </button>
+
+                  <button
+                    className={`btn-tertiary p-3 ${
+                      allWords?.length === 0 ? 'disabled opacity-70' : ''
+                    }`}
+                    onClick={exportWords}
+                    title={t('common:Download')}
+                    disabled={!allWords?.length}
+                  >
+                    <Export className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                  </button>
+
+                  <button
+                    className="btn-tertiary p-3"
+                    onClick={importWords}
+                    title={t('common:Upload')}
+                  >
+                    <Import className="w-6 h-6 stroke-th-text-secondary stroke-2" />
                   </button>
                 </div>
               </>
             )}
             <div>
               <Alphabet
-                alphabet={project?.dictionaries_alphabet}
+                alphabet={alphabetProject}
                 getAll={getAll}
                 setSearchQuery={setSearchQuery}
                 setCurrentPageWords={setCurrentPageWords}
@@ -219,13 +407,13 @@ function Dictionary() {
             </div>
           </div>
 
-          {words?.data.length ? (
+          {words?.data?.length ? (
             <div className="mt-2">
               <ListOfNotes
                 notes={words?.data}
                 removeNote={(e) => {
                   setIsOpenModal(true)
-                  setWordToDel(words?.data?.find((el) => el.id === e))
+                  setWordToDel(words?.data?.find((letter) => letter.id === e))
                 }}
                 setNoteId={setWordId}
                 classes={{
@@ -267,20 +455,20 @@ function Dictionary() {
               )}
             </div>
           ) : (
-            <div className="mt-2">{t('NoMatches')}</div>
+            <div className="mt-2">{t('common:NoMatches')}</div>
           )}
         </>
       ) : (
         <>
           <div
-            className="absolute top-1 right-0 pr-3 w-10 cursor-pointer"
+            className="absolute flex top-0 right-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveWord()
               setActiveWord(null)
               setWordId(null)
             }}
           >
-            <Back className="stroke-th-text-primary" />
+            <Back className="w-8 stroke-th-primary-200" />
           </div>
           <Redactor
             classes={{
@@ -292,7 +480,7 @@ function Dictionary() {
             activeNote={activeWord}
             setActiveNote={setActiveWord}
             readOnly={!isModeratorAccess}
-            placeholder={isModeratorAccess ? t('TextDescriptionWord') : ''}
+            placeholder={isModeratorAccess ? t('common:TextDescriptionWord') : ''}
           />
         </>
       )}
@@ -300,7 +488,10 @@ function Dictionary() {
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('AreYouSureDelete') + ' ' + t(wordToDel?.title).toLowerCase() + '?'}
+            {t('common:AreYouSureDelete') +
+              ' ' +
+              t(`common:${wordToDel?.title}`).toLowerCase() +
+              '?'}
           </div>
           <div className="flex w-1/2 gap-7">
             <button
@@ -313,7 +504,7 @@ function Dictionary() {
                 }
               }}
             >
-              {t('Yes')}
+              {t('common:Yes')}
             </button>
             <button
               className="btn-secondary flex-1"
@@ -322,7 +513,7 @@ function Dictionary() {
                 setIsOpenModal(false)
               }}
             >
-              {t('No')}
+              {t('common:No')}
             </button>
           </div>
         </div>
@@ -334,29 +525,30 @@ function Dictionary() {
 export default Dictionary
 
 function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) {
+  const uniqueAlphabet = [...new Set(alphabet)]
+
   return (
     <div className="flex flex-wrap">
-      {alphabet &&
-        alphabet
-          ?.sort((a, b) => a.localeCompare(b))
-          .map((el) => (
+      {uniqueAlphabet &&
+        uniqueAlphabet
+          .sort((a, b) => a.localeCompare(b))
+          .map((letter, index) => (
             <div
+              key={`${letter}_${index}`}
               onClick={() => {
                 setCurrentPageWords(0)
-                setSearchQuery(el.toLowerCase())
+                setSearchQuery(letter.toLowerCase())
               }}
               className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
-              key={el}
             >
-              {el}
+              {letter}
             </div>
           ))}
       <div
-        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100
-        "
+        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
         onClick={getAll}
       >
-        {t('ShowAll')}
+        {t('common:ShowAll')}
       </div>
     </div>
   )
