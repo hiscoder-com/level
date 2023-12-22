@@ -1,9 +1,9 @@
 {
-  "ContentError": "Content error",
-  "EmptyFileContent": "Empty file content",
+  "ContentError": "Ошибка содержимого",
+  "EmptyFileContent": "Отсутствует содержимое файла",
   "GoTo": "Вернуться на ",
   "Homepage": "Главную Страницу",
-  "NoData": "No data",
-  "NoFileSelected": "No file selected",
+  "NoData": "Нет данных",
+  "NoFileSelected": "Не выбран файл",
   "PageNotFound": "Страница не найдена."
 }
