@@ -11,8 +11,8 @@ import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { convertNotesToTree } from 'utils/helper'
-import { usePersonalNotes } from 'utils/hooks'
+import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
+import { useAllPersonalNotes, usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
 
@@ -24,6 +24,8 @@ import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
+import Export from 'public/export.svg'
+import Import from 'public/import.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -64,8 +66,10 @@ function PersonalNotes() {
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
+  const [allNotes] = useAllPersonalNotes()
+
   const [notes, { mutate }] = usePersonalNotes({
     sort: 'sorting',
   })
@@ -76,6 +80,152 @@ function PersonalNotes() {
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
+
+  useEffect(() => {
+    mutate()
+  }, [mutate])
+
+  function generateUniqueId(existingIds) {
+    let newId
+    do {
+      newId = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    } while (existingIds.includes(newId))
+    return newId
+  }
+
+  function parseNotesWithTopFolder(notes, user_id, deleted_at) {
+    const exportFolderId = generateUniqueId(allNotes)
+    const exportFolderDateTime = new Date().toISOString().replace(/[:.]/g, '-')
+
+    const exportFolder = {
+      id: exportFolderId,
+      user_id,
+      title: `export-${exportFolderDateTime}`,
+      data: null,
+      created_at: new Date().toISOString(),
+      changed_at: new Date().toISOString(),
+      deleted_at,
+      is_folder: true,
+      parent_id: null,
+      sorting: 0,
+    }
+
+    const parsedNotes = parseNotes(notes, user_id, exportFolderId)
+    return [exportFolder, ...parsedNotes]
+  }
+
+  function parseNotes(notes, user_id, parentId = null) {
+    return notes.reduce((acc, note) => {
+      const id = generateUniqueId(allNotes)
+      const parsedNote = {
+        id: id,
+        user_id,
+        title: note.title,
+        data: parseData(note.data),
+        created_at: note.created_at,
+        changed_at: new Date().toISOString(),
+        deleted_at: note.deleted_at,
+        is_folder: note.is_folder,
+        parent_id: parentId,
+        sorting: note.sorting,
+      }
+
+      acc.push(parsedNote)
+
+      if (note.children?.length > 0) {
+        const childNotes = parseNotes(note.children, user_id, id)
+        acc = acc.concat(childNotes)
+      }
+
+      return acc
+    }, [])
+  }
+
+  function parseData(data) {
+    if (!data) {
+      return null
+    }
+
+    return {
+      blocks: data.blocks || [],
+      version: data.version,
+      time: data.time,
+    }
+  }
+
+  const importNotes = async () => {
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.json'
+
+    fileInput.addEventListener('change', async (event) => {
+      try {
+        const file = event.target.files[0]
+        if (!file) {
+          throw new Error(t('error:NoFileSelected'))
+        }
+
+        const fileContents = await file.text()
+        if (!fileContents.trim()) {
+          throw new Error(t('error:EmptyFileContent'))
+        }
+
+        const importedData = JSON.parse(fileContents)
+        if (importedData.type !== 'personal_notes') {
+          throw new Error(t('error:ContentError'))
+        }
+        const parsedNotes = parseNotesWithTopFolder(
+          importedData.data,
+          user.id,
+          user.deleted_at
+        )
+
+        for (const note of parsedNotes) {
+          bulkNode(note)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    })
+
+    fileInput.click()
+  }
+
+  function exportNotes() {
+    try {
+      if (!notes || !notes.length) {
+        throw new Error(t('error:NoData'))
+      }
+      const transformedData = formationJSONToTree(notes)
+      const jsonContent = JSON.stringify(
+        { type: 'personal_notes', data: transformedData },
+        null,
+        2
+      )
+
+      const blob = new Blob([jsonContent], { type: 'application/json' })
+
+      const downloadLink = document.createElement('a')
+      const currentDate = new Date()
+      const formattedDate = currentDate.toISOString().split('T')[0]
+
+      const fileName = `personal_notes_${formattedDate}.json`
+
+      const url = URL.createObjectURL(blob)
+
+      downloadLink.href = url
+      downloadLink.download = fileName
+
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
+
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
   const saveNote = () => {
     axios
       .put(`/api/personal_notes/${noteId}`, activeNote)
@@ -84,7 +234,7 @@ function PersonalNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('SaveFailed'))
+        toast.error(t('common:SaveFailed'))
         console.log(err)
       })
   }
@@ -94,9 +244,18 @@ function PersonalNotes() {
     setActiveNote(currentNote)
   }
 
+  const bulkNode = (note) => {
+    axios
+      .post('/api/personal_notes/bulk_insert', {
+        note: note,
+      })
+      .then(() => mutate())
+      .catch(console.log)
+  }
+
   const addNode = (isFolder = false) => {
-    const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    const title = isFolder ? t('NewFolder') : t('NewNote')
+    const id = generateUniqueId(allNotes)
+    const title = isFolder ? t('common:NewFolder') : t('common:NewNote')
     axios
       .post('/api/personal_notes', {
         id,
@@ -110,7 +269,7 @@ function PersonalNotes() {
 
   const handleRenameNode = (newTitle, id) => {
     if (!newTitle.trim()) {
-      newTitle = t('EmptyTitle')
+      newTitle = t('common:EmptyTitle')
     }
     axios
       .put(`/api/personal_notes/${id}`, { title: newTitle })
@@ -202,7 +361,7 @@ function PersonalNotes() {
       id: 'adding_a_note',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-          <FileIcon /> {t('NewDocument')}
+          <FileIcon /> {t('common:NewDocument')}
         </span>
       ),
       action: () => addNode(),
@@ -211,7 +370,7 @@ function PersonalNotes() {
       id: 'adding_a_folder',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2">
-          <CloseFolder /> {t('NewFolder')}
+          <CloseFolder /> {t('common:NewFolder')}
         </span>
       ),
       action: () => addNode(true),
@@ -220,7 +379,7 @@ function PersonalNotes() {
       id: 'rename',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-          <Rename /> {t('Rename')}
+          <Rename /> {t('common:Rename')}
         </span>
       ),
       action: handleRename,
@@ -229,7 +388,7 @@ function PersonalNotes() {
       id: 'delete',
       buttonContent: (
         <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-          <Trash className="w-4" /> {t('Delete')}
+          <Trash className="w-4" /> {t('common:Delete')}
         </span>
       ),
       action: () => setIsOpenModal(true),
@@ -242,7 +401,9 @@ function PersonalNotes() {
         <div>
           <div className="flex gap-2">
             <button
-              className="btn-tertiary px-5 py-3 flex gap-2 items-center"
+              className={`btn-tertiary px-5 py-3 flex gap-2 items-center ${
+                notes?.length === 0 ? 'disabled opacity-70' : ''
+              }`}
               onClick={() => {
                 setCurrentNodeProps(null)
                 setIsOpenModal(true)
@@ -250,20 +411,45 @@ function PersonalNotes() {
               disabled={!notes?.length}
             >
               <Trash className="w-5 h-5 stroke-th-text-secondary" />
-              {t('RemoveAll')}
+              {t('common:RemoveAll')}
             </button>
-            <button className="btn-tertiary p-3" onClick={() => addNode()}>
+            <button
+              className="btn-tertiary p-3"
+              onClick={() => addNode()}
+              title={t('common:NewNote')}
+            >
               <FileIcon className="w-6 h-6 fill-th-text-secondary" />
             </button>
-            <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
+            <button
+              className="btn-tertiary p-3"
+              onClick={() => addNode(true)}
+              title={t('common:NewFolder')}
+            >
               <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
+            </button>
+            <button
+              className={`btn-tertiary p-3 ${
+                !notes || notes.length === 0 ? 'disabled opacity-70' : ''
+              }`}
+              onClick={exportNotes}
+              title={t('common:Download')}
+              disabled={!notes?.length}
+            >
+              <Export className="w-6 h-6 stroke-th-text-secondary" />
+            </button>
+            <button
+              className="btn-tertiary p-3"
+              onClick={importNotes}
+              title={t('common:Upload')}
+            >
+              <Import className="w-6 h-6 stroke-th-text-secondary" />
             </button>
           </div>
           <input
             className="input-primary mb-4"
             value={term}
             onChange={(event) => setTerm(event.target.value)}
-            placeholder={t('Search')}
+            placeholder={t('common:Search')}
           />
           <TreeView
             term={term}
@@ -322,20 +508,20 @@ function PersonalNotes() {
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            placeholder={t('TextNewNote')}
-            emptyTitle={t('EmptyTitle')}
+            placeholder={t('common:TextNewNote')}
+            emptyTitle={t('common:EmptyTitle')}
           />
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('AreYouSureDelete') +
+            {t('common:AreYouSureDelete') +
               ' ' +
               t(
                 currentNodeProps
                   ? currentNodeProps.node.data.name
-                  : t('AllNotes').toLowerCase()
+                  : t('common:AllNotes').toLowerCase()
               ) +
               '?'}
           </div>
@@ -347,13 +533,13 @@ function PersonalNotes() {
                 currentNodeProps ? removeNode() : removeAllNote()
               }}
             >
-              {t('Yes')}
+              {t('common:Yes')}
             </button>
             <button
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => setIsOpenModal(false)}
             >
-              {t('No')}
+              {t('common:No')}
             </button>
           </div>
         </div>

@@ -184,6 +184,7 @@ export async function getServerSideProps({ locale, params }) {
         'audio',
         'books',
         'users',
+        'error',
       ])),
       last_step: steps.data.sorting,
     },
