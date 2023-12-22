@@ -102,9 +102,16 @@ function ChapterVersesPage() {
     chapter_id: chapter?.id,
   })
 
-  const [isLoadingCancelStart, setIsLoadingCancelStart] = useState(false)
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
   const [isChapterStarted, setIsChapterStarted] = useState(false)
+
+  const checkChapterStarted = () => {
+    setIsChapterStarted(!!chapter?.started_at)
+  }
+
+  useEffect(() => {
+    checkChapterStarted()
+  }, [chapter])
 
   const changeStartChapter = () => {
     supabase
@@ -236,18 +243,20 @@ function ChapterVersesPage() {
                     return (
                       <div
                         onMouseUp={() => {
-                          if (currentTranslator) {
+                          if (currentTranslator && !isChapterStarted) {
                             coloring(index)
                           }
                         }}
                         onMouseLeave={() => {
-                          if (isHighlight && currentTranslator) {
+                          if (isHighlight && currentTranslator && !isChapterStarted) {
                             coloring(index)
                           }
                         }}
                         className={`truncate h-24 ${
-                          currentTranslator ? 'verse-block cursor-pointer' : ''
-                        }`}
+                          currentTranslator && !isChapterStarted
+                            ? 'verse-block cursor-pointer'
+                            : ''
+                        } ${chapter?.started_at ? 'opacity-70' : ''}`}
                         key={index}
                       >
                         <div
@@ -282,13 +291,15 @@ function ChapterVersesPage() {
                               : 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
                           }}
                         >
-                          <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
-                            {verse.translator_name ? (
-                              <Minus className="w-5 h-5 stroke-th-text-primary" />
-                            ) : (
-                              <Plus className="w-5 h-5 stroke-th-text-primary" />
-                            )}
-                          </div>
+                          {!chapter?.started_at ? (
+                            <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
+                              {verse.translator_name ? (
+                                <Minus className="w-5 h-5 stroke-th-text-primary" />
+                              ) : (
+                                <Plus className="w-5 h-5 stroke-th-text-primary" />
+                              )}
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     )
