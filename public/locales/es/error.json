@@ -1,9 +1,9 @@
 {
-  "ContentError": "Content error",
-  "EmptyFileContent": "Empty file content",
+  "ContentError": "Error de contenido",
+  "EmptyFileContent": "Contenido del archivo vacío",
   "GoTo": "Go to ",
   "Homepage": "Homepage",
-  "NoData": "No data",
-  "NoFileSelected": "No file selected",
+  "NoData": "Sin datos",
+  "NoFileSelected": "Ningún archivo seleccionado",
   "PageNotFound": "Page not found."
 }
