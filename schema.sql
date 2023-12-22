@@ -288,7 +288,7 @@ CREATE FUNCTION find_books_with_chapters_and_verses(project_code text)
           AND v.text IS NOT NULL
           AND p.code = project_code;
   END;
-$$
+$$;
 
 CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
