@@ -58,7 +58,12 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
           height={size}
         />
       ) : (
-        <svg viewBox="0 0 168 168" width={size} xmlns="http://www.w3.org/2000/svg">
+        <svg
+          viewBox="0 0 168 168"
+          width={size}
+          xmlns="http://www.w3.org/2000/svg"
+          className="rounded-full shadow-lg"
+        >
           <circle
             cx="84"
             cy="84"

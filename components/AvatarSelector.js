@@ -14,6 +14,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
   const [modalIsOpen, setModalIsOpen] = useRecoilState(avatarSelectorModalIsOpen)
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatarUrlArr, setAvatarUrlArr] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
   const updateAvatar = async (userId, avatarUrl) => {
     try {
@@ -40,6 +41,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
   useEffect(() => {
     const fetchAvatarData = async () => {
       try {
+        setIsLoading(true)
         const response = await axios.get('/api/user_avatars')
         const currentAvatarUrl = userAvatar.url || userAvatarUrl
 
@@ -55,6 +57,8 @@ function AvatarSelector({ id, userAvatarUrl }) {
         setAvatarUrlArr(avatarsData)
       } catch (error) {
         console.error('Error fetching avatars:', error)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -74,23 +78,36 @@ function AvatarSelector({ id, userAvatarUrl }) {
               <Close className="h-8 stroke-th-primary-100" />
             </button>
           </div>
-          <div className="flex flex-wrap gap-4 justify-center">
-            {avatarUrlArr?.map((avatar, index) => (
-              <div
-                key={index}
-                className={`border-4 rounded-full overflow-hidden shadow-lg ${
-                  avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
-                }`}
-                onClick={() => updateAvatar(id, avatar.url)}
-              >
-                <img
-                  src={avatar.url}
-                  alt={avatar.name}
-                  className="w-16 h-16 object-cover"
-                />
+          {isLoading ? (
+            <div role="status" className="w-full animate-pulse">
+              <div className="flex flex-wrap gap-3 justify-between">
+                {[...Array(4)].map((_, index) => (
+                  <div
+                    key={index}
+                    className="w-16 h-16 bg-th-secondary-100 rounded-full"
+                  ></div>
+                ))}
               </div>
-            ))}
-          </div>
+            </div>
+          ) : (
+            <div className="flex flex-wrap gap-4 justify-between">
+              {avatarUrlArr?.map((avatar, index) => (
+                <div
+                  key={index}
+                  className={`border-4 rounded-full overflow-hidden shadow-lg ${
+                    avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
+                  }`}
+                  onClick={() => updateAvatar(id, avatar.url)}
+                >
+                  <img
+                    src={avatar.url}
+                    alt={avatar.name}
+                    className="w-16 h-16 md:w-12 md:h-12 object-cover"
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </>
