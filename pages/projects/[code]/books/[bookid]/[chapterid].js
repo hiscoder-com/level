@@ -563,9 +563,21 @@ function ChapterVersesPage() {
                               <Button
                                 onClick={changeStartChapter}
                                 text={t('chapters:StartChapter')}
-                                color={'tertiary'}
+                                color={
+                                  verses?.some(
+                                    (item) => item.project_translator_id === null
+                                  )
+                                    ? 'disable'
+                                    : 'tertiary'
+                                }
                                 icon={<Check className="w-5 h-5" />}
-                                disabled={chapter?.finished_at || isValidating}
+                                disabled={
+                                  chapter?.finished_at ||
+                                  isValidating ||
+                                  verses?.some(
+                                    (item) => item.project_translator_id === null
+                                  )
+                                }
                                 avatar={
                                   isValidating || isLoading ? (
                                     <Loading className="w-5 h-5 animate-spin" />
