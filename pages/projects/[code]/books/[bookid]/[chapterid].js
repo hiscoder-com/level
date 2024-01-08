@@ -287,7 +287,7 @@ function ChapterVersesPage() {
                               : 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
                           }}
                         >
-                          {!chapter?.started_at ? (
+                          {!chapter?.started_at && (
                             <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
                               {verse.translator_name ? (
                                 <Minus className="w-5 h-5 stroke-th-text-primary" />
@@ -295,7 +295,7 @@ function ChapterVersesPage() {
                                 <Plus className="w-5 h-5 stroke-th-text-primary" />
                               )}
                             </div>
-                          ) : null}
+                          )}
                         </div>
                       </div>
                     )
@@ -593,9 +593,7 @@ function ChapterVersesPage() {
                               avatar={
                                 isLoadingCancelFinish ? (
                                   <Loading className="w-5 h-5 animate-spin" />
-                                ) : (
-                                  ''
-                                )
+                                ) : null
                               }
                             />
                           )}
