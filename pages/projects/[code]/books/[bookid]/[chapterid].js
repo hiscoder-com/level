@@ -319,7 +319,7 @@ function ChapterVersesPage() {
 
         <div className="hidden sm:block w-1/3">
           <div className="sticky top-7 flex flex-col gap-7">
-            <Card title={t('chapters:Assignment')}>
+            <Card title={t('chapters:Assignment')} isHidden={isChapterStarted}>
               <div className="flex flex-col gap-3">
                 {translators.length > 0 ? (
                   translators?.map((translator, index) => (
@@ -362,7 +362,7 @@ function ChapterVersesPage() {
                     ))}
                   </>
                 )}
-                <hr className="border-th-secondary-300" />
+                {!isChapterStarted && <hr className="border-th-secondary-300" />}
                 <Button
                   onClick={verseDividing}
                   text={t('Save')}
