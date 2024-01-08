@@ -103,11 +103,15 @@ function ChapterVersesPage() {
   })
 
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
-  const [isChapterStarted, setIsChapterStarted] = useState(false)
+  const [isChapterStarted, setIsChapterStarted] = useState(!!chapter?.started_at)
 
   useEffect(() => {
     setIsChapterStarted(!!chapter?.started_at)
   }, [chapter])
+
+  useEffect(() => {
+    console.log('isChapterStarted', isChapterStarted, 110)
+  }, [isChapterStarted])
 
   const changeStartChapter = () => {
     supabase
@@ -538,6 +542,8 @@ function ChapterVersesPage() {
                             text={t('Save')}
                             color="tertiary"
                             icon={<Check className="w-5 h-5" />}
+                            disabled={!translators?.length}
+                            hidden={isChapterStarted}
                           />
                           <Button
                             onClick={() =>
@@ -553,6 +559,8 @@ function ChapterVersesPage() {
                             text={t('Reset')}
                             color="primary"
                             icon={<Trash className="w-5 h-5" />}
+                            disabled={!translators?.length}
+                            hidden={isChapterStarted}
                           />
                           {!chapter?.finished_at &&
                             (!chapter?.started_at ? (
