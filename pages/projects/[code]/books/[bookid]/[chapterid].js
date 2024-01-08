@@ -109,10 +109,6 @@ function ChapterVersesPage() {
     setIsChapterStarted(!!chapter?.started_at)
   }, [chapter])
 
-  useEffect(() => {
-    console.log('isChapterStarted', isChapterStarted, 110)
-  }, [isChapterStarted])
-
   const changeStartChapter = () => {
     supabase
       .rpc('change_start_chapter', {
