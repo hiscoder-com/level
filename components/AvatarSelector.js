@@ -1,13 +1,9 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
-
 import axios from 'axios'
 import toast from 'react-hot-toast'
-
 import { useRecoilState } from 'recoil'
 import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
-
-import Close from 'public/close.svg'
 
 function AvatarSelector({ id, userAvatarUrl }) {
   const { t } = useTranslation('common')
@@ -65,17 +61,52 @@ function AvatarSelector({ id, userAvatarUrl }) {
     fetchAvatarData()
   }, [userAvatarUrl, userAvatar.url])
 
+  const fileInputRef = useRef(null)
+
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (file) {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      try {
+        const response = await axios.post('/api/user_avatar_upload', formData)
+        if (response.status === 200) {
+          const { url } = response.data
+          updateAvatar(id, url)
+        } else {
+          toast.error(t('UploadFailed'))
+        }
+      } catch (error) {
+        console.error('Error uploading avatar:', error)
+        toast.error(t('UploadFailed'))
+      }
+    }
+  }
+
+  const handleFileUpload = () => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click()
+    }
+  }
+
   return (
     <>
+      <input
+        type="file"
+        accept="image/*"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        style={{ display: 'none' }}
+      />
       {modalIsOpen && (
         <div
           className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="sticky top-0 flex items-center justify-between py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
-            <p className="text-left text-2xl font-bold">{t('AvatarSelection')}</p>
-            <button className="text-right" onClick={() => setModalIsOpen(false)}>
-              <Close className="h-8 stroke-th-primary-100" />
+          <div className="sticky top-0 flex justify-center py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
+            <button onClick={handleFileUpload} className="btn-primary w-full">
+              {t('AddFromComputer')}
             </button>
           </div>
           {isLoading ? (
