@@ -151,26 +151,26 @@ function CommandEditor({ config }) {
   }, [chapter?.id, supabase])
 
   const updateVerse = (id, text) => {
-    setVerseObjects((prev) => {
-      if (
-        !(config?.config?.moderatorOnly
-          ? !['user', 'translator'].includes(level)
-          : prev[id].editable)
-      ) {
-        return prev
-      }
-      prev[id].verse = text
-      axios
-        .put(`/api/save_verse`, { id: prev[id].verse_id, text })
-        .then()
-        .catch((error) => {
-          toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
-            duration: 8000,
-          })
-          console.log(error)
+    const _verseObjects = [...verseObjects]
+    if (
+      !(config?.config?.moderatorOnly
+        ? !['user', 'translator'].includes(level)
+        : _verseObjects[id].editable)
+    ) {
+      return _verseObjects
+    }
+    _verseObjects[id].verse = text
+    axios
+      .put(`/api/save_verse`, { id: _verseObjects[id].verse_id, text })
+      .then()
+      .catch((error) => {
+        toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
+          duration: 8000,
         })
-      return [...prev]
-    })
+        console.log(error)
+      })
+
+    setVerseObjects(_verseObjects)
   }
 
   return (
