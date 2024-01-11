@@ -7,7 +7,7 @@ import { Disclosure } from '@headlessui/react'
 import Gear from '/public/gear.svg'
 import Down from '/public/arrow-down.svg'
 
-function Card({ children, title, access, link = '/', isOpen = true }) {
+function Card({ children, title, access, link = '/', isOpen = true, isHidden = false }) {
   const { t } = useTranslation('common')
 
   return (
@@ -25,14 +25,16 @@ function Card({ children, title, access, link = '/', isOpen = true }) {
           <>
             <Disclosure.Panel>{children}</Disclosure.Panel>
             <Disclosure.Button>
-              <div className="flex gap-1 justify-center w-full pt-3 border-t border-th-secondary-300 text-th-secondary-300">
-                <span>{t(open ? 'Hide' : 'Open')}</span>
-                <Down
-                  className={`w-6 max-w-[1.5rem] stroke-th-secondary-300 ${
-                    open ? 'rotate-180 transform' : ''
-                  }`}
-                />
-              </div>
+              {!isHidden && (
+                <div className="flex gap-1 justify-center w-full pt-3 border-t border-th-secondary-300 text-th-secondary-300">
+                  <span>{t(open ? 'Hide' : 'Open')}</span>
+                  <Down
+                    className={`w-6 max-w-[1.5rem] stroke-th-secondary-300 ${
+                      open ? 'rotate-180 transform' : ''
+                    }`}
+                  />
+                </div>
+              )}
             </Disclosure.Button>
           </>
         )}
