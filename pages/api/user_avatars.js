@@ -1,7 +1,7 @@
 import { supabaseService } from 'utils/supabaseService'
 
 export default async function handler(req, res) {
-  const { method, body } = req
+  const { method, body, query } = req
 
   const handleError = (error, errorMessage) => {
     console.error(errorMessage, error)
@@ -10,6 +10,9 @@ export default async function handler(req, res) {
 
   switch (method) {
     case 'GET':
+      const userId = query.id
+      console.log({ userId })
+
       try {
         const { data, error } = await supabaseService.storage.from('avatars').list()
 
@@ -17,7 +20,11 @@ export default async function handler(req, res) {
           return handleError(error, 'Error fetching avatars:')
         }
 
-        const avatars = data.map(async (item) => {
+        const filteredData = data.filter(
+          (item) => item.name.includes('avatar') || item.name.includes(`_${userId}_`)
+        )
+
+        const avatars = filteredData.map(async (item) => {
           const { data: fileData, error: fileError } = supabaseService.storage
             .from('avatars')
             .getPublicUrl(item.name)

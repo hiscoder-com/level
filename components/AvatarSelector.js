@@ -9,7 +9,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
   const { t } = useTranslation('common')
   const [modalIsOpen, setModalIsOpen] = useRecoilState(avatarSelectorModalIsOpen)
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
-  const [avatarUrlArr, setAvatarUrlArr] = useState([])
+  const [avatarsArr, setAvatarsArr] = useState([])
   const [isLoading, setIsLoading] = useState(true)
 
   const updateAvatar = async (userId, avatarUrl) => {
@@ -21,7 +21,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
       toast.success(t('SaveSuccess'))
       setUserAvatar({ id, url: avatarUrl })
 
-      setAvatarUrlArr((prevAvatars) =>
+      setAvatarsArr((prevAvatars) =>
         prevAvatars.map((avatar) =>
           avatar.url === avatarUrl
             ? { ...avatar, selected: true }
@@ -38,19 +38,24 @@ function AvatarSelector({ id, userAvatarUrl }) {
     const fetchAvatarData = async () => {
       try {
         setIsLoading(true)
-        const response = await axios.get('/api/user_avatars')
-        const currentAvatarUrl = userAvatar.url || userAvatarUrl
+        const response = await axios.get(`/api/user_avatars?id=${id}`)
+        let currentAvatarUrl
+
+        if (userAvatar.id === id) {
+          currentAvatarUrl = userAvatar.url || userAvatarUrl
+        } else {
+          currentAvatarUrl = userAvatarUrl
+        }
 
         if (response.status !== 200) {
           throw new Error('Failed to fetch avatars')
         }
-
         const avatarsData = response.data.data.map((avatar) => ({
           ...avatar,
           selected: currentAvatarUrl === avatar.url,
         }))
 
-        setAvatarUrlArr(avatarsData)
+        setAvatarsArr(avatarsData)
       } catch (error) {
         console.error('Error fetching avatars:', error)
       } finally {
@@ -59,21 +64,24 @@ function AvatarSelector({ id, userAvatarUrl }) {
     }
 
     fetchAvatarData()
-  }, [userAvatarUrl, userAvatar.url])
+  }, [userAvatarUrl, userAvatar.url, id, userAvatar.id])
 
   const fileInputRef = useRef(null)
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
+    const userId = id
+
     if (file) {
       const formData = new FormData()
       formData.append('file', file)
+      formData.append('userId', userId)
 
       try {
         const response = await axios.post('/api/user_avatar_upload', formData)
         if (response.status === 200) {
           const { url } = response.data
-          updateAvatar(id, url)
+          updateAvatar(userId, url)
         } else {
           toast.error(t('UploadFailed'))
         }
@@ -122,7 +130,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
             </div>
           ) : (
             <div className="flex flex-wrap gap-4 justify-between">
-              {avatarUrlArr?.map((avatar, index) => (
+              {avatarsArr?.map((avatar, index) => (
                 <div
                   key={index}
                   className={`border-4 rounded-full overflow-hidden shadow-lg ${
