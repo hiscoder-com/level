@@ -4,6 +4,7 @@ function ImageEditor({ selectedFile }) {
   const canvasRef = useRef(null)
   const [image, setImage] = useState(null)
   const [cropArea, setCropArea] = useState({ x: 50, y: 50, width: 100, height: 100 })
+  const [resizeValue, setResizeValue] = useState(100)
 
   const [dragging, setDragging] = useState(false)
   const [startPos, setStartPos] = useState({ x: 0, y: 0 })
@@ -27,10 +28,10 @@ function ImageEditor({ selectedFile }) {
   useEffect(() => {
     if (image && canvasRef.current) {
       const ctx = canvasRef.current.getContext('2d')
-      drawCropArea(ctx, cropArea.x, cropArea.y, cropArea.width, cropArea.height)
+      drawCropArea(ctx, cropArea.x, cropArea.y, resizeValue, resizeValue)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [image, cropArea])
+  }, [image, cropArea, resizeValue])
 
   const drawCropArea = (ctx, x, y, width, height) => {
     if (!image) return
@@ -44,9 +45,9 @@ function ImageEditor({ selectedFile }) {
   const isInsideCropArea = (x, y) => {
     return (
       x > cropArea.x &&
-      x < cropArea.x + cropArea.width &&
+      x < cropArea.x + resizeValue &&
       y > cropArea.y &&
-      y < cropArea.y + cropArea.height
+      y < cropArea.y + resizeValue
     )
   }
 
@@ -67,41 +68,56 @@ function ImageEditor({ selectedFile }) {
     const x = e.clientX - rect.left
     const y = e.clientY - rect.top
 
-    const deltaX = x - startPos.x
-    const deltaY = y - startPos.y
+    if (isInsideCropArea(x, y)) {
+      const deltaX = x - startPos.x
+      const deltaY = y - startPos.y
 
-    setCropArea((prev) => ({
-      ...prev,
-      x: prev.x + deltaX,
-      y: prev.y + deltaY,
-    }))
-    setStartPos({ x, y })
+      setCropArea((prev) => ({
+        ...prev,
+        x: prev.x + deltaX,
+        y: prev.y + deltaY,
+      }))
+      setStartPos({ x, y })
 
-    const ctx = canvasRef.current.getContext('2d')
-    drawCropArea(
-      ctx,
-      cropArea.x + deltaX,
-      cropArea.y + deltaY,
-      cropArea.width,
-      cropArea.height
-    )
+      const ctx = canvasRef.current.getContext('2d')
+      drawCropArea(
+        ctx,
+        cropArea.x + deltaX,
+        cropArea.y + deltaY,
+        resizeValue,
+        resizeValue
+      )
+    }
   }
 
   const onMouseUp = () => {
     setDragging(false)
   }
 
+  const onResizeChange = (e) => {
+    setResizeValue(e.target.value)
+  }
+
   const cropAndSave = () => {
     if (!cropArea || !canvasRef.current) return
 
-    const { x, y, width, height } = cropArea
     const canvas = canvasRef.current
     const croppedCanvas = document.createElement('canvas')
-    croppedCanvas.width = width
-    croppedCanvas.height = height
+    croppedCanvas.width = resizeValue
+    croppedCanvas.height = resizeValue
     const croppedCtx = croppedCanvas.getContext('2d')
 
-    croppedCtx.drawImage(canvas, x, y, width, height, 0, 0, width, height)
+    croppedCtx.drawImage(
+      canvas,
+      cropArea.x,
+      cropArea.y,
+      resizeValue,
+      resizeValue,
+      0,
+      0,
+      resizeValue,
+      resizeValue
+    )
     const croppedImageData = croppedCanvas.toDataURL('image/jpeg')
 
     console.log('Cropped Image Data:', croppedImageData)
@@ -116,7 +132,18 @@ function ImageEditor({ selectedFile }) {
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
       />
-      {cropArea && <button onClick={cropAndSave}>Обрезать и сохранить</button>}
+      {cropArea && (
+        <>
+          <button onClick={cropAndSave}>Обрезать и сохранить</button>
+          <input
+            type="range"
+            min="50"
+            max="300"
+            value={resizeValue}
+            onChange={onResizeChange}
+          />
+        </>
+      )}
     </div>
   )
 }
