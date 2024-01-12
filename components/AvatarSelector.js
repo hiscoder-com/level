@@ -4,6 +4,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useRecoilState } from 'recoil'
 import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
+import ImageEditor from './ImageEditor'
 
 function AvatarSelector({ id, userAvatarUrl }) {
   const { t } = useTranslation('common')
@@ -11,6 +12,39 @@ function AvatarSelector({ id, userAvatarUrl }) {
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatarsArr, setAvatarsArr] = useState([])
   const [isLoading, setIsLoading] = useState(true)
+  const [selectedFile, setSelectedFile] = useState(null)
+  const [croppedImage, setCroppedImage] = useState(null)
+
+  const updateAvatarWithCroppedImage = async () => {
+    try {
+      if (croppedImage) {
+        await axios.post('/api/user_avatars', {
+          id: id,
+          avatar_url: croppedImage,
+        })
+        toast.success(t('SaveSuccess'))
+        setUserAvatar({ id, url: croppedImage })
+
+        setAvatarsArr((prevAvatars) =>
+          prevAvatars.map((avatar) =>
+            avatar.url === croppedImage
+              ? { ...avatar, selected: true }
+              : { ...avatar, selected: false }
+          )
+        )
+      } else {
+        toast.error(t('SelectCroppedImage'))
+      }
+    } catch (error) {
+      toast.error(t('SaveFailed'))
+      console.error('Error updating user avatar:', error)
+    }
+  }
+
+  const handleCropImage = (croppedImageData) => {
+    setCroppedImage(croppedImageData)
+    updateAvatarWithCroppedImage()
+  }
 
   const updateAvatar = async (userId, avatarUrl) => {
     try {
@@ -73,22 +107,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
     const userId = id
 
     if (file) {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('userId', userId)
-
-      try {
-        const response = await axios.post('/api/user_avatar_upload', formData)
-        if (response.status === 200) {
-          const { url } = response.data
-          updateAvatar(userId, url)
-        } else {
-          toast.error(t('UploadFailed'))
-        }
-      } catch (error) {
-        console.error('Error uploading avatar:', error)
-        toast.error(t('UploadFailed'))
-      }
+      setSelectedFile(file)
     }
   }
 
@@ -128,6 +147,8 @@ function AvatarSelector({ id, userAvatarUrl }) {
                 ))}
               </div>
             </div>
+          ) : selectedFile ? (
+            <ImageEditor selectedFile={selectedFile} onCropImage={handleCropImage} />
           ) : (
             <div className="flex flex-wrap gap-4 justify-between">
               {avatarsArr?.map((avatar, index) => (
