@@ -28,7 +28,7 @@ export default async function uploadFileHandler(req, res) {
 
     const userId = data.fields.userId
     const file = data.files.file[0]
-    const fileName = `user_${userId}_${Date.now()}_${file.originalFilename}`
+    const fileName = `user_${userId}_${Date.now()}.png`
     const contentType = data.files.file[0].mimetype
     const buffer = await fs.readFile(file.filepath)
     const stream = new Readable()
@@ -67,7 +67,20 @@ export default async function uploadFileHandler(req, res) {
       }
     }
 
-    res.status(200).json({ message: 'File uploaded successfully', fileName })
+    const { data: publicURL, error: urlError } = supabaseService.storage
+      .from('avatars')
+      .getPublicUrl(fileName)
+
+    if (urlError) {
+      console.error('Error getting public URL:', urlError)
+      return res.status(500).json({ error: 'Error getting public URL' })
+    }
+
+    res.status(200).json({
+      message: 'File uploaded successfully',
+      fileName,
+      url: publicURL.publicUrl,
+    })
   } catch (error) {
     console.error('Error handling file upload:', error)
     res.status(500).json({ error: 'Internal Server Error' })

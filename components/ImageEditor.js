@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
-function ImageEditor({ selectedFile, id }) {
+function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const canvasRef = useRef(null)
   const [image, setImage] = useState(null)
   const [cropArea, setCropArea] = useState({ x: 50, y: 50, width: 100, height: 100 })
@@ -137,18 +138,25 @@ function ImageEditor({ selectedFile, id }) {
       resizeValue
     )
 
-    const croppedImageData = croppedCanvas.toDataURL('image/jpeg')
-    console.log('Cropped Image Data:', croppedImageData)
-    // try {
-    //   const response = await axios.post('/api/user_avatars_upload', {
-    //     croppedImageData,
-    //     userId: id,
-    //   })
+    croppedCanvas.toBlob(async (blob) => {
+      const formData = new FormData()
+      formData.append('file', blob, 'avatar.png')
+      formData.append('userId', id)
 
-    //   console.log('Uploaded Image URL:', response.data.url)
-    // } catch (error) {
-    //   console.error('Error uploading cropped image:', error)
-    // }
+      try {
+        const response = await axios.post('/api/user_avatar_upload', formData)
+        if (response.status === 200) {
+          const { url } = response.data
+          updateAvatar(id, url)
+          setSelectedFile(null)
+        } else {
+          toast.error(t('UploadFailed'))
+        }
+      } catch (error) {
+        console.error('Error uploading avatar:', error)
+        toast.error(t('UploadFailed'))
+      }
+    })
   }
 
   return (
