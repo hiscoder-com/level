@@ -19,6 +19,8 @@ export default function Footer({
   textButton,
   href,
   className = { button: 'relative btn-quaternary w-28 text-center' },
+  lastTranslators,
+  isWaitTranslators = false,
 }) {
   const [isStepPage, setIsStepPage] = useState(false)
   const [checked, setChecked] = useState(false)
@@ -63,34 +65,39 @@ export default function Footer({
           !isStepPage ? 'ml-auto' : ''
         }`}
       >
-        <div className="flex flex-row justify-between w-full items-center space-x-6">
-          <CheckBox
-            onChange={() => setChecked((prev) => !prev)}
-            checked={checked}
-            className={{
-              accent:
-                'bg-th-secondary-10 checked:bg-th-secondary-400 checked:border-th-secondary-400 checked:before:bg-th-secondary-400 border-th-secondary',
-              cursor: 'fill-th-secondary-10 text-th-secondary-10 stroke-th-secondary-10',
-            }}
-            label={textCheckbox}
-          />
-          {href ? (
-            <Link href={href} legacyBehavior>
-              <button className={className.button} disabled={!checked}>
+        {!isWaitTranslators ? (
+          <div className="flex flex-row justify-between w-full items-center space-x-6">
+            <CheckBox
+              onChange={() => setChecked((prev) => !prev)}
+              checked={checked}
+              className={{
+                accent:
+                  'bg-th-secondary-10 checked:bg-th-secondary-400 checked:border-th-secondary-400 checked:before:bg-th-secondary-400 border-th-secondary',
+                cursor:
+                  'fill-th-secondary-10 text-th-secondary-10 stroke-th-secondary-10',
+              }}
+              label={textCheckbox}
+            />
+            {href ? (
+              <Link href={href} legacyBehavior>
+                <button className={className.button} disabled={!checked}>
+                  {textButton}
+                </button>
+              </Link>
+            ) : (
+              <ButtonLoading
+                onClick={handleClick}
+                className={className.button}
+                disabled={!checked}
+                isLoading={loading}
+              >
                 {textButton}
-              </button>
-            </Link>
-          ) : (
-            <ButtonLoading
-              onClick={handleClick}
-              className={className.button}
-              disabled={!checked}
-              isLoading={loading}
-            >
-              {textButton}
-            </ButtonLoading>
-          )}
-        </div>
+              </ButtonLoading>
+            )}
+          </div>
+        ) : (
+          <div>Ждём</div>
+        )}
       </div>
     </div>
   )

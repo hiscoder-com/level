@@ -33,7 +33,13 @@ export default function ProgressPage({ last_step }) {
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
+  const [lastTranslators, setLastTranslators] = useState([])
+  const [isWaitLastTranslators, setIsWaitLastTranslators] = useState(false)
 
+  function getLastTranslators(verses, currentStep) {
+    const filteredVerses = verses.filter((verse) => verse.current_step < currentStep)
+    return filteredVerses.length > 0 ? filteredVerses : null
+  }
   useEffect(() => {
     if (user?.login) {
       supabase
@@ -48,52 +54,91 @@ export default function ProgressPage({ last_step }) {
     }
   }, [book, chapter, project, supabase, user?.login])
 
-  useEffect(() => {
-    supabase
+  const fetchStepsData = async (project, step) => {
+    const stepsData = await supabase
       .from('steps')
       .select('*,projects!inner(*)')
       .eq('projects.code', project)
       .eq('sorting', step)
       .single()
-      .then((res) => {
-        if (!res.data) {
+    return stepsData.data
+  }
+
+  const fetchCurrentSteps = async (projectId) => {
+    const res = await supabase.rpc('get_current_steps', {
+      project_id: projectId,
+    })
+    return res.data
+  }
+  const fetchTranslatorStep = async (project, chapter, book) => {
+    const res = await supabase.rpc('get_translators_step', {
+      project_code: project,
+      chapter_num: chapter,
+      book_code: book,
+    })
+    return res.data
+  }
+
+  useEffect(() => {
+    const handleSetStepsData = (stepsData) => {
+      setProjectId(stepsData.projects?.id)
+      let stepConfig = {
+        title: stepsData.title,
+        config: [...stepsData.config],
+        whole_chapter: stepsData.whole_chapter,
+        resources: { ...stepsData.projects?.resources },
+        base_manifest: stepsData.projects?.base_manifest?.resource,
+      }
+      setStepConfigData({
+        count_of_users: stepsData.count_of_users,
+        time: stepsData.time,
+        title: stepsData.title,
+        description: stepsData.description,
+        last_step,
+        current_step: step,
+        project_code: project,
+      })
+      setStepConfig(stepConfig)
+    }
+    const getSteps = async () => {
+      try {
+        const stepsData = await fetchStepsData(project, step)
+        if (!stepsData) {
           return replace('/')
         }
-        supabase
-          .rpc('get_current_steps', { project_id: res.data.projects.id })
-          .then((response) => {
-            const current_step = response.data.filter(
-              (el) => el.book === book && el.chapter.toString() === chapter.toString()
-            )?.[0]?.step
-            if (!current_step) {
-              return replace(`/account`)
+        const curentSteps = await fetchCurrentSteps(stepsData.projects.id)
+        const currentStepObject = curentSteps.find(
+          (el) => el.book === book && el.chapter.toString() === chapter.toString()
+        )
+        if (!currentStepObject) {
+          return replace(`/account`)
+        }
+        const currentStep = currentStepObject.step
+        if (currentStep > 1) {
+          const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
+          const _lastTranslators = getLastTranslators(translatorsChapter, currentStep)
+          setLastTranslators(_lastTranslators)
+          if (_lastTranslators) {
+            const previousStep = currentStep - 1
+            const previousStepsData = await fetchStepsData(project, previousStep)
+            if (previousStepsData.team_transition_next_step) {
+              setIsWaitLastTranslators(true)
+              handleSetStepsData(previousStepsData)
+              return replace(`/translate/${project}/${book}/${chapter}/${previousStep}`)
             }
-            if (parseInt(current_step) !== parseInt(step)) {
+            if (parseInt(step) !== parseInt(currentStep)) {
               return replace(
-                `/translate/${project}/${book}/${chapter}/${current_step}/intro`
+                `/translate/${project}/${book}/${chapter}/${currentStep}/intro`
               )
             }
-            setProjectId(res.data?.projects?.id)
-
-            let stepConfig = {
-              title: res.data?.title,
-              config: [...res.data?.config],
-              whole_chapter: res.data?.whole_chapter,
-              resources: { ...res.data?.projects?.resources },
-              base_manifest: res.data?.projects?.base_manifest?.resource,
-            }
-            setStepConfigData({
-              count_of_users: res.data?.count_of_users,
-              time: res.data?.time,
-              title: res.data?.title,
-              description: res.data?.description,
-              last_step,
-              current_step: step,
-              project_code: project,
-            })
-            setStepConfig(stepConfig)
-          })
-      })
+          }
+        }
+        handleSetStepsData(stepsData)
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    getSteps()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter, project, step])
 
@@ -108,12 +153,73 @@ export default function ProgressPage({ last_step }) {
     })
     localStorage.setItem('highlightIds', JSON.stringify({}))
     setCurrentVerse('1')
+    const stepsData = await fetchStepsData(project, step)
+
+    const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
+    const _lastTranslators = getLastTranslators(translatorsChapter, next_step)
+
+    if (stepsData.team_transition_next_step && _lastTranslators) {
+      setIsWaitLastTranslators(true)
+      return
+    }
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {
       replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
     }
   }
+  useEffect(() => {
+    let mySubscription = null
+    const createRealtime = async (chapterId) => {
+      mySubscription = supabase
+        .channel('public:verses:' + chapterId)
+        .on(
+          'postgres_changes',
+          {
+            event: 'UPDATE',
+            schema: 'public',
+            table: 'verses',
+            filter: 'chapter_id=eq.' + chapterId,
+          },
+          async () => {
+            try {
+              const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
+              const _lastTranslators = getLastTranslators(translatorsChapter, step)
+
+              if (!_lastTranslators) {
+                return replace(
+                  `/translate/${project}/${book}/${chapter}/${parseInt(step) + 1}/intro`
+                )
+              }
+            } catch (error) {
+              console.error(error)
+            }
+          }
+        )
+        .subscribe()
+    }
+
+    const main = async () => {
+      try {
+        const res = await supabase.rpc('get_project_book_chapter_verses', {
+          project_code: project,
+          chapter_num: chapter,
+          book_c: book,
+        })
+        const chapterId = res.data.chapter.id
+        await createRealtime(chapterId)
+        return () => {
+          supabase.removeChannel(mySubscription)
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    if (isWaitLastTranslators) {
+      main()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [book, chapter, isWaitLastTranslators, project, replace, step, supabase])
 
   return (
     <div>
@@ -136,6 +242,8 @@ export default function ProgressPage({ last_step }) {
         textCheckbox={t('Done')}
         handleClick={() => setIsOpenModal(true)}
         loading={loading}
+        lastTranslators={lastTranslators}
+        isWaitTranslators={isWaitLastTranslators}
       />
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 justify-center items-center">
