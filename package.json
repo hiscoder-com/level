@@ -31,6 +31,7 @@
     "@texttree/translation-words-helpers": "^0.2.4",
     "axios": "^0.27.2",
     "file-saver": "^2.0.5",
+    "formidable": "^3.5.1",
     "github-markdown-css": "^5.2.0",
     "i18next": "^23.2.10",
     "js-yaml": "^4.1.0",

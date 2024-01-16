@@ -1,36 +1,54 @@
+import { IncomingForm } from 'formidable'
+import { promises as fs } from 'fs'
+import { Readable } from 'stream'
+
 import { supabaseService } from 'utils/supabaseService'
 
-export default async function handler(req, res) {
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
+
+export default async function uploadFileHandler(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', ['POST'])
     return res.status(405).end(`Method ${req.method} Not Allowed`)
   }
-  const svgRegex = /<svg[\s\S]*<\/svg>/
-  const matches = req.body.match(svgRegex)
-
-  if (!matches) {
-    return res.status(400).json({ error: 'Invalid SVG content' })
-  }
-  const svgContent = matches[0]
-  const timestamp = Date.now()
-  const { userId } = parseMultipartData(req.body)
-  const fileName = `user_${userId}_${timestamp}.svg`
 
   try {
-    const { data: existingAvatars, error: fetchError } = await supabaseService.storage
-      .from('avatars')
-      .list('', { limit: 100, search: `user_${userId}` })
+    const data = await new Promise((resolve, reject) => {
+      const form = new IncomingForm()
 
-    if (fetchError) {
-      console.error('Error fetching existing file:', fetchError)
-      return res.status(500).json({ error: 'Error fetching existing avatar' })
+      form.parse(req, (err, fields, files) => {
+        if (err) return reject(err)
+        resolve({ fields, files })
+      })
+    })
+
+    const userId = data.fields.userId
+    const file = data.files.file[0]
+    const fileName = `user_${userId}_${Date.now()}_${file.originalFilename}`
+    const contentType = data.files.file[0].mimetype
+    const buffer = await fs.readFile(file.filepath)
+    const stream = new Readable()
+    stream.push(buffer)
+    stream.push(null)
+
+    const { data: existingFiles, error: listError } = await supabaseService.storage
+      .from('avatars')
+      .list('', { limit: 10, search: `user_${userId}_` })
+
+    if (listError) {
+      console.error('Error fetching existing files:', listError)
+      return res.status(500).json({ error: 'Error fetching existing files' })
     }
 
     const { error: uploadError } = await supabaseService.storage
       .from('avatars')
-      .upload(fileName, svgContent, {
+      .upload(fileName, stream, {
         cacheControl: 'no-cache',
-        contentType: 'image/svg+xml',
+        contentType,
       })
 
     if (uploadError) {
@@ -38,40 +56,20 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'Internal Server Error' })
     }
 
-    if (existingAvatars.length > 0) {
-      const oldAvatarNames = existingAvatars.map((file) => file.name)
+    if (existingFiles.length > 0) {
+      const oldFileNames = existingFiles.map((file) => file.name)
       const { error: deleteError } = await supabaseService.storage
         .from('avatars')
-        .remove(oldAvatarNames)
+        .remove(oldFileNames)
 
       if (deleteError) {
-        console.error('Error deleting existing avatar:', deleteError)
-        return res.status(500).json({ error: 'Error deleting existing avatar' })
+        console.error('Error deleting old file:', deleteError)
       }
     }
 
-    return res.status(200).json({
-      url: `${process.env.SUPABASE_URL}/storage/v1/object/public/avatars/${fileName}`,
-    })
+    res.status(200).json({ message: 'File uploaded successfully', fileName })
   } catch (error) {
     console.error('Error handling file upload:', error)
-    return res.status(500).json({ error: 'Internal Server Error' })
+    res.status(500).json({ error: 'Internal Server Error' })
   }
-}
-
-function parseMultipartData(body) {
-  const boundaryPattern = /----WebKitFormBoundary[\w\d]+/
-  const boundary = body.match(boundaryPattern)[0]
-
-  const parts = body.split(boundary)
-  let userId
-
-  parts.forEach((part) => {
-    if (part.includes('name="userId"')) {
-      const userIdPart = part.split('\r\n\r\n')[1]
-      userId = userIdPart.substring(0, userIdPart.lastIndexOf('\r\n')).trim()
-    }
-  })
-
-  return { userId }
 }

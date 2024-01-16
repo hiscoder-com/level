@@ -11,7 +11,6 @@ export default async function handler(req, res) {
   switch (method) {
     case 'GET':
       const userId = query.id
-      console.log({ userId })
 
       try {
         const { data, error } = await supabaseService.storage.from('avatars').list()

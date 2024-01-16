@@ -12,39 +12,39 @@ function AvatarSelector({ id, userAvatarUrl }) {
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatarsArr, setAvatarsArr] = useState([])
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [croppedImage, setCroppedImage] = useState(null)
+  // const [selectedFile, setSelectedFile] = useState(null)
+  // const [croppedImage, setCroppedImage] = useState(null)
 
-  const updateAvatarWithCroppedImage = async () => {
-    try {
-      if (croppedImage) {
-        await axios.post('/api/user_avatars', {
-          id: id,
-          avatar_url: croppedImage,
-        })
-        toast.success(t('SaveSuccess'))
-        setUserAvatar({ id, url: croppedImage })
+  // const updateAvatarWithCroppedImage = async () => {
+  //   try {
+  //     if (croppedImage) {
+  //       await axios.post('/api/user_avatars', {
+  //         id: id,
+  //         avatar_url: croppedImage,
+  //       })
+  //       toast.success(t('SaveSuccess'))
+  //       setUserAvatar({ id, url: croppedImage })
 
-        setAvatarsArr((prevAvatars) =>
-          prevAvatars.map((avatar) =>
-            avatar.url === croppedImage
-              ? { ...avatar, selected: true }
-              : { ...avatar, selected: false }
-          )
-        )
-      } else {
-        toast.error(t('SelectCroppedImage'))
-      }
-    } catch (error) {
-      toast.error(t('SaveFailed'))
-      console.error('Error updating user avatar:', error)
-    }
-  }
+  //       setAvatarsArr((prevAvatars) =>
+  //         prevAvatars.map((avatar) =>
+  //           avatar.url === croppedImage
+  //             ? { ...avatar, selected: true }
+  //             : { ...avatar, selected: false }
+  //         )
+  //       )
+  //     } else {
+  //       toast.error(t('SelectCroppedImage'))
+  //     }
+  //   } catch (error) {
+  //     toast.error(t('SaveFailed'))
+  //     console.error('Error updating user avatar:', error)
+  //   }
+  // }
 
-  const handleCropImage = (croppedImageData) => {
-    setCroppedImage(croppedImageData)
-    updateAvatarWithCroppedImage()
-  }
+  // const handleCropImage = (croppedImageData) => {
+  //   setCroppedImage(croppedImageData)
+  //   updateAvatarWithCroppedImage()
+  // }
 
   const updateAvatar = async (userId, avatarUrl) => {
     try {
@@ -107,7 +107,23 @@ function AvatarSelector({ id, userAvatarUrl }) {
     const userId = id
 
     if (file) {
-      setSelectedFile(file)
+      // setSelectedFile(file)
+      const formData = new FormData()
+      formData.append('file', file)
+      formData.append('userId', userId)
+
+      try {
+        const response = await axios.post('/api/user_avatar_upload', formData)
+        if (response.status === 200) {
+          const { url } = response.data
+          updateAvatar(userId, url)
+        } else {
+          toast.error(t('UploadFailed'))
+        }
+      } catch (error) {
+        console.error('Error uploading avatar:', error)
+        toast.error(t('UploadFailed'))
+      }
     }
   }
 
@@ -126,6 +142,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
         ref={fileInputRef}
         style={{ display: 'none' }}
       />
+
       {modalIsOpen && (
         <div
           className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
@@ -147,8 +164,6 @@ function AvatarSelector({ id, userAvatarUrl }) {
                 ))}
               </div>
             </div>
-          ) : selectedFile ? (
-            <ImageEditor selectedFile={selectedFile} onCropImage={handleCropImage} />
           ) : (
             <div className="flex flex-wrap gap-4 justify-between">
               {avatarsArr?.map((avatar, index) => (

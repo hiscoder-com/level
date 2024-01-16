@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
+import axios from 'axios'
 
-function ImageEditor({ selectedFile }) {
+function ImageEditor({ selectedFile, id }) {
   const canvasRef = useRef(null)
   const [image, setImage] = useState(null)
   const [cropArea, setCropArea] = useState({ x: 50, y: 50, width: 100, height: 100 })
@@ -38,8 +39,21 @@ function ImageEditor({ selectedFile }) {
 
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height)
     ctx.drawImage(image, 0, 0)
-    ctx.strokeStyle = 'red'
-    ctx.strokeRect(x, y, width, height)
+
+    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
+    ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
+
+    ctx.drawImage(image, x, y, width, height, x, y, width, height)
+
+    // рисуем круг
+    // const radius = Math.min(width, height) / 2
+    // const centerX = x + width / 2
+    // const centerY = y + height / 2
+    // ctx.beginPath()
+    // ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI)
+    // ctx.stroke()
+
+    // ctx.strokeRect(x, y, width, height)
   }
 
   const isInsideCropArea = (x, y) => {
@@ -69,24 +83,28 @@ function ImageEditor({ selectedFile }) {
     const y = e.clientY - rect.top
 
     if (isInsideCropArea(x, y)) {
-      const deltaX = x - startPos.x
-      const deltaY = y - startPos.y
+      let deltaX = x - startPos.x
+      let deltaY = y - startPos.y
+
+      let newX = cropArea.x + deltaX
+      let newY = cropArea.y + deltaY
+      const maxX = canvasRef.current.width - resizeValue
+      const maxY = canvasRef.current.height - resizeValue
+
+      if (newX < 0) newX = 0
+      if (newY < 0) newY = 0
+      if (newX > maxX) newX = maxX
+      if (newY > maxY) newY = maxY
 
       setCropArea((prev) => ({
         ...prev,
-        x: prev.x + deltaX,
-        y: prev.y + deltaY,
+        x: newX,
+        y: newY,
       }))
       setStartPos({ x, y })
 
       const ctx = canvasRef.current.getContext('2d')
-      drawCropArea(
-        ctx,
-        cropArea.x + deltaX,
-        cropArea.y + deltaY,
-        resizeValue,
-        resizeValue
-      )
+      drawCropArea(ctx, newX, newY, resizeValue, resizeValue)
     }
   }
 
@@ -98,7 +116,7 @@ function ImageEditor({ selectedFile }) {
     setResizeValue(e.target.value)
   }
 
-  const cropAndSave = () => {
+  const cropAndSave = async () => {
     if (!cropArea || !canvasRef.current) return
 
     const canvas = canvasRef.current
@@ -118,9 +136,19 @@ function ImageEditor({ selectedFile }) {
       resizeValue,
       resizeValue
     )
-    const croppedImageData = croppedCanvas.toDataURL('image/jpeg')
 
+    const croppedImageData = croppedCanvas.toDataURL('image/jpeg')
     console.log('Cropped Image Data:', croppedImageData)
+    // try {
+    //   const response = await axios.post('/api/user_avatars_upload', {
+    //     croppedImageData,
+    //     userId: id,
+    //   })
+
+    //   console.log('Uploaded Image URL:', response.data.url)
+    // } catch (error) {
+    //   console.error('Error uploading cropped image:', error)
+    // }
   }
 
   return (
