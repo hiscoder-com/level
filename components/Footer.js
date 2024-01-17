@@ -96,7 +96,10 @@ export default function Footer({
             )}
           </div>
         ) : (
-          <div>Ждём</div>
+          <div className="space-x-2 flex flex-col items-center">
+            <div>{'Ждём'}</div>
+            <div>{lastTranslators && lastTranslators.join(', ')}</div>
+          </div>
         )}
       </div>
     </div>
