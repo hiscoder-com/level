@@ -84,6 +84,19 @@ function AvatarSelector({ id, userAvatarUrl }) {
     }
   }
 
+  const handleDragOver = (e) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    const files = e.dataTransfer.files
+    if (files.length > 0) {
+      const file = files[0]
+      setSelectedFile(file)
+    }
+  }
+
   return (
     <>
       <input
@@ -98,6 +111,8 @@ function AvatarSelector({ id, userAvatarUrl }) {
         <div
           className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
           onClick={(e) => e.stopPropagation()}
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
         >
           <div className="sticky top-0 flex justify-center py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
             <button onClick={handleFileUpload} className="btn-primary w-full">
