@@ -10,6 +10,8 @@ import AboutVersion from 'components/AboutVersion'
 import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
+import ThemeSwitcher from './ThemeSwitcher'
+
 import { aboutVersionModalIsOpen } from './state/atoms'
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -94,16 +96,18 @@ function SideBar({ setIsOpenSideBar, access }) {
                       </div>
                     </Menu.Item>
                   </div>
-
-                  <div
-                    className="flex justify-center cursor-pointer"
-                    onClick={() => {
-                      setVersionModalIsOpen(false)
-                      setIsOpenSideBar((prev) => !prev)
-                      close()
-                    }}
-                  >
-                    <SignOut />
+                  <div className="space-y-4">
+                    <ThemeSwitcher />
+                    <div
+                      className="flex justify-center cursor-pointer"
+                      onClick={() => {
+                        setVersionModalIsOpen(false)
+                        setIsOpenSideBar((prev) => !prev)
+                        close()
+                      }}
+                    >
+                      <SignOut />
+                    </div>
                   </div>
                 </div>
               </div>

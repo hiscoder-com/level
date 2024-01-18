@@ -614,3 +614,15 @@ export function useGetSteps({ code }) {
   })
   return [steps, { mutate, error, isLoading }]
 }
+
+export function useGetTheme() {
+  const [theme, setTheme] = useState('root')
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedTheme = localStorage.getItem('theme') || 'default'
+      setTheme(savedTheme)
+      document.documentElement.className = savedTheme
+    }
+  }, [])
+  return theme
+}

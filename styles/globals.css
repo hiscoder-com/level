@@ -26,6 +26,30 @@
 	--divide-verse9: theme('colors.emerald.200');
 
 }
+.texttree {
+	 --primary-100: theme('colors.sky.950');
+	--primary-200:theme('colors.sky.950');
+	--primary-300: theme('colors.slate.580');
+	--primary-400: theme('colors.sky.950');
+	--secondary-10: theme('colors.white');
+  --secondary-100: theme('colors.gray.150');
+	--secondary-200:	theme('colors.gray.250');
+	--secondary-300:	theme('colors.gray.450');
+  --secondary-400: theme('colors.yellow.500');	
+	--text-primary:theme('colors.neutral.800');
+	--text-secondary:theme('colors.yellow.500');
+	--invalid: theme('colors.red.500');
+	--divide-verse1: theme('colors.stone.400');
+	--divide-verse2: theme('colors.stone.300');
+	--divide-verse3: theme('colors.zinc.300');
+	--divide-verse4: theme('colors.gray.200');
+	--divide-verse5: theme('colors.orange.200');
+	--divide-verse6: theme('colors.slate.400');
+	--divide-verse7: theme('colors.slate.300');
+	--divide-verse8: theme('colors.emerald.400');
+	--divide-verse9: theme('colors.emerald.200');
+
+}
 
 @layer base {
 	html {
@@ -226,4 +250,19 @@
 
 .logo:hover path:last-of-type {
   fill: #023047; 
+}
+
+.half-circle {
+  border-radius: 50%; 
+  position: relative; 
+  overflow: hidden; 
+}
+
+.half-circle::before {
+  content: "";
+  position: absolute; 
+  top: 0; 
+  right: 0;
+  width: 50%;
+  height: 100%; 
 }
