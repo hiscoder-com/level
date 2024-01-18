@@ -134,9 +134,9 @@ function ChapterList() {
                           isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
                         } ${
                           finished_at
-                            ? 'bg-th-secondary-400 border-th-secondary-400 text-th-text-secondary'
+                            ? 'bg-th-secondary-400 border-th-secondary-400 text-th-text-secondary-100'
                             : isCreated
-                            ? 'text-th-text-secondary bg-th-primary-100 border-th-primary-100'
+                            ? 'text-th-text-secondary-100 bg-th-primary-100 border-th-primary-100'
                             : 'bg-th-secondary-10 border-th-primary-100'
                         } border-2`}
                       >
@@ -210,7 +210,7 @@ function ChapterList() {
             closeHandle={() => setIsOpenDownloading(false)}
             className={{
               dialogPanel:
-                'w-full max-w-md align-middle p-6 bg-th-primary-100 text-th-text-secondary overflow-y-visible rounded-3xl',
+                'w-full max-w-md align-middle p-6 bg-th-primary-100 text-th-text-secondary-100 overflow-y-visible rounded-3xl',
             }}
           >
             <Download

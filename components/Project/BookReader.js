@@ -494,7 +494,7 @@ function BookListReader({ books, setReference, reference, project }) {
                 {({ selected }) => (
                   <div
                     className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                      selected ? 'bg-th-primary-100 text-th-text-secondary' : ''
+                      selected ? 'bg-th-primary-100 text-th-text-secondary-100' : ''
                     }
                       `}
                   >
@@ -571,10 +571,10 @@ function BookListReader({ books, setReference, reference, project }) {
                                         chapters
                                       ) || reference?.checks
                                         ? 'cursor-pointer bg-th-primary-100'
-                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary rounded-md'
+                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary-100 rounded-md'
                                     } ${
                                       index === reference?.chapter
-                                        ? 'cursor-default bg-th-primary-300 text-th-text-secondary rounded-md'
+                                        ? 'cursor-default bg-th-primary-100 text-th-text-secondary-100 rounded-md'
                                         : checkChapterVersesExist(
                                             book.code,
                                             index,

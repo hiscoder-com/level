@@ -364,7 +364,7 @@ function Dictionary() {
                     onClick={addNote}
                     title={t('common:AddWord')}
                   >
-                    <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                    <Plus className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
                   </button>
 
                   <button
@@ -375,7 +375,7 @@ function Dictionary() {
                     title={t('common:Download')}
                     disabled={!allWords?.length}
                   >
-                    <Export className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                    <Export className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
                   </button>
 
                   <button
@@ -383,7 +383,7 @@ function Dictionary() {
                     onClick={importWords}
                     title={t('common:Upload')}
                   >
-                    <Import className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                    <Import className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
                   </button>
                 </div>
               </>

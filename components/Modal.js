@@ -15,7 +15,7 @@ function Modal({
       main: 'z-50 relative',
       dialogTitle: 'text-center text-2xl font-medium leading-6',
       dialogPanel:
-        'w-full max-w-md p-6 align-middle transform overflow-y-auto shadow-xl transition-all bg-th-primary-100 text-th-text-secondary rounded-3xl',
+        'w-full max-w-md p-6 align-middle transform overflow-y-auto shadow-xl transition-all bg-th-primary-100 text-th-text-secondary-100 rounded-3xl',
       transitionChild: 'fixed inset-0 bg-opacity-25 backdrop-brightness-90',
       backdrop: 'inset-0 fixed overflow-y-auto backdrop-blur',
       content: 'flex items-center justify-center p-4 min-h-full',

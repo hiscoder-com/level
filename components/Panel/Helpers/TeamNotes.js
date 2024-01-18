@@ -400,14 +400,14 @@ function TeamNotes() {
                 onClick={() => addNode()}
                 title={t('common:NewNote')}
               >
-                <FileIcon className="w-6 h-6 fill-th-text-secondary" />
+                <FileIcon className="w-6 h-6 fill-th-text-secondary-100" />
               </button>
               <button
                 className="btn-tertiary p-3"
                 onClick={() => addNode(true)}
                 title={t('common:NewFolder')}
               >
-                <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
+                <CloseFolder className="w-6 h-6 stroke-th-text-secondary-100" />
               </button>
               <button
                 className={`btn-tertiary p-3 ${
@@ -417,14 +417,14 @@ function TeamNotes() {
                 title={t('common:Download')}
                 disabled={!notes?.length}
               >
-                <Export className="w-6 h-6 stroke-th-text-secondary" />
+                <Export className="w-6 h-6 stroke-th-text-secondary-100" />
               </button>
               <button
                 className="btn-tertiary p-3"
                 onClick={importNotes}
                 title={t('common:Upload')}
               >
-                <Import className="w-6 h-6 stroke-th-text-secondary" />
+                <Import className="w-6 h-6 stroke-th-text-secondary-100" />
               </button>
             </div>
           )}

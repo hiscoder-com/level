@@ -103,7 +103,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
             dialogPanel: `w-full align-middle transform overflow-y-auto shadow-xl transition-all ${
               isMobileIndexPage
                 ? 'px-6 pb-6 bg-th-secondary-10 text-th-text-primary h-screen w-screen'
-                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-th-primary-100 text-th-text-secondary'
+                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-th-primary-100 text-th-text-secondary-100'
             }`,
             main: `z-50 ${isMobileIndexPage ? 'fixed flex inset-0' : 'relative'}`,
             transitionChild: `inset-0 opacity-25 bg-th-secondary-100 ${
@@ -131,7 +131,7 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
                 className={`h-8 ${
                   isMobileIndexPage
                     ? 'stroke-th-text-primary'
-                    : 'stroke-th-text-secondary'
+                    : 'stroke-th-text-secondary-100'
                 }`}
               />
             </button>

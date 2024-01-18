@@ -448,9 +448,9 @@ function ChapterVersesPage() {
               } `}
             ></div>
             <Menu.Button
-              className={`fixed sm:hidden p-4 translate-y-1/2
+              className="fixed sm:hidden p-4 translate-y-1/2
                bottom-[60vh]
-               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary transition-all duration-700 shadow-2xl`}
+               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary-100 transition-all duration-700 shadow-2xl"
             >
               <Plus
                 className={`w-7 h-7 transition-all duration-700 ${

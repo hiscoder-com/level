@@ -49,7 +49,7 @@ function Account() {
                       {({ selected }) => (
                         <div
                           className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                            selected ? 'bg-th-primary-100 text-th-text-secondary' : ''
+                            selected ? 'bg-th-primary-100 text-th-text-secondary-100' : ''
                           }
                       `}
                         >
@@ -97,7 +97,7 @@ function Account() {
                 )}
               </Tab.List>
               <Tab.Panels className="pb-10">
-                <div className="px-10 h-10 bg-th-primary-100 rounded-t-3xl"></div>
+                <div className="px-10 h-10 bg-th-primary-500 rounded-t-3xl"></div>
                 <div className="px-5 border border-th-secondary-300 bg-th-secondary-10 rounded-b-2xl">
                   <Tab.Panel>
                     <Projects type={'account'} />
@@ -124,7 +124,7 @@ function Account() {
                 }`}
               ></div>
               <Menu.Button
-                className={`block sm:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary rounded-full bg-th-primary-100 transition-all duration-700 shadow-2xl bottom-[15vh] ${
+                className={`block sm:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary-100 rounded-full bg-th-primary-100 transition-all duration-700 shadow-2xl bottom-[15vh] ${
                   openInternalMenu ? 'hidden' : 'fixed'
                 }`}
                 onClick={() => setOpenInternalMenu(false)}
@@ -157,7 +157,7 @@ function Account() {
                     <Menu>
                       <Menu.Button>
                         <div
-                          className={`py-2 px-7 text-center text-th-text-secondary cursor-pointer bg-th-primary-100 rounded-3xl ${
+                          className={`py-2 px-7 text-center text-th-text-secondary-100 cursor-pointer bg-th-primary-100 rounded-3xl ${
                             openInternalMenu ? 'hidden' : 'block'
                           }`}
                           onClick={() => setOpenInternalMenu(true)}
@@ -180,7 +180,7 @@ function Account() {
         >
           <div className="flex justify-end">
             <button
-              className={`p-4 mt-4 text-th-text-secondary rounded-full bg-th-primary-100 shadow-2xl ${
+              className={`p-4 mt-4 text-th-text-secondary-100 rounded-full bg-th-primary-100 shadow-2xl ${
                 openInternalMenu ? 'block' : 'hidden'
               }`}
               onClick={() => setOpenInternalMenu(false)}

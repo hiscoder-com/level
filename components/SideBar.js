@@ -37,9 +37,9 @@ function SideBar({ setIsOpenSideBar, access }) {
           >
             {access &&
               (!open ? (
-                <Burger className="h-10 stroke-th-text-secondary" />
+                <Burger className="h-10 stroke-th-text-secondary-100" />
               ) : (
-                <Close className="h-10 stroke-th-text-secondary" />
+                <Close className="h-10 stroke-th-text-secondary-100" />
               ))}
           </Menu.Button>
           <Transition

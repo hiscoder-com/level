@@ -106,7 +106,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
           </Tab>
         </Tab.List>
         <Tab.Panels>
-          <div className="bg-th-primary-100 h-10 rounded-t-3xl px-10"></div>
+          <div className="px-10 h-10 rounded-t-3xl bg-th-primary-500"></div>
           <Tab.Panel>
             <div className="flex flex-col py-7 px-10 border border-th-secondary-300 rounded-b-2xl bg-th-secondary-10">
               <div className="flex flex-col gap-4">
