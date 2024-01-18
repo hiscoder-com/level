@@ -13,6 +13,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
   const [avatarsArr, setAvatarsArr] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedFile, setSelectedFile] = useState(null)
+  const [isDragOver, setIsDragOver] = useState(false)
 
   const updateAvatar = async (userId, avatarUrl) => {
     try {
@@ -86,15 +87,28 @@ function AvatarSelector({ id, userAvatarUrl }) {
 
   const handleDragOver = (e) => {
     e.preventDefault()
+    setIsDragOver(true)
   }
 
   const handleDrop = (e) => {
     e.preventDefault()
+    setIsDragOver(false)
+
     const files = e.dataTransfer.files
     if (files.length > 0) {
       const file = files[0]
       setSelectedFile(file)
     }
+  }
+
+  const handleDragEnter = (e) => {
+    e.preventDefault()
+    setIsDragOver(true)
+  }
+
+  const handleDragLeave = (e) => {
+    e.preventDefault()
+    setIsDragOver(false)
   }
 
   return (
@@ -107,61 +121,78 @@ function AvatarSelector({ id, userAvatarUrl }) {
         style={{ display: 'none' }}
       />
 
-      {modalIsOpen && (
-        <div
-          className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
-          onClick={(e) => e.stopPropagation()}
-          onDragOver={handleDragOver}
-          onDrop={handleDrop}
-        >
-          <div className="sticky top-0 flex justify-center py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
-            <button
-              onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
-              className="btn-primary w-full"
-            >
-              {selectedFile ? t('CancelAvatarUpload') : t('AddFromComputer')}
-            </button>
+      {modalIsOpen &&
+        (isDragOver ? (
+          <div
+            className="absolute flex justify-center items-center right-0 top-0 w-full h-full md:h-4/6 shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5 md:bg-black md:bg-opacity-50"
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+            onDrop={handleDrop}
+          >
+            <p className="md:text-white text-center mb-40">{t('DropZoneText')}</p>
           </div>
-          {isLoading ? (
-            <div role="status" className="w-full animate-pulse">
-              <div className="flex flex-wrap gap-3 justify-between">
-                {[...Array(4)].map((_, index) => (
-                  <div
-                    key={index}
-                    className="w-16 h-16 bg-th-secondary-100 rounded-full"
-                  ></div>
-                ))}
-              </div>
+        ) : (
+          <div
+            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+            onClick={(e) => e.stopPropagation()}
+            onDragEnter={handleDragEnter}
+            onDragLeave={handleDragLeave}
+            onDragOver={handleDragOver}
+          >
+            <div className="sticky top-0 flex justify-center py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
+              <button
+                onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
+                className="btn-primary w-full"
+              >
+                {selectedFile ? t('CancelAvatarUpload') : t('AddFromComputer')}
+              </button>
             </div>
-          ) : selectedFile ? (
-            <ImageEditor
-              selectedFile={selectedFile}
-              updateAvatar={updateAvatar}
-              setSelectedFile={setSelectedFile}
-              id={id}
-              t={t}
-            />
-          ) : (
-            <div className="flex flex-wrap gap-4 justify-between">
-              {avatarsArr?.map((avatar, index) => (
-                <div
-                  key={index}
-                  className={`border-4 rounded-full overflow-hidden shadow-lg ${
-                    avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
-                  }`}
-                  onClick={() => updateAvatar(id, avatar.url)}
-                >
-                  <img
-                    src={avatar.url}
-                    alt={avatar.name}
-                    className="w-16 h-16 md:w-12 md:h-12 object-cover"
-                  />
+            {isLoading ? (
+              <div role="status" className="w-full animate-pulse">
+                <div className="flex flex-wrap gap-3 justify-between">
+                  {[...Array(4)].map((_, index) => (
+                    <div
+                      key={index}
+                      className="w-16 h-16 bg-th-secondary-100 rounded-full"
+                    ></div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
+              </div>
+            ) : selectedFile ? (
+              <ImageEditor
+                selectedFile={selectedFile}
+                updateAvatar={updateAvatar}
+                setSelectedFile={setSelectedFile}
+                id={id}
+                t={t}
+              />
+            ) : (
+              <>
+                <div className="flex flex-wrap items-center justify-start gap-4">
+                  {avatarsArr?.map((avatar, index) => (
+                    <div
+                      key={index}
+                      className={`border-4 rounded-full overflow-hidden shadow-lg ${
+                        avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
+                      }`}
+                      onClick={() => updateAvatar(id, avatar.url)}
+                    >
+                      <img
+                        src={avatar.url}
+                        alt={avatar.name}
+                        className="w-16 h-16 md:w-12 md:h-12 object-cover"
+                      />
+                    </div>
+                  ))}
+                </div>
+                <p className="text-center text-gray-300 mt-6">
+                  You can drag and drop the picture to upload
+                </p>
+              </>
+            )}
+          </div>
+        ))}
     </>
   )
 }
