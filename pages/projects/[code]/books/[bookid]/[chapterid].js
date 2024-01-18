@@ -527,7 +527,7 @@ function ChapterVersesPage() {
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-300">
+                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-100">
                           <Button
                             onClick={verseDividing}
                             text={t('Save')}
