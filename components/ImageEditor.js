@@ -5,9 +5,10 @@ import toast from 'react-hot-toast'
 function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const canvasRef = useRef(null)
   const parentRef = useRef(null)
-  const [cropArea, setCropArea] = useState({ x: 50, y: 50, size: 100 })
   const [isDragging, setIsDragging] = useState(false)
   const [startDrag, setStartDrag] = useState({ x: 0, y: 0 })
+  const [maxCropSize, setMaxCropSize] = useState(300)
+  const [cropArea, setCropArea] = useState({ x: 0, y: 0, size: maxCropSize })
 
   const onMouseDown = (e) => {
     setStartDrag({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
@@ -23,15 +24,12 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     const dy = e.nativeEvent.offsetY - startDrag.y
 
     setCropArea((prev) => {
-      // Вычисляем новые координаты
       let newX = prev.x + dx
       let newY = prev.y + dy
 
-      // Ограничиваем перемещение по оси X
       newX = Math.max(0, newX)
       newX = Math.min(canvas.width - prev.size, newX)
 
-      // Ограничиваем перемещение по оси Y
       newY = Math.max(0, newY)
       newY = Math.min(canvas.height - prev.size, newY)
 
@@ -128,16 +126,16 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         const maxCanvasWidth = parent.offsetWidth
         const maxCanvasHeight = parent.offsetHeight
 
-        // Вычисляем коэффициенты масштабирования для ширины и высоты
         const scaleX = maxCanvasWidth / width
         const scaleY = maxCanvasHeight / height
         const scale = Math.min(scaleX, scaleY)
 
-        // Применяем масштабирование, если изображение больше холста
         if (scale < 1) {
           width *= scale
           height *= scale
         }
+
+        setMaxCropSize(Math.min(width, height))
 
         canvas.width = width
         canvas.height = height
@@ -148,24 +146,24 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     }
   }, [cropArea, selectedFile])
 
+  useEffect(() => {
+    setCropArea((prev) => ({
+      ...prev,
+      size: maxCropSize,
+    }))
+  }, [maxCropSize])
+
   function drawShading(ctx, canvasWidth, canvasHeight, { x, y, size }) {
+    size = Math.round(size)
     ctx.fillStyle = 'rgba(0, 0, 0, 0.5)'
 
-    // Верхний прямоугольник
     ctx.fillRect(0, 0, canvasWidth, y)
-
-    // Нижний прямоугольник
     ctx.fillRect(0, y + size, canvasWidth, canvasHeight - y - size)
-
-    // Левый прямоугольник
     ctx.fillRect(0, y, x, size)
-
-    // Правый прямоугольник
     ctx.fillRect(x + size, y, canvasWidth - x - size, size)
   }
 
   function drawCropArea(ctx, { x, y, size }) {
-    ctx.strokeStyle = 'red'
     ctx.strokeRect(x, y, size, size)
   }
 
@@ -179,14 +177,20 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
       />
-      <input
-        type="range"
-        min="50"
-        max="500"
-        value={cropArea.size}
-        onChange={onCropSizeChange}
-      />
-      <button onClick={handleCrop}>Сохранить обрезанное изображение</button>
+      <div className="flex justify-between w-full mt-6">
+        <input
+          type="range"
+          min="65"
+          max={maxCropSize}
+          value={cropArea.size}
+          onChange={onCropSizeChange}
+        />
+        <div className="bg-th-secondary-10">
+          <button onClick={handleCrop} className="btn-primary">
+            {t('SaveCroppedImage')}
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

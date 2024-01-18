@@ -115,8 +115,11 @@ function AvatarSelector({ id, userAvatarUrl }) {
           onDrop={handleDrop}
         >
           <div className="sticky top-0 flex justify-center py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
-            <button onClick={handleFileUpload} className="btn-primary w-full">
-              {t('AddFromComputer')}
+            <button
+              onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
+              className="btn-primary w-full"
+            >
+              {selectedFile ? t('CancelAvatarUpload') : t('AddFromComputer')}
             </button>
           </div>
           {isLoading ? (
