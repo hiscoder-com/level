@@ -1,6 +1,7 @@
 const themes = [
   { name: 'default', className: 'bg-slate-550 before:bg-slate-600' },
   { name: 'texttree', className: 'bg-sky-950 before:bg-yellow-500' },
+  { name: 'uw', className: 'bg-cyan-600 before:bg-sky-500' },
 ]
 
 const ThemeSwitcher = () => {

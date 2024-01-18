@@ -180,11 +180,7 @@ function ChapterList() {
                       <div
                         className={`${
                           isCreated ? 'hidden' : 'hidden hover:block'
-                        } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer`}
-                        style={{
-                          background:
-                            'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
-                        }}
+                        } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer bg-th-primary-100 opacity-70`}
                         onClick={() => setCreatingChapter(chapter)}
                       >
                         <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secondary-10 border-2 rounded-full">
@@ -214,7 +210,7 @@ function ChapterList() {
             closeHandle={() => setIsOpenDownloading(false)}
             className={{
               dialogPanel:
-                'w-full max-w-md align-middle p-6 bg-gradient-to-r from-th-primary-100 to-th-primary-400 text-th-text-secondary overflow-y-visible rounded-3xl',
+                'w-full max-w-md align-middle p-6 bg-th-primary-100 text-th-text-secondary overflow-y-visible rounded-3xl',
             }}
           >
             <Download

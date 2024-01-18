@@ -94,6 +94,7 @@ function BookReader() {
               )
             })
         : [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [books]
   )
   const createdOldTestamentBooks = useMemo(
@@ -114,6 +115,7 @@ function BookReader() {
               )
             })
         : [],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [books]
   )
   return (
@@ -492,9 +494,7 @@ function BookListReader({ books, setReference, reference, project }) {
                 {({ selected }) => (
                   <div
                     className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                      selected
-                        ? 'bg-gradient-to-r from-th-primary-100 to-th-primary-400 text-th-text-secondary'
-                        : ''
+                      selected ? 'bg-th-primary-100 text-th-text-secondary' : ''
                     }
                       `}
                   >

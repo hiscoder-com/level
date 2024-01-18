@@ -4,9 +4,9 @@
 
 :root {
   --primary-100: theme('colors.slate.550');
-	--primary-200:theme('colors.slate.600');
+	/* --primary-200:theme('colors.slate.600');
 	--primary-300: theme('colors.slate.580');
-	--primary-400: theme('colors.slate.650');
+	--primary-400: theme('colors.slate.650'); неиспользуемые цвета*/
 	--secondary-10: theme('colors.white');
   --secondary-100: theme('colors.gray.150');
 	--secondary-200:	theme('colors.gray.250');
@@ -26,11 +26,12 @@
 	--divide-verse9: theme('colors.emerald.200');
 
 }
-.texttree {
+/* .texttree {
 	 --primary-100: theme('colors.sky.950');
 	--primary-200:theme('colors.sky.950');
 	--primary-300: theme('colors.slate.580');
 	--primary-400: theme('colors.sky.950');
+	--primary-500: theme('colors.yellow.500');
 	--secondary-10: theme('colors.white');
   --secondary-100: theme('colors.gray.150');
 	--secondary-200:	theme('colors.gray.250');
@@ -50,7 +51,54 @@
 	--divide-verse9: theme('colors.emerald.200');
 
 }
+.uw {
+  --primary-100: theme('colors.cyan.600');
+	--primary-200:theme('colors.sky.500');
+	--primary-300: theme('colors.cyan.600');
+	--primary-400: theme('colors.cyan.600');
+	--secondary-10: theme('colors.white');
+  --secondary-100: theme('colors.gray.150');
+	--secondary-200:	theme('colors.gray.250');
+	--secondary-300:	theme('colors.gray.450');
+  --secondary-400: theme('colors.yellow.650');	
+	--text-primary:theme('colors.neutral.800');
+	--text-secondary:theme('colors.white');
+	--invalid: theme('colors.red.500');
+	--divide-verse1: theme('colors.stone.400');
+	--divide-verse2: theme('colors.stone.300');
+	--divide-verse3: theme('colors.zinc.300');
+	--divide-verse4: theme('colors.gray.200');
+	--divide-verse5: theme('colors.orange.200');
+	--divide-verse6: theme('colors.slate.400');
+	--divide-verse7: theme('colors.slate.300');
+	--divide-verse8: theme('colors.emerald.400');
+	--divide-verse9: theme('colors.emerald.200');
 
+}
+.unfoldingWord {
+  --primary-100: theme('colors.cyan.600');
+	--primary-200:theme('colors.sky.500');
+	--primary-300: theme('colors.cyan.600');
+	--primary-400: theme('colors.cyan.600');
+	--secondary-10: theme('colors.white');
+  --secondary-100: theme('colors.gray.150');
+	--secondary-200:	theme('colors.gray.250');
+	--secondary-300:	theme('colors.gray.450');
+  --secondary-400: theme('colors.yellow.650');	
+	--text-primary:theme('colors.neutral.800');
+	--text-secondary:theme('colors.white');
+	--invalid: theme('colors.red.500');
+	--divide-verse1: theme('colors.stone.400');
+	--divide-verse2: theme('colors.stone.300');
+	--divide-verse3: theme('colors.zinc.300');
+	--divide-verse4: theme('colors.gray.200');
+	--divide-verse5: theme('colors.orange.200');
+	--divide-verse6: theme('colors.slate.400');
+	--divide-verse7: theme('colors.slate.300');
+	--divide-verse8: theme('colors.emerald.400');
+	--divide-verse9: theme('colors.emerald.200');
+
+} */
 @layer base {
 	html {
 		font-family: "Roboto", system-ui, sans-serif;
@@ -163,13 +211,13 @@
 	@apply py-2 px-2 text-base border-x border-t border-th-primary-100 rounded-t-2xl 
 }
 .tab-active {
-	@apply tab text-th-text-secondary bg-gradient-to-b from-th-primary-100 
-	to-th-primary-400  cursor-default focus:outline-none shadow
+	@apply tab text-th-text-secondary bg-th-primary-100 
+	cursor-default focus:outline-none shadow
 }
 
 .tab-inactive {
 	@apply tab bg-th-secondary-10
-	text-th-primary-100 hover:bg-gradient-to-b hover:from-th-secondary-10 hover:to-th-secondary-300 cursor-pointer
+	text-th-primary-100 hover:opacity-70 hover:from-th-secondary-10 hover:to-th-secondary-300 cursor-pointer
 }
 .card {
   @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-300 shadow-md;

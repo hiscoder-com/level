@@ -280,12 +280,7 @@ function ChapterVersesPage() {
                         <div
                           className={`${
                             currentTranslator ? '' : 'hidden'
-                          } w-full h-full rounded-2xl justify-center p-1 items-center`}
-                          style={{
-                            background: verse.translator_name
-                              ? 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)'
-                              : 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
-                          }}
+                          } w-full h-full rounded-2xl justify-center p-1 items-center bg-th-primary-100`}
                         >
                           {!chapter?.started_at && (
                             <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
