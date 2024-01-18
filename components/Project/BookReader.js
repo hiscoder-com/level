@@ -564,7 +564,7 @@ function BookListReader({ books, setReference, reference, project }) {
                                         chapters
                                       ) && !reference?.checks
                                     }
-                                    className={`flex justify-center items-center w-10 h-10 rounded-md${
+                                    className={`flex justify-center items-center w-10 h-10 rounded-md ${
                                       checkChapterVersesExist(
                                         book.code,
                                         index,
@@ -574,7 +574,7 @@ function BookListReader({ books, setReference, reference, project }) {
                                         : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary rounded-md'
                                     } ${
                                       index === reference?.chapter
-                                        ? 'cursor-default bg-th-primary-100 text-th-text-secondary rounded-md'
+                                        ? 'cursor-default bg-th-primary-300 text-th-text-secondary rounded-md'
                                         : checkChapterVersesExist(
                                             book.code,
                                             index,

@@ -89,11 +89,19 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         full
       />
       <Tab.Group defaultIndex={query?.levels ? 1 : 0}>
-        <Tab.List className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-5 gap-4 mt-9 px-5 font-bold text-center">
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab-inactive')}>
+        <Tab.List className="flex w-full sm:w-2/3 gap-4 mt-9 px-5 font-bold text-center">
+          <Tab
+            className={({ selected }) =>
+              `flex-1 ${selected ? 'tab-active' : 'tab-inactive'}`
+            }
+          >
             {t('Properties')}
           </Tab>
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab-inactive')}>
+          <Tab
+            className={({ selected }) =>
+              `flex-1 ${selected ? 'tab-active' : 'tab-inactive'}`
+            }
+          >
             {t('LevelTranslationChecks')}
           </Tab>
         </Tab.List>

@@ -211,7 +211,7 @@
 	@apply py-2 px-2 text-base border-x border-t border-th-primary-100 rounded-t-2xl 
 }
 .tab-active {
-	@apply tab text-th-text-secondary bg-th-primary-100 
+	@apply tab text-th-text-secondary bg-th-primary-400 
 	cursor-default focus:outline-none shadow
 }
 
