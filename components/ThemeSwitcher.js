@@ -1,7 +1,7 @@
 const themes = [
-  { name: 'default', className: 'bg-slate-550 before:bg-yellow-650' },
+  { name: 'default', className: 'bg-slate-550 before:bg-yellow-550' },
   { name: 'texttree', className: 'bg-sky-950 before:bg-yellow-500' },
-  { name: 'uw', className: 'bg-sky-900 before:bg-yellow-500' },
+  { name: 'uw', className: 'bg-sky-900 before:colors.sky.950' },
   { name: 'unfoldingWord', className: 'bg-cyan-600 before:bg-yellow-500' },
 ]
 

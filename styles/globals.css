@@ -29,7 +29,14 @@
 	--primary-500: theme('colors.slate.550');
 	--text-secondary-200:theme('colors.white');
 }
-
+.texttree {
+  --primary-100: theme('colors.sky.950');
+	--primary-200:theme('colors.slate.950');
+	--primary-400: theme('colors.sky.950');
+	--primary-500: theme('colors.yellow.500');
+  --secondary-400: theme('colors.yellow.500');	
+	--text-secondary-200:theme('colors.sky.950');	
+}
 .uw {
   --primary-100: theme('colors.sky.900');
 	--primary-200:theme('colors.sky.900');
@@ -46,14 +53,7 @@
   --secondary-400: theme('colors.yellow.500');	
 	--text-secondary-200:theme('colors.white');	
 }
-.texttree {
-  --primary-100: theme('colors.sky.950');
-	--primary-200:theme('colors.slate.950');
-	--primary-400: theme('colors.sky.950');
-	--primary-500: theme('colors.yellow.500');
-  --secondary-400: theme('colors.yellow.500');	
-	--text-secondary-200:theme('colors.sky.950');	
-}
+
 
 @layer base {
 	html {
