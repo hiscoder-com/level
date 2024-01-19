@@ -14,6 +14,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { useAccess, useAllWords, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
+import MenuButtons from '../UI/MenuButtons'
 
 import ArrowRight from 'public/arrow-right.svg'
 import ArrowLeft from 'public/arrow-left.svg'
@@ -200,7 +201,6 @@ function Dictionary() {
 
           bulkNode(newWord)
         }
-
         getAll()
         mutate()
         mutateProject()
@@ -351,6 +351,40 @@ function Dictionary() {
     setAlphabetProject(project?.dictionaries_alphabet)
   }, [project])
 
+  const menuItems = {
+    menu: [
+      {
+        id: 'export',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Export className="w-4 stroke-2" /> {t('common:Export')}
+          </span>
+        ),
+        action: () => exportWords(),
+      },
+      {
+        id: 'import',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Import className="w-4 stroke-2" /> {t('common:Import')}
+          </span>
+        ),
+        action: () => importWords(true),
+      },
+    ],
+    container: {
+      className: 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
+    },
+    item: {
+      className: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
+    },
+  }
+  const dropMenuItems = {
+    dots: menuItems.menu.filter((menuItem) => menuItem.id !== 'remove'),
+  }
+
+  const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
+
   return (
     <div className="relative">
       {!activeWord ? (
@@ -367,24 +401,10 @@ function Dictionary() {
                     <Plus className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
                   </button>
 
-                  <button
-                    className={`btn-tertiary p-3 ${
-                      allWords?.length === 0 ? 'disabled opacity-70' : ''
-                    }`}
-                    onClick={exportWords}
-                    title={t('common:Download')}
-                    disabled={!allWords?.length}
-                  >
-                    <Export className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
-                  </button>
-
-                  <button
-                    className="btn-tertiary p-3"
-                    onClick={importWords}
-                    title={t('common:Upload')}
-                  >
-                    <Import className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
-                  </button>
+                  <MenuButtons
+                    classNames={dropMenuClassNames}
+                    menuItems={dropMenuItems}
+                  />
                 </div>
               </>
             )}
@@ -490,7 +510,8 @@ function Dictionary() {
           <div className="text-center text-2xl">
             {t('common:AreYouSureDelete') +
               ' ' +
-              t(`common:${wordToDel?.title}`).toLowerCase() +
+              wordToDel?.title.toLowerCase().slice(0, 20) +
+              '...' +
               '?'}
           </div>
           <div className="flex w-1/2 gap-7">

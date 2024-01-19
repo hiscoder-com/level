@@ -27,7 +27,7 @@ function MenuButtons({ classNames, menuItems }) {
       action: setIsOpenPlusMenu,
       isOpen: isOpenPlusMenu,
     },
-  ]
+  ].filter((item) => Object.keys(menuItems).includes(item.id))
   return (
     <div className="flex gap-2 relative">
       {buttons.map((button) => (

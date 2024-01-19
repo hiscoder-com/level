@@ -14,25 +14,27 @@ function DropdownMenu({ menuItems, classNames, isOpenMenu, setIsOpenMenu }) {
     }
   }, [setIsOpenMenu])
   return (
-    <div
-      className={`${classNames.container.className} top-14 ${
-        !isOpenMenu ? 'hidden' : ''
-      }`}
-      ref={menuRef}
-    >
-      {menuItems.map((menuItem) => (
-        <div
-          key={menuItem.id}
-          className={classNames.item.className}
-          onClick={() => {
-            menuItem.action()
-            setIsOpenMenu(false)
-          }}
-        >
-          {menuItem.buttonContent}
-        </div>
-      ))}
-    </div>
+    menuItems && (
+      <div
+        className={`${classNames.container.className} top-14 ${
+          !isOpenMenu ? 'hidden' : ''
+        }`}
+        ref={menuRef}
+      >
+        {menuItems.map((menuItem) => (
+          <div
+            key={menuItem.id}
+            className={classNames.item.className}
+            onClick={() => {
+              menuItem.action()
+              setIsOpenMenu(false)
+            }}
+          >
+            {menuItem.buttonContent}
+          </div>
+        ))}
+      </div>
+    )
   )
 }
 export default DropdownMenu
