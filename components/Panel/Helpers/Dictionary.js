@@ -392,7 +392,7 @@ function Dictionary() {
           <div className="flex gap-4 items-start">
             {isModeratorAccess && (
               <>
-                <div className="flex gap-2">
+                <div className="flex w-full justify-end gap-2">
                   <button
                     className="btn-tertiary p-3"
                     onClick={addNote}
@@ -400,7 +400,6 @@ function Dictionary() {
                   >
                     <Plus className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
                   </button>
-
                   <MenuButtons
                     classNames={dropMenuClassNames}
                     menuItems={dropMenuItems}
@@ -408,23 +407,23 @@ function Dictionary() {
                 </div>
               </>
             )}
-            <div>
-              <Alphabet
-                alphabet={alphabetProject}
-                getAll={getAll}
-                setSearchQuery={setSearchQuery}
-                setCurrentPageWords={setCurrentPageWords}
-                t={t}
-              />
-              <input
-                className="input-primary max-w-xs mt-2 ml-2"
-                value={searchQuery}
-                onChange={(e) => {
-                  setCurrentPageWords(0)
-                  setSearchQuery(e.target.value)
-                }}
-              />
-            </div>
+          </div>
+          <div>
+            <Alphabet
+              alphabet={alphabetProject}
+              getAll={getAll}
+              setSearchQuery={setSearchQuery}
+              setCurrentPageWords={setCurrentPageWords}
+              t={t}
+            />
+            <input
+              className="input-primary max-w-xs mt-2 ml-2"
+              value={searchQuery}
+              onChange={(e) => {
+                setCurrentPageWords(0)
+                setSearchQuery(e.target.value)
+              }}
+            />
           </div>
 
           {words?.data?.length ? (
@@ -481,7 +480,7 @@ function Dictionary() {
       ) : (
         <>
           <div
-            className="absolute flex top-0 right-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveWord()
               setActiveWord(null)
@@ -493,7 +492,7 @@ function Dictionary() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-th-secondary-100 p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
+              title: 'bg-th-secondary-100 p-2 my-4 font-bold rounded-lg shadow-md',
               redactor:
                 'p-4 my-4 pb-20 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
@@ -501,6 +500,7 @@ function Dictionary() {
             setActiveNote={setActiveWord}
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('common:TextDescriptionWord') : ''}
+            isSelectableTitle
           />
         </>
       )}

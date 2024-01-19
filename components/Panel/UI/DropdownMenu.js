@@ -16,7 +16,7 @@ function DropdownMenu({ menuItems, classNames, isOpenMenu, setIsOpenMenu }) {
   return (
     menuItems && (
       <div
-        className={`${classNames.container.className} top-14 ${
+        className={`${classNames.container.className} top-14 right-0 ${
           !isOpenMenu ? 'hidden' : ''
         }`}
         ref={menuRef}

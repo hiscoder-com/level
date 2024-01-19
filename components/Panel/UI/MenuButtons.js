@@ -8,6 +8,13 @@ function MenuButtons({ classNames, menuItems }) {
 
   const buttons = [
     {
+      id: 'plus',
+      icon: <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />,
+      menu: menuItems,
+      action: setIsOpenPlusMenu,
+      isOpen: isOpenPlusMenu,
+    },
+    {
       id: 'dots',
       icon: (
         <div className="flex items-center justify-center w-6 h-6 space-x-1">
@@ -19,13 +26,6 @@ function MenuButtons({ classNames, menuItems }) {
       menu: menuItems,
       action: setIsOpenDotsMenu,
       isOpen: isOpenDotsMenu,
-    },
-    {
-      id: 'plus',
-      icon: <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />,
-      menu: menuItems,
-      action: setIsOpenPlusMenu,
-      isOpen: isOpenPlusMenu,
     },
   ].filter((item) => Object.keys(menuItems).includes(item.id))
   return (

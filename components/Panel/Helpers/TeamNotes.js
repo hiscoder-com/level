@@ -440,7 +440,9 @@ function TeamNotes({}) {
       {!activeNote ? (
         <div>
           {isModeratorAccess && (
-            <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
+            <div className="flex justify-end w-full">
+              <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
+            </div>
           )}
           <input
             className="input-primary mb-4"
@@ -489,7 +491,7 @@ function TeamNotes({}) {
       ) : (
         <>
           <div
-            className="absolute flex top-0 right-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -500,7 +502,7 @@ function TeamNotes({}) {
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 mr-12 font-bold bg-th-secondary-100 rounded-lg shadow-md',
+              title: 'p-2 my-4 font-bold bg-th-secondary-100 rounded-lg shadow-md',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
