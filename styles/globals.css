@@ -171,7 +171,7 @@
 }
 
 .btn-tertiary {
-	@apply mb-4 right-0 bg-th-secondary-300 text-th-text-secondary font-bold rounded-xl cursor-pointer hover:opacity-70
+	@apply mb-4 right-0 bg-th-primary-100 text-th-text-secondary font-bold rounded-xl cursor-pointer hover:opacity-70
 }
 
 .btn-quaternary {
