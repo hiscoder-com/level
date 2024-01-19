@@ -23,6 +23,7 @@ import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
 import Export from 'public/export.svg'
 import Import from 'public/import.svg'
+import Close from 'public/close.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -38,7 +39,7 @@ const ListOfNotes = dynamic(
   }
 )
 
-function Dictionary() {
+function Dictionary(ut) {
   const [currentPageWords, setCurrentPageWords] = useState(0)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -416,14 +417,21 @@ function Dictionary() {
               setCurrentPageWords={setCurrentPageWords}
               t={t}
             />
-            <input
-              className="input-primary max-w-xs mt-2 ml-2"
-              value={searchQuery}
-              onChange={(e) => {
-                setCurrentPageWords(0)
-                setSearchQuery(e.target.value)
-              }}
-            />
+            <div className="relative flex items-center mt-2 ml-2">
+              <input
+                className="input-primary"
+                value={searchQuery}
+                onChange={(e) => {
+                  setCurrentPageWords(0)
+                  setSearchQuery(e.target.value)
+                }}
+                placeholder={t('common:Search')}
+              />
+              <Close
+                className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+                onClick={() => searchQuery && getAll()}
+              />
+            </div>
           </div>
 
           {words?.data?.length ? (

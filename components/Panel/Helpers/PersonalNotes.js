@@ -27,6 +27,7 @@ import ArrowRight from 'public/folder-arrow-right.svg'
 import Export from 'public/export.svg'
 import Import from 'public/import.svg'
 import Rename from 'public/rename.svg'
+import Close from 'public/close.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -448,12 +449,18 @@ function PersonalNotes() {
           <div className="flex justify-end w-full">
             <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
           </div>
-          <input
-            className="input-primary mb-4"
-            value={term}
-            onChange={(event) => setTerm(event.target.value)}
-            placeholder={t('common:Search')}
-          />
+          <div className="relative flex items-center mb-4">
+            <input
+              className="input-primary flex-1"
+              value={term}
+              onChange={(event) => setTerm(event.target.value)}
+              placeholder={t('common:Search')}
+            />
+            <Close
+              className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+              onClick={() => term && setTerm('')}
+            />
+          </div>
           <TreeView
             term={term}
             selection={noteId}
