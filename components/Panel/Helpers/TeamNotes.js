@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 
 import Modal from 'components/Modal'
+import MenuButtons from '../UI/MenuButtons'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
@@ -57,7 +58,7 @@ const icons = {
   closeFolder: <CloseFolder className={'w-6 h-6'} />,
 }
 
-function TeamNotes() {
+function TeamNotes({}) {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
@@ -350,83 +351,96 @@ function TeamNotes() {
     }
   }
 
-  const menuItems = [
-    {
-      id: 'adding_a_note',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <FileIcon /> {t('common:NewDocument')}
-        </span>
-      ),
-      action: () => addNode(),
+  const menuItems = {
+    contextMenu: [
+      {
+        id: 'adding_a_note',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <FileIcon /> {t('common:NewDocument')}
+          </span>
+        ),
+        action: () => addNode(),
+      },
+      {
+        id: 'adding_a_folder',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <CloseFolder /> {t('common:NewFolder')}
+          </span>
+        ),
+        action: () => addNode(true),
+      },
+      {
+        id: 'rename',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Rename /> {t('common:Rename')}
+          </span>
+        ),
+        action: handleRename,
+      },
+      {
+        id: 'delete',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Trash className="w-4" /> {t('common:Delete')}
+          </span>
+        ),
+        action: () => setIsOpenModal(true),
+      },
+    ],
+    menu: [
+      {
+        id: 'export',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Export className="w-4 stroke-2" /> {t('common:Export')}
+          </span>
+        ),
+        action: () => exportNotes(),
+      },
+      {
+        id: 'import',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Import className="w-4 stroke-2" /> {t('common:Import')}
+          </span>
+        ),
+        action: () => importNotes(true),
+      },
+      {
+        id: 'remove',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Trash className="w-4 stroke-2" /> {t('common:RemoveAll')}
+          </span>
+        ),
+        action: () => setIsOpenModal(true),
+      },
+    ],
+    container: {
+      className: 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
     },
-    {
-      id: 'adding_a_folder',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2'}>
-          <CloseFolder /> {t('common:NewFolder')}
-        </span>
-      ),
-      action: () => addNode(true),
+    item: {
+      className: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
     },
-    {
-      id: 'rename',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Rename /> {t('common:Rename')}
-        </span>
-      ),
-      action: handleRename,
-    },
-    {
-      id: 'delete',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Trash className={'w-4'} /> {t('common:Delete')}
-        </span>
-      ),
-      action: () => setIsOpenModal(true),
-    },
-  ]
+  }
+  const dropMenuItems = {
+    dots: menuItems.menu.filter((menuItem) => menuItem.id !== 'remove'),
+    plus: menuItems.contextMenu.filter(
+      (menuItem) => menuItem.id === 'adding_a_note' || menuItem.id === 'adding_a_folder'
+    ),
+  }
+
+  const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   return (
     <div className="relative">
       {!activeNote ? (
         <div>
           {isModeratorAccess && (
-            <div className="flex gap-2">
-              <button
-                className="btn-tertiary p-3"
-                onClick={() => addNode()}
-                title={t('common:NewNote')}
-              >
-                <FileIcon className="w-6 h-6 fill-th-text-secondary-100" />
-              </button>
-              <button
-                className="btn-tertiary p-3"
-                onClick={() => addNode(true)}
-                title={t('common:NewFolder')}
-              >
-                <CloseFolder className="w-6 h-6 stroke-th-text-secondary-100" />
-              </button>
-              <button
-                className={`btn-tertiary p-3 ${
-                  notes?.length === 0 ? 'disabled opacity-70' : ''
-                }`}
-                onClick={exportNotes}
-                title={t('common:Download')}
-                disabled={!notes?.length}
-              >
-                <Export className="w-6 h-6 stroke-th-text-secondary-100" />
-              </button>
-              <button
-                className="btn-tertiary p-3"
-                onClick={importNotes}
-                title={t('common:Upload')}
-              >
-                <Import className="w-6 h-6 stroke-th-text-secondary-100" />
-              </button>
-            </div>
+            <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
           )}
           <input
             className="input-primary mb-4"
@@ -462,12 +476,11 @@ function TeamNotes() {
               setIsVisible={setIsShowMenu}
               isVisible={isShowMenu}
               nodeProps={currentNodeProps}
-              menuItems={menuItems}
+              menuItems={menuItems.contextMenu}
               clickMenuEvent={contextMenuEvent}
               classes={{
-                menuItem: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
-                menuContainer:
-                  'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
+                menuItem: menuItems.item.className,
+                menuContainer: menuItems.container.className,
                 emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
               }}
             />
@@ -496,6 +509,7 @@ function TeamNotes() {
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('common:TextNewNote') : ''}
             emptyTitle={t('common:EmptyTitle')}
+            isSelectableTitle
           />
         </>
       )}

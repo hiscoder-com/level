@@ -8,6 +8,7 @@ import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 
 import Modal from 'components/Modal'
+import MenuButtons from '../UI/MenuButtons'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
@@ -26,7 +27,6 @@ import ArrowRight from 'public/folder-arrow-right.svg'
 import Export from 'public/export.svg'
 import Import from 'public/import.svg'
 import Rename from 'public/rename.svg'
-import MenuButtons from '../UI/MenuButtons'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -416,7 +416,7 @@ function PersonalNotes() {
         action: () => importNotes(true),
       },
       {
-        id: 'rename',
+        id: 'remove',
         buttonContent: (
           <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
             <Trash className="w-4 stroke-2" /> {t('common:RemoveAll')}
