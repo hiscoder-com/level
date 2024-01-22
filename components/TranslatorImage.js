@@ -18,9 +18,8 @@ const defaultColor = [
 ]
 
 function TranslatorImage({ item, size, clickable, showModerator = false }) {
-  const [userAvatarUrl, setUserAvatarUrl] = useState(item?.users?.avatar_url || '')
+  const [userAvatarUrl, setUserAvatarUrl] = useState(item?.users?.avatar_url || null)
   const userAvatar = useRecoilValue(userAvatarState)
-
   const {
     push,
     query: { project, book, chapter, step, translator },
@@ -32,10 +31,10 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
   )
 
   useEffect(() => {
-    userAvatar.url !== null &&
-      userAvatar.id === item.users?.id &&
-      setUserAvatarUrl(userAvatar.url)
-  }, [item.users?.id, userAvatar])
+    userAvatar?.id === item.users?.id
+      ? setUserAvatarUrl(userAvatar?.url || null)
+      : setUserAvatarUrl(item?.users?.avatar_url || null)
+  }, [item.users?.id, item.users?.avatar_url, userAvatar])
 
   return (
     <div

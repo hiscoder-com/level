@@ -11,6 +11,7 @@ import AvatarSelector from './AvatarSelector'
 import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
 import SignOut from './SignOut'
+
 import { aboutVersionModalIsOpen, avatarSelectorModalIsOpen } from './state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
@@ -119,7 +120,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                     </Menu.Item>
                   </div>
 
-                  <AvatarSelector id={user?.id} userAvatarUrl={user?.avatar_url} />
+                  <AvatarSelector id={user?.id} />
 
                   <div
                     className="flex justify-center cursor-pointer"

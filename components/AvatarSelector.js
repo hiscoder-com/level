@@ -2,18 +2,23 @@ import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 import toast from 'react-hot-toast'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
 import ImageEditor from './ImageEditor'
+import { useUser } from 'utils/hooks'
 
-function AvatarSelector({ id, userAvatarUrl }) {
+import Trash from 'public/trash.svg'
+
+function AvatarSelector({ id }) {
   const { t } = useTranslation('common')
-  const [modalIsOpen, setModalIsOpen] = useRecoilState(avatarSelectorModalIsOpen)
+  const fileInputRef = useRef(null)
+  const modalIsOpen = useRecoilValue(avatarSelectorModalIsOpen)
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatarsArr, setAvatarsArr] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedFile, setSelectedFile] = useState(null)
   const [isDragOver, setIsDragOver] = useState(false)
+  const [user, { mutate }] = useUser(id)
 
   const updateAvatar = async (userId, avatarUrl) => {
     try {
@@ -21,6 +26,7 @@ function AvatarSelector({ id, userAvatarUrl }) {
         id: userId,
         avatar_url: avatarUrl,
       })
+      mutate()
       toast.success(t('SaveSuccess'))
       setUserAvatar({ id, url: avatarUrl })
 
@@ -44,20 +50,18 @@ function AvatarSelector({ id, userAvatarUrl }) {
         const response = await axios.get(`/api/user_avatars?id=${id}`)
         let currentAvatarUrl
 
-        if (userAvatar.id === id) {
-          currentAvatarUrl = userAvatar.url || userAvatarUrl
-        } else {
-          currentAvatarUrl = userAvatarUrl
-        }
-
         if (response.status !== 200) {
           throw new Error('Failed to fetch avatars')
         }
+
+        currentAvatarUrl = user?.avatar_url || null
+
         const avatarsData = response.data.data.map((avatar) => ({
           ...avatar,
           selected: currentAvatarUrl === avatar.url,
         }))
 
+        setUserAvatar({ id, url: currentAvatarUrl })
         setAvatarsArr(avatarsData)
       } catch (error) {
         console.error('Error fetching avatars:', error)
@@ -67,13 +71,11 @@ function AvatarSelector({ id, userAvatarUrl }) {
     }
 
     fetchAvatarData()
-  }, [userAvatarUrl, userAvatar.url, id, userAvatar.id])
-
-  const fileInputRef = useRef(null)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userAvatar.url, id, userAvatar.id])
 
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
-
     if (file) {
       setSelectedFile(file)
     }
@@ -85,14 +87,13 @@ function AvatarSelector({ id, userAvatarUrl }) {
     }
   }
 
-  const handleDragOver = (e) => {
+  const handleDragEnterOver = (e) => {
     e.preventDefault()
     setIsDragOver(true)
   }
 
   const handleDrop = (e) => {
-    e.preventDefault()
-    setIsDragOver(false)
+    handleDragLeave(e)
 
     const files = e.dataTransfer.files
     if (files.length > 0) {
@@ -101,14 +102,37 @@ function AvatarSelector({ id, userAvatarUrl }) {
     }
   }
 
-  const handleDragEnter = (e) => {
-    e.preventDefault()
-    setIsDragOver(true)
-  }
-
   const handleDragLeave = (e) => {
     e.preventDefault()
     setIsDragOver(false)
+  }
+
+  const resetAvatar = async (userId) => {
+    try {
+      const response = await axios.post('/api/user_avatars', {
+        id: userId,
+        avatar_url: null,
+      })
+
+      if (response.status === 200) {
+        mutate()
+        toast.success(t('AvatarResetSuccess'))
+
+        setUserAvatar({ id: userId, url: null })
+
+        setAvatarsArr(
+          avatarsArr.map((avatar) => ({
+            ...avatar,
+            selected: false,
+          }))
+        )
+      } else {
+        toast.error(t('AvatarResetFailed'))
+      }
+    } catch (error) {
+      toast.error(t('AvatarResetFailed'))
+      console.error('Error resetting user avatar:', error)
+    }
   }
 
   return (
@@ -125,9 +149,10 @@ function AvatarSelector({ id, userAvatarUrl }) {
         (isDragOver ? (
           <div
             className="absolute flex justify-center items-center right-0 top-0 w-full h-full md:h-4/6 shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5 md:bg-black md:bg-opacity-50"
-            onDragEnter={handleDragEnter}
+            onClick={() => setIsDragOver(false)}
+            onDragEnter={handleDragEnterOver}
             onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
+            onDragOver={handleDragEnterOver}
             onDrop={handleDrop}
           >
             <p className="md:text-white text-center mb-40">{t('DropZoneText')}</p>
@@ -136,9 +161,9 @@ function AvatarSelector({ id, userAvatarUrl }) {
           <div
             className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
-            onDragEnter={handleDragEnter}
+            onDragEnter={handleDragEnterOver}
             onDragLeave={handleDragLeave}
-            onDragOver={handleDragOver}
+            onDragOver={handleDragEnterOver}
           >
             <div className="sticky top-0 flex justify-center py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
               <button
@@ -173,22 +198,35 @@ function AvatarSelector({ id, userAvatarUrl }) {
                   {avatarsArr?.map((avatar, index) => (
                     <div
                       key={index}
-                      className={`border-4 rounded-full overflow-hidden shadow-lg ${
+                      className={`relative border-4 rounded-full overflow-hidden shadow-lg group ${
                         avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
                       }`}
-                      onClick={() => updateAvatar(id, avatar.url)}
+                      onClick={() => {
+                        if (avatar.url !== userAvatar.url) {
+                          updateAvatar(id, avatar.url)
+                        }
+                      }}
                     >
                       <img
                         src={avatar.url}
                         alt={avatar.name}
                         className="w-16 h-16 md:w-12 md:h-12 object-cover"
                       />
+                      {avatar.selected && (
+                        <div
+                          className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            resetAvatar(id)
+                          }}
+                        >
+                          <Trash className="w-3 text-white" />
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
-                <p className="text-center text-gray-300 mt-6">
-                  You can drag and drop the picture to upload
-                </p>
+                <p className="text-center text-gray-300 mt-6">{t('DropZoneHint')}</p>
               </>
             )}
           </div>
