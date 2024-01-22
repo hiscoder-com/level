@@ -98,7 +98,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
       formData.append('userId', id)
 
       try {
-        const response = await axios.post('/api/user_avatar_upload', formData)
+        const response = await axios.post('/api/users/avatar_upload', formData)
         if (response.status === 200) {
           const { url } = response.data
           updateAvatar(id, url)

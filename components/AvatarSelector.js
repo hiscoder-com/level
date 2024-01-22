@@ -1,10 +1,13 @@
 import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
+
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
+
 import ImageEditor from './ImageEditor'
+
+import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
 import { useUser } from 'utils/hooks'
 
 import Trash from 'public/trash.svg'
@@ -22,7 +25,7 @@ function AvatarSelector({ id }) {
 
   const updateAvatar = async (userId, avatarUrl) => {
     try {
-      await axios.post('/api/user_avatars', {
+      await axios.post('/api/users/avatars', {
         id: userId,
         avatar_url: avatarUrl,
       })
@@ -47,7 +50,7 @@ function AvatarSelector({ id }) {
     const fetchAvatarData = async () => {
       try {
         setIsLoading(true)
-        const response = await axios.get(`/api/user_avatars?id=${id}`)
+        const response = await axios.get(`/api/users/avatars?id=${id}`)
         let currentAvatarUrl
 
         if (response.status !== 200) {
@@ -109,7 +112,7 @@ function AvatarSelector({ id }) {
 
   const resetAvatar = async (userId) => {
     try {
-      const response = await axios.post('/api/user_avatars', {
+      const response = await axios.post('/api/users/avatars', {
         id: userId,
         avatar_url: null,
       })
