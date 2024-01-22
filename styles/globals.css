@@ -227,3 +227,36 @@
 .logo:hover path:last-of-type {
   fill: #023047; 
 }
+
+.green-two-layers {
+  position: relative;
+  background: linear-gradient(340deg, #24585B 50%, transparent 50%);
+}
+
+.green-two-layers::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(340deg, #113E41 40%, transparent 40%);
+  z-index: -1;
+}
+
+.gray-two-layers {
+  position: relative;
+  background: linear-gradient(340deg, #e3e3e3 50%, transparent 50%);
+}
+
+.gray-two-layers::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(340deg, #aeaeae 40%, transparent 40%);
+  z-index: -1;
+}
+

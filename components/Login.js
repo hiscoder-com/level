@@ -129,10 +129,6 @@ function Login() {
     <>
       {user?.id ? (
         <div className="flex flex-col p-5 lg:py-10 xl:px-8">
-          <div className="flex justify-end mb-6">
-            <SwitchLocalization />
-          </div>
-
           <div className="mb-6 lg:mb-14 text-center">
             <div>
               {t('YouSignInAs')} {user.login}
@@ -153,7 +149,6 @@ function Login() {
         <div className="flex flex-col p-5 lg:py-10 xl:px-8">
           <div className="flex justify-between mb-6 z-10">
             <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold">{t('SignIn')}</h1>
-            <SwitchLocalization />
           </div>
           <form className="space-y-6 xl:space-y-10">
             <div className="relative z-0 w-full">
@@ -218,7 +213,7 @@ function Login() {
                 disabled={loading}
                 onClick={handleLogin}
                 isLoading={isLoadingLogin}
-                className={`relative w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold ${
+                className={`relative w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold flex items-center justify-center ${
                   loading || isLoadingLogin ? 'btn' : 'btn-primary border-0'
                 } `}
               >
