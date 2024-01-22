@@ -400,7 +400,7 @@ function ChapterVersesPage() {
                     }
                     avatar={
                       isValidating || isLoading ? (
-                        <Loading className="w-5 h-5 animate-spin" />
+                        <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                       ) : (
                         ''
                       )
@@ -428,7 +428,7 @@ function ChapterVersesPage() {
                   disabled={isValidating}
                   avatar={
                     isLoadingCancelFinish ? (
-                      <Loading className="w-5 h-5 animate-spin" />
+                      <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                     ) : (
                       ''
                     )
@@ -575,7 +575,7 @@ function ChapterVersesPage() {
                                 }
                                 avatar={
                                   isValidating || isLoading ? (
-                                    <Loading className="w-5 h-5 animate-spin" />
+                                    <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                                   ) : (
                                     ''
                                   )
@@ -603,7 +603,7 @@ function ChapterVersesPage() {
                               disabled={isValidating}
                               avatar={
                                 isLoadingCancelFinish ? (
-                                  <Loading className="w-5 h-5 animate-spin" />
+                                  <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                                 ) : null
                               }
                             />

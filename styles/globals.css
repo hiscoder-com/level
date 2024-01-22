@@ -271,3 +271,15 @@
   width: 50%;
   height: 100%; 
 }
+
+.progress-custom-colors path:nth-child(1) {
+@apply  stroke-th-primary-100
+}
+
+.progress-custom-colors path:nth-child(2) {
+@apply  stroke-th-primary-200
+}
+
+.progress-custom-colors path:nth-child(3) {
+@apply  stroke-th-primary-400
+}
