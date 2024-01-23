@@ -6,7 +6,7 @@ module.exports = {
       colors: {
         'th-primary-100': 'var(--primary-100)',
         'th-primary-200': 'var(--primary-200)',
-        'th-primary-100': 'var(--primary-100)',
+        'th-primary-300': 'var(--primary-300)',
         'th-primary-400': 'var(--primary-400)',
         'th-primary-500': 'var(--primary-500)',
         'th-secondary-10': 'var(--secondary-10)',

@@ -616,7 +616,10 @@ export function useGetSteps({ code }) {
 }
 
 export function useGetTheme() {
-  const [theme, setTheme] = useState('root')
+  const [theme, setTheme] = useState(() => {
+    return checkLSVal('theme', 'default', 'string')
+  })
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedTheme = localStorage.getItem('theme') || 'default'

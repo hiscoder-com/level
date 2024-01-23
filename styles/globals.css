@@ -25,6 +25,7 @@
 .default {
 	--primary-100: theme('colors.slate.550');
 	--primary-200:theme('colors.slate.550');
+	--primary-300:theme('colors.slate.650');
 	--primary-400: theme('colors.slate.650');
 	--primary-500: theme('colors.slate.550');
 	--text-secondary-200:theme('colors.white');
@@ -32,14 +33,16 @@
 .texttree {
   --primary-100: theme('colors.sky.950');
 	--primary-200:theme('colors.slate.950');
+	--primary-300:theme('colors.black');
 	--primary-400: theme('colors.sky.950');
 	--primary-500: theme('colors.yellow.500');
   --secondary-400: theme('colors.yellow.500');	
 	--text-secondary-200:theme('colors.sky.950');	
 }
-.uw {
+.uW {
   --primary-100: theme('colors.sky.900');
 	--primary-200:theme('colors.sky.900');
+	--primary-300: theme('colors.sky.950');
 	--primary-400: theme('colors.sky.950');
 	--primary-500: theme('colors.sky.900');
   --secondary-400: theme('colors.yellow.500');	
@@ -48,6 +51,7 @@
 .unfoldingWord {
   --primary-100: theme('colors.cyan.600');
 	--primary-200:theme('colors.cyan.600');
+	--primary-300:theme('colors.cyan.800');
 	--primary-400: theme('colors.cyan.800');
 	--primary-500: theme('colors.cyan.600');
   --secondary-400: theme('colors.yellow.500');	
@@ -282,4 +286,8 @@
 
 .progress-custom-colors path:nth-child(3) {
 @apply  stroke-th-primary-400
+}
+
+.not-found path:last-child {
+@apply  fill-th-primary-300
 }
