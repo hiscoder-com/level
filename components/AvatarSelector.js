@@ -48,6 +48,10 @@ function AvatarSelector({ id }) {
 
   useEffect(() => {
     const fetchAvatarData = async () => {
+      if (!id) {
+        return
+      }
+
       try {
         setIsLoading(true)
         const response = await axios.get(`/api/users/avatars?id=${id}`)

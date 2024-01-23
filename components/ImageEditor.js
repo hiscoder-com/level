@@ -169,7 +169,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   }
 
   return (
-    <div ref={parentRef}>
+    <div ref={parentRef} className="overflow-auto">
       <canvas
         ref={canvasRef}
         style={{ border: '1px solid black', width: '100%', height: 'auto' }}
