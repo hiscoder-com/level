@@ -170,10 +170,12 @@ export default function ProgressPage({ last_step }) {
     }
   }
   useEffect(() => {
+    let isMounted = true
     let mySubscription = null
-    const createRealtime = async (chapterId) => {
+    const subscribeToRealtimeUpdates = async (chapterId) => {
+      if (!isMounted) return
       mySubscription = supabase
-        .channel('public:verses:' + chapterId)
+        .channel('waitTranslators' + chapterId)
         .on(
           'postgres_changes',
           {
@@ -184,6 +186,7 @@ export default function ProgressPage({ last_step }) {
           },
           async () => {
             try {
+              if (!isMounted) return
               const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
               const _lastTranslators = getLastTranslators(
                 translatorsChapter,
@@ -192,10 +195,11 @@ export default function ProgressPage({ last_step }) {
               setLastTranslators(_lastTranslators)
               if (!_lastTranslators) {
                 setIsWaitLastTranslators(false)
-                supabase.removeChannel(mySubscription)
-                return push(
-                  `/translate/${project}/${book}/${chapter}/${parseInt(step) + 1}/intro`
-                )
+                if (isMounted) {
+                  replace(
+                    `/translate/${project}/${book}/${chapter}/${parseInt(step) + 1}/intro`
+                  )
+                }
               }
             } catch (error) {
               console.error(error)
@@ -205,7 +209,7 @@ export default function ProgressPage({ last_step }) {
         .subscribe()
     }
 
-    const main = async () => {
+    const initializeSubscription = async () => {
       try {
         const res = await supabase.rpc('get_project_book_chapter_verses', {
           project_code: project,
@@ -213,19 +217,22 @@ export default function ProgressPage({ last_step }) {
           book_c: book,
         })
         const chapterId = res.data.chapter.id
-        await createRealtime(chapterId)
-        return () => {
-          supabase.removeChannel(mySubscription)
-        }
+        subscribeToRealtimeUpdates(chapterId)
       } catch (error) {
         console.log(error)
       }
     }
     if (isWaitLastTranslators) {
-      main()
+      initializeSubscription()
+    }
+    return () => {
+      isMounted = false
+      if (mySubscription) {
+        supabase.removeChannel(mySubscription)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter, isWaitLastTranslators, project, replace, step, supabase])
+  }, [book, chapter, isWaitLastTranslators, project, step, supabase])
   const last = useMemo(() => {
     if (lastTranslators) {
       return lastTranslators.map((translator) => translator.translator)
