@@ -13,35 +13,52 @@ export default async function handler(req, res) {
       const userId = query.id
 
       try {
-        const { data, error } = await supabaseService.storage.from('avatars').list()
+        const { data: allAvatars, error: allAvatarsError } = await supabaseService.storage
+          .from('avatars')
+          .list()
 
-        if (error) {
-          return handleError(error, 'Error fetching avatars:')
+        if (allAvatarsError) {
+          return handleError(allAvatarsError, 'Error fetching avatars:')
         }
 
-        const filteredData = data.filter(
-          (item) => item.name.includes('avatar') || item.name.includes(`_${userId}_`)
+        const { data: usedAvatarsData, error: usedAvatarsError } = await supabaseService
+          .from('users')
+          .select('avatar_url')
+          .not('id', 'eq', userId)
+
+        if (usedAvatarsError) {
+          return handleError(usedAvatarsError, 'Error fetching used avatars:')
+        }
+
+        const usedAvatars = new Set(
+          usedAvatarsData
+            .filter((user) => user.avatar_url !== null)
+            .map((user) => user.avatar_url)
         )
 
-        const avatars = filteredData.map(async (item) => {
+        const avatars = allAvatars.map(async (avatar) => {
           const { data: fileData, error: fileError } = supabaseService.storage
             .from('avatars')
-            .getPublicUrl(item.name)
+            .getPublicUrl(avatar.name)
 
           if (fileError) {
-            console.error(`Error fetching URL for ${item.name}:`, fileError)
+            console.error(`Error fetching URL for ${avatar.name}:`, fileError)
             return null
           }
 
           return {
-            name: item.name,
+            name: avatar.name,
             url: fileData?.publicUrl || null,
           }
         })
 
         const avatarData = await Promise.all(avatars)
 
-        return res.status(200).json({ data: avatarData })
+        const filteredData = avatarData.filter(
+          (avatar) => !usedAvatars.has(avatar.url) || avatar.name.includes(`_${userId}_`)
+        )
+
+        return res.status(200).json({ data: filteredData })
       } catch (error) {
         return handleError(error, 'Server error:')
       }
@@ -49,6 +66,29 @@ export default async function handler(req, res) {
     case 'POST':
       try {
         const { id, avatar_url } = body
+
+        const { data, error: fetchError } = await supabaseService
+          .from('users')
+          .select('avatar_url')
+          .eq('id', id)
+          .single()
+
+        if (fetchError) {
+          return handleError(fetchError, 'Error fetching current user avatar:')
+        }
+        const prev_url = data.avatar_url
+
+        if (avatar_url === null && prev_url && prev_url.includes(id)) {
+          const oldFileName = prev_url.split('/').pop()
+
+          const { error: deleteError } = await supabaseService.storage
+            .from('avatars')
+            .remove([oldFileName])
+
+          if (deleteError) {
+            console.error('Error deleting old file:', deleteError)
+          }
+        }
 
         const { error: updateError } = await supabaseService
           .from('users')
