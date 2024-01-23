@@ -54,9 +54,12 @@ export default async function handler(req, res) {
 
         const avatarData = await Promise.all(avatars)
 
-        const filteredData = avatarData.filter(
-          (avatar) => !usedAvatars.has(avatar.url) || avatar.name.includes(`_${userId}_`)
-        )
+        const filteredData = avatarData.filter((avatar) => {
+          return (
+            (!usedAvatars.has(avatar.url) && avatar.name.includes('avatar')) ||
+            avatar.name.includes(`_${userId}_`)
+          )
+        })
 
         return res.status(200).json({ data: filteredData })
       } catch (error) {
