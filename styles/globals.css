@@ -62,6 +62,82 @@
 		background-color: var(--scroll);
 		border-radius: 10px
 	}
+
+/* Общие стили для трека */
+input[type="range"] {
+  --slider-thumb-color: var(--primary-100); /* Цвет ползунка --primary-400 */
+  --slider-track-color: var(--secondary-400); /* Цвет активной части трека --secondary-400 */
+  --slider-track-background: var(--secondary-200); /* Фон трека --secondary-200 */
+  --slider-border-color: var(--secondary-300); /* Цвет бордера трека --secondary-300 */
+
+  /* Общие стили для трека */
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  background: var(--slider-track-background);
+  border-radius: 10px;
+  border: 1px solid var(--slider-border-color);
+}
+
+/* Стилизация активной части трека */
+input[type="range"]::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, var(--slider-track-color) 0%, var(--slider-track-color) var(--slider-pos), var(--slider-track-background) var(--slider-pos));
+  border-radius: 10px; /* Добавляем стили активной части трека */
+  height: 8px; /* Добавляем стили активной части трека */
+  border: 1px solid var(--secondary-300); /* Добавляем бордер цвета --secondary-300 */
+}
+
+/* Дополнительные стили для Firefox */
+/* Стилизация активной части трека для Firefox */
+input[type="range"]::-moz-range-progress {
+  background: var(--slider-track-color); /* Задаем цвет активной части трека */
+  border-radius: 10px;
+	height: 8px;
+  border: 1px solid var(--secondary-300);
+
+}
+
+/* Дополнительные стили для IE */
+input[type="range"]::-ms-fill-lower {
+  background: var(--slider-track-color);
+}
+
+/* Стилизация ползунка */
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--slider-thumb-color);
+  border-radius: 50%;
+  margin-top: -4px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--slider-thumb-color);
+  border-radius: 50%;
+}
+
+input[type="range"]::-ms-thumb {
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: var(--slider-thumb-color);
+  border-radius: 50%;
+  margin-top: 0; /* Исправляем смещение для IE */
+}
+
+/* Для корректной работы в Firefox */
+input[type="range"]::-moz-focus-outer {
+  border: 0;
+}
+
+
+
+
+
 }
 
 .appbar {

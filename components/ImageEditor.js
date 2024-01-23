@@ -168,6 +168,23 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     ctx.strokeRect(x, y, size, size)
   }
 
+  useEffect(() => {
+    const rangeSlider = document.getElementById('rangeSlider')
+    const updateSliderTrack = () => {
+      const percentage =
+        ((rangeSlider.value - rangeSlider.min) / (rangeSlider.max - rangeSlider.min)) *
+        100
+      rangeSlider.style.setProperty('--slider-pos', `${percentage}%`)
+    }
+
+    rangeSlider.addEventListener('input', updateSliderTrack)
+    updateSliderTrack() // Инициализация при первом рендере
+
+    return () => {
+      rangeSlider.removeEventListener('input', updateSliderTrack)
+    }
+  }, [maxCropSize])
+
   return (
     <div ref={parentRef} className="overflow-auto">
       <canvas
@@ -178,14 +195,18 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
       />
-      <div className="flex justify-between w-full mt-6">
-        <input
-          type="range"
-          min="65"
-          max={maxCropSize}
-          value={cropArea.size}
-          onChange={onCropSizeChange}
-        />
+      <div className="flex justify-between w-full mt-6 gap-5">
+        <div className="flex flex-col">
+          <label htmlFor="rangeSlider">{t('Resize')}</label>
+          <input
+            id="rangeSlider"
+            type="range"
+            min="65"
+            max={maxCropSize}
+            value={cropArea.size}
+            onChange={onCropSizeChange}
+          />
+        </div>
         <div className="bg-th-secondary-10">
           <button onClick={handleCrop} className="btn-primary">
             {t('SaveCroppedImage')}
