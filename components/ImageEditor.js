@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
+import Resize from 'public/minimize_icon.svg'
+
 function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const canvasRef = useRef(null)
   const parentRef = useRef(null)
@@ -196,8 +198,8 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         onMouseUp={onMouseUp}
       />
       <div className="flex justify-between w-full mt-6 gap-5">
-        <div className="flex flex-col">
-          <label htmlFor="rangeSlider">{t('Resize')}</label>
+        <div className="flex items-center gap-3">
+          <Resize className="w-6 h-6 stroke-th-text-primary" />
           <input
             id="rangeSlider"
             type="range"
@@ -209,7 +211,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         </div>
         <div className="bg-th-secondary-10">
           <button onClick={handleCrop} className="btn-primary">
-            {t('SaveCroppedImage')}
+            {t('Save')}
           </button>
         </div>
       </div>
