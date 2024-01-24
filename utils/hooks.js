@@ -7,18 +7,24 @@ import { useRecoilState } from 'recoil'
 
 import { currentVerse } from '../components/state/atoms'
 
-const fetcher = async ([url]) => {
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: new Headers({ 'Content-Type': 'application/json' }),
-    credentials: 'same-origin',
-  })
-  if (!res.ok) {
-    const error = await res.json()
-    error.status = res.status
+const fetcher = async (url) => {
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      headers: new Headers({ 'Content-Type': 'application/json' }),
+      credentials: 'same-origin',
+    })
+    const data = await res.json()
+
+    if (!res.ok) {
+      throw { status: res.status, ...data }
+    }
+
+    return data
+  } catch (error) {
+    console.error('Fetch Error:', error)
     throw error
   }
-  return res.json()
 }
 /**
  *hook returns information about all languages from table ''
@@ -37,6 +43,74 @@ export function useLanguages() {
 
   return [languages, { mutate, isLoading, error }]
 }
+
+/**
+ *hook returns all personal notes
+ * @returns {array}
+ */
+export function useAllPersonalNotes() {
+  const {
+    data: allNotes,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(['/api/personal_notes/all_notes'], fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [allNotes, { mutate, isLoading, error }]
+}
+
+/**
+ *hook returns all team notes
+ * @returns {array}
+ */
+export function useAllTeamlNotes() {
+  const {
+    data: allNotes,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(['/api/team_notes/all_notes'], fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+  return [allNotes, { mutate, isLoading, error }]
+}
+
+/**
+ *hook returns words from dictionarie
+ * @returns {array}
+ */
+// hooks/useAllWords.js
+export function useAllWords(queryWords) {
+  const { searchQuery, wordsPerPage, pageNumber, project_id_param } = queryWords
+
+  const apiUrl = project_id_param
+    ? `/api/dictionaries/getWords?searchQuery=${searchQuery}&wordsPerPage=${wordsPerPage}&pageNumber=${pageNumber}&project_id_param=${project_id_param}`
+    : null
+
+  const {
+    data: allWords,
+    mutate,
+    error,
+    isLoading,
+  } = useSWR(apiUrl, fetcher, {
+    revalidateOnFocus: false,
+    revalidateIfStale: false,
+  })
+
+  if (!project_id_param) {
+    return [null, { mutate, isLoading, error }]
+  }
+
+  if (error) {
+    console.error('API Error Details:', error)
+  }
+
+  return [allWords, { mutate, isLoading, error }]
+}
+
 /**
  *hook returns information about all users
  * @returns {array}

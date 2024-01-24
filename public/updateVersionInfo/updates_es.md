@@ -1,3 +1,20 @@
+# Versión 0.11.0
+## Fecha: 12/20/2023
+
+### **Modificado:**
+- en la sección de materiales auxiliares, como notas, el botón "ATRÁS" está fijo
+- el botón "ATRÁS" se ha generalizado en materiales auxiliares, bloc de notas y diccionario
+- se corrigió un error al mostrar una lista de idiomas al cambiar de idioma
+- cuando utilizamos confirmaciones, utilizamos un tipo de URL (excluimos '/src/')
+- búsqueda agregada por notas
+- notas: error en el menú contextual corregido
+- lista de notas: un clic en un elemento del árbol abre una nota/carpeta, dos clics abren el árbol completo y tres clics comienzan a cambiar el nombre
+- se corrigió la visualización del alfabeto al agregar y eliminar palabras 
+- se corrigió la visualización de la lista de diccionario en ausencia de palabras filtro
+
+### **Añadido:**
+- importación y exportación de notas personales, notas de equipo y diccionario
+
 # Versión 0.10.1
 ## Fecha: 11/21/2023
 

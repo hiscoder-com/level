@@ -12,8 +12,8 @@ import Modal from 'components/Modal'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { convertNotesToTree } from 'utils/helper'
-import { useTeamNotes, useProject, useAccess } from 'utils/hooks'
+import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
+import { useTeamNotes, useProject, useAccess, useAllTeamlNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
 
@@ -25,6 +25,8 @@ import OpenFolder from 'public/open-folder.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
+import Export from 'public/export.svg'
+import Import from 'public/import.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -59,11 +61,15 @@ function TeamNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
+  const [isShowMenu, setIsShowMenu] = useState(false)
   const [noteId, setNoteId] = useState(localStorage.getItem('selectedTeamNoteId') || '')
   const [activeNote, setActiveNote] = useState(null)
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const { t } = useTranslation(['common'])
+  const { t } = useTranslation(['common, error'])
+  const [term, setTerm] = useState('')
   const { user } = useCurrentUser()
+  const [allNotes] = useAllTeamlNotes()
+
   const {
     query: { project: code },
   } = useRouter()
@@ -77,6 +83,159 @@ function TeamNotes() {
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const supabase = useSupabaseClient()
+  useEffect(() => {
+    mutate()
+  }, [mutate])
+
+  function generateUniqueId(existingIds) {
+    let newId
+    do {
+      newId = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
+    } while (existingIds.includes(newId))
+    return newId
+  }
+
+  function parseNotesWithTopFolder(notes, project_id, deleted_at) {
+    const exportFolderId = generateUniqueId(allNotes)
+    const exportFolderDateTime = new Date().toISOString().replace(/[:.]/g, '-')
+
+    const exportFolder = {
+      id: exportFolderId,
+      project_id,
+      title: `export-${exportFolderDateTime}`,
+      data: null,
+      created_at: new Date().toISOString(),
+      changed_at: new Date().toISOString(),
+      deleted_at,
+      is_folder: true,
+      parent_id: null,
+      sorting: 0,
+    }
+
+    const parsedNotes = parseNotes(notes, project_id, exportFolderId)
+    return [exportFolder, ...parsedNotes]
+  }
+
+  function parseNotes(notes, project_id, parentId = null) {
+    return notes.reduce((acc, note) => {
+      const id = generateUniqueId(allNotes)
+      const parsedNote = {
+        id: id,
+        project_id,
+        title: note.title,
+        data: parseData(note.data),
+        created_at: note.created_at,
+        changed_at: new Date().toISOString(),
+        deleted_at: note.deleted_at,
+        is_folder: note.is_folder,
+        parent_id: parentId,
+        sorting: note.sorting,
+      }
+
+      acc.push(parsedNote)
+
+      if (note.children?.length > 0) {
+        const childNotes = parseNotes(note.children, project_id, id)
+        acc = acc.concat(childNotes)
+      }
+
+      return acc
+    }, [])
+  }
+
+  function parseData(data) {
+    if (!data) {
+      return null
+    }
+
+    return {
+      blocks: data.blocks || [],
+      version: data.version,
+      time: data.time,
+    }
+  }
+
+  const importNotes = async () => {
+    const fileInput = document.createElement('input')
+    fileInput.type = 'file'
+    fileInput.accept = '.json'
+
+    fileInput.addEventListener('change', async (event) => {
+      try {
+        const file = event.target.files[0]
+        if (!file) {
+          throw new Error(t('error:NoFileSelected'))
+        }
+
+        const fileContents = await file.text()
+        if (!fileContents.trim()) {
+          throw new Error(t('error:EmptyFileContent'))
+        }
+
+        const importedData = JSON.parse(fileContents)
+        if (importedData.type !== 'team_notes') {
+          throw new Error(t('error:ContentError'))
+        }
+        const parsedNotes = parseNotesWithTopFolder(
+          importedData.data,
+          project.id,
+          project.deleted_at
+        )
+
+        for (const note of parsedNotes) {
+          console.log(note)
+          bulkNode(note)
+        }
+      } catch (error) {
+        toast.error(error.message)
+      }
+    })
+
+    fileInput.click()
+  }
+
+  function exportNotes() {
+    try {
+      if (!notes || !notes.length) {
+        throw new Error(t('error:NoData'))
+      }
+      const transformedData = formationJSONToTree(notes)
+      const jsonContent = JSON.stringify(
+        { type: 'team_notes', data: transformedData },
+        null,
+        2
+      )
+      const blob = new Blob([jsonContent], { type: 'application/json' })
+
+      const downloadLink = document.createElement('a')
+      const currentDate = new Date()
+      const formattedDate = currentDate.toISOString().split('T')[0]
+
+      const fileName = `team_notes_${formattedDate}.json`
+
+      const url = URL.createObjectURL(blob)
+
+      downloadLink.href = url
+      downloadLink.download = fileName
+
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
+
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
+
+  const bulkNode = (note) => {
+    axios
+      .post('/api/team_notes/bulk_insert', {
+        note: note,
+      })
+      .then(() => mutate())
+      .catch(console.log)
+  }
 
   const saveNote = () => {
     axios
@@ -86,19 +245,19 @@ function TeamNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('SaveFailed'))
+        toast.error(t('common:SaveFailed'))
         console.log(err)
       })
   }
 
-  const onDoubleClick = () => {
-    const currentNote = notes.find((el) => el.id === noteId)
+  const changeNode = () => {
+    const currentNote = notes.find((el) => el.id === hoveredNodeId)
     setActiveNote(currentNote)
   }
 
   const addNode = (isFolder = false) => {
-    const id = ('000000000' + Math.random().toString(36).substring(2, 9)).slice(-9)
-    const title = isFolder ? t('NewFolder') : t('NewNote')
+    const id = generateUniqueId(allNotes)
+    const title = isFolder ? t('common:NewFolder') : t('common:NewNote')
 
     axios
       .post('/api/team_notes', {
@@ -113,7 +272,7 @@ function TeamNotes() {
 
   const handleRenameNode = (newTitle, id) => {
     if (!newTitle.trim()) {
-      newTitle = t('EmptyTitle')
+      newTitle = t('common:EmptyTitle')
     }
     axios
       .put(`/api/team_notes/${id}`, { title: newTitle })
@@ -161,11 +320,11 @@ function TeamNotes() {
   }, [notes])
 
   useEffect(() => {
-    localStorage.setItem('selectedTeamNoteId', noteId)
+    noteId && localStorage.setItem('selectedTeamNoteId', noteId)
   }, [noteId])
 
   const handleContextMenu = (event) => {
-    setNoteId(hoveredNodeId)
+    setIsShowMenu(true)
     setContextMenuEvent({ event })
   }
 
@@ -196,7 +355,7 @@ function TeamNotes() {
       id: 'adding_a_note',
       buttonContent: (
         <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <FileIcon /> {t('NewDocument')}
+          <FileIcon /> {t('common:NewDocument')}
         </span>
       ),
       action: () => addNode(),
@@ -205,7 +364,7 @@ function TeamNotes() {
       id: 'adding_a_folder',
       buttonContent: (
         <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2'}>
-          <CloseFolder /> {t('NewFolder')}
+          <CloseFolder /> {t('common:NewFolder')}
         </span>
       ),
       action: () => addNode(true),
@@ -214,7 +373,7 @@ function TeamNotes() {
       id: 'rename',
       buttonContent: (
         <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Rename /> {t('Rename')}
+          <Rename /> {t('common:Rename')}
         </span>
       ),
       action: handleRename,
@@ -223,7 +382,7 @@ function TeamNotes() {
       id: 'delete',
       buttonContent: (
         <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Trash className={'w-4'} /> {t('Delete')}
+          <Trash className={'w-4'} /> {t('common:Delete')}
         </span>
       ),
       action: () => setIsOpenModal(true),
@@ -236,15 +395,47 @@ function TeamNotes() {
         <div>
           {isModeratorAccess && (
             <div className="flex gap-2">
-              <button className="btn-tertiary p-3" onClick={() => addNode()}>
+              <button
+                className="btn-tertiary p-3"
+                onClick={() => addNode()}
+                title={t('common:NewNote')}
+              >
                 <FileIcon className="w-6 h-6 fill-th-text-secondary" />
               </button>
-              <button className="btn-tertiary p-3" onClick={() => addNode(true)}>
+              <button
+                className="btn-tertiary p-3"
+                onClick={() => addNode(true)}
+                title={t('common:NewFolder')}
+              >
                 <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
+              </button>
+              <button
+                className={`btn-tertiary p-3 ${
+                  notes?.length === 0 ? 'disabled opacity-70' : ''
+                }`}
+                onClick={exportNotes}
+                title={t('common:Download')}
+                disabled={!notes?.length}
+              >
+                <Export className="w-6 h-6 stroke-th-text-secondary" />
+              </button>
+              <button
+                className="btn-tertiary p-3"
+                onClick={importNotes}
+                title={t('common:Upload')}
+              >
+                <Import className="w-6 h-6 stroke-th-text-secondary" />
               </button>
             </div>
           )}
+          <input
+            className="input-primary mb-4"
+            value={term}
+            onChange={(event) => setTerm(event.target.value)}
+            placeholder={t('common:Search')}
+          />
           <TreeView
+            term={term}
             selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{
@@ -257,7 +448,7 @@ function TeamNotes() {
             selectedNodeId={noteId}
             treeWidth={'w-full'}
             icons={icons}
-            handleDoubleClick={onDoubleClick}
+            handleOnClick={changeNode}
             handleContextMenu={handleContextMenu}
             hoveredNodeId={hoveredNodeId}
             setHoveredNodeId={setHoveredNodeId}
@@ -268,8 +459,8 @@ function TeamNotes() {
           />
           {isModeratorAccess && (
             <ContextMenu
-              setSelectedNodeId={setNoteId}
-              selectedNodeId={noteId}
+              setIsVisible={setIsShowMenu}
+              isVisible={isShowMenu}
               nodeProps={currentNodeProps}
               menuItems={menuItems}
               clickMenuEvent={contextMenuEvent}
@@ -289,6 +480,7 @@ function TeamNotes() {
             onClick={() => {
               saveNote()
               setActiveNote(null)
+              setIsShowMenu(false)
             }}
           >
             <Back className="w-8 stroke-th-primary-200" />
@@ -302,39 +494,34 @@ function TeamNotes() {
             activeNote={activeNote}
             setActiveNote={setActiveNote}
             readOnly={!isModeratorAccess}
-            placeholder={isModeratorAccess ? t('TextNewNote') : ''}
-            emptyTitle={t('EmptyTitle')}
+            placeholder={isModeratorAccess ? t('common:TextNewNote') : ''}
+            emptyTitle={t('common:EmptyTitle')}
           />
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('AreYouSureDelete') + ' ' + t(currentNodeProps?.node.data.name) + '?'}
+            {t('common:AreYouSureDelete') +
+              ' ' +
+              t(`common:${currentNodeProps?.node.data.name}`) +
+              '?'}
           </div>
           <div className="flex gap-7 w-1/2">
             <button
               className="btn-secondary flex-1"
               onClick={() => {
                 setIsOpenModal(false)
-                if (currentNodeProps) {
-                  removeNode()
-                  setCurrentNodeProps(null)
-                }
+                removeNode()
               }}
             >
-              {t('Yes')}
+              {t('common:Yes')}
             </button>
             <button
               className="btn-secondary flex-1"
-              onClick={() => {
-                setIsOpenModal(false)
-                setTimeout(() => {
-                  setCurrentNodeProps(null)
-                }, 1000)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
-              {t('No')}
+              {t('common:No')}
             </button>
           </div>
         </div>
