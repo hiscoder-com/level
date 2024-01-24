@@ -80,7 +80,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                     onClick={() => openModal('avatarSelector')}
                   >
                     <TranslatorImage item={{ users: user }} />
-                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center">
+                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center">
                       <Camera className="w-4 text-white" />
                     </div>
                   </div>

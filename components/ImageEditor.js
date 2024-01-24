@@ -13,6 +13,52 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const [maxCropSize, setMaxCropSize] = useState(300)
   const [cropArea, setCropArea] = useState({ x: 0, y: 0, size: maxCropSize })
 
+  const getTouchCoords = (touchEvent) => {
+    const rect = canvasRef.current.getBoundingClientRect()
+    return {
+      x: touchEvent.touches[0].clientX - rect.left,
+      y: touchEvent.touches[0].clientY - rect.top,
+    }
+  }
+
+  const onTouchStart = (e) => {
+    const coords = getTouchCoords(e)
+    setStartDrag({ x: coords.x, y: coords.y })
+    setIsDragging(true)
+  }
+
+  const onTouchMove = (e) => {
+    if (!isDragging) return
+    e.preventDefault()
+
+    const canvas = canvasRef.current
+    if (!canvas) return
+
+    const coords = getTouchCoords(e)
+
+    const dx = coords.x - startDrag.x
+    const dy = coords.y - startDrag.y
+
+    setCropArea((prev) => {
+      let newX = prev.x + dx
+      let newY = prev.y + dy
+
+      newX = Math.max(0, newX)
+      newX = Math.min(canvas.width - prev.size, newX)
+
+      newY = Math.max(0, newY)
+      newY = Math.min(canvas.height - prev.size, newY)
+
+      return {
+        ...prev,
+        x: newX,
+        y: newY,
+      }
+    })
+
+    setStartDrag({ x: coords.x, y: coords.y })
+  }
+
   const onMouseDown = (e) => {
     setStartDrag({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
     setIsDragging(true)
@@ -192,6 +238,9 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
       <canvas
         ref={canvasRef}
         style={{ border: '1px solid black', width: '100%', height: 'auto' }}
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onMouseUp}
         onMouseLeave={onMouseLeave}
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}

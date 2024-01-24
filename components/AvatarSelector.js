@@ -166,13 +166,13 @@ function AvatarSelector({ id }) {
           </div>
         ) : (
           <div
-            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-5 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
             onClick={(e) => e.stopPropagation()}
             onDragEnter={handleDragEnterOver}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragEnterOver}
           >
-            <div className="sticky top-0 flex justify-center py-6 mb-6 border-b border-th-secondary-300 bg-th-secondary-10">
+            <div className="sticky top-0 flex justify-center py-6 border-b border-th-secondary-300 bg-th-secondary-10">
               <button
                 onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
                 className="btn-primary w-full"
@@ -181,7 +181,7 @@ function AvatarSelector({ id }) {
               </button>
             </div>
             {isLoading ? (
-              <div role="status" className="w-full animate-pulse">
+              <div role="status" className="w-full animate-pulse py-6">
                 <div className="flex flex-wrap gap-3 justify-between">
                   {[...Array(4)].map((_, index) => (
                     <div
@@ -201,7 +201,7 @@ function AvatarSelector({ id }) {
               />
             ) : (
               <>
-                <div className="flex flex-wrap items-center justify-start gap-4">
+                <div className="flex flex-wrap items-center justify-start gap-4 overflow-y-auto py-6">
                   {avatarsArr?.map((avatar, index) => (
                     <div
                       key={index}
@@ -221,7 +221,7 @@ function AvatarSelector({ id }) {
                       />
                       {avatar.selected && (
                         <div
-                          className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center"
+                          className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center"
                           onClick={(e) => {
                             e.stopPropagation()
                             resetAvatar(id)
@@ -233,7 +233,9 @@ function AvatarSelector({ id }) {
                     </div>
                   ))}
                 </div>
-                <p className="text-center text-gray-300 mt-6">{t('DropZoneHint')}</p>
+                <p className="hidden md:block text-center text-gray-300">
+                  {t('DropZoneHint')}
+                </p>
               </>
             )}
           </div>
