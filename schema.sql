@@ -76,6 +76,9 @@
     DROP FUNCTION IF EXISTS PUBLIC.set_sorting_before_insert;
     DROP FUNCTION IF EXISTS PUBLIC.correct_sorting_on_deletion;
     DROP FUNCTION IF EXISTS PUBLIC.move_node;
+    DROP FUNCTION IF EXISTS PUBLIC.get_books_not_null_level_checks;
+    DROP FUNCTION IF EXISTS PUBLIC.find_books_with_chapters_and_verses;
+    DROP FUNCTION IF EXISTS PUBLIC.get_words_page;
 
   -- END DROP FUNCTION
 
@@ -108,8 +111,74 @@
 -- END CREATE CUSTOM TYPE
 
 -- CREATE FUNCTION
+
+-- return words from pages dict
+CREATE FUNCTION get_words_page(
+    search_query TEXT,  
+    words_per_page INT,  
+    page_number INT,  
+    project_id_param BIGINT
+  ) 
+  RETURNS TABLE (
+    dict_id TEXT,
+    dict_project_id BIGINT,
+    dict_title TEXT,
+    dict_data JSON,
+    dict_created_at TIMESTAMP,
+    dict_changed_at TIMESTAMP,
+    dict_deleted_at TIMESTAMP,
+    total_records BIGINT
+  )  
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+  from_offset INT;
+  to_offset INT;
+  BEGIN
+    IF page_number = -1 THEN
+      RETURN QUERY
+       SELECT
+        id AS dict_id,
+        project_id AS dict_project_id,
+        title AS dict_title,
+        data AS dict_data,
+        created_at AS dict_created_at,
+        changed_at AS dict_changed_at,
+        deleted_at AS dict_deleted_at,
+        COUNT(*) OVER() AS total_records
+      FROM dictionaries
+      WHERE project_id = project_id_param
+        AND deleted_at IS NULL
+        AND title ILIKE (search_query || '%')
+      ORDER BY title ASC;
+    ELSE
+      from_offset := page_number * words_per_page;
+      to_offset := (page_number + 1) * words_per_page;
+
+      RETURN QUERY
+        SELECT
+          id AS dict_id,
+          project_id AS dict_project_id,
+          title AS dict_title,
+          data AS dict_data,
+          created_at AS dict_created_at,
+          changed_at AS dict_changed_at,
+          deleted_at AS dict_deleted_at,
+          COUNT(*) OVER() AS total_records
+        FROM dictionaries
+        WHERE project_id = project_id_param
+        AND deleted_at IS NULL
+        AND title ILIKE (search_query || '%')
+        ORDER BY title ASC
+        LIMIT words_per_page
+        OFFSET from_offset;
+    END IF;
+  END 
+$$;
+
+
+
   -- function returns your maximum role on the project
-    CREATE FUNCTION PUBLIC.authorize(
+  CREATE FUNCTION PUBLIC.authorize(
         user_id uuid,
         project_id BIGINT
       ) RETURNS TEXT
@@ -150,716 +219,76 @@
       END;
     $$;
 
-  -- getting all the books that specify the levels of checks
-    CREATE OR REPLACE FUNCTION get_books_not_null_level_checks(project_code text)
-    RETURNS TABLE (book_code public.book_code, level_checks json) AS $$
-      DECLARE
-        project_id bigint;
-    BEGIN
-        SELECT id INTO project_id FROM public.projects WHERE code = project_code;
-
-      IF project_id IS NULL THEN
-        RETURN;
-      END IF;
-
-      IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
-        RETURN;
-      END IF;
-
-      RETURN QUERY
-        SELECT
-            b.code AS book_code,
-            b.level_checks
-        FROM
-            public.books b
-        INNER JOIN
-            public.projects p ON b.project_id = p.id
-        WHERE
-            p.code = project_code
-            AND b.level_checks IS NOT NULL;
-      END;
-    $$ LANGUAGE plpgsql;
-
-
-  -- getting all books with verses that are started and non-zero translation texts
-    CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses(project_code text)
-    RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
-    DECLARE
-        project_id bigint;
-      BEGIN
-      SELECT id INTO project_id FROM public.projects WHERE code = project_code;
-
-      IF project_id IS NULL THEN
-        RETURN;
-      END IF;
-
-      IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
-        RETURN;
-      END IF;
-
-      RETURN QUERY
-        SELECT
-            b.code AS book_code,
-            c.num AS chapter_num,
-            v.num AS verse_num,
-            v.text AS verse_text
-        FROM
-            public.books b
-        INNER JOIN
-            public.chapters c ON b.id = c.book_id
-        INNER JOIN
-            public.verses v ON c.id = v.chapter_id
-        INNER JOIN
-            public.projects p ON b.project_id = p.id
-        WHERE
-            c.started_at IS NOT NULL
-            AND v.text IS NOT NULL
-            AND p.code = project_code;
-        END;
-      $$ LANGUAGE plpgsql;
-
-
-
-  -- conditions for the user to have access to the site: 2 checkboxes and the user was not blocked
-    CREATE FUNCTION PUBLIC.has_access() RETURNS BOOLEAN
-      LANGUAGE plpgsql SECURITY DEFINER AS $$
-      DECLARE
-        access INT;
-
-      BEGIN
-        SELECT
-          COUNT(*) INTO access
-        FROM
-          PUBLIC.users
-        WHERE
-          users.id = auth.uid() AND users.agreement
-          AND users.confession AND users.blocked IS NULL;
-
-        RETURN access > 0;
-
-      END;
-    $$;
-
-  -- RETURNS which step the user is currently at in a particular project
-  CREATE FUNCTION PUBLIC.get_current_steps(project_id BIGINT) RETURNS TABLE(title TEXT, project TEXT, book PUBLIC.book_code, chapter INT2, step INT2, started_at TIMESTAMP)
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-
-    BEGIN
-      -- must be on the project
-      IF authorize(auth.uid(), get_current_steps.project_id) IN ('user') THEN
-        RETURN;
-      END IF;
-
-      RETURN query SELECT steps.title, projects.code AS project, books.code AS book, chapters.num AS chapter, steps.sorting AS step, chapters.started_at
-      FROM verses
-        LEFT JOIN chapters ON (verses.chapter_id = chapters.id)
-        LEFT JOIN books ON (chapters.book_id = books.id)
-        LEFT JOIN steps ON (verses.current_step = steps.id)
-        LEFT JOIN projects ON (projects.id = verses.project_id)
-      WHERE verses.project_id = get_current_steps.project_id
-        AND chapters.started_at IS NOT NULL
-        AND chapters.finished_at IS NULL
-        AND project_translator_id = (SELECT id FROM project_translators WHERE project_translators.project_id = get_current_steps.project_id AND user_id = auth.uid())
-      GROUP BY books.id, chapters.id, verses.current_step, steps.id, projects.id;
-
-    END;
-  $$;
-
-  -- get all the verses of the chapter
-  CREATE FUNCTION PUBLIC.get_whole_chapter(project_code TEXT, chapter_num INT2, book_code PUBLIC.book_code) RETURNS TABLE(verse_id BIGINT, num INT2, verse TEXT, translator TEXT)
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      verses_list RECORD;
-      cur_chapter_id BIGINT;
-      cur_project_id BIGINT;
-    BEGIN
-
-      SELECT projects.id INTO cur_project_id
-      FROM PUBLIC.projects
-      WHERE projects.code = get_whole_chapter.project_code;
-
-      -- find out the project_id
-      IF cur_project_id IS NULL THEN
-        RETURN;
-      END IF;
-
-      -- user must be assigned to this project
-      IF authorize(auth.uid(), cur_project_id) IN ('user') THEN
-        RETURN;
-      END IF;
-
-      SELECT chapters.id INTO cur_chapter_id
-      FROM PUBLIC.chapters
-      WHERE chapters.num = get_whole_chapter.chapter_num AND chapters.project_id = cur_project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_whole_chapter.book_code AND books.project_id = cur_project_id);
-
-      -- find out the chapter id
-      IF cur_chapter_id IS NULL THEN
-        RETURN;
-      END IF;
-
-      -- return the verse id, number, and text from a specific chapter
-      RETURN query SELECT verses.id AS verse_id, verses.num, verses.text AS verse, users.login AS translator
-      FROM public.verses LEFT OUTER JOIN public.project_translators ON (verses.project_translator_id = project_translators.id) LEFT OUTER JOIN public.users ON (project_translators.user_id = users.id)
-      WHERE verses.project_id = cur_project_id
-        AND verses.chapter_id = cur_chapter_id
-      ORDER BY verses.num;
-
-    END;
-  $$;
-
-  -- install a translator as a moderator. Check that there is such a thing, which is set by the admin or coordinator. Otherwise, return false. The condition that we decided to do only one moderator per project at the interface level and not the database. Leave the possibility that there are more than 1 moderators.
-  CREATE FUNCTION PUBLIC.assign_moderator(user_id uuid, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      usr RECORD;
-    BEGIN
-      IF authorize(auth.uid(), assign_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
-        RETURN FALSE;
-      END IF;
-      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = assign_moderator.project_id AND project_translators.user_id = assign_moderator.user_id;
-      IF usr.id IS NULL THEN
-        RETURN FALSE;
-      END IF;
-      UPDATE PUBLIC.project_translators SET is_moderator = TRUE WHERE project_translators.id = usr.id;
-
-      RETURN TRUE;
-
-    END;
-  $$;
-
-  -- cancel the appointment of a specific moderator
-  CREATE FUNCTION PUBLIC.remove_moderator(user_id uuid, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      usr RECORD;
-    BEGIN
-      IF authorize(auth.uid(), remove_moderator.project_id) NOT IN ('admin', 'coordinator') THEN
-        RETURN FALSE;
-      END IF;
-      SELECT id, is_moderator INTO usr FROM PUBLIC.project_translators WHERE project_translators.project_id = remove_moderator.project_id AND project_translators.user_id = remove_moderator.user_id;
-      IF usr.id IS NULL THEN
-        RETURN FALSE;
-      END IF;
-      UPDATE PUBLIC.project_translators SET is_moderator = FALSE WHERE project_translators.id = usr.id;
-
-      RETURN TRUE;
-
-    END;
-  $$;
-
-  -- distribution of verses among translators
-  CREATE FUNCTION PUBLIC.divide_verses(divider VARCHAR, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-     verse_row record;
-    BEGIN
-      IF authorize(auth.uid(), divide_verses.project_id) NOT IN ('admin', 'coordinator') THEN
-        RETURN FALSE;
-      END IF;
-
-      FOR verse_row IN SELECT * FROM jsonb_to_recordset(divider::jsonb) AS x(project_translator_id INT,id INT)
-      LOOP
-        UPDATE PUBLIC.verses SET project_translator_id = verse_row.project_translator_id WHERE verse_row.id = id;
-      END LOOP;
-
-      RETURN TRUE;
-
-    END;
-  $$;
-
-   -- Sets the start date of the translation of the chapter if it is not there or removes it if the date is already set
-  CREATE FUNCTION PUBLIC.change_start_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      chap RECORD;
-    BEGIN
-      IF authorize(auth.uid(), change_start_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
-      END IF;
-
-      SELECT started_at,finished_at INTO chap FROM PUBLIC.chapters WHERE change_start_chapter.chapter_id = chapters.id AND change_start_chapter.project_id = chapters.project_id;
-
-      IF chap.finished_at IS NOT NULL
-      THEN RETURN FALSE;
-      END IF;
-
-      IF chap.started_at  IS NULL THEN
-        UPDATE PUBLIC.chapters SET started_at = NOW() WHERE change_start_chapter.chapter_id = chapters.id;
-      ELSE
-        UPDATE PUBLIC.chapters SET started_at = NULL WHERE change_start_chapter.chapter_id = chapters.id;
-      END IF;
-
-      RETURN true;
-
-    END;
-  $$;
-
-   -- Sets the end date for the translation of the chapter if it is not there or removes it if the date is already set
-  CREATE FUNCTION PUBLIC.change_finish_chapter(chapter_id BIGINT,project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      chap RECORD;
-    BEGIN
-      IF authorize(auth.uid(), change_finish_chapter.project_id) NOT IN ('admin', 'coordinator')THEN RETURN FALSE;
-      END IF;
-
-      SELECT finished_at,started_at INTO chap FROM PUBLIC.chapters WHERE change_finish_chapter.chapter_id = chapters.id AND change_finish_chapter.project_id = chapters.project_id;
-
-      IF chap.started_at IS NULL
-      THEN RETURN FALSE;
-      END IF;
-
-      IF chap.finished_at  IS NULL THEN
-        UPDATE PUBLIC.chapters SET finished_at = NOW() WHERE change_finish_chapter.chapter_id = chapters.id;
-      ELSE
-        UPDATE PUBLIC.chapters SET finished_at = NULL WHERE change_finish_chapter.chapter_id = chapters.id;
-      END IF;
-
-      RETURN true;
-
-    END;
-  $$;
-
-   -- save the verse
-  -- I think that in general it is possible to reduce the number of requests, but let's leave it to the refactoring phase)
-  CREATE FUNCTION PUBLIC.save_verse(verse_id BIGINT, new_verse TEXT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-     current_verse record;
-     current_chapter record;
-     cur_user record;
-    BEGIN
-      SELECT * FROM public.verses WHERE verses.id = verse_id INTO current_verse;
-      -- the verse must exist and must be assigned to a translator
-      IF current_verse.project_translator_id IS NULL THEN
-        RETURN FALSE;
-      END IF;
-
-      -- user must be on this project
-      IF authorize(auth.uid(), current_verse.project_id) IN ('user') THEN RETURN FALSE;
-      END IF;
-
-      SELECT chapters.id FROM public.chapters WHERE chapters.id = current_verse.chapter_id AND chapters.started_at IS NOT NULL AND chapters.finished_at IS NULL INTO current_chapter;
-      -- the chapter should be in the process of being translated
-      IF current_chapter.id IS NULL THEN
-        RETURN FALSE;
-      END IF;
-
-      SELECT project_translators.user_id AS id FROM public.project_translators WHERE project_translators.id = current_verse.project_translator_id AND project_translators.project_id = current_verse.project_id AND project_translators.user_id = auth.uid() INTO cur_user;
-      -- the current user must be a translator on the project, and must be assigned to this verse
-      IF cur_user.id IS NULL THEN
-        RETURN FALSE;
-      END IF;
-
-      UPDATE PUBLIC.verses SET "text" = save_verse.new_verse WHERE verses.id = save_verse.verse_id;
-
-      RETURN true;
-
-    END;
-  $$;
-
-  -- since the user cannot directly correct the fields in the user table, he calls this function to mark the confession
-  CREATE FUNCTION PUBLIC.check_confession() RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-
-    BEGIN
-      UPDATE PUBLIC.users SET confession = TRUE WHERE users.id = auth.uid();
-
-      RETURN TRUE;
-
-    END;
-  $$;
-
-  -- and this function to set the agreement
-  CREATE FUNCTION PUBLIC.check_agreement() RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-
-    BEGIN
-      UPDATE PUBLIC.users SET agreement = TRUE WHERE users.id = auth.uid();
-
-      RETURN TRUE;
-
-    END;
-  $$;
-
-  -- for rls, a function that allows only the admin to do something
-  CREATE FUNCTION PUBLIC.admin_only()
-    RETURNS BOOLEAN LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      access INT;
-
-    BEGIN
-      SELECT
-        COUNT(*) INTO access
-      FROM
-        PUBLIC.users
-      WHERE
-        users.id = auth.uid() AND users.is_admin;
-
-      RETURN access > 0;
-
-    END;
-  $$;
-
-  -- for rls, a function that checks if the user is a verse translator
-  -- can use the function to write the user ID to the table right away, otherwise you will often have to do such checks
-  CREATE FUNCTION PUBLIC.can_translate(translator_id BIGINT)
-    returns BOOLEAN LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      access INT;
-
-    BEGIN
-      SELECT
-        COUNT(*) INTO access
-      FROM
-        PUBLIC.project_translators
-      WHERE
-        user_id = auth.uid() AND id = can_translate.translator_id;
-
-      RETURN access > 0;
-
-    END;
-  $$;
-
-  -- A new function for moving to the next step (we indicate specifically which step is now) (check that the user has the right to edit these verses, find out the ID of the next step, change the ID of the step for all verses)
-  CREATE FUNCTION PUBLIC.go_to_step(project TEXT, chapter INT2, book PUBLIC.book_code, current_step INT2) RETURNS INTEGER
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      proj_trans RECORD;
-      cur_step INT2;
-      cur_chapter_id BIGINT;
-      next_step RECORD;
-    BEGIN
-
-      SELECT
-        project_translators.id, projects.id AS project_id INTO proj_trans
-      FROM
-        PUBLIC.project_translators LEFT JOIN PUBLIC.projects ON (projects.id = project_translators.project_id)
-      WHERE
-        project_translators.user_id = auth.uid() AND projects.code = go_to_step.project;
-
-      -- Is there such a translator on the project
-      IF proj_trans.id IS NULL THEN
-        RETURN 0;
-      END IF;
-
-      -- get chapter id
-      SELECT chapters.id INTO cur_chapter_id
-      FROM PUBLIC.chapters
-      WHERE chapters.num = go_to_step.chapter AND chapters.project_id = proj_trans.project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = go_to_step.book AND books.project_id = proj_trans.project_id);
-
-      -- chapter validation
-      IF cur_chapter_id IS NULL THEN
-        RETURN 0;
-      END IF;
-
-      SELECT
-        sorting INTO cur_step
-      FROM
-        PUBLIC.verses LEFT JOIN PUBLIC.steps ON (steps.id = verses.current_step)
-      WHERE verses.chapter_id = cur_chapter_id
-        AND project_translator_id = proj_trans.id
-      LIMIT 1;
-
-      -- Are there verses assigned to him, and find out at what step now
-      IF cur_step IS NULL THEN
-        RETURN 0;
-      END IF;
-
-      IF cur_step != go_to_step.current_step THEN
-        RETURN cur_step;
-      END IF;
-
-      SELECT id, sorting INTO next_step
-      FROM PUBLIC.steps
-      WHERE steps.project_id = proj_trans.project_id
-        AND steps.sorting > cur_step
-      ORDER BY steps.sorting
-      LIMIT 1;
-
-      -- get from the base, what is the next step, if it is not there, then do nothing
-      IF next_step.id IS NULL THEN
-        RETURN cur_step;
-      END IF;
-
-      -- If yes, then update the database
-      UPDATE PUBLIC.verses SET current_step = next_step.id WHERE verses.chapter_id = cur_chapter_id
-        AND verses.project_translator_id = proj_trans.id;
-
-      RETURN next_step.sorting;
-
-    END;
-  $$;
-
-  -- blocking a user, can only be called by an admin, it is impossible to block another admin
-  CREATE FUNCTION PUBLIC.block_user(user_id uuid) returns TEXT
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      blocked_user RECORD;
-    BEGIN
-      IF NOT PUBLIC.admin_only() THEN
-        RETURN FALSE;
-      END IF;
-
-      SELECT blocked, is_admin INTO blocked_user FROM PUBLIC.users WHERE id = block_user.user_id;
-      IF blocked_user.is_admin = TRUE THEN
-        RETURN FALSE;
-      END IF;
-
-      IF blocked_user.blocked IS NULL THEN
-        UPDATE PUBLIC.users SET blocked = NOW() WHERE id = block_user.user_id;
-      ELSE
-        UPDATE PUBLIC.users SET blocked = NULL WHERE id = block_user.user_id;
-      END IF;
-
-      RETURN TRUE;
-
-    END;
-  $$;
-
-  CREATE FUNCTION PUBLIC.update_chapters_in_books(book_id BIGINT, chapters_new JSON, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE chapters_old JSON;
-    BEGIN
-      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-      END IF;
-      SELECT json_build_object('chapters',chapters) FROM PUBLIC.books WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id INTO chapters_old;
-      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function','update_chapters_in_books', 'book_id', book_id, 'chapters', update_chapters_in_books.chapters_new, 'project_id', project_id, 'old values', chapters_old));
-      UPDATE PUBLIC.books SET chapters = update_chapters_in_books.chapters_new WHERE books.id = book_id AND books.project_id = update_chapters_in_books.project_id;
-      RETURN TRUE;
-    END;
-  $$;
-
-  CREATE FUNCTION PUBLIC.insert_additional_chapter(book_id BIGINT, verses int4, project_id BIGINT, num INT2) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    BEGIN
-      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-      END IF;
-      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'insert_additional_chapter', 'book_id', book_id, 'verses', verses, 'project_id', project_id, 'num',  num));
-      INSERT INTO PUBLIC.chapters (num, verses, book_id, project_id) VALUES (num, verses, book_id, project_id)
-      ON CONFLICT ON CONSTRAINT chapters_book_id_num_key
-            DO NOTHING;
-      RETURN TRUE;
-    END;
-  $$;
-
-  CREATE FUNCTION PUBLIC.update_verses_in_chapters(book_id BIGINT, verses_new INTEGER, num INT2, project_id BIGINT) RETURNS JSON
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE chapter JSON;
-            verses_old JSON;
-    BEGIN
-      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-      END IF;
-      SELECT json_build_object('verses', verses) FROM PUBLIC.chapters WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.project_id = update_verses_in_chapters.project_id INTO verses_old;
-      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_verses_in_chapters', 'book_id', book_id, 'verses', update_verses_in_chapters.verses_new, 'project_id', project_id, 'old values', verses_old));
-      UPDATE PUBLIC.chapters SET verses = update_verses_in_chapters.verses_new WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num AND chapters.project_id = update_verses_in_chapters.project_id;
-      SELECT json_build_object('id', id, 'started_at', started_at) FROM PUBLIC.chapters WHERE chapters.book_id = update_verses_in_chapters.book_id AND chapters.num = update_verses_in_chapters.num INTO chapter;
-      RETURN chapter;
-    END;
-  $$;
-
-  CREATE FUNCTION PUBLIC.insert_additional_verses(start_verse INT2, finish_verse INT2, chapter_id BIGINT, project_id INTEGER) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE step_id BIGINT;
-    BEGIN
-      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-      END IF;
-      IF finish_verse < start_verse THEN
-        RETURN false;
-      END IF;
-      SELECT id FROM steps WHERE steps.project_id = insert_additional_verses.project_id AND sorting = 1 INTO step_id;
-      INSERT INTO PUBLIC.logs (log) VALUES ( json_build_object('function', 'insert_additional_verses', 'start_verse', start_verse, 'step_id', id, 'finish_verse', finish_verse, 'chapter_id', chapter_id, 'project_id', project_id));
-
-      FOR i IN start_verse..finish_verse LOOP
-        INSERT INTO
-          PUBLIC.verses (num, chapter_id, current_step, project_id)
-        VALUES
-          (i, chapter_id, step_id, project_id)
-          ON CONFLICT ON CONSTRAINT verses_chapter_id_num_key
-          DO NOTHING;
-      END LOOP;
-      RETURN TRUE;
-    END;
-  $$;
-
-  CREATE FUNCTION PUBLIC.update_resources_in_projects(resources_new JSON, base_manifest_new JSON, project_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE old_values JSON;
-    BEGIN
-      IF authorize(auth.uid(), project_id) NOT IN ('admin', 'coordinator') THEN RETURN FALSE;
-      END IF;
-      SELECT json_build_object('resources', resources, 'base_manifest', base_manifest) FROM PUBLIC.projects WHERE id = update_resources_in_projects.project_id INTO old_values;
-      INSERT INTO PUBLIC.logs (log) VALUES (json_build_object('function', 'update_resources_in_projects','resources', update_resources_in_projects.resources_new, 'base_manifest', update_resources_in_projects.base_manifest_new, 'project_id', project_id, 'old values', old_values));
-      UPDATE PUBLIC.projects SET resources = update_resources_in_projects.resources_new, base_manifest = update_resources_in_projects.base_manifest_new WHERE id = project_id;
-      RETURN TRUE;
-    END;
-  $$;
-
-  -- create policy "политика с джойном"
-  --   on teams
-  --   for update using (
-  --     auth.uid() in (
-  --       select user_id from members
-  --       WHERE team_id = id
-  --     )
-  --   );
-
-  -- inserts a row into public.users
-  CREATE FUNCTION PUBLIC.handle_new_user() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
-      INSERT INTO
-        PUBLIC.users (id, email, login)
-      VALUES
-        (NEW.id, NEW.email, NEW.raw_user_meta_data ->> 'login');
-
-      RETURN NEW;
-
-    END;
-
-  $$;
-
-  -- creating a new brief for the project
-  CREATE FUNCTION PUBLIC.create_brief(project_id BIGINT, is_enable BOOLEAN, data_collection JSON) RETURNS BIGINT
-      LANGUAGE plpgsql SECURITY DEFINER AS $$
-      DECLARE
-        brief_id BIGINT;
-      BEGIN
-        IF authorize(auth.uid(), create_brief.project_id) NOT IN ('admin', 'coordinator') THEN
-          RETURN false;
-        END IF;
-        INSERT INTO PUBLIC.briefs (project_id, data_collection, is_enable) VALUES (project_id, data_collection, is_enable) RETURNING id INTO brief_id;
-        RETURN brief_id;
-      END;
-  $$;
-
-  -- after creating a book, create chapters
-  CREATE FUNCTION PUBLIC.handle_new_book() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
-      IF (PUBLIC.create_chapters(NEW.id)) THEN
-        RETURN NEW;
-      ELSE
-        RETURN NULL;
-      END IF;
-    END;
-  $$;
-
-  -- after switching to a new step - save the previous one in progress
-  CREATE FUNCTION PUBLIC.handle_next_step() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
-      IF NEW.current_step = OLD.current_step THEN
-        RETURN NEW;
-      END IF;
-      INSERT INTO
-        PUBLIC.progress (verse_id, "text", step_id)
-      VALUES
-        (NEW.id, NEW.text, OLD.current_step);
-
-      RETURN NEW;
-
-    END;
-  $$;
-
-  -- update changed_at to current time/date when personal_notes is updating
-  CREATE FUNCTION PUBLIC.handle_update_personal_notes() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
-      NEW.changed_at:=NOW();
-      RETURN NEW;
-    END;
-  $$;
-
-  -- update changed_at to current time/date when team_notes is updating
-  CREATE FUNCTION PUBLIC.handle_update_team_notes() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY DEFINER AS $$ BEGIN
-      NEW.changed_at:=NOW();
-      RETURN NEW;
-    END;
-  $$;
-
-  -- update the alphabet array in the projects column when a new word is added with a new first character, when a new word is updated or restored, or when a word is soft deleted
-  CREATE FUNCTION PUBLIC.alphabet_change_handler() RETURNS TRIGGER
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
-    DECLARE
-      old_letter_exists BOOLEAN;
-      new_letter_exists BOOLEAN;
-    BEGIN
-      -- If the record was undeleted, check if the letter exists in the alphabet
-      IF OLD.deleted_at IS NOT NULL AND NEW.deleted_at IS NULL THEN
-        SELECT EXISTS(
-          SELECT 1 FROM PUBLIC.projects
-          WHERE jsonb_exists(dictionaries_alphabet, upper(NEW.title::VARCHAR(1)))
-          AND projects.id = NEW.project_id
-        ) INTO new_letter_exists;
-
-        -- If the letter does not exist, add it to the project alphabet
-        IF NOT new_letter_exists THEN
-          UPDATE PUBLIC.projects
-          SET dictionaries_alphabet = dictionaries_alphabet || jsonb_build_array(upper(NEW.title::VARCHAR(1)))
-          WHERE projects.id = NEW.project_id;
-        END IF;
-        RETURN NEW;
-      END IF;
-
-      -- If the word was updated or soft deleted
-      IF OLD.title <> NEW.title OR (OLD.deleted_at IS NULL AND NEW.deleted_at IS NOT NULL) THEN
-        -- Check if there are other words starting with the same letter as the old word
-        SELECT EXISTS(
-          SELECT 1 FROM PUBLIC.dictionaries
-          WHERE upper(title::VARCHAR(1)) = upper(OLD.title::VARCHAR(1))
-          AND project_id = OLD.project_id AND deleted_at IS NULL
-        ) INTO old_letter_exists;
-
-        -- If not, remove the letter from the project alphabet
-        IF NOT old_letter_exists THEN
-          UPDATE PUBLIC.projects
-          SET dictionaries_alphabet = dictionaries_alphabet - upper(OLD.title::VARCHAR(1))
-          WHERE projects.id = OLD.project_id;
-        END IF;
-
-        -- If the word was updated (not soft deleted), check if there are other words starting with the same letter as the new word
-        IF NEW.deleted_at IS NULL AND OLD.title <> NEW.title THEN
-          SELECT COUNT(id) > 1 FROM PUBLIC.dictionaries
-            WHERE upper(title::VARCHAR(1)) = upper(NEW.title::VARCHAR(1))
-            AND project_id = NEW.project_id AND deleted_at IS NULL
-          INTO new_letter_exists;
-
-          -- If not, add the letter to the project alphabet
-          IF NOT new_letter_exists THEN
-            UPDATE PUBLIC.projects
-            SET dictionaries_alphabet = dictionaries_alphabet || jsonb_build_array(upper(NEW.title::VARCHAR(1)))
-            WHERE projects.id = NEW.project_id;
-          END IF;
-        END IF;
-      END IF;
-
-      RETURN NEW;
-    END;
-  $$;
-
-  CREATE FUNCTION PUBLIC.alphabet_insert_handler() RETURNS TRIGGER
+-- getting all the books that specify the levels of checks
+CREATE FUNCTION get_books_not_null_level_checks(project_code text) 
+  RETURNS TABLE (book_code public.book_code, level_checks json) 
   LANGUAGE plpgsql SECURITY DEFINER AS $$
   DECLARE
-    new_letter_exists BOOLEAN;
+  project_id bigint;
   BEGIN
-    -- Check if the letter exists in the alphabet
-    SELECT EXISTS(
-      SELECT 1 FROM PUBLIC.projects
-      WHERE jsonb_exists(dictionaries_alphabet, upper(NEW.title::VARCHAR(1)))
-      AND projects.id = NEW.project_id
-    ) INTO new_letter_exists;
+    SELECT id INTO project_id FROM public.projects WHERE code = project_code;
 
-    -- If the letter does not exist, add it to the project alphabet
-    IF NOT new_letter_exists THEN
-      UPDATE PUBLIC.projects
-      SET dictionaries_alphabet = dictionaries_alphabet || jsonb_build_array(upper(NEW.title::VARCHAR(1)))
-      WHERE projects.id = NEW.project_id;
+    IF project_id IS NULL THEN
+      RETURN;
     END IF;
 
-    RETURN NEW;
+    IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
+     RETURN;
+    END IF;
+
+    RETURN QUERY
+     SELECT
+        b.code AS book_code,
+        b.level_checks
+      FROM
+        public.books b
+      INNER JOIN
+        public.projects p ON b.project_id = p.id
+      WHERE
+        p.code = project_code
+        AND b.level_checks IS NOT NULL;
+  END;
+$$;
+
+-- getting all books with verses that are started and non-zero translation texts
+CREATE FUNCTION find_books_with_chapters_and_verses(project_code text)
+  RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text)  
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+  project_id bigint;
+  BEGIN
+    SELECT id INTO project_id FROM public.projects WHERE code = project_code;
+
+    IF project_id IS NULL THEN
+      RETURN;
+    END IF;
+
+    IF authorize(auth.uid(), project_id) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
+      RETURN;
+    END IF;
+
+    RETURN QUERY
+       SELECT
+        b.code AS book_code,
+        c.num AS chapter_num,
+        v.num AS verse_num,
+        v.text AS verse_text
+        FROM
+          public.books b
+        INNER JOIN
+          public.chapters c ON b.id = c.book_id
+        INNER JOIN
+          public.verses v ON c.id = v.chapter_id
+        INNER JOIN
+          public.projects p ON b.project_id = p.id
+        WHERE
+          c.started_at IS NOT NULL
+          AND v.text IS NOT NULL
+          AND p.code = project_code;
   END;
   $$;
 
-  CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
+CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       chapter JSONB;
