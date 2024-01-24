@@ -20,6 +20,7 @@ import Localization from 'public/localization.svg'
 import VersionLogo from 'public/version.svg'
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
+import Camera from 'public/camera.svg'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
@@ -75,10 +76,13 @@ function SideBar({ setIsOpenSideBar, access }) {
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl">
                 <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-300">
                   <div
-                    className="w-16 h-16 min-w-[3rem]"
+                    className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
                   >
                     <TranslatorImage item={{ users: user }} />
+                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center">
+                      <Camera className="w-4 text-white" />
+                    </div>
                   </div>
 
                   <div>

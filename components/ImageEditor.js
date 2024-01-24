@@ -180,7 +180,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     }
 
     rangeSlider.addEventListener('input', updateSliderTrack)
-    updateSliderTrack() // Инициализация при первом рендере
+    updateSliderTrack()
 
     return () => {
       rangeSlider.removeEventListener('input', updateSliderTrack)

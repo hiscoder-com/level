@@ -150,7 +150,7 @@
       END;
     $$;
 
--- getting all the books that specify the levels of checks
+  -- getting all the books that specify the levels of checks
     CREATE OR REPLACE FUNCTION get_books_not_null_level_checks(project_code text)
     RETURNS TABLE (book_code public.book_code, level_checks json) AS $$
       DECLARE
@@ -181,7 +181,7 @@
     $$ LANGUAGE plpgsql;
 
 
--- getting all books with verses that are started and non-zero translation texts
+  -- getting all books with verses that are started and non-zero translation texts
     CREATE OR REPLACE FUNCTION find_books_with_chapters_and_verses(project_code text)
     RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text) AS $$
     DECLARE
@@ -857,7 +857,7 @@
 
     RETURN NEW;
   END;
-$$;
+  $$;
 
   CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -1144,7 +1144,8 @@ $$;
       agreement BOOLEAN NOT NULL DEFAULT FALSE,
       confession BOOLEAN NOT NULL DEFAULT FALSE,
       is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-      blocked TIMESTAMP DEFAULT NULL
+      blocked TIMESTAMP DEFAULT NULL,
+      avatar_url VARCHAR(255) DEFAULT NULL
     );
 
     ALTER TABLE
@@ -2345,7 +2346,7 @@ $$;
       }
     ]
   }
-]', 'bible'::project_type),
+  ]', 'bible'::project_type),
       ('CANA OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
       {
         "title": "1 ШАГ - САМОСТОЯТЕЛЬНОЕ ИЗУЧЕНИЕ",
@@ -3152,7 +3153,7 @@ $$;
       }
     ]
   }
-]','bible'::project_type);
+  ]','bible'::project_type);
   -- END METHODS
 
   -- ROLE PERMISSIONS
@@ -3221,3 +3222,20 @@ $$;
 
   -- END PROGRESS
 -- END DUMMY DATA
+
+-- CREATE BUCKET IN STORAGE
+  -- create a bucket in storage to store avatars
+    insert into storage.buckets
+      (id, name, public)
+    values
+      ('avatars', 'avatars', true);
+
+  -- create Policies
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_0" ON storage.objects FOR SELECT TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_1" ON storage.objects FOR INSERT TO public WITH CHECK (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_2" ON storage.objects FOR UPDATE TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_3" ON storage.objects FOR DELETE TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+-- END CREATE BUCKET IN STORAGE
