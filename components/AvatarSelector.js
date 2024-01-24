@@ -177,7 +177,7 @@ function AvatarSelector({ id }) {
                 onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
                 className="btn-primary w-full"
               >
-                {selectedFile ? t('CancelAvatarUpload') : t('AddFromComputer')}
+                {selectedFile ? t('CancelAvatarUpload') : t('UploadAvatar')}
               </button>
             </div>
             {isLoading ? (
