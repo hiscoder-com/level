@@ -39,7 +39,7 @@ const ListOfNotes = dynamic(
   }
 )
 
-function Dictionary(ut) {
+function Dictionary() {
   const [currentPageWords, setCurrentPageWords] = useState(0)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')

@@ -94,8 +94,7 @@ function BookReader() {
               )
             })
         : [],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [books]
+    [books, chapters]
   )
   const createdOldTestamentBooks = useMemo(
     () =>
@@ -115,8 +114,8 @@ function BookReader() {
               )
             })
         : [],
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [books]
+
+    [books, chapters]
   )
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">

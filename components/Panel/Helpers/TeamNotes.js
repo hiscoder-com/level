@@ -59,7 +59,7 @@ const icons = {
   closeFolder: <CloseFolder className={'w-6 h-6'} />,
 }
 
-function TeamNotes({}) {
+function TeamNotes() {
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
@@ -355,7 +355,7 @@ function TeamNotes({}) {
   const menuItems = {
     contextMenu: [
       {
-        id: 'adding_a_note',
+        id: 'adding_note',
         buttonContent: (
           <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
             <FileIcon /> {t('common:NewDocument')}
@@ -364,7 +364,7 @@ function TeamNotes({}) {
         action: () => addNode(),
       },
       {
-        id: 'adding_a_folder',
+        id: 'adding_folder',
         buttonContent: (
           <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
             <CloseFolder /> {t('common:NewFolder')}
@@ -429,8 +429,8 @@ function TeamNotes({}) {
   }
   const dropMenuItems = {
     dots: menuItems.menu.filter((menuItem) => menuItem.id !== 'remove'),
-    plus: menuItems.contextMenu.filter(
-      (menuItem) => menuItem.id === 'adding_a_note' || menuItem.id === 'adding_a_folder'
+    plus: menuItems.contextMenu.filter((menuItem) =>
+      ['adding_note', 'adding_folder'].includes(menuItem.id)
     ),
   }
 
@@ -525,10 +525,8 @@ function TeamNotes({}) {
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('common:AreYouSureDelete') +
-              ' ' +
-              t(`common:${currentNodeProps?.node.data.name}`) +
-              '?'}
+            {t('common:AreYouSureDelete') + ' ' + currentNodeProps?.node.data.name ||
+              '' + '?'}
           </div>
           <div className="flex gap-7 w-1/2">
             <button
