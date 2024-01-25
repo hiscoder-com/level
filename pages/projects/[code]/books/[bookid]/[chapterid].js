@@ -102,11 +102,14 @@ function ChapterVersesPage() {
     chapter_id: chapter?.id,
   })
 
-  const [isLoadingCancelStart, setIsLoadingCancelStart] = useState(false)
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
+  const [isChapterStarted, setIsChapterStarted] = useState(!!chapter?.started_at)
+
+  useEffect(() => {
+    setIsChapterStarted(!!chapter?.started_at)
+  }, [chapter])
 
   const changeStartChapter = () => {
-    setIsLoadingCancelStart(true)
     supabase
       .rpc('change_start_chapter', {
         chapter_id: chapter?.id,
@@ -115,9 +118,9 @@ function ChapterVersesPage() {
       .then(() => {
         mutateChapter()
         mutateChapters()
+        setIsChapterStarted(true)
       })
       .catch(console.log)
-      .finally(() => setIsLoadingCancelStart(false))
   }
 
   const changeFinishChapter = () => {
@@ -236,18 +239,20 @@ function ChapterVersesPage() {
                     return (
                       <div
                         onMouseUp={() => {
-                          if (currentTranslator) {
+                          if (currentTranslator && !isChapterStarted) {
                             coloring(index)
                           }
                         }}
                         onMouseLeave={() => {
-                          if (isHighlight && currentTranslator) {
+                          if (isHighlight && currentTranslator && !isChapterStarted) {
                             coloring(index)
                           }
                         }}
                         className={`truncate h-24 ${
-                          currentTranslator ? 'verse-block cursor-pointer' : ''
-                        }`}
+                          currentTranslator && !isChapterStarted
+                            ? 'verse-block cursor-pointer'
+                            : ''
+                        } ${chapter?.started_at ? 'opacity-70' : ''}`}
                         key={index}
                       >
                         <div
@@ -275,20 +280,17 @@ function ChapterVersesPage() {
                         <div
                           className={`${
                             currentTranslator ? '' : 'hidden'
-                          } w-full h-full rounded-2xl justify-center p-1 items-center`}
-                          style={{
-                            background: verse.translator_name
-                              ? 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)'
-                              : 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
-                          }}
+                          } w-full h-full rounded-2xl justify-center p-1 items-center bg-th-primary-100`}
                         >
-                          <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
-                            {verse.translator_name ? (
-                              <Minus className="w-5 h-5 stroke-th-text-primary" />
-                            ) : (
-                              <Plus className="w-5 h-5 stroke-th-text-primary" />
-                            )}
-                          </div>
+                          {!chapter?.started_at && (
+                            <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
+                              {verse.translator_name ? (
+                                <Minus className="w-5 h-5 stroke-th-text-primary" />
+                              ) : (
+                                <Plus className="w-5 h-5 stroke-th-text-primary" />
+                              )}
+                            </div>
+                          )}
                         </div>
                       </div>
                     )
@@ -308,7 +310,7 @@ function ChapterVersesPage() {
 
         <div className="hidden sm:block w-1/3">
           <div className="sticky top-7 flex flex-col gap-7">
-            <Card title={t('chapters:Assignment')}>
+            <Card title={t('chapters:Assignment')} isHidden={isChapterStarted}>
               <div className="flex flex-col gap-3">
                 {translators.length > 0 ? (
                   translators?.map((translator, index) => (
@@ -351,13 +353,14 @@ function ChapterVersesPage() {
                     ))}
                   </>
                 )}
-                <hr className="border-th-secondary-300" />
+                {!isChapterStarted && <hr className="border-th-secondary-300" />}
                 <Button
                   onClick={verseDividing}
                   text={t('Save')}
                   color="tertiary"
                   icon={<Check className="w-5 h-5" />}
                   disabled={!translators?.length}
+                  hidden={isChapterStarted}
                 />
                 <Button
                   onClick={() =>
@@ -374,6 +377,7 @@ function ChapterVersesPage() {
                   color="primary"
                   icon={<Trash className="w-5 h-5" />}
                   disabled={!translators?.length}
+                  hidden={isChapterStarted}
                 />
               </div>
             </Card>
@@ -383,34 +387,27 @@ function ChapterVersesPage() {
                   <Button
                     onClick={changeStartChapter}
                     text={t('chapters:StartChapter')}
-                    color={'tertiary'}
+                    color={
+                      verses?.some((item) => item.project_translator_id === null)
+                        ? 'disable'
+                        : 'tertiary'
+                    }
                     icon={<Check className="w-5 h-5" />}
                     disabled={
-                      chapter?.finished_at || isValidating || translators?.length === 0
+                      chapter?.finished_at ||
+                      isValidating ||
+                      verses?.some((item) => item.project_translator_id === null)
                     }
                     avatar={
                       isValidating || isLoading ? (
-                        <Loading className="w-5 h-5 animate-spin" />
+                        <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                       ) : (
                         ''
                       )
                     }
                   />
                 ) : (
-                  <Button
-                    onClick={changeStartChapter}
-                    text={t('chapters:CancelStartChapter')}
-                    color={'primary'}
-                    icon={<Trash className="w-5 h-5" />}
-                    disabled={chapter?.finished_at || isValidating}
-                    avatar={
-                      isLoadingCancelStart ? (
-                        <Loading className="w-5 h-5 animate-spin" />
-                      ) : (
-                        ''
-                      )
-                    }
-                  />
+                  ''
                 ))}
               {chapter?.started_at && (
                 <Button
@@ -431,7 +428,7 @@ function ChapterVersesPage() {
                   disabled={isValidating}
                   avatar={
                     isLoadingCancelFinish ? (
-                      <Loading className="w-5 h-5 animate-spin" />
+                      <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                     ) : (
                       ''
                     )
@@ -451,9 +448,9 @@ function ChapterVersesPage() {
               } `}
             ></div>
             <Menu.Button
-              className={`fixed sm:hidden p-4 translate-y-1/2
+              className="fixed sm:hidden p-4 translate-y-1/2
                bottom-[60vh]
-               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary transition-all duration-700 shadow-2xl`}
+               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary-100 transition-all duration-700 shadow-2xl"
             >
               <Plus
                 className={`w-7 h-7 transition-all duration-700 ${
@@ -530,12 +527,14 @@ function ChapterVersesPage() {
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-300">
+                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-100">
                           <Button
                             onClick={verseDividing}
                             text={t('Save')}
                             color="tertiary"
                             icon={<Check className="w-5 h-5" />}
+                            disabled={!translators?.length}
+                            hidden={isChapterStarted}
                           />
                           <Button
                             onClick={() =>
@@ -551,38 +550,39 @@ function ChapterVersesPage() {
                             text={t('Reset')}
                             color="primary"
                             icon={<Trash className="w-5 h-5" />}
+                            disabled={!translators?.length}
+                            hidden={isChapterStarted}
                           />
                           {!chapter?.finished_at &&
                             (!chapter?.started_at ? (
                               <Button
                                 onClick={changeStartChapter}
                                 text={t('chapters:StartChapter')}
-                                color={'tertiary'}
+                                color={
+                                  verses?.some(
+                                    (item) => item.project_translator_id === null
+                                  )
+                                    ? 'disable'
+                                    : 'tertiary'
+                                }
                                 icon={<Check className="w-5 h-5" />}
-                                disabled={chapter?.finished_at || isValidating}
+                                disabled={
+                                  chapter?.finished_at ||
+                                  isValidating ||
+                                  verses?.some(
+                                    (item) => item.project_translator_id === null
+                                  )
+                                }
                                 avatar={
                                   isValidating || isLoading ? (
-                                    <Loading className="w-5 h-5 animate-spin" />
+                                    <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                                   ) : (
                                     ''
                                   )
                                 }
                               />
                             ) : (
-                              <Button
-                                onClick={changeStartChapter}
-                                text={t('chapters:CancelStartChapter')}
-                                color={'primary'}
-                                icon={<Trash className="w-5 h-5" />}
-                                disabled={chapter?.finished_at || isValidating}
-                                avatar={
-                                  isLoadingCancelStart ? (
-                                    <Loading className="w-5 h-5 animate-spin" />
-                                  ) : (
-                                    ''
-                                  )
-                                }
-                              />
+                              ''
                             ))}
                           {chapter?.started_at && (
                             <Button
@@ -603,10 +603,8 @@ function ChapterVersesPage() {
                               disabled={isValidating}
                               avatar={
                                 isLoadingCancelFinish ? (
-                                  <Loading className="w-5 h-5 animate-spin" />
-                                ) : (
-                                  ''
-                                )
+                                  <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
+                                ) : null
                               }
                             />
                           )}

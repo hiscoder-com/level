@@ -14,6 +14,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { useAccess, useAllWords, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
+import MenuButtons from '../UI/MenuButtons'
 
 import ArrowRight from 'public/arrow-right.svg'
 import ArrowLeft from 'public/arrow-left.svg'
@@ -22,6 +23,7 @@ import Trash from 'public/trash.svg'
 import Plus from 'public/plus.svg'
 import Export from 'public/export.svg'
 import Import from 'public/import.svg'
+import Close from 'public/close.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -200,7 +202,6 @@ function Dictionary() {
 
           bulkNode(newWord)
         }
-
         getAll()
         mutate()
         mutateProject()
@@ -351,6 +352,40 @@ function Dictionary() {
     setAlphabetProject(project?.dictionaries_alphabet)
   }, [project])
 
+  const menuItems = {
+    menu: [
+      {
+        id: 'export',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Export className="w-4 stroke-2" /> {t('common:Export')}
+          </span>
+        ),
+        action: () => exportWords(),
+      },
+      {
+        id: 'import',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Import className="w-4 stroke-2" /> {t('common:Import')}
+          </span>
+        ),
+        action: () => importWords(true),
+      },
+    ],
+    container: {
+      className: 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
+    },
+    item: {
+      className: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
+    },
+  }
+  const dropMenuItems = {
+    dots: menuItems.menu.filter((menuItem) => menuItem.id !== 'remove'),
+  }
+
+  const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
+
   return (
     <div className="relative">
       {!activeWord ? (
@@ -358,51 +393,43 @@ function Dictionary() {
           <div className="flex gap-4 items-start">
             {isModeratorAccess && (
               <>
-                <div className="flex gap-2">
+                <div className="flex w-full justify-end gap-2">
                   <button
                     className="btn-tertiary p-3"
                     onClick={addNote}
                     title={t('common:AddWord')}
                   >
-                    <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />
+                    <Plus className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
                   </button>
-
-                  <button
-                    className={`btn-tertiary p-3 ${
-                      allWords?.length === 0 ? 'disabled opacity-70' : ''
-                    }`}
-                    onClick={exportWords}
-                    title={t('common:Download')}
-                    disabled={!allWords?.length}
-                  >
-                    <Export className="w-6 h-6 stroke-th-text-secondary stroke-2" />
-                  </button>
-
-                  <button
-                    className="btn-tertiary p-3"
-                    onClick={importWords}
-                    title={t('common:Upload')}
-                  >
-                    <Import className="w-6 h-6 stroke-th-text-secondary stroke-2" />
-                  </button>
+                  <MenuButtons
+                    classNames={dropMenuClassNames}
+                    menuItems={dropMenuItems}
+                  />
                 </div>
               </>
             )}
-            <div>
-              <Alphabet
-                alphabet={alphabetProject}
-                getAll={getAll}
-                setSearchQuery={setSearchQuery}
-                setCurrentPageWords={setCurrentPageWords}
-                t={t}
-              />
+          </div>
+          <div>
+            <Alphabet
+              alphabet={alphabetProject}
+              getAll={getAll}
+              setSearchQuery={setSearchQuery}
+              setCurrentPageWords={setCurrentPageWords}
+              t={t}
+            />
+            <div className="relative flex items-center mt-2 ml-2">
               <input
-                className="input-primary max-w-xs mt-2 ml-2"
+                className="input-primary"
                 value={searchQuery}
                 onChange={(e) => {
                   setCurrentPageWords(0)
                   setSearchQuery(e.target.value)
                 }}
+                placeholder={t('common:Search')}
+              />
+              <Close
+                className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+                onClick={() => searchQuery && getAll()}
               />
             </div>
           </div>
@@ -461,7 +488,7 @@ function Dictionary() {
       ) : (
         <>
           <div
-            className="absolute flex top-0 right-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveWord()
               setActiveWord(null)
@@ -473,7 +500,7 @@ function Dictionary() {
           <Redactor
             classes={{
               wrapper: '',
-              title: 'bg-th-secondary-100 p-2 my-4 mr-12 font-bold rounded-lg shadow-md',
+              title: 'bg-th-secondary-100 p-2 my-4 font-bold rounded-lg shadow-md',
               redactor:
                 'p-4 my-4 pb-20 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
@@ -481,6 +508,7 @@ function Dictionary() {
             setActiveNote={setActiveWord}
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('common:TextDescriptionWord') : ''}
+            isSelectableTitle
           />
         </>
       )}
@@ -490,7 +518,8 @@ function Dictionary() {
           <div className="text-center text-2xl">
             {t('common:AreYouSureDelete') +
               ' ' +
-              t(`common:${wordToDel?.title}`).toLowerCase() +
+              wordToDel?.title.toLowerCase().slice(0, 20) +
+              '...' +
               '?'}
           </div>
           <div className="flex w-1/2 gap-7">

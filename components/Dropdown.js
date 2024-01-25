@@ -47,7 +47,7 @@ function Dropdown({ description, user }) {
         onClick={toggle}
         ref={toolsButton}
       >
-        <Tools className="fill-th-text-secondary" />
+        <Tools className="fill-th-text-secondary-100" />
       </div>
 
       {isOpen && (
