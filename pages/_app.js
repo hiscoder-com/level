@@ -9,9 +9,11 @@ import { UserContextProvider } from 'lib/UserContext'
 import 'styles/globals.css'
 
 import useSupabaseClient from 'utils/supabaseClient'
+import { useGetTheme } from 'utils/hooks'
 
 function MyApp({ Component, pageProps }) {
   const supabaseClient = useSupabaseClient()
+  useGetTheme()
   if (Component.layoutType == 'empty') {
     return (
       <UserContextProvider supabaseClient={supabaseClient}>

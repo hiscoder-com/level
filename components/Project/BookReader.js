@@ -94,7 +94,7 @@ function BookReader() {
               )
             })
         : [],
-    [books]
+    [books, chapters]
   )
   const createdOldTestamentBooks = useMemo(
     () =>
@@ -114,7 +114,8 @@ function BookReader() {
               )
             })
         : [],
-    [books]
+
+    [books, chapters]
   )
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
@@ -492,9 +493,7 @@ function BookListReader({ books, setReference, reference, project }) {
                 {({ selected }) => (
                   <div
                     className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
-                      selected
-                        ? 'bg-gradient-to-r from-th-primary-100 to-th-primary-400 text-th-text-secondary'
-                        : ''
+                      selected ? 'bg-th-primary-100 text-th-text-secondary-100' : ''
                     }
                       `}
                   >
@@ -564,17 +563,17 @@ function BookListReader({ books, setReference, reference, project }) {
                                         chapters
                                       ) && !reference?.checks
                                     }
-                                    className={`flex justify-center items-center w-10 h-10 rounded-md${
+                                    className={`flex justify-center items-center w-10 h-10 rounded-md ${
                                       checkChapterVersesExist(
                                         book.code,
                                         index,
                                         chapters
                                       ) || reference?.checks
-                                        ? 'cursor-pointer bg-th-primary-300'
-                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary rounded-md'
+                                        ? 'cursor-pointer bg-th-primary-100'
+                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary-100 rounded-md'
                                     } ${
                                       index === reference?.chapter
-                                        ? 'cursor-default bg-th-primary-300 text-th-text-secondary rounded-md'
+                                        ? 'cursor-default bg-th-primary-100 text-th-text-secondary-100 rounded-md'
                                         : checkChapterVersesExist(
                                             book.code,
                                             index,
