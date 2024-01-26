@@ -56,6 +56,7 @@ function CommandEditor({ config }) {
       }, {})
       const { error: errorPost } = await supabase.rpc('save_verses_if_null', {
         verses: versesToSave,
+        project_id: currentProject.id,
       })
       if (errorPost) {
         toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
