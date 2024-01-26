@@ -166,7 +166,7 @@ function Tool({ config, toolName, tnLink, editable = false }) {
   }
   return (
     <>
-      <div className="flex align-bottom-center px-4 h-10 font-bold bg-th-primary-100 text-th-text-secondary text-center items-center justify-center rounded-t-lg">
+      <div className="flex align-bottom-center px-4 h-10 font-bold bg-th-primary-500 text-th-text-secondary-200 text-center items-center justify-center rounded-t-lg">
         <p className="truncate">
           {![
             'translate',

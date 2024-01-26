@@ -57,7 +57,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             } md:ml-0 `}
           >
             <Link href={logoLink}>
-              <VcanaLogo className="h-6 fill-th-text-secondary" />
+              <VcanaLogo className="h-6 fill-th-text-secondary-100" />
             </Link>
           </div>
 
@@ -67,7 +67,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
                 <Timer time={stepConfig.time} />
               </div>
               <Down
-                className="w-6 h-6 stroke-th-text-secondary"
+                className="w-6 h-6 stroke-th-text-secondary-100"
                 onClick={() => setShowFullAppbar((prev) => !prev)}
               />
             </div>
@@ -76,7 +76,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         {isStepPage && (
           <>
             <div
-              className={`block md:flex text-center text-th-text-secondary ${
+              className={`block md:flex text-center text-th-text-secondary-100 ${
                 showFullAppbar ? '' : 'hidden'
               }`}
             >
