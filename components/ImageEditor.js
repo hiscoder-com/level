@@ -13,6 +13,22 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const [maxCropSize, setMaxCropSize] = useState(300)
   const [cropArea, setCropArea] = useState({ x: 0, y: 0, size: maxCropSize })
 
+  const updateCropArea = (posX, posY) => {
+    if (!isDragging || !canvasRef.current) return
+
+    const dx = posX - startDrag.x
+    const dy = posY - startDrag.y
+
+    setCropArea((prev) => {
+      let newX = Math.max(0, Math.min(prev.x + dx, canvasRef.current.width - prev.size))
+      let newY = Math.max(0, Math.min(prev.y + dy, canvasRef.current.height - prev.size))
+
+      return { ...prev, x: newX, y: newY }
+    })
+
+    setStartDrag({ x: posX, y: posY })
+  }
+
   const getTouchCoords = (touchEvent) => {
     const rect = canvasRef.current.getBoundingClientRect()
     return {
@@ -28,35 +44,9 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   }
 
   const onTouchMove = (e) => {
-    if (!isDragging) return
     e.preventDefault()
-
-    const canvas = canvasRef.current
-    if (!canvas) return
-
     const coords = getTouchCoords(e)
-
-    const dx = coords.x - startDrag.x
-    const dy = coords.y - startDrag.y
-
-    setCropArea((prev) => {
-      let newX = prev.x + dx
-      let newY = prev.y + dy
-
-      newX = Math.max(0, newX)
-      newX = Math.min(canvas.width - prev.size, newX)
-
-      newY = Math.max(0, newY)
-      newY = Math.min(canvas.height - prev.size, newY)
-
-      return {
-        ...prev,
-        x: newX,
-        y: newY,
-      }
-    })
-
-    setStartDrag({ x: coords.x, y: coords.y })
+    updateCropArea(coords.x, coords.y)
   }
 
   const onMouseDown = (e) => {
@@ -65,31 +55,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   }
 
   const onMouseMove = (e) => {
-    if (!isDragging) return
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const dx = e.nativeEvent.offsetX - startDrag.x
-    const dy = e.nativeEvent.offsetY - startDrag.y
-
-    setCropArea((prev) => {
-      let newX = prev.x + dx
-      let newY = prev.y + dy
-
-      newX = Math.max(0, newX)
-      newX = Math.min(canvas.width - prev.size, newX)
-
-      newY = Math.max(0, newY)
-      newY = Math.min(canvas.height - prev.size, newY)
-
-      return {
-        ...prev,
-        x: newX,
-        y: newY,
-      }
-    })
-
-    setStartDrag({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
+    updateCropArea(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
   }
 
   const onMouseUp = () => {
@@ -140,25 +106,24 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
       cropArea.size
     )
 
-    croppedCanvas.toBlob(async (blob) => {
-      const formData = new FormData()
-      formData.append('file', blob, 'avatar.png')
-      formData.append('userId', id)
+    const base64Image = croppedCanvas.toDataURL('image/png')
+    const formData = new FormData()
+    formData.append('file', base64Image)
+    formData.append('userId', id)
 
-      try {
-        const response = await axios.post('/api/users/avatar_upload', formData)
-        if (response.status === 200) {
-          const { url } = response.data
-          updateAvatar(id, url)
-          setSelectedFile(null)
-        } else {
-          toast.error(t('UploadFailed'))
-        }
-      } catch (error) {
-        console.error('Error uploading avatar:', error)
+    try {
+      const response = await axios.post('/api/users/avatar_upload', formData)
+      if (response.status === 200) {
+        const { url } = response.data
+        updateAvatar(id, url)
+        setSelectedFile(null)
+      } else {
         toast.error(t('UploadFailed'))
       }
-    })
+    } catch (error) {
+      console.error('Error uploading avatar:', error)
+      toast.error(t('UploadFailed'))
+    }
   }
 
   useEffect(() => {

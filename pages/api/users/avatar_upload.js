@@ -1,6 +1,5 @@
 import { IncomingForm } from 'formidable'
-import { promises as fs } from 'fs'
-import { Readable } from 'stream'
+import { decode } from 'base64-arraybuffer'
 
 import { supabaseService } from 'utils/supabaseService'
 
@@ -27,17 +26,13 @@ export default async function uploadFileHandler(req, res) {
     })
 
     const userId = data.fields.userId
-    const file = data.files.file[0]
     const fileName = `user_${userId}_${Date.now()}.png`
-    const contentType = data.files.file[0].mimetype
-    const buffer = await fs.readFile(file.filepath)
-    const stream = new Readable()
-    stream.push(buffer)
-    stream.push(null)
+    const base64Image = data.fields.file[0]
+    const arrayBuffer = decode(base64Image.split(',')[1])
 
     const { data: existingFiles, error: listError } = await supabaseService.storage
       .from('avatars')
-      .list('', { limit: 10, search: `user_${userId}_` })
+      .list('', { limit: 1, search: `user_${userId}_` })
 
     if (listError) {
       console.error('Error fetching existing files:', listError)
@@ -46,9 +41,9 @@ export default async function uploadFileHandler(req, res) {
 
     const { error: uploadError } = await supabaseService.storage
       .from('avatars')
-      .upload(fileName, stream, {
+      .upload(fileName, arrayBuffer, {
         cacheControl: 'no-cache',
-        contentType,
+        contentType: 'image/png',
       })
 
     if (uploadError) {
@@ -75,7 +70,6 @@ export default async function uploadFileHandler(req, res) {
       console.error('Error getting public URL:', urlError)
       return res.status(500).json({ error: 'Error getting public URL' })
     }
-
     res.status(200).json({
       message: 'File uploaded successfully',
       fileName,

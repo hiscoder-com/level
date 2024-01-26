@@ -2652,8 +2652,8 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
   -- END PROGRESS
 -- END DUMMY DATA
 
--- CREATE BUCKET IN STORAGE
-  -- create a bucket in storage to store avatars
+-- INSERT BUCKET IN STORAGE
+  -- insert a bucket in storage to store avatars
     insert into storage.buckets
       (id, name, public)
     values
@@ -2667,4 +2667,4 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     CREATE POLICY "Give users authenticated access to folder 1oj01fe_2" ON storage.objects FOR UPDATE TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
 
     CREATE POLICY "Give users authenticated access to folder 1oj01fe_3" ON storage.objects FOR DELETE TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
--- END CREATE BUCKET IN STORAGE
+-- END INSERT BUCKET IN STORAGE

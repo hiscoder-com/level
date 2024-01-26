@@ -21,21 +21,6 @@ export default async function handler(req, res) {
           return handleError(allAvatarsError, 'Error fetching avatars:')
         }
 
-        const { data: usedAvatarsData, error: usedAvatarsError } = await supabaseService
-          .from('users')
-          .select('avatar_url')
-          .not('id', 'eq', userId)
-
-        if (usedAvatarsError) {
-          return handleError(usedAvatarsError, 'Error fetching used avatars:')
-        }
-
-        const usedAvatars = new Set(
-          usedAvatarsData
-            .filter((user) => user.avatar_url !== null)
-            .map((user) => user.avatar_url)
-        )
-
         const avatars = allAvatars.map(async (avatar) => {
           const { data: fileData, error: fileError } = supabaseService.storage
             .from('avatars')
@@ -55,10 +40,7 @@ export default async function handler(req, res) {
         const avatarData = await Promise.all(avatars)
 
         const filteredData = avatarData.filter((avatar) => {
-          return (
-            (!usedAvatars.has(avatar.url) && avatar.name.includes('avatar')) ||
-            avatar.name.includes(`_${userId}_`)
-          )
+          return avatar.name.includes('avatar') || avatar.name.includes(`_${userId}_`)
         })
 
         return res.status(200).json({ data: filteredData })

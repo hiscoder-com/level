@@ -2,7 +2,7 @@
   ALTER TABLE
   PUBLIC.users ADD COLUMN avatar_url VARCHAR(255) DEFAULT NULL;
 
--- create a bucket in storage to store avatars
+-- insert a bucket in storage to store avatars
   insert into storage.buckets
     (id, name, public)
   values

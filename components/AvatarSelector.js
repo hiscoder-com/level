@@ -17,13 +17,21 @@ function AvatarSelector({ id }) {
   const fileInputRef = useRef(null)
   const modalIsOpen = useRecoilValue(avatarSelectorModalIsOpen)
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
-  const [avatarsArr, setAvatarsArr] = useState([])
+  const [avatars, setAvatars] = useState([])
   const [isLoading, setIsLoading] = useState(true)
   const [selectedFile, setSelectedFile] = useState(null)
   const [isDragOver, setIsDragOver] = useState(false)
   const [user, { mutate }] = useUser(id)
 
   const updateAvatar = async (userId, avatarUrl) => {
+    const pngPattern = new RegExp(`user_${userId}.*\.png$`)
+    const svgPattern = new RegExp(`avatar_(0[1-9]|1[0-9]|2[0-4])\.svg$`)
+
+    if (!avatarUrl || (!pngPattern.test(avatarUrl) && !svgPattern.test(avatarUrl))) {
+      toast.error(t('SaveFailed'))
+      return
+    }
+
     try {
       await axios.post('/api/users/avatars', {
         id: userId,
@@ -33,7 +41,7 @@ function AvatarSelector({ id }) {
       toast.success(t('SaveSuccess'))
       setUserAvatar({ id, url: avatarUrl })
 
-      setAvatarsArr((prevAvatars) =>
+      setAvatars((prevAvatars) =>
         prevAvatars.map((avatar) =>
           avatar.url === avatarUrl
             ? { ...avatar, selected: true }
@@ -69,7 +77,7 @@ function AvatarSelector({ id }) {
         }))
 
         setUserAvatar({ id, url: currentAvatarUrl })
-        setAvatarsArr(avatarsData)
+        setAvatars(avatarsData)
       } catch (error) {
         console.error('Error fetching avatars:', error)
       } finally {
@@ -81,9 +89,26 @@ function AvatarSelector({ id }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAvatar.url, id, userAvatar.id])
 
+  const MAX_FILE_SIZE = 5 * 1024 * 1024
+  const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml']
+
+  const isValidFile = (file) => {
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error(t('FileTooLarge'))
+      return false
+    }
+
+    if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+      toast.error(t('UnsupportedFileType'))
+      return false
+    }
+
+    return true
+  }
+
   const handleFileChange = async (e) => {
     const file = e.target.files[0]
-    if (file) {
+    if (file && isValidFile(file)) {
       setSelectedFile(file)
     }
   }
@@ -105,7 +130,10 @@ function AvatarSelector({ id }) {
     const files = e.dataTransfer.files
     if (files.length > 0) {
       const file = files[0]
-      setSelectedFile(file)
+
+      if (isValidFile(file)) {
+        setSelectedFile(file)
+      }
     }
   }
 
@@ -127,8 +155,8 @@ function AvatarSelector({ id }) {
 
         setUserAvatar({ id: userId, url: null })
 
-        setAvatarsArr(
-          avatarsArr.map((avatar) => ({
+        setAvatars(
+          avatars.map((avatar) => ({
             ...avatar,
             selected: false,
           }))
@@ -202,7 +230,7 @@ function AvatarSelector({ id }) {
             ) : (
               <>
                 <div className="flex flex-wrap items-center justify-start gap-4 overflow-y-auto py-6">
-                  {avatarsArr?.map((avatar, index) => (
+                  {avatars?.map((avatar, index) => (
                     <div
                       key={index}
                       className={`relative border-4 rounded-full overflow-hidden shadow-lg group ${
