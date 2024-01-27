@@ -46,6 +46,9 @@ function CommandEditor({ config }) {
 
   const copyVersesFromResource = useCallback(
     async (versesFromDb, versesFromResource) => {
+      if (!currentProject?.id) {
+        return
+      }
       const verseMappings = versesFromResource?.verseObjects?.reduce((acc, el) => {
         acc[el.verse] = el.text
         return acc
@@ -56,7 +59,7 @@ function CommandEditor({ config }) {
       }, {})
       const { error: errorPost } = await supabase.rpc('save_verses_if_null', {
         verses: versesToSave,
-        project_id: currentProject.id,
+        project_id: currentProject?.id,
       })
       if (errorPost) {
         toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
@@ -65,7 +68,7 @@ function CommandEditor({ config }) {
         console.log(errorPost)
       }
     },
-    [supabase, t]
+    [currentProject?.id, supabase, t]
   )
   useEffect(() => {
     const fetchVerseData = async () => {
@@ -83,7 +86,11 @@ function CommandEditor({ config }) {
           editable: verses.includes(el.verse_id),
         }))
         const versesFromDb = result.filter((verse) => verse.num < 201)
+        const isNullVerse = versesFromDb.some((verse) => !verse.verse)
         setVerseObjects(versesFromDb)
+
+        if (!isNullVerse) return
+
         if (config.config.getFromResource && config.mainResource) {
           const { owner, repo, commit, bookPath } = config.mainResource
           const params = {
@@ -106,8 +113,8 @@ function CommandEditor({ config }) {
   }, [
     book,
     chapter_num,
-    config.config.getFromResource,
-    config.mainResource,
+    config?.config.getFromResource,
+    config?.mainResource,
     config?.reference?.verses,
     copyVersesFromResource,
     project,
@@ -115,15 +122,14 @@ function CommandEditor({ config }) {
   ])
 
   const updateVerseObject = (id, text) => {
-    setVerseObjects((prev) => {
-      const newVerseObject = prev.map((el) => {
+    setVerseObjects((prev) =>
+      prev.map((el) => {
         if (el.verse_id === id) {
           el.verse = text
         }
         return el
       })
-      return newVerseObject
-    })
+    )
   }
 
   useEffect(() => {
