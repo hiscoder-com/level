@@ -29,7 +29,9 @@ INSERT INTO
           },
           {
             "name": "tnotes",
-            "config": {}
+            "config": {
+              "quote_resource": "https://git.door43.org/ru_gl/ru_rlob"
+              }
           },
           {
             "name": "info",
@@ -88,7 +90,9 @@ INSERT INTO
           },
           {
             "name": "tnotes",
-            "config": {}
+            "config": {
+              "quote_resource": "https://git.door43.org/ru_gl/ru_rlob"
+              }
           },
           {
             "name": "info",
@@ -154,7 +158,9 @@ INSERT INTO
           },
           {
             "name": "tnotes",
-            "config": {}
+            "config": {
+              "quote_resource": "https://git.door43.org/ru_gl/ru_rlob"
+              }
           },
           {
             "name": "info",
