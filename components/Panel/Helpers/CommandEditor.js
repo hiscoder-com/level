@@ -79,13 +79,13 @@ function CommandEditor({ config }) {
           book_code: book,
         })
         const verses = config?.reference?.verses?.map((v) => v.verse_id)
-        const result = res.data.map((el) => ({
+        const versesFromDb = res.data.map((el) => ({
           verse_id: el.verse_id,
           verse: el.verse,
           num: el.num,
           editable: verses.includes(el.verse_id),
         }))
-        const versesFromDb = result.filter((verse) => verse.num < 201)
+
         const isNullVerse = versesFromDb.some((verse) => !verse.verse)
         setVerseObjects(versesFromDb)
 
