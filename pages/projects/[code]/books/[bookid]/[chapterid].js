@@ -30,6 +30,7 @@ import Gear from 'public/gear.svg'
 import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
 import Card from 'components/Project/Card'
+import Breadcrumbs from 'components/Breadcrumbs'
 
 const translatorColors = [
   {
