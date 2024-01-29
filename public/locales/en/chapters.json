@@ -5,7 +5,8 @@
   "Created": "Created",
   "FinishedAt": "Finished at",
   "FinishedChapter": "Finish the chapter",
-  "ReadingMode": "Reading mode",
+  "FastDivide": "Fast divide",
+  "ReadOnly": "Read-only mode",
   "SelectAllVerses": "Select all verses",
   "StartChapter": "Start the chapter",
   "StartedAt": "Started at"
