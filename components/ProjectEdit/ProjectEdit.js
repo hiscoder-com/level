@@ -317,7 +317,7 @@ function ProjectEdit() {
               ))}
             </Tab.List>
 
-            <div className="px-5 h-12 bg-th-primary-100 rounded-t-3xl" />
+            <div className="px-5 h-12 bg-th-primary-500 rounded-t-3xl" />
             <Tab.Panels>
               {tabs.map((tab, idx) => (
                 <Tab.Panel key={idx}>
