@@ -114,7 +114,7 @@ function Steps({ updateSteps, customSteps = [], className = 'bg-th-secondary-10'
                 <div className="flex items-center gap-2 w-full">
                   <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:AwaitingTeam')}
-                  </span>{' '}
+                  </span>
                   <Switch
                     checked={step.is_awaiting_team}
                     onChange={() => handleSwitchAwaitingTeam({ index: idx_step, step })}

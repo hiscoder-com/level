@@ -12,6 +12,8 @@ import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
 
 import { stepConfigState } from './state/atoms'
+import Loading from 'public/progress.svg'
+
 export default function Footer({
   loading = false,
   textCheckbox,
@@ -19,7 +21,6 @@ export default function Footer({
   textButton,
   href,
   className = { button: 'relative btn-quaternary w-28 text-center' },
-  lastTranslators,
   isWaitTranslators = false,
 }) {
   const [isStepPage, setIsStepPage] = useState(false)
@@ -96,10 +97,7 @@ export default function Footer({
             )}
           </div>
         ) : (
-          <div className="space-x-2 flex flex-col items-center">
-            <div>{'Ждём'}</div>
-            <div>{lastTranslators && lastTranslators.join(', ')}</div>
-          </div>
+          <Loading className="progress-custom-colors w-7 animate-spin stroke-th-primary-100" />
         )}
       </div>
     </div>

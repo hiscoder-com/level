@@ -34,13 +34,13 @@ export default function ProgressPage({ last_step }) {
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const [lastTranslators, setLastTranslators] = useState([])
   const [isWaitLastTranslators, setIsWaitLastTranslators] = useState(false)
 
   function getLastTranslators(verses, currentStep) {
     const filteredVerses = verses.filter((verse) => verse.current_step < currentStep)
     return filteredVerses.length > 0 ? filteredVerses : null
   }
+
   useEffect(() => {
     if (user?.login) {
       supabase
@@ -118,7 +118,6 @@ export default function ProgressPage({ last_step }) {
         if (currentStep > 1) {
           const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
           const _lastTranslators = getLastTranslators(translatorsChapter, currentStep)
-          setLastTranslators(_lastTranslators)
           if (_lastTranslators) {
             const previousStep = currentStep - 1
             const previousStepsData = await fetchStepsData(project, previousStep)
@@ -169,6 +168,7 @@ export default function ProgressPage({ last_step }) {
       push(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
     }
   }
+
   useEffect(() => {
     let isMounted = true
     let mySubscription = null
@@ -192,7 +192,6 @@ export default function ProgressPage({ last_step }) {
                 translatorsChapter,
                 parseInt(step) + 1
               )
-              setLastTranslators(_lastTranslators)
               if (!_lastTranslators) {
                 setIsWaitLastTranslators(false)
                 if (isMounted) {
@@ -233,11 +232,6 @@ export default function ProgressPage({ last_step }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [book, chapter, isWaitLastTranslators, project, step, supabase])
-  const last = useMemo(() => {
-    if (lastTranslators) {
-      return lastTranslators.map((translator) => translator.translator)
-    }
-  }, [lastTranslators])
 
   return (
     <div>
@@ -260,7 +254,6 @@ export default function ProgressPage({ last_step }) {
         textCheckbox={t('Done')}
         handleClick={() => setIsOpenModal(true)}
         loading={loading}
-        lastTranslators={last}
         isWaitTranslators={isWaitLastTranslators}
       />
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
