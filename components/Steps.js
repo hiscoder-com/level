@@ -1,5 +1,8 @@
-import { Disclosure } from '@headlessui/react'
+import { useRouter } from 'next/router'
+
+import { Disclosure, Switch } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
+import axios from 'axios'
 
 import UpdateField from './UpdateField'
 
@@ -7,12 +10,30 @@ import Down from 'public/arrow-down.svg'
 
 function Steps({ updateSteps, customSteps = [], className = 'bg-th-secondary-10' }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
+  const {
+    query: { code },
+  } = useRouter()
 
   const fields = [
     { title: t('common:Title'), name: 'title', textarea: false },
     { title: t('common:Description'), name: 'description', textarea: true },
     { title: t('common:IntroStep'), name: 'intro', textarea: true },
   ]
+
+  const handleSwitchAwaitingTeam = ({ index, step }) => {
+    const isAwaitingTeam = !step.is_awaiting_team
+    updateSteps({
+      index,
+      fieldName: 'is_awaiting_team',
+      value: isAwaitingTeam,
+    })
+    axios
+      .put(`/api/projects/${code}/steps/${step.id}`, {
+        step: { is_awaiting_team: isAwaitingTeam },
+      })
+      .then()
+      .catch(console.log)
+  }
   return (
     <>
       {customSteps?.map((step, idx_step) => (
@@ -89,6 +110,26 @@ function Steps({ updateSteps, customSteps = [], className = 'bg-th-secondary-10'
                   <div className="btn-base bg-th-secondary-200 hover:bg-th-secondary-200 pointer-events-none">
                     {step.time}
                   </div>
+                </div>
+                <div className="flex items-center gap-2 w-full">
+                  <span className="w-auto md:w-1/6 font-bold">
+                    {t('project-edit:AwaitingTeam')}
+                  </span>{' '}
+                  <Switch
+                    checked={step.is_awaiting_team}
+                    onChange={() => handleSwitchAwaitingTeam({ index: idx_step, step })}
+                    className={`${
+                      step.is_awaiting_team
+                        ? 'bg-th-primary-100 border-th-primary-100'
+                        : 'bg-th-secondary-200 border-th-secondary-300'
+                    } relative inline-flex h-6 w-11 items-center border rounded-full`}
+                  >
+                    <span
+                      className={`${
+                        step.is_awaiting_team ? 'translate-x-6' : 'translate-x-1'
+                      } inline-block h-4 w-4 transform rounded-full bg-th-secondary-10 transition`}
+                    />
+                  </Switch>
                 </div>
               </Disclosure.Panel>
             </div>

@@ -122,7 +122,7 @@ export default function ProgressPage({ last_step }) {
           if (_lastTranslators) {
             const previousStep = currentStep - 1
             const previousStepsData = await fetchStepsData(project, previousStep)
-            if (previousStepsData.team_transition_next_step) {
+            if (previousStepsData.is_awaiting_team) {
               setIsWaitLastTranslators(true)
               handleSetStepsData(previousStepsData)
               return replace(`/translate/${project}/${book}/${chapter}/${previousStep}`)
@@ -159,7 +159,7 @@ export default function ProgressPage({ last_step }) {
     const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
     const _lastTranslators = getLastTranslators(translatorsChapter, next_step)
 
-    if (stepsData.team_transition_next_step && _lastTranslators) {
+    if (stepsData.is_awaiting_team && _lastTranslators) {
       setIsWaitLastTranslators(true)
       return
     }
