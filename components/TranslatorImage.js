@@ -42,11 +42,7 @@ function TranslatorImage({
       : setUserAvatarUrl(item?.users?.avatar_url || null)
   }, [item.users?.id, item.users?.avatar_url, userAvatar])
 
-  const cursorStyle = isPointerCursor
-    ? 'cursor-pointer'
-    : canClick
-    ? 'cursor-pointer'
-    : 'cursor-default'
+  const cursorStyle = isPointerCursor || canClick ? 'cursor-pointer' : 'cursor-default'
 
   return (
     <div

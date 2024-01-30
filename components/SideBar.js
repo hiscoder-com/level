@@ -58,9 +58,9 @@ function SideBar({ setIsOpenSideBar, access }) {
           >
             {access &&
               (!open ? (
-                <Burger className="h-10 stroke-th-text-secondary" />
+                <Burger className="h-10 stroke-th-text-secondary-100" />
               ) : (
-                <Close className="h-10 stroke-th-text-secondary" />
+                <Close className="h-10 stroke-th-text-secondary-100" />
               ))}
           </Menu.Button>
           <Transition
@@ -124,19 +124,19 @@ function SideBar({ setIsOpenSideBar, access }) {
                       </div>
                     </Menu.Item>
                   </div>
-
                   <AvatarSelector id={user?.id} />
-
-                  <ThemeSwitcher />
-                  <div
-                    className="flex justify-center cursor-pointer"
-                    onClick={() => {
-                      setVersionModalIsOpen(false)
-                      setIsOpenSideBar((prev) => !prev)
-                      close()
-                    }}
-                  >
-                    <SignOut />
+                  <div className="space-y-5">
+                    <ThemeSwitcher />
+                    <div
+                      className="flex justify-center cursor-pointer"
+                      onClick={() => {
+                        setVersionModalIsOpen(false)
+                        setIsOpenSideBar((prev) => !prev)
+                        close()
+                      }}
+                    >
+                      <SignOut />
+                    </div>
                   </div>
                 </div>
               </div>

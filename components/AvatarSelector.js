@@ -232,7 +232,7 @@ function AvatarSelector({ id }) {
               />
             ) : (
               <>
-                <div className="flex flex-wrap items-center justify-start gap-4 overflow-y-auto py-6">
+                <div className="flex flex-wrap items-center justify-start gap-4 overflow-y-auto py-6 z-10 bg-white">
                   {avatars?.map((avatar, index) => (
                     <div
                       key={index}

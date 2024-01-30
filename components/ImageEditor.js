@@ -3,6 +3,8 @@ import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
+import ButtonLoading from './ButtonLoading'
+
 import Resize from 'public/minimize_icon.svg'
 
 function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
@@ -13,6 +15,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const [startDrag, setStartDrag] = useState({ x: 0, y: 0 })
   const [maxCropSize, setMaxCropSize] = useState(300)
   const [cropArea, setCropArea] = useState({ x: 0, y: 0, size: maxCropSize })
+  const [isSaving, setIsSaving] = useState(false)
 
   const updateCropArea = (posX, posY) => {
     if (!isDragging || !canvasRef.current) return
@@ -84,9 +87,6 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
 
   const onMouseUp = () => {
     setIsDragging(false)
-    if (canvasRef.current) {
-      canvasRef.current.style.cursor = 'grab'
-    }
   }
 
   const onMouseLeave = () => {
@@ -117,6 +117,8 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   }
 
   const handleCrop = async () => {
+    setIsSaving(true)
+
     const canvas = canvasRef.current
     if (!canvas || !cropArea) return
 
@@ -161,6 +163,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
       console.error('Error uploading avatar:', error)
       toast.error(t('UploadFailed'))
     }
+    setIsSaving(false)
   }
 
   useEffect(() => {
@@ -246,7 +249,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   }, [maxCropSize])
 
   return (
-    <div ref={parentRef} className="overflow-auto">
+    <div ref={parentRef} className="overflow-auto min-h-full bg-white z-10">
       <canvas
         ref={canvasRef}
         style={{ border: '1px solid black', width: '100%', height: 'auto' }}
@@ -258,8 +261,8 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
       />
-      <div className="flex justify-between w-full mt-6 gap-5">
-        <div className="flex items-center gap-3">
+      <div className="flex flex-col md:flex-row justify-between w-full mt-6 gap-5">
+        <div className="flex items-center gap-3 w-full md:w-fit">
           <Resize className="w-6 h-6 stroke-th-text-primary" />
           <input
             ref={rangeSliderRef}
@@ -270,11 +273,13 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
             onChange={onCropSizeChange}
           />
         </div>
-        <div className="bg-th-secondary-10">
-          <button onClick={handleCrop} className="btn-primary">
-            {t('Save')}
-          </button>
-        </div>
+        <ButtonLoading
+          isLoading={isSaving}
+          onClick={handleCrop}
+          className="relative btn-primary w-full md:w-fit"
+        >
+          {t('Save')}
+        </ButtonLoading>
       </div>
     </div>
   )
