@@ -280,12 +280,7 @@ function ChapterVersesPage() {
                         <div
                           className={`${
                             currentTranslator ? '' : 'hidden'
-                          } w-full h-full rounded-2xl justify-center p-1 items-center`}
-                          style={{
-                            background: verse.translator_name
-                              ? 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)'
-                              : 'linear-gradient(90deg, var(--primary-300) 1%, var(--primary-100) 98%)',
-                          }}
+                          } w-full h-full rounded-2xl justify-center p-1 items-center bg-th-primary-100`}
                         >
                           {!chapter?.started_at && (
                             <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secon border-2 rounded-full">
@@ -405,7 +400,7 @@ function ChapterVersesPage() {
                     }
                     avatar={
                       isValidating || isLoading ? (
-                        <Loading className="w-5 h-5 animate-spin" />
+                        <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                       ) : (
                         ''
                       )
@@ -433,7 +428,7 @@ function ChapterVersesPage() {
                   disabled={isValidating}
                   avatar={
                     isLoadingCancelFinish ? (
-                      <Loading className="w-5 h-5 animate-spin" />
+                      <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                     ) : (
                       ''
                     )
@@ -453,9 +448,9 @@ function ChapterVersesPage() {
               } `}
             ></div>
             <Menu.Button
-              className={`fixed sm:hidden p-4 translate-y-1/2
+              className="fixed sm:hidden p-4 translate-y-1/2
                bottom-[60vh]
-               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary transition-all duration-700 shadow-2xl`}
+               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary-100 transition-all duration-700 shadow-2xl"
             >
               <Plus
                 className={`w-7 h-7 transition-all duration-700 ${
@@ -532,7 +527,7 @@ function ChapterVersesPage() {
                           )}
                         </div>
 
-                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-300">
+                        <div className="grid grid-cols-2 gap-3 pt-2 border-t border-th-primary-100">
                           <Button
                             onClick={verseDividing}
                             text={t('Save')}
@@ -580,7 +575,7 @@ function ChapterVersesPage() {
                                 }
                                 avatar={
                                   isValidating || isLoading ? (
-                                    <Loading className="w-5 h-5 animate-spin" />
+                                    <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                                   ) : (
                                     ''
                                   )
@@ -608,7 +603,7 @@ function ChapterVersesPage() {
                               disabled={isValidating}
                               avatar={
                                 isLoadingCancelFinish ? (
-                                  <Loading className="w-5 h-5 animate-spin" />
+                                  <Loading className="progress-custom-colors w-5 h-5 animate-spin stroke-th-primary-100" />
                                 ) : null
                               }
                             />

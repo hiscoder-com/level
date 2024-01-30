@@ -1,3 +1,13 @@
+# Version 0.12.0
+## Date: 01/25/2024
+
+### **Changed:**
+- the location of the buttons in the dictionary/notepad/team notes
+
+### **Added:**
+- 3 new color themes
+- switch color themes in the menu
+
 # Version 0.11.0
 ## Date: 12/20/2023
 

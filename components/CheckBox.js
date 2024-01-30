@@ -7,8 +7,9 @@ const CheckBox = forwardRef(
     {
       className = {
         cursor: 'text-th-secondary-10 stroke-th-secondary-10 fill-th-secondary-10',
-        accent: '',
-        wrapper: '',
+        accent:
+          'bg-th-secondary-10 checked:bg-th-secondary-400 checked:border-th-secondary-400 checked:before:bg-th-secondary-400 border-th-secondary',
+        wrapper: 'flex-row-reverse justify-between',
       },
       label,
       id = 'checkBox',

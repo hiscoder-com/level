@@ -2,18 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --primary-100: theme('colors.slate.550');
-	--primary-200:theme('colors.slate.600');
-	--primary-300: theme('colors.slate.580');
-	--primary-400: theme('colors.slate.650');
+
+:root {  
 	--secondary-10: theme('colors.white');
   --secondary-100: theme('colors.gray.150');
 	--secondary-200:	theme('colors.gray.250');
 	--secondary-300:	theme('colors.gray.450');
   --secondary-400: theme('colors.yellow.650');	
 	--text-primary:theme('colors.neutral.800');
-	--text-secondary:theme('colors.white');
+	--text-secondary-100:theme('colors.white');
 	--invalid: theme('colors.red.500');
 	--divide-verse1: theme('colors.stone.400');
 	--divide-verse2: theme('colors.stone.300');
@@ -24,8 +21,43 @@
 	--divide-verse7: theme('colors.slate.300');
 	--divide-verse8: theme('colors.emerald.400');
 	--divide-verse9: theme('colors.emerald.200');
-
 }
+.default {
+	--primary-100: theme('colors.slate.550');
+	--primary-200:theme('colors.slate.550');
+	--primary-300:theme('colors.slate.650');
+	--primary-400: theme('colors.slate.650');
+	--primary-500: theme('colors.slate.550');
+	--text-secondary-200:theme('colors.white');
+}
+.texttree {
+  --primary-100: theme('colors.sky.950');
+	--primary-200:theme('colors.slate.950');
+	--primary-300:theme('colors.black');
+	--primary-400: theme('colors.sky.950');
+	--primary-500: theme('colors.yellow.500');
+  --secondary-400: theme('colors.yellow.500');	
+	--text-secondary-200:theme('colors.sky.950');	
+}
+.uW {
+  --primary-100: theme('colors.sky.900');
+	--primary-200:theme('colors.sky.900');
+	--primary-300: theme('colors.sky.950');
+	--primary-400: theme('colors.sky.950');
+	--primary-500: theme('colors.sky.900');
+  --secondary-400: theme('colors.yellow.500');	
+	--text-secondary-200:theme('colors.white');	
+}
+.unfoldingWord {
+  --primary-100: theme('colors.cyan.600');
+	--primary-200:theme('colors.cyan.600');
+	--primary-300:theme('colors.cyan.800');
+	--primary-400: theme('colors.cyan.800');
+	--primary-500: theme('colors.cyan.600');
+  --secondary-400: theme('colors.yellow.500');	
+	--text-secondary-200:theme('colors.white');	
+}
+
 
 @layer base {
 	html {
@@ -136,16 +168,17 @@
 }
 
 .tab {
-	@apply py-2 px-2 text-base border-x border-t border-th-primary-100 rounded-t-2xl 
+	@apply py-2 px-2 text-base border-x border-t  rounded-t-2xl 
 }
 .tab-active {
-	@apply tab text-th-text-secondary bg-gradient-to-b from-th-primary-100 
-	to-th-primary-400  cursor-default focus:outline-none shadow
+	@apply tab text-th-text-secondary-100 bg-th-primary-400 border-th-primary-400
+	cursor-default focus:outline-none shadow
 }
 
 .tab-inactive {
 	@apply tab bg-th-secondary-10
-	text-th-primary-100 hover:bg-gradient-to-b hover:from-th-secondary-10 hover:to-th-secondary-300 cursor-pointer
+	border-th-primary-100
+	text-th-primary-100 hover:bg-opacity-70 cursor-pointer
 }
 .card {
   @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-300 shadow-md;
@@ -162,8 +195,8 @@
 }
 
 .btn-primary {
-  @apply btn-base border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary 
-	disabled:text-th-text-secondary disabled:cursor-default;
+  @apply btn-base border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary-100 disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary-100 
+	disabled:text-th-text-secondary-100 disabled:cursor-default;
 }
 
 .btn-secondary {
@@ -171,20 +204,20 @@
 }
 
 .btn-tertiary {
-	@apply mb-4 right-0 bg-th-secondary-300 text-th-text-secondary font-bold rounded-xl cursor-pointer hover:opacity-70
+	@apply mb-4 right-0 bg-th-primary-100 text-th-text-secondary-100 font-bold rounded-xl cursor-pointer hover:opacity-70
 }
 
 .btn-quaternary {
-  @apply btn-base text-th-text-secondary bg-th-secondary-400 hover:bg-th-secondary-200  border border-th-secondary-400 disabled:cursor-auto hover:border-th-secondary-300 hover:text-th-text-primary disabled:opacity-50 disabled:hover:bg-th-secondary-400  disabled:hover:border-th-secondary-400 disabled:hover:text-th-text-secondary;
+  @apply btn-base text-th-text-secondary-100 bg-th-secondary-400 hover:bg-th-secondary-200  border border-th-secondary-400 disabled:cursor-auto hover:border-th-secondary-300 hover:text-th-text-primary disabled:opacity-50 disabled:hover:bg-th-secondary-400  disabled:hover:border-th-secondary-400 disabled:hover:text-th-text-secondary-100;
 }
 
 .btn-red {
-  @apply btn-base text-th-invalid border-th-invalid border  hover:bg-th-invalid hover:text-th-text-secondary;
+  @apply btn-base text-th-invalid border-th-invalid border  hover:bg-th-invalid hover:text-th-text-secondary-100;
 }
 
 .step-link {
-  @apply py-3 border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 rounded-3xl cursor-pointer text-center hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary 
-	disabled:text-th-text-secondary disabled:cursor-default;
+  @apply py-3 border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 rounded-3xl cursor-pointer text-center hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary-100 disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary-100 
+	disabled:text-th-text-secondary-100 disabled:cursor-default;
 }
 
 .first-check path:nth-child(1),
@@ -226,4 +259,35 @@
 
 .logo:hover path:last-of-type {
   fill: #023047; 
+}
+
+.half-circle {
+  border-radius: 50%; 
+  position: relative; 
+  overflow: hidden; 
+}
+
+.half-circle::before {
+  content: "";
+  position: absolute; 
+  top: 0; 
+  right: 0;
+  width: 50%;
+  height: 100%; 
+}
+
+.progress-custom-colors path:nth-child(1) {
+@apply  stroke-th-primary-100
+}
+
+.progress-custom-colors path:nth-child(2) {
+@apply  stroke-th-primary-200
+}
+
+.progress-custom-colors path:nth-child(3) {
+@apply  stroke-th-primary-400
+}
+
+.not-found path:last-child {
+@apply  fill-th-primary-300
 }
