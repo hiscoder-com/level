@@ -23,7 +23,7 @@ function AvatarSelector({ id }) {
   const [isDragOver, setIsDragOver] = useState(false)
   const [user, { mutate }] = useUser(id)
 
-  const updateAvatar = async (userId, avatarUrl) => {
+  const updateAvatar = async (userId, avatarUrl, newAvatar = null) => {
     const pngPattern = new RegExp(`user_${userId}.*\.png$`)
     const svgPattern = new RegExp(`avatar_(0[1-9]|1[0-9]|2[0-4])\.svg$`)
 
@@ -41,13 +41,23 @@ function AvatarSelector({ id }) {
       toast.success(t('SaveSuccess'))
       setUserAvatar({ id, url: avatarUrl })
 
-      setAvatars((prevAvatars) =>
-        prevAvatars.map((avatar) =>
-          avatar.url === avatarUrl
-            ? { ...avatar, selected: true }
-            : { ...avatar, selected: false }
-        )
-      )
+      setAvatars((prevAvatars) => {
+        const updatedAvatars = prevAvatars.map((avatar) => ({
+          ...avatar,
+          selected: avatar.url === avatarUrl,
+        }))
+
+        if (newAvatar) {
+          setAvatars((prevAvatars) => {
+            const filteredAvatars = prevAvatars.filter(
+              (avatar) => !avatar.name.includes(`_${userId}_`)
+            )
+            return [newAvatar, ...filteredAvatars]
+          })
+        }
+
+        return updatedAvatars
+      })
     } catch (error) {
       toast.error(t('SaveFailed'))
       console.error('Error updating user avatar:', error)
@@ -56,27 +66,23 @@ function AvatarSelector({ id }) {
 
   useEffect(() => {
     const fetchAvatarData = async () => {
-      if (!id) {
+      if (!id || !user) {
         return
       }
 
       try {
         setIsLoading(true)
         const response = await axios.get(`/api/users/avatars?id=${id}`)
-        let currentAvatarUrl
 
         if (response.status !== 200) {
           throw new Error('Failed to fetch avatars')
         }
 
-        currentAvatarUrl = user?.avatar_url || null
-
         const avatarsData = response.data.data.map((avatar) => ({
           ...avatar,
-          selected: currentAvatarUrl === avatar.url,
+          selected: user?.avatar_url === avatar.url,
         }))
 
-        setUserAvatar({ id, url: currentAvatarUrl })
         setAvatars(avatarsData)
       } catch (error) {
         console.error('Error fetching avatars:', error)
@@ -85,9 +91,8 @@ function AvatarSelector({ id }) {
       }
     }
 
-    fetchAvatarData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAvatar.url, id, userAvatar.id])
+    !avatars.length && fetchAvatarData()
+  }, [id, user])
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024
   const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml']
@@ -152,14 +157,12 @@ function AvatarSelector({ id }) {
       if (response.status === 200) {
         mutate()
         toast.success(t('AvatarResetSuccess'))
-
         setUserAvatar({ id: userId, url: null })
 
-        setAvatars(
-          avatars.map((avatar) => ({
-            ...avatar,
-            selected: false,
-          }))
+        setAvatars((avatars) =>
+          user.avatar_url.includes(`_${userId}_`)
+            ? avatars.filter((avatar) => avatar.url !== user.avatar_url)
+            : avatars.map((avatar) => ({ ...avatar, selected: false }))
         )
       } else {
         toast.error(t('AvatarResetFailed'))
@@ -233,7 +236,7 @@ function AvatarSelector({ id }) {
                   {avatars?.map((avatar, index) => (
                     <div
                       key={index}
-                      className={`relative border-4 rounded-full overflow-hidden shadow-lg group ${
+                      className={`relative border-4 rounded-full overflow-hidden shadow-lg cursor-pointer group ${
                         avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
                       }`}
                       onClick={() => {
@@ -246,6 +249,7 @@ function AvatarSelector({ id }) {
                         src={avatar.url}
                         alt={avatar.name}
                         className="w-16 h-16 md:w-12 md:h-12 object-cover"
+                        draggable="false"
                       />
                       {avatar.selected && (
                         <div

@@ -43,6 +43,10 @@ export default async function handler(req, res) {
           return avatar.name.includes('avatar') || avatar.name.includes(`_${userId}_`)
         })
 
+        filteredData.sort(
+          (a, b) => b.name.includes(`_${userId}_`) - a.name.includes(`_${userId}_`)
+        )
+
         return res.status(200).json({ data: filteredData })
       } catch (error) {
         return handleError(error, 'Server error:')

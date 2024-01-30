@@ -8,6 +8,7 @@ import Resize from 'public/minimize_icon.svg'
 function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const canvasRef = useRef(null)
   const parentRef = useRef(null)
+  const rangeSliderRef = useRef(null)
   const [isDragging, setIsDragging] = useState(false)
   const [startDrag, setStartDrag] = useState({ x: 0, y: 0 })
   const [maxCropSize, setMaxCropSize] = useState(300)
@@ -29,6 +30,15 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     setStartDrag({ x: posX, y: posY })
   }
 
+  const isInsideCropArea = (x, y) => {
+    return (
+      x >= cropArea.x &&
+      x <= cropArea.x + cropArea.size &&
+      y >= cropArea.y &&
+      y <= cropArea.y + cropArea.size
+    )
+  }
+
   const getTouchCoords = (touchEvent) => {
     const rect = canvasRef.current.getBoundingClientRect()
     return {
@@ -39,6 +49,8 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
 
   const onTouchStart = (e) => {
     const coords = getTouchCoords(e)
+    const inside = isInsideCropArea(coords.x, coords.y)
+    if (!inside) return
     setStartDrag({ x: coords.x, y: coords.y })
     setIsDragging(true)
   }
@@ -46,30 +58,49 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const onTouchMove = (e) => {
     e.preventDefault()
     const coords = getTouchCoords(e)
+    if (!isDragging || !isInsideCropArea(coords.x, coords.y)) return
     updateCropArea(coords.x, coords.y)
   }
 
   const onMouseDown = (e) => {
+    const inside = isInsideCropArea(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+    if (!inside) return
     setStartDrag({ x: e.nativeEvent.offsetX, y: e.nativeEvent.offsetY })
     setIsDragging(true)
+    canvasRef.current.style.cursor = 'grabbing'
   }
 
   const onMouseMove = (e) => {
+    const inside = isInsideCropArea(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+    canvasRef.current.style.cursor = inside
+      ? isDragging
+        ? 'grabbing'
+        : 'grab'
+      : 'default'
+
+    if (!isDragging || !inside) return
     updateCropArea(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
   }
 
   const onMouseUp = () => {
     setIsDragging(false)
+    if (canvasRef.current) {
+      canvasRef.current.style.cursor = 'grab'
+    }
   }
 
   const onMouseLeave = () => {
     if (isDragging) {
       setIsDragging(false)
+      if (canvasRef.current) {
+        canvasRef.current.style.cursor = 'grab'
+      }
     }
   }
 
   const onCropSizeChange = (e) => {
     const newSize = parseInt(e.target.value, 10)
+
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -114,8 +145,14 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     try {
       const response = await axios.post('/api/users/avatar_upload', formData)
       if (response.status === 200) {
-        const { url } = response.data
-        updateAvatar(id, url)
+        const { url, fileName } = response.data
+        const newAvatar = {
+          name: fileName,
+          selected: true,
+          url,
+        }
+
+        updateAvatar(id, url, newAvatar)
         setSelectedFile(null)
       } else {
         toast.error(t('UploadFailed'))
@@ -133,7 +170,6 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     if (canvas && parent && selectedFile) {
       const ctx = canvas.getContext('2d')
       const newImage = new Image()
-      newImage.src = URL.createObjectURL(selectedFile)
 
       newImage.onload = () => {
         let { width, height } = newImage
@@ -157,6 +193,12 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         drawShading(ctx, canvas.width, canvas.height, cropArea)
         drawCropArea(ctx, cropArea)
       }
+      newImage.onerror = () => {
+        console.error('Error loading image.')
+        toast.error(t('ImageLoadFailed'))
+      }
+
+      newImage.src = URL.createObjectURL(selectedFile)
     }
   }, [cropArea, selectedFile])
 
@@ -182,19 +224,24 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   }
 
   useEffect(() => {
-    const rangeSlider = document.getElementById('rangeSlider')
     const updateSliderTrack = () => {
-      const percentage =
-        ((rangeSlider.value - rangeSlider.min) / (rangeSlider.max - rangeSlider.min)) *
-        100
-      rangeSlider.style.setProperty('--slider-pos', `${percentage}%`)
+      if (rangeSliderRef.current) {
+        let percentage =
+          ((rangeSliderRef.current.value - rangeSliderRef.current.min) /
+            (rangeSliderRef.current.max - rangeSliderRef.current.min)) *
+          100
+        percentage = Math.max(5, percentage)
+        rangeSliderRef.current.style.setProperty('--slider-pos', `${percentage}%`)
+      }
     }
 
-    rangeSlider.addEventListener('input', updateSliderTrack)
+    rangeSliderRef.current.addEventListener('input', updateSliderTrack)
     updateSliderTrack()
 
     return () => {
-      rangeSlider.removeEventListener('input', updateSliderTrack)
+      if (rangeSliderRef.current) {
+        rangeSliderRef.current.removeEventListener('input', updateSliderTrack)
+      }
     }
   }, [maxCropSize])
 
@@ -215,7 +262,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         <div className="flex items-center gap-3">
           <Resize className="w-6 h-6 stroke-th-text-primary" />
           <input
-            id="rangeSlider"
+            ref={rangeSliderRef}
             type="range"
             min="65"
             max={maxCropSize}

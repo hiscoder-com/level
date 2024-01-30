@@ -17,7 +17,13 @@ const defaultColor = [
   'fill-th-divide-verse9',
 ]
 
-function TranslatorImage({ item, size, clickable, showModerator = false }) {
+function TranslatorImage({
+  item,
+  size,
+  clickable,
+  showModerator = false,
+  isPointerCursor = false,
+}) {
   const [userAvatarUrl, setUserAvatarUrl] = useState(item?.users?.avatar_url || null)
   const userAvatar = useRecoilValue(userAvatarState)
   const {
@@ -36,6 +42,12 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
       : setUserAvatarUrl(item?.users?.avatar_url || null)
   }, [item.users?.id, item.users?.avatar_url, userAvatar])
 
+  const cursorStyle = isPointerCursor
+    ? 'cursor-pointer'
+    : canClick
+    ? 'cursor-pointer'
+    : 'cursor-default'
+
   return (
     <div
       title={`${item?.users ? `${item.users?.login}` : ''}`}
@@ -44,7 +56,7 @@ function TranslatorImage({ item, size, clickable, showModerator = false }) {
           push(`/translate/${project}/${book}/${chapter}/${step}/${item?.users?.login}`)
         }
       }}
-      className={`relative ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
+      className={`relative ${cursorStyle} ${
         showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
       } rounded-full select-none`}
     >

@@ -79,8 +79,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                     className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
                   >
-                    <TranslatorImage item={{ users: user }} />
-                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center">
+                    <TranslatorImage item={{ users: user }} isPointerCursor="true" />
+                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center cursor-pointer">
                       <Camera className="w-4 text-white" />
                     </div>
                   </div>

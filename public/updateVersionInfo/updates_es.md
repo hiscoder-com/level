@@ -1,3 +1,9 @@
+# Versión 0.13.0
+## Fecha: 01/30/2024
+
+### **Añadido:**
+- Agregar avatar o foto de traductores
+
 # Versión 0.11.0
 ## Fecha: 12/20/2023
 

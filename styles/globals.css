@@ -75,6 +75,7 @@
     background: var(--slider-track-background);
     border-radius: 10px;
     border: 1px solid var(--slider-border-color);
+    cursor: pointer;
   }
 
   input[type="range"]::-webkit-slider-runnable-track {
