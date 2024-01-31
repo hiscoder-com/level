@@ -434,6 +434,7 @@ function ChapterVersesPage() {
                 project={project}
                 mutateChapter={mutateChapter}
                 mutateChapters={mutateChapters}
+                setIsChapterStarted={setIsChapterStarted}
               />
             </div>
           </div>
@@ -531,6 +532,7 @@ function ChapterVersesPage() {
                           project={project}
                           mutateChapter={mutateChapter}
                           mutateChapters={mutateChapters}
+                          setIsChapterStarted={setIsChapterStarted}
                         />
                       </div>
                     </Menu.Item>
@@ -751,6 +753,7 @@ function ManageChapterButtons({
   project,
   mutateChapter,
   mutateChapters,
+  setIsChapterStarted,
 }) {
   const { t } = useTranslation(['common', 'chapters'])
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
