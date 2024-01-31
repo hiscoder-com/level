@@ -85,8 +85,12 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
     updateCropArea(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
   }
 
-  const onMouseUp = () => {
+  const onMouseUp = (e) => {
     setIsDragging(false)
+    if (canvasRef.current) {
+      const inside = isInsideCropArea(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
+      canvasRef.current.style.cursor = inside ? 'grab' : 'default'
+    }
   }
 
   const onMouseLeave = () => {
