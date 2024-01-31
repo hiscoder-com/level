@@ -79,6 +79,9 @@
     DROP FUNCTION IF EXISTS PUBLIC.get_books_not_null_level_checks;
     DROP FUNCTION IF EXISTS PUBLIC.find_books_with_chapters_and_verses;
     DROP FUNCTION IF EXISTS PUBLIC.get_words_page;
+    DROP FUNCTION IF EXISTS PUBLIC.chapter_assign;
+    DROP FUNCTION IF EXISTS PUBLIC.save_verses_if_null;
+
 
   -- END DROP FUNCTION
 
@@ -111,6 +114,96 @@
 -- END CREATE CUSTOM TYPE
 
 -- CREATE FUNCTION
+
+CREATE FUNCTION PUBLIC.get_whole_chapter(project_code TEXT, chapter_num INT2, book_code PUBLIC.book_code) RETURNS TABLE(verse_id BIGINT, num INT2, verse TEXT, translator TEXT)
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE
+      verses_list RECORD;
+      cur_chapter_id BIGINT;
+      cur_project_id BIGINT;
+    BEGIN
+
+      SELECT projects.id INTO cur_project_id
+      FROM PUBLIC.projects
+      WHERE projects.code = get_whole_chapter.project_code;
+
+      -- find out the project_id
+      IF cur_project_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- user must be assigned to this project
+      IF authorize(auth.uid(), cur_project_id) IN ('user') THEN
+        RETURN;
+      END IF;
+
+      SELECT chapters.id INTO cur_chapter_id
+      FROM PUBLIC.chapters
+      WHERE chapters.num = get_whole_chapter.chapter_num AND chapters.project_id = cur_project_id AND chapters.book_id = (SELECT id FROM PUBLIC.books WHERE books.code = get_whole_chapter.book_code AND books.project_id = cur_project_id);
+
+      -- find out the chapter id
+      IF cur_chapter_id IS NULL THEN
+        RETURN;
+      END IF;
+
+      -- return the verse id, number, and text from a specific chapter
+      RETURN query SELECT verses.id AS verse_id, verses.num, verses.text AS verse, users.login AS translator
+      FROM public.verses LEFT OUTER JOIN public.project_translators ON (verses.project_translator_id = project_translators.id) LEFT OUTER JOIN public.users ON (project_translators.user_id = users.id)
+      WHERE verses.project_id = cur_project_id
+        AND verses.chapter_id = cur_chapter_id
+        AND verses.num < '201'
+      ORDER BY verses.num;
+
+    END;
+  $$;
+  
+--save verses if it have at least 1 null value
+CREATE FUNCTION PUBLIC.save_verses_if_null(verses JSON) RETURNS BOOLEAN
+    LANGUAGE plpgsql SECURITY DEFINER AS $$
+    DECLARE
+    new_verses RECORD;
+    current_verse RECORD;
+    BEGIN 
+      
+      IF authorize(auth.uid(), current_verse.project_id) IN ('user') THEN RETURN FALSE;
+      END IF;
+          
+      FOR new_verses IN SELECT * FROM json_each_text(save_verses_if_null.verses)
+      LOOP
+        UPDATE
+          PUBLIC.verses
+        SET "text" = new_verses.value::TEXT
+        WHERE
+          verses.id = new_verses.key::BIGINT AND "text" IS NULL;
+      END LOOP;
+      RETURN true;
+    END;
+  $$;
+
+-- assign read-only mode for translator in specific chapter
+CREATE FUNCTION PUBLIC.chapter_assign(chapter INT, translators BIGINT[], project_id BIGINT) RETURNS BOOLEAN
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+    verse_row RECORD;
+    num_verse INT;
+    x INT;
+    
+  BEGIN
+    IF authorize(auth.uid(), chapter_assign.project_id) NOT IN ('admin', 'coordinator') THEN
+      RETURN FALSE;
+    END IF; 
+      UPDATE PUBLIC.verses 
+      SET project_translator_id = NULL WHERE verses.chapter_id = chapter AND verses.num >200;
+
+    num_verse = 201;
+    FOREACH x IN ARRAY translators LOOP
+      UPDATE PUBLIC.verses 
+      SET project_translator_id = x WHERE chapter_id = chapter AND num = num_verse;
+      num_verse = num_verse + 1;
+    END LOOP;
+    RETURN TRUE;
+  END;
+$$;
 
 -- return words from pages dict
 CREATE FUNCTION get_words_page(
@@ -250,8 +343,6 @@ CREATE FUNCTION get_books_not_null_level_checks(project_code text)
   END;
 $$;
 
-
-
 -- getting all books with verses that are started and non-zero translation texts
 CREATE FUNCTION find_books_with_chapters_and_verses(project_code text)
   RETURNS TABLE (book_code public.book_code, chapter_num smallint, verse_num smallint, verse_text text)  
@@ -288,7 +379,7 @@ CREATE FUNCTION find_books_with_chapters_and_verses(project_code text)
           AND v.text IS NOT NULL
           AND p.code = project_code;
   END;
-$$;
+  $$;
 
 CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -360,54 +451,58 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
 
   -- create verses
   CREATE FUNCTION PUBLIC.create_verses(chapter_id BIGINT) RETURNS BOOLEAN
-    LANGUAGE plpgsql SECURITY DEFINER AS $$
+  LANGUAGE plpgsql SECURITY DEFINER AS $$
+  DECLARE
+    chapter RECORD;
+    start_verse int;
+    method_type text;
+  BEGIN
+    -- 1. Get the number of verses
+    SELECT  chapters.id AS id,
+            chapters.verses AS verses,
+            chapters.project_id AS project_id,
+            steps.id AS step_id
+    FROM PUBLIC.chapters
+    JOIN PUBLIC.steps ON (steps.project_id = chapters.project_id)
+    WHERE chapters.id = create_verses.chapter_id
+    ORDER BY steps.sorting ASC
+    LIMIT 1
+    INTO chapter;
 
-    DECLARE
-      chapter RECORD;
-      start_verse int;
-      method_type text;
-    BEGIN
-      -- 1. Get the number of verses
-      SELECT  chapters.id AS id,
-              chapters.verses AS verses,
-              chapters.project_id AS project_id,
-              steps.id AS step_id
-        FROM PUBLIC.chapters
-          JOIN PUBLIC.steps ON (steps.project_id = chapters.project_id)
-        WHERE chapters.id = create_verses.chapter_id
-        ORDER BY steps.sorting ASC
-        LIMIT 1
-        INTO chapter;
-
-      IF authorize(auth.uid(), chapter.project_id) NOT IN ('admin', 'coordinator')
-      THEN
-        RETURN FALSE;
-      END IF;
-      method_type = (SELECT type FROM projects WHERE id = chapter.project_id);
-      IF method_type = 'obs'
-      THEN
-        start_verse = 0;
-      ELSE
-        start_verse = 1;
-      END IF;
-      FOR i IN start_verse..chapter.verses LOOP
-        INSERT INTO
-          PUBLIC.verses (num, chapter_id, current_step, project_id)
-        VALUES
-          (i , chapter.id, chapter.step_id, chapter.project_id);
-      END LOOP;
-      IF method_type = 'obs'
-      THEN
-       INSERT INTO
-          PUBLIC.verses (num, chapter_id, current_step, project_id)
-        VALUES
-          (200 , chapter.id, chapter.step_id, chapter.project_id);
-      ELSE
-        RETURN true;
-      END IF;
+    IF authorize(auth.uid(), chapter.project_id) NOT IN ('admin', 'coordinator')
+    THEN
+      RETURN FALSE;
+    END IF;
+    method_type = (SELECT type FROM projects WHERE id = chapter.project_id);
+    IF method_type = 'obs'
+    THEN
+      start_verse = 0;
+    ELSE
+      start_verse = 1;
+    END IF;
+    FOR i IN start_verse..chapter.verses LOOP
+      INSERT INTO
+        PUBLIC.verses (num, chapter_id, current_step, project_id)
+      VALUES
+        (i , chapter.id, chapter.step_id, chapter.project_id);
+    END LOOP;
+    FOR i IN 201..220 LOOP
+      INSERT INTO
+        PUBLIC.verses (num, chapter_id, current_step, project_id)
+      VALUES
+        (i , chapter.id, chapter.step_id, chapter.project_id);
+    END LOOP;
+    IF method_type = 'obs'
+    THEN
+      INSERT INTO
+        PUBLIC.verses (num, chapter_id, current_step, project_id)
+      VALUES
+        (200 , chapter.id, chapter.step_id, chapter.project_id);
+    ELSE
       RETURN true;
-
-    END;
+    END IF;
+    RETURN true;      
+  END;
   $$;
 
   -- create update_project_basic
@@ -575,7 +670,8 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
       agreement BOOLEAN NOT NULL DEFAULT FALSE,
       confession BOOLEAN NOT NULL DEFAULT FALSE,
       is_admin BOOLEAN NOT NULL DEFAULT FALSE,
-      blocked TIMESTAMP DEFAULT NULL
+      blocked TIMESTAMP DEFAULT NULL,
+      avatar_url VARCHAR(255) DEFAULT NULL
     );
 
     ALTER TABLE
@@ -1306,7 +1402,7 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
       PUBLIC.methods;
 
     INSERT INTO
-      PUBLIC.methods (title, resources, steps, "type")
+      PUBLIC.methods (title, resources, steps, "type", brief)
     VALUES
       ('CANA Bible crash test', '{"simplified":false, "literal":true, "tnotes":false, "twords":false, "tquestions":false}', '[
   {
@@ -1776,7 +1872,131 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
       }
     ]
   }
-]', 'bible'::project_type),
+]', 'bible'::project_type,'[
+  {
+    "id": 1,
+    "block": [
+      {
+        "answer": "",
+        "question": "Как называется язык?"
+      },
+      {
+        "answer": "",
+        "question": "Какое межд.сокращение для языка?"
+      },
+      {
+        "answer": "",
+        "question": "Где распространён?"
+      },
+      {
+        "answer": "",
+        "question": "Почему выбран именно этот язык или диалект?"
+      },
+      {
+        "answer": "",
+        "question": "Какой алфавит используется в данном языке?"
+      }
+    ],
+    "title": "О языке",
+    "resume": ""
+  },
+  {
+    "id": 2,
+    "block": [
+      {
+        "answer": "",
+        "question": "Почему нужен этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Какие переводы уже есть на этом языке?"
+      },
+      {
+        "answer": "",
+        "question": "Какие диалекты или другие языки могли бы пользоваться этим переводом?"
+      },
+      {
+        "answer": "",
+        "question": "Как вы думаете могут ли возникнуть трудности с другими командами, уже работающими над переводом библейского контента на этот язык?"
+      }
+    ],
+    "title": "О необходимости перевода",
+    "resume": ""
+  },
+  {
+    "id": 3,
+    "block": [
+      {
+        "answer": "",
+        "question": "кто будет пользоваться переводом?"
+      },
+      {
+        "answer": "",
+        "question": "На сколько человек в данной народности рассчитан этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "какие языки используют постоянно эти люди, кроме своего родного языка?"
+      },
+      {
+        "answer": "",
+        "question": "В этой народности больше мужчин/женщин, пожилых/молодых, грамотных/неграмотных?"
+      }
+    ],
+    "title": "О целевой аудитории перевода",
+    "resume": ""
+  },
+  {
+    "id": 4,
+    "block": [
+      {
+        "answer": "",
+        "question": "Какой будет тип перевода, смысловой или подстрочный (дословный, буквальный)?"
+      },
+      {
+        "answer": "",
+        "question": "Какой будет стиль языка у перевода?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет распространяться перевод?"
+      }
+    ],
+    "title": "О стиле перевода",
+    "resume": ""
+  },
+  {
+    "id": 5,
+    "block": [
+      {
+        "answer": "",
+        "question": "Кто инициаторы перевода (кто проявил интерес к тому, чтобы начать работу над переводом)?"
+      },
+      {
+        "answer": "",
+        "question": "Кто будет работать над переводом?"
+      }
+    ],
+    "title": "О команде",
+    "resume": ""
+  },
+  {
+    "id": 6,
+    "block": [
+      {
+        "answer": "",
+        "question": "О будет оценивать перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет поддерживаться качество перевода?"
+      }
+    ],
+    "title": "О качестве перевода",
+    "resume": ""
+  }
+]'),
+
       ('CANA OBS', '{"obs":true, "tnotes":false, "twords":false, "tquestions":false}', '[
       {
         "title": "1 ШАГ - САМОСТОЯТЕЛЬНОЕ ИЗУЧЕНИЕ",
@@ -2115,7 +2335,130 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
           }
         ]
       }
-    ]', 'obs'::project_type),('CANA Bible','{"simplified":false, "literal":true,"reference":false, "tnotes":false, "twords":false, "tquestions":false}','[
+    ]', 'obs'::project_type,'[
+  {
+    "id": 1,
+    "block": [
+      {
+        "answer": "",
+        "question": "Как называется язык?"
+      },
+      {
+        "answer": "",
+        "question": "Какое межд.сокращение для языка?"
+      },
+      {
+        "answer": "",
+        "question": "Где распространён?"
+      },
+      {
+        "answer": "",
+        "question": "Почему выбран именно этот язык или диалект?"
+      },
+      {
+        "answer": "",
+        "question": "Какой алфавит используется в данном языке?"
+      }
+    ],
+    "title": "О языке",
+    "resume": ""
+  },
+  {
+    "id": 2,
+    "block": [
+      {
+        "answer": "",
+        "question": "Почему нужен этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Какие переводы уже есть на этом языке?"
+      },
+      {
+        "answer": "",
+        "question": "Какие диалекты или другие языки могли бы пользоваться этим переводом?"
+      },
+      {
+        "answer": "",
+        "question": "Как вы думаете могут ли возникнуть трудности с другими командами, уже работающими над переводом библейского контента на этот язык?"
+      }
+    ],
+    "title": "О необходимости перевода",
+    "resume": ""
+  },
+  {
+    "id": 3,
+    "block": [
+      {
+        "answer": "",
+        "question": "кто будет пользоваться переводом?"
+      },
+      {
+        "answer": "",
+        "question": "На сколько человек в данной народности рассчитан этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "какие языки используют постоянно эти люди, кроме своего родного языка?"
+      },
+      {
+        "answer": "",
+        "question": "В этой народности больше мужчин/женщин, пожилых/молодых, грамотных/неграмотных?"
+      }
+    ],
+    "title": "О целевой аудитории перевода",
+    "resume": ""
+  },
+  {
+    "id": 4,
+    "block": [
+      {
+        "answer": "",
+        "question": "Какой будет тип перевода, смысловой или подстрочный (дословный, буквальный)?"
+      },
+      {
+        "answer": "",
+        "question": "Какой будет стиль языка у перевода?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет распространяться перевод?"
+      }
+    ],
+    "title": "О стиле перевода",
+    "resume": ""
+  },
+  {
+    "id": 5,
+    "block": [
+      {
+        "answer": "",
+        "question": "Кто инициаторы перевода (кто проявил интерес к тому, чтобы начать работу над переводом)?"
+      },
+      {
+        "answer": "",
+        "question": "Кто будет работать над переводом?"
+      }
+    ],
+    "title": "О команде",
+    "resume": ""
+  },
+  {
+    "id": 6,
+    "block": [
+      {
+        "answer": "",
+        "question": "О будет оценивать перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет поддерживаться качество перевода?"
+      }
+    ],
+    "title": "О качестве перевода",
+    "resume": ""
+  }
+]'),('CANA Bible','{"simplified":false, "literal":true,"reference":false, "tnotes":false, "twords":false, "tquestions":false}','[
   {
     "title": "1 ШАГ - ОБЗОР КНИГИ",
     "description": "Это индивидуальная работа и выполняется до встречи с другими участниками команды КРАШ-ТЕСТА.\n\n\n\nЦЕЛЬ этого шага для КОРРЕКТОРА МАТЕРИАЛОВ: убедиться, что материалы букпэкеджа подготовлены корректно и не содержат ошибок или каких-либо трудностей для использования переводчиками.\n\nЦЕЛЬ этого шага для ТЕСТОВОГО ПЕРЕВОДЧИКА: понять общий смысл и цель книги, а также контекст (обстановку, время и место, любые факты, помогающие более точно перевести текст) и подготовиться к командному обсуждению текста перед тем, как начать перевод.\n\n\n\n\n\nОБЩИЙ ОБЗОР К КНИГЕ\n\nПрочитайте общий обзор к книге. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в общем обзоре к книге.\n\nЭто задание выполняется только при работе над первой главой. При работе над другими главами книги возвращаться к общему обзору книги не нужно. \n\n\n\nОБЗОР К ГЛАВЕ\n\nПрочитайте обзор к главе. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в обзоре к главе.\n\n\n\nЧТЕНИЕ ДОСЛОВНОЙ БИБЛИИ РОБ-Д (RLOB)\n\nПрочитайте ГЛАВУ ДОСЛОВНОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nЧТЕНИЕ СМЫСЛОВОЙ БИБЛИИ РОБ-С (RSOB)\n\nПрочитайте ГЛАВУ СМЫСЛОВОЙ БИБЛИИ. Запишите для обсуждения командой предложения, которые могут вызвать трудности при переводе или которые требуют особого внимания от переводчиков. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «СЛОВА»\n\nПрочитайте СЛОВА к главе. Необходимо прочитать статьи к каждому слову. Отметьте для обсуждения командой статьи к словам, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.\n\n\n\nОБЗОР ИНСТРУМЕНТА «ЗАМЕТКИ»\n\nПрочитайте ЗАМЕТКИ к главе. Необходимо прочитать ЗАМЕТКИ к каждому отрывку. Отметьте для обсуждения командой ЗАМЕТКИ, которые могут быть полезными для перевода Писания. Также отметьте найденные ошибки или неточности в этом инструменте.",
@@ -2583,7 +2926,451 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
       }
     ]
   }
-]','bible'::project_type);
+]','bible'::project_type,'[
+  {
+    "id": 1,
+    "block": [
+      {
+        "answer": "",
+        "question": "Как называется язык?"
+      },
+      {
+        "answer": "",
+        "question": "Какое межд.сокращение для языка?"
+      },
+      {
+        "answer": "",
+        "question": "Где распространён?"
+      },
+      {
+        "answer": "",
+        "question": "Почему выбран именно этот язык или диалект?"
+      },
+      {
+        "answer": "",
+        "question": "Какой алфавит используется в данном языке?"
+      }
+    ],
+    "title": "О языке",
+    "resume": ""
+  },
+  {
+    "id": 2,
+    "block": [
+      {
+        "answer": "",
+        "question": "Почему нужен этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Какие переводы уже есть на этом языке?"
+      },
+      {
+        "answer": "",
+        "question": "Какие диалекты или другие языки могли бы пользоваться этим переводом?"
+      },
+      {
+        "answer": "",
+        "question": "Как вы думаете могут ли возникнуть трудности с другими командами, уже работающими над переводом библейского контента на этот язык?"
+      }
+    ],
+    "title": "О необходимости перевода",
+    "resume": ""
+  },
+  {
+    "id": 3,
+    "block": [
+      {
+        "answer": "",
+        "question": "кто будет пользоваться переводом?"
+      },
+      {
+        "answer": "",
+        "question": "На сколько человек в данной народности рассчитан этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "какие языки используют постоянно эти люди, кроме своего родного языка?"
+      },
+      {
+        "answer": "",
+        "question": "В этой народности больше мужчин/женщин, пожилых/молодых, грамотных/неграмотных?"
+      }
+    ],
+    "title": "О целевой аудитории перевода",
+    "resume": ""
+  },
+  {
+    "id": 4,
+    "block": [
+      {
+        "answer": "",
+        "question": "Какой будет тип перевода, смысловой или подстрочный (дословный, буквальный)?"
+      },
+      {
+        "answer": "",
+        "question": "Какой будет стиль языка у перевода?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет распространяться перевод?"
+      }
+    ],
+    "title": "О стиле перевода",
+    "resume": ""
+  },
+  {
+    "id": 5,
+    "block": [
+      {
+        "answer": "",
+        "question": "Кто инициаторы перевода (кто проявил интерес к тому, чтобы начать работу над переводом)?"
+      },
+      {
+        "answer": "",
+        "question": "Кто будет работать над переводом?"
+      }
+    ],
+    "title": "О команде",
+    "resume": ""
+  },
+  {
+    "id": 6,
+    "block": [
+      {
+        "answer": "",
+        "question": "О будет оценивать перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет поддерживаться качество перевода?"
+      }
+    ],
+    "title": "О качестве перевода",
+    "resume": ""
+  }
+]'),  ('RuGL','{"simplified":true, "literal":false, "tnotes":false, "twords":false}','[
+  {
+    "time": 60,
+    "intro": "Описание шага",
+    "title": "1 ШАГ",
+    "config": [
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "simplified",
+            "config": {}
+          }
+        ]
+      },
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "literal",
+            "config": {}
+          },
+          {
+            "name": "twords",
+            "config": {}
+          },
+          {
+            "name": "tnotes",
+            "config": {
+              "quote_resource": "https://git.door43.org/ru_gl/ru_rlob"
+              }
+          },
+          {
+            "name": "info",
+            "config": {
+              "url": "https://git.door43.org/ru_gl/ru_tn"
+            }
+          }
+        ]
+      },
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "personalNotes",
+            "config": {}
+          },
+          {
+            "name": "teamNotes",
+            "config": {}
+          },
+          {
+            "name": "dictionary",
+            "config": {}
+          }
+        ]
+      }
+    ],
+    "description": "Описание шага",
+    "whole_chapter": true,
+    "count_of_users": 1
+  },
+  {
+    "time": 60,
+    "intro": "Описание шага",
+    "title": "2 ШАГ",
+    "config": [
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "simplified",
+            "config": {}
+          }
+        ]
+      },
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "literal",
+            "config": {}
+          },
+          {
+            "name": "twords",
+            "config": {}
+          },
+          {
+            "name": "tnotes",
+            "config": {
+              "quote_resource": "https://git.door43.org/ru_gl/ru_rlob"
+              }
+          },
+          {
+            "name": "info",
+            "config": {
+              "url": "https://git.door43.org/ru_gl/ru_tn"
+            }
+          }
+        ]
+      },
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "commandTranslate",
+            "config": {
+              "moderatorOnly": true,
+              "getFromResource": true
+            }
+          },
+          {
+            "name": "personalNotes",
+            "config": {}
+          },
+          {
+            "name": "teamNotes",
+            "config": {}
+          },
+          {
+            "name": "dictionary",
+            "config": {}
+          }
+        ]
+      }
+    ],
+    "description": "Описание шага",
+    "whole_chapter": true,
+    "count_of_users": 1
+  },
+  {
+    "time": 60,
+    "intro": "Описание шага",
+    "title": "3 ШАГ",
+    "config": [
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "simplified",
+            "config": {}
+          }
+        ]
+      },
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "literal",
+            "config": {}
+          },
+          {
+            "name": "twords",
+            "config": {}
+          },
+          {
+            "name": "tnotes",
+            "config": {
+              "quote_resource": "https://git.door43.org/ru_gl/ru_rlob"
+              }
+          },
+          {
+            "name": "info",
+            "config": {
+              "url": "https://git.door43.org/ru_gl/ru_tn"
+            }
+          }
+        ]
+      },
+      {
+        "size": 2,
+        "tools": [
+          {
+            "name": "commandTranslate",
+            "config": {
+              "moderatorOnly": true
+            }
+          },
+          {
+            "name": "personalNotes",
+            "config": {}
+          },
+          {
+            "name": "teamNotes",
+            "config": {}
+          },
+          {
+            "name": "dictionary",
+            "config": {}
+          }
+        ]
+      }
+    ],
+    "description": "Описание шага",
+    "whole_chapter": true,
+    "count_of_users": 1
+  }
+]','bible'::project_type,'[
+  {
+    "id": 1,
+    "block": [
+      {
+        "answer": "",
+        "question": "Как называется язык?"
+      },
+      {
+        "answer": "",
+        "question": "Какое межд.сокращение для языка?"
+      },
+      {
+        "answer": "",
+        "question": "Где распространён?"
+      },
+      {
+        "answer": "",
+        "question": "Почему выбран именно этот язык или диалект?"
+      },
+      {
+        "answer": "",
+        "question": "Какой алфавит используется в данном языке?"
+      }
+    ],
+    "title": "О языке",
+    "resume": ""
+  },
+  {
+    "id": 2,
+    "block": [
+      {
+        "answer": "",
+        "question": "Почему нужен этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Какие переводы уже есть на этом языке?"
+      },
+      {
+        "answer": "",
+        "question": "Какие диалекты или другие языки могли бы пользоваться этим переводом?"
+      },
+      {
+        "answer": "",
+        "question": "Как вы думаете могут ли возникнуть трудности с другими командами, уже работающими над переводом библейского контента на этот язык?"
+      }
+    ],
+    "title": "О необходимости перевода",
+    "resume": ""
+  },
+  {
+    "id": 3,
+    "block": [
+      {
+        "answer": "",
+        "question": "кто будет пользоваться переводом?"
+      },
+      {
+        "answer": "",
+        "question": "На сколько человек в данной народности рассчитан этот перевод?"
+      },
+      {
+        "answer": "",
+        "question": "какие языки используют постоянно эти люди, кроме своего родного языка?"
+      },
+      {
+        "answer": "",
+        "question": "В этой народности больше мужчин/женщин, пожилых/молодых, грамотных/неграмотных?"
+      }
+    ],
+    "title": "О целевой аудитории перевода",
+    "resume": ""
+  },
+  {
+    "id": 4,
+    "block": [
+      {
+        "answer": "",
+        "question": "Какой будет тип перевода, смысловой или подстрочный (дословный, буквальный)?"
+      },
+      {
+        "answer": "",
+        "question": "Какой будет стиль языка у перевода?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет распространяться перевод?"
+      }
+    ],
+    "title": "О стиле перевода",
+    "resume": ""
+  },
+  {
+    "id": 5,
+    "block": [
+      {
+        "answer": "",
+        "question": "Кто инициаторы перевода (кто проявил интерес к тому, чтобы начать работу над переводом)?"
+      },
+      {
+        "answer": "",
+        "question": "Кто будет работать над переводом?"
+      }
+    ],
+    "title": "О команде",
+    "resume": ""
+  },
+  {
+    "id": 6,
+    "block": [
+      {
+        "answer": "",
+        "question": "О будет оценивать перевод?"
+      },
+      {
+        "answer": "",
+        "question": "Как будет поддерживаться качество перевода?"
+      }
+    ],
+    "title": "О качестве перевода",
+    "resume": ""
+  }
+]');
+
   -- END METHODS
 
   -- ROLE PERMISSIONS
@@ -2653,3 +3440,19 @@ CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
   -- END PROGRESS
 -- END DUMMY DATA
 
+-- INSERT BUCKET IN STORAGE
+  -- insert a bucket in storage to store avatars
+    insert into storage.buckets
+      (id, name, public)
+    values
+      ('avatars', 'avatars', true);
+
+  -- create Policies
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_0" ON storage.objects FOR SELECT TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_1" ON storage.objects FOR INSERT TO public WITH CHECK (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_2" ON storage.objects FOR UPDATE TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+
+    CREATE POLICY "Give users authenticated access to folder 1oj01fe_3" ON storage.objects FOR DELETE TO public USING (bucket_id = 'avatars' AND (storage.foldername(name))[1] = 'private' AND auth.role() = 'authenticated');
+-- END INSERT BUCKET IN STORAGE

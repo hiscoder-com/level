@@ -263,7 +263,6 @@ export function useGetResource({ config, url }) {
     resource: { owner, repo, commit, bookPath },
   } = config
   const params = { owner, repo, commit, bookPath, book, chapter, verses }
-
   const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
   const { isLoading, data, error } = useSWR(
     url && owner && repo && commit && bookPath ? [url, params] : null,
@@ -273,7 +272,6 @@ export function useGetResource({ config, url }) {
       revalidateIfStale: false,
     }
   )
-
   return { isLoading, data, error }
 }
 
@@ -441,7 +439,12 @@ export function useGetBook({ code, book_code }) {
  * @param {string} book_code code of book
  * @returns {array}
  */
-export function useGetChapters({ code, book_code }) {
+export function useGetChapters({
+  code,
+  book_code,
+  revalidateIfStale = false,
+  revalidateOnFocus = false,
+}) {
   const {
     data: chapters,
     mutate,
@@ -451,8 +454,8 @@ export function useGetChapters({ code, book_code }) {
     code && book_code ? [`/api/projects/${code}/books/${book_code}/chapters`] : null,
     fetcher,
     {
-      revalidateOnFocus: false,
-      revalidateIfStale: false,
+      revalidateOnFocus,
+      revalidateIfStale,
     }
   )
   return [chapters, { mutate, error, isLoading }]

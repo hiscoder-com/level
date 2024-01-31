@@ -3,161 +3,245 @@
 @tailwind utilities;
 
 
-:root {  
-	--secondary-10: theme('colors.white');
+
+:root {
+  --secondary-10: theme('colors.white');
   --secondary-100: theme('colors.gray.150');
-	--secondary-200:	theme('colors.gray.250');
-	--secondary-300:	theme('colors.gray.450');
-  --secondary-400: theme('colors.yellow.650');	
-	--text-primary:theme('colors.neutral.800');
-	--text-secondary-100:theme('colors.white');
-	--invalid: theme('colors.red.500');
-	--divide-verse1: theme('colors.stone.400');
-	--divide-verse2: theme('colors.stone.300');
-	--divide-verse3: theme('colors.zinc.300');
-	--divide-verse4: theme('colors.gray.200');
-	--divide-verse5: theme('colors.orange.200');
-	--divide-verse6: theme('colors.slate.400');
-	--divide-verse7: theme('colors.slate.300');
-	--divide-verse8: theme('colors.emerald.400');
-	--divide-verse9: theme('colors.emerald.200');
+  --secondary-200:  theme('colors.gray.250');
+  --secondary-300:  theme('colors.gray.450');
+  --secondary-400: theme('colors.yellow.650');
+  --text-primary:theme('colors.neutral.800');
+  --text-secondary-100:theme('colors.white');
+  --invalid: theme('colors.red.500');
+  --divide-verse1: theme('colors.stone.400');
+  --divide-verse2: theme('colors.stone.300');
+  --divide-verse3: theme('colors.zinc.300');
+  --divide-verse4: theme('colors.gray.200');
+  --divide-verse5: theme('colors.orange.200');
+  --divide-verse6: theme('colors.slate.400');
+  --divide-verse7: theme('colors.slate.300');
+  --divide-verse8: theme('colors.emerald.400');
+  --divide-verse9: theme('colors.emerald.200');
 }
 .default {
-	--primary-100: theme('colors.slate.550');
-	--primary-200:theme('colors.slate.550');
-	--primary-300:theme('colors.slate.650');
-	--primary-400: theme('colors.slate.650');
-	--primary-500: theme('colors.slate.550');
-	--text-secondary-200:theme('colors.white');
+  --primary-100: theme('colors.slate.550');
+  --primary-200:theme('colors.slate.550');
+  --primary-300:theme('colors.slate.650');
+  --primary-400: theme('colors.slate.650');
+  --primary-500: theme('colors.slate.550');
+  --text-secondary-200:theme('colors.white');
 }
 .texttree {
   --primary-100: theme('colors.sky.950');
-	--primary-200:theme('colors.slate.950');
-	--primary-300:theme('colors.black');
-	--primary-400: theme('colors.sky.950');
-	--primary-500: theme('colors.yellow.500');
-  --secondary-400: theme('colors.yellow.500');	
-	--text-secondary-200:theme('colors.sky.950');	
+  --primary-200:theme('colors.slate.950');
+  --primary-300:theme('colors.black');
+  --primary-400: theme('colors.sky.950');
+  --primary-500: theme('colors.yellow.500');
+  --secondary-400: theme('colors.yellow.500');
+  --text-secondary-200:theme('colors.sky.950');
 }
 .uW {
   --primary-100: theme('colors.sky.900');
-	--primary-200:theme('colors.sky.900');
-	--primary-300: theme('colors.sky.950');
-	--primary-400: theme('colors.sky.950');
-	--primary-500: theme('colors.sky.900');
-  --secondary-400: theme('colors.yellow.500');	
-	--text-secondary-200:theme('colors.white');	
+  --primary-200:theme('colors.sky.900');
+  --primary-300: theme('colors.sky.950');
+  --primary-400: theme('colors.sky.950');
+  --primary-500: theme('colors.sky.900');
+  --secondary-400: theme('colors.yellow.500');
+  --text-secondary-200:theme('colors.white');
 }
 .unfoldingWord {
   --primary-100: theme('colors.cyan.600');
-	--primary-200:theme('colors.cyan.600');
-	--primary-300:theme('colors.cyan.800');
-	--primary-400: theme('colors.cyan.800');
-	--primary-500: theme('colors.cyan.600');
-  --secondary-400: theme('colors.yellow.500');	
-	--text-secondary-200:theme('colors.white');	
+  --primary-200:theme('colors.cyan.600');
+  --primary-300:theme('colors.cyan.800');
+  --primary-400: theme('colors.cyan.800');
+  --primary-500: theme('colors.cyan.600');
+  --secondary-400: theme('colors.yellow.500');
+  --text-secondary-200:theme('colors.white');
 }
 
 
 @layer base {
-	html {
-		font-family: "Roboto", system-ui, sans-serif;
-	}
+  html {
+    font-family: "Roboto", system-ui, sans-serif;
+  }
 
-	body {
-		@apply text-th-text-primary
-	}
+  body {
+    @apply text-th-text-primary
+  }
 
-	body.no-scrollbar {
-		scrollbar-width: none !important;
-	}
+  body.no-scrollbar {
+    scrollbar-width: none !important;
+  }
 
-	body.no-scrollbar::-webkit-scrollbar {
-		display: none !important;
-	}
+  body.no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+  }
 
-	* {
-		scrollbar-width: thin;
-		scrollbar-color: var(--scroll) var(--background-primary);
-	}
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scroll) var(--background-primary);
+  }
 
-	*::-webkit-scrollbar {
-		width: 7px;
-	}
+  *::-webkit-scrollbar {
+    width: 7px;
+  }
 
-	*::-webkit-scrollbar-track {
-		background: var(--background-primary);
-		border-radius: 10px;
-	}
+  *::-webkit-scrollbar-track {
+    background: var(--background-primary);
+    border-radius: 10px;
+  }
 
-	*::-webkit-scrollbar-thumb {
-		background-color: var(--scroll);
-		border-radius: 10px
-	}
+  *::-webkit-scrollbar-thumb {
+    background-color: var(--scroll);
+    border-radius: 10px
+  }
+
+  input[type="range"] {
+    --slider-thumb-color: var(--primary-100);
+    --slider-track-color: var(--secondary-400);
+    --slider-track-background: var(--secondary-200);
+    --slider-border-color: var(--secondary-300);
+
+    appearance: none;
+    width: 100%;
+    height: 8px;
+    background: var(--slider-track-background);
+    border-radius: 10px;
+    border: 1px solid var(--slider-border-color);
+    cursor: pointer;
+  }
+
+  input[type="range"]::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, var(--slider-track-color) 0%, var(--slider-track-color) var(--slider-pos), var(--slider-track-background) var(--slider-pos));
+    border-radius: 10px;
+    height: 8px;
+    border: 1px solid var(--secondary-300);
+  }
+
+  input[type="range"]::-moz-range-progress {
+    background: var(--slider-track-color);
+    border-radius: 10px;
+    height: 8px;
+    border: 1px solid var(--secondary-300);
+
+  }
+
+  input[type="range"]::-ms-fill-lower {
+    background: var(--slider-track-color);
+  }
+
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--slider-thumb-color);
+    border-radius: 50%;
+    margin-top: -4px;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  input[type="range"]:hover::-webkit-slider-thumb {
+    opacity: 1;
+  }
+
+  input[type="range"]::-moz-range-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--slider-thumb-color);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  input[type="range"]:hover::-moz-range-thumb {
+    opacity: 1;
+  }
+
+  input[type="range"]::-ms-thumb {
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--slider-thumb-color);
+    border-radius: 50%;
+    margin-top: 0;
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+
+  input[type="range"]:hover::-ms-thumb {
+    opacity: 1;
+  }
+
+  input[type="range"]::-moz-focus-outer {
+    border: 0;
+  }
+
 }
 
 .appbar {
-	@apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-th-primary-100 sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
+  @apply fixed sm:relative top-0 sm:top-auto left-0 sm:left-auto right-0 sm:right-auto bg-th-primary-100 sm:bg-inherit z-[999] sm:z-auto mx-auto flex md:items-center flex-1 flex-col justify-between px-5 py-2 gap-1 max-w-7xl sm:px-5 md:flex-row md:h-16 lg:px-8 xl:px-0 xl:w-11/12 2xl:px-0 2xl:w-4/5 shadow-lg md:shadow-none;
 }
 
 .arrow {
-	@apply px-5 py-5 rounded-full duration-300
-	hover:bg-th-secondary-10
-	active:bg-th-secondary-300
-	disabled:opacity-30
-	disabled:hover:bg-transparent;
+  @apply px-5 py-5 rounded-full duration-300
+  hover:bg-th-secondary-10
+  active:bg-th-secondary-300
+  disabled:opacity-30
+  disabled:hover:bg-transparent;
 }
 
 .f-screen-appbar {
-	min-height: calc(100vh - 11.5rem);
+  min-height: calc(100vh - 11.5rem);
 }
 
 .layout-appbar {
-	@apply f-screen-appbar flex flex-col gap-5 md:gap-7 items-center px-2 md:px-5 pt-5 md:pt-0 font-sans;
+  @apply f-screen-appbar flex flex-col gap-5 md:gap-7 items-center px-2 md:px-5 pt-5 md:pt-0 font-sans;
 }
 
 .markdown-body img {
-	display: inline;
-	vertical-align: inherit;
+  display: inline;
+  vertical-align: inherit;
 }
 
 .markdown-body ol {
-	list-style: decimal;
+  list-style: decimal;
 }
 
 .markdown-body ul {
-	list-style: inherit;
+  list-style: inherit;
 }
 
 .adaptive-card {
-	height: calc(50vh);
+  height: calc(50vh);
 }
 
 @media (min-width: 768px) {
-	.adaptive-card {
-		height: calc(50vh - 110px);
-	}
+  .adaptive-card {
+    height: calc(50vh - 110px);
+  }
 }
 
 @media (min-width: 1024px) {
-	.adaptive-card {
-		height: calc(100vh - 230px);
-	}
+  .adaptive-card {
+    height: calc(100vh - 230px);
+  }
 }
 
 .label {
-	@apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
+  @apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
 }
 
 .inactive {
-	filter: blur(6px) grayscale(1);
-	user-select: none;
-	pointer-events: none;
-	opacity: 0.5;
+  filter: blur(6px) grayscale(1);
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .input-label {
-	@apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-secondary-300 appearance-none focus:outline-none focus:ring-0 focus:border-th-primary-100;
+  @apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-secondary-300 appearance-none focus:outline-none focus:ring-0 focus:border-th-primary-100;
 }
 
 .verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2) {
@@ -168,17 +252,17 @@
 }
 
 .tab {
-	@apply py-2 px-2 text-base border-x border-t  rounded-t-2xl 
+  @apply py-2 px-2 text-base border-x border-t rounded-t-2xl
 }
 .tab-active {
-	@apply tab text-th-text-secondary-100 bg-th-primary-400 border-th-primary-400
-	cursor-default focus:outline-none shadow
+  @apply tab text-th-text-secondary-100 bg-th-primary-400 border-th-primary-400
+  cursor-default focus:outline-none shadow
 }
 
 .tab-inactive {
-	@apply tab bg-th-secondary-10
-	border-th-primary-100
-	text-th-primary-100 hover:bg-opacity-70 cursor-pointer
+  @apply tab bg-th-secondary-10
+  border-th-primary-100
+  text-th-primary-100 hover:bg-opacity-70 cursor-pointer
 }
 .card {
   @apply p-3 sm:py-5 sm:px-8 rounded-2xl border border-th-secondary-300 shadow-md;
@@ -186,7 +270,7 @@
 
 @screen sm {
   .card-md {
-	 @apply p-3 sm:p-5 rounded-2xl border border-th-secondary-300 shadow-md;
+   @apply p-3 sm:p-5 rounded-2xl border border-th-secondary-300 shadow-md;
 }
 }
 
@@ -195,8 +279,9 @@
 }
 
 .btn-primary {
-  @apply btn-base border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary-100 disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary-100 
-	disabled:text-th-text-secondary-100 disabled:cursor-default;
+
+  @apply btn-base border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary-100 disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary-100
+  disabled:text-th-text-secondary-100 disabled:cursor-default;
 }
 
 .btn-secondary {
@@ -204,7 +289,8 @@
 }
 
 .btn-tertiary {
-	@apply mb-4 right-0 bg-th-primary-100 text-th-text-secondary-100 font-bold rounded-xl cursor-pointer hover:opacity-70
+
+  @apply mb-4 right-0 bg-th-primary-100 text-th-text-secondary-100 font-bold rounded-xl cursor-pointer hover:opacity-70
 }
 
 .btn-quaternary {
@@ -216,8 +302,9 @@
 }
 
 .step-link {
-  @apply py-3 border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 rounded-3xl cursor-pointer text-center hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary-100 disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary-100 
-	disabled:text-th-text-secondary-100 disabled:cursor-default;
+
+  @apply py-3 border text-th-text-primary border-th-secondary-300 bg-th-secondary-200 rounded-3xl cursor-pointer text-center hover:bg-th-secondary-400 hover:border-th-secondary-400 hover:text-th-text-secondary-100 disabled:hover:bg-th-secondary-200  disabled:border-th-text-secondary-100
+  disabled:text-th-text-secondary-100 disabled:cursor-default;
 }
 
 .first-check path:nth-child(1),
@@ -242,38 +329,38 @@
 }
 
 .input-base {
-	@apply px-4 py-2 w-full text-sm md:text-base rounded-lg border focus:outline-none;
+  @apply px-4 py-2 w-full text-sm md:text-base rounded-lg border focus:outline-none;
 }
 
 .input-primary {
-	@apply input-base text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
+  @apply input-base text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
 }
 
 .input-invalid {
-	@apply input-base border-th-invalid text-th-invalid;
+  @apply input-base border-th-invalid text-th-invalid;
 }
 
 .logo:hover path:first-of-type {
-  fill: #ffb703; 
+  fill: #ffb703;
 }
 
 .logo:hover path:last-of-type {
-  fill: #023047; 
+  fill: #023047;
 }
 
 .half-circle {
-  border-radius: 50%; 
-  position: relative; 
-  overflow: hidden; 
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
 }
 
 .half-circle::before {
   content: "";
-  position: absolute; 
-  top: 0; 
+  position: absolute;
+  top: 0;
   right: 0;
   width: 50%;
-  height: 100%; 
+  height: 100%;
 }
 
 .progress-custom-colors path:nth-child(1) {
