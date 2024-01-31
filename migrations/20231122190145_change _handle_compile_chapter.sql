@@ -1,4 +1,5 @@
-  DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;
+  DROP TRIGGER IF EXISTS on_public_chapters_update ON PUBLIC.chapters;
+  DROP FUNCTION IF EXISTS PUBLIC.handle_compile_chapter;  
   
   CREATE FUNCTION PUBLIC.handle_compile_chapter() RETURNS TRIGGER
     LANGUAGE plpgsql SECURITY DEFINER AS $$
@@ -12,3 +13,7 @@
       RETURN NEW;
     END;
   $$;
+
+  CREATE TRIGGER on_public_chapters_update BEFORE
+    UPDATE
+      ON PUBLIC.chapters FOR each ROW EXECUTE FUNCTION PUBLIC.handle_compile_chapter();

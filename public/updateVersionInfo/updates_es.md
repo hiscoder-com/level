@@ -1,3 +1,16 @@
+# Versión 0.14.0
+## Fecha: 01/31/2024
+
+### **Añadido:**
+- método de verificación de traducción para el equipo GL- opción en métodos para citas en TN
+- opción en métodos para citas en TN
+- función de distribución rápida de versículos
+- modo de solo lectura para la participación del traductor en la traducción de capítulos
+- seleccionar todo el título de la nota al editar en el diccionario/bloc de notas/notas del equipo
+
+### **Corregido:**
+- error con el desplazamiento cuando hay dos herramientas bíblicas en el espacio de trabajo
+
 # Versión 0.13.0
 ## Fecha: 01/30/2024
 
