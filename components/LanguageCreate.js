@@ -99,16 +99,7 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
               <div className="text-th-invalid">{input.errorMessage}</div>
             </div>
           ))}
-          <CheckBox
-            className={{
-              accent:
-                'bg-th-primary-300 checked:bg-th-secondary-10 checked:border-th-primary-100 checked:before:bg-th-secondary-10 border-th-secondary-300',
-              cursor: 'fill-th-text-primary text-th-text-primary stroke-th-text-primary',
-              wrapper: 'flex-row-reverse justify-between',
-            }}
-            label={t('project-edit:GatewayLanguage')}
-            {...register('isGl', {})}
-          />
+          <CheckBox label={t('project-edit:GatewayLanguage')} {...register('isGl', {})} />
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
               <ButtonLoading className="relative btn-secondary" isLoading={isSaving}>

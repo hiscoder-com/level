@@ -1,3 +1,13 @@
+# Versión 0.12.0
+## Fecha: 01/25/2024
+
+### **Modificado:**
+- la ubicación de los botones en el diccionario/bloc de notas / notas del equipo
+
+### **Añadido:**
+- 3 nuevos temas de color
+- cambiar temas de color en el menú
+
 # Versión 0.11.0
 ## Fecha: 12/20/2023
 

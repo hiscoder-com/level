@@ -9,6 +9,7 @@ import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
 
 import Modal from 'components/Modal'
+import MenuButtons from '../UI/MenuButtons'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
@@ -27,6 +28,7 @@ import ArrowRight from 'public/folder-arrow-right.svg'
 import Rename from 'public/rename.svg'
 import Export from 'public/export.svg'
 import Import from 'public/import.svg'
+import Close from 'public/close.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -350,90 +352,111 @@ function TeamNotes() {
     }
   }
 
-  const menuItems = [
-    {
-      id: 'adding_a_note',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <FileIcon /> {t('common:NewDocument')}
-        </span>
-      ),
-      action: () => addNode(),
+  const menuItems = {
+    contextMenu: [
+      {
+        id: 'adding_note',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <FileIcon /> {t('common:NewDocument')}
+          </span>
+        ),
+        action: () => addNode(),
+      },
+      {
+        id: 'adding_folder',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <CloseFolder /> {t('common:NewFolder')}
+          </span>
+        ),
+        action: () => addNode(true),
+      },
+      {
+        id: 'rename',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Rename /> {t('common:Rename')}
+          </span>
+        ),
+        action: handleRename,
+      },
+      {
+        id: 'delete',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Trash className="w-4" /> {t('common:Delete')}
+          </span>
+        ),
+        action: () => setIsOpenModal(true),
+      },
+    ],
+    menu: [
+      {
+        id: 'export',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Export className="w-4 stroke-2" /> {t('common:Export')}
+          </span>
+        ),
+        action: () => exportNotes(),
+      },
+      {
+        id: 'import',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Import className="w-4 stroke-2" /> {t('common:Import')}
+          </span>
+        ),
+        action: () => importNotes(true),
+      },
+      {
+        id: 'remove',
+        buttonContent: (
+          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+            <Trash className="w-4 stroke-2" /> {t('common:RemoveAll')}
+          </span>
+        ),
+        action: () => setIsOpenModal(true),
+      },
+    ],
+    container: {
+      className: 'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
     },
-    {
-      id: 'adding_a_folder',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5 border-b-2'}>
-          <CloseFolder /> {t('common:NewFolder')}
-        </span>
-      ),
-      action: () => addNode(true),
+    item: {
+      className: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
     },
-    {
-      id: 'rename',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Rename /> {t('common:Rename')}
-        </span>
-      ),
-      action: handleRename,
-    },
-    {
-      id: 'delete',
-      buttonContent: (
-        <span className={'flex items-center gap-2.5 py-1 pr-7 pl-2.5'}>
-          <Trash className={'w-4'} /> {t('common:Delete')}
-        </span>
-      ),
-      action: () => setIsOpenModal(true),
-    },
-  ]
+  }
+  const dropMenuItems = {
+    dots: menuItems.menu.filter((menuItem) => menuItem.id !== 'remove'),
+    plus: menuItems.contextMenu.filter((menuItem) =>
+      ['adding_note', 'adding_folder'].includes(menuItem.id)
+    ),
+  }
+
+  const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   return (
     <div className="relative">
       {!activeNote ? (
         <div>
           {isModeratorAccess && (
-            <div className="flex gap-2">
-              <button
-                className="btn-tertiary p-3"
-                onClick={() => addNode()}
-                title={t('common:NewNote')}
-              >
-                <FileIcon className="w-6 h-6 fill-th-text-secondary" />
-              </button>
-              <button
-                className="btn-tertiary p-3"
-                onClick={() => addNode(true)}
-                title={t('common:NewFolder')}
-              >
-                <CloseFolder className="w-6 h-6 stroke-th-text-secondary" />
-              </button>
-              <button
-                className={`btn-tertiary p-3 ${
-                  notes?.length === 0 ? 'disabled opacity-70' : ''
-                }`}
-                onClick={exportNotes}
-                title={t('common:Download')}
-                disabled={!notes?.length}
-              >
-                <Export className="w-6 h-6 stroke-th-text-secondary" />
-              </button>
-              <button
-                className="btn-tertiary p-3"
-                onClick={importNotes}
-                title={t('common:Upload')}
-              >
-                <Import className="w-6 h-6 stroke-th-text-secondary" />
-              </button>
+            <div className="flex justify-end w-full">
+              <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
             </div>
           )}
-          <input
-            className="input-primary mb-4"
-            value={term}
-            onChange={(event) => setTerm(event.target.value)}
-            placeholder={t('common:Search')}
-          />
+          <div className="relative flex items-center mb-4">
+            <input
+              className="input-primary flex-1"
+              value={term}
+              onChange={(event) => setTerm(event.target.value)}
+              placeholder={t('common:Search')}
+            />
+            <Close
+              className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+              onClick={() => term && setTerm('')}
+            />
+          </div>
           <TreeView
             term={term}
             selection={noteId}
@@ -462,12 +485,11 @@ function TeamNotes() {
               setIsVisible={setIsShowMenu}
               isVisible={isShowMenu}
               nodeProps={currentNodeProps}
-              menuItems={menuItems}
+              menuItems={menuItems.contextMenu}
               clickMenuEvent={contextMenuEvent}
               classes={{
-                menuItem: 'cursor-pointer bg-th-secondary-100 hover:bg-th-secondary-200',
-                menuContainer:
-                  'absolute border rounded z-[100] whitespace-nowrap bg-white shadow',
+                menuItem: menuItems.item.className,
+                menuContainer: menuItems.container.className,
                 emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
               }}
             />
@@ -476,7 +498,7 @@ function TeamNotes() {
       ) : (
         <>
           <div
-            className="absolute flex top-0 right-0 p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -487,7 +509,7 @@ function TeamNotes() {
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 mr-12 font-bold bg-th-secondary-100 rounded-lg shadow-md',
+              title: 'p-2 my-4 font-bold bg-th-secondary-100 rounded-lg shadow-md',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
@@ -496,16 +518,15 @@ function TeamNotes() {
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('common:TextNewNote') : ''}
             emptyTitle={t('common:EmptyTitle')}
+            isSelectableTitle
           />
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('common:AreYouSureDelete') +
-              ' ' +
-              t(`common:${currentNodeProps?.node.data.name}`) +
-              '?'}
+            {t('common:AreYouSureDelete') + ' ' + currentNodeProps?.node.data.name ||
+              '' + '?'}
           </div>
           <div className="flex gap-7 w-1/2">
             <button

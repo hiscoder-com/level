@@ -274,7 +274,7 @@ function Download({
         />
         <div className="flex gap-7 items-end">
           <div
-            className={`flex flex-col w-full ${
+            className={`flex flex-col w-full space-y-4 ${
               downloadType === 'pdf' ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -294,13 +294,6 @@ function Download({
                       })
                     }
                     checked={downloadSettings[key]}
-                    className={{
-                      accent:
-                        'bg-th-primary-300 checked:bg-th-secondary-10 checked:border-th-primary-100 checked:before:bg-th-secondary-10 border-th-secondary-300',
-                      cursor:
-                        'fill-th-text-primary text-th-text-primary stroke-th-text-primary',
-                      wrapper: 'flex-row-reverse justify-between',
-                    }}
                     label={t(key)}
                   />
                 )

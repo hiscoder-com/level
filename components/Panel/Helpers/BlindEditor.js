@@ -163,7 +163,7 @@ function BlindEditor({ config }) {
                         ? 'stroke-th-secondary-300'
                         : !isTranslating
                         ? 'fill-th-secondary-100'
-                        : 'stroke-th-text-secondary'
+                        : 'stroke-th-text-secondary-100'
                     }`}
                   />
                 )}
@@ -202,7 +202,7 @@ function BlindEditor({ config }) {
               setEnabledInputs([])
               sendToDb(verseObjects.length - 1)
             }}
-            className="btn-base bg-th-primary-100 text-th-text-secondary hover:opacity-70"
+            className="btn-base bg-th-primary-100 text-th-text-secondary-100 hover:opacity-70"
           >
             {t('Save')}
           </button>

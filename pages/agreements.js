@@ -32,7 +32,7 @@ export default function Agreements() {
               key={agreement.name}
               className={`relative flex flex-col justify-start gap-5 py-5 pl-3 pr-4 max-w-xs text-start ${
                 agreement.done
-                  ? 'bg-th-primary-100 text-th-text-secondary'
+                  ? 'bg-th-primary-100 text-th-text-secondary-100'
                   : 'bg-th-secondary-200 text-th-text-primary'
               } cursor-pointer rounded-md`}
               onClick={() => push(agreement.link)}
