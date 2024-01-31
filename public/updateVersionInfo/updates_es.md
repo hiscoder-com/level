@@ -11,6 +11,12 @@
 ### **Corregido:**
 - error con el desplazamiento cuando hay dos herramientas bíblicas en el espacio de trabajo
 
+# Versión 0.13.0
+## Fecha: 01/30/2024
+
+### **Añadido:**
+- Agregar avatar o foto de traductores
+
 # Versión 0.12.0
 ## Fecha: 01/25/2024
 

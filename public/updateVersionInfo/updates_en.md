@@ -11,6 +11,12 @@
 ### **Fixed:**
 - bug with scroll when there are two Bible tools on the workspace
 
+# Version 0.13.0
+## Date: 01/30/2024
+
+### **Added:**
+- Adding avatar or photo of translators
+
 # Version 0.12.0
 ## Date: 01/25/2024
 
@@ -33,7 +39,7 @@
 - notes: fixed context menu bug
 - list of notes: one click on a tree element opens a note/folder, two clicks open the entire tree, and three clicks start renaming
 - fixed the display of the alphabet when adding and deleting words
-- fixed the display of the dictionary list in the absence of words to the filter 
+- fixed the display of the dictionary list in the absence of words to the filter
 
 ### **Added:**
 - import and export personal notes, team notes and dictionary

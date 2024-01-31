@@ -55,7 +55,7 @@ const ThemeSwitcher = () => {
   }, [])
 
   return (
-    <div className="flex space-x-4 box-border">
+    <div className="flex space-x-4 box-border mx-1">
       {themes.map((theme) => (
         <div key={theme.name} className="relative">
           <div
