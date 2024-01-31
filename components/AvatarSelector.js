@@ -25,7 +25,7 @@ function AvatarSelector({ id }) {
 
   const updateAvatar = async (userId, avatarUrl, newAvatar = null) => {
     const pngPattern = new RegExp(`user_${userId}.*\.png$`)
-    const svgPattern = new RegExp(`avatar_(0[1-9]|1[0-9]|2[0-4])\.svg$`)
+    const svgPattern = new RegExp(`avatar_(0[1-9]|1[0-9]|2[0-2])\.png$`)
 
     if (!avatarUrl || (!pngPattern.test(avatarUrl) && !svgPattern.test(avatarUrl))) {
       toast.error(t('SaveFailed'))
