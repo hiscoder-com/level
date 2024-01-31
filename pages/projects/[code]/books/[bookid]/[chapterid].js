@@ -718,7 +718,7 @@ function DividingButtons({
         }
         className="relative btn-primary"
       >
-        {t('FastDivide')}
+        {t('chapters:FastDivide')}
       </ButtonLoading>
       <div className="flex gap-4">
         <ButtonLoading
