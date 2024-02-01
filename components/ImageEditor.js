@@ -202,7 +202,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
       }
       newImage.onerror = () => {
         console.error('Error loading image.')
-        toast.error(t('ImageLoadFailed'))
+        toast.error(t('ImageUploadFailed'))
       }
 
       newImage.src = URL.createObjectURL(selectedFile)
