@@ -5,7 +5,7 @@ function AutoSizeTextArea({ disabled = false, updateVerse, index, verseObject })
 
   useEffect(() => {
     if (startValue === false || disabled) {
-      setStartValue(verseObject.verse?.trim())
+      setStartValue(verseObject.verse ? verseObject.verse.trim() : false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verseObject.verse])

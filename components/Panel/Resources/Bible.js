@@ -18,7 +18,7 @@ function Bible({ config, url, toolName }) {
   })
   const { handleSaveScroll, currentScrollVerse } = useScroll({
     toolName,
-    idPrefix: 'id',
+    idPrefix: toolName,
     isLoading,
   })
 
@@ -36,6 +36,7 @@ function Bible({ config, url, toolName }) {
           verseObjects={data?.verseObjects}
           handleSaveScroll={handleSaveScroll}
           currentScrollVerse={currentScrollVerse}
+          toolName={toolName}
         />
       )}
     </>
@@ -44,15 +45,15 @@ function Bible({ config, url, toolName }) {
 
 export default Bible
 
-function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
+function Verses({ verseObjects, handleSaveScroll, currentScrollVerse, toolName }) {
   return (
     <>
       {verseObjects?.map((verseObject) => (
         <div
           key={verseObject.verse}
-          id={'id' + verseObject.verse}
+          id={toolName + verseObject.verse}
           className={`p-2 rounded-lg ${
-            'id' + currentScrollVerse === 'id' + verseObject.verse
+            toolName + currentScrollVerse === toolName + verseObject.verse
               ? 'bg-th-secondary-100'
               : ''
           }`}
@@ -67,7 +68,12 @@ function Verses({ verseObjects, handleSaveScroll, currentScrollVerse }) {
   )
 }
 
-function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) {
+function VersesExtended({
+  verseObjects,
+  handleSaveScroll,
+  currentScrollVerse,
+  toolName,
+}) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
   return (
     <>
@@ -78,12 +84,12 @@ function VersesExtended({ verseObjects, handleSaveScroll, currentScrollVerse }) 
             key={verseObject.verse}
             onClick={() => handleSaveScroll(verseObject.verse)}
             className={`flex items-start my-3 select-none rounded-lg ${
-              'id' + currentScrollVerse === 'id' + verseObject.verse
+              toolName + currentScrollVerse === toolName + verseObject.verse
                 ? 'bg-th-secondary-100'
                 : ''
             }`}
           >
-            <div id={'id' + verseObject.verse} className={`ml-2`}>
+            <div id={toolName + verseObject.verse} className={`ml-2`}>
               {obsCheckAdditionalVerses(verseObject.verse)}
             </div>
             {checkedCurrent ? (

@@ -14,16 +14,18 @@ function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const [tnotes, setTnotes] = useState([])
   const { isLoading, data } = useGetResource({ config, url })
-
   const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
     domain: process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org',
     book: config.reference.book,
     tnotes: data,
     usfm: {
       link:
+        config.config.quote_resource ??
         (process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org') +
-        '/' +
-        config.targetResourceLink,
+          '/' +
+          config.mainResource.owner +
+          '/' +
+          config.mainResource.repo,
     },
   })
   useEffect(() => {
