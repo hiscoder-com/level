@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 
 import Link from 'next/link'
 
@@ -17,6 +18,7 @@ import EyeOffIcon from 'public/eye-off-icon.svg'
 
 function PasswordRecovery() {
   const supabase = useSupabaseClient()
+  const { query, replace } = useRouter()
   const { t } = useTranslation('users')
   const { user } = useCurrentUser()
   const [password, setPassword] = useState('')
@@ -72,6 +74,11 @@ function PasswordRecovery() {
         .finally(() => setIsRecovering(false))
     }
   }
+  useEffect(() => {
+    if (!query?.error) {
+      replace('/password-recovery')
+    }
+  }, [query?.error, replace])
 
   return (
     <div className="flex flex-col p-5 lg:py-10 xl:px-8">
@@ -82,7 +89,7 @@ function PasswordRecovery() {
       <form className="space-y-6 xl:space-y-10">
         <div className="flex flex-col gap-5 lg:justify-around">
           {!successResult ? (
-            user && (
+            user && !query?.error ? (
               <>
                 <p>{t('WriteNewPassword')}</p>
                 <div className="relative z-0 w-full">
@@ -138,6 +145,16 @@ function PasswordRecovery() {
                 >
                   {t('UpdatePassword')}
                 </ButtonLoading>
+              </>
+            ) : (
+              <>
+                <div>{t('UnSuccessRecovery')}</div>
+                <Link
+                  href={'/'}
+                  className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70"
+                >
+                  {t('GoToLogin')}
+                </Link>
               </>
             )
           ) : (

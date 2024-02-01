@@ -2,7 +2,7 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 
 export default async function handler(req, res) {
   const {
-    query: { token_hash, type, redirect_to, email },
+    query: { token, type, redirect_to, email },
   } = req
 
   const supabase = createPagesServerClient(
@@ -18,13 +18,15 @@ export default async function handler(req, res) {
 
   try {
     const { error } = await supabase.auth.verifyOtp({
-      token: token_hash,
+      token,
       type,
       email,
     })
-    if (error) throw error
+    if (error) {
+      return res.redirect(redirect_to + `?error=${encodeURIComponent(error)}`)
+    }
     return res.redirect(302, redirect_to)
   } catch (error) {
-    return res.status(404).json({ error })
+    return res.redirect(redirect_to + `?error=${encodeURIComponent(error)}`)
   }
 }
