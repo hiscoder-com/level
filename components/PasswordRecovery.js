@@ -15,14 +15,16 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
+import Progress from 'public/progress.svg'
 
 function PasswordRecovery() {
   const supabase = useSupabaseClient()
   const { query, replace } = useRouter()
   const { t } = useTranslation('users')
-  const { user } = useCurrentUser()
+  const { user, loading } = useCurrentUser()
   const [password, setPassword] = useState('')
   const [repeatPassword, setRepeatPassword] = useState('')
+
   const [isRecovering, setIsRecovering] = useState(false)
   const [error, setError] = useState('')
   const [successResult, setSuccessResult] = useState('')
@@ -75,10 +77,90 @@ function PasswordRecovery() {
     }
   }
   useEffect(() => {
-    if (!query?.error) {
-      replace('/password-recovery')
+    if (query?.token) {
+      replace('/password-recovery', undefined, { shallow: true })
     }
-  }, [query?.error, replace])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query?.token])
+
+  function renderContent() {
+    if (successResult) {
+      return (
+        <>
+          <div>{successResult}</div>
+          <Link href={'/'} className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70">
+            {t('GoToLogin')}
+          </Link>
+        </>
+      )
+    }
+
+    if (query?.error) {
+      return (
+        <>
+          <div>{t('UnSuccessRecovery')}</div>
+          <Link href={'/'} className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70">
+            {t('GoToLogin')}
+          </Link>
+        </>
+      )
+    }
+
+    if (loading) {
+      return (
+        <div className="flex justify-center">
+          <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
+        </div>
+      )
+    }
+
+    if (!user) {
+      return (
+        <>
+          <div>{t('UnSuccessRecovery')}</div>
+          <Link href={'/'} className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70">
+            {t('GoToLogin')}
+          </Link>
+        </>
+      )
+    }
+
+    return (
+      <>
+        <p>{t('WriteNewPassword')}</p>
+        <PasswordInput
+          type="new"
+          password={password}
+          showPassword={showPassword}
+          error={error}
+          onChange={setPassword}
+          onToggleShowPassword={() => setShowPassword((prev) => !prev)}
+        />
+        <p>{t('RepeatNewPassword')}</p>
+        <PasswordInput
+          type="repeat"
+          password={repeatPassword}
+          showPassword={showRepeatPassword}
+          error={error}
+          onChange={(value) => {
+            setError('')
+            setSuccessResult('')
+            setRepeatPassword(value.trim())
+          }}
+          onToggleShowPassword={() => setShowRepeatPassword((prev) => !prev)}
+        />
+        {error && <div className="opacity-100 min-h-[1.5rem]">{t(error)}</div>}
+        <ButtonLoading
+          type="button"
+          className="btn-primary relative self-center w-1/2 text-sm lg:text-base"
+          onClick={handleRecovery}
+          isLoading={isRecovering}
+        >
+          {t('UpdatePassword')}
+        </ButtonLoading>
+      </>
+    )
+  }
 
   return (
     <div className="flex flex-col p-5 lg:py-10 xl:px-8">
@@ -87,91 +169,38 @@ function PasswordRecovery() {
         <SwitchLocalization />
       </div>
       <form className="space-y-6 xl:space-y-10">
-        <div className="flex flex-col gap-5 lg:justify-around">
-          {!successResult ? (
-            user && !query?.error ? (
-              <>
-                <p>{t('WriteNewPassword')}</p>
-                <div className="relative z-0 w-full">
-                  <input
-                    name="floating_password_new"
-                    className={error ? 'input-invalid' : 'input-primary'}
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => {
-                      setError('')
-                      setSuccessResult('')
-                      setPassword(e.target.value)
-                    }}
-                  />
-
-                  <span
-                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-text-primary"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                  </span>
-                </div>
-                <p>{t('RepeatNewPassword')}</p>
-                <div className="relative w-full z-0">
-                  <input
-                    name="floating_password_repeat"
-                    className={error ? 'input-invalid' : 'input-primary'}
-                    type={showRepeatPassword ? 'text' : 'password'}
-                    value={repeatPassword}
-                    onChange={(e) => {
-                      setError('')
-                      setSuccessResult('')
-                      setRepeatPassword(e.target.value.trim())
-                    }}
-                  />
-
-                  <span
-                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-text-primary"
-                    onClick={() => setShowRepeatPassword((prev) => !prev)}
-                  >
-                    {showRepeatPassword ? <EyeOffIcon /> : <EyeIcon />}
-                  </span>
-                </div>
-
-                <div className={`${error ? 'opacity-100' : 'opacity-0'} min-h-[1.5rem]`}>
-                  {t(error)}
-                </div>
-                <ButtonLoading
-                  type="button"
-                  className="btn-primary relative self-center w-1/2 text-sm lg:text-base"
-                  onClick={handleRecovery}
-                  isLoading={isRecovering}
-                >
-                  {t('UpdatePassword')}
-                </ButtonLoading>
-              </>
-            ) : (
-              <>
-                <div>{t('UnSuccessRecovery')}</div>
-                <Link
-                  href={'/'}
-                  className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70"
-                >
-                  {t('GoToLogin')}
-                </Link>
-              </>
-            )
-          ) : (
-            <>
-              <div>{successResult}</div>
-              <Link
-                href={'/'}
-                className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70"
-              >
-                {t('GoToLogin')}
-              </Link>
-            </>
-          )}
-        </div>
+        <div className="flex flex-col gap-5 lg:justify-around">{renderContent()}</div>
       </form>
     </div>
   )
 }
 
 export default PasswordRecovery
+
+function PasswordInput({
+  type,
+  password,
+  showPassword,
+  error,
+  onChange,
+  onToggleShowPassword,
+}) {
+  const fieldName = type === 'new' ? 'floating_password_new' : 'floating_password_repeat'
+  return (
+    <div className="relative z-0 w-full">
+      <input
+        name={fieldName}
+        className={error ? 'input-invalid' : 'input-primary'}
+        type={showPassword ? 'text' : 'password'}
+        value={password}
+        onChange={(e) => onChange(e.target.value)}
+      />
+      <span
+        className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-text-primary"
+        onClick={onToggleShowPassword}
+      >
+        {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+      </span>
+    </div>
+  )
+}
