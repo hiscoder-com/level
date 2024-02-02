@@ -1,3 +1,4 @@
+import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
 import { supabaseService } from 'utils/supabaseService'
 
 export default async function handler(req, res) {
@@ -5,6 +6,16 @@ export default async function handler(req, res) {
     query: { token, type, redirect_to, email },
   } = req
 
+  const supabase = createPagesServerClient(
+    { req, res },
+    {
+      supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      supabaseUrl: process.env.SUPABASE_URL,
+      cookieOptions: {
+        name: process.env.NEXT_PUBLIC_COOKIE_NAME ?? 'sb-vcana-cookies',
+      },
+    }
+  )
   const sendLog = async (log) => {
     const { data, error } = await supabaseService
       .from('logs')
@@ -15,7 +26,7 @@ export default async function handler(req, res) {
     return { data, error }
   }
   try {
-    const { error } = await supabaseService.auth.verifyOtp({
+    const { error } = await supabase.auth.verifyOtp({
       token,
       type,
       email,
