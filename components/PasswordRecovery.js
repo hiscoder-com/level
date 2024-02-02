@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/router'
 
 import Link from 'next/link'
@@ -76,12 +76,6 @@ function PasswordRecovery() {
         .finally(() => setIsRecovering(false))
     }
   }
-  useEffect(() => {
-    if (query?.token) {
-      replace('/password-recovery', undefined, { shallow: true })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query?.token])
 
   function renderContent() {
     if (successResult) {
