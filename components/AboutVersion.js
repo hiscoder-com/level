@@ -17,7 +17,12 @@ import updatesES from '../public/updateVersionInfo/updates_es.md'
 
 import Close from 'public/close.svg'
 
-function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
+function AboutVersion({
+  isMobileIndexPage = false,
+  isSidebar = false,
+  isStartPage = false,
+  setShowUpdates = () => {},
+}) {
   const aboutVersion = {
     en: updatesEN,
     ru: updatesRU,
@@ -55,6 +60,33 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale])
 
+  if (isStartPage) {
+    return (
+      <div className="flex flex-col lg:h-full pt-6 lg:pt-0">
+        <div className="flex items-center justify-between bg-th-secondary-10">
+          <p className="text-left font-bold">
+            {t('Version')} {packageJson.version}
+          </p>
+          <Close
+            className="block lg:hidden h-8 stroke-th-primary-100"
+            onClick={() => setShowUpdates(false)}
+          />
+        </div>
+        <ReactMarkdown className="flex-grow text-left mt-5 overflow-y-auto text-sm font-normal whitespace-pre-line leading-5">
+          {showAllUpdates ? fullAboutVersion : currentAboutVersion}
+        </ReactMarkdown>
+        <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
+          <button
+            onClick={() => setShowAllUpdates((prev) => !prev)}
+            className="btn-primary"
+          >
+            {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <div
@@ -82,10 +114,10 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
                 <Close className="h-8 stroke-th-primary-100" />
               </button>
             </div>
-            <ReactMarkdown className="mb-10 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
+            <ReactMarkdown className="flex-grow pb-5 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
               {showAllUpdates ? fullAboutVersion : currentAboutVersion}
             </ReactMarkdown>
-            <div className="flex justify-center pt-5 border-t border-th-secondary-300">
+            <div className="mt-auto flex justify-center pt-5 border-t border-th-secondary-300">
               <button
                 onClick={() => setShowAllUpdates((prev) => !prev)}
                 className={`${isMobileIndexPage ? 'btn-secondary' : 'btn-primary'}`}

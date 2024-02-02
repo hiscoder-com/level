@@ -43,6 +43,20 @@ module.exports = {
         },
       },
     },
+    backgroundPosition: {
+      bottom: 'bottom',
+      'center-bottom-1': 'center 42%',
+      'center-bottom-2': 'center 28%',
+      'center-bottom-3': 'center 23%',
+      center: 'center',
+      left: 'left',
+      'left-bottom': 'left bottom',
+      'left-top': 'left top',
+      right: 'right',
+      'right-bottom': 'right bottom',
+      'right-top': 'right top',
+      top: 'top',
+    },
   },
   variants: {
     extend: {
