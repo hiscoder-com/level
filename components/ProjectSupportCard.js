@@ -77,12 +77,14 @@ function ProjectSupportCard({ project, user }) {
           key={chapter}
           onClick={() => openListSteps(book.code, chapterNum)}
           disabled={!isChapterStarted || isChapterFinished}
-          className={`py-2 px-1 font-bold w-[12%] md:w-[10%] lg:w-[7%] xl:w-[5%] 2xl:w-[5%] ${
-            isChapterFinished ? 'bg-yellow-600' : 'bg-slate-200'
+          className={`py-2 px-1 font-bold w-[12%] md:w-[10%] lg:w-[7%] xl:w-[5%] 2xl:w-[5%] text-th-secondary-10 ${
+            isChapterFinished
+              ? 'bg-th-secondary-400 cursor-default hover:opacity-100'
+              : 'bg-th-primary-100'
           } rounded-md overflow-hidden ${
-            isChapterStarted && !isChapterFinished
-              ? 'hover:bg-teal-500 hover:text-white cursor-pointer'
-              : 'opacity-40 cursor-default'
+            isChapterStarted
+              ? 'hover:opacity-70 cursor-pointer'
+              : 'opacity-50 cursor-default'
           }`}
         >
           {chapter}
@@ -101,17 +103,17 @@ function ProjectSupportCard({ project, user }) {
         }}
         className={{
           dialogPanel:
-            'p-6 w-full max-w-md align-middle transform shadow-xl transition-all bg-gradient-to-r from-slate-700 to-slate-500 text-blue-250 rounded-3xl z-50',
+            'p-6 w-full max-w-md align-middle transform shadow-xl transition-all bg-th-primary-100 text-th-secondary-10 rounded-3xl z-50',
         }}
       >
         <div className="flex flex-col min-h-[30vh] gap-3">
-          <h1 className="mb-5 text-xl text-white">{t('TranslatorsList')}</h1>
+          <h1 className="mb-5 text-xl text-th-secondary-10">{t('TranslatorsList')}</h1>
           {currentSteps?.length > 0 &&
             currentSteps.map((step, step_idx) => {
               return (
                 <div key={step_idx}>
                   <div
-                    className="flex justify-between pl-5 items-center bg-white text-slate-900 rounded-xl cursor-pointer hover:bg-teal-500 hover:text-white"
+                    className="flex justify-between pl-5 items-center bg-th-secondary-10 text-th-primary-100 rounded-xl cursor-pointer"
                     onClick={() => {
                       setIsOpenModal(false)
                       push({
@@ -136,17 +138,17 @@ function ProjectSupportCard({ project, user }) {
         </div>
       </Modal>
       {isSupporterAccess && books?.length > 0 && (
-        <div className="card space-y-1">
+        <div className="card space-y-1 bg-th-secondary-10 sm:bg-th-secondary-100">
           <Link
             href={{
               pathname: '/projects/[code]',
               query: { code: project.code },
             }}
-            className="font-bold text-2xl mb-10 text-cyan-700 hover:text-gray-500"
+            className="font-bold text-2xl mb-10 text-th-primary-100 hover:opacity-70"
           >
             {project.title}
           </Link>
-          <div className="block sm:hidden divide-y divide-gray-400">
+          <div className="block sm:hidden divide-y divide-th-secondary-300">
             {books?.map((book, book_idx) => (
               <div key={book.code} className="w-full items-center justify-center">
                 <Disclosure
@@ -180,7 +182,7 @@ function ProjectSupportCard({ project, user }) {
               </div>
             ))}
           </div>
-          <div className="hidden sm:block divide-y divide-gray-400">
+          <div className="hidden sm:block divide-y divide-th-secondary-300">
             {books?.map((book, book_idx) => {
               let height
               if (wrapChapters?.current?.length) {

@@ -61,7 +61,7 @@ function StepSwitch({ stepProps, handleGetSteps }) {
               </div>
             </Popover.Button>
             <Popover.Panel
-              className={`absolute transform mt-1 py-2 bg-white text-slate-900 rounded-lg flex items-center justify-center shadow-lg z-50 w-fit`}
+              className={`absolute transform mt-1 py-2 bg-th-secondary-10 text-th-text-primary rounded-lg flex items-center justify-center shadow-lg z-50 w-fit`}
               onClick={(e) => {
                 e.stopPropagation()
               }}
@@ -72,12 +72,12 @@ function StepSwitch({ stepProps, handleGetSteps }) {
                       <button
                         key={el}
                         disabled={
-                          activeSteps.max_step <= el + 1 || stepProps.step === el + 1
+                          activeSteps.max_step < el + 1 || stepProps.step === el + 1
                         }
-                        className={`py-1 px-3 bg-slate-200 rounded-md flex flex-col justify-center ${
-                          activeSteps.max_step <= el + 1 || stepProps.step === el + 1
-                            ? 'opacity-40'
-                            : 'opacity-100 hover:bg-teal-500 hover:text-white'
+                        className={`py-1 px-3  rounded-md flex flex-col justify-center ${
+                          activeSteps.max_step < el + 1 || stepProps.step === el + 1
+                            ? 'bg-th-secondary-100'
+                            : 'bg-th-secondary-400 hover:opacity-70 text-th-secondary-10'
                         }`}
                         onClick={() => goToStep(el + 1, stepProps)}
                       >
@@ -87,7 +87,7 @@ function StepSwitch({ stepProps, handleGetSteps }) {
                   : [...Array(8).keys()].map((el) => (
                       <div
                         key={el}
-                        className="py-1 px-3 text-gray-200 bg-gray-200 rounded-md flex flex-col justify-center animate-pulse"
+                        className="py-1 px-3 text-th-text-primary bg-th-secondary-100 rounded-md flex flex-col justify-center"
                       >
                         {el + 1}
                       </div>

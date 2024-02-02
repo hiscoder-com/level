@@ -195,10 +195,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
             reference && [
               {
                 title: project?.title,
-                href: {
-                  pathname: '/projects/[code]',
-                  query: { code: project.code },
-                },
+                href: `/projects/${project?.code}`,
               },
               { title: t('Reader') },
             ]

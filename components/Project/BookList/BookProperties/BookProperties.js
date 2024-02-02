@@ -85,10 +85,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         links={[
           {
             title: project?.title,
-            href: {
-              pathname: '/projects/[code]',
-              query: { code: project.code },
-            },
+            href: '/projects/' + project?.code,
           },
           { title: t('books:' + book?.code) },
         ]}

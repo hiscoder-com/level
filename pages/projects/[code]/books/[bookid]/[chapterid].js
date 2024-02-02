@@ -291,14 +291,11 @@ function ChapterVersesPage() {
             links={[
               {
                 title: project?.title,
-                href: { pathname: '/projects/[code]', query: { code } },
+                href: '/projects/' + project?.code,
               },
               {
                 title: t(`books:${book?.code}`),
-                href: {
-                  pathname: '/projects/[code]/books/[bookid]',
-                  query: { code, bookid },
-                },
+                href: '/projects/' + code + '/books/' + bookid,
               },
               { title: `${t('Chapter')} ${chapter?.num}` },
             ]}
