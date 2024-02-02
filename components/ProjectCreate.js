@@ -17,21 +17,17 @@ import Steps from './Steps'
 import BasicInformation from './BasicInformation'
 import LanguageCreate from './LanguageCreate'
 import BriefEditQuestions from './BriefEditQuestions'
+import ButtonLoading from './ButtonLoading'
 
 import { useLanguages, useMethod } from 'utils/hooks'
-import { checkLSVal } from 'utils/helper'
 import { useCurrentUser } from 'lib/UserContext'
-import Spinner from '../public/spinner.svg'
 
 function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const { user } = useCurrentUser()
-
   const [_methods] = useMethod()
   const router = useRouter()
-  const [methods, setMethods] = useState(() => {
-    return checkLSVal('methods', _methods, 'object')
-  })
+  const [methods, setMethods] = useState(_methods)
   const [method, setMethod] = useState({})
   const [isCreating, setIsCreating] = useState(false)
   const [isOpenLanguageCreate, setIsOpenLanguageCreate] = useState(false)
@@ -76,23 +72,10 @@ function ProjectCreate() {
   }, [_methods, methods])
 
   useEffect(() => {
-    if (methods) {
-      localStorage.setItem('methods', JSON.stringify(methods))
-    }
-  }, [methods])
-
-  useEffect(() => {
     setResourcesUrl({})
   }, [methodId])
 
-  const saveMethods = (methods) => {
-    localStorage.setItem('methods', JSON.stringify(methods))
-    setMethods(methods)
-  }
-
   const onSubmit = async (data) => {
-    saveMethods(_methods)
-
     const { title, code, languageId, origtitle } = data
     if (!title || !code || !languageId) {
       return
@@ -111,7 +94,7 @@ function ProjectCreate() {
         resources: resourcesUrl,
       })
       .then((result) => {
-        saveMethods(_methods)
+        setMethods(_methods)
         const {
           status,
           headers: { location },
@@ -125,7 +108,6 @@ function ProjectCreate() {
       })
       .finally(() => setIsCreating(false))
   }
-
   const updateMethods = (methods, key, array) => {
     const _methods = methods.map((el) => {
       if (el.id === method.id) {
@@ -133,16 +115,14 @@ function ProjectCreate() {
       }
       return el
     })
-    saveMethods(_methods)
+    setMethods(_methods)
   }
-
   const updateBlock = ({ value, index, fieldName, block, setBlock, blockName }) => {
     block[index][fieldName] = value
     setBlock(block)
     updateMethods(methods, blockName, block)
   }
   const updateSteps = ({ value, index, fieldName }) => {
-    console.log(value, index)
     if (value && index != null && fieldName) {
       updateBlock({
         value,
@@ -154,16 +134,15 @@ function ProjectCreate() {
       })
     }
   }
-
   const saveBrief = (array) => {
     updateMethods(methods, 'brief', array)
   }
 
   return (
     <>
-      <div className="py-0 sm:py-10" onClick={(e) => e.stopPropagation()}>
-        <form className="flex flex-col gap-0 md:gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card-md py-7 space-y-7">
+      <div className="pt-0 pb-8 sm:py-5" onClick={(e) => e.stopPropagation()}>
+        <form className="flex flex-col gap-0 md:gap-7" onSubmit={handleSubmit(onSubmit)}>
+          <div className="card-md py-7 space-y-7 bg-transparent sm:bg-th-secondary-100">
             <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
             <BasicInformation
               t={t}
@@ -176,13 +155,13 @@ function ProjectCreate() {
               uniqueCheck
             />
           </div>
-          <div className="card-md flex flex-col gap-7 py-7">
+          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 py-7">
             <h3 className="text-xl font-bold">{t('project-edit:Steps')}</h3>
             <div className="flex flex-col gap-7 text-sm md:text-base">
               <Steps customSteps={customSteps} updateSteps={updateSteps} />
             </div>
           </div>
-          <div className="card-md flex flex-col gap-7 py-7">
+          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 py-7">
             <div className="flex justify-between">
               <h3 className="text-xl font-bold">{t('Brief')}</h3>
               <div className="flex items-center gap-2">
@@ -193,7 +172,7 @@ function ProjectCreate() {
                   checked={isBriefEnable}
                   onChange={() => setIsBriefEnable((prev) => !prev)}
                   className={`${
-                    isBriefEnable ? 'bg-cyan-600' : 'bg-gray-300'
+                    isBriefEnable ? 'bg-th-primary-100' : 'bg-th-secondary-100'
                   } relative inline-flex h-6 w-11 items-center rounded-full`}
                 >
                   <span
@@ -211,7 +190,7 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="card-md flex flex-col gap-7 pb-7 mb-7 border-b border-slate-900">
+          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 pb-7 border-b border-th-secondary-300">
             <h3 className="text-xl font-bold">{t('common:ListResources')}</h3>
             <CommitsList
               methodId={methodId}
@@ -219,17 +198,14 @@ function ProjectCreate() {
               setResourcesUrl={setResourcesUrl}
             />
             <div className="flex w-fit items-center justify-center">
-              <input
-                className={`btn-secondary btn-filled ${
-                  isCreating ? '!text-gray-200 hover:!text-white' : ''
-                }`}
-                type="submit"
-                value={t('CreateProject')}
+              <ButtonLoading
+                className="btn-primary relative"
                 disabled={isCreating}
-              />
-              {isCreating && (
-                <Spinner className="absolute animate-spin h-5 w-5 text-cyan-600 overflow-hidden" />
-              )}
+                value={t('CreateProject')}
+                isLoading={isCreating}
+              >
+                {t('CreateProject')}
+              </ButtonLoading>
             </div>
           </div>
         </form>

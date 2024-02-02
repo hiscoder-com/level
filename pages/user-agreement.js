@@ -6,29 +6,31 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Footer from 'components/Footer'
 
 import useSupabaseClient from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 
 export default function UserAgreement() {
   const supabase = useSupabaseClient()
-
   const router = useRouter()
+  const { getUser } = useCurrentUser()
   const { t } = useTranslation(['user-agreement', 'common', 'users'])
   const handleClick = async () => {
     const { error } = await supabase.rpc('check_agreement')
     if (error) {
       console.error(error)
     } else {
-      router.push(`/confession`)
+      getUser()
+      router.push('/agreements')
     }
   }
 
   return (
     <div className="layout-appbar">
       <div
-        className="text-alignment text-justify overflow-auto text-gray-800"
-        style={{ height: 'calc(100vh - 11rem)' }}
+        className="max-w-7xl pb-6 px-6 lg:px-8 bg-th-secondary-10 rounded-lg text-justify overflow-auto text-th-text-primary"
+        style={{ height: 'calc(100vh - 15rem)' }}
       >
-        <h1 className="pt-4 text-4xl">{t('users:Agreement')}:</h1>
-        <div className="mt-7">
+        <h1 className="pt-4 text-2xl md:text-4xl">{t('users:Agreement')}:</h1>
+        <div className="mt-7 text-sm">
           <b className="font-bold">{t('License')}</b>
           <p
             dangerouslySetInnerHTML={{
@@ -56,6 +58,7 @@ export default function UserAgreement() {
         textButton={t('common:Next')}
         textCheckbox={t('users:Agree')}
         handleClick={handleClick}
+        className={{ button: 'btn-primary' }}
       />
     </div>
   )

@@ -1,5 +1,102 @@
+# Version 0.14.0
+## Date: 01/31/2024
+
+### **Added:**
+- translation verification method for the GL team
+- option in methods for quotes in TN
+- fast verse divider feature
+- read-only mode for translator participation in chapter translation.
+- selecting the entire note title when editing in the dictionary/notepad/team notes
+
+### **Fixed:**
+- bug with scroll when there are two Bible tools on the workspace
+
+# Version 0.13.0
+## Date: 01/30/2024
+
+### **Added:**
+- Adding avatar or photo of translators
+
+# Version 0.12.0
+## Date: 01/25/2024
+
+### **Changed:**
+- the location of the buttons in the dictionary/notepad/team notes
+
+### **Added:**
+- 3 new color themes
+- switch color themes in the menu
+
+# Version 0.11.0
+## Date: 12/20/2023
+
+### **Changed:**
+- in the section of auxiliary materials, such as tnotes, the "BACK" button is fixed
+- the "BACK" button has been brought to a general form in auxiliary materials, notepad and dictionary
+- fixed a bug when displaying a list of languages when switching languages
+- when using commits, we use one type of URL (exclude '/src/')
+- added search by notes
+- notes: fixed context menu bug
+- list of notes: one click on a tree element opens a note/folder, two clicks open the entire tree, and three clicks start renaming
+- fixed the display of the alphabet when adding and deleting words
+- fixed the display of the dictionary list in the absence of words to the filter
+
+### **Added:**
+- import and export personal notes, team notes and dictionary
+
+# Version 0.10.1
+## Date: 11/21/2023
+
+### **Changed:**
+- path for loading pictures into OBS when exporting to PDF in intranet version
+- cover PDF
+### **Deleted:**
+- audio component in intranet version
+
+# Version 0.10.0
+## Date: 11/20/2023
+
+### **Added:**
+- tree list of personal and team notes
+
+# Version 0.9.0
+## Date: 11/16/2023
+
+### **Changed:**
+- reading mode is now also available if there are draft texts in the database
+### **Fixed:**
+- displaying a list of stories when the page is refreshed
+### **Added:**
+- ability to read draft texts stored in the database
+- display of the reading mode in the personal account
+- display of the reading mode in the list of books of the project
+
+# Version 0.8.0
+## Date: 11/09/2023
+
+### **Changed:**
+- page 404
+- user agreement page
+- color scheme of the site
+- brief editing page
+- personal account page
+- translation page
+- project settings page
+
+### **Fixed:**
+- bugs in the layout and functionality
+# Version 0.7.1
+## Date: 10/05/2023
+
+### **Changed:**
+- support usfm tags
+# Version 0.7.0
+## Date: 09/26/2023
+
+### **Added:**
+- recovery password
 # Version 0.6.0
-## Date: 09/04/2023
+## Date: 09/18/2023
 
 ### **Added:**
 - loading status for clicking on the internal link 

@@ -9,9 +9,11 @@ import { UserContextProvider } from 'lib/UserContext'
 import 'styles/globals.css'
 
 import useSupabaseClient from 'utils/supabaseClient'
+import { useGetTheme } from 'utils/hooks'
 
 function MyApp({ Component, pageProps }) {
   const supabaseClient = useSupabaseClient()
+  useGetTheme()
   if (Component.layoutType == 'empty') {
     return (
       <UserContextProvider supabaseClient={supabaseClient}>
@@ -25,7 +27,7 @@ function MyApp({ Component, pageProps }) {
   return (
     <UserContextProvider supabaseClient={supabaseClient}>
       <RecoilRoot>
-        <Layout backgroundColor={Component.backgroundColor ?? 'bg-blue-150'}>
+        <Layout backgroundColor={Component.backgroundColor ?? 'bg-th-secondary-100'}>
           <Component {...pageProps} />
         </Layout>
       </RecoilRoot>

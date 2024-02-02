@@ -7,37 +7,60 @@ import { Menu, Transition } from '@headlessui/react'
 import { useSetRecoilState } from 'recoil'
 
 import AboutVersion from 'components/AboutVersion'
+import AvatarSelector from './AvatarSelector'
 import SwitchLocalization from './SwitchLocalization'
 import TranslatorImage from './TranslatorImage'
+import ThemeSwitcher from './ThemeSwitcher'
 import SignOut from './SignOut'
-import { aboutVersionModalIsOpen } from './state/atoms'
+
+import { aboutVersionModalIsOpen, avatarSelectorModalIsOpen } from './state/atoms'
+
 import { useCurrentUser } from 'lib/UserContext'
 
 import Localization from 'public/localization.svg'
 import VersionLogo from 'public/version.svg'
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
+import Camera from 'public/camera.svg'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation('projects')
+
   const setVersionModalIsOpen = useSetRecoilState(aboutVersionModalIsOpen)
+  const setSelectorModalIsOpen = useSetRecoilState(avatarSelectorModalIsOpen)
+
+  const openModal = (modalType) => {
+    if (modalType === 'aboutVersion') {
+      setSelectorModalIsOpen(false)
+      setVersionModalIsOpen((prev) => !prev)
+    } else if (modalType === 'avatarSelector') {
+      setVersionModalIsOpen(false)
+      setSelectorModalIsOpen((prev) => !prev)
+    }
+  }
+
+  const closeModal = () => {
+    setVersionModalIsOpen(false)
+    setSelectorModalIsOpen(false)
+  }
+
   return (
     <Menu>
-      {({ open }) => (
+      {({ open, close }) => (
         <>
           <Menu.Button
             onClick={() => {
-              setVersionModalIsOpen(false)
+              closeModal()
               setIsOpenSideBar((prev) => !prev)
             }}
             className="z-30"
           >
             {access &&
               (!open ? (
-                <Burger className="h-10 stroke-slate-600" />
+                <Burger className="h-10 stroke-th-text-secondary-100" />
               ) : (
-                <Close className="h-10 stroke-slate-600" />
+                <Close className="h-10 stroke-th-text-secondary-100" />
               ))}
           </Menu.Button>
           <Transition
@@ -51,10 +74,16 @@ function SideBar({ setIsOpenSideBar, access }) {
               className="fixed flex flex-col w-full md:w-1/2 lg:w-[48%] xl:w-[27rem] gap-7 top-14 sm:top-20 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 lg:pr-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-gray-350 bg-white sm:rounded-2xl">
-                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-gray-300">
-                  <div className="w-12 h-12 min-w-[3rem]">
-                    <TranslatorImage item={{ users: user }} />
+              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl">
+                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-300">
+                  <div
+                    className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
+                    onClick={() => openModal('avatarSelector')}
+                  >
+                    <TranslatorImage item={{ users: user }} isPointerCursor="true" />
+                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center cursor-pointer">
+                      <Camera className="w-4 text-white" />
+                    </div>
                   </div>
 
                   <div>
@@ -62,6 +91,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                     <div>{user?.email}</div>
                   </div>
                 </div>
+
                 <div className="f-screen-appbar flex flex-col justify-between sm:min-h-[60vh]">
                   <div className="flex flex-col gap-7">
                     <Menu.Item
@@ -70,8 +100,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                       className="flex items-center justify-between gap-2 cursor-default"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
-                          <Localization className="w-5 h-5 min-w-[1.5rem] stroke-slate-600" />
+                        <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100">
+                          <Localization className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
                         </div>
                         <span>{t('Language')}</span>
                       </div>
@@ -85,18 +115,28 @@ function SideBar({ setIsOpenSideBar, access }) {
                     >
                       <div
                         className="flex w-full items-center gap-4 cursor-pointer"
-                        onClick={() => setVersionModalIsOpen((prev) => !prev)}
+                        onClick={() => openModal('aboutVersion')}
                       >
-                        <div className="px-4 py-2 rounded-[23rem] bg-gray-200">
-                          <VersionLogo className="w-5 h-5 min-w-[1.5rem]" />
+                        <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
+                          <VersionLogo className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
                         </div>
                         <AboutVersion isSidebar={true} />
                       </div>
                     </Menu.Item>
                   </div>
-
-                  <div className="flex justify-center cursor-pointer">
-                    <SignOut />
+                  <AvatarSelector id={user?.id} />
+                  <div className="space-y-5">
+                    <ThemeSwitcher />
+                    <div
+                      className="flex justify-center cursor-pointer"
+                      onClick={() => {
+                        setVersionModalIsOpen(false)
+                        setIsOpenSideBar((prev) => !prev)
+                        close()
+                      }}
+                    >
+                      <SignOut />
+                    </div>
                   </div>
                 </div>
               </div>

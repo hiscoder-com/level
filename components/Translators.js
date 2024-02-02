@@ -7,6 +7,7 @@ import { useTranslators } from 'utils/hooks'
 function Translators({
   projectCode,
   size,
+  showModerator,
   activeTranslators = [],
   support = false,
   clickable = false,
@@ -34,7 +35,7 @@ function Translators({
   }, [_translators, activeTranslators])
 
   return (
-    <div className="flex">
+    <div className="flex items-center">
       {translators && translators.length > 0 && (
         <>
           {translators.map((translator, key) => {
@@ -45,6 +46,7 @@ function Translators({
                   item={translator}
                   size={size}
                   support={support}
+                  showModerator={showModerator}
                 />
               </div>
             )

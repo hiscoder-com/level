@@ -26,7 +26,7 @@ export default async function notesHandler(req, res) {
                     data: {},
                   },
                 ],
-                version: '2.8.1',
+                version: '2.27.2',
               },
             },
           ])

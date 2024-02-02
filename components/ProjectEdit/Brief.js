@@ -12,7 +12,7 @@ import axios from 'axios'
 
 import UpdateField from 'components/UpdateField'
 import BriefEditQuestions from 'components/BriefEditQuestions'
-import ButtonSave from 'components/ButtonSave'
+import ButtonLoading from 'components/ButtonLoading'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 
@@ -20,7 +20,6 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
-
   const [briefDataCollection, setBriefDataCollection] = useState([])
   const [editableMode, setEditableMode] = useState(false)
   const [hidden, setHidden] = useState(true)
@@ -29,9 +28,7 @@ function BriefBlock({ access, title = false }) {
     query: { code },
   } = useRouter()
   const [project] = useProject({ code })
-
   const { t } = useTranslation(['common', 'project-edit'])
-
   const [brief, { mutate }] = useGetBrief({
     project_id: project?.id,
   })
@@ -109,25 +106,23 @@ function BriefBlock({ access, title = false }) {
             {t('project-edit:EditBriefTitle')}
           </h3>
         )}
-
         <div className="flex flex-col items-end lg:flex-row gap-7 justify-end text-sm md:text-base">
           {access && (
             <div className="flex items-center">
               <span className="mr-3">
                 {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
               </span>
-
               <Switch
                 checked={brief?.is_enable || false}
                 onChange={handleSwitch}
                 className={`${
-                  brief?.is_enable ? 'bg-cyan-600' : 'bg-gray-200'
+                  brief?.is_enable ? 'bg-th-primary-100' : 'bg-th-secondary-100'
                 } relative inline-flex h-7 w-12 items-center rounded-full`}
               >
                 <span
                   className={`${
                     brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
                 />
               </Switch>
             </div>
@@ -141,13 +136,13 @@ function BriefBlock({ access, title = false }) {
                 setHidden((prev) => !prev)
               }}
               className={`${
-                !hidden && !editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+                !hidden && !editableMode ? 'bg-th-primary-100' : 'bg-th-secondary-100'
               } relative inline-flex h-7 w-12 items-center rounded-full`}
             >
               <span
                 className={`${
                   !hidden ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
               />
             </Switch>
           </div>
@@ -160,13 +155,13 @@ function BriefBlock({ access, title = false }) {
                   setEditableMode((prev) => !prev)
                 }}
                 className={`${
-                  editableMode ? 'bg-cyan-600' : 'bg-gray-200'
+                  editableMode ? 'bg-th-primary-100' : 'bg-th-secondary-100'
                 } relative inline-flex h-7 w-12 items-center rounded-full`}
               >
                 <span
                   className={`${
                     editableMode ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-white transition`}
+                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
                 />
               </Switch>
             </div>
@@ -182,17 +177,17 @@ function BriefBlock({ access, title = false }) {
         <div className="space-y-7">
           {briefDataCollection.length > 0 ? (
             <div className="flex flex-col gap-4 w-full mb-4">
-              <ul className="list-decimal ml-4 text-sm md:text-base text-slate-900 space-y-7">
+              <ul className="list-decimal ml-4 text-sm md:text-base text-th-text-primary space-y-7">
                 {briefDataCollection.map((briefItem, index) => {
                   return (
                     <li key={index} className="space-y-3 font-bold">
                       <div className="flex gap-7 center justify-between">
-                        <p className="font-bold">{briefItem.title}</p>
+                        <p>{briefItem.title}</p>
                       </div>
                       <div className={hidden ? 'hidden' : 'space-y-7'}>
                         {briefItem.block?.map((questionAndAnswerPair, blockIndex) => {
                           return (
-                            <div key={blockIndex}>
+                            <div className="font-normal" key={blockIndex}>
                               <div className="space-y-3">
                                 <p>{questionAndAnswerPair.question}</p>
                                 <UpdateField
@@ -209,9 +204,8 @@ function BriefBlock({ access, title = false }) {
                           )
                         })}
                       </div>
-
                       <div className="space-y-7">
-                        <p className={hidden ? 'hidden' : 'text-lg font-bold mt-7'}>
+                        <p className={hidden ? 'hidden' : 'text-lg mt-7'}>
                           {t('project-edit:Summary')}
                         </p>
                         <UpdateField
@@ -219,8 +213,9 @@ function BriefBlock({ access, title = false }) {
                           updateValue={updateCollection}
                           index={index}
                           access={access}
-                          className="input-primary"
+                          className="input-primary font-normal"
                           editable={access}
+                          textarea
                         />
                       </div>
                     </li>
@@ -235,23 +230,22 @@ function BriefBlock({ access, title = false }) {
                   {[3, 7, 3, 4, 9, 6, 3, 10, 8].map((width, index) => (
                     <div
                       key={index}
-                      className={`h-7 w-${width}/12 mt-4 bg-gray-200 rounded-full`}
+                      className={`h-7 w-${width}/12 mt-4 bg-th-secondary-100 rounded-full`}
                     ></div>
                   ))}
                 </div>
               </div>
             </>
           )}
-
           {access && (
             <div>
-              <ButtonSave
-                className="btn-primary"
+              <ButtonLoading
+                className="relative btn-primary"
                 onClick={() => saveToDatabase(briefDataCollection, true)}
-                isSaving={isSaving}
+                isLoading={isSaving}
               >
                 {t('Save')}
-              </ButtonSave>
+              </ButtonLoading>
             </div>
           )}
         </div>

@@ -4,21 +4,18 @@ import { useMethod } from 'utils/hooks'
 
 function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
   const [customResources, setCustomResources] = useState({})
-
   const [methods] = useMethod()
   useEffect(() => {
     if (methods && methodId) {
       const selectedMethod = methods.find(
         (el) => el.id.toString() === methodId.toString()
       )
-
       if (selectedMethod) {
         setCustomResources(selectedMethod.resources)
       }
     }
   }, [methodId, methods])
-
-  const setResources = useMemo(() => {
+  const resources = useMemo(() => {
     const listOfResources = []
     for (const resource in customResources) {
       if (Object.hasOwnProperty.call(customResources, resource)) {
@@ -32,9 +29,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
               {resource}:
             </div>
             <input
-              className={`p-2 w-full md:w-5/6 rounded-lg bg-white text-slate-900 border ${
-                resourcesUrl?.[resource] ? 'border-slate-900' : 'border-blue-200'
-              } placeholder-blue-200 focus:border-slate-900 focus:outline-none`}
+              className="input-primary"
               value={resourcesUrl?.[resource] ?? ''}
               onChange={(e) =>
                 setResourcesUrl((prev) => ({ ...prev, [resource]: e.target.value }))
@@ -48,7 +43,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customResources, resourcesUrl])
 
-  return <div className="flex flex-col gap-2 text-lg">{setResources}</div>
+  return <div className="flex flex-col gap-2 text-lg">{resources}</div>
 }
 
 export default CommitsList

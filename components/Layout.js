@@ -40,16 +40,13 @@ function Layout({ backgroundColor, children }) {
             enter="transition-opacity duration-200"
             leave="transition-opacity duration-200"
           >
-            <div
-              className={
-                'absolute flex justify-center items-center top-14 sm:top-16 left-0 bottom-0 right-0 bg-zinc-500 bg-opacity-10 backdrop-blur z-10 overflow-y-hidden'
-              }
-            >
-              {loadingPage && <Progress className="w-14 animate-spin" />}
+            <div className="absolute flex justify-center items-center top-14 sm:top-16 left-0 bottom-0 right-0 backdrop-brightness-90 backdrop-blur z-20 overflow-y-hidden">
+              {loadingPage && (
+                <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
+              )}
             </div>
           </Transition>
         </div>
-
         <main>
           <div className="pt-5 px-5 lg:px-8 mt-14 sm:mt-auto">{children}</div>
         </main>

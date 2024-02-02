@@ -76,8 +76,8 @@ function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
         className={{
           dialogPanel: `w-full max-w-md align-middle p-6 rounded-3xl ${
             isCreated
-              ? 'bg-gray-400 text-white'
-              : 'bg-gradient-to-r from-slate-700 to-slate-600 text-blue-250'
+              ? 'bg-th-secondary-300 text-th-text-secondary-100'
+              : 'bg-th-primary-100 text-th-text-secondary-100'
           }`,
         }}
         handleCloseDisabled={isCreating}

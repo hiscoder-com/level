@@ -26,34 +26,30 @@ function BlindEditor({ config }) {
   const [firstStepRef, setFirstStepRef] = useState({})
   const { t } = useTranslation(['common'])
   const textAreaRef = useRef([])
-
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
 
   useEffect(() => {
-    setVerseObjects(config.reference.verses)
-    let updatedArray = []
     const _verseObjects = config.reference.verses
-    config.reference.verses.forEach((el) => {
-      if (el.verse) {
-        updatedArray.push(el.num.toString())
-      }
-    })
+    setVerseObjects(_verseObjects)
+    const updatedArray = _verseObjects
+      .filter((verseObject) => verseObject.verse)
+      .map((verseObject) => verseObject.num.toString())
     setCheckedVersesBible(updatedArray)
     setTranslatedVerses(updatedArray)
     if (!updatedArray.length) {
       return
     }
-    if (updatedArray.length === _verseObjects.length) {
+    const lastNumInUpdatedArray = updatedArray[updatedArray.length - 1]
+    const nextIndex = _verseObjects.findIndex(
+      (verseObject, index) =>
+        verseObject.num.toString() === lastNumInUpdatedArray &&
+        index < _verseObjects.length - 1
+    )
+
+    if (nextIndex !== -1) {
+      setEnabledIcons([_verseObjects[nextIndex + 1].num.toString()])
+    } else if (updatedArray.length === _verseObjects.length) {
       setEnabledIcons(['0'])
-    } else {
-      for (let index = 0; index < _verseObjects.length; index++) {
-        if (
-          _verseObjects[index].num.toString() === updatedArray[updatedArray.length - 1] &&
-          index < _verseObjects.length - 1
-        ) {
-          setEnabledIcons([_verseObjects[index + 1].num.toString()])
-        }
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -86,20 +82,16 @@ function BlindEditor({ config }) {
       toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
         duration: 8000,
       })
-      console.log(res)
     }
   }
+
   const saveVerse = (ref) => {
     const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
     if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
-      if (textAreaRef?.current?.[index - 1]) {
-        textAreaRef?.current[index - 1].focus()
-      } else {
-        textAreaRef?.current[index].focus()
-      }
+      const focusIndex = textAreaRef?.current?.[index - 1] ? index - 1 : index
+      textAreaRef?.current?.[focusIndex]?.focus()
       return
     }
-
     setEnabledIcons((prev) => {
       return [
         ...prev,
@@ -107,16 +99,15 @@ function BlindEditor({ config }) {
       ].filter((el) => el !== prevNumVerse)
     })
     setCheckedVersesBible((prev) => [...prev, currentNumVerse])
-
     setEnabledInputs((prev) =>
       [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
     )
     if (index === 0) {
       return
     }
-
     sendToDb(index - 1)
   }
+
   const handleSaveVerse = (ref) => {
     if (ref.index === 0 && !ref.isTranslating) {
       setIsOpenModal(true)
@@ -152,31 +143,33 @@ function BlindEditor({ config }) {
                     isTranslating,
                   })
                 }
-                className={`${isTranslating ? 'btn-cyan' : 'btn-white'}`}
+                className={`p-3 rounded-2xl ${
+                  isTranslating ? 'bg-th-primary-100 cursor-auto' : 'bg-th-secondary-100'
+                }`}
                 disabled={disabledButton}
               >
                 {isTranslated ? (
-                  <Check className="w-4 h-4 stroke-2" />
+                  <Check className="w-5 h-5 stroke-2 stroke-th-secondary-300" />
                 ) : (
                   <Pencil
                     className={`w-5 h-5 stroke-2 ${
                       disabledButton
-                        ? 'fill-gray-200'
+                        ? 'stroke-th-secondary-300'
                         : !isTranslating
-                        ? 'fill-cyan-600'
-                        : 'fill-white'
+                        ? 'fill-th-secondary-100'
+                        : 'stroke-th-text-secondary-100'
                     }`}
                   />
                 )}
               </button>
 
-              <div className="mx-4">{obsCheckAdditionalVerses(verseObject.num)}</div>
+              <div className="mx-4 mt-3">{obsCheckAdditionalVerses(verseObject.num)}</div>
               {isTranslating ? (
                 <textarea
                   ref={(el) => (textAreaRef.current[index] = el)}
                   autoFocus
                   rows={1}
-                  className="resize-none focus:outline-none focus:inline-none w-full"
+                  className="mt-3 w-full resize-none focus:outline-none focus:inline-none"
                   onChange={(e) => {
                     e.target.style.height = 'inherit'
                     e.target.style.height = `${e.target.scrollHeight}px`
@@ -191,7 +184,7 @@ function BlindEditor({ config }) {
                   defaultValue={verseObject.verse ?? ''}
                 />
               ) : (
-                <div className="whitespace-pre-line">{verseObject.verse}</div>
+                <div className="mt-3 whitespace-pre-line">{verseObject.verse}</div>
               )}
             </div>
           )
@@ -203,7 +196,7 @@ function BlindEditor({ config }) {
               setEnabledInputs([])
               sendToDb(verseObjects.length - 1)
             }}
-            className="btn-white"
+            className="btn-base bg-th-primary-100 text-th-text-secondary-100 hover:opacity-70"
           >
             {t('Save')}
           </button>
@@ -221,7 +214,7 @@ function BlindEditor({ config }) {
                 saveVerse(firstStepRef)
                 setTimeout(() => {
                   if (textAreaRef?.current) {
-                    textAreaRef?.current[0].focus()
+                    textAreaRef.current[0].focus()
                   }
                 }, 1000)
               }}
@@ -230,9 +223,7 @@ function BlindEditor({ config }) {
             </button>
             <button
               className="btn-secondary flex-1"
-              onClick={() => {
-                setIsOpenModal(false)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
               {t('No')}
             </button>

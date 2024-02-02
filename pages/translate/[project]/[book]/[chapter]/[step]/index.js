@@ -122,7 +122,7 @@ export default function ProgressPage({ last_step }) {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {versesRange.length && stepConfig ? (
+      {stepConfig ? (
         <Workspace
           reference={{ step, book, chapter, verses: versesRange }}
           stepConfig={stepConfig}
@@ -184,6 +184,7 @@ export async function getServerSideProps({ locale, params }) {
         'audio',
         'books',
         'users',
+        'error',
       ])),
       last_step: steps.data.sorting,
     },

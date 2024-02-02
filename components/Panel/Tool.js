@@ -17,7 +17,7 @@ import {
   TQ,
 } from './'
 
-function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }) {
+function Tool({ config, toolName, tnLink, editable = false }) {
   const { t } = useTranslation(['common', 'books'])
   const {
     resource: {
@@ -83,7 +83,6 @@ function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }
         (el) => el.identifier === config.reference.book
       )?.path
 
-      config.targetResourceLink = targetResourceLink
       url = '/api/git/tn'
       break
 
@@ -167,21 +166,23 @@ function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }
   }
   return (
     <>
-      <div className="pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg truncate">
-        {![
-          'translate',
-          'commandTranslate',
-          'draftTranslate',
-          'teamNotes',
-          'personalNotes',
-          'audio',
-          'dictionary',
-        ].includes(toolName) &&
-          `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
-        {title}
+      <div className="flex align-bottom-center px-4 h-10 font-bold bg-th-primary-500 text-th-text-secondary-200 text-center items-center justify-center rounded-t-lg">
+        <p className="truncate">
+          {![
+            'translate',
+            'commandTranslate',
+            'draftTranslate',
+            'teamNotes',
+            'personalNotes',
+            'audio',
+            'dictionary',
+          ].includes(toolName) &&
+            `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
+          {title}
+        </p>
       </div>
       <div className="adaptive-card">
-        <div className="h-full p-4 overflow-x-hidden overflow-y-auto">
+        <div className="h-full p-4 overflow-x-hidden overflow-y-auto border border-b-th-secondary-300 border-l-th-secondary-300 border-r-th-secondary-300 rounded-b-lg">
           <CurrentTool config={config} url={url} toolName={toolName} />
         </div>
       </div>

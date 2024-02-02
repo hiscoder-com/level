@@ -1,10 +1,32 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-const defaultColor = ['#27AE60', '#03A9F4', '#023047', '#7DAE27', '#27AE9B', '#9D27AE']
+import { useRecoilValue } from 'recoil'
+import { userAvatarState } from './state/atoms'
 
-function TranslatorImage({ item, size, clickable, support }) {
+const defaultColor = [
+  'fill-th-divide-verse1',
+  'fill-th-divide-verse2',
+  'fill-th-divide-verse3',
+  'fill-th-divide-verse4',
+  'fill-th-divide-verse5',
+  'fill-th-divide-verse6',
+  'fill-th-divide-verse7',
+  'fill-th-divide-verse8',
+  'fill-th-divide-verse9',
+]
+
+function TranslatorImage({
+  item,
+  size,
+  clickable,
+  support,
+  showModerator = false,
+  isPointerCursor = false,
+}) {
+  const [userAvatarUrl, setUserAvatarUrl] = useState(item?.users?.avatar_url || null)
+  const userAvatar = useRecoilValue(userAvatarState)
   const {
     push,
     query: { project, book, chapter, step, translator },
@@ -14,6 +36,14 @@ function TranslatorImage({ item, size, clickable, support }) {
     () => clickable && (!translator || translator !== item.users?.login),
     [clickable, item.users?.login, translator]
   )
+
+  useEffect(() => {
+    userAvatar?.id === item.users?.id
+      ? setUserAvatarUrl(userAvatar?.url || null)
+      : setUserAvatarUrl(item?.users?.avatar_url || null)
+  }, [item.users?.id, item.users?.avatar_url, userAvatar])
+
+  const cursorStyle = isPointerCursor || canClick ? 'cursor-pointer' : 'cursor-default'
 
   return (
     <div
@@ -34,37 +64,38 @@ function TranslatorImage({ item, size, clickable, support }) {
           })
         }
       }}
-      className={`relative border-2 ${canClick ? 'cursor-pointer' : 'cursor-default'} ${
-        item.is_moderator ? 'border-blue-800 ' : ''
+      className={`relative ${cursorStyle} ${
+        showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
       } rounded-full select-none`}
     >
-      {item.avatar ? (
-        <div
-          style={{
-            backgroundImage: 'url(' + item?.url + ')',
-            width: size,
-            height: size,
-          }}
-          className={`relative rounded-full bg-contain bg-center bg-no-repeat`}
-        ></div>
+      {userAvatarUrl ? (
+        <img
+          src={userAvatarUrl}
+          alt={`${item?.users?.login} avatar`}
+          className="rounded-full shadow-lg"
+          width={size}
+          height={size}
+        />
       ) : (
         <svg
           viewBox="0 0 168 168"
-          fill="white"
           width={size}
           xmlns="http://www.w3.org/2000/svg"
+          className="rounded-full shadow-lg"
         >
           <circle
             cx="84"
             cy="84"
             r="84"
-            fill={defaultColor[item?.users?.login.length % 6]}
+            className={
+              defaultColor[item?.users?.login.length % 6] ?? 'fill-th-divide-verse1'
+            }
           />
           <text
             x="84"
             y="110"
             textAnchor="middle"
-            className="text-7xl text-white font-bold"
+            className="text-7xl fill-th-text-primary font-bold"
           >
             {item?.users?.login.toUpperCase().slice(0, 2)}
           </text>

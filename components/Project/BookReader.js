@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -12,12 +12,28 @@ import ChecksIcon from './BookList/ChecksIcon'
 import Breadcrumbs from 'components/Breadcrumbs'
 
 import { useCurrentUser } from 'lib/UserContext'
-import { useAccess, useGetBooks, useGetResource, useProject } from 'utils/hooks'
+import {
+  useAccess,
+  useGetBooks,
+  useGetChaptersTranslate,
+  useGetResource,
+  useProject,
+} from 'utils/hooks'
+
+import {
+  checkBookCodeExists,
+  checkChapterVersesExist,
+  getVerseCount,
+  getVerseCountOBS,
+  getVerseObjectsForBookAndChapter,
+} from 'utils/helper'
+
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
 
 import Down from '/public/arrow-down.svg'
 import Left from '/public/left.svg'
 import Gear from '/public/gear.svg'
+import Card from './Card'
 
 function BookReader() {
   const { user } = useCurrentUser()
@@ -29,6 +45,8 @@ function BookReader() {
     code,
   })
   const [project] = useProject({ code })
+
+  const [chapters] = useGetChaptersTranslate({ code })
 
   const resource = useMemo(() => {
     if (reference?.checks) {
@@ -49,6 +67,9 @@ function BookReader() {
     },
     url: `/api/git/${project?.type}`,
   })
+  const verseObjectsToUse =
+    verseObjects ||
+    getVerseObjectsForBookAndChapter(chapters, reference?.bookid, reference?.chapter)
   useEffect(() => {
     if (bookid && books) {
       const book = books.find((book) => book.code === bookid)
@@ -61,7 +82,9 @@ function BookReader() {
         ? books
             .filter((book) =>
               Object.keys(newTestamentList).some(
-                (nt) => nt === book.code && book?.level_checks
+                (nt) =>
+                  nt === book.code &&
+                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
               )
             )
             .sort((a, b) => {
@@ -71,7 +94,7 @@ function BookReader() {
               )
             })
         : [],
-    [books]
+    [books, chapters]
   )
   const createdOldTestamentBooks = useMemo(
     () =>
@@ -79,7 +102,9 @@ function BookReader() {
         ? books
             .filter((book) =>
               Object.keys(oldTestamentList).some(
-                (ot) => ot === book.code && book?.level_checks
+                (ot) =>
+                  ot === book.code &&
+                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
               )
             )
             .sort((a, b) => {
@@ -89,9 +114,9 @@ function BookReader() {
               )
             })
         : [],
-    [books]
+
+    [books, chapters]
   )
-  //TODO в брифе неработает ссылка
   return (
     <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
       <div className="static xl:sticky top-7 flex flex-col md:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
@@ -112,15 +137,10 @@ function BookReader() {
         </div>
       </div>
       <div className="w-full xl:w-2/3">
-        <div className="card flex flex-col gap-7">
+        <div className="card flex flex-col gap-7 bg-th-secondary-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
-            <Link
-              href={{
-                pathname: '/projects/[code]',
-                query: { code: project.code },
-              }}
-            >
-              <Left className="w-5 h-5 hover:text-gray-500" />
+            <Link href={'/projects/' + project?.code} className="p-3">
+              <Left className="w-5 h-5 stroke-th-primary-200 hover:opacity-70" />
             </Link>
             <Navigation
               books={
@@ -133,7 +153,7 @@ function BookReader() {
             />
           </div>
           <Verses
-            verseObjects={verseObjects}
+            verseObjects={verseObjectsToUse}
             user={user}
             reference={reference}
             isLoading={isLoading}
@@ -145,7 +165,6 @@ function BookReader() {
 }
 
 export default BookReader
-
 function Verses({ verseObjects, user, reference, isLoading }) {
   const {
     push,
@@ -158,6 +177,15 @@ function Verses({ verseObjects, user, reference, isLoading }) {
   })
   const [project] = useProject({ code })
   const { t } = useTranslation()
+  const [books] = useGetBooks({ code })
+
+  const verseCount = useMemo(() => {
+    if (project?.type === 'obs') {
+      return getVerseCountOBS(books, reference?.chapter)
+    } else {
+      return getVerseCount(books, bookid, reference?.chapter)
+    }
+  }, [books, project?.type, bookid, reference?.chapter])
 
   return (
     <div className="flex flex-col gap-5">
@@ -185,31 +213,36 @@ function Verses({ verseObjects, user, reference, isLoading }) {
       <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
         {!isLoading ? (
           verseObjects ? (
-            verseObjects.verseObjects?.map((verseObject) => (
-              <div className="flex gap-2" key={verseObject.verse}>
-                {verseObject.verse > 0 && verseObject.verse < 200 && (
-                  <sup className="mt-2">{verseObject.verse}</sup>
-                )}
-                <p
-                  className={
-                    verseObject.verse === '0'
-                      ? 'font-bold'
-                      : '' || verseObject.verse === '200'
-                      ? 'italic'
-                      : ''
-                  }
-                >
-                  {verseObject.text}
-                </p>
-              </div>
-            ))
+            <>
+              {Array.from({ length: Math.min(verseCount + 1, 200) }).map((_, index) => {
+                const verseIndex = verseObjects?.verseObjects?.findIndex(
+                  (verse) => parseInt(verse.verse) === index
+                )
+                const text =
+                  verseObjects?.verseObjects && verseIndex !== -1
+                    ? verseObjects.verseObjects[verseIndex].text
+                    : ' '
+
+                return (
+                  <div className={`flex gap-2 ${text === ' ' ? 'mb-2' : ''}`} key={index}>
+                    {index !== 0 && <sup className="mt-2">{index}</sup>}
+                    <p>{text}</p>
+                  </div>
+                )
+              })}
+              {verseObjects?.verseObjects && (
+                <div className="flex gap-2 mb-2">
+                  {verseObjects.verseObjects.find((verse) => verse.verse === 200)?.text}
+                </div>
+              )}
+            </>
           ) : (
             <>
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
                 <div
                   className="flex gap-2
-                  text-cyan-700 hover:stroke-gray-500 hover:text-gray-500 cursor-pointer"
+                  text-th-primary-200 hover:opacity-70 cursor-pointer"
                   onClick={() =>
                     push({
                       pathname: `/projects/[code]`,
@@ -229,10 +262,10 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           )
         ) : (
           <div className="p-4 md:p-6 h-full animate-pulse">
-            <div className="mb-4 h-2.5 w-1/4 bg-gray-200 rounded-full"></div>
+            <div className="mb-4 h-2.5 w-1/4 bg-th-secondary-100 rounded-full"></div>
             {[...Array(22).keys()].map((el) => (
               <div key={el}>
-                <div className="h-2 mb-4 bg-gray-200 rounded-full"></div>
+                <div className="h-2 mb-4 bg-th-secondary-100 rounded-full"></div>
               </div>
             ))}
           </div>
@@ -241,6 +274,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
     </div>
   )
 }
+
 function Navigation({ books, reference, setReference }) {
   const { query, replace } = useRouter()
   const [selectedBook, setSelectedBook] = useState({})
@@ -269,15 +303,19 @@ function Navigation({ books, reference, setReference }) {
   return (
     <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3">
       <button
-        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
-          !prevChapter ? 'bg-gray-100 cursor-default' : 'bg-slate-200 cursor-pointer'
+        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-th-secondary-100 rounded-3xl ${
+          !prevChapter ? 'cursor-default' : 'bg-th-secondary-100 cursor-pointer'
         }
         }`}
         onClick={() =>
           prevChapter && setReference((prev) => ({ ...prev, chapter: prev.chapter - 1 }))
         }
       >
-        <Down className={`w-5 h-5 rotate-90 ${prevChapter ? '' : 'stroke-gray-400'}`} />
+        <Down
+          className={`w-5 h-5 rotate-90 ${
+            !prevChapter ? 'stroke-th-secondary-300' : 'stroke-th-text-primary'
+          }`}
+        />
         <span className={`${prevChapter ? 'opacity-100' : 'opacity-0'}`}>
           {prevChapter}
         </span>
@@ -297,14 +335,18 @@ function Navigation({ books, reference, setReference }) {
           <div className="relative">
             <Listbox.Button>
               <div
-                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-slate-200 ${
+                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-th-secondary-100 ${
                   !Object.keys(selectedBook)?.length ? 'animate-pulse' : ''
                 } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
               >
                 <div
                   className={`flex ${
                     books?.length > 1 ? 'justify-between' : 'justify-center'
-                  } ${!Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'}`}
+                  } ${
+                    selectedBook && !Object.keys(selectedBook)?.length
+                      ? 'opacity-0'
+                      : 'opacity-auto'
+                  }`}
                 >
                   <span>{t('books:' + selectedBook?.code)}</span>
                   {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
@@ -312,7 +354,7 @@ function Navigation({ books, reference, setReference }) {
               </div>
             </Listbox.Button>
             <div className="flex justify-center">
-              <Listbox.Options className="absolute w-full max-h-[50vh] bg-slate-200 overflow-y-scroll rounded-b-2xl">
+              <Listbox.Options className="absolute w-full max-h-[50vh] bg-th-secondary-100 overflow-y-scroll rounded-b-2xl">
                 {books?.map((book) => (
                   <Listbox.Option
                     key={book?.id}
@@ -330,8 +372,8 @@ function Navigation({ books, reference, setReference }) {
                     {({ selected }) => (
                       <div
                         className={`${
-                          selected ? 'bg-slate-100' : 'bg-slate-200'
-                        } w-full px-3 py-1 hover:bg-slate-100 cursor-pointer`}
+                          selected ? 'opacity-70' : 'bg-th-secondary-100'
+                        } w-full px-3 py-1 hover:opacity-70 cursor-pointer`}
                       >
                         {t('books:' + book?.code)}
                       </div>
@@ -345,8 +387,8 @@ function Navigation({ books, reference, setReference }) {
       </Listbox>
 
       <div
-        className={`w-2/5 sm:w-auto px-7 py-3 bg-slate-200 rounded-3xl cursor-pointer ${
-          !isNextChapter ? 'cursor-default bg-gray-100' : 'cursor-pointer'
+        className={`w-2/5 sm:w-auto px-7 py-3 bg-th-secondary-100 rounded-3xl ${
+          !isNextChapter ? 'cursor-default' : 'cursor-pointer'
         }
         }`}
         onClick={() =>
@@ -355,7 +397,7 @@ function Navigation({ books, reference, setReference }) {
         }
       >
         <div
-          className={`flex justify-around gap-1 ${
+          className={`flex justify-around items-center gap-1 ${
             !Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'
           }`}
         >
@@ -366,7 +408,9 @@ function Navigation({ books, reference, setReference }) {
             className={`hidden sm:block ${isNextChapter ? 'opacity-100' : 'opacity-0'}`}
           >{`${t('Chapter')}`}</span>
           <Down
-            className={`w-5 h-5 -rotate-90 ${isNextChapter ? '' : 'stroke-gray-400'}`}
+            className={`w-5 h-5 -rotate-90 ${
+              isNextChapter ? 'stroke-th-text-primary' : 'stroke-th-secondary-300'
+            }`}
           />
         </div>
       </div>
@@ -377,10 +421,14 @@ function Navigation({ books, reference, setReference }) {
 function BookListReader({ books, setReference, reference, project }) {
   const [createdOldTestamentBooks, createdNewTestamentBooks] = books
   const [currentBook, setCurrentBook] = useState(null)
-
   const { query, replace } = useRouter()
   const { t } = useTranslation(['common', 'books'])
   const refs = useRef([])
+  const {
+    query: { code, bookid },
+  } = useRouter()
+  const [chapters] = useGetChaptersTranslate({ code })
+
   const scrollRefs = useRef({})
   const handleClose = (index) => {
     refs.current.map((closeFunction, refIndex) => {
@@ -394,7 +442,6 @@ function BookListReader({ books, setReference, reference, project }) {
       verseRef(scrollRefs.current[bookid])
     }
   }
-
   const scrollTo = (currentBook, position) => {
     let offset = 0
     const top = currentBook.offsetTop - 95
@@ -410,12 +457,18 @@ function BookListReader({ books, setReference, reference, project }) {
     currentBook.parentNode.scrollTo({ left: 0, top: top + offset, behavior: 'smooth' })
   }
 
-  const defaultIndex = useMemo(
+  const defaultIndex = useMemo(() => {
+    const index = [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex(
+      (list) => list?.find((el) => el.code === query.bookid)
+    )
+
+    return index === -1 ? 0 : index
+  }, [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid])
+
+  const tabs = useMemo(
     () =>
-      [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex((list) =>
-        list?.find((el) => el.code === query.bookid)
-      ),
-    [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid]
+      project?.type === 'obs' ? ['OpenBibleStories'] : ['NewTestament', 'OldTestament'],
+    [project?.type]
   )
 
   const verseRef = useCallback((node) => {
@@ -438,90 +491,127 @@ function BookListReader({ books, setReference, reference, project }) {
   }, [reference?.bookid])
   //TODO надо сделать скролл при нажатии на таб Ветхий завет или новый
   return (
-    <div className="card flex flex-col gap-7">
-      <Tab.Group defaultIndex={defaultIndex}>
-        <Tab.List
-          as={'div'}
-          className={`grid grid-cols-2 gap-3 w-full font-bold border-b border-slate-900 ${
-            project?.type === 'obs' ? 'hidden' : 'flex'
-          }`}
-        >
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
-            {t('NewTestament')}
-          </Tab>
-          <Tab className={({ selected }) => (selected ? 'tab-active' : 'tab')}>
-            {t('OldTestament')}
-          </Tab>
-        </Tab.List>
-        <Tab.Panels className="text-sm font-bold">
-          {[createdNewTestamentBooks, createdOldTestamentBooks].map((list, idx) => (
-            <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
-              {list?.map((book, index) => (
-                <Disclosure
-                  as={'div'}
-                  key={book.code}
-                  defaultOpen={query?.bookid === book.code}
-                  ref={(ref) => (scrollRefs.current[book.code] = ref)}
-                >
-                  {({ open, close }) => {
-                    return (
-                      <>
-                        <Disclosure.Button
-                          ref={() => (refs.current[index] = close)}
-                          onClick={() => {
-                            handleClose(index)
-                            replace(
-                              {
-                                query: { ...query, bookid: book.code },
-                              },
-                              undefined,
-                              { shallow: true }
-                            )
-                          }}
-                          className={`flex justify-between items-center py-2 w-full hover:text-gray-400 ${
-                            !open ? 'border-b border-gray-400' : ''
-                          }`}
-                        >
-                          <div className="flex items-center gap-4">
-                            <ChecksIcon levelCheck={book?.level_checks} />
-                            <div>{t('books:' + book.code)}</div>
-                          </div>
-                          <Down
-                            className={`w-6 max-w-[1.5rem] ${
-                              open ? 'rotate-180 transform' : ''
+    <Card>
+      <div className="flex flex-col gap-7 bg-th-secondary-10">
+        <Tab.Group defaultIndex={defaultIndex}>
+          <Tab.List className="flex p-1 w-full -mt-6 bg-th-secondary-10 border border-th-secondary-300 rounded-3xl shadow-md">
+            {tabs.map((tab) => (
+              <Tab as={Fragment} key={tab}>
+                {({ selected }) => (
+                  <div
+                    className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
+                      selected ? 'bg-th-primary-100 text-th-text-secondary-100' : ''
+                    }
+                      `}
+                  >
+                    {t(tab)}
+                  </div>
+                )}
+              </Tab>
+            ))}
+          </Tab.List>
+
+          <Tab.Panels className="text-sm font-bold">
+            {[
+              ...(createdNewTestamentBooks !== undefined
+                ? [createdNewTestamentBooks]
+                : []),
+              ...(createdOldTestamentBooks !== undefined
+                ? [createdOldTestamentBooks]
+                : []),
+            ].map((list, idx) => (
+              <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
+                {list?.map((book, index) => (
+                  <Disclosure
+                    as={'div'}
+                    key={book.code}
+                    defaultOpen={query?.bookid === book.code}
+                    ref={(ref) => (scrollRefs.current[book.code] = ref)}
+                  >
+                    {({ open, close }) => {
+                      return (
+                        <>
+                          <Disclosure.Button
+                            ref={() => (refs.current[index] = close)}
+                            onClick={() => {
+                              handleClose(index)
+                              replace(
+                                {
+                                  query: { ...query, bookid: book.code },
+                                },
+                                undefined,
+                                { shallow: true }
+                              )
+                            }}
+                            className={`flex justify-between items-center py-2 w-full hover:opacity-70 ${
+                              !open ? 'border-b border-th-secondary-300' : ''
                             }`}
-                          />
-                        </Disclosure.Button>
-                        <Disclosure.Panel>
-                          <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-gray-400">
-                            {[...Array(Object.keys(book.chapters).length).keys()]
-                              .map((el) => el + 1)
-                              .map((index) => (
-                                <div
-                                  className={`flex justify-center items-center w-10 h-10 bg-slate-200 rounded-md cursor-pointer hover:bg-slate-100 ${
-                                    index === reference?.chapter
-                                      ? 'cursor-default bg-slate-100'
-                                      : 'bg-slate-200 cursor-pointer '
-                                  }`}
-                                  key={index}
-                                  onClick={() =>
-                                    setReference((prev) => ({ ...prev, chapter: index }))
-                                  }
-                                >
-                                  {index}
-                                </div>
-                              ))}
-                          </div>
-                        </Disclosure.Panel>
-                      </>
-                    )
-                  }}
-                </Disclosure>
-              ))}
-            </Tab.Panel>
-          ))}
-        </Tab.Panels>
-      </Tab.Group>
-    </div>
+                          >
+                            <div className="flex items-center gap-4 text-base">
+                              <ChecksIcon levelCheck={book?.level_checks} />
+                              <div>{t('books:' + book.code)}</div>
+                            </div>
+                            <Down
+                              className={`w-6 max-w-[1.5rem] ${
+                                open ? 'rotate-180 transform' : ''
+                              }`}
+                            />
+                          </Disclosure.Button>
+                          <Disclosure.Panel>
+                            <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-th-secondary-300">
+                              {[...Array(Object.keys(book.chapters).length).keys()]
+                                .map((el) => el + 1)
+                                .map((index) => (
+                                  <button
+                                    disabled={
+                                      !checkChapterVersesExist(
+                                        book.code,
+                                        index,
+                                        chapters
+                                      ) && !reference?.checks
+                                    }
+                                    className={`flex justify-center items-center w-10 h-10 rounded-md ${
+                                      checkChapterVersesExist(
+                                        book.code,
+                                        index,
+                                        chapters
+                                      ) || reference?.checks
+                                        ? 'cursor-pointer bg-th-primary-100'
+                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary-100 rounded-md'
+                                    } ${
+                                      index === reference?.chapter
+                                        ? 'cursor-default bg-th-primary-100 text-th-text-secondary-100 rounded-md'
+                                        : checkChapterVersesExist(
+                                            book.code,
+                                            index,
+                                            chapters
+                                          ) || reference?.checks
+                                        ? 'hover:opacity-70 bg-th-secondary-200'
+                                        : ''
+                                    }`}
+                                    key={index}
+                                    onClick={() =>
+                                      setReference((prev) => ({
+                                        ...prev,
+                                        chapter: index,
+                                      }))
+                                    }
+                                  >
+                                    {index}
+                                  </button>
+                                ))}
+                            </div>
+                          </Disclosure.Panel>
+                        </>
+                      )
+                    }}
+                  </Disclosure>
+                ))}
+              </Tab.Panel>
+            ))}
+          </Tab.Panels>
+        </Tab.Group>
+      </div>
+    </Card>
   )
 }

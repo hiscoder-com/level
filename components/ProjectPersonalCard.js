@@ -7,7 +7,13 @@ import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
 
-import { useBriefState, useGetBooks, useAccess } from 'utils/hooks'
+import {
+  useGetChaptersTranslate,
+  useBriefState,
+  useGetBooks,
+  useAccess,
+} from 'utils/hooks'
+
 import { readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
@@ -26,6 +32,7 @@ function ProjectPersonalCard({ project, user }) {
     code: project?.code,
   })
 
+  const [chaptersArray] = useGetChaptersTranslate({ code: project.code })
   useEffect(() => {
     supabase
       .rpc('get_current_steps', { project_id: project.id })
@@ -63,6 +70,7 @@ function ProjectPersonalCard({ project, user }) {
   const [books] = useGetBooks({
     code: project?.code,
   })
+
   const levelChecks = useMemo(() => {
     if (books) {
       const _books = {}
@@ -109,17 +117,17 @@ function ProjectPersonalCard({ project, user }) {
         <div className="flex flex-col gap-3 sm:gap-7">
           {Object.keys(chapters).map((book, i) => {
             return (
-              <div key={i} className="card flex flex-col sm:flex-row gap-7 p-7 h-full">
+              <div
+                key={i}
+                className="card flex flex-col sm:flex-row gap-7 p-7 h-full bg-th-secondary-10 sm:bg-th-secondary-100"
+              >
                 {!isLoading && currentSteps && project ? (
                   <>
-                    <div className="flex flex-col gap-7 w-auto lg:w-1/3">
+                    <div className="flex flex-col gap-6 w-auto sm:w-1/2 lg:w-1/3">
                       <div className="flex gap-1 flex-wrap items-center">
                         <Link
-                          className="text-xl font-bold text-cyan-700 hover:text-gray-500 cursor-pointer"
-                          href={{
-                            pathname: '/projects/[code]/books/[bookid]',
-                            query: { code: project.code, bookid: book },
-                          }}
+                          className="text-xl font-bold text-th-primary-200 hover:opacity-70 cursor-pointer"
+                          href={`/projects/${project.code}/books/${book}`}
                         >
                           {t(`books:${book}`)}
                         </Link>
@@ -128,98 +136,93 @@ function ProjectPersonalCard({ project, user }) {
                         })} ${t('Verse', {
                           count: countChaptersVerses?.[book]?.countVerses,
                         })})`}</div>
-                        {levelChecks?.[book] && (
-                          <Reader
-                            className="w-6 min-w-[1.5rem] text-cyan-700 hover:text-gray-500 cursor-pointer"
-                            onClick={() =>
-                              push({
-                                pathname: `/projects/[code]/books/read`,
-                                query: {
-                                  code: project?.code,
-                                  bookid: book,
-                                },
-                                shallow: true,
-                              })
-                            }
-                          />
-                        )}
                       </div>
                       <div className="flex flex-col gap-5">
                         <div className="flex gap-3">
                           <p>{t('projects:Project')}:</p>
                           <Link
-                            href={{
-                              pathname: '/projects/[code]',
-                              query: { code: project.code },
-                            }}
-                            className="text-cyan-700 hover:text-gray-500"
+                            href={`/projects/${project.code}`}
+                            className="text-th-primary-200 hover:opacity-70"
                           >
                             {project?.title}
                           </Link>
+                          {(chaptersArray || levelChecks?.[book]) && (
+                            <Reader
+                              className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70 cursor-pointer"
+                              onClick={() =>
+                                push({
+                                  pathname: `/projects/${project?.code}/books/read`,
+                                  query: {
+                                    bookid: chaptersArray[0].book_code || book,
+                                  },
+                                  shallow: true,
+                                })
+                              }
+                            />
+                          )}
                         </div>
                         <div className="flex flex-wrap gap-3">
                           <p>{t('Translator_other')}:</p>
-                          <Translators projectCode={project?.code} size="25px" />
+                          <Translators
+                            projectCode={project?.code}
+                            size="25px"
+                            className="-mx-0.5"
+                          />
                         </div>
                         <div className="flex gap-3">
-                          <p>
-                            {t('projects:Begin')}:{' '}
-                            {chapters &&
-                              readableDate(
-                                Math.min(
-                                  ...chapters?.[book].map((el) =>
-                                    Date.parse(el.started_at)
-                                  )
-                                ),
-                                locale
-                              )}
+                          <p className="flex gap-2">
+                            <span>{t('projects:Begin')}: </span>
+                            <span className="text-th-secondary-300">
+                              {chapters &&
+                                readableDate(
+                                  Math.min(
+                                    ...chapters?.[book].map((el) =>
+                                      Date.parse(el.started_at)
+                                    )
+                                  ),
+                                  locale
+                                )}
+                            </span>
                           </p>
                         </div>
                       </div>
                     </div>
-                    <div className="sm:flex sm:flex-wrap gap-1 sm:gap-3 grid grid-cols-1 content-start w-3/4 sm:w-1/2 lg:w-2/3 text-sm">
+                    <div className="flex flex-wrap justify-center sm:justify-start content-start text-center w-auto sm:w-1/2 lg:w-2/3 gap-1 sm:gap-3">
                       {chapters[book].map((step, index) => {
                         const stepLink = (
-                          <>
+                          <p className="space-x-1">
+                            <span>{step.chapter}</span>
+                            <span>{t('Ch').toLowerCase()}</span>
+                            <span>{' | '}</span>
                             <span>
-                              {step.chapter} {t('Ch').toLowerCase()}
+                              {countChaptersVerses?.[book]?.chapters[step.chapter]}
                             </span>
-                            <span>|</span>
-                            <span>
-                              {countChaptersVerses?.[book]?.chapters[step.chapter]}{' '}
-                              {t('Ver').toLowerCase()}
-                            </span>
-                            <span>|</span>
-                            <span>
-                              {step?.step} {t('Step').toLowerCase()}
-                            </span>
-                          </>
+                            <span>{t('Ver').toLowerCase()}</span>
+                            <span>{' | '}</span>
+                            <span>{step?.step}</span>
+                            <span>{t('Step').toLowerCase()}</span>
+                          </p>
                         )
 
                         return !isBrief || briefResume ? (
                           <Link
                             key={index}
-                            href={{
-                              pathname:
-                                typeof searchLocalStorage(step, localStorageSteps) ===
-                                'undefined'
-                                  ? '/translate/[project]/[book]/[chapter]/[step]/intro'
-                                  : '/translate/[project]/[book]/[chapter]/[step]',
-                              query: {
-                                project: step.project,
-                                book: step.book,
-                                chapter: step.chapter,
-                                step: step.step,
-                              },
-                            }}
-                            className="btn-primary flex justify-center gap-1 sm:gap-2 text-sm sm:text-base"
+                            href={`/translate/${step.project}/${step.book}/${
+                              step.chapter
+                            }/${step.step}${
+                              typeof searchLocalStorage(step, localStorageSteps) ===
+                              'undefined'
+                                ? '/intro'
+                                : ''
+                            }`}
+                            className="step-link w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
                           >
                             {stepLink}
                           </Link>
                         ) : (
                           <button
                             key={index}
-                            className="btn-primary flex justify-center gap-1 sm:gap-2"
+                            className="step-link px-5 w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
                             disabled
                           >
                             {stepLink}
@@ -244,11 +247,11 @@ function ProjectPersonalCard({ project, user }) {
                     role="status"
                     className="flex flex-col gap-4 h-full w-full animate-pulse"
                   >
-                    <div className="h-3 bg-gray-200 rounded-2xl w-1/4" />
-                    <div className="h-3 bg-gray-200 rounded-2xl w-1/2" />
-                    <div className="h-3 bg-gray-200 rounded-2xl w-full" />
-                    <div className="h-3 bg-gray-200 rounded-2xl w-full" />
-                    <div className="h-3 bg-gray-200 rounded-2xl w-full" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-1/4" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-1/2" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
+                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
                   </div>
                 )}
               </div>

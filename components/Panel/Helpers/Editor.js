@@ -17,7 +17,7 @@ function Editor({ config }) {
   const [verseObjects, setVerseObjects] = useState([])
 
   useEffect(() => {
-    setVerseObjects(config.reference.verses)
+    setVerseObjects(config.reference.verses?.filter((verse) => verse.num < 201))
   }, [config.reference.verses])
 
   const updateVerse = (id, text) => {
@@ -31,7 +31,6 @@ function Editor({ config }) {
           toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
             duration: 8000,
           })
-          console.log(res)
         }
       }
       saveInDB()

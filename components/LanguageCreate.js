@@ -1,13 +1,16 @@
+import { useState } from 'react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
-import CheckboxShevron from 'public/checkbox-shevron.svg'
+import ButtonLoading from 'components/ButtonLoading'
+import CheckBox from 'components/CheckBox'
 
 function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
+  const [isSaving, setIsSaving] = useState(false)
 
   const {
     register,
@@ -17,6 +20,7 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   } = useForm()
 
   const handleAddLanguage = async (languageOptions) => {
+    setIsSaving(true)
     try {
       const { error } = await axios.post('/api/languages', languageOptions)
       if (error) throw error
@@ -26,6 +30,8 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
     } catch (error) {
       toast.error(t('common:SaveFailed'))
       console.log(error)
+    } finally {
+      setIsSaving(false)
     }
   }
   const inputs = [
@@ -86,36 +92,21 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
     <Modal isOpen={isOpen} closeHandle={closeHandle}>
       <form onSubmit={handleSubmit(handleAddLanguage)}>
         <div className="space-y-4">
-          {inputs.map((el) => (
-            <div key={el.id} className="space-y-2">
-              <div>{el.title}</div>
-              <input {...el.register} className={el.className} />
-              <div className="text-red-600">{el.errorMessage}</div>
+          {inputs.map((input) => (
+            <div key={input.id} className="space-y-2">
+              <div>{input.title}</div>
+              <input {...input.register} className={input.className} />
+              <div className="text-th-invalid">{input.errorMessage}</div>
             </div>
           ))}
-          <div className="flex items-center">
-            <label htmlFor={'isGl'}>{t('project-edit:GatewayLanguage')}</label>
-            <label
-              className="relative flex justify-center items-center p-3 cursor-pointer rounded-full"
-              htmlFor="isGl"
-              data-ripple-dark="true"
-            >
-              <input
-                id="isGl"
-                type="checkbox"
-                className="w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-cyan-700 bg-white checked:bg-cyan-700 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
-                {...register('isGl', {})}
-              />
-              <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
-                <CheckboxShevron />
-              </div>
-            </label>
-          </div>
+          <CheckBox label={t('project-edit:GatewayLanguage')} {...register('isGl', {})} />
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
-              <button className="btn-secondary">{t('Save')}</button>
+              <ButtonLoading className="relative btn-secondary" isLoading={isSaving}>
+                {t('common:Save')}
+              </ButtonLoading>
               <button type="button" className="btn-secondary" onClick={closeHandle}>
-                {t('Close')}
+                {t('common:Close')}
               </button>
             </div>
           </div>

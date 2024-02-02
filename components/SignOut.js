@@ -4,15 +4,15 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import ButtonLoading from './ButtonLoading'
+
 import useSupabaseClient from 'utils/supabaseClient'
 
 export default function SignOut() {
   const supabaseClient = useSupabaseClient()
-
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation('users')
   const router = useRouter()
-
   const handleLogout = async () => {
     try {
       setLoading(true)
@@ -27,12 +27,12 @@ export default function SignOut() {
   }
 
   return (
-    <button
-      disabled={loading}
+    <ButtonLoading
+      isLoading={loading}
       onClick={handleLogout}
-      className="bg-gray-200 w-full py-2 rounded-lg text-slate-600 text-lg font-bold"
+      className="btn-primary w-full"
     >
       {t('users:SignOut')}
-    </button>
+    </ButtonLoading>
   )
 }
