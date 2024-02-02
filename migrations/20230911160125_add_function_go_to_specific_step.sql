@@ -61,7 +61,7 @@ CREATE FUNCTION PUBLIC.go_to_specific_step(new_step INT2, login TEXT, project TE
         RETURN cur_step;
       END IF;
 
-      If new_step >= max_step THEN
+      If new_step > max_step THEN
         RETURN cur_step;
       END IF;
 

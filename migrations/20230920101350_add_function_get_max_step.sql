@@ -6,19 +6,19 @@ CREATE OR REPLACE FUNCTION PUBLIC.get_max_step(
 ) RETURNS JSON
 LANGUAGE plpgsql SECURITY DEFINER AS $$   
 DECLARE
-  project_id BIGINT;
+  current_project_id BIGINT;
   max_step INT2;
   count_steps INT2;      
 BEGIN
-  SELECT id INTO project_id FROM projects WHERE code = project_code;
+  SELECT id INTO current_project_id FROM projects WHERE code = project_code;
 
-  IF NOT authorize(auth.uid(), project_id) IN ('admin', 'supporter') THEN
+  IF NOT authorize(auth.uid(), current_project_id) IN ('admin', 'supporter') THEN
     RETURN json_build_object('count_steps', 0, 'max_step', 0);
   END IF;
 
   SELECT MAX(steps.sorting) INTO count_steps
   FROM PUBLIC.steps 
-  WHERE steps.project_id = project_id;
+  WHERE steps.project_id = current_project_id;
 
   SELECT MAX(steps.sorting) INTO max_step
   FROM Public.progress 
@@ -26,7 +26,7 @@ BEGIN
   WHERE progress.verse_id = (
     SELECT verses.id 
     FROM PUBLIC.verses 
-    WHERE verses.chapter_id = chapter_id 
+    WHERE verses.chapter_id = get_max_step.chapter_id 
       AND project_translator_id = translator_id 
     LIMIT 1
   );
