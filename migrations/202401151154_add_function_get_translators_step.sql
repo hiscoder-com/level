@@ -20,9 +20,8 @@ BEGIN
 
   SELECT chapters.id INTO cur_chapter_id
   FROM PUBLIC.chapters
-  WHERE chapters.num = get_translators_step.chapter_num AND chapters.project_id = cur_project_id AND chapters.book_id = (
-    SELECT id FROM PUBLIC.books WHERE books.code = get_translators_step.book_code AND books.project_id = cur_project_id
-  );
+  LEFT JOIN PUBLIC.books ON (chapters.book_id = books.id)
+  WHERE chapters.num = get_translators_step.chapter_num AND chapters.project_id = cur_project_id AND books.code = get_translators_step.book_code;
 
   IF cur_chapter_id IS NULL THEN
     RETURN;
