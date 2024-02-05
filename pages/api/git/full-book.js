@@ -96,7 +96,6 @@ export default async function bibleHandler(req, res) {
     }
 
     const _res = pk.gqlQuerySync(query)
-    console.log(_res)
     const chaptersRefactor = () => {
       if (_res) {
         const newarray = _res.data.documents[0].cvIndexes.map((chapter) => {
