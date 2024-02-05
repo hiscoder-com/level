@@ -10,6 +10,7 @@ import {
   Reader,
   Audio,
   Bible,
+  BibleWholeBook,
   OBSTN,
   Info,
   TWL,
@@ -115,6 +116,15 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       )?.path
 
       url = '/api/git/bible'
+
+      break
+    case 'whole-book':
+      CurrentTool = BibleWholeBook
+
+      config.resource.bookPath = config.mainResource.manifest.projects.find(
+        (el) => el.identifier === config.reference.book
+      )?.path
+      url = '/api/git/full-book'
 
       break
 
