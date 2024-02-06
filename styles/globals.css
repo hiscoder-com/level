@@ -350,7 +350,7 @@
 
 .green-two-layers {
   position: relative;
-  background: linear-gradient(340deg, #24585B 50%, transparent 50%);
+  background: linear-gradient(45deg, #24585B 50%, transparent 50%);
 }
 
 .green-two-layers::after {
@@ -366,7 +366,7 @@
 
 .gray-two-layers {
   position: relative;
-  background: linear-gradient(340deg, #e3e3e3 50%, transparent 50%);
+  background: linear-gradient(45deg, #e3e3e3 50%, transparent 50%);
 }
 
 .gray-two-layers::after {

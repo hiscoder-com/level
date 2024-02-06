@@ -62,8 +62,8 @@ function AboutVersion({
 
   if (isStartPage) {
     return (
-      <div className="flex flex-col lg:h-full pt-6 lg:pt-0">
-        <div className="flex items-center justify-between bg-th-secondary-10">
+      <div className="flex flex-col w-full lg:h-full">
+        <div className="sticky top-0 py-6 md:py-0 md:static flex items-center justify-between bg-th-secondary-10">
           <p className="text-left font-bold">
             {t('Version')} {packageJson.version}
           </p>
@@ -72,7 +72,7 @@ function AboutVersion({
             onClick={() => setShowUpdates(false)}
           />
         </div>
-        <ReactMarkdown className="flex-grow text-left mt-5 overflow-y-auto text-sm font-normal whitespace-pre-line leading-5">
+        <ReactMarkdown className="flex-grow md:mt-5 text-left overflow-y-auto text-sm font-normal whitespace-pre-line leading-5">
           {showAllUpdates ? fullAboutVersion : currentAboutVersion}
         </ReactMarkdown>
         <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
