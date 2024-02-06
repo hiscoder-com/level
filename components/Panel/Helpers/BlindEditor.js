@@ -29,30 +29,27 @@ function BlindEditor({ config }) {
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
 
   useEffect(() => {
-    setVerseObjects(config.reference.verses)
-    let updatedArray = []
     const _verseObjects = config.reference.verses
-    config.reference.verses.forEach((el) => {
-      if (el.verse) {
-        updatedArray.push(el.num.toString())
-      }
-    })
+    setVerseObjects(_verseObjects)
+    const updatedArray = _verseObjects
+      .filter((verseObject) => verseObject.verse)
+      .map((verseObject) => verseObject.num.toString())
     setCheckedVersesBible(updatedArray)
     setTranslatedVerses(updatedArray)
     if (!updatedArray.length) {
       return
     }
-    if (updatedArray.length === _verseObjects.length) {
+    const lastNumInUpdatedArray = updatedArray[updatedArray.length - 1]
+    const nextIndex = _verseObjects.findIndex(
+      (verseObject, index) =>
+        verseObject.num.toString() === lastNumInUpdatedArray &&
+        index < _verseObjects.length - 1
+    )
+
+    if (nextIndex !== -1) {
+      setEnabledIcons([_verseObjects[nextIndex + 1].num.toString()])
+    } else if (updatedArray.length === _verseObjects.length) {
       setEnabledIcons(['0'])
-    } else {
-      for (let index = 0; index < _verseObjects.length; index++) {
-        if (
-          _verseObjects[index].num.toString() === updatedArray[updatedArray.length - 1] &&
-          index < _verseObjects.length - 1
-        ) {
-          setEnabledIcons([_verseObjects[index + 1].num.toString()])
-        }
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -91,11 +88,8 @@ function BlindEditor({ config }) {
   const saveVerse = (ref) => {
     const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
     if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
-      if (textAreaRef?.current?.[index - 1]) {
-        textAreaRef?.current[index - 1].focus()
-      } else {
-        textAreaRef?.current[index].focus()
-      }
+      const focusIndex = textAreaRef?.current?.[index - 1] ? index - 1 : index
+      textAreaRef?.current?.[focusIndex]?.focus()
       return
     }
     setEnabledIcons((prev) => {
@@ -220,7 +214,7 @@ function BlindEditor({ config }) {
                 saveVerse(firstStepRef)
                 setTimeout(() => {
                   if (textAreaRef?.current) {
-                    textAreaRef?.current[0].focus()
+                    textAreaRef.current[0].focus()
                   }
                 }, 1000)
               }}
@@ -229,9 +223,7 @@ function BlindEditor({ config }) {
             </button>
             <button
               className="btn-secondary flex-1"
-              onClick={() => {
-                setIsOpenModal(false)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
               {t('No')}
             </button>

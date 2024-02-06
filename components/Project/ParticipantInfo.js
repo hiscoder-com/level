@@ -51,8 +51,8 @@ function ParticipantInfo({ project, access }) {
               <div className="w-7 h-7 min-w-[2rem]">
                 <TranslatorImage item={participant} />
               </div>
-              <div>
-                <p className="text-lg">{participant?.users?.login}</p>
+              <div className="truncate">
+                <p className="text-lg truncate">{participant?.users?.login}</p>
                 <div className="text-sm">
                   {participant.is_coordinator ? (
                     <p>{t('Coordinator')}</p>

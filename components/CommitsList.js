@@ -15,7 +15,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
       }
     }
   }, [methodId, methods])
-  const setResources = useMemo(() => {
+  const resources = useMemo(() => {
     const listOfResources = []
     for (const resource in customResources) {
       if (Object.hasOwnProperty.call(customResources, resource)) {
@@ -43,7 +43,7 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [customResources, resourcesUrl])
 
-  return <div className="flex flex-col gap-2 text-lg">{setResources}</div>
+  return <div className="flex flex-col gap-2 text-lg">{resources}</div>
 }
 
 export default CommitsList

@@ -20,7 +20,9 @@ export default async function userHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, login, email, blocked, agreement, confession, is_admin')
+          .select(
+            'id, login, email, blocked, agreement, confession, is_admin, avatar_url'
+          )
           .eq('id', id)
           .single()
         if (error) throw error

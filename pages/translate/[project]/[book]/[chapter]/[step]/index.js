@@ -240,7 +240,7 @@ export default function ProgressPage({ last_step }) {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {versesRange.length && stepConfig ? (
+      {stepConfig ? (
         <Workspace
           reference={{ step, book, chapter, verses: versesRange }}
           stepConfig={stepConfig}

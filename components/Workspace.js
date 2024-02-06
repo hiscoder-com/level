@@ -81,9 +81,7 @@ function Workspace({ stepConfig, reference, editable = false }) {
               tools={el.tools}
               resources={stepConfig.resources}
               reference={reference}
-              targetResourceLink={`${
-                stepConfig.resources[stepConfig.base_manifest].owner
-              }/${stepConfig.resources[stepConfig.base_manifest].repo}`}
+              mainResource={stepConfig.resources[stepConfig.base_manifest]}
               tnLink={tnLink}
               wholeChapter={stepConfig.whole_chapter}
               editable={editable}
@@ -112,14 +110,13 @@ const sizeTabs = {
 function Panel({
   tools,
   resources,
-  targetResourceLink,
-  tnLink,
   reference,
+  mainResource,
+  tnLink,
   wholeChapter,
   editable = false,
 }) {
   const { t } = useTranslation('common')
-
   return (
     <Tab.Group>
       <Tab.List
@@ -164,11 +161,11 @@ function Panel({
               <div className="flex flex-col bg-th-secondary-10 rounded-lg h-full">
                 <Tool
                   editable={editable}
-                  targetResourceLink={targetResourceLink}
                   tnLink={tnLink}
                   config={{
                     reference,
                     wholeChapter,
+                    mainResource,
                     config: tool.config,
                     resource: resources[tool.name]
                       ? resources[tool.name]
