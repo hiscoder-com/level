@@ -1,12 +1,17 @@
+# Versión 0.15.0
+## Fecha: 02/07/2024
+
+### **Añadido:**
+- opción para esperar a todos los miembros del equipo al pasar al siguiente paso
+
 # Versión 0.14.0
 ## Fecha: 01/31/2024
 
 ### **Añadido:**
-- método de verificación de traducción para el equipo GL- opción en métodos para citas en TN
-- opción en métodos para citas en TN
-- función de distribución rápida de versículos
-- modo de solo lectura para la participación del traductor en la traducción de capítulos
-- seleccionar todo el título de la nota al editar en el diccionario/bloc de notas/notas del equipo
+- el método para verificar el texto traducido (nivel 3) para el comando GL
+- función de distribución quickverse
+- modo de solo lectura para participantes con funciones limitadas en la traducción de capítulos
+- resaltando el título completo de la nota al editar en el diccionario/bloc de notas / notas del equipo
 
 ### **Corregido:**
 - error con el desplazamiento cuando hay dos herramientas bíblicas en el espacio de trabajo
