@@ -1,41 +1,65 @@
-DROP FUNCTION IF EXISTS PUBLIC.get_translators_step;
-CREATE FUNCTION PUBLIC.get_translators_step(project_code TEXT, chapter_num INT2, book_code PUBLIC.book_code) 
-RETURNS TABLE(verse_id BIGINT, current_step INT2, translator TEXT)
+DROP FUNCTION IF EXISTS PUBLIC.get_is_await_team;
+
+CREATE FUNCTION PUBLIC.get_is_await_team(
+  project_code TEXT, 
+  chapter_num INT2, 
+  book_code PUBLIC.book_code,
+  step INT8
+) 
+
+RETURNS BOOLEAN
 LANGUAGE plpgsql SECURITY DEFINER AS $$
 DECLARE
+
   cur_chapter_id BIGINT;
   cur_project_id BIGINT;
+  is_awaiting_team_var BOOLEAN;
+
 BEGIN
+
   SELECT projects.id INTO cur_project_id
   FROM PUBLIC.projects
-  WHERE projects.code = get_translators_step.project_code;
+  WHERE code = project_code;
 
   IF cur_project_id IS NULL THEN
-    RETURN;
+    RETURN FALSE;
   END IF;
 
-  IF authorize(auth.uid(), cur_project_id) IN ('user') THEN
-    RETURN;
+  IF authorize(auth.uid(), cur_project_id) = 'user' THEN
+    RETURN FALSE;
   END IF;
 
   SELECT chapters.id INTO cur_chapter_id
   FROM PUBLIC.chapters
-  LEFT JOIN PUBLIC.books ON (chapters.book_id = books.id)
-  WHERE chapters.num = get_translators_step.chapter_num AND chapters.project_id = cur_project_id AND books.code = get_translators_step.book_code;
+  LEFT JOIN PUBLIC.books ON chapters.book_id = books.id
+  WHERE num = chapter_num AND chapters.project_id = cur_project_id AND books.code = book_code;
 
   IF cur_chapter_id IS NULL THEN
-    RETURN;
+    RETURN FALSE;
+  END IF;  
+
+ SELECT is_awaiting_team INTO is_awaiting_team_var
+    FROM steps
+    WHERE project_id = cur_project_id AND sorting = get_is_await_team.step;
+
+  IF (is_awaiting_team_var = false) THEN
+    RETURN FALSE;
+  END IF;  
+
+
+
+  IF EXISTS (
+    SELECT 1
+    FROM public.verses
+    LEFT JOIN public.project_translators ON verses.project_translator_id = project_translators.id
+    LEFT JOIN public.users ON project_translators.user_id = users.id
+    LEFT JOIN public.steps ON verses.current_step = steps.id
+    WHERE verses.project_id = cur_project_id AND verses.chapter_id = cur_chapter_id 
+      AND verses.project_translator_id IS NOT NULL and steps.sorting < get_is_await_team.step
+  ) THEN RETURN true;
+  ELSE
+    RETURN FALSE;
   END IF;
 
-  RETURN QUERY 
-  SELECT DISTINCT ON (users.login) verses.id AS verse_id, steps.sorting as current_step,  users.login AS translator
-  FROM public.verses 
-  LEFT JOIN public.project_translators ON verses.project_translator_id = project_translators.id
-  LEFT JOIN public.users ON project_translators.user_id = users.id
-  LEFT JOIN public.steps ON verses.current_step = steps.id
-  WHERE verses.project_id = cur_project_id AND verses.chapter_id = cur_chapter_id
-  ORDER BY users.login, verses.num ASC;
-
 END;
-
 $$;

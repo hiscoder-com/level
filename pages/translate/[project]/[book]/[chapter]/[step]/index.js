@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Head from 'next/head'
 import { useRouter } from 'next/router'
@@ -34,12 +34,7 @@ export default function ProgressPage({ last_step }) {
   const [versesRange, setVersesRange] = useState([])
   const [loading, setLoading] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const [isWaitLastTranslators, setIsWaitLastTranslators] = useState(false)
-
-  function getLastTranslators(verses, currentStep) {
-    const filteredVerses = verses.filter((verse) => verse.current_step < currentStep)
-    return filteredVerses.length > 0 ? filteredVerses : null
-  }
+  const [isAwaitTeamState, setIsAwaitTeamState] = useState(false)
 
   useEffect(() => {
     if (user?.login) {
@@ -71,11 +66,17 @@ export default function ProgressPage({ last_step }) {
     })
     return res.data
   }
-  const fetchTranslatorStep = async (project, chapter, book) => {
-    const res = await supabase.rpc('get_translators_step', {
-      project_code: project,
-      chapter_num: chapter,
-      book_code: book,
+  const fetchIsAwaitTeamCheck = async ({
+    projectCode,
+    chapterNum,
+    bookCode,
+    stepNum,
+  }) => {
+    const res = await supabase.rpc('get_is_await_team', {
+      project_code: projectCode,
+      chapter_num: chapterNum,
+      book_code: bookCode,
+      step: stepNum,
     })
     return res.data
   }
@@ -116,21 +117,22 @@ export default function ProgressPage({ last_step }) {
         }
         const currentStep = currentStepObject.step
         if (currentStep > 1) {
-          const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
-          const _lastTranslators = getLastTranslators(translatorsChapter, currentStep)
-          if (_lastTranslators) {
+          const isAwaitTeam = await fetchIsAwaitTeamCheck({
+            projectCode: project,
+            chapterNum: chapter,
+            bookCode: book,
+            stepNum: currentStep,
+          })
+          if (isAwaitTeam) {
             const previousStep = currentStep - 1
-            const previousStepsData = await fetchStepsData(project, previousStep)
-            if (previousStepsData.is_awaiting_team) {
-              setIsWaitLastTranslators(true)
-              handleSetStepsData(previousStepsData)
+            setIsAwaitTeamState(isAwaitTeam)
+            if (parseInt(step) !== parseInt(previousStep)) {
               return replace(`/translate/${project}/${book}/${chapter}/${previousStep}`)
             }
-            if (parseInt(step) !== parseInt(currentStep)) {
-              return replace(
-                `/translate/${project}/${book}/${chapter}/${currentStep}/intro`
-              )
-            }
+          } else if (parseInt(step) !== parseInt(currentStep)) {
+            return replace(
+              `/translate/${project}/${book}/${chapter}/${currentStep}/intro`
+            )
           }
         }
         handleSetStepsData(stepsData)
@@ -151,17 +153,20 @@ export default function ProgressPage({ last_step }) {
       chapter,
       current_step: step,
     })
-    localStorage.setItem('highlightIds', JSON.stringify({}))
     setCurrentVerse('1')
-    const stepsData = await fetchStepsData(project, step)
+    const isAwaitTeam = await fetchIsAwaitTeamCheck({
+      projectCode: project,
+      chapterNum: chapter,
+      bookCode: book,
+      stepNum: next_step,
+    })
 
-    const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
-    const _lastTranslators = getLastTranslators(translatorsChapter, next_step)
-
-    if (stepsData.is_awaiting_team && _lastTranslators) {
-      setIsWaitLastTranslators(true)
+    if (isAwaitTeam) {
+      setIsAwaitTeamState(isAwaitTeam)
       return
     }
+    localStorage.setItem('highlightIds', JSON.stringify({}))
+
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {
@@ -187,18 +192,17 @@ export default function ProgressPage({ last_step }) {
           async () => {
             try {
               if (!isMounted) return
-              const translatorsChapter = await fetchTranslatorStep(project, chapter, book)
-              const _lastTranslators = getLastTranslators(
-                translatorsChapter,
-                parseInt(step) + 1
-              )
-              if (!_lastTranslators) {
-                setIsWaitLastTranslators(false)
-                if (isMounted) {
-                  replace(
-                    `/translate/${project}/${book}/${chapter}/${parseInt(step) + 1}/intro`
-                  )
-                }
+              const isAwaitTeam = await fetchIsAwaitTeamCheck({
+                projectCode: project,
+                chapterNum: chapter,
+                bookCode: book,
+                stepNum: parseInt(step) + 1,
+              })
+
+              if (!isAwaitTeam) {
+                replace(
+                  `/translate/${project}/${book}/${chapter}/${parseInt(step) + 1}/intro`
+                )
               }
             } catch (error) {
               console.error(error)
@@ -221,7 +225,7 @@ export default function ProgressPage({ last_step }) {
         console.log(error)
       }
     }
-    if (isWaitLastTranslators) {
+    if (isAwaitTeamState) {
       initializeSubscription()
     }
     return () => {
@@ -231,8 +235,7 @@ export default function ProgressPage({ last_step }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [book, chapter, isWaitLastTranslators, project, step, supabase])
-
+  }, [book, chapter, isAwaitTeamState, project, step, supabase])
   return (
     <div>
       <Head>
@@ -254,7 +257,7 @@ export default function ProgressPage({ last_step }) {
         textCheckbox={t('Done')}
         handleClick={() => setIsOpenModal(true)}
         loading={loading}
-        isWaitTranslators={isWaitLastTranslators}
+        isAwaitTeam={isAwaitTeamState}
       />
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 justify-center items-center">

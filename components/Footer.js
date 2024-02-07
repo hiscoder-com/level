@@ -21,7 +21,7 @@ export default function Footer({
   textButton,
   href,
   className = { button: 'relative btn-quaternary w-28 text-center' },
-  isWaitTranslators = false,
+  isAwaitTeam = false,
 }) {
   const [isStepPage, setIsStepPage] = useState(false)
   const [checked, setChecked] = useState(false)
@@ -66,7 +66,7 @@ export default function Footer({
           !isStepPage ? 'ml-auto' : ''
         }`}
       >
-        {!isWaitTranslators ? (
+        {!isAwaitTeam ? (
           <div className="flex flex-row justify-between w-full items-center space-x-6">
             <CheckBox
               onChange={() => setChecked((prev) => !prev)}
