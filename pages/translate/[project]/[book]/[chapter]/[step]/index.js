@@ -177,6 +177,7 @@ export default function ProgressPage({ last_step }) {
   useEffect(() => {
     let isMounted = true
     let mySubscription = null
+    let redirected = false
     const subscribeToRealtimeUpdates = async (chapterId) => {
       if (!isMounted) return
       mySubscription = supabase
@@ -191,7 +192,6 @@ export default function ProgressPage({ last_step }) {
           },
           async () => {
             try {
-              if (!isMounted) return
               const isAwaitTeam = await fetchIsAwaitTeamCheck({
                 projectCode: project,
                 chapterNum: chapter,
@@ -199,7 +199,8 @@ export default function ProgressPage({ last_step }) {
                 stepNum: parseInt(step) + 1,
               })
 
-              if (!isAwaitTeam) {
+              if (!isAwaitTeam && !redirected) {
+                redirected = true
                 replace(
                   `/translate/${project}/${book}/${chapter}/${parseInt(step) + 1}/intro`
                 )
