@@ -27,7 +27,6 @@ export default function ProgressPage({ last_step }) {
   const {
     query: { project, book, chapter, step },
     replace,
-    push,
   } = useRouter()
   const [stepConfig, setStepConfig] = useState(null)
   const setProjectId = useSetRecoilState(projectIdState)
@@ -82,26 +81,6 @@ export default function ProgressPage({ last_step }) {
   }
 
   useEffect(() => {
-    const handleSetStepsData = (stepsData) => {
-      setProjectId(stepsData.projects?.id)
-      let stepConfig = {
-        title: stepsData.title,
-        config: [...stepsData.config],
-        whole_chapter: stepsData.whole_chapter,
-        resources: { ...stepsData.projects?.resources },
-        base_manifest: stepsData.projects?.base_manifest?.resource,
-      }
-      setStepConfigData({
-        count_of_users: stepsData.count_of_users,
-        time: stepsData.time,
-        title: stepsData.title,
-        description: stepsData.description,
-        last_step,
-        current_step: step,
-        project_code: project,
-      })
-      setStepConfig(stepConfig)
-    }
     const getSteps = async () => {
       try {
         const stepsData = await fetchStepsData(project, step)
@@ -135,7 +114,24 @@ export default function ProgressPage({ last_step }) {
             )
           }
         }
-        handleSetStepsData(stepsData)
+        setProjectId(stepsData.projects?.id)
+        let stepConfig = {
+          title: stepsData.title,
+          config: [...stepsData.config],
+          whole_chapter: stepsData.whole_chapter,
+          resources: { ...stepsData.projects?.resources },
+          base_manifest: stepsData.projects?.base_manifest?.resource,
+        }
+        setStepConfigData({
+          count_of_users: stepsData.count_of_users,
+          time: stepsData.time,
+          title: stepsData.title,
+          description: stepsData.description,
+          last_step,
+          current_step: step,
+          project_code: project,
+        })
+        setStepConfig(stepConfig)
       } catch (error) {
         console.log(error)
       }
@@ -170,7 +166,7 @@ export default function ProgressPage({ last_step }) {
     if (parseInt(step) === parseInt(next_step)) {
       replace(`/account`)
     } else {
-      push(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
+      replace(`/translate/${project}/${book}/${chapter}/${next_step}/intro`)
     }
   }
 

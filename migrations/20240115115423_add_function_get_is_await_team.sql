@@ -42,11 +42,9 @@ BEGIN
     FROM steps
     WHERE project_id = cur_project_id AND sorting = get_is_await_team.step;
 
-  IF (is_awaiting_team_var = false) THEN
+  IF (is_awaiting_team_var = FALSE) THEN
     RETURN FALSE;
   END IF;  
-
-
 
   IF EXISTS (
     SELECT 1
@@ -56,7 +54,7 @@ BEGIN
     LEFT JOIN public.steps ON verses.current_step = steps.id
     WHERE verses.project_id = cur_project_id AND verses.chapter_id = cur_chapter_id 
       AND verses.project_translator_id IS NOT NULL and steps.sorting < get_is_await_team.step
-  ) THEN RETURN true;
+  ) THEN RETURN TRUE;
   ELSE
     RETURN FALSE;
   END IF;
