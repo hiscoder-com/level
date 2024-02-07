@@ -3,6 +3,7 @@ import Link from 'next/link'
 
 import SwitchLocalization from './SwitchLocalization'
 import Login from './Login'
+import Feedback from './Feedback'
 import AboutVersion from './AboutVersion'
 
 import { useTranslation } from 'next-i18next'
@@ -18,14 +19,30 @@ import Close from 'public/close.svg'
 function StartPage({ children }) {
   const { t } = useTranslation(['start-page', 'projects', 'users'])
   const [contentKey, setContentKey] = useState(null)
-  const [showUpdates, setShowUpdates] = useState(false)
-  const [showPartners, setShowPartners] = useState(false)
+  const [showSections, setShowSections] = useState({
+    updates: false,
+    partners: false,
+    feedback: false,
+  })
+
   const [paddingClass, setPaddingClass] = useState('2xl:px-0')
+
+  const toggleSection = (section) => {
+    setShowSections((prev) => ({
+      ...prev,
+      [section]: !prev[section],
+    }))
+  }
 
   const contentObjects = {
     login: <Login />,
-    connect: 'connect',
-    updates: <AboutVersion isStartPage={true} setShowUpdates={setShowUpdates} />,
+    connect: <Feedback t={t} />,
+    updates: (
+      <AboutVersion
+        isStartPage={true}
+        setShowUpdates={(value) => toggleSection('updates', value)}
+      />
+    ),
     partners: <Partners t={t} />,
     about: <About />,
     reviews: <Reviews />,
@@ -169,7 +186,9 @@ function StartPage({ children }) {
             <div className="text-center text-lg xl:text-xl space-x-1 uppercase">
               {t('Verse.Matthew')}
             </div>
-            <div className="text-xs lg:text-base overflow-auto">{t('Verse.text')}</div>
+            <div className="text-xs lg:text-base overflow-auto font-normal">
+              {t('Verse.text')}
+            </div>
           </div>
           <div className="h-20 lg:h-24 rounded-2xl bg-[#3C6E71]">
             <div
@@ -192,11 +211,14 @@ function StartPage({ children }) {
         </div>
         <div
           className="px-6 bg-th-secondary-10 rounded-xl text-center"
-          onClick={() => setShowUpdates((prev) => !prev)}
+          onClick={() => toggleSection('updates')}
         >
-          {showUpdates ? (
+          {showSections.updates ? (
             <div onClick={(e) => e.stopPropagation()}>
-              <AboutVersion isStartPage={true} setShowUpdates={setShowUpdates} />
+              <AboutVersion
+                isStartPage={true}
+                setShowUpdates={(value) => toggleSection('updates', value)}
+              />
             </div>
           ) : (
             <div className="py-6">{t('Updates')}</div>
@@ -308,18 +330,25 @@ function StartPage({ children }) {
         </div>
         <div
           className="p-6 bg-th-secondary-10 rounded-xl text-center"
-          onClick={() => setShowPartners((prev) => !prev)}
+          onClick={() => toggleSection('partners')}
         >
-          {showPartners ? (
+          {showSections.partners ? (
             <div>
-              <Partners t={t} setShowPartner={setShowPartners} />
+              <Partners
+                t={t}
+                setShowPartner={(value) => toggleSection('partners', value)}
+              />
             </div>
           ) : (
             <div className="py-6">{t('Partners')}</div>
           )}
         </div>
-        <div className="p-6 bg-th-secondary-10 rounded-xl">
+        <div
+          className="p-6 bg-th-secondary-10 rounded-xl"
+          onClick={() => toggleSection('feedback')}
+        >
           <div className="mb-5 text-center">Связаться с нами</div>
+          {showSections.feedback && <Feedback t={t} />}
           <div className="flex justify-center items-center gap-3">
             <Social />
           </div>

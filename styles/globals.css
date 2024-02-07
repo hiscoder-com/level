@@ -329,15 +329,23 @@
 }
 
 .input-base {
-  @apply px-4 py-2 w-full text-sm md:text-base rounded-lg border focus:outline-none;
+  @apply px-4 w-full text-sm md:text-base rounded-lg border focus:outline-none;
 }
 
 .input-primary {
-  @apply input-base text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
+  @apply input-base py-2 text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
+}
+
+.input-feedback {
+  @apply input-base py-4 text-th-text-primary border-th-secondary-300 font-normal focus:border-th-primary-200 placeholder:text-th-secondary-300
+}
+
+.invalid-feedback {
+  @apply input-base py-4 border-th-invalid text-th-invalid;
 }
 
 .input-invalid {
-  @apply input-base border-th-invalid text-th-invalid;
+  @apply input-base py-2 border-th-invalid text-th-invalid;
 }
 
 .logo:hover path:first-of-type {
