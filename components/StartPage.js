@@ -16,13 +16,15 @@ import Youtube from 'public/youtube.svg'
 import Facebook from 'public/facebook.svg'
 import Close from 'public/close.svg'
 
-function StartPage({ children }) {
+function StartPage() {
   const { t } = useTranslation(['start-page', 'projects', 'users'])
   const [contentKey, setContentKey] = useState(null)
   const [showSections, setShowSections] = useState({
     updates: false,
     partners: false,
     feedback: false,
+    signIn: false,
+    demo: false,
   })
 
   const [paddingClass, setPaddingClass] = useState('2xl:px-0')
@@ -34,9 +36,17 @@ function StartPage({ children }) {
     }))
   }
 
+  const handleContentClick = (newContentKey) => {
+    if (contentKey === newContentKey) {
+      setContentKey(null)
+    } else {
+      setContentKey(newContentKey)
+    }
+  }
+
   const contentObjects = {
-    login: <Login />,
-    connect: <Feedback t={t} />,
+    signIn: <Login />,
+    connect: <Feedback t={t} onClose={() => setContentKey(null)} />,
     updates: (
       <AboutVersion
         isStartPage={true}
@@ -101,7 +111,7 @@ function StartPage({ children }) {
           <div className="h-[19.4rem] rounded-2xl bg-[#3C6E71]">
             <div
               className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl cursor-pointer"
-              onClick={() => setContentKey('updates')}
+              onClick={() => handleContentClick('updates')}
             >
               {t('Updates')}
             </div>
@@ -109,7 +119,7 @@ function StartPage({ children }) {
           <div className="h-[19.4rem] rounded-2xl bg-white">
             <div
               className="gray-two-layers p-5 lg:p-7 h-full w-full z-10 rounded-2xl after:rounded-2xl cursor-pointer"
-              onClick={() => setContentKey('partners')}
+              onClick={() => handleContentClick('partners')}
             >
               {t('Partners')}
             </div>
@@ -168,14 +178,14 @@ function StartPage({ children }) {
           <div className="h-32 rounded-2xl bg-[#3C6E71]">
             <div
               className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl uppercase cursor-pointer after:rounded-2xl"
-              onClick={() => setContentKey('demo')}
+              onClick={() => handleContentClick('demo')}
             >
               {t('Demo')}
             </div>
           </div>
           <div
             className="p-5 lg:p-7 h-32 bg-th-secondary-10 rounded-2xl cursor-pointer"
-            onClick={() => setContentKey('connect')}
+            onClick={() => handleContentClick('connect')}
           >
             {t('ConnectWithUs')}
           </div>
@@ -193,7 +203,7 @@ function StartPage({ children }) {
           <div className="h-20 lg:h-24 rounded-2xl bg-[#3C6E71]">
             <div
               className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10 cursor-pointer"
-              onClick={() => setContentKey('login')}
+              onClick={() => handleContentClick('signIn')}
             >
               {t('users:SignIn')}
             </div>
@@ -354,10 +364,33 @@ function StartPage({ children }) {
           </div>
         </div>
         <div className="grid grid-cols-2 gap-5 text-center">
-          <div className="p-6 bg-th-secondary-10 rounded-xl text-center">DEMO</div>
-          <div className="p-6 text-th-text-secondary-100 bg-th-primary-100 rounded-xl">
-            Войти
-          </div>
+          {!showSections.signIn && (
+            <div
+              className={`p-6 bg-th-secondary-10 rounded-xl text-center ${
+                showSections.demo ? 'col-span-2' : ''
+              }`}
+              onClick={() => toggleSection('demo')}
+            >
+              <div className="mb-5 text-center">DEMO</div>
+              {showSections.demo && <div>demo</div>}
+            </div>
+          )}
+
+          {!showSections.demo && (
+            <div
+              className={`p-6 rounded-xl ${
+                showSections.signIn
+                  ? 'col-span-2 bg-th-secondary-10'
+                  : 'bg-th-primary-100 text-th-text-secondary-100'
+              }`}
+              onClick={() => toggleSection('signIn')}
+            >
+              <div className="mb-5 text-center">
+                {showSections.signIn ? t('users:LoginToAccount') : 'Войти'}
+              </div>
+              {showSections.signIn && <Login />}
+            </div>
+          )}
         </div>
       </main>
     </>

@@ -1,16 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 
-import SwitchLocalization from './SwitchLocalization'
-import SignOut from './SignOut'
-import Modal from './Modal'
 import ButtonLoading from './ButtonLoading'
+import Modal from './Modal'
 
 import { useRedirect } from 'utils/hooks'
 
@@ -18,14 +15,14 @@ import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import Report from 'public/error-outline.svg'
-import EyeIcon from 'public/eye-icon.svg'
-import EyeOffIcon from 'public/eye-off-icon.svg'
+import Loading from 'public/progress.svg'
+import InputField from './Panel/UI/InputField'
 
 function Login() {
   const supabase = useSupabaseClient()
   const [showPassword, setShowPassword] = useState(false)
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(false)
+  const [isError, setIsError] = useState(false)
   const [errorMessageSendLink, setErrorMessageSendLink] = useState('')
   const [successMessageSendLink, setSuccessMessageSendLink] = useState('')
 
@@ -61,7 +58,7 @@ function Login() {
   useEffect(() => {
     if (user) {
       const { agreement, confession } = user
-      setError(false)
+      setIsError(false)
       router.push(agreement && confession ? `/account` : '/agreements')
     }
   }, [router, user])
@@ -75,9 +72,9 @@ function Login() {
         password,
       })
       if (error) throw error
-      setError(false)
+      setIsError(false)
     } catch (error) {
-      setError(true)
+      setIsError(true)
     } finally {
       setIsLoadingLogin(false)
     }
@@ -125,82 +122,54 @@ function Login() {
       return
     }
   }
-  return (
-    <>
-      {user?.id ? (
-        <div className="flex flex-col p-5 lg:py-10 xl:px-8">
-          <div className="mb-6 lg:mb-14 text-center">
-            <div>
-              {t('YouSignInAs')} {user.login}
-            </div>
-            <div>
-              {t('Email')} {user.email}
-            </div>
-            <Link href={href ?? '/'} className="text-th-primary-200 hover:opacity-70">
-              {t('GoToAccount')}
-            </Link>
-          </div>
 
-          <div className="flex flex-col items-center text-sm lg:text-base">
-            <SignOut />
-          </div>
-        </div>
-      ) : (
-        <div className="flex flex-col p-5 lg:py-10 xl:px-8">
-          <div className="flex justify-between mb-6 z-10">
-            <h1 className="text-2xl lg:text-3xl xl:text-4xl font-bold">{t('SignIn')}</h1>
-          </div>
-          <form className="space-y-6 xl:space-y-10">
-            <div className="relative z-0 w-full">
-              <input
-                ref={loginRef}
-                className="input-label peer"
-                type="text"
-                name="floating_email"
-                id="floating_email"
-                placeholder=""
-                onChange={(event) => {
-                  setLogin(event.target.value)
-                }}
-              />
-              <label htmlFor="floating_email" className="label">
-                {t('Login')}
-              </label>
-            </div>
-            <div className="relative z-0 w-full">
-              <input
-                ref={passwordRef}
-                name="floating_password"
-                id="floating_password"
-                className="input-label peer"
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                placeholder=" "
-                onChange={(event) => {
-                  setPassword(event.target.value)
-                }}
-              />
-              <label htmlFor="floating_password" className="label">
-                {t('Password')}
-              </label>
-              <span
-                className="absolute right-2 bottom-2 cursor-pointer stroke-2 stroke-th-text-primary"
-                onClick={() => {
-                  setShowPassword((prev) => !prev)
-                }}
-              >
-                {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-              </span>
-            </div>
-            <div className="flex items-center justify-between mb-4">
-              {error && (
+  return (
+    <div className="flex flex-col w-full">
+      <div className="hidden md:block"> {t('LoginToAccount')}</div>
+      <div
+        className="flex flex-grow items-center pb-6 md:pb-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {user?.id ? (
+          <Loading className="progress-custom-colors mx-auto my-auto inset-0 w-14 animate-spin stroke-th-primary-100" />
+        ) : (
+          <form className="flex flex-col w-full space-y-6 xl:space-y-10">
+            <InputField
+              refInput={loginRef}
+              type="text"
+              name="floating_email"
+              id="floating_email"
+              value={login}
+              isError={isError && !login}
+              label={t('Login')}
+              onChange={(event) => setLogin(event.target.value)}
+              className="input-base-label"
+            />
+
+            <InputField
+              refInput={passwordRef}
+              type={showPassword ? 'text' : 'password'}
+              name="floating_password"
+              id="floating_password"
+              value={password}
+              isError={isError && !password}
+              label={t('Password')}
+              onChange={(event) => setPassword(event.target.value)}
+              showPasswordToggle={true}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              className="input-password"
+            />
+
+            <div className="flex flex-col gap-4 lg:flex-row items-center justify-between">
+              {isError && (
                 <>
                   <p className="flex text-xs text-th-invalid">
-                    <Report className="w-4 h-4" /> {t('WrongLoginPassword')}
+                    <Report className="w-4 h-4 mr-1" /> {t('WrongLoginPassword')}
                   </p>
                   <button
                     type="button"
-                    className="underline text-th-primary-200 hover:opacity-70"
+                    className="underline text-th-primary-200 hover:opacity-70 text-sm md:text-base"
                     onClick={() => setIsOpenModal(true)}
                   >
                     {t('ForgotPassword')}?
@@ -208,66 +177,65 @@ function Login() {
                 </>
               )}
             </div>
-            <div className="flex flex-col lg:flex-row items-center lg:justify-around">
+
+            <div className="flex flex-col gap-4 lg:flex-row items-center">
               <ButtonLoading
                 disabled={loading}
                 onClick={handleLogin}
                 isLoading={isLoadingLogin}
-                className={`relative w-1/2 lg:w-1/3 mb-4 lg:mb-0 lg:text-lg font-bold flex items-center justify-center ${
-                  loading || isLoadingLogin ? 'btn' : 'btn-primary border-0'
-                } `}
+                className="relative w-full lg:w-1/2 px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-[#3C6E71]"
               >
                 {t('SignIn')}
               </ButtonLoading>
               <button
                 type="button"
-                className="text-sm lg:text-base text-th-primary-200 hover:opacity-70"
+                className="w-full lg:w-1/2 py-4 text-sm md:text-base font-medium text-gray-300 hover:text-th-primary-100"
                 onClick={() => setIsOpenModal(true)}
               >
                 {t('RestoreAccess')}
               </button>
             </div>
           </form>
-        </div>
-      )}
-      <Modal
-        isOpen={isOpenModal}
-        closeHandle={() => setIsOpenModal(false)}
-        title={t('PasswordRecovery')}
-      >
-        {successMessageSendLink ? (
-          <div className="text-center mt-7">{successMessageSendLink}</div>
-        ) : (
-          <div className="flex flex-col gap-7 mb-7 w-full">
-            <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
-            <div className="flex gap-4">
-              <input
-                className={errorMessageSendLink ? 'input-invalid' : 'input-primary'}
-                onChange={(e) => {
-                  setErrorMessageSendLink('')
-                  setEmail(e.target.value)
-                }}
-              />
-              <ButtonLoading
-                className="relative btn-secondary"
-                disabled={!email}
-                isLoading={isSendingEmail}
-                onClick={handleSendRecoveryLink}
-              >
-                {t('Send')}
-              </ButtonLoading>
-            </div>
-          </div>
         )}
-        <div
-          className={`${
-            errorMessageSendLink ? 'opacity-100' : 'opacity-0'
-          } min-h-[1.5rem]`}
+        <Modal
+          isOpen={isOpenModal}
+          closeHandle={() => setIsOpenModal(false)}
+          title={t('PasswordRecovery')}
         >
-          {errorMessageSendLink}
-        </div>
-      </Modal>
-    </>
+          {successMessageSendLink ? (
+            <div className="text-center mt-7">{successMessageSendLink}</div>
+          ) : (
+            <div className="flex flex-col gap-7 mb-7 w-full">
+              <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
+              <div className="flex gap-4">
+                <input
+                  className={errorMessageSendLink ? 'input-invalid' : 'input-primary'}
+                  onChange={(e) => {
+                    setErrorMessageSendLink('')
+                    setEmail(e.target.value)
+                  }}
+                />
+                <ButtonLoading
+                  className="relative btn-secondary"
+                  disabled={!email}
+                  isLoading={isSendingEmail}
+                  onClick={handleSendRecoveryLink}
+                >
+                  {t('Send')}
+                </ButtonLoading>
+              </div>
+            </div>
+          )}
+          <div
+            className={`${
+              errorMessageSendLink ? 'opacity-100' : 'opacity-0'
+            } min-h-[1.5rem]`}
+          >
+            {errorMessageSendLink}
+          </div>
+        </Modal>
+      </div>
+    </div>
   )
 }
 

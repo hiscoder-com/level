@@ -3,7 +3,6 @@ import Head from 'next/head'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import Login from 'components/Login'
 import StartPage from 'components/StartPage'
 
 export default function Home() {
@@ -16,9 +15,7 @@ export default function Home() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <StartPage>
-        <Login />
-      </StartPage>
+      <StartPage />
     </main>
   )
 }

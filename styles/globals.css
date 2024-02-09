@@ -229,19 +229,11 @@
   }
 }
 
-.label {
-  @apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
-}
-
 .inactive {
   filter: blur(6px) grayscale(1);
   user-select: none;
   pointer-events: none;
   opacity: 0.5;
-}
-
-.input-label {
-  @apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-secondary-300 appearance-none focus:outline-none focus:ring-0 focus:border-th-primary-100;
 }
 
 .verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2) {
@@ -332,16 +324,20 @@
   @apply px-4 w-full text-sm md:text-base rounded-lg border focus:outline-none;
 }
 
+.input-password {
+  @apply pl-4 pr-12 w-full text-sm md:text-base rounded-lg border focus:outline-none block py-4 font-normal bg-transparent appearance-none;
+}
+
 .input-primary {
   @apply input-base py-2 text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
 }
 
-.input-feedback {
-  @apply input-base py-4 text-th-text-primary border-th-secondary-300 font-normal focus:border-th-primary-200 placeholder:text-th-secondary-300
+.input-base-label {
+  @apply input-base block py-4 font-normal bg-transparent appearance-none;
 }
 
-.invalid-feedback {
-  @apply input-base py-4 border-th-invalid text-th-invalid;
+.label-base {
+  @apply absolute top-4 left-4 -z-10 origin-[0] text-base duration-300 transform -translate-y-10 scale-75 peer-focus:font-medium peer-focus:left-4 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-10;
 }
 
 .input-invalid {
