@@ -5,6 +5,7 @@ import SwitchLocalization from './SwitchLocalization'
 import Login from './Login'
 import Feedback from './Feedback'
 import AboutVersion from './AboutVersion'
+import Demo from './Demo'
 
 import { useTranslation } from 'next-i18next'
 
@@ -45,7 +46,7 @@ function StartPage() {
   }
 
   const contentObjects = {
-    signIn: <Login />,
+    signIn: <Login handleClick={() => handleContentClick('connect')} />,
     connect: <Feedback t={t} onClose={() => setContentKey(null)} />,
     updates: (
       <AboutVersion
@@ -54,15 +55,15 @@ function StartPage() {
       />
     ),
     partners: <Partners t={t} />,
-    about: <About />,
+    intro: <VcanaIntro t={t} />,
     reviews: <Reviews />,
     howItWork: <HowItWork />,
     faq: <Faq />,
-    demo: 'On the construction',
+    demo: <Demo t={t} />,
   }
 
   const [blocks, setBlocks] = useState({
-    about: { clicked: false, opacity: 'opacity-0' },
+    intro: { clicked: false, opacity: 'opacity-0' },
     howItWork: { clicked: false, opacity: 'opacity-0' },
     reviews: { clicked: false, opacity: 'opacity-0' },
     faq: { clicked: false, opacity: 'opacity-0' },
@@ -98,31 +99,31 @@ function StartPage() {
   return (
     <>
       <main
-        className={`hidden md:flex mx-auto max-w-7xl w-full h-[94vh] max-h-[40rem] lg:max-h-[46rem] xl:max-h-[54rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 ${paddingClass}`}
+        className={`hidden md:flex mx-auto max-w-7xl w-full h-[94vh] max-h-[40rem] lg:max-h-[46rem] xl:max-h-[54rem] 2xl:max-h-[56.4rem] text-2xl font-bold px-5 lg:px-16 xl:px-20 ${paddingClass}`}
       >
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
           <div className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl">
             <VcanaLogo className="w-44" />
           </div>
-          <div className="p-5 lg:p-7 flex justify-between items-center h-[4.4rem] bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-xl">
-            <div>{t('projects:Language')}</div>
+          <div className="p-5 lg:p-7 flex justify-between items-center h-[4.4rem] bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
+            <p>{t('projects:Language')}</p>
             <SwitchLocalization />
           </div>
-          <div className="h-[19.4rem] rounded-2xl bg-[#3C6E71]">
-            <div
+          <div className="h-[19.4rem] rounded-2xl bg-slate-550">
+            <p
               className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl cursor-pointer"
               onClick={() => handleContentClick('updates')}
             >
               {t('Updates')}
-            </div>
+            </p>
           </div>
           <div className="h-[19.4rem] rounded-2xl bg-white">
-            <div
+            <p
               className="gray-two-layers p-5 lg:p-7 h-full w-full z-10 rounded-2xl after:rounded-2xl cursor-pointer"
               onClick={() => handleContentClick('partners')}
             >
               {t('Partners')}
-            </div>
+            </p>
           </div>
         </aside>
         <section className="w-1/2 px-1 text-white">
@@ -130,10 +131,10 @@ function StartPage() {
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
               <div
                 className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('about')}
+                onClick={() => setContentKey('intro')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
-                <div className="relative z-10">{t('mainBlocks.WhatIsVcana')}</div>
+                <p className="relative z-10">{t('mainBlocks.WhatIsVcana')}</p>
               </div>
 
               <div
@@ -141,7 +142,7 @@ function StartPage() {
                 onClick={() => setContentKey('reviews')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
-                <div className="relative z-10">{t('mainBlocks.Reviews')}</div>
+                <p className="relative z-10">{t('mainBlocks.Reviews')}</p>
               </div>
             </div>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
@@ -150,7 +151,7 @@ function StartPage() {
                 onClick={() => setContentKey('howItWork')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
-                <div className="relative z-10">{t('mainBlocks.HowItWork')}</div>
+                <p className="relative z-10">{t('mainBlocks.HowItWork')}</p>
               </div>
 
               <div
@@ -158,12 +159,12 @@ function StartPage() {
                 onClick={() => setContentKey('faq')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
-                <div className="relative z-10">{t('mainBlocks.FAQ')}</div>
+                <p className="relative z-10">{t('mainBlocks.FAQ')}</p>
               </div>
             </div>
           </div>
           <div
-            className={`relative p-10 ${
+            className={`relative text-3xl p-10 ${
               contentKey ? 'flex' : 'hidden'
             } h-full bg-white rounded-2xl w-full text-black`}
           >
@@ -175,38 +176,38 @@ function StartPage() {
           </div>
         </section>
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pl-3 xl:pl-6">
-          <div className="h-32 rounded-2xl bg-[#3C6E71]">
-            <div
+          <div className="h-32 rounded-2xl bg-slate-550">
+            <p
               className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl uppercase cursor-pointer after:rounded-2xl"
               onClick={() => handleContentClick('demo')}
             >
               {t('Demo')}
-            </div>
+            </p>
           </div>
-          <div
+          <p
             className="p-5 lg:p-7 h-32 bg-th-secondary-10 rounded-2xl cursor-pointer"
             onClick={() => handleContentClick('connect')}
           >
             {t('ConnectWithUs')}
-          </div>
+          </p>
           <div className="flex justify-center items-center p-4 gap-3 h-[4.4rem] bg-th-secondary-10 rounded-2xl overflow-x-auto">
             <Social />
           </div>
           <div className="p-5 lg:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 xl:space-y-4 overflow-hidden">
-            <div className="text-center text-lg xl:text-xl space-x-1 uppercase">
+            <p className="text-center text-lg xl:text-xl space-x-1 uppercase">
               {t('Verse.Matthew')}
-            </div>
-            <div className="text-xs lg:text-base overflow-auto font-normal">
+            </p>
+            <p className="text-xs lg:text-base overflow-auto font-normal">
               {t('Verse.text')}
-            </div>
+            </p>
           </div>
-          <div className="h-20 lg:h-24 rounded-2xl bg-[#3C6E71]">
-            <div
+          <div className="h-20 lg:h-24 rounded-2xl bg-slate-550">
+            <p
               className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10 cursor-pointer"
               onClick={() => handleContentClick('signIn')}
             >
               {t('users:SignIn')}
-            </div>
+            </p>
           </div>
         </aside>
       </main>
@@ -224,37 +225,30 @@ function StartPage() {
           onClick={() => toggleSection('updates')}
         >
           {showSections.updates ? (
-            <div onClick={(e) => e.stopPropagation()}>
+            <div>
               <AboutVersion
                 isStartPage={true}
                 setShowUpdates={(value) => toggleSection('updates', value)}
               />
             </div>
           ) : (
-            <div className="py-6">{t('Updates')}</div>
+            <p className="py-6">{t('Updates')}</p>
           )}
         </div>
         <div
           className={`rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden relative ${
-            blocks.about.clicked ? 'min-h-36' : 'h-36'
+            blocks.intro.clicked ? 'min-h-36' : 'h-36'
           }`}
-          onClick={() => toggleBlock('about')}
+          onClick={() => toggleBlock('intro')}
         >
           <div
             className={`absolute inset-0 bg-[url("../public/about.jpg")] bg-cover bg-no-repeat bg-center-bottom-1 transition-opacity duration-500 ${
-              blocks.about.clicked ? 'opacity-0' : 'opacity-100'
+              blocks.intro.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
           <div className="relative z-10">
-            {blocks.about.clicked ? (
-              <>
-                <p>{t('mainBlocks.WhatIsVcana')}</p>
-                <p
-                  className={`text-sm mt-3 transition-opacity duration-700 ${blocks.about.opacity}`}
-                >
-                  {t('mainBlocks.VcanaText')}
-                </p>
-              </>
+            {blocks.intro.clicked ? (
+              <VcanaIntro t={t} opacity={blocks.intro.opacity} />
             ) : (
               <p className="text-white">{t('mainBlocks.WhatIsVcana')}</p>
             )}
@@ -343,14 +337,9 @@ function StartPage() {
           onClick={() => toggleSection('partners')}
         >
           {showSections.partners ? (
-            <div>
-              <Partners
-                t={t}
-                setShowPartner={(value) => toggleSection('partners', value)}
-              />
-            </div>
+            <Partners t={t} />
           ) : (
-            <div className="py-6">{t('Partners')}</div>
+            <p className="py-6">{t('Partners')}</p>
           )}
         </div>
         <div
@@ -372,7 +361,7 @@ function StartPage() {
               onClick={() => toggleSection('demo')}
             >
               <div className="mb-5 text-center">DEMO</div>
-              {showSections.demo && <div>demo</div>}
+              {showSections.demo && <Demo t={t} />}
             </div>
           )}
 
@@ -381,14 +370,21 @@ function StartPage() {
               className={`p-6 rounded-xl ${
                 showSections.signIn
                   ? 'col-span-2 bg-th-secondary-10'
-                  : 'bg-th-primary-100 text-th-text-secondary-100'
+                  : 'bg-slate-550 text-th-text-secondary-100'
               }`}
               onClick={() => toggleSection('signIn')}
             >
               <div className="mb-5 text-center">
                 {showSections.signIn ? t('users:LoginToAccount') : 'Войти'}
               </div>
-              {showSections.signIn && <Login />}
+              {showSections.signIn && (
+                <Login
+                  handleClick={() => {
+                    toggleSection('signIn')
+                    toggleSection('feedback')
+                  }}
+                />
+              )}
             </div>
           )}
         </div>
@@ -399,13 +395,27 @@ function StartPage() {
 
 export default StartPage
 
-function About() {
-  return <div>About</div>
+function VcanaIntro({ t, opacity }) {
+  return (
+    <div className="flex flex-col w-full gap-6 md:gap-12">
+      <p>{t('mainBlocks.WhatIsVcana')}</p>
+      <div className="flex flex-grow flex-col justify-between items-center pb-6 md:pb-0">
+        <p
+          className={`text-sm md:text-base font-normal mt-3 transition-opacity duration-700 ${
+            opacity || ''
+          }`}
+        >
+          {t('mainBlocks.VcanaText')}
+        </p>
+        <img src="/v-cana-intro.png" alt="v-cana intro image" className="w-full h-auto" />
+      </div>
+    </div>
+  )
 }
 function Partners({ t }) {
   return (
     <div className="flex flex-col w-full gap-6 md:gap-14">
-      <div> {t('Partners')}</div>
+      <p>{t('Partners')}</p>
       <div
         className="flex justify-center items-center w-full h-32 md:h-56 rounded-xl bg-th-secondary-100"
         onClick={(e) => e.stopPropagation()}
@@ -431,22 +441,22 @@ function Social() {
   return (
     <>
       <Link href="https://youtube.com/@texttree" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-th-primary-100">
+        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
           <Youtube className="w-4 h-4" />
         </div>
       </Link>
       <Link href="https://texttree.t.me/" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-th-primary-100">
+        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
           <Telegram className="w-4" />
         </div>
       </Link>
       <Link href="https://facebook.com/texttreeorg" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-th-primary-100">
+        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
           <Facebook className="h-4" />
         </div>
       </Link>
       <Link href="https://instagram.com/texttreeorg" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-th-primary-100">
+        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
           <Instagram />
         </div>
       </Link>

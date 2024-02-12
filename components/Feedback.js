@@ -43,7 +43,7 @@ function Feedback({ t, onClose }) {
 
   return (
     <div className="flex flex-col w-full">
-      <div className="hidden md:block"> {t('ConnectWithUs')}</div>
+      <p className="hidden md:block"> {t('ConnectWithUs')}</p>
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
         onClick={(e) => e.stopPropagation()}
@@ -88,7 +88,7 @@ function Feedback({ t, onClose }) {
           <ButtonLoading
             type="submit"
             isLoading={isSaving}
-            className="relative px-5 py-4 mt-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-[#3C6E71]"
+            className="relative px-5 py-4 mt-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
           >
             {t('users:Send')}
           </ButtonLoading>

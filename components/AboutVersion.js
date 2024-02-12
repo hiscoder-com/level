@@ -64,24 +64,29 @@ function AboutVersion({
     return (
       <div className="flex flex-col w-full lg:h-full">
         <div className="sticky top-0 py-6 md:py-0 md:static flex items-center justify-between bg-th-secondary-10">
-          <p className="text-left font-bold">
+          <p>
             {t('Version')} {packageJson.version}
           </p>
           <Close
             className="block lg:hidden h-8 stroke-th-primary-100"
-            onClick={() => setShowUpdates(false)}
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowUpdates(false)
+            }}
           />
         </div>
-        <ReactMarkdown className="flex-grow md:mt-5 text-left overflow-y-auto text-sm font-normal whitespace-pre-line leading-5">
-          {showAllUpdates ? fullAboutVersion : currentAboutVersion}
-        </ReactMarkdown>
-        <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
-          <button
-            onClick={() => setShowAllUpdates((prev) => !prev)}
-            className="btn-primary"
-          >
-            {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
-          </button>
+        <div onClick={(e) => e.stopPropagation()}>
+          <ReactMarkdown className="flex-grow md:mt-5 text-left overflow-y-auto text-sm font-normal whitespace-pre-line leading-5">
+            {showAllUpdates ? fullAboutVersion : currentAboutVersion}
+          </ReactMarkdown>
+          <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
+            <button
+              onClick={() => setShowAllUpdates((prev) => !prev)}
+              className="btn-primary"
+            >
+              {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
+            </button>
+          </div>
         </div>
       </div>
     )

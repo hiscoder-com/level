@@ -8,7 +8,7 @@ import ButtonLoading from './ButtonLoading'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
-export default function SignOut({ isStartPage = false }) {
+export default function SignOut() {
   const supabaseClient = useSupabaseClient()
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation('users')
@@ -27,12 +27,12 @@ export default function SignOut({ isStartPage = false }) {
     }
   }
 
-  const buttonClassName = isStartPage
-    ? 'relative px-5 py-4 mt-10 lg:mt-16 rounded-lg text-center w-full text-sm md:text-base font-medium text-th-text-secondary-100 bg-[#3C6E71]'
-    : 'btn-primary w-full'
-
   return (
-    <ButtonLoading isLoading={loading} onClick={handleLogout} className={buttonClassName}>
+    <ButtonLoading
+      isLoading={loading}
+      onClick={handleLogout}
+      className="btn-primary w-full"
+    >
       {t('users:SignOut')}
     </ButtonLoading>
   )

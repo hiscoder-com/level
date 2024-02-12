@@ -31,6 +31,8 @@
   "PasswordShouldBeLeastSix": "Password should be at least 6 characters",
   "ProblemWithRecovery": "Problem with recovery",
   "Register": "Registration",
+  "RegistrationTextEnd": "write to the administrator.",
+  "RegistrationTextStart": "To register,",
   "RepeatNewPassword": "Repeat the new password",
   "RestoreAccess": "Restore Access",
   "Send": "Send",

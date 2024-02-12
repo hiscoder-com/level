@@ -15,7 +15,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 import Report from 'public/error-outline.svg'
 import Loading from 'public/progress.svg'
 
-function Login() {
+function Login({ handleClick = () => {} }) {
   const supabase = useSupabaseClient()
   const router = useRouter()
   const { t } = useTranslation('users')
@@ -118,7 +118,7 @@ function Login() {
 
   return (
     <div className="flex flex-col w-full">
-      <div className="hidden md:block"> {t('LoginToAccount')}</div>
+      <p className="hidden md:block"> {t('LoginToAccount')}</p>
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
         onClick={(e) => e.stopPropagation()}
@@ -176,7 +176,7 @@ function Login() {
                 disabled={loading}
                 onClick={handleLogin}
                 isLoading={isLoadingLogin}
-                className="relative w-full lg:w-1/2 px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-[#3C6E71]"
+                className="relative w-full lg:w-1/2 px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
               >
                 {t('SignIn')}
               </ButtonLoading>
@@ -188,6 +188,13 @@ function Login() {
                 {t('RestoreAccess')}
               </button>
             </div>
+
+            <p className="text-base text-center font-medium">
+              {t('RegistrationTextStart')}{' '}
+              <span className="text-th-primary-200 cursor-pointer" onClick={handleClick}>
+                {t('RegistrationTextEnd')}
+              </span>
+            </p>
           </form>
         )}
         <Modal
