@@ -40,7 +40,6 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       </div>
     )
   }
-  console.log(ReflectionQuestions)
 
   config.verses = config.wholeChapter
     ? []

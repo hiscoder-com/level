@@ -39,7 +39,7 @@ const ListOfNotes = dynamic(
   }
 )
 
-function Dictionary() {
+function Dictionary({ config }) {
   const [currentPageWords, setCurrentPageWords] = useState(0)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -47,6 +47,7 @@ function Dictionary() {
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
+  const isRtl = config.config.rtl || false
 
   const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
@@ -352,12 +353,15 @@ function Dictionary() {
     setAlphabetProject(project?.dictionaries_alphabet)
   }, [project])
 
+  const classNameButtonIcon = `flex items-center gap-2.5 py-1 pl-2.5 ${
+    isRtl ? 'pr-2' : 'pr-7'
+  }`
   const menuItems = {
     menu: [
       {
         id: 'export',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Export className="w-4 stroke-2" /> {t('common:Export')}
           </span>
         ),
@@ -366,7 +370,7 @@ function Dictionary() {
       {
         id: 'import',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Import className="w-4 stroke-2" /> {t('common:Import')}
           </span>
         ),
@@ -404,6 +408,7 @@ function Dictionary() {
                   <MenuButtons
                     classNames={dropMenuClassNames}
                     menuItems={dropMenuItems}
+                    isRtl={isRtl}
                   />
                 </div>
               </>
@@ -416,8 +421,12 @@ function Dictionary() {
               setSearchQuery={setSearchQuery}
               setCurrentPageWords={setCurrentPageWords}
               t={t}
+              isRtl={isRtl}
             />
-            <div className="relative flex items-center mt-2 ml-2">
+            <div
+              className="relative flex items-center mt-2 ml-2"
+              dir={isRtl ? 'rtl' : 'ltr'}
+            >
               <input
                 className="input-primary"
                 value={searchQuery}
@@ -427,10 +436,14 @@ function Dictionary() {
                 }}
                 placeholder={t('common:Search')}
               />
-              <Close
-                className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
-                onClick={() => searchQuery && getAll()}
-              />
+              {searchQuery && (
+                <Close
+                  className={`absolute р-6 w-6 z-10 cursor-pointer ${
+                    isRtl ? 'left-1' : 'right-1 '
+                  }`}
+                  onClick={getAll}
+                />
+              )}
             </div>
           </div>
 
@@ -450,7 +463,8 @@ function Dictionary() {
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
                 }}
                 isShowDelBtn={isModeratorAccess}
-                delBtnChildren={<Trash className={'w-4 h-4 stroke-th-text-primary'} />}
+                delBtnChildren={<Trash className="w-4 h-4 stroke-th-text-primary" />}
+                isRtl={isRtl}
               />
               {totalPageCount > 1 && (
                 <div className="flex justify-around bottom-0 left-0">
@@ -509,6 +523,7 @@ function Dictionary() {
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('common:TextDescriptionWord') : ''}
             isSelectableTitle
+            isRtl={isRtl}
           />
         </>
       )}
@@ -553,11 +568,18 @@ function Dictionary() {
 
 export default Dictionary
 
-function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) {
+function Alphabet({
+  alphabet,
+  getAll,
+  setCurrentPageWords,
+  setSearchQuery,
+  t,
+  isRtl = false,
+}) {
   const uniqueAlphabet = [...new Set(alphabet)]
 
   return (
-    <div className="flex flex-wrap">
+    <div className="flex flex-wrap" dir={isRtl ? 'rtl' : 'ltr'}>
       {uniqueAlphabet &&
         uniqueAlphabet
           .sort((a, b) => a.localeCompare(b))

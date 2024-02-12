@@ -2,7 +2,7 @@ import { useState } from 'react'
 import DropdownMenu from './DropdownMenu'
 import Plus from 'public/plus.svg'
 
-function MenuButtons({ classNames, menuItems }) {
+function MenuButtons({ classNames, menuItems, isRtl = false }) {
   const [isOpenDotsMenu, setIsOpenDotsMenu] = useState(false)
   const [isOpenPlusMenu, setIsOpenPlusMenu] = useState(false)
 
@@ -43,6 +43,7 @@ function MenuButtons({ classNames, menuItems }) {
             classNames={classNames}
             isOpenMenu={button.isOpen}
             setIsOpenMenu={button.action}
+            isRtl={isRtl}
           />
         </div>
       ))}

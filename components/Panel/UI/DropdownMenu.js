@@ -1,6 +1,12 @@
 import { useEffect, useRef } from 'react'
 
-function DropdownMenu({ menuItems, classNames, isOpenMenu, setIsOpenMenu }) {
+function DropdownMenu({
+  menuItems,
+  classNames,
+  isOpenMenu,
+  setIsOpenMenu,
+  isRtl = false,
+}) {
   const menuRef = useRef(null)
   useEffect(() => {
     function handleClickOutside(event) {
@@ -20,6 +26,7 @@ function DropdownMenu({ menuItems, classNames, isOpenMenu, setIsOpenMenu }) {
           !isOpenMenu ? 'hidden' : ''
         }`}
         ref={menuRef}
+        dir={isRtl ? 'rtl' : 'ltr'}
       >
         {menuItems.map((menuItem) => (
           <div

@@ -58,7 +58,7 @@ const icons = {
   closeFolder: <CloseFolder className="w-6 h-6" />,
 }
 
-function PersonalNotes() {
+function PersonalNotes({ config }) {
   const projectId = useRecoilValue(projectIdState)
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
@@ -80,6 +80,7 @@ function PersonalNotes() {
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
   const supabase = useSupabaseClient()
+  const isRtl = config.config.rtl || false
 
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
@@ -357,13 +358,15 @@ function PersonalNotes() {
       mutate()
     }
   }
-
+  const classNameButtonIcon = `flex items-center gap-2.5 py-1 pl-2.5 ${
+    isRtl ? 'pr-2' : 'pr-7'
+  }`
   const menuItems = {
     contextMenu: [
       {
         id: 'adding_note',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <FileIcon /> {t('common:NewDocument')}
           </span>
         ),
@@ -372,7 +375,7 @@ function PersonalNotes() {
       {
         id: 'adding_folder',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <CloseFolder /> {t('common:NewFolder')}
           </span>
         ),
@@ -381,7 +384,7 @@ function PersonalNotes() {
       {
         id: 'rename',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Rename /> {t('common:Rename')}
           </span>
         ),
@@ -390,7 +393,7 @@ function PersonalNotes() {
       {
         id: 'delete',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Trash className="w-4" /> {t('common:Delete')}
           </span>
         ),
@@ -401,7 +404,7 @@ function PersonalNotes() {
       {
         id: 'export',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Export className="w-4 stroke-2" /> {t('common:Export')}
           </span>
         ),
@@ -410,7 +413,7 @@ function PersonalNotes() {
       {
         id: 'import',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Import className="w-4 stroke-2" /> {t('common:Import')}
           </span>
         ),
@@ -419,7 +422,7 @@ function PersonalNotes() {
       {
         id: 'remove',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Trash className="w-4 stroke-2" /> {t('common:RemoveAll')}
           </span>
         ),
@@ -450,27 +453,36 @@ function PersonalNotes() {
       {!activeNote ? (
         <div>
           <div className="flex justify-end w-full">
-            <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
+            <MenuButtons
+              classNames={dropMenuClassNames}
+              menuItems={dropMenuItems}
+              isRtl={isRtl}
+            />
           </div>
-          <div className="relative flex items-center mb-4">
+          <div className="relative flex items-center mb-4" dir={isRtl ? 'rtl' : 'ltr'}>
             <input
               className="input-primary flex-1"
               value={term}
               onChange={(event) => setTerm(event.target.value)}
               placeholder={t('common:Search')}
             />
-            <Close
-              className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
-              onClick={() => term && setTerm('')}
-            />
+            {term && (
+              <Close
+                className={`absolute р-6 w-6 z-10 cursor-pointer ${
+                  isRtl ? 'left-1' : 'right-1 '
+                }`}
+                onClick={() => setTerm('')}
+              />
+            )}
           </div>
           <TreeView
             term={term}
             selection={noteId}
             handleDeleteNode={handleRemoveNode}
             classes={{
-              nodeWrapper:
-                'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200',
+              nodeWrapper: `px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ${
+                isRtl ? '' : 'flex'
+              }`,
               nodeTextBlock: 'items-center truncate',
             }}
             data={dataForTreeView}
@@ -486,6 +498,7 @@ function PersonalNotes() {
             handleRenameNode={handleRenameNode}
             handleDragDrop={handleDragDrop}
             openByDefault={false}
+            isRtl={isRtl}
           />
           <ContextMenu
             setIsVisible={setIsShowMenu}
@@ -498,6 +511,7 @@ function PersonalNotes() {
               menuContainer: menuItems.container.className,
               emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
             }}
+            isRtl={isRtl}
           />
         </div>
       ) : (
@@ -523,6 +537,7 @@ function PersonalNotes() {
             placeholder={t('common:TextNewNote')}
             emptyTitle={t('common:EmptyTitle')}
             isSelectableTitle
+            isRtl={isRtl}
           />
         </>
       )}
