@@ -42,7 +42,9 @@ function IntroStep({ title, markdown, nextLink }) {
         style={{ height: 'calc(100vh - 11rem)' }}
         className="mb-4 mx-auto py-6 px-6 lg:px-8 bg-th-secondary-10 overflow-auto rounded-lg"
       >
-        <h2 className="mb-4 text-3xl">{title}</h2>
+        <h2 className="mb-4 text-3xl">{title.title}</h2>
+        {title.subtitle && <h3 className="mb-4 text-xl text-center">{title.subtitle}</h3>}
+
         <MarkdownExtended className="markdown-body">{markdown}</MarkdownExtended>
       </div>
       <Footer

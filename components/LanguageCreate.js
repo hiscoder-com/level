@@ -100,6 +100,8 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
             </div>
           ))}
           <CheckBox label={t('project-edit:GatewayLanguage')} {...register('isGl', {})} />
+          <CheckBox label={t('project-edit:Rtl')} {...register('isRtl', {})} />
+
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
               <ButtonLoading className="relative btn-secondary" isLoading={isSaving}>

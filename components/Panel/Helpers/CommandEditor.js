@@ -179,7 +179,6 @@ function CommandEditor({ config }) {
 
     setVerseObjects(_verseObjects)
   }
-
   return (
     <div>
       {verseObjects.map((verseObject, index) => (
@@ -206,6 +205,7 @@ function CommandEditor({ config }) {
             verseObject={verseObject}
             index={index}
             updateVerse={updateVerse}
+            isRtl={config.config.rtl}
           />
         </div>
       ))}

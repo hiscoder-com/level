@@ -47,6 +47,7 @@ function Editor({ config }) {
             verseObject={verseObject}
             index={index}
             updateVerse={updateVerse}
+            isRtl={config.config.rtl}
           />
         </div>
       ))}

@@ -91,12 +91,18 @@ function BasicInformation({
             <select
               className="input-primary bg-th-secondary-10 h-full appearance-none cursor-pointer"
               placeholder={t('Language')}
-              {...register('languageId')}
+              {...register('language')}
             >
               {languages &&
                 languages.map((language) => {
                   return (
-                    <option key={language.id} value={language.id}>
+                    <option
+                      key={language.id}
+                      value={JSON.stringify({
+                        id: language.id,
+                        isRtl: language.is_rtl || false,
+                      })}
+                    >
                       {language.orig_name}
                     </option>
                   )

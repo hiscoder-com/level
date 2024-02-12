@@ -86,6 +86,7 @@ export default function ProgressPage({ last_step }) {
               count_of_users: res.data?.count_of_users,
               time: res.data?.time,
               title: res.data?.title,
+              subtitle: res.data?.subtitle,
               description: res.data?.description,
               last_step,
               current_step: step,

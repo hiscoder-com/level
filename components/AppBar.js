@@ -76,11 +76,14 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         {isStepPage && (
           <>
             <div
-              className={`block md:flex text-center text-th-text-secondary-100 ${
+              className={`block md:flex flex-col text-center text-th-text-secondary-100 ${
                 showFullAppbar ? '' : 'hidden'
               }`}
             >
-              {stepConfig.title}
+              <div>{stepConfig.title}</div>
+              {stepConfig.subtitle && (
+                <div className="text-xs">{stepConfig.subtitle}</div>
+              )}
             </div>
             <div
               className={`block md:flex items-center gap-4 justify-center md:justify-start text-th-text-primary ${

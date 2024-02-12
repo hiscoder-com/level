@@ -1,6 +1,30 @@
 import supabaseApi from 'utils/supabaseServer'
 import { parseManifests, validationBrief } from 'utils/helper'
 
+const setRtlOption = (steps, rtl) => {
+  if (!rtl) {
+    return steps
+  } else {
+    return steps.map((step) => {
+      if (step.config && step.config.length > 0) {
+        step.config = step.config.map((toolConfig) => {
+          if (toolConfig.tools && toolConfig.tools.length > 0) {
+            toolConfig.tools = toolConfig.tools.map((tool) => {
+              if (
+                ['draftTranslate', 'commandTranslate', 'translate'].includes(tool.name)
+              ) {
+                tool.config = Object.assign({}, tool.config, { rtl: true })
+              }
+              return tool
+            })
+          }
+          return toolConfig
+        })
+      }
+      return step
+    })
+  }
+}
 export default async function languageProjectsHandler(req, res) {
   let supabase
   try {
@@ -10,7 +34,7 @@ export default async function languageProjectsHandler(req, res) {
   }
   const {
     body: {
-      language_id,
+      language,
       method_id,
       code,
       title,
@@ -69,7 +93,7 @@ export default async function languageProjectsHandler(req, res) {
               title,
               orig_title,
               code,
-              language_id,
+              language_id: language.id,
               type: current_method.type,
               resources: newResources,
               method: current_method.title,
@@ -93,10 +117,15 @@ export default async function languageProjectsHandler(req, res) {
           throw briefError
         }
         let sorting = 1
-        for (const step_el of steps) {
-          await supabase
+        const stepsCheckRtl = setRtlOption(steps, language.isRtl)
+        for (const step_el of stepsCheckRtl) {
+          const { error: errorSetSteps } = await supabase
             .from('steps')
             .insert([{ ...step_el, sorting: sorting++, project_id: project.id }])
+          if (errorSetSteps) {
+            await supabaseService.from('projects').delete().eq('id', project.id)
+            throw errorSetSteps
+          }
         }
         res.setHeader('Location', `/projects/${project.code}`)
         return res.status(201).json({})

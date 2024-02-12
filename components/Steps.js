@@ -10,6 +10,7 @@ function Steps({ updateSteps, customSteps = [], className = 'bg-th-secondary-10'
 
   const fields = [
     { title: t('common:Title'), name: 'title', textarea: false },
+    { title: t('common:Subtitle'), name: 'subtitle', textarea: false },
     { title: t('common:Description'), name: 'description', textarea: true },
     { title: t('common:IntroStep'), name: 'intro', textarea: true },
   ]

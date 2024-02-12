@@ -76,8 +76,9 @@ function ProjectCreate() {
   }, [methodId])
 
   const onSubmit = async (data) => {
-    const { title, code, languageId, origtitle } = data
-    if (!title || !code || !languageId) {
+    const { title, code, language, origtitle } = data
+    const languageObject = JSON.parse(language)
+    if (!title || !code || !languageObject.id) {
       return
     }
     setIsCreating(true)
@@ -87,7 +88,7 @@ function ProjectCreate() {
         custom_brief_questions: customBriefQuestions,
         title,
         orig_title: origtitle,
-        language_id: languageId,
+        language: languageObject,
         code,
         method_id: method.id,
         steps: method.steps,

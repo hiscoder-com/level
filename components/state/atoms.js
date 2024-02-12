@@ -32,6 +32,7 @@ export const stepConfigState = atom({
     time: 0,
     description: '',
     title: '',
+    subtitle: '',
     last_step: 8,
     current_step: 1,
     project_code: '',

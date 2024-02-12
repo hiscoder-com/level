@@ -129,6 +129,7 @@ function BlindEditor({ config }) {
             (index === 0 && !enabledIcons.length) ||
             enabledIcons.includes(currentNumVerse)
           )
+          console.log(config)
           const isTranslating = enabledInputs.includes(verseObject.num.toString())
           const isTranslated = translatedVerses.includes(currentNumVerse)
           return (
@@ -167,6 +168,7 @@ function BlindEditor({ config }) {
               {isTranslating ? (
                 <textarea
                   ref={(el) => (textAreaRef.current[index] = el)}
+                  dir={config.config.rtl ? 'rtl' : 'ltr'}
                   autoFocus
                   rows={1}
                   className="mt-3 w-full resize-none focus:outline-none focus:inline-none"
@@ -184,7 +186,12 @@ function BlindEditor({ config }) {
                   defaultValue={verseObject.verse ?? ''}
                 />
               ) : (
-                <div className="mt-3 whitespace-pre-line">{verseObject.verse}</div>
+                <div
+                  className="mt-3 whitespace-pre-line w-full"
+                  dir={config.config.rtl ? 'rtl' : 'ltr'}
+                >
+                  {verseObject.verse}
+                </div>
               )}
             </div>
           )
@@ -201,7 +208,6 @@ function BlindEditor({ config }) {
             {t('Save')}
           </button>
         )}
-        <Toaster />
       </div>
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">

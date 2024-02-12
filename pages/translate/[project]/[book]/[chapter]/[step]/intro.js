@@ -16,16 +16,16 @@ export default function IntroPage() {
   const { project, book, chapter, step } = query
 
   const [introMd, setIntroMd] = useState('')
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState({})
   useEffect(() => {
     supabase
       .from('steps')
-      .select('title,intro,sorting,projects!inner(code,id)')
+      .select('title,intro,sorting,subtitle,projects!inner(code,id)')
       .match({ 'projects.code': project, sorting: step })
       .single()
       .then((res) => {
         setIntroMd(res.data.intro)
-        setTitle(res.data.title)
+        setTitle({ title: res.data.title, subtitle: res.data.subtitle ?? '' })
         supabase
           .rpc('get_current_steps', { project_id: res.data.projects.id })
           .then((response) => {

@@ -1,6 +1,9 @@
 import { useTranslation } from 'next-i18next'
 
 import {
+  ObservationQuestions,
+  TheologicalQuestions,
+  DiscourseQuestions,
   PersonalNotes,
   CommandEditor,
   BlindEditor,
@@ -8,13 +11,15 @@ import {
   TeamNotes,
   Editor,
   Reader,
-  Audio,
+  Retelling,
   Bible,
   OBSTN,
   Info,
   TWL,
   TN,
   TQ,
+  ReflectionQuestions,
+  TranslationRules,
 } from './'
 
 function Tool({ config, toolName, tnLink, editable = false }) {
@@ -35,6 +40,7 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       </div>
     )
   }
+  console.log(ReflectionQuestions)
 
   config.verses = config.wholeChapter
     ? []
@@ -143,9 +149,9 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       title = t('personalNotes')
       break
 
-    case 'audio':
-      CurrentTool = Audio
-      title = t('audio')
+    case 'retelling':
+      CurrentTool = Retelling
+      title = t('retelling')
       break
 
     case 'dictionary':
@@ -159,6 +165,31 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       config.tnLink = tnLink
 
       url = '/api/git/info'
+      break
+
+    case 'observationQuestions':
+      CurrentTool = ObservationQuestions
+      title = t('observationQuestions')
+      break
+
+    case 'discourseQuestions':
+      CurrentTool = DiscourseQuestions
+      title = t('discourseQuestions')
+      break
+
+    case 'theologicalQuestions':
+      CurrentTool = TheologicalQuestions
+      title = t('theologicalQuestions')
+      break
+
+    case 'reflectionQuestions':
+      CurrentTool = ReflectionQuestions
+      title = t('reflectionQuestions')
+      break
+
+    case 'translationRules':
+      CurrentTool = TranslationRules
+      title = t('translationRules')
       break
 
     default:
