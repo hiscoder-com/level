@@ -1,47 +1,39 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
-
 import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 
 import ButtonLoading from './ButtonLoading'
 import Modal from './Modal'
-
-import { useRedirect } from 'utils/hooks'
+import InputField from './Panel/UI/InputField'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import Report from 'public/error-outline.svg'
 import Loading from 'public/progress.svg'
-import InputField from './Panel/UI/InputField'
 
 function Login() {
   const supabase = useSupabaseClient()
-  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+  const { t } = useTranslation('users')
+  const { user, loading } = useCurrentUser()
+
+  const [login, setLogin] = useState('')
   const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [isError, setIsError] = useState(false)
   const [errorMessageSendLink, setErrorMessageSendLink] = useState('')
   const [successMessageSendLink, setSuccessMessageSendLink] = useState('')
-
-  const [login, setLogin] = useState('')
   const [isLoadingLogin, setIsLoadingLogin] = useState(false)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [isSendingEmail, setIsSendingEmail] = useState(false)
 
-  const [email, setEmail] = useState('')
-
-  const { user, loading } = useCurrentUser()
-  const { t } = useTranslation('users')
   const passwordRef = useRef(null)
   const loginRef = useRef(null)
-  const router = useRouter()
-  const { href } = useRedirect({
-    user,
-    startLink: '/agreements',
-  })
 
   useEffect(() => {
     if (passwordRef?.current) {
@@ -64,8 +56,9 @@ function Login() {
   }, [router, user])
 
   const handleLogin = async (e) => {
-    setIsLoadingLogin(true)
     e.preventDefault()
+    setIsLoadingLogin(true)
+
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email: login,

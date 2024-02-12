@@ -2,18 +2,18 @@ import EyeIcon from 'public/eye-icon.svg'
 import EyeOffIcon from 'public/eye-off-icon.svg'
 
 function InputField({
-  showPasswordToggle = false,
-  showPassword = false,
   setShowPassword,
-  value,
   onChange,
+  value,
   name,
-  type,
   id,
+  type,
   label,
-  isError = false,
-  className = '',
   refInput,
+  className = '',
+  isError = false,
+  showPassword = false,
+  showPasswordToggle = false,
   ...props
 }) {
   const baseClassName = 'input-base-label peer'
@@ -43,7 +43,6 @@ function InputField({
           ref={refInput}
           className={finalClassName}
           type={showPassword ? 'text' : type}
-          // type={type} было
           name={name}
           id={id}
           value={value}
