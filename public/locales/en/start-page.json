@@ -6,6 +6,23 @@
     "HowItWork": "How it work",
     "HowItWorkText": "Each translation process has its own order of operations. For example, in the first step, the translator reads the text (gets familiar with it). After that, he/she makes a draft of the translation. In the final step, the translator reads his text and makes changes (edits his translation). Realizing that each ethod of Bible translation has its own materials for each of these steps, we decided to create a platform where the translator could simply go to the project page and see only what he or she needs at that particular step. Depending on the method, the content of the tools varies.",
     "Reviews": "Reviews",
+    "ReviewsBlock": {
+      "FirstReview": {
+        "Country": "Azerbajan",
+        "Name": "Ramis",
+        "Text": "I have experience in Bible translation. We did the translation in different programs. But now I can say for sure that V-CANA is the best tool for teamwork in translation."
+      },
+      "SecondReview": {
+        "Country": "Russia",
+        "Name": "Lina",
+        "Text": "My impressions of working in V-CANA - It's not just convenient. It's comfortable."
+      },
+      "ThirdReview": {
+        "Country": "Uzbekistan",
+        "Name": "Bakhrom",
+        "Text": "V-CANA is very much to my liking. It is very convenient that there is a command dictionary, and when you come across similar words, the dictionary helps you to use them in the same way in different places. It is very convenient that there is a biblical dictionary and there are explanations on how to better translate some difficult sentences. A very useful tool."
+      }
+    },
     "VcanaText": "V-CANA is a platform for step-by-step Bible translation using various helpful materials from our partners.",
     "WhatIsVcana": "What is V-CANA?"
   },

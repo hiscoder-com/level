@@ -75,18 +75,18 @@ function AboutVersion({
             }}
           />
         </div>
-        <div onClick={(e) => e.stopPropagation()}>
-          <ReactMarkdown className="flex-grow md:mt-5 text-left overflow-y-auto text-sm font-normal whitespace-pre-line leading-5">
+        <div className="overflow-auto" onClick={(e) => e.stopPropagation()}>
+          <ReactMarkdown className="flex-grow md:mt-5 text-left overflow-auto pr-5 text-sm font-normal whitespace-pre-line leading-5">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
-          <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
-            <button
-              onClick={() => setShowAllUpdates((prev) => !prev)}
-              className="btn-primary"
-            >
-              {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
-            </button>
-          </div>
+        </div>
+        <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
+          <button
+            onClick={() => setShowAllUpdates((prev) => !prev)}
+            className="btn-primary"
+          >
+            {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
+          </button>
         </div>
       </div>
     )

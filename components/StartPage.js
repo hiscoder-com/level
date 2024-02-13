@@ -6,6 +6,7 @@ import Login from './Login'
 import Feedback from './Feedback'
 import AboutVersion from './AboutVersion'
 import Demo from './Demo'
+import Reviews from './Reviews'
 
 import { useTranslation } from 'next-i18next'
 
@@ -56,9 +57,9 @@ function StartPage() {
     ),
     partners: <Partners t={t} />,
     intro: <VcanaIntro t={t} />,
-    reviews: <Reviews />,
-    howItWork: <HowItWork />,
-    faq: <Faq />,
+    reviews: <Reviews t={t} />,
+    howItWork: <HowItWork t={t} />,
+    faq: <Faq t={t} />,
     demo: <Demo t={t} />,
   }
 
@@ -267,14 +268,7 @@ function StartPage() {
           ></div>
           <div className="relative z-10">
             {blocks.howItWork.clicked ? (
-              <>
-                <p>{t('mainBlocks.HowItWork')}</p>
-                <p
-                  className={`text-sm mt-3 transition-opacity duration-700 ${blocks.howItWork.opacity}`}
-                >
-                  {t('mainBlocks.HowItWorkText')}
-                </p>
-              </>
+              <HowItWork t={t} opacity={blocks.howItWork.opacity} />
             ) : (
               <p className="text-white">{t('mainBlocks.HowItWork')}</p>
             )}
@@ -293,14 +287,7 @@ function StartPage() {
           ></div>
           <div className="relative z-10">
             {blocks.reviews.clicked ? (
-              <>
-                <p>{t('Reviews')}</p>
-                <p
-                  className={`text-sm mt-3 transition-opacity duration-700 ${blocks.reviews.opacity}`}
-                >
-                  Some Reviews...
-                </p>
-              </>
+              <Reviews t={t} opacity={blocks.reviews.opacity} />
             ) : (
               <p className="text-white">{t('Reviews')}</p>
             )}
@@ -319,14 +306,7 @@ function StartPage() {
           ></div>
           <div className="relative z-10">
             {blocks.faq.clicked ? (
-              <>
-                <p>{t('FAQ')}</p>
-                <p
-                  className={`text-sm mt-3 transition-opacity duration-700 ${blocks.faq.opacity}`}
-                >
-                  Some FAQ...
-                </p>
-              </>
+              <Faq t={t} opacity={blocks.faq.opacity} />
             ) : (
               <p className="text-white">{t('FAQ')}</p>
             )}
@@ -346,7 +326,7 @@ function StartPage() {
           className="p-6 bg-th-secondary-10 rounded-xl"
           onClick={() => toggleSection('feedback')}
         >
-          <div className="mb-5 text-center">Связаться с нами</div>
+          <div className="mb-5 text-center">{t('ConnectWithUs')}</div>
           {showSections.feedback && <Feedback t={t} />}
           <div className="flex justify-center items-center gap-3">
             <Social />
@@ -360,7 +340,7 @@ function StartPage() {
               }`}
               onClick={() => toggleSection('demo')}
             >
-              <div className="mb-5 text-center">DEMO</div>
+              <div className="mb-5 text-center uppercase">{t('Demo')}</div>
               {showSections.demo && <Demo t={t} />}
             </div>
           )}
@@ -427,14 +407,26 @@ function Partners({ t }) {
     </div>
   )
 }
-function Reviews() {
-  return <div>Reviews</div>
+
+function HowItWork({ t, opacity }) {
+  return (
+    <div>
+      <p>{t('mainBlocks.HowItWork')}</p>
+      <p className={`text-sm mt-3 transition-opacity duration-700 ${opacity || ''}`}>
+        {t('mainBlocks.HowItWorkText')}
+      </p>
+    </div>
+  )
 }
-function HowItWork() {
-  return <div>HowItWork</div>
-}
-function Faq() {
-  return <div>FAQ</div>
+function Faq({ t, opacity }) {
+  return (
+    <div>
+      <p>{t('FAQ')}</p>
+      <p className={`text-sm mt-3 transition-opacity duration-700 ${opacity || ''}`}>
+        Some FAQ...
+      </p>
+    </div>
+  )
 }
 
 function Social() {

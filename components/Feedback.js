@@ -43,7 +43,7 @@ function Feedback({ t, onClose }) {
 
   return (
     <div className="flex flex-col w-full">
-      <p className="hidden md:block"> {t('ConnectWithUs')}</p>
+      <p className="hidden md:block">{t('ConnectWithUs')}</p>
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
         onClick={(e) => e.stopPropagation()}
