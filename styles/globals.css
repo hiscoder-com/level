@@ -192,6 +192,13 @@
   disabled:hover:bg-transparent;
 }
 
+.arrow-how-it-work {
+  @apply absolute top-1/2 transform -translate-y-1/2 p-3 rounded-full duration-300 bg-slate-550
+  hover:bg-th-secondary-400
+  active:bg-th-secondary-300
+  disabled:bg-th-secondary-300;
+}
+
 .f-screen-appbar {
   min-height: calc(100vh - 11.5rem);
 }

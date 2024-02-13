@@ -1,26 +1,30 @@
 import { useEffect, useState } from 'react'
+
 import Link from 'next/link'
 
-import SwitchLocalization from './SwitchLocalization'
-import Login from './Login'
-import Feedback from './Feedback'
+import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 import AboutVersion from './AboutVersion'
+import Feedback from './Feedback'
 import Demo from './Demo'
+import Login from './Login'
 import Reviews from './Reviews'
+import HowItWork from './HowItWork'
+import SwitchLocalization from './SwitchLocalization'
 
 import { useTranslation } from 'next-i18next'
 
-import VcanaLogo from 'public/vcana-logo-color.svg'
-import UnfoldingWord from 'public/unfolding-word.svg'
+import Close from 'public/close.svg'
+import Facebook from 'public/facebook.svg'
 import Instagram from 'public/instagram.svg'
 import Telegram from 'public/telegram.svg'
+import UnfoldingWord from 'public/unfolding-word.svg'
+import VcanaLogo from 'public/vcana-logo-color.svg'
 import Youtube from 'public/youtube.svg'
-import Facebook from 'public/facebook.svg'
-import Close from 'public/close.svg'
 
 function StartPage() {
   const { t } = useTranslation(['start-page', 'projects', 'users'])
   const [contentKey, setContentKey] = useState(null)
+  const [paddingClass, setPaddingClass] = useState('2xl:px-0')
   const [showSections, setShowSections] = useState({
     updates: false,
     partners: false,
@@ -28,8 +32,12 @@ function StartPage() {
     signIn: false,
     demo: false,
   })
-
-  const [paddingClass, setPaddingClass] = useState('2xl:px-0')
+  const [blocks, setBlocks] = useState({
+    intro: { clicked: false, opacity: 'opacity-0' },
+    howItWork: { clicked: false, opacity: 'opacity-0' },
+    reviews: { clicked: false, opacity: 'opacity-0' },
+    faq: { clicked: false, opacity: 'opacity-0' },
+  })
 
   const toggleSection = (section) => {
     setShowSections((prev) => ({
@@ -59,16 +67,9 @@ function StartPage() {
     intro: <VcanaIntro t={t} />,
     reviews: <Reviews t={t} />,
     howItWork: <HowItWork t={t} />,
-    faq: <Faq t={t} />,
+    faq: <FrequentlyAskedQuestions t={t} />,
     demo: <Demo t={t} />,
   }
-
-  const [blocks, setBlocks] = useState({
-    intro: { clicked: false, opacity: 'opacity-0' },
-    howItWork: { clicked: false, opacity: 'opacity-0' },
-    reviews: { clicked: false, opacity: 'opacity-0' },
-    faq: { clicked: false, opacity: 'opacity-0' },
-  })
 
   const toggleBlock = (key) => {
     setBlocks((prev) => ({
@@ -306,7 +307,7 @@ function StartPage() {
           ></div>
           <div className="relative z-10">
             {blocks.faq.clicked ? (
-              <Faq t={t} opacity={blocks.faq.opacity} />
+              <FrequentlyAskedQuestions t={t} opacity={blocks.faq.opacity} />
             ) : (
               <p className="text-white">{t('FAQ')}</p>
             )}
@@ -404,27 +405,6 @@ function Partners({ t }) {
           <UnfoldingWord />
         </Link>
       </div>
-    </div>
-  )
-}
-
-function HowItWork({ t, opacity }) {
-  return (
-    <div>
-      <p>{t('mainBlocks.HowItWork')}</p>
-      <p className={`text-sm mt-3 transition-opacity duration-700 ${opacity || ''}`}>
-        {t('mainBlocks.HowItWorkText')}
-      </p>
-    </div>
-  )
-}
-function Faq({ t, opacity }) {
-  return (
-    <div>
-      <p>{t('FAQ')}</p>
-      <p className={`text-sm mt-3 transition-opacity duration-700 ${opacity || ''}`}>
-        Some FAQ...
-      </p>
     </div>
   )
 }
