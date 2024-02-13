@@ -67,32 +67,25 @@
 
   body {
     @apply text-th-text-primary
-  }
+  } 
 
-  body.no-scrollbar {
-    scrollbar-width: none !important;
-  }
-
-  body.no-scrollbar::-webkit-scrollbar {
-    display: none !important;
-  }
-
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scroll) var(--background-primary);
-  }
+  html {
+  scrollbar-width: auto; 
+  scrollbar-color: var(--primary-100) var(--secondary-200); 
+}
 
   *::-webkit-scrollbar {
     width: 7px;
+    background:var(--secondary-200)
   }
 
   *::-webkit-scrollbar-track {
-    background: var(--background-primary);
+    background: var(--secondary-200);
     border-radius: 10px;
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: var(--scroll);
+    background-color: var(--primary-100);
     border-radius: 10px
   }
 
