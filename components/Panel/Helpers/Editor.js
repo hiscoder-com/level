@@ -8,16 +8,22 @@ import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { obsCheckAdditionalVerses } from 'utils/helper'
+import { useScroll } from 'utils/hooks'
 
 function Editor({ config }) {
   const supabase = useSupabaseClient()
-
   const { t } = useTranslation(['common'])
-
   const [verseObjects, setVerseObjects] = useState([])
-
+  const [isLoading, setIsLoading] = useState(false)
+  useScroll({
+    toolName: 'editor',
+    idPrefix: 'editor',
+    isLoading,
+  })
   useEffect(() => {
+    setIsLoading(true)
     setVerseObjects(config.reference.verses?.filter((verse) => verse.num < 201))
+    setIsLoading(false)
   }, [config.reference.verses])
 
   const updateVerse = (id, text) => {
@@ -41,7 +47,11 @@ function Editor({ config }) {
   return (
     <div>
       {verseObjects.map((verseObject, index) => (
-        <div key={verseObject.verse_id} className="flex my-3">
+        <div
+          key={verseObject.verse_id}
+          id={'editor' + verseObject.num}
+          className="flex my-3 pt-1"
+        >
           <div>{obsCheckAdditionalVerses(verseObject.num)}</div>
           <AutoSizeTextArea
             verseObject={verseObject}

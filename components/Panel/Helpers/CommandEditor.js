@@ -6,7 +6,7 @@ import { toast, Toaster } from 'react-hot-toast'
 import useSupabaseClient from 'utils/supabaseClient'
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 import { useCurrentUser } from 'lib/UserContext'
-import { useGetChapter, useProject } from 'utils/hooks'
+import { useGetChapter, useProject, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 // getFromResource - если true  - то все стихи копируются из главного ресурса в эдитор
@@ -25,10 +25,15 @@ function CommandEditor({ config }) {
   const [level, setLevel] = useState('user')
   const [verseObjects, setVerseObjects] = useState([])
   const [currentProject] = useProject({ code: project })
-  const [chapter] = useGetChapter({
+  const [chapter, { isLoading }] = useGetChapter({
     code: project,
     book_code: book,
     chapter_id: chapter_num,
+  })
+  useScroll({
+    toolName: 'editor',
+    idPrefix: 'editor',
+    isLoading,
   })
 
   useEffect(() => {
@@ -183,7 +188,11 @@ function CommandEditor({ config }) {
   return (
     <div>
       {verseObjects.map((verseObject, index) => (
-        <div key={verseObject.verse_id} className="flex my-3">
+        <div
+          id={'editor' + verseObject.num}
+          key={verseObject.verse_id}
+          className="flex my-3"
+        >
           <div
             className={
               (
