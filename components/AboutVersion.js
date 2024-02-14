@@ -69,7 +69,7 @@ function AboutVersion({ isStartPage = false, setShowUpdates = () => {} }) {
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
         </div>
-        <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
+        <div className="flex justify-center mt-auto py-4 lg:py-0 lg:pt-4">
           <button
             onClick={(e) => {
               e.stopPropagation()

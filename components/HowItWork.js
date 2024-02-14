@@ -23,17 +23,17 @@ function HowItWork({ t, opacity }) {
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-12">
-      <p>{t('mainBlocks.HowItWork')}</p>
+      <p>{t('MainBlocks.HowItWork')}</p>
       <div className="overflow-auto pr-5" onClick={(e) => e.stopPropagation()}>
         <p
           className={`text-sm md:text-base font-normal transition-opacity duration-700 ${
             opacity || ''
           }`}
         >
-          {t('mainBlocks.HowItWorkText')}
+          {t('MainBlocks.HowItWorkText')}
         </p>
         <div className="mt-6 md:mt-12 pb-6 relative">
-          <p>{t('mainBlocks.Screenshots')}</p>
+          <p>{t('MainBlocks.Screenshots')}</p>
 
           <div className="relative">
             <button onClick={prevPage} className="arrow-how-it-work left-0">

@@ -3,37 +3,37 @@ import { useState } from 'react'
 function FrequentlyAskedQuestions({ t, opacity }) {
   const faqData = [
     {
-      questionKey: 'mainBlocks.FAQBlock.FirstQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.FirstQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.FirstQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.FirstQuestion.Answer',
       isFirst: true,
     },
     {
-      questionKey: 'mainBlocks.FAQBlock.SecondQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.SecondQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.SecondQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.SecondQuestion.Answer',
     },
     {
-      questionKey: 'mainBlocks.FAQBlock.ThirdQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.ThirdQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.ThirdQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.ThirdQuestion.Answer',
     },
     {
-      questionKey: 'mainBlocks.FAQBlock.FourthQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.FourthQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.FourthQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.FourthQuestion.Answer',
     },
     {
-      questionKey: 'mainBlocks.FAQBlock.FifthQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.FifthQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.FifthQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.FifthQuestion.Answer',
     },
     {
-      questionKey: 'mainBlocks.FAQBlock.SixthQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.SixthQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.SixthQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.SixthQuestion.Answer',
     },
     {
-      questionKey: 'mainBlocks.FAQBlock.SeventhQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.SeventhQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.SeventhQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.SeventhQuestion.Answer',
     },
     {
-      questionKey: 'mainBlocks.FAQBlock.EighthQuestion.Question',
-      answerKey: 'mainBlocks.FAQBlock.EighthQuestion.Answer',
+      questionKey: 'MainBlocks.FAQBlock.EighthQuestion.Question',
+      answerKey: 'MainBlocks.FAQBlock.EighthQuestion.Answer',
     },
   ]
 

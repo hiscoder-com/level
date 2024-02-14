@@ -135,7 +135,7 @@ function StartPage() {
                 onClick={() => setContentKey('intro')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('mainBlocks.WhatIsVcana')}</p>
+                <p className="relative z-10">{t('MainBlocks.WhatIsVcana')}</p>
               </div>
 
               <div
@@ -143,7 +143,7 @@ function StartPage() {
                 onClick={() => setContentKey('reviews')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('mainBlocks.Reviews')}</p>
+                <p className="relative z-10">{t('MainBlocks.Reviews')}</p>
               </div>
             </div>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
@@ -152,7 +152,7 @@ function StartPage() {
                 onClick={() => setContentKey('howItWork')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('mainBlocks.HowItWork')}</p>
+                <p className="relative z-10">{t('MainBlocks.HowItWork')}</p>
               </div>
 
               <div
@@ -160,7 +160,7 @@ function StartPage() {
                 onClick={() => setContentKey('faq')}
               >
                 <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('mainBlocks.FAQ')}</p>
+                <p className="relative z-10">{t('MainBlocks.FAQ')}</p>
               </div>
             </div>
           </div>
@@ -251,7 +251,7 @@ function StartPage() {
             {blocks.intro.clicked ? (
               <VcanaIntro t={t} opacity={blocks.intro.opacity} />
             ) : (
-              <p className="text-white">{t('mainBlocks.WhatIsVcana')}</p>
+              <p className="text-white">{t('MainBlocks.WhatIsVcana')}</p>
             )}
           </div>
         </div>
@@ -270,7 +270,7 @@ function StartPage() {
             {blocks.howItWork.clicked ? (
               <HowItWork t={t} opacity={blocks.howItWork.opacity} />
             ) : (
-              <p className="text-white">{t('mainBlocks.HowItWork')}</p>
+              <p className="text-white">{t('MainBlocks.HowItWork')}</p>
             )}
           </div>
         </div>
@@ -378,14 +378,14 @@ export default StartPage
 function VcanaIntro({ t, opacity }) {
   return (
     <div className="flex flex-col w-full gap-6 md:gap-12">
-      <p>{t('mainBlocks.WhatIsVcana')}</p>
+      <p>{t('MainBlocks.WhatIsVcana')}</p>
       <div className="flex flex-grow flex-col justify-between items-center pb-6 md:pb-0">
         <p
           className={`text-sm md:text-base font-normal mt-3 transition-opacity duration-700 ${
             opacity || ''
           }`}
         >
-          {t('mainBlocks.VcanaText')}
+          {t('MainBlocks.VcanaText')}
         </p>
         <img src="/v-cana-intro.png" alt="v-cana intro image" className="w-full h-auto" />
       </div>

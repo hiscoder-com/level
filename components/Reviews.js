@@ -1,19 +1,19 @@
 function Reviews({ t, opacity }) {
   const reviewData = [
     {
-      nameKey: 'mainBlocks.ReviewsBlock.FirstReview.Name',
-      countryKey: 'mainBlocks.ReviewsBlock.FirstReview.Country',
-      textKey: 'mainBlocks.ReviewsBlock.FirstReview.Text',
+      nameKey: 'MainBlocks.ReviewsBlock.FirstReview.Name',
+      countryKey: 'MainBlocks.ReviewsBlock.FirstReview.Country',
+      textKey: 'MainBlocks.ReviewsBlock.FirstReview.Text',
     },
     {
-      nameKey: 'mainBlocks.ReviewsBlock.SecondReview.Name',
-      countryKey: 'mainBlocks.ReviewsBlock.SecondReview.Country',
-      textKey: 'mainBlocks.ReviewsBlock.SecondReview.Text',
+      nameKey: 'MainBlocks.ReviewsBlock.SecondReview.Name',
+      countryKey: 'MainBlocks.ReviewsBlock.SecondReview.Country',
+      textKey: 'MainBlocks.ReviewsBlock.SecondReview.Text',
     },
     {
-      nameKey: 'mainBlocks.ReviewsBlock.ThirdReview.Name',
-      countryKey: 'mainBlocks.ReviewsBlock.ThirdReview.Country',
-      textKey: 'mainBlocks.ReviewsBlock.ThirdReview.Text',
+      nameKey: 'MainBlocks.ReviewsBlock.ThirdReview.Name',
+      countryKey: 'MainBlocks.ReviewsBlock.ThirdReview.Country',
+      textKey: 'MainBlocks.ReviewsBlock.ThirdReview.Text',
     },
   ]
 
