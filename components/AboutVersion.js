@@ -71,7 +71,10 @@ function AboutVersion({ isStartPage = false, setShowUpdates = () => {} }) {
         </div>
         <div className="mt-auto flex justify-center py-4 lg:py-0 lg:pt-4">
           <button
-            onClick={() => setShowAllUpdates((prev) => !prev)}
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowAllUpdates((prev) => !prev)
+            }}
             className="btn-primary"
           >
             {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}

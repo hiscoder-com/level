@@ -92,7 +92,6 @@ function StartPage() {
     }
 
     updatePadding()
-
     window.addEventListener('resize', updatePadding)
 
     return () => window.removeEventListener('resize', updatePadding)
@@ -107,7 +106,7 @@ function StartPage() {
           <div className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl">
             <VcanaLogo className="w-44" />
           </div>
-          <div className="p-5 lg:p-7 flex justify-between items-center h-[4.4rem] bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
+          <div className="flex justify-between items-center h-[4.4rem] p-5 lg:p-7 bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
             <p>{t('projects:Language')}</p>
             <SwitchLocalization />
           </div>
@@ -192,7 +191,7 @@ function StartPage() {
           >
             {t('ConnectWithUs')}
           </p>
-          <div className="flex justify-center items-center p-4 gap-3 h-[4.4rem] bg-th-secondary-10 rounded-2xl overflow-x-auto">
+          <div className="flex justify-center items-center p-4 gap-3 h-[4.4rem] bg-th-secondary-10 rounded-2xl overflow-hidden">
             <Social />
           </div>
           <div className="p-5 lg:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 xl:space-y-4 overflow-hidden">
@@ -238,7 +237,7 @@ function StartPage() {
           )}
         </div>
         <div
-          className={`rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden relative ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.intro.clicked ? 'min-h-36' : 'h-36'
           }`}
           onClick={() => toggleBlock('intro')}
@@ -257,7 +256,7 @@ function StartPage() {
           </div>
         </div>
         <div
-          className={`rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden relative ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.howItWork.clicked ? 'min-h-36' : 'h-36'
           }`}
           onClick={() => toggleBlock('howItWork')}
@@ -276,7 +275,7 @@ function StartPage() {
           </div>
         </div>
         <div
-          className={`rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden relative ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.reviews.clicked ? 'min-h-36' : 'h-36'
           }`}
           onClick={() => toggleBlock('reviews')}
@@ -295,7 +294,7 @@ function StartPage() {
           </div>
         </div>
         <div
-          className={`rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden relative ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.faq.clicked ? 'min-h-36' : 'h-36'
           }`}
           onClick={() => toggleBlock('faq')}
@@ -410,28 +409,31 @@ function Partners({ t }) {
 }
 
 function Social() {
+  const socialLinks = [
+    { href: 'https://youtube.com/@texttree', Icon: Youtube, lgSize: '7' },
+    { href: 'https://texttree.t.me/', Icon: Telegram },
+    {
+      href: 'https://facebook.com/texttreeorg',
+      Icon: Facebook,
+      size: '4',
+      lgSize: '7',
+    },
+    { href: 'https://instagram.com/texttreeorg', Icon: Instagram },
+  ]
+
   return (
     <>
-      <Link href="https://youtube.com/@texttree" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
-          <Youtube className="w-4 h-4" />
-        </div>
-      </Link>
-      <Link href="https://texttree.t.me/" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
-          <Telegram className="w-4" />
-        </div>
-      </Link>
-      <Link href="https://facebook.com/texttreeorg" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
-          <Facebook className="h-4" />
-        </div>
-      </Link>
-      <Link href="https://instagram.com/texttreeorg" target="_blank">
-        <div className="flex items-center justify-center w-6 lg:w-7 h-6 lg:h-7 p-0 lg:p-2 rounded-full bg-slate-550">
-          <Instagram />
-        </div>
-      </Link>
+      {socialLinks.map(({ href, Icon, size, lgSize }, index) => (
+        <Link href={href} key={index} target="_blank">
+          <div
+            className={`flex items-center justify-center w-6 lg:w-${
+              lgSize || '7'
+            } h-6 lg:h-${lgSize || '7'} p-0 lg:p-2 rounded-full bg-slate-550`}
+          >
+            <Icon className={size ? `h-${size}` : 'w-4'} />
+          </div>
+        </Link>
+      ))}
     </>
   )
 }
