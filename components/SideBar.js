@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next'
 
 import { Menu, Transition } from '@headlessui/react'
 
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState } from 'recoil'
 
 import AboutVersion from 'components/AboutVersion'
 import AvatarSelector from './AvatarSelector'
@@ -13,8 +13,9 @@ import TranslatorImage from './TranslatorImage'
 import ThemeSwitcher from './ThemeSwitcher'
 import SignOut from './SignOut'
 import ModalInSideBar from './ModalInSideBar'
+import { PersonalNotes } from './Panel'
 
-import { aboutVersionModalIsOpen, avatarSelectorModalIsOpen } from './state/atoms'
+import { modalsSidebar } from './state/atoms'
 
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -28,23 +29,22 @@ import Camera from 'public/camera.svg'
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation('projects')
+  const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
 
-  const setVersionModalIsOpen = useSetRecoilState(aboutVersionModalIsOpen)
-  const setSelectorModalIsOpen = useSetRecoilState(avatarSelectorModalIsOpen)
-  const [notepadModalIsOpen, setNotepadModalIsOpen] = useState(false)
   const openModal = (modalType) => {
-    if (modalType === 'aboutVersion') {
-      setSelectorModalIsOpen(false)
-      setVersionModalIsOpen((prev) => !prev)
-    } else if (modalType === 'avatarSelector') {
-      setVersionModalIsOpen(false)
-      setSelectorModalIsOpen((prev) => !prev)
-    }
+    setModalsSidebarState((prevModals) => ({
+      aboutVersion: modalType === 'aboutVersion' ? !prevModals.aboutVersion : false,
+      avatarSelector: modalType === 'avatarSelector' ? !prevModals.avatarSelector : false,
+      notepad: modalType === 'notepad' ? !prevModals.notepad : false,
+    }))
   }
 
   const closeModal = () => {
-    setVersionModalIsOpen(false)
-    setSelectorModalIsOpen(false)
+    setModalsSidebarState({
+      aboutVersion: false,
+      avatarSelector: false,
+      notepad: false,
+    })
   }
 
   return (
@@ -132,15 +132,19 @@ function SideBar({ setIsOpenSideBar, access }) {
                     >
                       <div
                         className="flex w-full items-center gap-4 cursor-pointer"
-                        onClick={() => setNotepadModalIsOpen(true)}
+                        onClick={() => openModal('notepad')}
                       >
                         <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
                           <Notepad className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
                         </div>
                         <ModalInSideBar
-                          isOpen={notepadModalIsOpen}
-                          setIsOpen={setNotepadModalIsOpen}
-                        />
+                          isOpen={modalsSidebarState.notepad}
+                          setIsOpen={(value) =>
+                            setModalsSidebarState((prev) => ({ ...prev, notepad: value }))
+                          }
+                        >
+                          <PersonalNotes />
+                        </ModalInSideBar>
                       </div>
                     </Menu.Item>
                   </div>

@@ -40,10 +40,10 @@ export default function Footer({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
   return (
-    <div className="flex flex-col justify-between items-center py-4 md:py-0 mx-auto md:w-full max-w-7xl bg-th-secondary-100 md:flex-row lg:px-4 xl:px-0">
+    <div className="relative flex flex-col justify-between items-center py-4 md:py-0 mx-auto md:w-full max-w-7xl bg-th-secondary-100 md:flex-row lg:px-4 xl:px-0">
       {isStepPage && (
         <>
-          <div className="hidden lg:block pb-3 md:pb-0 translate-y-1/3">
+          <div className="hidden lg:block absolute mx-auto left-0 right-0 pb-3 md:pb-0 translate-y-1/3">
             <ProgressBar
               amountSteps={stepConfig.last_step}
               currentStep={stepConfig.current_step}

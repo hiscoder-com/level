@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 :root {
   --secondary-10: theme('colors.white');
   --secondary-100: theme('colors.gray.150');
@@ -59,7 +57,6 @@
   --text-secondary-200:theme('colors.white');
 }
 
-
 @layer base {
   html {
     font-family: "Roboto", system-ui, sans-serif;
@@ -71,13 +68,13 @@
 
   html {
   scrollbar-width: auto; 
-  scrollbar-color: var(--primary-100) var(--secondary-200); 
-
+  scrollbar-color: var(--primary-100) var(--secondary-200);
 }
 
   *::-webkit-scrollbar {
     width: 7px;
-    background:var(--secondary-200)
+    background:var(--secondary-200);
+    border-radius: 10px
   }
 
   *::-webkit-scrollbar-track {
