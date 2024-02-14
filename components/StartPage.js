@@ -218,7 +218,7 @@ function StartPage() {
           <div className="flex justify-center p-6 bg-th-secondary-10 rounded-xl">
             <VcanaLogo />
           </div>
-          <div className="p-4 bg-th-secondary-10 rounded-xl">
+          <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl">
             <SwitchLocalization />
           </div>
         </div>
@@ -336,12 +336,12 @@ function StartPage() {
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
             <div
-              className={`p-6 bg-th-secondary-10 rounded-xl text-center ${
+              className={`p-6 bg-th-secondary-10 rounded-xl ${
                 showSections.demo ? 'col-span-2' : ''
               }`}
               onClick={() => toggleSection('demo')}
             >
-              <div className="mb-5 text-center uppercase">{t('Demo')}</div>
+              <div className="uppercase">{t('Demo')}</div>
               {showSections.demo && <Demo t={t} />}
             </div>
           )}
@@ -355,8 +355,8 @@ function StartPage() {
               }`}
               onClick={() => toggleSection('signIn')}
             >
-              <div className="mb-5 text-center">
-                {showSections.signIn ? t('users:LoginToAccount') : 'Войти'}
+              <div className={`${showSections.signIn ? 'mb-5' : ''}`}>
+                {showSections.signIn ? t('users:LoginToAccount') : t('users:SignIn')}
               </div>
               {showSections.signIn && (
                 <Login
