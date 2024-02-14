@@ -135,7 +135,7 @@ function StartPage() {
                 className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('intro')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
+                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
                 <p className="relative z-10">{t('mainBlocks.WhatIsVcana')}</p>
               </div>
 
@@ -143,7 +143,7 @@ function StartPage() {
                 className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('reviews')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
+                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
                 <p className="relative z-10">{t('mainBlocks.Reviews')}</p>
               </div>
             </div>
@@ -152,7 +152,7 @@ function StartPage() {
                 className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('howItWork')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
+                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
                 <p className="relative z-10">{t('mainBlocks.HowItWork')}</p>
               </div>
 
@@ -160,7 +160,7 @@ function StartPage() {
                 className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/faq.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('faq')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-95 group-hover:bg-black/0 transition duration-300"></div>
+                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
                 <p className="relative z-10">{t('mainBlocks.FAQ')}</p>
               </div>
             </div>
@@ -244,7 +244,7 @@ function StartPage() {
           onClick={() => toggleBlock('intro')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/about.jpg")] bg-cover bg-no-repeat bg-center-bottom-1 transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/about.jpg")] bg-cover bg-no-repeat bg-center-bottom-1 transition-opacity brightness-90 duration-500 ${
               blocks.intro.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -263,7 +263,7 @@ function StartPage() {
           onClick={() => toggleBlock('howItWork')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/inside.jpg")] bg-cover bg-no-repeat bg-center-bottom-2 transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/inside.jpg")] bg-cover bg-no-repeat bg-center-bottom-2 transition-opacity brightness-90 duration-500 ${
               blocks.howItWork.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -282,7 +282,7 @@ function StartPage() {
           onClick={() => toggleBlock('reviews')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/reviews.jpg")] bg-cover bg-no-repeat bg-center-bottom-2 transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/reviews.jpg")] bg-cover bg-no-repeat bg-center-bottom-2 transition-opacity brightness-90 duration-500 ${
               blocks.reviews.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -301,7 +301,7 @@ function StartPage() {
           onClick={() => toggleBlock('faq')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/faq.jpg")] bg-cover bg-no-repeat bg-center-bottom-3 transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/faq.jpg")] bg-cover bg-no-repeat bg-center-bottom-3 transition-opacity brightness-90 duration-500 ${
               blocks.faq.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>

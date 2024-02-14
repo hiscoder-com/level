@@ -120,7 +120,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
                           <VersionLogo className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
                         </div>
-                        <AboutVersion isSidebar={true} />
+                        <AboutVersion />
                       </div>
                     </Menu.Item>
                   </div>
