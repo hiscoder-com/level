@@ -31,8 +31,8 @@ function CommandEditor({ config }) {
     chapter_id: chapter_num,
   })
   useScroll({
-    toolName: 'editor',
-    idPrefix: 'editor',
+    toolName: 'commandTranslate',
+    idPrefix: 'commandTranslate',
     isLoading,
   })
 
@@ -186,10 +186,10 @@ function CommandEditor({ config }) {
   }
 
   return (
-    <div>
+    <>
       {verseObjects.map((verseObject, index) => (
         <div
-          id={'editor' + verseObject.num}
+          id={'commandTranslate' + verseObject.num}
           key={verseObject.verse_id}
           className="flex my-3"
         >
@@ -220,7 +220,7 @@ function CommandEditor({ config }) {
       ))}
       <div className="select-none">ㅤ</div>
       <Toaster />
-    </div>
+    </>
   )
 }
 

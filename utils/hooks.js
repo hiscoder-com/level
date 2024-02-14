@@ -324,8 +324,14 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
 
   useEffect(() => {
     setTimeout(() => {
-      document?.getElementById(idPrefix + currentScrollVerse)?.scrollIntoView()
+      const element = document.getElementById(idPrefix + currentScrollVerse)
+      const container = document.getElementById('container_' + toolName)
+      if (element && container) {
+        element.scrollIntoView()
+        container.scrollBy({ top: -20 })
+      }
     }, 100)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScrollVerse, isLoading])
 

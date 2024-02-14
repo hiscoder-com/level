@@ -182,7 +182,10 @@ function Tool({ config, toolName, tnLink, editable = false }) {
         </p>
       </div>
       <div className="adaptive-card overflow-hidden border border-b-th-secondary-300 border-l-th-secondary-300 border-r-th-secondary-300 rounded-b-lg box-border">
-        <div className="h-full overflow-x-hidden overflow-y-auto p-4">
+        <div
+          id={'container_' + toolName}
+          className="h-full overflow-x-hidden overflow-y-auto p-4"
+        >
           <CurrentTool config={config} url={url} toolName={toolName} />
         </div>
       </div>

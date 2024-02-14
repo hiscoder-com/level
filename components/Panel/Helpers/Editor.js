@@ -16,8 +16,8 @@ function Editor({ config }) {
   const [verseObjects, setVerseObjects] = useState([])
   const [isLoading, setIsLoading] = useState(false)
   useScroll({
-    toolName: 'editor',
-    idPrefix: 'editor',
+    toolName: 'translate',
+    idPrefix: 'translate',
     isLoading,
   })
   useEffect(() => {
@@ -49,7 +49,7 @@ function Editor({ config }) {
       {verseObjects.map((verseObject, index) => (
         <div
           key={verseObject.verse_id}
-          id={'editor' + verseObject.num}
+          id={'translate' + verseObject.num}
           className="flex my-3 pt-1"
         >
           <div>{obsCheckAdditionalVerses(verseObject.num)}</div>
