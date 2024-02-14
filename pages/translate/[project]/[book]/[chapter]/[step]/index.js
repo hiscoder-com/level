@@ -16,6 +16,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseService'
 import useSupabaseClient from 'utils/supabaseClient'
 import { projectIdState, stepConfigState, currentVerse } from 'components/state/atoms'
+import Progress from 'public/progress.svg'
 
 export default function ProgressPage({ last_step }) {
   const supabase = useSupabaseClient()
@@ -247,7 +248,9 @@ export default function ProgressPage({ last_step }) {
           editable={true}
         />
       ) : (
-        t('Loading')
+        <div className="f-screen-appbar flex items-center justify-center mx-auto max-w-7xl">
+          <Progress className=" progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
+        </div>
       )}
       <Footer
         textButton={t('Next')}
