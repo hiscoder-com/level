@@ -11,8 +11,8 @@ import { inactiveState } from '../../state/atoms'
 
 import BackButton from 'public/arrow-left.svg'
 
-export default function Audio() {
-  const [audioState, setAudioState] = useState('Main Audio')
+export default function Retelling({ config }) {
+  const [audioState, setAudioState] = useState('Main')
   const setInactive = useSetRecoilState(inactiveState)
   const router = useRouter()
 
@@ -31,16 +31,19 @@ export default function Audio() {
     <>
       {audioState === 'Retell Yourself' ? (
         <RetellYourself setAudioState={setAudioState} />
-      ) : audioState === 'Retell Partner' ? (
-        <RetellPartner setAudioState={setAudioState} />
+      ) : audioState === 'Retell Partner' || !config.config.yourself ? (
+        <RetellPartner
+          setAudioState={setAudioState}
+          isYourselfRetelling={config.config.yourself}
+        />
       ) : (
-        <MainAudio setAudioState={setAudioState} />
+        <Main setAudioState={setAudioState} />
       )}
     </>
   )
 }
 
-function MainAudio({ setAudioState }) {
+function Main({ setAudioState }) {
   const { t } = useTranslation(['audio'])
   const isIntranet = process.env.NEXT_PUBLIC_INTRANET ?? false
   return (
@@ -66,17 +69,19 @@ function MainAudio({ setAudioState }) {
   )
 }
 
-function RetellPartner({ setAudioState }) {
+function RetellPartner({ setAudioState, isYourselfRetelling }) {
   const [inactive, setInactive] = useRecoilState(inactiveState)
   const { t } = useTranslation(['audio'])
 
   return (
     <div className="flex flex-col items-center gap-5 min-h-full justify-center relative">
-      <BackButtonComponent
-        setAudioState={setAudioState}
-        audioState={'Main Audio'}
-        className="w-5 h-5 absolute top-0 left-0"
-      />
+      {isYourselfRetelling && (
+        <BackButtonComponent
+          setAudioState={setAudioState}
+          audioState={'Main Audio'}
+          className="w-5 h-5 absolute top-0 left-0"
+        />
+      )}
       {inactive ? (
         <button
           className="btn-base bg-th-secondary-300 text-th-text-secondary-100 mr-2 hover:opacity-70"

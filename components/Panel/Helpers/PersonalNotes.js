@@ -28,6 +28,7 @@ import Export from 'public/export.svg'
 import Import from 'public/import.svg'
 import Rename from 'public/rename.svg'
 import Close from 'public/close.svg'
+import Progress from 'public/progress.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -74,14 +75,13 @@ function PersonalNotes({ config }) {
   const { user } = useCurrentUser()
   const [allNotes] = useAllPersonalNotes()
 
-  const [notes, { mutate }] = usePersonalNotes({
+  const [notes, { isLoading, mutate }] = usePersonalNotes({
     sort: 'sorting',
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
   const supabase = useSupabaseClient()
   const isRtl = config.config.rtl || false
-
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
@@ -475,44 +475,50 @@ function PersonalNotes({ config }) {
               />
             )}
           </div>
-          <TreeView
-            term={term}
-            selection={noteId}
-            handleDeleteNode={handleRemoveNode}
-            classes={{
-              nodeWrapper: `px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ${
-                isRtl ? '' : 'flex'
-              }`,
-              nodeTextBlock: 'items-center truncate',
-            }}
-            data={dataForTreeView}
-            setSelectedNodeId={setNoteId}
-            selectedNodeId={noteId}
-            treeWidth={'w-full'}
-            icons={icons}
-            handleOnClick={changeNode}
-            handleContextMenu={handleContextMenu}
-            hoveredNodeId={hoveredNodeId}
-            setHoveredNodeId={setHoveredNodeId}
-            getCurrentNodeProps={setCurrentNodeProps}
-            handleRenameNode={handleRenameNode}
-            handleDragDrop={handleDragDrop}
-            openByDefault={false}
-            isRtl={isRtl}
-          />
-          <ContextMenu
-            setIsVisible={setIsShowMenu}
-            isVisible={isShowMenu}
-            nodeProps={currentNodeProps}
-            menuItems={menuItems.contextMenu}
-            clickMenuEvent={contextMenuEvent}
-            classes={{
-              menuItem: menuItems.item.className,
-              menuContainer: menuItems.container.className,
-              emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
-            }}
-            isRtl={isRtl}
-          />
+          {!isLoading || notes?.length ? (
+            <>
+              <TreeView
+                term={term}
+                selection={noteId}
+                handleDeleteNode={handleRemoveNode}
+                classes={{
+                  nodeWrapper: `px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ${
+                    isRtl ? '' : 'flex'
+                  }`,
+                  nodeTextBlock: 'items-center truncate',
+                }}
+                data={dataForTreeView}
+                setSelectedNodeId={setNoteId}
+                selectedNodeId={noteId}
+                treeWidth={'w-full'}
+                icons={icons}
+                handleOnClick={changeNode}
+                handleContextMenu={handleContextMenu}
+                hoveredNodeId={hoveredNodeId}
+                setHoveredNodeId={setHoveredNodeId}
+                getCurrentNodeProps={setCurrentNodeProps}
+                handleRenameNode={handleRenameNode}
+                handleDragDrop={handleDragDrop}
+                openByDefault={false}
+                isRtl={isRtl}
+              />
+              <ContextMenu
+                setIsVisible={setIsShowMenu}
+                isVisible={isShowMenu}
+                nodeProps={currentNodeProps}
+                menuItems={menuItems.contextMenu}
+                clickMenuEvent={contextMenuEvent}
+                classes={{
+                  menuItem: menuItems.item.className,
+                  menuContainer: menuItems.container.className,
+                  emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
+                }}
+                isRtl={isRtl}
+              />
+            </>
+          ) : (
+            <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100 mx-auto" />
+          )}
         </div>
       ) : (
         <>

@@ -90,10 +90,12 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
-              <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-10 rounded-3xl">
-                <User className="w-4 h-4 stroke-th-text-primary" />
-                {stepConfig.count_of_users}
-              </div>
+              {stepConfig.count_of_users > 0 && (
+                <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-10 rounded-3xl">
+                  <User className="w-4 h-4 stroke-th-text-primary" />
+                  {stepConfig.count_of_users}
+                </div>
+              )}
               <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>

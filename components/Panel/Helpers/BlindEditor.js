@@ -129,7 +129,6 @@ function BlindEditor({ config }) {
             (index === 0 && !enabledIcons.length) ||
             enabledIcons.includes(currentNumVerse)
           )
-          console.log(config)
           const isTranslating = enabledInputs.includes(verseObject.num.toString())
           const isTranslated = translatedVerses.includes(currentNumVerse)
           return (
