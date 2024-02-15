@@ -39,7 +39,7 @@ function FrequentlyAskedQuestions({ t, opacity }) {
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-12">
-      <p>{t('FAQ')}</p>
+      <p className="font-semibold md:font-bold">{t('FAQ')}</p>
       <div
         className={`text-sm md:text-base transition-opacity duration-700 overflow-auto pr-5 ${
           opacity || ''

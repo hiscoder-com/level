@@ -126,7 +126,7 @@ function Login({ handleClick = () => {} }) {
         {user?.id ? (
           <Loading className="progress-custom-colors mx-auto my-auto inset-0 w-14 animate-spin stroke-th-primary-100" />
         ) : (
-          <form className="flex flex-col w-full space-y-6 xl:space-y-10">
+          <form className="flex flex-col w-full space-y-4">
             <InputField
               refInput={loginRef}
               type="text"
@@ -154,24 +154,22 @@ function Login({ handleClick = () => {} }) {
               className="input-password"
             />
 
-            <div className="flex flex-col gap-4 lg:flex-row items-center justify-between">
-              {isError && (
-                <>
-                  <p className="flex text-xs text-th-invalid">
-                    <Report className="w-4 h-4 mr-1" /> {t('WrongLoginPassword')}
-                  </p>
-                  <button
-                    type="button"
-                    className="underline text-th-primary-200 hover:opacity-70 text-sm md:text-base"
-                    onClick={() => setIsOpenModal(true)}
-                  >
-                    {t('ForgotPassword')}?
-                  </button>
-                </>
-              )}
-            </div>
+            {isError && (
+              <div className="flex flex-col gap-4 lg:flex-row items-center justify-between">
+                <p className="flex text-xs text-th-invalid">
+                  <Report className="w-4 h-4 mr-1" /> {t('WrongLoginPassword')}
+                </p>
+                <button
+                  type="button"
+                  className="underline text-th-primary-200 hover:opacity-70 text-sm md:text-base"
+                  onClick={() => setIsOpenModal(true)}
+                >
+                  {t('ForgotPassword')}?
+                </button>
+              </div>
+            )}
 
-            <div className="flex flex-col gap-4 lg:flex-row items-center">
+            <div className="flex flex-col gap-4 lg:flex-row items-center pt-1">
               <ButtonLoading
                 disabled={loading}
                 onClick={handleLogin}

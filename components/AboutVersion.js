@@ -16,7 +16,7 @@ import updatesES from '../public/updateVersionInfo/updates_es.md'
 
 import Close from 'public/close.svg'
 
-function AboutVersion({ isStartPage = false, setShowUpdates = () => {} }) {
+function AboutVersion({ isStartPage = false }) {
   const aboutVersion = {
     en: updatesEN,
     ru: updatesRU,
@@ -51,25 +51,16 @@ function AboutVersion({ isStartPage = false, setShowUpdates = () => {} }) {
 
   if (isStartPage) {
     return (
-      <div className="flex flex-col w-full lg:h-full">
-        <div className="sticky top-0 py-6 md:py-0 md:static flex items-center justify-between bg-th-secondary-10">
-          <p>
-            {t('Version')} {packageJson.version}
-          </p>
-          <Close
-            className="block lg:hidden h-8 stroke-th-primary-100"
-            onClick={(e) => {
-              e.stopPropagation()
-              setShowUpdates(false)
-            }}
-          />
-        </div>
+      <div className="flex flex-col w-full gap-6 md:gap-2.5">
+        <p className="font-semibold md:font-bold">
+          {t('Version')} {packageJson.version}
+        </p>
         <div className="overflow-auto" onClick={(e) => e.stopPropagation()}>
-          <ReactMarkdown className="flex-grow md:mt-5 text-left overflow-auto pr-5 text-sm font-normal whitespace-pre-line leading-5">
+          <ReactMarkdown className="flex-grow text-left overflow-auto md:pr-5 text-sm font-normal whitespace-pre-line leading-5">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
         </div>
-        <div className="flex justify-center mt-auto py-4 lg:py-0 lg:pt-4">
+        <div className="flex justify-center mt-auto">
           <button
             onClick={(e) => {
               e.stopPropagation()

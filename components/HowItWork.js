@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import ProgressBar from './ProgressBar'
 
@@ -21,9 +21,28 @@ function HowItWork({ t, opacity }) {
 
   const imagePath = `/how-it-work-0${image}.png`
 
+  const preloadImages = (images) => {
+    images.forEach((image) => {
+      const img = new Image()
+      img.src = image
+    })
+  }
+
+  useEffect(() => {
+    const imagePaths = [
+      '/how-it-work-01.png',
+      '/how-it-work-02.png',
+      '/how-it-work-03.png',
+      '/how-it-work-04.png',
+      '/how-it-work-05.png',
+      '/how-it-work-06.png',
+    ]
+    preloadImages(imagePaths)
+  }, [])
+
   return (
     <div className="flex flex-col w-full gap-6 md:gap-12">
-      <p>{t('MainBlocks.HowItWork')}</p>
+      <p className="font-semibold md:font-bold">{t('MainBlocks.HowItWork')}</p>
       <div className="overflow-auto pr-5" onClick={(e) => e.stopPropagation()}>
         <p
           className={`text-sm md:text-base font-normal transition-opacity duration-700 ${

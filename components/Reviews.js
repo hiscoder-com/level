@@ -19,7 +19,7 @@ function Reviews({ t, opacity }) {
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-12">
-      <p>{t('Reviews')}</p>
+      <p className="font-semibold md:font-bold">{t('Reviews')}</p>
       <div
         className={`text-sm md:text-base transition-opacity duration-700 overflow-auto pr-5 ${
           opacity || ''
@@ -37,11 +37,11 @@ export default Reviews
 function Review({ t, nameKey, countryKey, textKey }) {
   return (
     <div
-      className="flex flex-col gap-5 justify-center w-full p-5 mb-5 font-normal rounded-xl bg-th-secondary-100"
+      className="flex flex-col gap-2 md:gap-5 justify-center w-full p-5 mb-5 font-normal rounded-xl bg-th-secondary-100"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex w-full justify-between">
-        <p className="font-bold text-base md:text-xl">{t(nameKey)}</p>
+        <p className="font-semibold md:font-bold text-base md:text-xl">{t(nameKey)}</p>
         <p>{t(countryKey)}</p>
       </div>
       <p>{t(textKey)}</p>

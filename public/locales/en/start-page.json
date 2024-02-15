@@ -1,6 +1,9 @@
 {
+  "ComingSoon": "Coming soon",
   "ConnectWithUs": "Connect with us",
   "Demo": "Demo",
+  "LogoHeader": "V-CANA platform created by TextTree Movement",
+  "LogoText": "The TextTree Movement is a movement that provides materials, software, and media resources for Bible translation and biblical content. TextTree Movement equips churches to create church-centered, open-license translations of Scripture.",
   "MainBlocks": {
     "FAQ": "FAQ",
     "FAQBlock": {

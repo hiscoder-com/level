@@ -42,17 +42,11 @@ function Feedback({ t, onClose }) {
   }
 
   return (
-    <div className="flex flex-col w-full">
-      <p className="hidden md:block">{t('ConnectWithUs')}</p>
-      <div
-        className="flex flex-grow items-center pb-6 md:pb-0"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="flex flex-col w-full gap-6 md:gap-0">
+      <p className="font-semibold md:font-bold">{t('ConnectWithUs')}</p>
+      <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
         <Toaster />
-        <form
-          className="flex flex-col w-full space-y-6 xl:space-y-10"
-          onSubmit={handleSubmit}
-        >
+        <form className="flex flex-col w-full space-y-4" onSubmit={handleSubmit}>
           <InputField
             name="name"
             type="text"
@@ -82,13 +76,13 @@ function Feedback({ t, onClose }) {
             value={message}
             isError={isError && !message}
             onChange={(e) => setMessage(e.target.value)}
-            className="overflow-auto max-h-40"
+            className="overflow-auto max-h-40 mb-3"
           />
 
           <ButtonLoading
             type="submit"
             isLoading={isSaving}
-            className="relative px-5 py-4 mt-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
+            className="relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
           >
             {t('users:Send')}
           </ButtonLoading>

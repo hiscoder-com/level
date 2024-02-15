@@ -34,7 +34,7 @@ function InputField({
           name={name}
           id={id}
           value={value}
-          placeholder=""
+          placeholder={label}
           onChange={onChange}
           {...props}
         />
@@ -46,18 +46,12 @@ function InputField({
           name={name}
           id={id}
           value={value}
-          placeholder=""
+          placeholder={label}
           onChange={onChange}
           {...props}
         />
       )}
 
-      <label
-        htmlFor={id}
-        className={`label-base ${isError ? 'text-th-invalid' : 'text-th-text-primary'}`}
-      >
-        {label}
-      </label>
       {showPasswordToggle && (
         <span
           className="absolute right-4 bottom-4 cursor-pointer stroke-2 stroke-th-text-primary"

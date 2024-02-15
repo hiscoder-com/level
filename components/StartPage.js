@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 import AboutVersion from './AboutVersion'
@@ -14,11 +15,12 @@ import SwitchLocalization from './SwitchLocalization'
 import { useTranslation } from 'next-i18next'
 
 import Close from 'public/close.svg'
+import UnfoldingWord from 'public/unfolding-word.svg'
+import VcanaLogo from 'public/vcana-logo-color.svg'
+import TTMLogo from 'public/ttm-logo.svg'
 import Facebook from 'public/facebook.svg'
 import Instagram from 'public/instagram.svg'
 import Telegram from 'public/telegram.svg'
-import UnfoldingWord from 'public/unfolding-word.svg'
-import VcanaLogo from 'public/vcana-logo-color.svg'
 import Youtube from 'public/youtube.svg'
 
 function StartPage() {
@@ -26,6 +28,7 @@ function StartPage() {
   const [contentKey, setContentKey] = useState(null)
   const [paddingClass, setPaddingClass] = useState('2xl:px-0')
   const [showSections, setShowSections] = useState({
+    logo: false,
     updates: false,
     partners: false,
     feedback: false,
@@ -57,18 +60,14 @@ function StartPage() {
   const contentObjects = {
     signIn: <Login handleClick={() => handleContentClick('connect')} />,
     connect: <Feedback t={t} onClose={() => setContentKey(null)} />,
-    updates: (
-      <AboutVersion
-        isStartPage={true}
-        setShowUpdates={(value) => toggleSection('updates', value)}
-      />
-    ),
+    updates: <AboutVersion isStartPage={true} />,
     partners: <Partners t={t} />,
     intro: <VcanaIntro t={t} />,
     reviews: <Reviews t={t} />,
     howItWork: <HowItWork t={t} />,
     faq: <FrequentlyAskedQuestions t={t} />,
     demo: <Demo t={t} />,
+    logo: <Logo t={t} />,
   }
 
   const toggleBlock = (key) => {
@@ -103,7 +102,10 @@ function StartPage() {
         className={`hidden md:flex mx-auto max-w-7xl w-full h-[94vh] max-h-[40rem] lg:max-h-[46rem] xl:max-h-[54rem] 2xl:max-h-[56.4rem] text-2xl font-bold px-5 lg:px-16 xl:px-20 ${paddingClass}`}
       >
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
-          <div className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl">
+          <div
+            className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
+            onClick={() => handleContentClick('logo')}
+          >
             <VcanaLogo className="w-44" />
           </div>
           <div className="flex justify-between items-center h-[4.4rem] p-5 lg:p-7 bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
@@ -131,43 +133,39 @@ function StartPage() {
           <div className={`${contentKey ? 'hidden' : 'flex'} h-full gap-4 xl:gap-7`}>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
               <div
-                className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('intro')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('MainBlocks.WhatIsVcana')}</p>
+                {t('MainBlocks.WhatIsVcana')}
               </div>
 
               <div
-                className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('reviews')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('MainBlocks.Reviews')}</p>
+                {t('MainBlocks.Reviews')}
               </div>
             </div>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
               <div
-                className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('howItWork')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('MainBlocks.HowItWork')}</p>
+                {t('MainBlocks.HowItWork')}
               </div>
 
               <div
-                className="relative group p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/faq.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/faq.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('faq')}
               >
-                <div className="absolute inset-0 rounded-2xl bg-black/10 backdrop-brightness-90 group-hover:bg-black/0 transition duration-300"></div>
-                <p className="relative z-10">{t('MainBlocks.FAQ')}</p>
+                {t('MainBlocks.FAQ')}
               </div>
             </div>
           </div>
           <div
             className={`relative text-3xl p-10 ${
               contentKey ? 'flex' : 'hidden'
-            } h-full bg-white rounded-2xl w-full text-black`}
+            } h-full bg-white rounded-2xl w-full overflow-hidden text-black`}
           >
             {contentObjects[contentKey]}
             <Close
@@ -185,14 +183,11 @@ function StartPage() {
               {t('Demo')}
             </p>
           </div>
-          <p
+          <div
             className="p-5 lg:p-7 h-32 bg-th-secondary-10 rounded-2xl cursor-pointer"
             onClick={() => handleContentClick('connect')}
           >
             {t('ConnectWithUs')}
-          </p>
-          <div className="flex justify-center items-center p-4 gap-3 h-[4.4rem] bg-th-secondary-10 rounded-2xl overflow-hidden">
-            <Social />
           </div>
           <div className="p-5 lg:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 xl:space-y-4 overflow-hidden">
             <p className="text-center text-lg xl:text-xl space-x-1 uppercase">
@@ -202,7 +197,7 @@ function StartPage() {
               {t('Verse.text')}
             </p>
           </div>
-          <div className="h-20 lg:h-24 rounded-2xl bg-slate-550">
+          <div className="h-32 rounded-2xl bg-slate-550">
             <p
               className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10 cursor-pointer"
               onClick={() => handleContentClick('signIn')}
@@ -212,38 +207,45 @@ function StartPage() {
           </div>
         </aside>
       </main>
-      <main className="flex md:hidden flex-col gap-5 p-5 font-bold text-lg">
+      <main className="flex md:hidden flex-col gap-5 p-5 font-medium text-lg">
+        <SectionBlock
+          sectionKey="logo"
+          content={<Logo t={t} />}
+          showSection={showSections.logo}
+          toggleSection={toggleSection}
+          isLogo={true}
+          label={<VcanaLogo className="h-7" />}
+        />
+
         <div className="grid grid-cols-2 gap-5 text-center">
-          <div className="flex justify-center p-6 bg-th-secondary-10 rounded-xl">
-            <VcanaLogo />
-          </div>
-          <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl">
-            <SwitchLocalization />
-          </div>
-        </div>
-        <div
-          className="px-6 bg-th-secondary-10 rounded-xl text-center"
-          onClick={() => toggleSection('updates')}
-        >
-          {showSections.updates ? (
-            <div>
-              <AboutVersion
-                isStartPage={true}
-                setShowUpdates={(value) => toggleSection('updates', value)}
-              />
+          {!showSections.updates && (
+            <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl z-10">
+              <SwitchLocalization />
             </div>
-          ) : (
-            <p className="py-6">{t('Updates')}</p>
           )}
+
+          <div
+            className={`p-5 bg-th-secondary-10 rounded-xl ${
+              showSections.updates ? 'col-span-2' : ''
+            }`}
+            onClick={() => toggleSection('updates')}
+          >
+            {!showSections.updates ? (
+              <p>{t('Updates')}</p>
+            ) : (
+              <AboutVersion isStartPage={true} />
+            )}
+          </div>
         </div>
+
         <div
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
-            blocks.intro.clicked ? 'min-h-36' : 'h-36'
+            blocks.intro.clicked ? '' : 'h-36'
           }`}
           onClick={() => toggleBlock('intro')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/about.jpg")] bg-cover bg-no-repeat bg-center-bottom-1 transition-opacity brightness-90 duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/about-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.intro.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -257,12 +259,12 @@ function StartPage() {
         </div>
         <div
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
-            blocks.howItWork.clicked ? 'min-h-36' : 'h-36'
+            blocks.howItWork.clicked ? '' : 'h-36'
           }`}
           onClick={() => toggleBlock('howItWork')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/inside.jpg")] bg-cover bg-no-repeat bg-center-bottom-2 transition-opacity brightness-90 duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/inside-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.howItWork.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -276,12 +278,12 @@ function StartPage() {
         </div>
         <div
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
-            blocks.reviews.clicked ? 'min-h-36' : 'h-36'
+            blocks.reviews.clicked ? '' : 'h-36'
           }`}
           onClick={() => toggleBlock('reviews')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/reviews.jpg")] bg-cover bg-no-repeat bg-center-bottom-2 transition-opacity brightness-90 duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/reviews-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.reviews.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -295,12 +297,12 @@ function StartPage() {
         </div>
         <div
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
-            blocks.faq.clicked ? 'min-h-36' : 'h-36'
+            blocks.faq.clicked ? '' : 'h-36'
           }`}
           onClick={() => toggleBlock('faq')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/faq.jpg")] bg-cover bg-no-repeat bg-center-bottom-3 transition-opacity brightness-90 duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/faq-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.faq.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -312,51 +314,49 @@ function StartPage() {
             )}
           </div>
         </div>
-        <div
-          className="p-6 bg-th-secondary-10 rounded-xl text-center"
-          onClick={() => toggleSection('partners')}
-        >
-          {showSections.partners ? (
-            <Partners t={t} />
-          ) : (
-            <p className="py-6">{t('Partners')}</p>
-          )}
-        </div>
-        <div
-          className="p-6 bg-th-secondary-10 rounded-xl"
-          onClick={() => toggleSection('feedback')}
-        >
-          <div className="mb-5 text-center">{t('ConnectWithUs')}</div>
-          {showSections.feedback && <Feedback t={t} />}
-          <div className="flex justify-center items-center gap-3">
-            <Social />
-          </div>
-        </div>
+
+        <SectionBlock
+          sectionKey="partners"
+          label={t('Partners')}
+          content={<Partners t={t} />}
+          showSection={showSections.partners}
+          toggleSection={toggleSection}
+        />
+        <SectionBlock
+          sectionKey="feedback"
+          label={t('ConnectWithUs')}
+          content={<Feedback t={t} />}
+          showSection={showSections.feedback}
+          toggleSection={toggleSection}
+        />
+
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
             <div
-              className={`p-6 bg-th-secondary-10 rounded-xl ${
+              className={`p-5 bg-th-secondary-10 rounded-xl ${
                 showSections.demo ? 'col-span-2' : ''
               }`}
               onClick={() => toggleSection('demo')}
             >
-              <div className="uppercase">{t('Demo')}</div>
+              <p className={`uppercase ${showSections.demo ? 'font-semibold' : ''}`}>
+                {t('Demo')}
+              </p>
               {showSections.demo && <Demo t={t} />}
             </div>
           )}
 
           {!showSections.demo && (
             <div
-              className={`p-6 rounded-xl ${
+              className={`p-5 rounded-xl ${
                 showSections.signIn
                   ? 'col-span-2 bg-th-secondary-10'
                   : 'bg-slate-550 text-th-text-secondary-100'
               }`}
               onClick={() => toggleSection('signIn')}
             >
-              <div className={`${showSections.signIn ? 'mb-5' : ''}`}>
+              <p className={`${showSections.signIn ? 'mb-5 font-semibold' : ''}`}>
                 {showSections.signIn ? t('users:LoginToAccount') : t('users:SignIn')}
-              </div>
+              </p>
               {showSections.signIn && (
                 <Login
                   handleClick={() => {
@@ -377,16 +377,16 @@ export default StartPage
 
 function VcanaIntro({ t, opacity }) {
   return (
-    <div className="flex flex-col w-full gap-6 md:gap-12">
-      <p>{t('MainBlocks.WhatIsVcana')}</p>
-      <div className="flex flex-grow flex-col justify-between items-center pb-6 md:pb-0">
-        <p
-          className={`text-sm md:text-base font-normal mt-3 transition-opacity duration-700 ${
-            opacity || ''
-          }`}
-        >
-          {t('MainBlocks.VcanaText')}
-        </p>
+    <div className="flex flex-col w-full">
+      <p className="font-semibold md:font-bold">{t('MainBlocks.WhatIsVcana')}</p>
+      <p
+        className={`mt-6 md:mt-12 text-sm md:text-base font-normal transition-opacity duration-700 ${
+          opacity || ''
+        }`}
+      >
+        {t('MainBlocks.VcanaText')}
+      </p>
+      <div className="flex flex-grow flex-col justify-center items-center pb-6 md:pb-0">
         <img src="/v-cana-intro.png" alt="v-cana intro image" className="w-full h-auto" />
       </div>
     </div>
@@ -395,7 +395,7 @@ function VcanaIntro({ t, opacity }) {
 function Partners({ t }) {
   return (
     <div className="flex flex-col w-full gap-6 md:gap-14">
-      <p>{t('Partners')}</p>
+      <p className="font-semibold md:font-bold">{t('Partners')}</p>
       <div
         className="flex justify-center items-center w-full h-32 md:h-56 rounded-xl bg-th-secondary-100"
         onClick={(e) => e.stopPropagation()}
@@ -408,32 +408,62 @@ function Partners({ t }) {
   )
 }
 
-function Social() {
-  const socialLinks = [
-    { href: 'https://youtube.com/@texttree', Icon: Youtube, lgSize: '7' },
-    { href: 'https://texttree.t.me/', Icon: Telegram },
-    {
-      href: 'https://facebook.com/texttreeorg',
-      Icon: Facebook,
-      size: '4',
-      lgSize: '7',
-    },
+function SectionBlock({
+  sectionKey,
+  label,
+  content,
+  showSection,
+  toggleSection,
+  isLogo = false,
+}) {
+  return (
+    <div
+      className={`p-5 bg-th-secondary-10 rounded-xl ${
+        isLogo ? 'flex justify-center' : 'text-center'
+      }`}
+      onClick={() => toggleSection(sectionKey)}
+    >
+      {showSection ? content : isLogo ? label : <p>{label}</p>}
+    </div>
+  )
+}
+
+function Logo({ t }) {
+  const { locale } = useRouter()
+
+  let socialLinks = [
+    { href: 'https://www.youtube.com/@texttree', Icon: Youtube },
+    { href: 'https://texttree.t.me', Icon: Telegram },
+    { href: 'https://facebook.com/texttreeorg', Icon: Facebook, size: '6' },
     { href: 'https://instagram.com/texttreeorg', Icon: Instagram },
   ]
 
+  if (locale !== 'ru') {
+    socialLinks = [{ href: 'https://www.youtube.com/@texttreemovement', Icon: Youtube }]
+  }
+
   return (
-    <>
-      {socialLinks.map(({ href, Icon, size, lgSize }, index) => (
-        <Link href={href} key={index} target="_blank">
-          <div
-            className={`flex items-center justify-center w-6 lg:w-${
-              lgSize || '7'
-            } h-6 lg:h-${lgSize || '7'} p-0 lg:p-2 rounded-full bg-slate-550`}
-          >
-            <Icon className={size ? `h-${size}` : 'w-4'} />
-          </div>
+    <div className="flex flex-col w-full gap-6 md:gap-14">
+      <p className="font-semibold md:font-bold">{t('LogoHeader')}</p>
+      <p className="text-sm md:text-base font-normal">{t('LogoText')}</p>
+
+      <div className="flex items-center gap-5 md:gap-10 flex-col md:flex-row">
+        <Link href="https://www.texttree.org" target="_blank">
+          <TTMLogo />
         </Link>
-      ))}
-    </>
+
+        <div className="flex justify-center items-center gap-3">
+          {socialLinks.map(({ href, Icon, size }, index) => (
+            <Link href={href} key={index} target="_blank">
+              <div
+                className={`flex items-center justify-center w-8 h-8 rounded-full bg-slate-550`}
+              >
+                <Icon className={size ? `h-${size}` : 'w-5'} />
+              </div>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </div>
   )
 }
