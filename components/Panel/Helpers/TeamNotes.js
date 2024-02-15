@@ -454,10 +454,12 @@ function TeamNotes() {
               onChange={(event) => setTerm(event.target.value)}
               placeholder={t('common:Search')}
             />
-            <Close
-              className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
-              onClick={() => term && setTerm('')}
-            />
+            {term && (
+              <Close
+                className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+                onClick={() => setTerm('')}
+              />
+            )}
           </div>
           <TreeView
             term={term}
