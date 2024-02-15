@@ -201,7 +201,6 @@ function BlindEditor({ config }) {
             {t('Save')}
           </button>
         )}
-        <Toaster />
       </div>
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">

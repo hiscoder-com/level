@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil'
 
 import { currentVerse } from '../components/state/atoms'
 
+const SCROLL_TOP_OFFSET = 20
+
 const fetcher = async (url) => {
   try {
     const res = await fetch(url, {
@@ -327,8 +329,12 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
       const element = document.getElementById(idPrefix + currentScrollVerse)
       const container = document.getElementById('container_' + toolName)
       if (element && container) {
-        element.scrollIntoView()
-        container.scrollBy({ top: -20 })
+        container.scrollBy({
+          top:
+            element.getBoundingClientRect().top -
+            container.getBoundingClientRect().top -
+            SCROLL_TOP_OFFSET,
+        })
       }
     }, 100)
 

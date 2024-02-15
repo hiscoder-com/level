@@ -45,7 +45,7 @@ function Editor({ config }) {
   }
 
   return (
-    <div>
+    <>
       {verseObjects.map((verseObject, index) => (
         <div
           key={verseObject.verse_id}
@@ -61,8 +61,7 @@ function Editor({ config }) {
         </div>
       ))}
       <div className="select-none">ㅤ</div>
-      <Toaster />
-    </div>
+    </>
   )
 }
 

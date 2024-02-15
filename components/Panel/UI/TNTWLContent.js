@@ -7,7 +7,7 @@ import Back from 'public/left.svg'
 function TNTWLContent({ setItem, item }) {
   return (
     <div
-      className={`absolute top-0 bottom-0 bg-th-secondary-10 overflow-auto left-0 right-0 ${
+      className={`absolute top-0 bottom-0 pr-2 bg-th-secondary-10 overflow-auto left-0 right-0 ${
         item ? '' : 'hidden'
       } z-10`}
     >
