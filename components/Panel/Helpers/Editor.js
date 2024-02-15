@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import { toast, Toaster } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 

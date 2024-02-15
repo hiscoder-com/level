@@ -2,12 +2,8 @@ import { useEffect, useState } from 'react'
 
 function AutoSizeTextArea({ disabled = false, updateVerse, index, verseObject }) {
   const [startValue, setStartValue] = useState(false)
-
   useEffect(() => {
-    if (startValue === false || disabled) {
-      setStartValue(verseObject.verse ? verseObject.verse.trim() : false)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setStartValue(verseObject.verse ? verseObject.verse.trim() : false)
   }, [verseObject.verse])
 
   return (
@@ -26,8 +22,9 @@ function AutoSizeTextArea({ disabled = false, updateVerse, index, verseObject })
       className={`block w-full mx-3 focus:outline-none focus:inline-none whitespace-pre-line focus:bg-th-secondary-10 ${
         verseObject.verse || disabled ? '' : 'bg-th-secondary-100'
       }`}
-      // eslint-disable-next-line prettier/prettier
-    >{startValue}</div>
+    >
+      {startValue}
+    </div>
   )
 }
 
