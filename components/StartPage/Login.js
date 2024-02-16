@@ -5,9 +5,9 @@ import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
 
-import ButtonLoading from './ButtonLoading'
-import Modal from './Modal'
-import InputField from './Panel/UI/InputField'
+import Modal from 'components/Modal'
+import ButtonLoading from 'components/ButtonLoading'
+import InputField from 'components/Panel/UI/InputField'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'

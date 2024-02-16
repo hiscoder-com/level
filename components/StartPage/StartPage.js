@@ -1,27 +1,24 @@
 import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import Image from 'next/image'
 
-import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
-import AboutVersion from './AboutVersion'
+import { useTranslation } from 'next-i18next'
+
+import SwitchLocalization from 'components/SwitchLocalization'
+import AboutVersion from 'components/AboutVersion'
 import Feedback from './Feedback'
+import Logo from './Logo'
 import Demo from './Demo'
 import Login from './Login'
 import Reviews from './Reviews'
-import HowItWork from './HowItWork'
-import SwitchLocalization from './SwitchLocalization'
-
-import { useTranslation } from 'next-i18next'
+import HowItWorks from './HowItWorks'
+import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 
 import Close from 'public/close.svg'
 import UnfoldingWord from 'public/unfolding-word.svg'
 import VcanaLogo from 'public/vcana-logo-color.svg'
-import TTMLogo from 'public/ttm-logo.svg'
-import Facebook from 'public/facebook.svg'
-import Instagram from 'public/instagram.svg'
-import Telegram from 'public/telegram.svg'
-import Youtube from 'public/youtube.svg'
+import VCanaIntro from 'public/v-cana-intro.png'
 
 function StartPage() {
   const { t } = useTranslation(['start-page', 'projects', 'users'])
@@ -64,7 +61,7 @@ function StartPage() {
     partners: <Partners t={t} />,
     intro: <VcanaIntro t={t} />,
     reviews: <Reviews t={t} />,
-    howItWork: <HowItWork t={t} />,
+    howItWork: <HowItWorks t={t} />,
     faq: <FrequentlyAskedQuestions t={t} />,
     demo: <Demo t={t} />,
     logo: <Logo t={t} />,
@@ -151,7 +148,7 @@ function StartPage() {
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('howItWork')}
               >
-                {t('MainBlocks.HowItWork')}
+                {t('MainBlocks.HowItWorks')}
               </div>
 
               <div
@@ -270,9 +267,9 @@ function StartPage() {
           ></div>
           <div className="relative z-10">
             {blocks.howItWork.clicked ? (
-              <HowItWork t={t} opacity={blocks.howItWork.opacity} />
+              <HowItWorks t={t} opacity={blocks.howItWork.opacity} />
             ) : (
-              <p className="text-white">{t('MainBlocks.HowItWork')}</p>
+              <p className="text-white">{t('MainBlocks.HowItWorks')}</p>
             )}
           </div>
         </div>
@@ -387,11 +384,12 @@ function VcanaIntro({ t, opacity }) {
         {t('MainBlocks.VcanaText')}
       </p>
       <div className="flex flex-grow flex-col justify-center items-center pb-6 md:pb-0">
-        <img src="/v-cana-intro.png" alt="v-cana intro image" className="w-full h-auto" />
+        <Image src={VCanaIntro} alt="v-cana intro image" />
       </div>
     </div>
   )
 }
+
 function Partners({ t }) {
   return (
     <div className="flex flex-col w-full gap-6 md:gap-14">
@@ -424,46 +422,6 @@ function SectionBlock({
       onClick={() => toggleSection(sectionKey)}
     >
       {showSection ? content : isLogo ? label : <p>{label}</p>}
-    </div>
-  )
-}
-
-function Logo({ t }) {
-  const { locale } = useRouter()
-
-  let socialLinks = [
-    { href: 'https://www.youtube.com/@texttree', Icon: Youtube },
-    { href: 'https://texttree.t.me', Icon: Telegram },
-    { href: 'https://facebook.com/texttreeorg', Icon: Facebook, size: '6' },
-    { href: 'https://instagram.com/texttreeorg', Icon: Instagram },
-  ]
-
-  if (locale !== 'ru') {
-    socialLinks = [{ href: 'https://www.youtube.com/@texttreemovement', Icon: Youtube }]
-  }
-
-  return (
-    <div className="flex flex-col w-full gap-6 md:gap-14">
-      <p className="font-semibold md:font-bold">{t('LogoHeader')}</p>
-      <p className="text-sm md:text-base font-normal">{t('LogoText')}</p>
-
-      <div className="flex items-center gap-5 md:gap-10 flex-col md:flex-row">
-        <Link href="https://www.texttree.org" target="_blank">
-          <TTMLogo />
-        </Link>
-
-        <div className="flex justify-center items-center gap-3">
-          {socialLinks.map(({ href, Icon, size }, index) => (
-            <Link href={href} key={index} target="_blank">
-              <div
-                className={`flex items-center justify-center w-8 h-8 rounded-full bg-slate-550`}
-              >
-                <Icon className={size ? `h-${size}` : 'w-5'} />
-              </div>
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
   )
 }
