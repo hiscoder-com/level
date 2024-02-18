@@ -3,8 +3,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import StartPage from 'components/StartPage'
+import StartPage from 'components/StartPage/StartPage'
 
 export default function Home() {
   const { t } = useTranslation('common')

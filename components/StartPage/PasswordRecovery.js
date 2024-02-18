@@ -8,8 +8,8 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
-import ButtonLoading from './ButtonLoading'
-import InputField from './Panel/UI/InputField'
+import ButtonLoading from '../ButtonLoading'
+import InputField from '../Panel/UI/InputField'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
@@ -22,6 +22,8 @@ function PasswordRecovery() {
   const { t } = useTranslation('users')
   const { user, loading } = useCurrentUser()
   const [passwords, setPasswords] = useState({ main: '', repeated: '' })
+  const mainPasswordRef = useRef(null)
+  const repeatedPasswordRef = useRef(null)
 
   const [isRecovering, setIsRecovering] = useState(false)
   const [error, setError] = useState('')
@@ -83,12 +85,10 @@ function PasswordRecovery() {
         .finally(() => setIsRecovering(false))
     }
   }
-  const passwordRef = useRef(null)
-  const repeatPasswordRef = useRef(null)
 
   useEffect(() => {
-    if (passwordRef?.current) {
-      passwordRef.current.focus()
+    if (mainPasswordRef?.current) {
+      mainPasswordRef.current.focus()
     }
   }, [showPassword])
 
@@ -118,11 +118,9 @@ function PasswordRecovery() {
         </div>
       )
     }
-
     if (query?.error) {
       return <div>{t('UnSuccessRecovery')}</div>
     }
-
     if (loading || isRecovering) {
       return (
         <div className="flex justify-center">
@@ -130,7 +128,6 @@ function PasswordRecovery() {
         </div>
       )
     }
-
     if (!user) {
       return (
         <Link
@@ -146,36 +143,40 @@ function PasswordRecovery() {
         </Link>
       )
     }
-
+    const passwordsRender = [
+      {
+        ref: mainPasswordRef,
+        id: 'main_password',
+        name: 'main',
+        value: passwords.main,
+        label: t('TypeNewPassword'),
+      },
+      {
+        ref: repeatedPasswordRef,
+        id: 'repeated_password',
+        name: 'repeated',
+        value: passwords.repeated,
+        label: t('RepeatNewPassword'),
+      },
+    ]
     return (
       <>
-        <InputField
-          refInput={passwordRef}
-          type={showPassword ? 'text' : 'password'}
-          name="main"
-          id="main_password"
-          isError={error && ![passwords.main]}
-          label={t('Password')}
-          onChange={handleChange}
-          showPasswordToggle={true}
-          showPassword={showPassword}
-          setShowPassword={setShowPassword}
-          className="input-password"
-        />
-
-        <InputField
-          refInput={repeatPasswordRef}
-          type={showPassword ? 'text' : 'password'}
-          name="repeated"
-          id="repeated_password"
-          isError={error && !passwords.repeated}
-          label={t('RepeatPassword')}
-          onChange={handleChange}
-          showPasswordToggle={true}
-          showPassword={showPassword}
-          setShowPassword={setShowPassword}
-          className="input-password"
-        />
+        {passwordsRender.map((pass) => (
+          <InputField
+            key={pass.id}
+            refInput={pass.ref}
+            type={showPassword ? 'text' : 'password'}
+            name={pass.name}
+            id={pass.id}
+            isError={error && ![pass.value]}
+            label={pass.label}
+            onChange={handleChange}
+            showPasswordToggle={true}
+            showPassword={showPassword}
+            setShowPassword={setShowPassword}
+            className="input-password"
+          />
+        ))}
         {error && <div className="opacity-100 min-h-[1.5rem]">{t(error)}</div>}
         <ButtonLoading
           type="button"
@@ -189,8 +190,8 @@ function PasswordRecovery() {
     )
   }
   useEffect(() => {
-    if (repeatPasswordRef?.current) {
-      repeatPasswordRef.current.focus()
+    if (repeatedPasswordRef?.current) {
+      repeatedPasswordRef.current.focus()
     }
   }, [])
 

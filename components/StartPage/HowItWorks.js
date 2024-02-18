@@ -1,10 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import Image from 'next/image'
 
-import ProgressBar from './ProgressBar'
+import ProgressBar from 'components/ProgressBar'
 
 import LeftArrow from 'public/arrow-left.svg'
+import HowItWorkImage1 from 'public/how-it-work-01.png'
+import HowItWorkImage2 from 'public/how-it-work-02.png'
+import HowItWorkImage3 from 'public/how-it-work-03.png'
+import HowItWorkImage4 from 'public/how-it-work-04.png'
+import HowItWorkImage5 from 'public/how-it-work-05.png'
+import HowItWorkImage6 from 'public/how-it-work-06.png'
 
-function HowItWork({ t, opacity }) {
+function HowItWorks({ t, opacity }) {
   const [image, setImage] = useState(1)
 
   const prevPage = () => {
@@ -19,49 +26,40 @@ function HowItWork({ t, opacity }) {
     })
   }
 
-  const imagePath = `/how-it-work-0${image}.png`
+  const images = [
+    null,
+    HowItWorkImage1,
+    HowItWorkImage2,
+    HowItWorkImage3,
+    HowItWorkImage4,
+    HowItWorkImage5,
+    HowItWorkImage6,
+  ]
 
-  const preloadImages = (images) => {
-    images.forEach((image) => {
-      const img = new Image()
-      img.src = image
-    })
-  }
-
-  useEffect(() => {
-    const imagePaths = [
-      '/how-it-work-01.png',
-      '/how-it-work-02.png',
-      '/how-it-work-03.png',
-      '/how-it-work-04.png',
-      '/how-it-work-05.png',
-      '/how-it-work-06.png',
-    ]
-    preloadImages(imagePaths)
-  }, [])
+  const imagePath = images[image]
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-12">
-      <p className="font-semibold md:font-bold">{t('MainBlocks.HowItWork')}</p>
+      <p className="font-semibold md:font-bold">{t('MainBlocks.HowItWorks')}</p>
       <div className="overflow-auto pr-5" onClick={(e) => e.stopPropagation()}>
         <p
           className={`text-sm md:text-base font-normal transition-opacity duration-700 ${
             opacity || ''
           }`}
         >
-          {t('MainBlocks.HowItWorkText')}
+          {t('MainBlocks.HowItWorksText')}
         </p>
-        <div className="mt-6 md:mt-12 pb-6 relative">
+        <div className="mt-6 md:mt-12 pb-6 md:pb-0 relative">
           <p>{t('MainBlocks.Screenshots')}</p>
 
           <div className="relative">
             <button onClick={prevPage} className="arrow-how-it-work left-0">
               <LeftArrow className="w-3 stroke-th-secondary-10" />
             </button>
-            <img
+            <Image
               src={imagePath}
               alt={`how it work image ${image}`}
-              className="w-full h-auto mt-7 mb-5"
+              className="mt-7 mb-5"
             />
             <button onClick={nextPage} className="arrow-how-it-work right-0">
               <LeftArrow className="w-3 rotate-180 stroke-th-secondary-10" />
@@ -75,4 +73,4 @@ function HowItWork({ t, opacity }) {
   )
 }
 
-export default HowItWork
+export default HowItWorks

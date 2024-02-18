@@ -3,20 +3,22 @@ import { useState } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 import axios from 'axios'
 
-import ButtonLoading from './ButtonLoading'
-import InputField from './Panel/UI/InputField'
+import ButtonLoading from 'components/ButtonLoading'
+import InputField from 'components/Panel/UI/InputField'
 
 function Feedback({ t, onClose }) {
-  const [name, setName] = useState('')
-  const [email, setEmail] = useState('')
-  const [message, setMessage] = useState('')
+  const [feedback, setFeedback] = useState({ name: '', email: '', message: '' })
   const [isError, setIsError] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+
+  const handleChange = (e) => {
+    setFeedback({ ...feedback, [e.target.name]: e.target.value })
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault()
 
-    if (!name || !email || !message) {
+    if (!feedback.name || !feedback.email || !feedback.message) {
       toast.error(t('NotAllFieldFull'))
       setIsError(true)
       return
@@ -24,7 +26,7 @@ function Feedback({ t, onClose }) {
 
     setIsSaving(true)
     axios
-      .post('/.netlify/functions/sendFeedback', JSON.stringify({ name, message, email }))
+      .post('/.netlify/functions/sendFeedback', JSON.stringify(feedback))
       .then(() => {
         toast.success(t('YourMessageHasBeenSent'))
         setIsError(false)
@@ -52,9 +54,9 @@ function Feedback({ t, onClose }) {
             type="text"
             id="floating_name"
             label={t('users:YourName')}
-            value={name}
-            isError={isError && !name}
-            onChange={(e) => setName(e.target.value)}
+            value={feedback.name}
+            isError={isError && !feedback.name}
+            onChange={handleChange}
           />
 
           <InputField
@@ -62,9 +64,9 @@ function Feedback({ t, onClose }) {
             type="email"
             id="floating_email"
             label={t('users:Email')}
-            value={email}
-            isError={isError && !email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={feedback.email}
+            isError={isError && !feedback.email}
+            onChange={handleChange}
           />
 
           <InputField
@@ -73,9 +75,9 @@ function Feedback({ t, onClose }) {
             type="textarea"
             id="floating_message"
             label={t('users:Message')}
-            value={message}
-            isError={isError && !message}
-            onChange={(e) => setMessage(e.target.value)}
+            value={feedback.message}
+            isError={isError && !feedback.message}
+            onChange={handleChange}
             className="overflow-auto max-h-40 mb-3"
           />
 
