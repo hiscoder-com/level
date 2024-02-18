@@ -11,6 +11,7 @@ import Login from './Login'
 import Reviews from './Reviews'
 import HowItWork from './HowItWork'
 import SwitchLocalization from './SwitchLocalization'
+import PasswordRecovery from 'components/PasswordRecovery'
 
 import { useTranslation } from 'next-i18next'
 
@@ -23,9 +24,10 @@ import Instagram from 'public/instagram.svg'
 import Telegram from 'public/telegram.svg'
 import Youtube from 'public/youtube.svg'
 
-function StartPage() {
+function StartPage({ defaultContentKey = null }) {
   const { t } = useTranslation(['start-page', 'projects', 'users'])
-  const [contentKey, setContentKey] = useState(null)
+  const router = useRouter()
+  const [contentKey, setContentKey] = useState(defaultContentKey)
   const [paddingClass, setPaddingClass] = useState('2xl:px-0')
   const [showSections, setShowSections] = useState({
     logo: false,
@@ -34,7 +36,9 @@ function StartPage() {
     feedback: false,
     signIn: false,
     demo: false,
+    passwordRecovery: false,
   })
+
   const [blocks, setBlocks] = useState({
     intro: { clicked: false, opacity: 'opacity-0' },
     howItWork: { clicked: false, opacity: 'opacity-0' },
@@ -49,11 +53,20 @@ function StartPage() {
     }))
   }
 
+  useEffect(() => {
+    if (defaultContentKey) {
+      setContentKey(defaultContentKey)
+    }
+  }, [defaultContentKey])
+
   const handleContentClick = (newContentKey) => {
     if (contentKey === newContentKey) {
       setContentKey(null)
     } else {
       setContentKey(newContentKey)
+    }
+    if (defaultContentKey) {
+      router.replace('/', undefined, { shallow: true })
     }
   }
 
@@ -68,6 +81,7 @@ function StartPage() {
     faq: <FrequentlyAskedQuestions t={t} />,
     demo: <Demo t={t} />,
     logo: <Logo t={t} />,
+    passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
 
   const toggleBlock = (key) => {
@@ -170,7 +184,12 @@ function StartPage() {
             {contentObjects[contentKey]}
             <Close
               className="absolute w-6 h-6 right-9 top-10 stroke-black cursor-pointer"
-              onClick={() => setContentKey(null)}
+              onClick={() => {
+                setContentKey(null)
+                if (defaultContentKey) {
+                  router.replace('/', undefined, { shallow: true })
+                }
+              }}
             />
           </div>
         </section>

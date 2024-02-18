@@ -1,4 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+
+import { useRouter } from 'next/router'
 
 import Link from 'next/link'
 
@@ -6,26 +8,25 @@ import axios from 'axios'
 
 import { useTranslation } from 'next-i18next'
 
-import SwitchLocalization from './SwitchLocalization'
 import ButtonLoading from './ButtonLoading'
+import InputField from './Panel/UI/InputField'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-import EyeIcon from 'public/eye-icon.svg'
-import EyeOffIcon from 'public/eye-off-icon.svg'
+import Progress from 'public/progress.svg'
 
 function PasswordRecovery() {
   const supabase = useSupabaseClient()
+  const { query } = useRouter()
   const { t } = useTranslation('users')
-  const { user } = useCurrentUser()
-  const [password, setPassword] = useState('')
-  const [repeatPassword, setRepeatPassword] = useState('')
+  const { user, loading } = useCurrentUser()
+  const [passwords, setPasswords] = useState({ main: '', repeated: '' })
+
   const [isRecovering, setIsRecovering] = useState(false)
   const [error, setError] = useState('')
   const [successResult, setSuccessResult] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [showRepeatPassword, setShowRepeatPassword] = useState(false)
 
   const signOut = async () => {
     try {
@@ -35,20 +36,28 @@ function PasswordRecovery() {
       console.log(error)
     }
   }
-  const comparePasswords = (passFirst, passSecond) => {
-    if (!passFirst || !passSecond) {
+  const comparePasswords = (passwords) => {
+    const { main, repeated } = passwords
+    if (!main || !repeated) {
       return { error: true, message: 'NotAllFieldsFilled' }
     }
-    if (passFirst.length < 6) {
+    if (main.length < 6) {
       return { error: true, message: 'PasswordShouldBeLeastSix' }
     }
-    if (passFirst !== passSecond) {
+    if (main !== repeated) {
       return { error: true, message: 'PasswordsDontMatch' }
     }
     return { error: false, message: 'Success' }
   }
+
+  const handleChange = (e) => {
+    setPasswords({
+      ...passwords,
+      [e.target.name]: e.target.value,
+    })
+  }
   const handleRecovery = () => {
-    const { error, message } = comparePasswords(password, repeatPassword)
+    const { error, message } = comparePasswords(passwords)
     if (error) {
       setError(message)
       return
@@ -57,9 +66,11 @@ function PasswordRecovery() {
       setIsRecovering(true)
       axios
         .put('/api/users/update_password', {
-          password,
+          password: passwords.main,
         })
         .then((res) => {
+          setSuccessResult
+          setSuccessResult
           if (res) {
             setSuccessResult(t('PasswordChanged'))
             signOut()
@@ -72,87 +83,128 @@ function PasswordRecovery() {
         .finally(() => setIsRecovering(false))
     }
   }
+  const passwordRef = useRef(null)
+  const repeatPasswordRef = useRef(null)
+
+  useEffect(() => {
+    if (passwordRef?.current) {
+      passwordRef.current.focus()
+    }
+  }, [showPassword])
+
+  function renderContent() {
+    if (isRecovering) {
+      return (
+        <div className="flex justify-center">
+          <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
+        </div>
+      )
+    }
+    if (successResult) {
+      return (
+        <div className="mx-auto text-center">
+          <div className="text-th-text-primary mb-4">{successResult}</div>
+          <Link
+            className="hover:opacity-70"
+            href={{
+              pathname: '/',
+              query: {
+                contentKey: 'signIn',
+              },
+            }}
+          >
+            {t('TryLoggingIn')}
+          </Link>
+        </div>
+      )
+    }
+
+    if (query?.error) {
+      return <div>{t('UnSuccessRecovery')}</div>
+    }
+
+    if (loading || isRecovering) {
+      return (
+        <div className="flex justify-center">
+          <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
+        </div>
+      )
+    }
+
+    if (!user) {
+      return (
+        <Link
+          className="hover:opacity-70 text-center"
+          href={{
+            pathname: '/',
+            query: {
+              contentKey: 'signIn',
+            },
+          }}
+        >
+          {t('TryLoggingIn')}
+        </Link>
+      )
+    }
+
+    return (
+      <>
+        <InputField
+          refInput={passwordRef}
+          type={showPassword ? 'text' : 'password'}
+          name="main"
+          id="main_password"
+          isError={error && ![passwords.main]}
+          label={t('Password')}
+          onChange={handleChange}
+          showPasswordToggle={true}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          className="input-password"
+        />
+
+        <InputField
+          refInput={repeatPasswordRef}
+          type={showPassword ? 'text' : 'password'}
+          name="repeated"
+          id="repeated_password"
+          isError={error && !passwords.repeated}
+          label={t('RepeatPassword')}
+          onChange={handleChange}
+          showPasswordToggle={true}
+          showPassword={showPassword}
+          setShowPassword={setShowPassword}
+          className="input-password"
+        />
+        {error && <div className="opacity-100 min-h-[1.5rem]">{t(error)}</div>}
+        <ButtonLoading
+          type="button"
+          className="relative w-full px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
+          onClick={handleRecovery}
+          isLoading={isRecovering}
+        >
+          {t('UpdatePassword')}
+        </ButtonLoading>
+      </>
+    )
+  }
+  useEffect(() => {
+    if (repeatPasswordRef?.current) {
+      repeatPasswordRef.current.focus()
+    }
+  }, [])
 
   return (
-    <div className="flex flex-col p-5 lg:py-10 xl:px-8">
-      <div className="flex justify-between mb-6">
-        <h1 className="text-2xl font-bold">{t('PasswordRecovery')}</h1>
-        <SwitchLocalization />
+    <div className="flex flex-col w-full">
+      <p className="hidden md:block mr-4">{t('PasswordRecovery')}</p>
+      <div
+        className="flex flex-grow items-center pb-6 md:pb-0"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <form className="flex flex-col w-full space-y-4 text-th-primary-200 text-sm md:text-xl">
+          {renderContent()}
+        </form>
       </div>
-      <form className="space-y-6 xl:space-y-10">
-        <div className="flex flex-col gap-5 lg:justify-around">
-          {!successResult ? (
-            user && (
-              <>
-                <p>{t('WriteNewPassword')}</p>
-                <div className="relative z-0 w-full">
-                  <input
-                    name="floating_password_new"
-                    className={error ? 'input-invalid' : 'input-primary'}
-                    type={showPassword ? 'text' : 'password'}
-                    value={password}
-                    onChange={(e) => {
-                      setError('')
-                      setSuccessResult('')
-                      setPassword(e.target.value)
-                    }}
-                  />
-
-                  <span
-                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-text-primary"
-                    onClick={() => setShowPassword((prev) => !prev)}
-                  >
-                    {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                  </span>
-                </div>
-                <p>{t('RepeatNewPassword')}</p>
-                <div className="relative w-full z-0">
-                  <input
-                    name="floating_password_repeat"
-                    className={error ? 'input-invalid' : 'input-primary'}
-                    type={showRepeatPassword ? 'text' : 'password'}
-                    value={repeatPassword}
-                    onChange={(e) => {
-                      setError('')
-                      setSuccessResult('')
-                      setRepeatPassword(e.target.value.trim())
-                    }}
-                  />
-
-                  <span
-                    className="absolute right-2 bottom-2 cursor-pointer stroke-2 text-th-text-primary"
-                    onClick={() => setShowRepeatPassword((prev) => !prev)}
-                  >
-                    {showRepeatPassword ? <EyeOffIcon /> : <EyeIcon />}
-                  </span>
-                </div>
-
-                <div className={`${error ? 'opacity-100' : 'opacity-0'} min-h-[1.5rem]`}>
-                  {t(error)}
-                </div>
-                <ButtonLoading
-                  type="button"
-                  className="btn-primary relative self-center w-1/2 text-sm lg:text-base"
-                  onClick={handleRecovery}
-                  isLoading={isRecovering}
-                >
-                  {t('UpdatePassword')}
-                </ButtonLoading>
-              </>
-            )
-          ) : (
-            <>
-              <div>{successResult}</div>
-              <Link
-                href={'/'}
-                className="mb-6 lg:mb-14 text-th-primary-200 hover:opacity-70"
-              >
-                {t('GoToLogin')}
-              </Link>
-            </>
-          )}
-        </div>
-      </form>
     </div>
   )
 }

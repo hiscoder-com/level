@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
@@ -7,7 +8,7 @@ import StartPage from 'components/StartPage'
 
 export default function Home() {
   const { t } = useTranslation('common')
-
+  const { query } = useRouter()
   return (
     <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
       <Head>
@@ -15,7 +16,7 @@ export default function Home() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <StartPage />
+      <StartPage defaultContentKey={query?.contentKey || null} />
     </main>
   )
 }
