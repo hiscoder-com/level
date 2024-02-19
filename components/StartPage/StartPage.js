@@ -1,17 +1,18 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import SwitchLocalization from 'components/SwitchLocalization'
 import AboutVersion from 'components/AboutVersion'
 import Feedback from './Feedback'
 import Logo from './Logo'
 import Demo from './Demo'
 import Login from './Login'
 import Reviews from './Reviews'
+import PasswordRecovery from './PasswordRecovery'
 import HowItWorks from './HowItWorks'
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 
@@ -19,10 +20,13 @@ import Close from 'public/close.svg'
 import UnfoldingWord from 'public/unfolding-word.svg'
 import VcanaLogo from 'public/vcana-logo-color.svg'
 import VCanaIntro from 'public/v-cana-intro.png'
+import SwitchLocalization from 'components/SwitchLocalization'
 
-function StartPage() {
+function StartPage({ defaultContentKey = null }) {
   const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
-  const [contentKey, setContentKey] = useState(null)
+  const router = useRouter()
+  const [contentKey, setContentKey] = useState(defaultContentKey)
+
   const [showSections, setShowSections] = useState({
     logo: false,
     updates: false,
@@ -30,7 +34,9 @@ function StartPage() {
     feedback: false,
     signIn: false,
     demo: false,
+    passwordRecovery: false,
   })
+
   const [blocks, setBlocks] = useState({
     intro: { clicked: false, opacity: 'opacity-0' },
     howItWork: { clicked: false, opacity: 'opacity-0' },
@@ -45,11 +51,20 @@ function StartPage() {
     }))
   }
 
+  useEffect(() => {
+    if (defaultContentKey) {
+      setContentKey(defaultContentKey)
+    }
+  }, [defaultContentKey])
+
   const handleContentClick = (newContentKey) => {
     if (contentKey === newContentKey) {
       setContentKey(null)
     } else {
       setContentKey(newContentKey)
+    }
+    if (defaultContentKey) {
+      router.replace('/', undefined, { shallow: true })
     }
   }
 
@@ -64,6 +79,7 @@ function StartPage() {
     faq: <FrequentlyAskedQuestions t={t} />,
     demo: <Demo t={t} />,
     logo: <Logo t={t} />,
+    passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
 
   const toggleBlock = (key) => {
@@ -148,7 +164,12 @@ function StartPage() {
             {contentObjects[contentKey]}
             <Close
               className="absolute w-6 h-6 right-9 top-10 stroke-black cursor-pointer"
-              onClick={() => setContentKey(null)}
+              onClick={() => {
+                setContentKey(null)
+                if (defaultContentKey) {
+                  router.replace('/', undefined, { shallow: true })
+                }
+              }}
             />
           </div>
         </section>
