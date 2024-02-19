@@ -21,7 +21,7 @@ function ModalInSideBar({ isOpen, setIsOpen, children }) {
               <Close className="h-8 stroke-th-primary-100" />
             </button>
           </div>
-          <div className="h-full overflow-x-hidden overflow-y-auto p-4 ">{children}</div>
+          <div className="h-full overflow-x-hidden overflow-y-auto p-4">{children}</div>
         </div>
       )}
     </>
