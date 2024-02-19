@@ -13,6 +13,7 @@ export default function SignOut() {
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation('users')
   const router = useRouter()
+
   const handleLogout = async () => {
     try {
       setLoading(true)
