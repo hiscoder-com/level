@@ -4,7 +4,7 @@
   "Agreement": "Agreement",
   "Block": "Block",
   "Blocked": "Blocking",
-  "ConditionOfConsent": "By clicking the \"Submit\" button, you agree to the privacy policy.",
+  "ConditionOfConsent": "By clicking the \"Send\" button, you agree to the privacy policy.",
   "Confession": "Confession of Faith",
   "CreateNewUser": "Create a new user",
   "Email": "Email",
@@ -51,6 +51,7 @@
   "WriteYourEmailRecovery": "Write your email to which you will receive a password recovery link",
   "WrongLoginPassword": "Invalid username or password",
   "YourLogin": "Your login",
+  "YourMessageSentThankYou": "Your message has been sent. Thank you!",
   "YourName": "Your name",
   "YouSignInAs": "You are logged in as"
 }

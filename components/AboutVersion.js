@@ -51,10 +51,13 @@ function AboutVersion({ isStartPage = false }) {
 
   if (isStartPage) {
     return (
-      <div className="flex flex-col w-full gap-6 md:gap-2.5">
+      <div className="relative flex flex-col w-full gap-6 md:gap-2.5">
         <p className="font-semibold md:font-bold">
           {t('Version')} {packageJson.version}
         </p>
+        <Close
+          className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+        />
         <div className="overflow-auto" onClick={(e) => e.stopPropagation()}>
           <ReactMarkdown className="flex-grow text-left overflow-auto md:pr-5 text-sm font-normal whitespace-pre-line leading-5">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}

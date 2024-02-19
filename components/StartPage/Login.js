@@ -14,6 +14,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 import Report from 'public/error-outline.svg'
 import Loading from 'public/progress.svg'
+import Close from 'public/close.svg'
 
 function Login({ handleClick = () => {} }) {
   const supabase = useSupabaseClient()
@@ -117,8 +118,11 @@ function Login({ handleClick = () => {} }) {
   }
 
   return (
-    <div className="flex flex-col w-full">
+    <div className="relative flex flex-col w-full">
       <p className="hidden md:block">{t('LoginToAccount')}</p>
+      <Close
+        className={`absolute md:hidden w-6 h-6 right-0 -top-12 stroke-black cursor-pointer`}
+      />
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
         onClick={(e) => e.stopPropagation()}
@@ -224,11 +228,7 @@ function Login({ handleClick = () => {} }) {
               </div>
             </div>
           )}
-          <div
-            className={`${
-              errorMessageSendLink ? 'opacity-100' : 'opacity-0'
-            } min-h-[1.5rem]`}
-          >
+          <div className={`${errorMessageSendLink ? '' : 'hidden'} `}>
             {errorMessageSendLink}
           </div>
         </Modal>

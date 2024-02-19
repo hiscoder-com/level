@@ -4,6 +4,7 @@ import Image from 'next/image'
 import ProgressBar from 'components/ProgressBar'
 
 import LeftArrow from 'public/arrow-left.svg'
+import Close from 'public/close.svg'
 import HowItWorkImage1 from 'public/how-it-work-01.png'
 import HowItWorkImage2 from 'public/how-it-work-02.png'
 import HowItWorkImage3 from 'public/how-it-work-03.png'
@@ -39,8 +40,11 @@ function HowItWorks({ t, opacity }) {
   const imagePath = images[image]
 
   return (
-    <div className="flex flex-col w-full gap-6 md:gap-12">
+    <div className="relative flex flex-col w-full gap-6 md:gap-12">
       <p className="font-semibold md:font-bold">{t('MainBlocks.HowItWorks')}</p>
+      <Close
+        className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+      />
       <div className="overflow-auto pr-5" onClick={(e) => e.stopPropagation()}>
         <p
           className={`text-sm md:text-base font-normal transition-opacity duration-700 ${
