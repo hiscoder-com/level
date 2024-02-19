@@ -23,7 +23,7 @@ function Logo({ t }) {
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-14">
-      <p className="font-semibold md:font-bold md:mr-10">{t('LogoHeader')}</p>
+      <p className="font-semibold md:font-bold mr-10">{t('LogoHeader')}</p>
       <p className="text-sm md:text-base font-normal">{t('LogoText')}</p>
 
       <div className="flex items-center gap-5 md:gap-10 flex-col md:flex-row">

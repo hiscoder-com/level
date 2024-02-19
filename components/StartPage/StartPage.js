@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import Link from 'next/link'
 import Image from 'next/image'
@@ -23,10 +23,10 @@ import VCanaIntro from 'public/v-cana-intro.png'
 import SwitchLocalization from 'components/SwitchLocalization'
 
 function StartPage({ defaultContentKey = null }) {
-  const { t } = useTranslation(['start-page', 'projects', 'users'])
+  const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
   const router = useRouter()
   const [contentKey, setContentKey] = useState(defaultContentKey)
-  const [paddingClass, setPaddingClass] = useState('2xl:px-0')
+
   const [showSections, setShowSections] = useState({
     logo: false,
     updates: false,
@@ -92,27 +92,9 @@ function StartPage({ defaultContentKey = null }) {
     }))
   }
 
-  useEffect(() => {
-    const updatePadding = () => {
-      const windowHeight = window.innerHeight
-      if (windowHeight < 1024 && window.innerWidth >= 1536) {
-        setPaddingClass('2xl:px-32')
-      } else {
-        setPaddingClass('2xl:px-0')
-      }
-    }
-
-    updatePadding()
-    window.addEventListener('resize', updatePadding)
-
-    return () => window.removeEventListener('resize', updatePadding)
-  }, [])
-
   return (
     <>
-      <main
-        className={`hidden md:flex mx-auto max-w-7xl w-full h-[94vh] max-h-[40rem] lg:max-h-[46rem] xl:max-h-[54rem] 2xl:max-h-[56.4rem] text-2xl font-bold px-5 lg:px-16 xl:px-20 ${paddingClass}`}
-      >
+      <main className="hidden md:flex mx-auto max-w-7xl w-full h-[94vh] max-h-[40rem] lg:max-h-[46rem] xl:max-h-[54rem] 2xl:max-h-[56.4rem] text-2xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
           <div
             className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
@@ -236,7 +218,7 @@ function StartPage({ defaultContentKey = null }) {
 
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.updates && (
-            <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl z-10">
+            <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl z-20">
               <SwitchLocalization />
             </div>
           )}
@@ -342,7 +324,7 @@ function StartPage({ defaultContentKey = null }) {
         <SectionBlock
           sectionKey="feedback"
           label={t('ConnectWithUs')}
-          content={<Feedback t={t} />}
+          content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
           showSection={showSections.feedback}
           toggleSection={toggleSection}
         />
@@ -377,8 +359,9 @@ function StartPage({ defaultContentKey = null }) {
               {showSections.signIn && (
                 <Login
                   handleClick={() => {
-                    toggleSection('signIn')
-                    toggleSection('feedback')
+                    toggleSection(
+                      showSections.signIn && showSections.feedback ? 'signIn' : 'feedback'
+                    )
                   }}
                 />
               )}
@@ -396,6 +379,9 @@ function VcanaIntro({ t, opacity }) {
   return (
     <div className="flex flex-col w-full">
       <p className="font-semibold md:font-bold">{t('MainBlocks.WhatIsVcana')}</p>
+      <Close
+        className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+      />
       <p
         className={`mt-6 md:mt-12 text-sm md:text-base font-normal transition-opacity duration-700 ${
           opacity || ''
@@ -436,12 +422,17 @@ function SectionBlock({
 }) {
   return (
     <div
-      className={`p-5 bg-th-secondary-10 rounded-xl ${
+      className={`relative p-5 bg-th-secondary-10 rounded-xl ${
         isLogo ? 'flex justify-center' : 'text-center'
       }`}
       onClick={() => toggleSection(sectionKey)}
     >
       {showSection ? content : isLogo ? label : <p>{label}</p>}
+      <Close
+        className={`absolute w-6 h-6 right-5 top-5 stroke-black cursor-pointer ${
+          showSection ? '' : 'hidden'
+        }`}
+      />
     </div>
   )
 }

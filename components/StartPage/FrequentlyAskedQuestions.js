@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import Close from 'public/close.svg'
+
 function FrequentlyAskedQuestions({ t, opacity }) {
   const faqData = [
     {
@@ -38,8 +40,11 @@ function FrequentlyAskedQuestions({ t, opacity }) {
   ]
 
   return (
-    <div className="flex flex-col w-full gap-6 md:gap-12">
+    <div className="relative flex flex-col w-full gap-6 md:gap-12">
       <p className="font-semibold md:font-bold">{t('FAQ')}</p>
+      <Close
+        className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+      />
       <div
         className={`text-sm md:text-base transition-opacity duration-700 overflow-auto pr-5 ${
           opacity || ''

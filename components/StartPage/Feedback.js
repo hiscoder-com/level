@@ -10,6 +10,7 @@ function Feedback({ t, onClose }) {
   const [feedback, setFeedback] = useState({ name: '', email: '', message: '' })
   const [isError, setIsError] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [isSent, setIsSent] = useState(false)
 
   const handleChange = (e) => {
     setFeedback({ ...feedback, [e.target.name]: e.target.value })
@@ -30,9 +31,7 @@ function Feedback({ t, onClose }) {
       .then(() => {
         toast.success(t('YourMessageHasBeenSent'))
         setIsError(false)
-        setTimeout(() => {
-          onClose()
-        }, 2000)
+        setIsSent(true)
       })
       .catch((err) => {
         console.log({ err })
@@ -48,50 +47,62 @@ function Feedback({ t, onClose }) {
       <p className="font-semibold md:font-bold">{t('ConnectWithUs')}</p>
       <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
         <Toaster />
-        <form className="flex flex-col w-full space-y-4" onSubmit={handleSubmit}>
-          <InputField
-            name="name"
-            type="text"
-            id="floating_name"
-            label={t('users:YourName')}
-            value={feedback.name}
-            isError={isError && !feedback.name}
-            onChange={handleChange}
-          />
+        {!isSent ? (
+          <form className="flex flex-col w-full space-y-4" onSubmit={handleSubmit}>
+            <InputField
+              name="name"
+              type="text"
+              id="floating_name"
+              label={t('users:YourName')}
+              value={feedback.name}
+              isError={isError && !feedback.name}
+              onChange={handleChange}
+            />
 
-          <InputField
-            name="email"
-            type="email"
-            id="floating_email"
-            label={t('users:Email')}
-            value={feedback.email}
-            isError={isError && !feedback.email}
-            onChange={handleChange}
-          />
+            <InputField
+              name="email"
+              type="email"
+              id="floating_email"
+              label={t('users:Email')}
+              value={feedback.email}
+              isError={isError && !feedback.email}
+              onChange={handleChange}
+            />
 
-          <InputField
-            rows="3"
-            name="message"
-            type="textarea"
-            id="floating_message"
-            label={t('users:Message')}
-            value={feedback.message}
-            isError={isError && !feedback.message}
-            onChange={handleChange}
-            className="overflow-auto max-h-40 mb-3"
-          />
+            <InputField
+              rows="3"
+              name="message"
+              type="textarea"
+              id="floating_message"
+              label={t('users:Message')}
+              value={feedback.message}
+              isError={isError && !feedback.message}
+              onChange={handleChange}
+              className="overflow-auto max-h-40 mb-3"
+            />
 
-          <ButtonLoading
-            type="submit"
-            isLoading={isSaving}
-            className="relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
-          >
-            {t('users:Send')}
-          </ButtonLoading>
-          <p className="text-center text-sm font-light">
-            {t('users:ConditionOfConsent')}
-          </p>
-        </form>
+            <ButtonLoading
+              type="submit"
+              isLoading={isSaving}
+              className="relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
+            >
+              {t('users:Send')}
+            </ButtonLoading>
+            <p className="text-center text-sm font-light">
+              {t('users:ConditionOfConsent')}
+            </p>
+          </form>
+        ) : (
+          <div className="text-center w-full">
+            <p>{t('users:YourMessageSentThankYou')}</p>
+            <button
+              className="px-10 py-4 mt-14 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
+              onClick={() => onClose()}
+            >
+              {t('common:Close')}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   )
