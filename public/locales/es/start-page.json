@@ -1,74 +1,74 @@
 {
-  "ComingSoon": "Coming soon",
-  "ConnectWithUs": "Connect with us",
+  "ComingSoon": "Próximamente",
+  "ConnectWithUs": "Contáctanos",
   "Demo": "Demo",
-  "LogoHeader": "V-CANA platform created by TextTree Movement",
-  "LogoText": "The TextTree Movement is a movement that provides materials, software, and media resources for Bible translation and biblical content. TextTree Movement equips churches to create church-centered, open-license translations of Scripture.",
+  "LogoHeader": "Plataforma V-CANA creada por el Movimiento TextTree",
+  "LogoText": "El movimiento TextTree es un movimiento que proporciona materiales, software y recursos multimedia para la traducción de la Biblia y el contenido bíblico. El movimiento TextTree equipa a las iglesias para crear traducciones de las Escrituras centradas en la iglesia y de licencia abierta.",
   "MainBlocks": {
     "FAQ": "FAQ",
     "FAQBlock": {
       "EighthQuestion": {
-        "Answer": "We will soon be creating a page on the website with details on how you can support the development of the V-CANA platform. In the meantime, you can contact us via the customer support form.",
-        "Question": "How can I support the development of the V-CANA platform?"
+        "Answer": "Pronto lanzaremos una página en el sitio web con detalles sobre cómo puede apoyar el desarrollo de la plataforma V-CANA. Mientras tanto, puede ponerse en contacto con nosotros a través del formulario de comentarios.",
+        "Question": "¿Cómo puedo apoyar el desarrollo de la plataforma V-CANA?"
       },
       "FifthQuestion": {
-        "Answer": "We currently offer UnfoldingWord materials - https://www.unfoldingword.org/ We are also in the process of contacting other partners who provide materials for Bible translation work. If you are a representative of a project that is developing such materials, please contact us through the contact form.",
-        "Question": "What partners provide materials for the platform?"
+        "Answer": "Actualmente ofrecemos materiales de UnfoldingWord - https://www.unfoldingword.org/. También estamos en conversaciones con otros socios que proporcionan materiales para el trabajo de traducción de la Biblia. Si es usted representante de un proyecto que está elaborando este tipo de materiales, póngase en contacto con nosotros a través del formulario de contacto.",
+        "Question": "¿Qué materiales de los socios se utilizan actualmente en la plataforma?"
       },
       "FirstQuestion": {
-        "Answer": "The V-CANA platform is designed primarily for translating the Bible and biblical content. As a rule, such work is done by various missions and Bible societies. The V-CANA platform is also designed for local translation groups.",
-        "Question": "Who is this platform for?"
+        "Answer": "La plataforma V-CANA está diseñada principalmente para traducir la Biblia y contenidos bíblicos. Por regla general, este trabajo lo realizan diversas misiones y sociedades bíblicas. La plataforma V-CANA también está diseñada para grupos de traducción locales.",
+        "Question": "¿A quién va dirigida esta plataforma?"
       },
       "FourthQuestion": {
-        "Answer": "At the first phase, the V-CANA platform can only be used by participants of projects with which we have a preliminary cooperation agreement. If you plan to use the platform within a project, please contact us via the customer support form.",
-        "Question": "How can I start using the V-CANA platform?"
+        "Answer": "En una primera fase, la plataforma V-CANA sólo puede ser utilizada por representantes de proyectos con los que tengamos un acuerdo preliminar. Si tiene previsto utilizar la plataforma en el marco de algún proyecto, póngase en contacto con nosotros a través del formulario de comentarios.",
+        "Question": "¿Cómo puedo empezar a utilizar la plataforma V-CANA?"
       },
       "SecondQuestion": {
-        "Answer": "Use of the V-CANA platform is free for all users.",
-        "Question": "What are the pricing for users of V-CANA?"
+        "Answer": "El uso de la plataforma V-CANA es gratuito para todos los usuarios.",
+        "Question": "¿Cuáles son las tarifas para los usuarios de V-CANA?"
       },
       "SeventhQuestion": {
-        "Answer": "Yes, if you work with the online version of the platform. But if you work with the intranet version, there is no need for a permanent internet connection.",
-        "Question": "Is it necessary to have a stable Internet connection for working with the V-CANA platform?"
+        "Answer": "Sí, si trabajas con la versión en línea de la plataforma. Pero si trabajas con la versión intranet, no es necesaria una conexión permanente a internet.",
+        "Question": "¿Necesito una conexión constante a Internet para utilizar la plataforma V-CANA?"
       },
       "SixthQuestion": {
-        "Answer": "If you represent a project and plan to using the V-CANA platform with your materials, please contact us via the customer support form.",
-        "Question": "Can I upload my own materials?"
+        "Answer": "Si representa a un proyecto y tiene previsto utilizar la plataforma V-CANA con sus materiales, póngase en contacto con nosotros a través del formulario de contacto.",
+        "Question": "¿Puedo cargar mis propios materiales?"
       },
       "ThirdQuestion": {
-        "Answer": "This button can only be used by registered users.",
-        "Question": "I click on the Login button, but I can't log in to the site. Why?"
+        "Answer": "Este botón sólo puede ser utilizado por usuarios registrados.",
+        "Question": "Hago clic en el botón Iniciar sesión, pero no puedo acceder al sitio. ¿Por qué?"
       }
     },
-    "HowItWorks": "How it works",
-    "HowItWorksText": "Each translation process has its own order of operations. For example, in the first step, the translator reads the text (gets familiar with it). After that, he/she makes a draft of the translation. In the final step, the translator reads his text and makes changes (edits his translation). Realizing that each ethod of Bible translation has its own materials for each of these steps, we decided to create a platform where the translator could simply go to the project page and see only what he or she needs at that particular step. Depending on the method, the content of the tools varies.",
-    "Reviews": "Reviews",
+    "HowItWorks": "Cómo funciona",
+    "HowItWorksText": "Cada proceso de traducción tiene su propio orden de operaciones. Por ejemplo, en el primer paso, el traductor lee el texto (se familiariza con él de antemano). Después, hace un esquema de la traducción. Por último, el traductor lee el texto y lo modifica (edita la traducción). Al darnos cuenta de que cada método de traducción de la Biblia tiene su propio material para cada uno de estos pasos, decidimos crear una plataforma en la que el traductor pudiera simplemente ir a la página y ver sólo lo que necesita en ese paso concreto. Dependiendo del método, el contenido de las herramientas varía.",
+    "Reviews": "Reseñas",
     "ReviewsBlock": {
       "FirstReview": {
         "Country": "Azerbajan",
         "Name": "Ramis",
-        "Text": "I have experience in Bible translation. We did the translation in different programs. But now I can say for sure that V-CANA is the best tool for teamwork in translation."
+        "Text": "Tengo experiencia en traducción bíblica. Hicimos la traducción en diferentes programas. Pero ahora puedo decir con seguridad que V-CANA es la mejor herramienta para el trabajo en equipo en la traducción."
       },
       "SecondReview": {
-        "Country": "Russia",
+        "Country": "Rusia",
         "Name": "Lina",
-        "Text": "My impressions of working in V-CANA - It's not just convenient. It's comfortable."
+        "Text": "Mis impresiones sobre el trabajo en V-CANA - No sólo es cómodo. Es confortable."
       },
       "ThirdReview": {
-        "Country": "Uzbekistan",
+        "Country": "Uzbekistán",
         "Name": "Bakhrom",
-        "Text": "V-CANA is very much to my liking. It is very convenient that there is a command dictionary, and when you come across similar words, the dictionary helps you to use them in the same way in different places. It is very convenient that there is a biblical dictionary and there are explanations on how to better translate some difficult sentences. A very useful tool."
+        "Text": "V-CANA ha sido muy útil. Es muy conveniente que haya un diccionario de comandos, y cuando te encuentras con palabras similares, el diccionario te ayuda a usarlas de la misma manera en diferentes lugares.\nMuy conveniente que haya un diccionario bíblico y que haya explicaciones de cómo traducir mejor algunas frases complejas. Una herramienta muy útil."
       }
     },
-    "Screenshots": "Screenshots",
-    "VcanaText": "V-CANA is a platform for step-by-step Bible translation using various helpful materials from our partners.",
-    "WhatIsVcana": "What is V-CANA?"
+    "Screenshots": "Captura de pantalla",
+    "VcanaText": "V-CANA es una plataforma de traducción bíblica paso a paso que utiliza diversos materiales de referencia de nuestros socios.",
+    "WhatIsVcana": "¿Qué es V-CANA?"
   },
-  "NotAllFieldFull": "Not all fields are filled in!",
-  "Partners": "Partners",
+  "NotAllFieldFull": "No todos los campos han sido rellenados!",
+  "Partners": "Asociarse",
   "Verse": {
     "Matthew": "Matthew 24:14",
-    "text": "And this gospel of the kingdom will be preached in the whole world for a testimony to all the nations, and then the end will come."
+    "text": "Y este evangelio del reino será predicado en todo el mundo como testimonio a todas las naciones, y entonces vendrá el final."
   },
-  "YourMessageHasBeenSent": "Your message has been sent"
+  "YourMessageHasBeenSent": "Se ha enviado su mensaje"
 }
