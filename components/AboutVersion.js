@@ -6,7 +6,6 @@ import { useTranslation } from 'next-i18next'
 
 import { useRecoilState } from 'recoil'
 
-import Modal from './Modal'
 import { modalsSidebar } from './state/atoms'
 
 import packageJson from '../package.json'
@@ -17,7 +16,7 @@ import updatesES from '../public/updateVersionInfo/updates_es.md'
 
 import Close from 'public/close.svg'
 
-function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
+function AboutVersion({ isStartPage = false }) {
   const aboutVersion = {
     en: updatesEN,
     ru: updatesRU,
@@ -25,14 +24,14 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   }
   const { locale } = useRouter()
   const { t } = useTranslation('common')
-  const [isOpen, setIsOpen] = useState(false)
   const [showAllUpdates, setShowAllUpdates] = useState(false)
   const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
+
   useEffect(() => {
-    if (!modalsSidebarState.aboutVersion || !isOpen) {
+    if (!modalsSidebarState.aboutVersion) {
       setShowAllUpdates(false)
     }
-  }, [isOpen, modalsSidebarState.aboutVersion])
+  }, [modalsSidebarState.aboutVersion])
 
   const processText = (text) => {
     return text.replace(/^-\s+/gm, '∙ ').replace(/^#([\s\S]+?)\n/g, '')
@@ -44,118 +43,80 @@ function AboutVersion({ isMobileIndexPage = false, isSidebar = false }) {
   const fullAboutVersion = useMemo(() => {
     const content = getAboutVersionByLanguage(locale)
     return content ? processText(content) : ''
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale])
 
   const currentAboutVersion = useMemo(() => {
     const content = getAboutVersionByLanguage(locale).match(/^#\s([\s\S]+?)\n#\s/g)
     return content?.length ? processText(content[0]) : ''
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale])
+
+  if (isStartPage) {
+    return (
+      <div className="relative flex flex-col w-full gap-6 md:gap-2.5">
+        <p className="font-semibold md:font-bold">
+          {t('Version')} {packageJson.version}
+        </p>
+        <Close
+          className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+        />
+        <div className="overflow-auto" onClick={(e) => e.stopPropagation()}>
+          <ReactMarkdown className="flex-grow text-left overflow-auto md:pr-5 text-sm font-normal whitespace-pre-line leading-5">
+            {showAllUpdates ? fullAboutVersion : currentAboutVersion}
+          </ReactMarkdown>
+        </div>
+        <div className="flex justify-center mt-auto">
+          <button
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowAllUpdates((prev) => !prev)
+            }}
+            className="btn-primary"
+          >
+            {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <>
-      <div
-        className={`hover:opacity-70 ${isMobileIndexPage ? 'ml-4' : ''} ${
-          !isSidebar ? 'text-xs cursor-pointer text-th-text-primary' : ''
-        }`}
-        onClick={() => {
-          !isSidebar && setIsOpen(true)
-        }}
-      >
+      <div className="hover:opacity-70">
         {t('Version')} {packageJson.version}
       </div>
-
-      {isSidebar ? (
-        modalsSidebarState.aboutVersion && (
-          <div
-            className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="sticky top-0 flex items-center justify-between py-6 bg-th-secondary-10">
-              <p className="text-left text-2xl font-bold">
-                {t('Version')} {packageJson.version}
-              </p>
-              <button
-                className="text-right"
-                onClick={() =>
-                  setModalsSidebarState((prev) => ({ ...prev, aboutVersion: false }))
-                }
-              >
-                <Close className="h-8 stroke-th-primary-100" />
-              </button>
-            </div>
-            <ReactMarkdown className="mb-10 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
-              {showAllUpdates ? fullAboutVersion : currentAboutVersion}
-            </ReactMarkdown>
-            <div className="flex justify-center pt-5 border-t border-th-secondary-300">
-              <button
-                onClick={() => setShowAllUpdates((prev) => !prev)}
-                className={`${isMobileIndexPage ? 'btn-secondary' : 'btn-primary'}`}
-              >
-                {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
-              </button>
-            </div>
-          </div>
-        )
-      ) : (
-        <Modal
-          isOpen={isOpen}
-          closeHandle={() => setIsOpen(false)}
-          className={{
-            dialogPanel: `w-full align-middle transform overflow-y-auto shadow-xl transition-all ${
-              isMobileIndexPage
-                ? 'px-6 pb-6 bg-th-secondary-10 text-th-text-primary h-screen w-screen'
-                : 'flex flex-col h-full max-h-[80vh] max-w-lg px-6 pb-6 rounded-3xl bg-th-primary-100 text-th-text-secondary-100'
-            }`,
-            main: `z-50 ${isMobileIndexPage ? 'fixed flex inset-0' : 'relative'}`,
-            transitionChild: `inset-0 opacity-25 bg-th-secondary-100 ${
-              isMobileIndexPage ? 'absolute' : 'fixed'
-            }`,
-            backdrop: `inset-0 ${
-              isMobileIndexPage ? 'relative' : 'fixed overflow-y-auto backdrop-blur'
-            }`,
-            content: `${
-              !isMobileIndexPage && 'flex items-center justify-center p-4 min-h-full'
-            }`,
-          }}
-          isChangelog={!isMobileIndexPage}
+      {modalsSidebarState.aboutVersion && (
+        <div
+          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+          onClick={(e) => e.stopPropagation()}
         >
-          <div
-            className={`sticky top-0 flex items-center justify-between py-6 ${
-              isMobileIndexPage ? 'bg-th-secondary-10' : 'bg-th-primary-100'
-            }`}
-          >
-            <p className="text-2xl font-bold text-left">
+          <div className="sticky top-0 flex items-center justify-between py-6 bg-th-secondary-10">
+            <p className="text-left text-2xl font-bold">
               {t('Version')} {packageJson.version}
             </p>
-            <button className="text-right" onClick={() => setIsOpen(false)}>
-              <Close
-                className={`h-8 ${
-                  isMobileIndexPage
-                    ? 'stroke-th-text-primary'
-                    : 'stroke-th-text-secondary-100'
-                }`}
-              />
+            <button
+              className="text-right"
+              onClick={() =>
+                setModalsSidebarState((prev) => ({
+                  ...prev,
+                  aboutVersion: false,
+                }))
+              }
+            >
+              <Close className="h-8 stroke-th-primary-100" />
             </button>
           </div>
-
-          <ReactMarkdown
-            className={`pr-3 whitespace-pre-line leading-5 ${
-              !isMobileIndexPage ? 'max-h-full mb-4 overflow-auto' : ''
-            }`}
-          >
+          <ReactMarkdown className="flex-grow pb-5 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
-          <div className="flex justify-center mt-4">
+          <div className="mt-auto flex justify-center pt-5 border-t border-th-secondary-300">
             <button
               onClick={() => setShowAllUpdates((prev) => !prev)}
-              className={`${isMobileIndexPage ? 'btn-primary' : 'btn-secondary'}`}
+              className="btn-primary"
             >
               {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
             </button>
           </div>
-        </Modal>
+        </div>
       )}
     </>
   )
