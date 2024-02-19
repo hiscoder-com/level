@@ -13,7 +13,7 @@ function SwitchLocalization() {
   const sortedLngs = [locale, ...supportedLngs.filter((lng) => lng !== locale)]
 
   return (
-    <div className="text-xs lg:text-sm font-bold relative">
+    <div className="relative max-w-min text-xs lg:text-sm font-bold">
       <Menu>
         <Menu.Button
           className="px-4 py-2 text-sm bg-th-secondary-100 rounded-[9rem] hover:opacity-70"
@@ -21,7 +21,7 @@ function SwitchLocalization() {
         >
           {t(locale.toUpperCase())}
         </Menu.Button>
-        <Menu.Items className="absolute flex top-0 right-0 text-sm bg-th-secondary-100 rounded-2xl">
+        <Menu.Items className="absolute top-0 right-0 text-sm bg-th-secondary-100 rounded-2xl">
           <div className="flex flex-col">
             {sortedLngs.map((loc) => (
               <Menu.Item
