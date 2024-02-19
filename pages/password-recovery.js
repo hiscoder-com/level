@@ -9,7 +9,7 @@ import StartPage from 'components/StartPage/StartPage'
 export default function PasswordRecoveryPage() {
   const { t } = useTranslation('common')
   return (
-    <main className="layout-empty bg-th-secondary-100">
+    <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
       <Head>
         <title>{t('V-CANA')}</title>
         <meta name="description" content="VCANA" />
