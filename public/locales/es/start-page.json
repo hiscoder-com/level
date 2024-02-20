@@ -40,7 +40,7 @@
         "Question": "Hago clic en el botón Iniciar sesión, pero no puedo acceder al sitio. ¿Por qué?"
       }
     },
-    "HowItWorks": "Cómo funciona",
+    "HowItWorks": "Cómo funciona?",
     "HowItWorksText": "Cada proceso de traducción tiene su propio orden de operaciones. Por ejemplo, en el primer paso, el traductor lee el texto (se familiariza con él de antemano). Después, hace un esquema de la traducción. Por último, el traductor lee el texto y lo modifica (edita la traducción). Al darnos cuenta de que cada método de traducción de la Biblia tiene su propio material para cada uno de estos pasos, decidimos crear una plataforma en la que el traductor pudiera simplemente ir a la página y ver sólo lo que necesita en ese paso concreto. Dependiendo del método, el contenido de las herramientas varía.",
     "Reviews": "Reseñas",
     "ReviewsBlock": {
