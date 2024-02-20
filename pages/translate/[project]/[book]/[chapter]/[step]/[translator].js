@@ -147,7 +147,7 @@ function TranslatorPage({ last_step }) {
           stepConfig={stepConfig}
         />
       ) : (
-        <div className="f-screen-appbar flex items-center justify-center mx-auto max-w-7xl">
+        <div className="h-empty-screen flex items-center justify-center mx-auto max-w-7xl py-5">
           <Progress className=" progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
         </div>
       )}
