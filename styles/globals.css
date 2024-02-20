@@ -201,6 +201,9 @@
 .f-screen-appbar {
   min-height: calc(100vh - 11.5rem);
 }
+.h-empty-screen {
+  min-height: calc(100vh - 9rem);
+}
 
 .layout-appbar {
   @apply f-screen-appbar flex flex-col gap-5 md:gap-7 items-center px-2 md:px-5 pt-5 md:pt-0 font-sans;
