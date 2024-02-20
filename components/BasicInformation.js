@@ -113,7 +113,7 @@ function BasicInformation({
           <div className="w-full md:w-1/4">
             <button
               type="button"
-              className="input-base flex items-center gap-2 text-th-text-primary border-th-secondary-300 bg-th-secondary-10 truncate"
+              className="input-base py-2 flex items-center gap-2 text-th-text-primary border-th-secondary-300 bg-th-secondary-10 truncate"
               onClick={() => setIsOpenLanguageCreate(true)}
             >
               <Plus className="w-6 h-6 min-w-[1.5rem] stroke-2 border-2 border-th-text-primary stroke-th-text-primary rounded-full" />

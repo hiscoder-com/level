@@ -12,7 +12,7 @@ import MenuButtons from '../UI/MenuButtons'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
+import { checkLSVal, convertNotesToTree, formationJSONToTree } from 'utils/helper'
 import { useAllPersonalNotes, usePersonalNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
@@ -67,7 +67,9 @@ function PersonalNotes({ config }) {
   const [noteId, setNoteId] = useState(
     localStorage.getItem('selectedPersonalNoteId') || ''
   )
-  const [activeNote, setActiveNote] = useState(null)
+  const [activeNote, setActiveNote] = useState(() => {
+    return checkLSVal('activePersonalNote', {}, 'object')
+  })
   const [isOpenModal, setIsOpenModal] = useState(false)
 
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
@@ -307,12 +309,13 @@ function PersonalNotes({ config }) {
   }, [noteId])
 
   useEffect(() => {
-    if (!activeNote) {
+    if (!activeNote?.id) {
       return
     }
     const timer = setTimeout(() => {
       saveNote()
     }, 2000)
+    localStorage.setItem('activePersonalNote', JSON.stringify(activeNote))
     return () => {
       clearTimeout(timer)
     }
@@ -450,7 +453,7 @@ function PersonalNotes({ config }) {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
   return (
     <div className="relative">
-      {!activeNote ? (
+      {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
           <div className="flex justify-end w-full">
             <MenuButtons
@@ -528,6 +531,7 @@ function PersonalNotes({ config }) {
               saveNote()
               setActiveNote(null)
               setIsShowMenu(false)
+              localStorage.setItem('activePersonalNote', JSON.stringify({}))
             }}
           >
             <Back className="w-8 stroke-th-primary-200" />

@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 :root {
   --secondary-10: theme('colors.white');
   --secondary-100: theme('colors.gray.150');
@@ -59,7 +57,6 @@
   --text-secondary-200:theme('colors.white');
 }
 
-
 @layer base {
   html {
     font-family: "Roboto", system-ui, sans-serif;
@@ -67,7 +64,7 @@
 
   body {
     @apply text-th-text-primary
-  }
+  } 
 
   body.no-scrollbar {
     scrollbar-width: none !important;
@@ -77,22 +74,24 @@
     display: none !important;
   }
 
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--scroll) var(--background-primary);
-  }
+  html {
+  scrollbar-width: auto; 
+  scrollbar-color: var(--primary-100) var(--secondary-200);
+}
 
   *::-webkit-scrollbar {
     width: 7px;
+    background:var(--secondary-200);
+    border-radius: 10px
   }
 
   *::-webkit-scrollbar-track {
-    background: var(--background-primary);
+    background: var(--secondary-200);
     border-radius: 10px;
   }
 
   *::-webkit-scrollbar-thumb {
-    background-color: var(--scroll);
+    background-color: var(--primary-100);
     border-radius: 10px
   }
 
@@ -192,6 +191,13 @@
   disabled:hover:bg-transparent;
 }
 
+.arrow-how-it-work {
+  @apply absolute top-1/2 transform -translate-y-1/2 p-3 rounded-full duration-300 bg-slate-550
+  hover:bg-th-secondary-400
+  active:bg-th-secondary-300
+  disabled:bg-th-secondary-300;
+}
+
 .f-screen-appbar {
   min-height: calc(100vh - 11.5rem);
 }
@@ -229,19 +235,11 @@
   }
 }
 
-.label {
-  @apply peer-focus:font-medium absolute text-base text-th-text-primary duration-300 transform -translate-y-8 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-8;
-}
-
 .inactive {
   filter: blur(6px) grayscale(1);
   user-select: none;
   pointer-events: none;
   opacity: 0.5;
-}
-
-.input-label {
-  @apply block py-2.5 px-0 w-full text-sm text-th-text-primary bg-transparent border-0 border-b-2 border-th-secondary-300 appearance-none focus:outline-none focus:ring-0 focus:border-th-primary-100;
 }
 
 .verse-block>div:nth-child(1), .verse-block:hover>div:nth-child(2) {
@@ -329,15 +327,27 @@
 }
 
 .input-base {
-  @apply px-4 py-2 w-full text-sm md:text-base rounded-lg border focus:outline-none;
+  @apply px-4 w-full text-sm md:text-base rounded-lg border focus:outline-none;
+}
+
+.input-password {
+  @apply pl-4 pr-12 w-full text-sm md:text-base rounded-lg border focus:outline-none block py-4 font-normal bg-transparent appearance-none;
 }
 
 .input-primary {
-  @apply input-base text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
+  @apply input-base py-2 text-th-text-primary border-th-secondary-300 focus:border-th-primary-200 placeholder:text-th-secondary-300
+}
+
+.input-base-label {
+  @apply input-base block py-4 font-normal bg-transparent appearance-none;
+}
+
+.label-base {
+  @apply absolute top-4 left-4 -z-10 origin-[0] text-base duration-300 transform -translate-y-10 scale-75 peer-focus:font-medium peer-focus:left-4 peer-focus:text-th-primary-100 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-10;
 }
 
 .input-invalid {
-  @apply input-base border-th-invalid text-th-invalid;
+  @apply input-base py-2 border-th-invalid text-th-invalid;
 }
 
 .logo:hover path:first-of-type {
@@ -346,6 +356,38 @@
 
 .logo:hover path:last-of-type {
   fill: #023047;
+}
+
+.green-two-layers {
+  position: relative;
+  background: linear-gradient(45deg, #24585B 50%, transparent 50%);
+}
+
+.green-two-layers::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(340deg, #113E41 40%, transparent 40%);
+  z-index: -1;
+}
+
+.gray-two-layers {
+  position: relative;
+  background: linear-gradient(45deg, #e3e3e3 50%, transparent 50%);
+}
+
+.gray-two-layers::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: linear-gradient(340deg, #aeaeae 40%, transparent 40%);
+  z-index: -1;
 }
 
 .half-circle {

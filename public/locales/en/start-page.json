@@ -1,0 +1,74 @@
+{
+  "ComingSoon": "Coming soon",
+  "ConnectWithUs": "Connect with us",
+  "Demo": "Demo",
+  "LogoHeader": "V-CANA platform created by TextTree Movement",
+  "LogoText": "The TextTree Movement is a movement that provides materials, software, and media resources for Bible translation and biblical content. TextTree Movement equips churches to create church-centered, open-license translations of Scripture.",
+  "MainBlocks": {
+    "FAQ": "FAQ",
+    "FAQBlock": {
+      "EighthQuestion": {
+        "Answer": "We will soon be creating a page on the website with details on how you can support the development of the V-CANA platform. In the meantime, you can contact us via the customer support form.",
+        "Question": "How can I support the development of the V-CANA platform?"
+      },
+      "FifthQuestion": {
+        "Answer": "We currently offer UnfoldingWord materials - https://www.unfoldingword.org/ We are also in the process of contacting other partners who provide materials for Bible translation work. If you are a representative of a project that is developing such materials, please contact us through the contact form.",
+        "Question": "What partners provide materials for the platform?"
+      },
+      "FirstQuestion": {
+        "Answer": "The V-CANA platform is designed primarily for translating the Bible and biblical content. As a rule, such work is done by various missions and Bible societies. The V-CANA platform is also designed for local translation groups.",
+        "Question": "Who is this platform for?"
+      },
+      "FourthQuestion": {
+        "Answer": "At the first phase, the V-CANA platform can only be used by participants of projects with which we have a preliminary cooperation agreement. If you plan to use the platform within a project, please contact us via the customer support form.",
+        "Question": "How can I start using the V-CANA platform?"
+      },
+      "SecondQuestion": {
+        "Answer": "Use of the V-CANA platform is free for all users.",
+        "Question": "What are the pricing for users of V-CANA?"
+      },
+      "SeventhQuestion": {
+        "Answer": "Yes, if you work with the online version of the platform. But if you work with the intranet version, there is no need for a permanent internet connection.",
+        "Question": "Is it necessary to have a stable Internet connection for working with the V-CANA platform?"
+      },
+      "SixthQuestion": {
+        "Answer": "If you represent a project and plan to using the V-CANA platform with your materials, please contact us via the customer support form.",
+        "Question": "Can I upload my own materials?"
+      },
+      "ThirdQuestion": {
+        "Answer": "This button can only be used by registered users.",
+        "Question": "I click on the Login button, but I can't log in to the site. Why?"
+      }
+    },
+    "HowItWorks": "How it works?",
+    "HowItWorksText": "Each translation process has its own order of operations. For example, in the first step, the translator reads the text (gets familiar with it). After that, he/she makes a draft of the translation. In the final step, the translator reads his text and makes changes (edits his translation). Realizing that each ethod of Bible translation has its own materials for each of these steps, we decided to create a platform where the translator could simply go to the project page and see only what he or she needs at that particular step. Depending on the method, the content of the tools varies.",
+    "Reviews": "Reviews",
+    "ReviewsBlock": {
+      "FirstReview": {
+        "Country": "Azerbajan",
+        "Name": "Ramis",
+        "Text": "I have experience in Bible translation. We did the translation in different programs. But now I can say for sure that V-CANA is the best tool for teamwork in translation."
+      },
+      "SecondReview": {
+        "Country": "Russia",
+        "Name": "Lina",
+        "Text": "My impressions of working in V-CANA - It's not just convenient. It's comfortable."
+      },
+      "ThirdReview": {
+        "Country": "Uzbekistan",
+        "Name": "Bakhrom",
+        "Text": "V-CANA is very much to my liking. It is very convenient that there is a command dictionary, and when you come across similar words, the dictionary helps you to use them in the same way in different places. It is very convenient that there is a biblical dictionary and there are explanations on how to better translate some difficult sentences. A very useful tool."
+      }
+    },
+    "Screenshots": "Screenshots",
+    "VcanaText": "V-CANA is a platform for step-by-step Bible translation using various helpful materials from our partners.",
+    "WhatIsVcana": "What is V-CANA?"
+  },
+  "NotAllFieldFull": "Not all fields are filled in!",
+  "Partners": "Partners",
+  "Verse": {
+    "Matthew": "Matthew 24:14",
+    "text": "And this gospel of the kingdom will be preached in the whole world for a testimony to all the nations, and then the end will come."
+  },
+  "YourMessageHasBeenSent": "Your message has been sent"
+}

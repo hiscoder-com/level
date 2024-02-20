@@ -49,17 +49,16 @@ export const currentVerse = atom({
   effects: [localStorageEffect('currentScrollVerse')],
 })
 
-export const aboutVersionModalIsOpen = atom({
-  key: 'aboutVersionModalIsOpen',
-  default: false,
-})
-
-export const avatarSelectorModalIsOpen = atom({
-  key: 'avatarSelectorModalIsOpen',
-  default: false,
-})
-
 export const userAvatarState = atom({
   key: 'userAvatarState',
   default: { id: null, url: null },
+})
+
+export const modalsSidebar = atom({
+  key: 'modalsSidebar',
+  default: {
+    aboutVersion: false,
+    avatarSelector: false,
+    notepad: false,
+  },
 })

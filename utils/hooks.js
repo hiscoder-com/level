@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil'
 
 import { currentVerse } from '../components/state/atoms'
 
+const SCROLL_TOP_OFFSET = 20
+
 const fetcher = async (url) => {
   try {
     const res = await fetch(url, {
@@ -223,34 +225,6 @@ export function useTranslators({ code, revalidateIfStale, revalidateOnFocus }) {
 }
 
 /**
- *hook receives information from the database - whether the user has confirmed agreements and returns a link for a redirect
- * @param {string} userId id of authenticated user
- * @param {string} startLink the default link that the application needs to follow if the user has not passed the agreement
- * @returns {string}
- */
-export function useRedirect({ user, startLink }) {
-  const [href, setHref] = useState(startLink)
-
-  useEffect(() => {
-    if (!user?.id) {
-      return
-    }
-    const { agreement, confession } = user
-    if (!agreement) {
-      setHref('/agreements')
-      return
-    }
-    if (!confession) {
-      setHref('/confession')
-      return
-    }
-
-    setHref(`/account`)
-  }, [user])
-
-  return { href }
-}
-/**
  *hook receives information from git.door43
  * @param {object} config 2 keys object: {resource:{owner, repo, commit},reference: { book, chapter, step, verses }}
  * @param {string} url url of api, for example: '/api/git/bible'
@@ -324,8 +298,18 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
 
   useEffect(() => {
     setTimeout(() => {
-      document?.getElementById(idPrefix + currentScrollVerse)?.scrollIntoView()
+      const element = document.getElementById(idPrefix + currentScrollVerse)
+      const container = document.getElementById('container_' + toolName)
+      if (element && container) {
+        container.scrollBy({
+          top:
+            element.getBoundingClientRect().top -
+            container.getBoundingClientRect().top -
+            SCROLL_TOP_OFFSET,
+        })
+      }
     }, 100)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScrollVerse, isLoading])
 

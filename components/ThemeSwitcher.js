@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useGetTheme } from 'utils/hooks'
 
 const themes = [
@@ -29,6 +30,7 @@ const ThemeSwitcher = () => {
   const [currentTheme, setCurrentTheme] = useState(theme || 'default')
   const [hoverTheme, setHoverTheme] = useState(false)
   const timeoutRef = useRef(null)
+  const { t } = useTranslation('common')
 
   useEffect(() => {
     setCurrentTheme(theme)
@@ -55,29 +57,32 @@ const ThemeSwitcher = () => {
   }, [])
 
   return (
-    <div className="flex space-x-4 box-border mx-1">
-      {themes.map((theme) => (
-        <div key={theme.name} className="relative">
-          <div
-            onClick={() => switchTheme(theme.name)}
-            onMouseOver={() => handleMouseOver(theme.name)}
-            onMouseLeave={handleMouseLeave}
-            className={`half-circle w-10 h-10 rotate-45 cursor-pointer ${
-              currentTheme === theme.name
-                ? `border-th-secondary-10 border-2 outline outline-3 ${theme.outline}`
-                : ''
-            } ${theme.className}`}
-          />
-          <div
-            className={`absolute -top-16 p-4 z-10 bg-th-secondary-200 rounded-xl ${
-              hoverTheme !== theme.name ? 'hidden' : ''
-            }`}
-          >
-            {theme.name}
+    <>
+      <div>{t('ChooseTheme')}</div>
+      <div className="flex space-x-4 box-border mx-1">
+        {themes.map((theme) => (
+          <div key={theme.name} className="relative">
+            <div
+              onClick={() => switchTheme(theme.name)}
+              onMouseOver={() => handleMouseOver(theme.name)}
+              onMouseLeave={handleMouseLeave}
+              className={`half-circle w-10 h-10 rotate-45 cursor-pointer ${
+                currentTheme === theme.name
+                  ? `border-th-secondary-10 border-2 outline outline-3 ${theme.outline}`
+                  : ''
+              } ${theme.className}`}
+            />
+            <div
+              className={`absolute -top-16 p-4 z-10 bg-th-secondary-200 rounded-xl ${
+                hoverTheme !== theme.name ? 'hidden' : ''
+              }`}
+            >
+              {theme.name}
+            </div>
           </div>
-        </div>
-      ))}
-    </div>
+        ))}
+      </div>
+    </>
   )
 }
 
