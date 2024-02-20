@@ -220,6 +220,7 @@ function ProjectEdit() {
                   customSteps={customSteps}
                   updateSteps={updateSteps}
                   className="bg-th-secondary-100"
+                  isShowAwaitingTeam
                 />
               </div>
               <ButtonLoading

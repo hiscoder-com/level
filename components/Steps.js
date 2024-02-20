@@ -8,7 +8,12 @@ import UpdateField from './UpdateField'
 
 import Down from 'public/arrow-down.svg'
 
-function Steps({ updateSteps, customSteps = [], className = 'bg-th-secondary-10' }) {
+function Steps({
+  updateSteps,
+  customSteps = [],
+  className = 'bg-th-secondary-10',
+  isShowAwaitingTeam = false,
+}) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const {
     query: { code },
@@ -112,24 +117,30 @@ function Steps({ updateSteps, customSteps = [], className = 'bg-th-secondary-10'
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full">
-                  <span className="w-auto md:w-1/6 font-bold">
-                    {t('project-edit:AwaitingTeam')}
-                  </span>
-                  <Switch
-                    checked={step.is_awaiting_team}
-                    onChange={() => handleSwitchAwaitingTeam({ index: idx_step, step })}
-                    className={`${
-                      step.is_awaiting_team
-                        ? 'bg-th-primary-100 border-th-primary-100'
-                        : 'bg-th-secondary-200 border-th-secondary-300'
-                    } relative inline-flex h-6 w-11 items-center border rounded-full`}
-                  >
-                    <span
-                      className={`${
-                        step.is_awaiting_team ? 'translate-x-6' : 'translate-x-1'
-                      } inline-block h-4 w-4 transform rounded-full bg-th-secondary-10 transition`}
-                    />
-                  </Switch>
+                  {isShowAwaitingTeam && (
+                    <>
+                      <span className="w-auto md:w-1/6 font-bold">
+                        {t('project-edit:AwaitingTeam')}
+                      </span>
+                      <Switch
+                        checked={step.is_awaiting_team}
+                        onChange={() =>
+                          handleSwitchAwaitingTeam({ index: idx_step, step })
+                        }
+                        className={`${
+                          step.is_awaiting_team
+                            ? 'bg-th-primary-100 border-th-primary-100'
+                            : 'bg-th-secondary-200 border-th-secondary-300'
+                        } relative inline-flex h-6 w-11 items-center border rounded-full`}
+                      >
+                        <span
+                          className={`${
+                            step.is_awaiting_team ? 'translate-x-6' : 'translate-x-1'
+                          } inline-block h-4 w-4 transform rounded-full bg-th-secondary-10 transition`}
+                        />
+                      </Switch>
+                    </>
+                  )}
                 </div>
               </Disclosure.Panel>
             </div>
