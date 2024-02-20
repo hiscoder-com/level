@@ -154,7 +154,10 @@ function SideBar({ setIsOpenSideBar, access }) {
                     <div
                       className="flex justify-center cursor-pointer"
                       onClick={() => {
-                        setVersionModalIsOpen(false)
+                        setModalsSidebarState((prev) => ({
+                          ...prev,
+                          aboutVersion: false,
+                        }))
                         setIsOpenSideBar((prev) => !prev)
                         close()
                       }}
