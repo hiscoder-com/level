@@ -31,10 +31,10 @@ export default function Retelling({ config }) {
     <>
       {audioState === 'Retell Yourself' ? (
         <RetellYourself setAudioState={setAudioState} />
-      ) : audioState === 'Retell Partner' || !config.config.yourself ? (
+      ) : audioState === 'Retell Partner' || !config?.config?.yourself ? (
         <RetellPartner
           setAudioState={setAudioState}
-          isYourselfRetelling={config.config.yourself}
+          isYourselfRetelling={config?.config?.yourself}
         />
       ) : (
         <Main setAudioState={setAudioState} />

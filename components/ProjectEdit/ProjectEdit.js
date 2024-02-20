@@ -129,7 +129,7 @@ function ProjectEdit() {
   }
 
   const saveStepToDb = async (updatedStep) => {
-    const step = ['title', 'intro', 'description'].reduce(
+    const step = ['title', 'intro', 'description', 'subtitle'].reduce(
       (acc, key) => ({ ...acc, [key]: updatedStep[key] }),
       {}
     )
@@ -251,10 +251,13 @@ function ProjectEdit() {
   const idTabs = useMemo(() => tabs.map((tab) => tab.id), [tabs])
 
   const saveStepsToDb = async ({ steps }) => {
-    const _steps = steps.map((step) => {
-      const { id, description, intro, title } = step
-      return { id, description, intro, title }
-    })
+    const _steps = steps.map(({ id, description, intro, title, subtitle }) => ({
+      id,
+      description,
+      intro,
+      title,
+      subtitle,
+    }))
     setIsSavingSteps(true)
     axios
       .put(`/api/projects/${code}/steps`, {

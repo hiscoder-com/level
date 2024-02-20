@@ -47,7 +47,7 @@ function Dictionary({ config }) {
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
-  const isRtl = config.config.rtl || false
+  const isRtl = config?.config?.rtl || false
 
   const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()

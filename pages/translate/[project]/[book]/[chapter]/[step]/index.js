@@ -118,6 +118,7 @@ export default function ProgressPage({ last_step }) {
         setProjectId(stepsData.projects?.id)
         let stepConfig = {
           title: stepsData.title,
+          subtitle: stepsData.title,
           config: [...stepsData.config],
           whole_chapter: stepsData.whole_chapter,
           resources: { ...stepsData.projects?.resources },
@@ -127,6 +128,7 @@ export default function ProgressPage({ last_step }) {
           count_of_users: stepsData.count_of_users,
           time: stepsData.time,
           title: stepsData.title,
+          subtitle: stepsData.subtitle,
           description: stepsData.description,
           last_step,
           current_step: step,

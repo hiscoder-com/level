@@ -167,7 +167,7 @@ function BlindEditor({ config }) {
               {isTranslating ? (
                 <textarea
                   ref={(el) => (textAreaRef.current[index] = el)}
-                  dir={config.config.rtl ? 'rtl' : 'ltr'}
+                  dir={config?.config?.rtl ? 'rtl' : 'ltr'}
                   autoFocus
                   rows={1}
                   className="mt-3 w-full resize-none focus:outline-none focus:inline-none"
@@ -187,7 +187,7 @@ function BlindEditor({ config }) {
               ) : (
                 <div
                   className="mt-3 whitespace-pre-line w-full"
-                  dir={config.config.rtl ? 'rtl' : 'ltr'}
+                  dir={config?.config?.rtl ? 'rtl' : 'ltr'}
                 >
                   {verseObject.verse}
                 </div>
