@@ -66,6 +66,14 @@
     @apply text-th-text-primary
   } 
 
+  body.no-scrollbar {
+    scrollbar-width: none !important;
+  }
+
+  body.no-scrollbar::-webkit-scrollbar {
+    display: none !important;
+  }
+
   html {
   scrollbar-width: auto; 
   scrollbar-color: var(--primary-100) var(--secondary-200);

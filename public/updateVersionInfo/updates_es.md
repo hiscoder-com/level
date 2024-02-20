@@ -4,6 +4,9 @@
 ### **Añadido:**
 - opción para esperar a todos los miembros del equipo al pasar al siguiente paso
 
+### **Modificado:**
+- diseño de página de Inicio
+
 # Versión 0.14.0
 ## Fecha: 01/31/2024
 

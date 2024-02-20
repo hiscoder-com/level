@@ -4,6 +4,9 @@
 ### **Added:**
 - option to wait for all team members when moving to the next step
 
+### **Changed:**
+- design of the start page
+
 # Version 0.14.0
 ## Date: 01/31/2024
 
