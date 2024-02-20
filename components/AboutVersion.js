@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import { useRecoilState } from 'recoil'
 
-import { aboutVersionModalIsOpen } from './state/atoms'
+import { modalsSidebar } from './state/atoms'
 
 import packageJson from '../package.json'
 
@@ -25,12 +25,13 @@ function AboutVersion({ isStartPage = false }) {
   const { locale } = useRouter()
   const { t } = useTranslation('common')
   const [showAllUpdates, setShowAllUpdates] = useState(false)
-  const [versionModalIsOpen, setVersionModalIsOpen] = useRecoilState(
-    aboutVersionModalIsOpen
-  )
+  const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
+
   useEffect(() => {
-    !versionModalIsOpen && setShowAllUpdates(false)
-  }, [versionModalIsOpen])
+    if (!modalsSidebarState.aboutVersion) {
+      setShowAllUpdates(false)
+    }
+  }, [modalsSidebarState.aboutVersion])
 
   const processText = (text) => {
     return text.replace(/^-\s+/gm, '∙ ').replace(/^#([\s\S]+?)\n/g, '')
@@ -83,8 +84,7 @@ function AboutVersion({ isStartPage = false }) {
       <div className="hover:opacity-70">
         {t('Version')} {packageJson.version}
       </div>
-
-      {versionModalIsOpen && (
+      {modalsSidebarState.aboutVersion && (
         <div
           className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
           onClick={(e) => e.stopPropagation()}
@@ -93,7 +93,15 @@ function AboutVersion({ isStartPage = false }) {
             <p className="text-left text-2xl font-bold">
               {t('Version')} {packageJson.version}
             </p>
-            <button className="text-right" onClick={() => setVersionModalIsOpen(false)}>
+            <button
+              className="text-right"
+              onClick={() =>
+                setModalsSidebarState((prev) => ({
+                  ...prev,
+                  aboutVersion: false,
+                }))
+              }
+            >
               <Close className="h-8 stroke-th-primary-100" />
             </button>
           </div>

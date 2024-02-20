@@ -94,7 +94,7 @@ function StartPage({ defaultContentKey = null }) {
 
   return (
     <>
-      <main className="hidden md:flex mx-auto max-w-7xl w-full h-[94vh] max-h-[40rem] lg:max-h-[46rem] xl:max-h-[54rem] 2xl:max-h-[56.4rem] text-2xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
+      <main className="hidden md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
           <div
             className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
@@ -111,7 +111,7 @@ function StartPage({ defaultContentKey = null }) {
               className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl cursor-pointer"
               onClick={() => handleContentClick('updates')}
             >
-              {t('Updates')}
+              {t('common:Updates')}
             </p>
           </div>
           <div className="h-[19.4rem] rounded-2xl bg-white">
@@ -188,12 +188,12 @@ function StartPage({ defaultContentKey = null }) {
           >
             {t('ConnectWithUs')}
           </div>
-          <div className="p-5 lg:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 xl:space-y-4 overflow-hidden">
-            <p className="text-center text-lg xl:text-xl space-x-1 uppercase">
-              {t('Verse.Matthew')}
-            </p>
+          <div className="p-5 lg:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 xl:space-y-8 overflow-hidden">
             <p className="text-xs lg:text-base overflow-auto font-normal">
               {t('Verse.text')}
+            </p>
+            <p className="text-center text-lg xl:text-xl space-x-1 uppercase">
+              {t('Verse.Matthew')}
             </p>
           </div>
           <div className="h-32 rounded-2xl bg-slate-550">

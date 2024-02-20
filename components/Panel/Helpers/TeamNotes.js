@@ -13,7 +13,7 @@ import MenuButtons from '../UI/MenuButtons'
 
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
-import { convertNotesToTree, formationJSONToTree } from 'utils/helper'
+import { checkLSVal, convertNotesToTree, formationJSONToTree } from 'utils/helper'
 import { useTeamNotes, useProject, useAccess, useAllTeamlNotes } from 'utils/hooks'
 import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
@@ -65,7 +65,9 @@ function TeamNotes() {
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
   const [isShowMenu, setIsShowMenu] = useState(false)
   const [noteId, setNoteId] = useState(localStorage.getItem('selectedTeamNoteId') || '')
-  const [activeNote, setActiveNote] = useState(null)
+  const [activeNote, setActiveNote] = useState(() => {
+    return checkLSVal('activeTeamNote', {}, 'object')
+  })
   const [isOpenModal, setIsOpenModal] = useState(false)
   const { t } = useTranslation(['common, error'])
   const [term, setTerm] = useState('')
@@ -306,10 +308,10 @@ function TeamNotes() {
     if (!activeNote || !isModeratorAccess) {
       return
     }
-
     const timer = setTimeout(() => {
       saveNote()
     }, 2000)
+    localStorage.setItem('activeTeamNote', JSON.stringify(activeNote))
     return () => {
       clearTimeout(timer)
     }
@@ -438,7 +440,7 @@ function TeamNotes() {
 
   return (
     <div className="relative">
-      {!activeNote ? (
+      {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
           {isModeratorAccess && (
             <div className="flex justify-end w-full">
@@ -452,10 +454,12 @@ function TeamNotes() {
               onChange={(event) => setTerm(event.target.value)}
               placeholder={t('common:Search')}
             />
-            <Close
-              className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
-              onClick={() => term && setTerm('')}
-            />
+            {term && (
+              <Close
+                className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+                onClick={() => setTerm('')}
+              />
+            )}
           </div>
           <TreeView
             term={term}
@@ -503,6 +507,7 @@ function TeamNotes() {
               saveNote()
               setActiveNote(null)
               setIsShowMenu(false)
+              localStorage.setItem('activeTeamNote', JSON.stringify({}))
             }}
           >
             <Back className="w-8 stroke-th-primary-200" />

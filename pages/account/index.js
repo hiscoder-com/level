@@ -9,7 +9,6 @@ import Account from 'components/Account'
 
 function AccountHomePage() {
   const { t } = useTranslation(['users', 'common'])
-
   useEffect(() => {
     document.body.classList.add('no-scrollbar')
 
@@ -17,7 +16,6 @@ function AccountHomePage() {
       document.body.classList.remove('no-scrollbar')
     }
   }, [])
-
   return (
     <>
       <Head>

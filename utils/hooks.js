@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil'
 
 import { currentVerse } from '../components/state/atoms'
 
+const SCROLL_TOP_OFFSET = 20
+
 const fetcher = async (url) => {
   try {
     const res = await fetch(url, {
@@ -296,8 +298,18 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
 
   useEffect(() => {
     setTimeout(() => {
-      document?.getElementById(idPrefix + currentScrollVerse)?.scrollIntoView()
+      const element = document.getElementById(idPrefix + currentScrollVerse)
+      const container = document.getElementById('container_' + toolName)
+      if (element && container) {
+        container.scrollBy({
+          top:
+            element.getBoundingClientRect().top -
+            container.getBoundingClientRect().top -
+            SCROLL_TOP_OFFSET,
+        })
+      }
     }, 100)
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentScrollVerse, isLoading])
 

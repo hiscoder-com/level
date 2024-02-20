@@ -73,7 +73,7 @@ function Workspace({ stepConfig, reference, editable = false }) {
         return (
           <div
             key={index}
-            className={`flex flex-col gap-1 lg:gap-5 w-full lg:px-4 xl:px-0 ${
+            className={`flex flex-col gap-1 lg:gap-5 w-full lg:px-2 xl:px-0 overflow-hidden ${
               index === 0 && inactive ? 'inactive' : ''
             } ${sizes[el.size]}`}
           >

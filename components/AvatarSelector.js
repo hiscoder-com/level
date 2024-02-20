@@ -7,7 +7,7 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 
 import ImageEditor from './ImageEditor'
 
-import { avatarSelectorModalIsOpen, userAvatarState } from './state/atoms'
+import { userAvatarState, modalsSidebar } from './state/atoms'
 import { useUser } from 'utils/hooks'
 
 import Trash from 'public/trash.svg'
@@ -15,7 +15,7 @@ import Trash from 'public/trash.svg'
 function AvatarSelector({ id }) {
   const { t } = useTranslation('common')
   const fileInputRef = useRef(null)
-  const modalIsOpen = useRecoilValue(avatarSelectorModalIsOpen)
+  const modalsSidebarState = useRecoilValue(modalsSidebar)
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatars, setAvatars] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -92,7 +92,7 @@ function AvatarSelector({ id }) {
     }
 
     !avatars.length && fetchAvatarData()
-  }, [id, user])
+  }, [avatars.length, id, user])
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024
   const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/svg+xml']
@@ -183,7 +183,7 @@ function AvatarSelector({ id }) {
         style={{ display: 'none' }}
       />
 
-      {modalIsOpen &&
+      {modalsSidebarState.avatarSelector &&
         (isDragOver ? (
           <div
             className="absolute flex justify-center items-center right-0 top-0 w-full h-full md:h-4/6 shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5 md:bg-black md:bg-opacity-50"
