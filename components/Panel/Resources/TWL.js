@@ -105,6 +105,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
 
   return (
     <div
+      id={`container_${toolName}`}
       className={`divide-y divide-th-text-primary divide-dashed h-full overflow-auto ${
         isLoading ? 'px-4' : ''
       }`}

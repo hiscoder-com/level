@@ -50,13 +50,16 @@ function TN({ config, url, toolName }) {
         <Placeholder />
       ) : (
         <div className="relative h-full">
-          <TNTWLContent setItem={setItem} item={item} />
-          <TNList
-            setItem={setItem}
-            data={tnotes}
-            toolName={toolName}
-            isLoading={isLoading || tnotes}
-          />
+          {item ? (
+            <TNTWLContent setItem={setItem} item={item} />
+          ) : (
+            <TNList
+              setItem={setItem}
+              data={tnotes}
+              toolName={toolName}
+              isLoading={isLoading || tnotes}
+            />
+          )}
         </div>
       )}
     </>
@@ -79,7 +82,10 @@ function TNList({ setItem, data, toolName, isLoading }) {
   }, [data])
 
   return (
-    <div className="divide-y divide-th-text-primary divide-dashed h-full overflow-auto">
+    <div
+      id={`container_${toolName}`}
+      className="divide-y divide-th-text-primary divide-dashed h-full overflow-auto "
+    >
       {data &&
         verses.map(([verseNumber, notes], index) => {
           return (

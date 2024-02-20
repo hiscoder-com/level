@@ -29,7 +29,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/texttree/v-cana">
-    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
+    <img src="public/vcana-logo-color.svg" alt="Logo" width="200" height="80">
   </a>
 
 <h3 align="center">V-CANA</h3>

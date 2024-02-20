@@ -1,12 +1,20 @@
+# Version 0.15.0
+## Date: 02/07/2024
+
+### **Added:**
+- option to wait for all team members when moving to the next step
+
+### **Changed:**
+- design of the start page
+
 # Version 0.14.0
 ## Date: 01/31/2024
 
 ### **Added:**
-- translation verification method for the GL team
-- option in methods for quotes in TN
-- fast verse divider feature
-- read-only mode for translator participation in chapter translation.
-- selecting the entire note title when editing in the dictionary/notepad/team notes
+- the method of checking the translated text (level 3) for the GL command
+- quick verse distribution function
+- read-only mode for participants with limited functions in chapter translation
+- highlighting the entire note title when editing in dictionary/notepad/team notes
 
 ### **Fixed:**
 - bug with scroll when there are two Bible tools on the workspace

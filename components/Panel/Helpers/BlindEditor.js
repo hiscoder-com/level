@@ -6,7 +6,7 @@ import { useSetRecoilState } from 'recoil'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
-import { toast, Toaster } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
 
 import { checkedVersesBibleState } from '../../state/atoms'
 import Modal from 'components/Modal'
@@ -201,7 +201,6 @@ function BlindEditor({ config }) {
             {t('Save')}
           </button>
         )}
-        <Toaster />
       </div>
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">

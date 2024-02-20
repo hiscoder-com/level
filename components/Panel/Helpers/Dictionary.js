@@ -427,10 +427,12 @@ function Dictionary() {
                 }}
                 placeholder={t('common:Search')}
               />
-              <Close
-                className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
-                onClick={() => searchQuery && getAll()}
-              />
+              {searchQuery && (
+                <Close
+                  className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+                  onClick={getAll}
+                />
+              )}
             </div>
           </div>
 

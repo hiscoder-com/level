@@ -695,10 +695,8 @@ export const stepValidation = (step) => {
     if (!obj || typeof obj !== 'object') {
       throw new Error('This is incorrect json')
     }
-    if (
-      JSON.stringify(Object.keys(step)?.sort()) !==
-      JSON.stringify(['intro', 'description', 'title', 'id'].sort())
-    ) {
+    const base = ['intro', 'description', 'title', 'id', 'is_awaiting_team']
+    if (!JSON.stringify(Object.keys(step).every((element) => base.includes(element)))) {
       throw new Error('Step has different keys')
     }
   } catch (error) {
