@@ -20,7 +20,7 @@ const themes = [
   },
   {
     name: 'unfoldingWord',
-    className: 'bg-cyan-600 before:bg-yellow-500',
+    className: 'bg-cyan-600 before:bg-cyan-800',
     outline: 'outline-cyan-600',
   },
 ]
