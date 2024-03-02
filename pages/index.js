@@ -12,7 +12,7 @@ export default function Home() {
     <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
       <Head>
         <title>{t('V-CANA')}</title>
-        <meta name="description" content="VCANA" />
+        <meta name="description" content={t('MainBlocks.VcanaText')} />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <StartPage defaultContentKey={query?.contentKey || null} />
