@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
@@ -15,12 +13,13 @@ import Reviews from './Reviews'
 import PasswordRecovery from './PasswordRecovery'
 import HowItWorks from './HowItWorks'
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
+import SwitchLocalization from 'components/SwitchLocalization'
+import VcanaIntro from './VcanaIntro'
+import Partners from './Partners'
+import SectionBlock from './SectionBlock'
 
 import Close from 'public/close.svg'
-import UnfoldingWord from 'public/unfolding-word.svg'
 import VcanaLogo from 'public/vcana-logo-color.svg'
-import VCanaIntro from 'public/v-cana-intro.png'
-import SwitchLocalization from 'components/SwitchLocalization'
 
 function StartPage({ defaultContentKey = null }) {
   const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
@@ -129,9 +128,8 @@ function StartPage({ defaultContentKey = null }) {
               <div
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('intro')}
-              >
-                {t('MainBlocks.WhatIsVcana')}
-              </div>
+                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsVcana') }}
+              ></div>
 
               <div
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
@@ -183,16 +181,16 @@ function StartPage({ defaultContentKey = null }) {
             </p>
           </div>
           <div
-            className="p-5 lg:p-7 h-32 bg-th-secondary-10 rounded-2xl cursor-pointer"
+            className="p-5 lg:p-7 bg-th-secondary-10 rounded-2xl cursor-pointer h-auto xl:h-32"
             onClick={() => handleContentClick('connect')}
           >
             {t('ConnectWithUs')}
           </div>
-          <div className="p-5 lg:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 xl:space-y-8 overflow-hidden">
-            <p className="text-xs lg:text-base overflow-auto font-normal">
+          <div className="p-3 lg:p-5 2xl:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 2xl:space-y-4 overflow-hidden">
+            <p className="text-xs 2xl:text-base overflow-auto font-normal">
               {t('Verse.text')}
             </p>
-            <p className="text-center text-lg xl:text-xl space-x-1 uppercase">
+            <p className="text-right text-xs 2xl:text-sm space-x-1 uppercase font-normal">
               {t('Verse.Matthew')}
             </p>
           </div>
@@ -252,7 +250,10 @@ function StartPage({ defaultContentKey = null }) {
             {blocks.intro.clicked ? (
               <VcanaIntro t={t} opacity={blocks.intro.opacity} />
             ) : (
-              <p className="text-white">{t('MainBlocks.WhatIsVcana')}</p>
+              <p
+                className="text-white"
+                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsVcana') }}
+              ></p>
             )}
           </div>
         </div>
@@ -374,65 +375,3 @@ function StartPage({ defaultContentKey = null }) {
 }
 
 export default StartPage
-
-function VcanaIntro({ t, opacity }) {
-  return (
-    <div className="flex flex-col w-full">
-      <p className="font-semibold md:font-bold">{t('MainBlocks.WhatIsVcana')}</p>
-      <Close
-        className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
-      />
-      <p
-        className={`mt-6 md:mt-12 text-sm md:text-base font-normal transition-opacity duration-700 ${
-          opacity || ''
-        }`}
-      >
-        {t('MainBlocks.VcanaText')}
-      </p>
-      <div className="flex flex-grow flex-col justify-center items-center pb-6 md:pb-0">
-        <Image src={VCanaIntro} alt="v-cana intro image" />
-      </div>
-    </div>
-  )
-}
-
-function Partners({ t }) {
-  return (
-    <div className="flex flex-col w-full gap-6 md:gap-14">
-      <p className="font-semibold md:font-bold">{t('Partners')}</p>
-      <div
-        className="flex justify-center items-center w-full h-32 md:h-56 rounded-xl bg-th-secondary-100"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Link href="https://www.unfoldingword.org/" target="_blank">
-          <UnfoldingWord />
-        </Link>
-      </div>
-    </div>
-  )
-}
-
-function SectionBlock({
-  sectionKey,
-  label,
-  content,
-  showSection,
-  toggleSection,
-  isLogo = false,
-}) {
-  return (
-    <div
-      className={`relative p-5 bg-th-secondary-10 rounded-xl ${
-        isLogo ? 'flex justify-center' : 'text-center'
-      }`}
-      onClick={() => toggleSection(sectionKey)}
-    >
-      {showSection ? content : isLogo ? label : <p>{label}</p>}
-      <Close
-        className={`absolute w-6 h-6 right-5 top-5 stroke-black cursor-pointer ${
-          showSection ? '' : 'hidden'
-        }`}
-      />
-    </div>
-  )
-}
