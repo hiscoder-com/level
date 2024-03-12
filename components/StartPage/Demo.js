@@ -1,6 +1,4 @@
-import Image from 'next/image'
-
-import Underconstruction from 'public/underconstruction.png'
+import Underconstruction from 'public/underconstruction.svg'
 import Close from 'public/close.svg'
 
 function Demo({ t }) {
@@ -11,7 +9,7 @@ function Demo({ t }) {
         className={`absolute md:hidden w-6 h-6 right-0 -top-7 stroke-black cursor-pointer`}
       />
       <div className="flex flex-grow flex-col items-center justify-center gap-0 md:gap-14 pb-6 md:pb-0">
-        <Image src={Underconstruction} alt="Unredconstruction image" />
+        <Underconstruction className="py-8 w-full" />
         <p>{t('ComingSoon')}</p>
       </div>
     </div>
