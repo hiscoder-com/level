@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -27,6 +27,7 @@ function BlindEditor({ config }) {
   const { t } = useTranslation(['common'])
   const textAreaRef = useRef([])
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
+  const isSingleLineTranslation = config?.config?.is_single_line_translation
 
   useEffect(() => {
     const _verseObjects = config.reference.verses
@@ -53,17 +54,23 @@ function BlindEditor({ config }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  const filteredVerseObjects = useMemo(() => {
+    return isSingleLineTranslation
+      ? verseObjects.filter((_, index) => index === 0)
+      : verseObjects
+  }, [isSingleLineTranslation, verseObjects])
 
   useEffect(() => {
-    if (!verseObjects || !verseObjects.length) {
+    if (!filteredVerseObjects || !filteredVerseObjects.length) {
       return
     }
-    if (verseObjects[verseObjects.length - 1].verse) {
+    if (filteredVerseObjects[filteredVerseObjects.length - 1].verse) {
       setIsShowFinalButton(
-        enabledIcons?.[0] === verseObjects[verseObjects.length - 1].num.toString()
+        enabledIcons?.[0] ===
+          filteredVerseObjects[filteredVerseObjects.length - 1].num.toString()
       )
     }
-  }, [enabledIcons, verseObjects])
+  }, [enabledIcons, filteredVerseObjects, verseObjects])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
@@ -73,10 +80,11 @@ function BlindEditor({ config }) {
   }
 
   const sendToDb = async (index) => {
-    setTranslatedVerses((prev) => [...prev, verseObjects[index].num.toString()])
+    setTranslatedVerses((prev) => [...prev, filteredVerseObjects[index].num.toString()])
+
     const res = await supabase.rpc('save_verse', {
-      new_verse: verseObjects[index].verse,
-      verse_id: verseObjects[index].verse_id,
+      new_verse: filteredVerseObjects[index].verse,
+      verse_id: filteredVerseObjects[index].verse_id,
     })
     if (res.error || !res) {
       toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
@@ -120,11 +128,14 @@ function BlindEditor({ config }) {
   return (
     <>
       <div>
-        {verseObjects.map((verseObject, index) => {
+        {filteredVerseObjects.map((verseObject, index) => {
           const currentNumVerse = verseObject.num.toString()
           const nextNumVerse =
-            index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : ''
-          const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : ''
+            index < filteredVerseObjects.length - 1
+              ? filteredVerseObjects[index + 1].num.toString()
+              : ''
+          const prevNumVerse =
+            index !== 0 ? filteredVerseObjects[index - 1].num.toString() : ''
           const disabledButton = !(
             (index === 0 && !enabledIcons.length) ||
             enabledIcons.includes(currentNumVerse)
@@ -163,14 +174,20 @@ function BlindEditor({ config }) {
                 )}
               </button>
 
-              <div className="mx-4 mt-3">{obsCheckAdditionalVerses(verseObject.num)}</div>
+              {!isSingleLineTranslation && (
+                <div className="mx-4 mt-3">
+                  {obsCheckAdditionalVerses(verseObject.num)}
+                </div>
+              )}
               {isTranslating ? (
                 <textarea
                   ref={(el) => (textAreaRef.current[index] = el)}
                   dir={config?.config?.rtl ? 'rtl' : 'ltr'}
                   autoFocus
-                  rows={1}
-                  className="mt-3 w-full resize-none focus:outline-none focus:inline-none"
+                  rows={!isSingleLineTranslation ? 1 : verseObjects?.length}
+                  className={`mt-3 w-full resize-none focus:outline-none focus:inline-none ${
+                    isSingleLineTranslation ? 'border mx-4' : ''
+                  }`}
                   onChange={(e) => {
                     e.target.style.height = 'inherit'
                     e.target.style.height = `${e.target.scrollHeight}px`
@@ -200,7 +217,7 @@ function BlindEditor({ config }) {
             onClick={() => {
               setEnabledIcons(['201'])
               setEnabledInputs([])
-              sendToDb(verseObjects.length - 1)
+              sendToDb(filteredVerseObjects.length - 1)
             }}
             className="btn-base bg-th-primary-100 text-th-text-secondary-100 hover:opacity-70"
           >
