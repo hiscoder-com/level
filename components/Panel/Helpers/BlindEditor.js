@@ -2,13 +2,14 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
 import { toast } from 'react-hot-toast'
+import { Switch } from '@headlessui/react'
 
-import { checkedVersesBibleState } from '../../state/atoms'
+import { checkedVersesBibleState, isHideAllVersesState } from '../../state/atoms'
 import Modal from 'components/Modal'
 
 import { obsCheckAdditionalVerses } from 'utils/helper'
@@ -24,10 +25,11 @@ function BlindEditor({ config }) {
   const [verseObjects, setVerseObjects] = useState([])
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [firstStepRef, setFirstStepRef] = useState({})
+  const [isHideAllVerses, setIsHideAllVerses] = useRecoilState(isHideAllVersesState)
   const { t } = useTranslation(['common'])
   const textAreaRef = useRef([])
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
-  const isSingleLineTranslation = config?.config?.is_single_line_translation
+  const isSingleBlockTranslation = config?.config?.is_single_block_translation
 
   useEffect(() => {
     const _verseObjects = config.reference.verses
@@ -35,7 +37,7 @@ function BlindEditor({ config }) {
     const updatedArray = _verseObjects
       .filter((verseObject) => verseObject.verse)
       .map((verseObject) => verseObject.num.toString())
-    setCheckedVersesBible(updatedArray)
+    !isSingleBlockTranslation && setCheckedVersesBible(updatedArray)
     setTranslatedVerses(updatedArray)
     if (!updatedArray.length) {
       return
@@ -55,10 +57,10 @@ function BlindEditor({ config }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
   const filteredVerseObjects = useMemo(() => {
-    return isSingleLineTranslation
+    return isSingleBlockTranslation
       ? verseObjects.filter((_, index) => index === 0)
       : verseObjects
-  }, [isSingleLineTranslation, verseObjects])
+  }, [isSingleBlockTranslation, verseObjects])
 
   useEffect(() => {
     if (!filteredVerseObjects || !filteredVerseObjects.length) {
@@ -70,7 +72,7 @@ function BlindEditor({ config }) {
           filteredVerseObjects[filteredVerseObjects.length - 1].num.toString()
       )
     }
-  }, [enabledIcons, filteredVerseObjects, verseObjects])
+  }, [enabledIcons, filteredVerseObjects])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
@@ -106,7 +108,8 @@ function BlindEditor({ config }) {
         ...(index === 0 ? [currentNumVerse, nextNumVerse] : [nextNumVerse]),
       ].filter((el) => el !== prevNumVerse)
     })
-    setCheckedVersesBible((prev) => [...prev, currentNumVerse])
+    !isSingleBlockTranslation &&
+      setCheckedVersesBible((prev) => [...prev, currentNumVerse])
     setEnabledInputs((prev) =>
       [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
     )
@@ -174,7 +177,7 @@ function BlindEditor({ config }) {
                 )}
               </button>
 
-              {!isSingleLineTranslation && (
+              {!isSingleBlockTranslation && (
                 <div className="mx-4 mt-3">
                   {obsCheckAdditionalVerses(verseObject.num)}
                 </div>
@@ -184,9 +187,9 @@ function BlindEditor({ config }) {
                   ref={(el) => (textAreaRef.current[index] = el)}
                   dir={config?.config?.rtl ? 'rtl' : 'ltr'}
                   autoFocus
-                  rows={!isSingleLineTranslation ? 1 : verseObjects?.length}
+                  rows={!isSingleBlockTranslation ? 1 : verseObjects?.length}
                   className={`mt-3 w-full resize-none focus:outline-none focus:inline-none ${
-                    isSingleLineTranslation ? 'border mx-4' : ''
+                    isSingleBlockTranslation ? 'border mx-4' : ''
                   }`}
                   onChange={(e) => {
                     e.target.style.height = 'inherit'
@@ -225,6 +228,24 @@ function BlindEditor({ config }) {
           </button>
         )}
       </div>
+      {isSingleBlockTranslation && (
+        <div className="flex items-center gap-2 mt-2">
+          <span className="w-auto">{t('HideVerses')}</span>
+          <Switch
+            checked={isHideAllVerses}
+            onChange={() => setIsHideAllVerses((prev) => !prev)}
+            className={`${
+              isHideAllVerses ? 'bg-th-primary-100' : 'bg-th-secondary-100'
+            } relative inline-flex h-6 w-11 items-center rounded-full`}
+          >
+            <span
+              className={`${
+                isHideAllVerses ? 'translate-x-6' : 'translate-x-1'
+              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+            />
+          </Switch>
+        </div>
+      )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">{t('AreYouSureWantStartBlind')}</div>

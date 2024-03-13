@@ -62,3 +62,8 @@ export const modalsSidebar = atom({
     notepad: false,
   },
 })
+
+export const isHideAllVersesState = atom({
+  key: 'isHideAllVersesState',
+  default: false,
+})
