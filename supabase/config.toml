@@ -35,7 +35,7 @@ smtp_port = 64325
 pop3_port = 64326
 
 [auth]
-# The base URL of yshadow_port = 54320our website. Used as an allow-list for redirects and for constructing URLs used
+# The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
 site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
