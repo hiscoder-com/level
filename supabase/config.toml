@@ -7,9 +7,9 @@ project_id = "v-cana"
 port = 64321
 # Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
 # endpoints. public and storage are always included.
-schemas = []
+schemas = ["public", "storage"]
 # Extra schemas to add to the search_path of every request.
-extra_search_path = ["extensions"]
+extra_search_path = ["public", "extensions"]
 # The maximum number of rows returns from a view, table, or stored procedure. Limits payload size
 # for accidental or malicious requests.
 max_rows = 1000
@@ -17,9 +17,10 @@ max_rows = 1000
 [db]
 # Port to use for the local database URL.
 port = 64322
+shadow_port = 54320
 # The database major version to use. This has to be the same as your remote database's. Run `SHOW
 # server_version;` on the remote database to check.
-major_version = 15
+major_version = 14
 
 [studio]
 # Port to use for Supabase Studio.
@@ -34,7 +35,7 @@ smtp_port = 64325
 pop3_port = 64326
 
 [auth]
-# The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
+# The base URL of yshadow_port = 54320our website. Used as an allow-list for redirects and for constructing URLs used
 # in emails.
 site_url = "http://localhost:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
@@ -60,3 +61,10 @@ enable_confirmations = false
 enabled = false
 client_id = ""
 secret = ""
+
+[db.pooler]
+enabled = false
+port = 54329
+pool_mode = "transaction"
+default_pool_size = 15
+max_client_conn = 100
