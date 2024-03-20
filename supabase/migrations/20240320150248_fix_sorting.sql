@@ -284,10 +284,3 @@
     EXECUTE sql;
   END;
   $$;
-
-  -- RUN script for checking and correcting sorting of personal notes
-    DO $$
-    BEGIN
-      PERFORM PUBLIC.fix_sorting('personal_notes', 'user_id');
-      PERFORM PUBLIC.fix_sorting('team_notes', 'project_id');
-    END $$;
