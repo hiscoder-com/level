@@ -352,6 +352,7 @@ function PersonalNotes() {
       dragged_node_id: dragIds[0],
       new_parent_id: parentId,
       table_name: 'personal_notes',
+      user_id: user.id,
     })
 
     if (error) {

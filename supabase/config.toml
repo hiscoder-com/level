@@ -7,7 +7,7 @@ project_id = "v-cana"
 port = 64321
 # Schemas to expose in your API. Tables, views and stored procedures in this schema will get API
 # endpoints. public and storage are always included.
-schemas = ["public", "storage"]
+schemas = ["public", "storage", "graphql_public"]
 # Extra schemas to add to the search_path of every request.
 extra_search_path = ["public", "extensions"]
 # The maximum number of rows returns from a view, table, or stored procedure. Limits payload size
@@ -20,7 +20,7 @@ port = 64322
 shadow_port = 54320
 # The database major version to use. This has to be the same as your remote database's. Run `SHOW
 # server_version;` on the remote database to check.
-major_version = 14
+major_version = 15
 
 [studio]
 # Port to use for Supabase Studio.

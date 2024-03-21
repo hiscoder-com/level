@@ -1,3 +1,9 @@
+# Version 0.15.1
+## Date: 03/21/2024
+
+### **Fixed:**
+- fix drag & drop in personal/team notes
+
 # Version 0.15.0
 ## Date: 02/07/2024
 
