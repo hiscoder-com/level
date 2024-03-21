@@ -1,3 +1,9 @@
+# Versión 0.15.1
+## Fecha: 03/21/2024
+
+### **Fijo:**
+- arreglar arrastrar y soltar en notas personales/de equipo
+
 # Versión 0.15.0
 ## Fecha: 02/07/2024
 
