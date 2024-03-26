@@ -87,7 +87,10 @@ export default async function languagesHandler(req, res) {
   switch (method) {
     case 'GET':
       try {
-        const { data: value, error } = await supabase.from('languages').select('*')
+        const { data: value, error } = await supabase
+          .from('languages')
+          .select('*')
+          .order('id', { ascending: false })
         if (error) throw error
         data = value
       } catch (error) {
