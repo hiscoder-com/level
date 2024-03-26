@@ -83,7 +83,7 @@ function PersonalNotes({ config }) {
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
   const supabase = useSupabaseClient()
-  const isRtl = config?.config?.rtl || false
+  const isRtl = config?.isRtl || false
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }

@@ -94,7 +94,7 @@ function ProjectCreate() {
         custom_brief_questions: customBriefQuestions,
         title,
         orig_title: origtitle,
-        language: { id: languageId, isRtl: language.is_rtl },
+        language: { id: languageId, is_rtl: language.is_rtl },
         code,
         method_id: method.id,
         steps: method.steps,

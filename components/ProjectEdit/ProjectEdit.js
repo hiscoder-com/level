@@ -98,6 +98,10 @@ function ProjectEdit() {
     if (!title || !codeProject || !languageId || !origtitle) {
       return
     }
+    const language = languages.find((el) => el.id.toString() === languageId.toString())
+    if (!language) {
+      return
+    }
     setIsSavingBasic(true)
     axios
       .put(`/api/projects/${code}`, {
@@ -106,6 +110,7 @@ function ProjectEdit() {
           code: codeProject,
           language_id: languageId,
           orig_title: origtitle,
+          is_rtl: language?.is_rtl,
         },
       })
       .then(() => {

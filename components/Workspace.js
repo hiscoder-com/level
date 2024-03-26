@@ -85,6 +85,7 @@ function Workspace({ stepConfig, reference, editable = false }) {
               tnLink={tnLink}
               wholeChapter={stepConfig.whole_chapter}
               editable={editable}
+              isRtl={stepConfig.is_rtl}
             />
           </div>
         )
@@ -114,6 +115,7 @@ function Panel({
   mainResource,
   tnLink,
   wholeChapter,
+  isRtl,
   editable = false,
 }) {
   const { t } = useTranslation('common')
@@ -170,6 +172,7 @@ function Panel({
                     resource: resources[tool.name]
                       ? resources[tool.name]
                       : { manifest: { dublin_core: { subject: tool.name } } },
+                    isRtl,
                   }}
                   toolName={tool.name}
                 />

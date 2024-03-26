@@ -1,30 +1,6 @@
 import supabaseApi from 'utils/supabaseServer'
 import { parseManifests, validationBrief } from 'utils/helper'
 
-const setRtlOption = (steps, rtl) => {
-  if (!rtl) {
-    return steps
-  } else {
-    return steps.map((step) => {
-      if (step.config && step.config.length > 0) {
-        step.config = step.config.map((toolConfig) => {
-          if (toolConfig.tools && toolConfig.tools.length > 0) {
-            toolConfig.tools = toolConfig.tools.map((tool) => {
-              if (
-                ['draftTranslate', 'commandTranslate', 'translate'].includes(tool.name)
-              ) {
-                tool.config = Object.assign({}, tool.config, { rtl: true })
-              }
-              return tool
-            })
-          }
-          return toolConfig
-        })
-      }
-      return step
-    })
-  }
-}
 export default async function languageProjectsHandler(req, res) {
   let supabase
   try {
@@ -51,18 +27,18 @@ export default async function languageProjectsHandler(req, res) {
     case 'POST':
       try {
         if (!Object?.keys(resources)?.length) {
-          throw new Error('There is no information about resources')
+          throw { error: 'There is no information about resources' }
         }
 
         if (
           Object?.values(resources).filter((el) => el).length !==
           Object?.keys(resources)?.length
         ) {
-          throw new Error('Not all resource fields are filled in')
+          throw { error: 'Not all resource fields are filled in' }
         }
 
         if (validationBrief(custom_brief_questions)?.error) {
-          throw new Error('Brief template is not valid')
+          throw { error: 'Brief template is not valid' }
         }
 
         const { data: current_method, error: methodError } = await supabase
@@ -77,7 +53,7 @@ export default async function languageProjectsHandler(req, res) {
           JSON.stringify(Object.keys(resources).sort()) !==
           JSON.stringify(Object.keys(current_method.resources).sort())
         ) {
-          throw new Error('Resources not an equal')
+          throw { error: 'Resources not an equal' }
         }
 
         const { baseResource, newResources } = await parseManifests({
@@ -85,7 +61,7 @@ export default async function languageProjectsHandler(req, res) {
           current_method,
         })
 
-        if (!baseResource || !newResources) throw new Error('Resources are not valid')
+        if (!baseResource || !newResources) throw { error: 'Resources are not valid' }
         const { data: project, error } = await supabase
           .from('projects')
           .insert([
@@ -101,6 +77,7 @@ export default async function languageProjectsHandler(req, res) {
                 resource: baseResource.name,
                 books: baseResource.books,
               },
+              is_rtl: language.is_rtl,
             },
           ])
           .single()
@@ -112,13 +89,15 @@ export default async function languageProjectsHandler(req, res) {
           is_enable: is_brief_enable,
           data_collection: custom_brief_questions,
         })
+
         if (briefError) {
           await supabaseService.from('projects').delete().eq('id', project.id)
           throw briefError
         }
+
         let sorting = 1
-        const stepsCheckRtl = setRtlOption(steps, language.isRtl)
-        for (const step_el of stepsCheckRtl) {
+
+        for (const step_el of steps) {
           const { error: errorSetSteps } = await supabase
             .from('steps')
             .insert([{ ...step_el, sorting: sorting++, project_id: project.id }])

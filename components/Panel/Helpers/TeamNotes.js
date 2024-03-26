@@ -74,7 +74,7 @@ function TeamNotes({ config }) {
   const [term, setTerm] = useState('')
   const { user } = useCurrentUser()
   const [allNotes] = useAllTeamlNotes()
-  const isRtl = config?.config?.rtl || false
+  const isRtl = config?.isRtl || false
 
   const {
     query: { project: code },
