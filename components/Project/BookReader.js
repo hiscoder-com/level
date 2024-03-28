@@ -391,7 +391,7 @@ function Navigation({ books, reference, setReference }) {
                       {({ selected }) => (
                         <div
                           className={`${
-                            selected ? 'opacity-70' : 'bg-th-secondary-100'
+                            selected ? 'opacity-70' : ''
                           } w-full py-1 hover:opacity-70 cursor-pointer`}
                         >
                           {t('books:' + book?.code)}

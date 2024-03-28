@@ -1,3 +1,6 @@
+import { Fragment, useState } from 'react'
+import { Combobox, Transition } from '@headlessui/react'
+
 import { useTranslation } from 'next-i18next'
 import { useLanguages, useProjects } from 'utils/hooks'
 
@@ -7,6 +10,8 @@ import Down from 'public/arrow-down.svg'
 function BasicInformation({
   errors,
   register,
+  setValue,
+  project,
   methods,
   setIsOpenLanguageCreate,
   uniqueCheck = false,
@@ -14,6 +19,17 @@ function BasicInformation({
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const [projects] = useProjects()
   const [languages] = useLanguages()
+  const [selectedLanguage, setSelectedLanguage] = useState(project?.languages)
+  const [query, setQuery] = useState('')
+
+  const filteredLanguages =
+    query === ''
+      ? languages
+      : languages.filter((lang) => {
+          const langString = lang.orig_name.toLowerCase()
+          return langString.includes(query.toLowerCase())
+        })
+
   const inputs = [
     {
       id: 1,
@@ -62,6 +78,7 @@ function BasicInformation({
           : '',
     },
   ]
+
   return (
     <div className="flex flex-col gap-3 text-base">
       {inputs.map((input) => (
@@ -87,22 +104,69 @@ function BasicInformation({
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-2">
         <div className="w-auto md:w-1/5 font-bold">{t('Language')}</div>
         <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-4/5">
-          <div className="relative flex w-full md:w-3/4">
-            <select
-              className="input-primary bg-th-secondary-10 h-full appearance-none cursor-pointer"
-              placeholder={t('Language')}
-              {...register('languageId')}
+          <div className="relative w-full md:w-3/4">
+            <Combobox
+              as={'div'}
+              value={selectedLanguage}
+              onChange={(e) => {
+                setValue('languageId', e.id)
+                setSelectedLanguage(e)
+              }}
             >
-              {languages &&
-                languages.map((language) => {
-                  return (
-                    <option key={language.id} value={language.id}>
-                      {language.orig_name}
-                    </option>
-                  )
-                })}
-            </select>
-            <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 stroke-th-text-primary pointer-events-none" />
+              {({ open }) => (
+                <div className="relative text-th-text-primary">
+                  <div className="relative bg-th-secondary-10 overflow-hidden">
+                    <Combobox.Input
+                      className={`w-full pl-4 pr-10 py-2 border border-th-secondary-300 outline-none transition-all duration-100 ease-in-out ${
+                        open ? 'rounded-t-lg border-b-0' : 'rounded-lg'
+                      }`}
+                      displayValue={(language) => language?.orig_name}
+                      onChange={(event) => setQuery(event.target.value)}
+                    />
+                    <Combobox.Button className="absolute inset-y-0 right-0 pr-4">
+                      <Down className="h-5 w-5 stroke-th-text-primary pointer-events-none" />
+                    </Combobox.Button>
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    leave="transition-all ease-in-out duration-100"
+                    leaveFrom="opacity-100"
+                    leaveTo="opacity-0"
+                    afterLeave={() => setQuery('')}
+                  >
+                    <Combobox.Options className="absolute w-full max-h-40 overflow-y-auto rounded-b-lg bg-th-secondary-10 border border-t-0 border-th-secondary-300">
+                      {filteredLanguages?.length === 0 && query !== '' ? (
+                        <div className="relative select-none px-4 py-2">
+                          {t('common:NothingFound')}
+                        </div>
+                      ) : (
+                        filteredLanguages?.map((language) => (
+                          <Combobox.Option
+                            key={language.id}
+                            value={language}
+                            className={({ active }) =>
+                              `relative cursor-pointer select-none py-2 pl-4 pr-4 ${
+                                active ? 'bg-th-secondary-100' : ''
+                              }`
+                            }
+                          >
+                            {({ selected }) => (
+                              <span
+                                className={`block truncate ${
+                                  selected ? 'opacity-70' : ''
+                                }`}
+                              >
+                                {language.orig_name}
+                              </span>
+                            )}
+                          </Combobox.Option>
+                        ))
+                      )}
+                    </Combobox.Options>
+                  </Transition>
+                </div>
+              )}
+            </Combobox>
           </div>
           <div className="w-full md:w-1/4">
             <button

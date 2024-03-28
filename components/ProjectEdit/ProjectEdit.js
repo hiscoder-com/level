@@ -70,6 +70,7 @@ function ProjectEdit() {
   )
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
     getValues,
@@ -168,9 +169,11 @@ function ProjectEdit() {
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
                   register={register}
+                  setValue={setValue}
                   errors={errors}
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValues('code') !== code}
+                  project={project}
                 />
                 <ButtonLoading isLoading={isSavingBasic}>{t('Save')}</ButtonLoading>
               </form>

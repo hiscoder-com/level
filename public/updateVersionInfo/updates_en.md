@@ -1,3 +1,10 @@
+# Version 0.16.1
+## Date: 03/28/2024
+
+### **Added:**
+- Added selection of translators and autocomplete coordinators to ProjectEdit
+- Added autocomplete book selection to BookReader navigation
+
 # Version 0.15.1
 ## Date: 03/21/2024
 

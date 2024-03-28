@@ -1,3 +1,10 @@
+# Versión 0.16.1
+## Fecha: 03/28/2024
+
+### **Añadido:**
+- Se agregó una selección de traductores y coordinadores de autocompletar a ProjectEdit.
+- Se agregó la selección de libros de autocompletar a la navegación de BookReader.
+
 # Versión 0.15.1
 ## Fecha: 03/21/2024
 
