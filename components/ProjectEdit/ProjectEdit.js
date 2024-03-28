@@ -83,6 +83,7 @@ function ProjectEdit() {
   })
   const {
     register: registerSmall,
+    setValue: setValueSmall,
     handleSubmit: handleSubmitSmall,
     formState: { errors: errorsSmall },
     getValues: getValuesSmall,
@@ -350,6 +351,8 @@ function ProjectEdit() {
                 errors={errorsSmall}
                 setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                 uniqueCheck={getValuesSmall('code') !== code}
+                setValue={setValueSmall}
+                project={project}
               />
               <input className="btn-primary" type="submit" value={t('Save')} />
             </form>

@@ -1,4 +1,4 @@
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
@@ -19,8 +19,14 @@ function BasicInformation({
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const [projects] = useProjects()
   const [languages] = useLanguages()
-  const [selectedLanguage, setSelectedLanguage] = useState(project?.languages)
+  const [selectedLanguage, setSelectedLanguage] = useState(null)
   const [query, setQuery] = useState('')
+
+  useEffect(() => {
+    if (project !== null && project !== undefined) {
+      setSelectedLanguage(project.languages)
+    }
+  }, [project])
 
   const filteredLanguages =
     query === ''
@@ -76,6 +82,7 @@ function BasicInformation({
           : errors?.code?.type === 'notUniqueProject'
           ? t('CodeMessageErrorNotUniqueProject')
           : '',
+      readOnly: true,
     },
   ]
 
@@ -96,6 +103,7 @@ function BasicInformation({
               }
               placeholder={input.placeholder}
               {...input.register}
+              readOnly={input.readOnly}
             />
             {input.errorMessage && <div>{' ' + input.errorMessage}</div>}
           </div>
