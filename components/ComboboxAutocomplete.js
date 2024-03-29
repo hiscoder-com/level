@@ -9,7 +9,10 @@ function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t })
     query === ''
       ? options
       : options.filter((user) => {
-          const userString = `${user.login} ${user.email}`.toLowerCase()
+          const userString = `${user.label}${
+            user.email ? ` ${user.email}` : ''
+          }`.toLowerCase()
+
           return userString.includes(query.toLowerCase())
         })
 
@@ -30,7 +33,7 @@ function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t })
             <Combobox.Input
               className="w-full py-3 pl-5 pr-12 outline-none"
               displayValue={(value) =>
-                options?.find((option) => option.value === value)?.login
+                options?.find((option) => option.value === value)?.label
               }
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -53,14 +56,14 @@ function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t })
                   <Combobox.Option
                     key={person.value}
                     className={({ active }) =>
-                      `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
+                      `relative cursor-pointer select-none py-2 px-5 ${
                         active ? 'bg-th-secondary-100' : ''
                       }`
                     }
                     value={person}
                   >
                     <span className="block truncate">
-                      {`${person.login} (${person.email})`}
+                      {`${person.label}${person.email ? ` (${person.email})` : ''}`}
                     </span>
                   </Combobox.Option>
                 ))

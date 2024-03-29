@@ -31,7 +31,7 @@ function AssignParticipant({
         <div className="text-base sm:text-xl text-center">{t(label)}</div>
         <ComboboxAutocomplete
           options={listOfAssigned?.map((user) => ({
-            login: user.login,
+            label: user.login,
             value: user.id,
             email: user.email,
           }))}

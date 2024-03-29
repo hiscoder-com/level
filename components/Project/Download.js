@@ -7,7 +7,6 @@ import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
-import ComboboxAutocomplete from 'components/ComboboxAutocomplete'
 import CheckBox from 'components/CheckBox'
 
 import useSupabaseClient from 'utils/supabaseClient'
@@ -273,12 +272,6 @@ function Download({
           setSelectedOption={setDownloadType}
           selectedOption={downloadType}
         />
-        {/* <ComboboxAutocomplete
-          options={options}
-          setSelectedOption={setDownloadType}
-          selectedOption={downloadType}
-          t={t}
-        /> */}
         <div className="flex gap-7 items-end">
           <div
             className={`flex flex-col w-full space-y-4 ${

@@ -14,6 +14,7 @@ function BasicInformation({
   project,
   methods,
   setIsOpenLanguageCreate,
+  isProjectEdit = false,
   uniqueCheck = false,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -82,7 +83,7 @@ function BasicInformation({
           : errors?.code?.type === 'notUniqueProject'
           ? t('CodeMessageErrorNotUniqueProject')
           : '',
-      readOnly: true,
+      readOnly: isProjectEdit,
     },
   ]
 
@@ -123,9 +124,9 @@ function BasicInformation({
             >
               {({ open }) => (
                 <div className="relative text-th-text-primary">
-                  <div className="relative bg-th-secondary-10 overflow-hidden">
+                  <div className="relative overflow-hidden">
                     <Combobox.Input
-                      className={`w-full pl-4 pr-10 py-2 border border-th-secondary-300 outline-none transition-all duration-100 ease-in-out ${
+                      className={`w-full pl-4 pr-10 py-2 border border-th-secondary-300 bg-th-secondary-10 outline-none transition-all duration-100 ease-in-out ${
                         open ? 'rounded-t-lg border-b-0' : 'rounded-lg'
                       }`}
                       displayValue={(language) => language?.orig_name}
@@ -142,7 +143,7 @@ function BasicInformation({
                     leaveTo="opacity-0"
                     afterLeave={() => setQuery('')}
                   >
-                    <Combobox.Options className="absolute w-full max-h-40 overflow-y-auto rounded-b-lg bg-th-secondary-10 border border-t-0 border-th-secondary-300">
+                    <Combobox.Options className="absolute w-full max-h-40 overflow-y-auto rounded-b-lg bg-th-secondary-10 border border-t-0 border-th-secondary-300 z-10">
                       {filteredLanguages?.length === 0 && query !== '' ? (
                         <div className="relative select-none px-4 py-2">
                           {t('common:NothingFound')}
