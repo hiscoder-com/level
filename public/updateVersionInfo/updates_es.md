@@ -1,4 +1,4 @@
-# Versión 0.16.1
+# Versión 0.16.0
 ## Fecha: 03/29/2024
 
 ### **Añadido:**
