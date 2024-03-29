@@ -1,8 +1,8 @@
 # Version 0.16.1
-## Date: 03/28/2024
+## Date: 03/29/2024
 
 ### **Added:**
-- Added selection of translators and autocomplete coordinators to ProjectEdit
+- In the project settings, auto-completion has been added when selecting translators, coordinators and when choosing a language
 - Added autocomplete book selection to BookReader navigation
 
 # Version 0.15.1
