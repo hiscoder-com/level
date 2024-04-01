@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 
-import { Disclosure, Listbox, Tab } from '@headlessui/react'
+import { Disclosure, Combobox, Tab, Transition } from '@headlessui/react'
 
 import ResumeInfo from './ResumeInfo'
 import ChecksIcon from './BookList/ChecksIcon'
@@ -271,6 +271,8 @@ function Verses({ verseObjects, user, reference, isLoading }) {
 function Navigation({ books, reference, setReference }) {
   const { query, replace } = useRouter()
   const [selectedBook, setSelectedBook] = useState({})
+  const [queryCombobox, setQueryCombobox] = useState('')
+
   const { t } = useTranslation()
   useEffect(() => {
     if (books?.length) {
@@ -293,6 +295,15 @@ function Navigation({ books, reference, setReference }) {
       nextChapter <= Object.keys(selectedBook?.chapters || {}).length,
     [nextChapter, selectedBook?.chapters]
   )
+
+  const filteredBooks =
+    queryCombobox === ''
+      ? books
+      : books.filter((book) => {
+          const bookString = `${t('books:' + book.code)}`.toLowerCase()
+          return bookString.includes(queryCombobox.toLowerCase())
+        })
+
   return (
     <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3 z-10">
       <button
@@ -317,7 +328,7 @@ function Navigation({ books, reference, setReference }) {
         >{`${t('Chapter')}`}</span>
       </button>
 
-      <Listbox
+      <Combobox
         as={'div'}
         value={selectedBook}
         onChange={setSelectedBook}
@@ -325,59 +336,75 @@ function Navigation({ books, reference, setReference }) {
         disabled={books?.length === 1}
       >
         {({ open }) => (
-          <div className="relative">
-            <Listbox.Button>
-              <div
-                className={`px-7 py-3 min-w-[15rem] w-1/3 sm:w-auto bg-th-secondary-100 ${
-                  !Object.keys(selectedBook)?.length ? 'animate-pulse' : ''
-                } ${open ? 'rounded-t-2xl' : 'rounded-2xl '}`}
-              >
-                <div
-                  className={`flex ${
-                    books?.length > 1 ? 'justify-between' : 'justify-center'
-                  } ${
-                    selectedBook && !Object.keys(selectedBook)?.length
-                      ? 'opacity-0'
-                      : 'opacity-auto'
-                  }`}
-                >
-                  <span>{t('books:' + selectedBook?.code)}</span>
-                  {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
-                </div>
-              </div>
-            </Listbox.Button>
-            <div className="flex justify-center">
-              <Listbox.Options className="absolute w-full max-h-[50vh] bg-th-secondary-100 overflow-y-scroll rounded-b-2xl">
-                {books?.map((book) => (
-                  <Listbox.Option
-                    key={book?.id}
-                    value={book}
-                    onClick={() =>
-                      replace(
-                        {
-                          query: { ...query, bookid: book.code },
-                        },
-                        undefined,
-                        { shallow: true }
-                      )
-                    }
-                  >
-                    {({ selected }) => (
-                      <div
-                        className={`${
-                          selected ? 'opacity-70' : 'bg-th-secondary-100'
-                        } w-full px-3 py-1 hover:opacity-70 cursor-pointer`}
-                      >
-                        {t('books:' + book?.code)}
-                      </div>
-                    )}
-                  </Listbox.Option>
-                ))}
-              </Listbox.Options>
+          <div className="relative text-th-text-primary">
+            <div
+              className={`relative bg-th-secondary-10 cursor-default overflow-hidden transition-all duration-100 ease-in-out ${
+                open ? 'rounded-t-3xl' : 'rounded-3xl'
+              }`}
+            >
+              <Combobox.Input
+                className={`w-full min-w-[15rem] py-3 pl-6 pr-12 bg-th-secondary-100 outline-none ${
+                  selectedBook && Object.keys(selectedBook)?.length
+                    ? ''
+                    : 'animate-pulse text-transparent'
+                }`}
+                displayValue={(book) => (book ? t('books:' + book.code) : '')}
+                onChange={(event) => setQueryCombobox(event.target.value)}
+              />
+              <Combobox.Button className="absolute inset-y-0 right-0 pr-5">
+                {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
+              </Combobox.Button>
             </div>
+
+            <Transition
+              as={Fragment}
+              leave="transition-all ease-in-out duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+              afterLeave={() => setQueryCombobox('')}
+            >
+              <Combobox.Options className="absolute w-full max-h-[50vh] overflow-y-auto rounded-b-3xl bg-th-secondary-100 z-10">
+                {filteredBooks.length === 0 && queryCombobox !== '' ? (
+                  <div className="relative select-none px-6 py-2">
+                    {t('NothingFound')}
+                  </div>
+                ) : (
+                  filteredBooks.map((book) => (
+                    <Combobox.Option
+                      key={book?.id}
+                      className={({ active }) =>
+                        `relative cursor-pointer select-none py-2 px-6 ${
+                          active ? 'bg-th-secondary-100' : ''
+                        }`
+                      }
+                      value={book}
+                      onClick={() =>
+                        replace(
+                          {
+                            query: { ...query, bookid: book.code },
+                          },
+                          undefined,
+                          { shallow: true }
+                        )
+                      }
+                    >
+                      {({ selected }) => (
+                        <div
+                          className={`${
+                            selected ? 'opacity-70' : ''
+                          } w-full py-1 hover:opacity-70 cursor-pointer`}
+                        >
+                          {t('books:' + book?.code)}
+                        </div>
+                      )}
+                    </Combobox.Option>
+                  ))
+                )}
+              </Combobox.Options>
+            </Transition>
           </div>
         )}
-      </Listbox>
+      </Combobox>
 
       <div
         className={`w-2/5 sm:w-auto px-7 py-3 bg-th-secondary-100 rounded-3xl ${
@@ -391,7 +418,9 @@ function Navigation({ books, reference, setReference }) {
       >
         <div
           className={`flex justify-around items-center gap-1 ${
-            !Object.keys(selectedBook)?.length ? 'opacity-0' : 'opacity-auto'
+            selectedBook && Object.keys(selectedBook)?.length
+              ? 'opacity-auto'
+              : 'opacity-0'
           }`}
         >
           <span

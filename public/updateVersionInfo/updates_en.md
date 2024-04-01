@@ -1,3 +1,10 @@
+# Version 0.16.0
+## Date: 03/29/2024
+
+### **Added:**
+- In the project settings, auto-completion has been added when selecting translators, coordinators and when choosing a language
+- Added autocomplete book selection to BookReader navigation
+
 # Version 0.15.1
 ## Date: 03/21/2024
 
