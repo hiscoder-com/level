@@ -4,7 +4,7 @@ CREATE OR REPLACE FUNCTION public.update_project_basic(project_code text, title 
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER
-AS $function$DECLARE
+AS $function$ DECLARE
   project_id BIGINT;
 BEGIN
   SELECT id FROM public.projects WHERE projects.code = project_code INTO project_id;
@@ -19,15 +19,12 @@ BEGIN
     END IF;
       
     SELECT id FROM public.projects WHERE projects.code = update_project_basic.project_code INTO project_id;
-    IF project_id IS NOT NULL THEN
-      UPDATE PUBLIC.projects SET code = update_project_basic.code, title = update_project_basic.title, orig_title = update_project_basic.orig_title, language_id = update_project_basic.language_id WHERE projects.id = project_id;
-      RETURN TRUE;
-    END IF;
   END IF;
 
   UPDATE PUBLIC.projects SET code = update_project_basic.code, title=update_project_basic.title, orig_title = update_project_basic.orig_title, language_id = update_project_basic.language_id WHERE projects.id = project_id;
   RETURN TRUE;
-END;$function$
+END;
+$function$
 ;
 
 
