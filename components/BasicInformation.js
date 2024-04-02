@@ -14,7 +14,6 @@ function BasicInformation({
   project,
   methods,
   setIsOpenLanguageCreate,
-  isProjectEdit = false,
   uniqueCheck = false,
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -83,7 +82,6 @@ function BasicInformation({
           : errors?.code?.type === 'notUniqueProject'
           ? t('CodeMessageErrorNotUniqueProject')
           : '',
-      readOnly: isProjectEdit,
     },
   ]
 
