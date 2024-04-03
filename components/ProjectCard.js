@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useMemo } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -6,6 +7,7 @@ import Translators from './Translators'
 import Placeholder from './Placeholder'
 
 import { useBriefState, useAccess } from 'utils/hooks'
+import { getBriefName } from 'utils/helper'
 
 function ProjectCard({ project, user }) {
   const { t } = useTranslation(['projects', 'common'])
@@ -13,10 +15,15 @@ function ProjectCard({ project, user }) {
     user_id: user?.id,
     code: project?.code,
   })
-  const { briefResume, isLoading } = useBriefState({
+  const { briefResume, isLoading, briefName } = useBriefState({
     project_id: project?.id,
   })
-
+  const nameButtonBrief = useMemo(() => {
+    return getBriefName(
+      briefName,
+      t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
+    )
+  }, [briefName, isCoordinatorAccess, t])
   return (
     <>
       {!project?.code || isLoading || !user?.id ? (
@@ -31,7 +38,7 @@ function ProjectCard({ project, user }) {
                   href={`/projects/${project?.code}/edit?setting=brief`}
                   className="btn-primary w-fit"
                 >
-                  {t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                  {nameButtonBrief}
                 </Link>
               )}
               <div className="flex flex-col gap-5">

@@ -14,7 +14,7 @@ import {
   useAccess,
 } from 'utils/hooks'
 
-import { readableDate } from 'utils/helper'
+import { getBriefName, readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
 import Reader from '/public/dictionary.svg'
@@ -24,7 +24,7 @@ function ProjectPersonalCard({ project, user }) {
   const { locale, push } = useRouter()
   const [currentSteps, setCurrentSteps] = useState(null)
   const { t } = useTranslation(['common', 'books'])
-  const { briefResume, isBrief } = useBriefState({
+  const { briefResume, isBrief, briefName } = useBriefState({
     project_id: project?.id,
   })
   const [{ isCoordinatorAccess }, { isLoading }] = useAccess({
@@ -110,6 +110,13 @@ function ProjectPersonalCard({ project, user }) {
       return count
     }
   }, [books])
+
+  const nameButtonBrief = useMemo(() => {
+    return getBriefName(
+      briefName,
+      t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
+    )
+  }, [briefName, isCoordinatorAccess, t])
 
   return (
     <>
@@ -234,7 +241,7 @@ function ProjectPersonalCard({ project, user }) {
                           href={`/projects/${project?.code}/edit?setting=brief`}
                           className="btn-primary flex justify-center gap-1 sm:gap-2"
                         >
-                          {t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)}
+                          {nameButtonBrief}
                         </Link>
                       )}
                     </div>

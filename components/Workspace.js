@@ -145,6 +145,9 @@ function Panel({
               'audio',
               'dictionary',
               'info',
+              'tnotes',
+              'tquestions',
+              'twords',
             ].includes(tool.name) ? (
               <span title={t(tool.name)}>
                 {icons[tool.name]}

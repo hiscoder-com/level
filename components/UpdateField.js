@@ -16,7 +16,7 @@ function UpdateField({
 
   const [valueField, setValueField] = useState(value)
   useEffect(() => {
-    if (value) {
+    if (value !== undefined && value !== null) {
       setValueField(value)
     }
   }, [value])

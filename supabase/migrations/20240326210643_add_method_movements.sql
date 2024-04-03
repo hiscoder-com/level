@@ -197,7 +197,7 @@ INSERT INTO
         "tools": [
           {
             "name": "draftTranslate",
-            "config": {}
+            "config": {"is_single_block_translation": true}
           }
         ]
       }
@@ -272,11 +272,19 @@ INSERT INTO
           }
         ]
       },
-      {
+      { 
         "size": 2,
         "tools": [
           {
-            "name": "reflectionQuestions",
+            "name": "tnotes",
+            "config": {}
+          },
+          {
+            "name": "twords",
+            "config": {}
+          },
+          {
+            "name": "simplified",
             "config": {}
           }
         ]
@@ -285,11 +293,8 @@ INSERT INTO
         "size": 2,
         "tools": [
           {
-            "name": "commandTranslate",
-            "config": {
-              "is_rtl": false,
-              "moderatorOnly": false
-            }
+            "name": "translate",
+            "config": {}
           },
           {
             "name": "personalNotes",
@@ -378,10 +383,6 @@ INSERT INTO
           {
             "name": "simplified",
             "config": {}
-          },
-          {
-            "name": "translationRules",
-            "config": {}
           }
         ]
       },
@@ -391,7 +392,6 @@ INSERT INTO
           {
             "name": "commandTranslate",
             "config": {
-              "is_rtl": false,
               "moderatorOnly": true
             }
           },

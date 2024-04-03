@@ -336,8 +336,9 @@ export function useBriefState({ project_id }) {
     if (brief?.is_enable) {
       setBriefResume(brief.data_collection?.reduce((final, el) => final + el.resume, ''))
     }
-  }, [brief])
-  return { briefResume, isBrief: brief?.is_enable, isLoading }
+  }, [brief?.is_enable, brief?.data_collection])
+
+  return { briefResume, isBrief: brief?.is_enable, isLoading, briefName: brief?.name }
 }
 
 /**

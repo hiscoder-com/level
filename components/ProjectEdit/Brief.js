@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -18,10 +18,15 @@ import { useGetBrief, useProject } from 'utils/hooks'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
+import Pencil from 'public/editor-pencil.svg'
+import { getBriefName } from 'utils/helper'
+
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
   const [briefDataCollection, setBriefDataCollection] = useState([])
+  const [briefName, setBriefName] = useState('Brief')
   const [editableMode, setEditableMode] = useState(false)
+  const [isEditingBriefName, setIsEditingBriefName] = useState(false)
   const [hidden, setHidden] = useState(true)
   const [isSaving, setIsSaving] = useState(false)
   const {
@@ -32,6 +37,11 @@ function BriefBlock({ access, title = false }) {
   const [brief, { mutate }] = useGetBrief({
     project_id: project?.id,
   })
+  useEffect(() => {
+    if (brief?.name) {
+      setBriefName(brief.name)
+    }
+  }, [brief?.name])
 
   useEffect(() => {
     if (briefDataCollection.length == 0 && brief?.data_collection) {
@@ -56,7 +66,6 @@ function BriefBlock({ access, title = false }) {
       })
       .finally(() => setIsSaving(false))
   }
-
   useEffect(() => {
     const briefUpdates = supabase
       .channel('public:briefs')
@@ -79,7 +88,19 @@ function BriefBlock({ access, title = false }) {
         .catch(console.log)
     }
   }
-
+  const handleSaveBriefName = () => {
+    if (briefName && brief?.id) {
+      axios
+        .put(`/api/briefs/${brief?.id}/name`, {
+          name: briefName,
+        })
+        .then(mutate)
+        .catch((err) => {
+          toast.error(t('SaveFailed'))
+          console.log(err)
+        })
+    }
+  }
   const updateCollection = ({ value, index }) => {
     const _array = briefDataCollection.map((obj, idx) => {
       if (index === idx) {
@@ -98,13 +119,40 @@ function BriefBlock({ access, title = false }) {
     saveToDatabase(_array)
   }
 
+  const titleBrief = useMemo(() => {
+    return getBriefName(briefName, t('project-edit:EditBriefTitle'))
+  }, [briefName, t])
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex justify-end sm:justify-between">
+      <div className="flex justify-end items-start sm:justify-between">
         {title && (
-          <h3 className="text-lg md:text-xl font-bold">
-            {t('project-edit:EditBriefTitle')}
-          </h3>
+          <div className="flex items-center gap-2">
+            {!isEditingBriefName ? (
+              <h3 className="text-lg md:text-xl font-bold">{titleBrief}</h3>
+            ) : (
+              <input
+                value={briefName}
+                onChange={(e) => setBriefName(e.target.value)}
+                className="input-primary"
+              />
+            )}
+            {!access ? null : isEditingBriefName ? (
+              <ButtonLoading
+                className="relative btn-primary"
+                onClick={() => {
+                  handleSaveBriefName()
+                  setIsEditingBriefName(false)
+                }}
+                isLoading={isSaving}
+              >
+                {t('Save')}
+              </ButtonLoading>
+            ) : (
+              <button className="btn-primary" onClick={() => setIsEditingBriefName(true)}>
+                <Pencil className="w-5 inline" />
+              </button>
+            )}
+          </div>
         )}
         <div className="flex flex-col items-end lg:flex-row gap-7 justify-end text-sm md:text-base">
           {access && (
@@ -238,15 +286,13 @@ function BriefBlock({ access, title = false }) {
             </>
           )}
           {access && (
-            <div>
-              <ButtonLoading
-                className="relative btn-primary"
-                onClick={() => saveToDatabase(briefDataCollection, true)}
-                isLoading={isSaving}
-              >
-                {t('Save')}
-              </ButtonLoading>
-            </div>
+            <ButtonLoading
+              className="relative btn-primary"
+              onClick={() => saveToDatabase(briefDataCollection, true)}
+              isLoading={isSaving}
+            >
+              {t('Save')}
+            </ButtonLoading>
           )}
         </div>
       )}

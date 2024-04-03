@@ -15,6 +15,10 @@ function Dropdown({ description, user }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const projectId = useRecoilValue(projectIdState)
+  const [brief] = useGetBrief({
+    project_id: projectId,
+  })
   const dropdownMenu = useRef(null)
   const toolsButton = useRef(null)
   const { t } = useTranslation(['common'])
@@ -66,17 +70,21 @@ function Dropdown({ description, user }) {
             >
               {t('AboutStep').toUpperCase()}
             </button>
-            <button
-              className="px-4 py-2 rounded-b-lg hover:bg-th-secondary-100
+            {brief?.is_enable && (
+              <button
+                className="px-4 py-2 rounded-b-lg hover:bg-th-secondary-100
 			active:bg-th-secondary-100"
-              onClick={(e) => {
-                toggle()
-                setShowModalTranslationGoal(true)
-                e.stopPropagation()
-              }}
-            >
-              {t('AboutTranslation').toUpperCase()}
-            </button>
+                onClick={(e) => {
+                  toggle()
+                  setShowModalTranslationGoal(true)
+                  e.stopPropagation()
+                }}
+              >
+                {brief?.name === 'Brief' || !brief?.name
+                  ? t('AboutTranslation').toUpperCase()
+                  : brief.name.toUpperCase()}
+              </button>
+            )}
           </div>
         </>
       )}
@@ -85,11 +93,13 @@ function Dropdown({ description, user }) {
         closeModal={closeModal}
         description={description}
       />
-      <TranslationGoal
-        showModalTranslationGoal={showModalTranslationGoal}
-        user={user}
-        closeModal={closeModal}
-      />
+      {brief?.is_enable && (
+        <TranslationGoal
+          showModalTranslationGoal={showModalTranslationGoal}
+          closeModal={closeModal}
+          brief={brief}
+        />
+      )}
       <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold rounded-md divide-x divide-solid md:hidden bg-th-secondary-10">
         <button
           className="px-2 rounded-l-lg hover:opacity-70"
@@ -135,14 +145,8 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
   )
 }
 
-function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
+function TranslationGoal({ showModalTranslationGoal, closeModal, brief }) {
   const { t } = useTranslation(['common'])
-
-  const projectId = useRecoilValue(projectIdState)
-
-  const [brief] = useGetBrief({
-    project_id: projectId,
-  })
 
   const briefResume = brief?.data_collection
     ?.map((obj) => obj.resume)
@@ -153,7 +157,9 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
       <Modal
         isOpen={showModalTranslationGoal}
         closeHandle={closeModal}
-        title={t('TranslationGoal')}
+        title={
+          brief?.name === 'Brief' || !brief?.name ? t('TranslationGoal') : brief?.name
+        }
       >
         <div className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-th-secondary-10 overflow-y-auto">
           {briefResume?.map((resumeItem, index) => (
