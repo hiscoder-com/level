@@ -421,6 +421,8 @@ function ChapterVersesPage() {
                   isNotAllVersesDivided={isNotAllVersesDivided}
                   assign={assign}
                   reset={reset}
+                  currTranslator={currentTranslator}
+                  isTranslatorChoosed={!!currentTranslator}
                 />
               </div>
             </Card>
@@ -521,6 +523,8 @@ function ChapterVersesPage() {
                           isNotAllVersesDivided={isNotAllVersesDivided}
                           assign={assign}
                           reset={reset}
+                          currTranslator={currentTranslator}
+                          isTranslatorChoosed={!!currentTranslator}
                         />
 
                         <ManageChapterButtons
@@ -572,6 +576,7 @@ function Participants({
   translatorsSelecting,
 }) {
   const { t } = useTranslation()
+
   return (
     <div className="space-y-2.5 mb-2.5">
       <div className="flex justify-end">{t('chapters:ReadOnly')}</div>
@@ -670,6 +675,8 @@ function DividingButtons({
   isNotAllVersesDivided,
   assign,
   reset,
+  isTranslatorChoosed,
+  currTranslator,
 }) {
   const { t } = useTranslation(['common', 'chapters'])
   function fastDivideVerses(verses, translators) {
@@ -703,6 +710,32 @@ function DividingButtons({
       }
     })
   }
+
+  function assignVersesToTranslator(verses, translator) {
+    return verses.map((verse) => {
+      if (verse.project_translator_id) {
+        return verse
+      }
+
+      return {
+        ...verse,
+        project_translator_id: translator.id,
+        color: translator.color,
+        translator_name: translator.users?.login,
+      }
+    })
+  }
+
+  const deselectAllVerses = () => {
+    const updatedVerses = versesDivided.map((verse) => ({
+      ...verse,
+      project_translator_id: null,
+      translator_name: '',
+      color: defaultColor,
+    }))
+    setVersesDivided(updatedVerses)
+  }
+
   return (
     <>
       <ButtonLoading
@@ -722,6 +755,30 @@ function DividingButtons({
       >
         {t('chapters:FastDivide')}
       </ButtonLoading>
+
+      <div className="flex gap-4">
+        <ButtonLoading
+          onClick={() => {
+            const assignedVerses = assignVersesToTranslator(versesDivided, currTranslator)
+            if (!assignedVerses) {
+              return
+            }
+            setVersesDivided(assignedVerses)
+          }}
+          disabled={!translators?.length || !isTranslatorChoosed || isChapterStarted}
+          className="flex-1 relative btn-primary w-fit"
+        >
+          {t('chapters:SelectAll')}
+        </ButtonLoading>
+        <ButtonLoading
+          onClick={deselectAllVerses}
+          disabled={!translators?.length || !choosedVerses || isChapterStarted}
+          className="flex-1 relative btn-primary w-fit"
+        >
+          {t('chapters:Deselect')}
+        </ButtonLoading>
+      </div>
+
       <div className="flex gap-4">
         <ButtonLoading
           onClick={() => {
