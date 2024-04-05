@@ -46,7 +46,7 @@ function VerseDistributionButtons({
       }
     })
   }
-  // заменить название функции?
+
   function assignVersesToTranslator(verses, translator) {
     return verses.map((verse) => {
       if (verse.project_translator_id) {
@@ -75,7 +75,7 @@ function VerseDistributionButtons({
     <>
       <ButtonLoading
         onClick={() => {
-          const verses = fastDivideVerses(versesDivided, translators) //идентично assignedVerses
+          const verses = fastDivideVerses(versesDivided, translators)
           if (!verses) {
             return
           }
@@ -94,7 +94,7 @@ function VerseDistributionButtons({
       <div className="flex gap-4">
         <ButtonLoading
           onClick={() => {
-            const assignedVerses = assignVersesToTranslator(versesDivided, translator) //идентично verses
+            const assignedVerses = assignVersesToTranslator(versesDivided, translator)
             if (!assignedVerses) {
               return
             }
