@@ -1,14 +1,18 @@
-import { Fragment, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 
 import toast from 'react-hot-toast'
 
-import { Menu, Switch, Transition } from '@headlessui/react'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import Card from 'components/Project/Card'
+import Breadcrumbs from 'components/Breadcrumbs'
+import ProjectParticipants from 'components/Project/ChapterList/ProjectParticipants'
+import VerseDistributionButtons from 'components/Project/ChapterList/VerseDistributionButtons'
+import ChapterProgressControls from 'components/Project/ChapterList/ChapterProgressControls'
+import ChapterMobileMenu from 'components/Project/ChapterList/ChapterMobileMenu'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
@@ -23,14 +27,8 @@ import {
   useAccess,
 } from 'utils/hooks'
 
-import TranslatorImage from 'components/TranslatorImage'
-import ButtonLoading from 'components/ButtonLoading'
-
-import Gear from 'public/gear.svg'
 import Plus from 'public/plus.svg'
 import Minus from 'public/minus.svg'
-import Card from 'components/Project/Card'
-import Breadcrumbs from 'components/Breadcrumbs'
 
 const translatorColors = [
   {
@@ -275,6 +273,7 @@ function ChapterVersesPage() {
       toast.success(t('SaveSuccess'))
     }
   }
+
   const translatorsSelecting = async (translator) => {
     const translators = assignedTranslatorsIds.includes(translator.id)
       ? assignedTranslatorsIds.filter((el) => el !== translator.id)
@@ -282,6 +281,29 @@ function ChapterVersesPage() {
     chapterAsigning(translators)
     setAssignedTranslatorsIds(translators)
   }
+
+  const chapterProps = {
+    chapter,
+    isValidating,
+    isLoading,
+    verses,
+    supabase,
+    project,
+    mutateChapter,
+    mutateChapters,
+    isChapterStarted,
+    setIsChapterStarted,
+  }
+
+  const translatorsProps = {
+    translators,
+    assignedTranslatorsIds,
+    assignedVerseTranslators,
+    currentTranslator,
+    setCurrentTranslator,
+    translatorsSelecting,
+  }
+
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
@@ -400,18 +422,19 @@ function ChapterVersesPage() {
               access={isCoordinatorAccess}
             >
               <div>
-                <Participants
+                <ProjectParticipants
                   participants={translators}
                   assignedTranslatorsIds={assignedTranslatorsIds}
                   assignedVerseTranslators={assignedVerseTranslators}
                   currentTranslator={currentTranslator}
                   setCurrentTranslator={setCurrentTranslator}
                   translatorsSelecting={translatorsSelecting}
+                  t={t}
                 />
               </div>
               <div className="flex flex-col gap-3">
                 <hr className="border-th-secondary-300" />
-                <DividingButtons
+                <VerseDistributionButtons
                   translators={translators}
                   setVersesDivided={setVersesDivided}
                   versesDivided={versesDivided}
@@ -421,13 +444,15 @@ function ChapterVersesPage() {
                   isNotAllVersesDivided={isNotAllVersesDivided}
                   assign={assign}
                   reset={reset}
-                  currTranslator={currentTranslator}
-                  isTranslatorChoosed={!!currentTranslator}
+                  t={t}
+                  defaultColor={defaultColor}
+                  translator={currentTranslator}
+                  isTranslatorSelected={!!currentTranslator}
                 />
               </div>
             </Card>
             <div className="card flex flex-col gap-4 bg-th-secondary-10">
-              <ManageChapterButtons
+              <ChapterProgressControls
                 chapter={chapter}
                 isValidating={isValidating}
                 isLoading={isLoading}
@@ -437,116 +462,23 @@ function ChapterVersesPage() {
                 mutateChapter={mutateChapter}
                 mutateChapters={mutateChapters}
                 setIsChapterStarted={setIsChapterStarted}
+                t={t}
               />
             </div>
           </div>
         </div>
       </div>
-      <Menu>
-        {({ open }) => (
-          <>
-            <div
-              className={`inset-0 bg-zink-500 bg-opacity-10 backdrop-blur backdrop-filter ${
-                open ? 'fixed' : 'hidden'
-              } `}
-            ></div>
-            <Menu.Button
-              className="fixed sm:hidden p-4 translate-y-1/2
-               bottom-[60vh]
-               right-5 z-10 rounded-full bg-th-primary-100 text-th-text-secondary-100 transition-all duration-700"
-            >
-              <Plus
-                className={`w-7 h-7 transition-all duration-700 ${
-                  open ? 'rotate-45' : 'rotate-0'
-                } `}
-              />
-            </Menu.Button>
-            <Transition
-              as={Fragment}
-              show={open}
-              enter="transition-all duration-700 ease-in-out transform"
-              enterFrom="translate-y-full"
-              enterTo="translate-y-0"
-              leave="transition-all duration-700 ease-in-out transform"
-              leaveFrom="translate-y-0"
-              leaveTo="translate-y-full"
-            >
-              <div
-                className={`fixed bottom-0 left-0 w-full min-h-[60vh] overflow-y-auto rounded-t-2xl bg-th-secondary-10`}
-              >
-                {open && (
-                  <Menu.Items>
-                    <div className="flex gap-2 items-center">
-                      <div className="p-4 text-xl font-bold">{t('Participants')}</div>
-                      <Link href={`/projects/${project?.code}/edit?setting=participants`}>
-                        <Gear className="w-6 h-6 min-w-[1.5rem] stroke-th-text-primary" />
-                      </Link>
-                    </div>
-
-                    <Menu.Item
-                      as="div"
-                      className="px-4 h-full w-full"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <div className="flex flex-col gap-3 pb-3 h-full w-full">
-                        {translators.length > 0 ? (
-                          <div>
-                            <Participants
-                              participants={translators}
-                              assignedTranslatorsIds={assignedTranslatorsIds}
-                              assignedVerseTranslators={assignedVerseTranslators}
-                              currentTranslator={currentTranslator}
-                              setCurrentTranslator={setCurrentTranslator}
-                              translatorsSelecting={translatorsSelecting}
-                            />
-                          </div>
-                        ) : (
-                          <>
-                            {[...Array(4).keys()].map((el) => (
-                              <div
-                                role="status"
-                                className="w-full animate-pulse"
-                                key={el}
-                              >
-                                <div className="h-[68px] bg-th-secondary-100 rounded-2xl w-full"></div>
-                              </div>
-                            ))}
-                          </>
-                        )}
-                        <DividingButtons
-                          translators={translators}
-                          setVersesDivided={setVersesDivided}
-                          versesDivided={versesDivided}
-                          isChapterStarted={isChapterStarted}
-                          assignedTranslatorsIds={assignedTranslatorsIds}
-                          choosedVerses={choosedVerses}
-                          isNotAllVersesDivided={isNotAllVersesDivided}
-                          assign={assign}
-                          reset={reset}
-                          currTranslator={currentTranslator}
-                          isTranslatorChoosed={!!currentTranslator}
-                        />
-
-                        <ManageChapterButtons
-                          chapter={chapter}
-                          isValidating={isValidating}
-                          isLoading={isLoading}
-                          verses={verses}
-                          supabase={supabase}
-                          project={project}
-                          mutateChapter={mutateChapter}
-                          mutateChapters={mutateChapters}
-                          setIsChapterStarted={setIsChapterStarted}
-                        />
-                      </div>
-                    </Menu.Item>
-                  </Menu.Items>
-                )}
-              </div>
-            </Transition>
-          </>
-        )}
-      </Menu>
+      <ChapterMobileMenu
+        chapterProps={chapterProps}
+        translatorsProps={translatorsProps}
+        versesDivided={versesDivided}
+        setVersesDivided={setVersesDivided}
+        choosedVerses={choosedVerses}
+        isNotAllVersesDivided={isNotAllVersesDivided}
+        assign={assign}
+        reset={reset}
+        t={t}
+      />
     </div>
   )
 }
@@ -565,317 +497,4 @@ export async function getServerSideProps({ locale }) {
       ])),
     },
   }
-}
-
-function Participants({
-  participants,
-  assignedTranslatorsIds,
-  assignedVerseTranslators,
-  currentTranslator,
-  setCurrentTranslator,
-  translatorsSelecting,
-}) {
-  const { t } = useTranslation()
-
-  return (
-    <div className="space-y-2.5 mb-2.5">
-      <div className="flex justify-end">{t('chapters:ReadOnly')}</div>
-      {participants.length > 0 ? (
-        participants?.map((participant, index) => (
-          <div
-            key={index}
-            className="flex items-center gap-2"
-            onClick={() => {
-              if (!assignedTranslatorsIds?.includes(participant.id)) {
-                setCurrentTranslator(participant)
-              }
-            }}
-          >
-            <div
-              className={`flex flex-1 items-center gap-4 px-4 py-1 border rounded-3xl w-5/6 ${
-                assignedTranslatorsIds?.includes(participant.id)
-                  ? 'bg-th-secondary-200 text-th-text-secondary-100'
-                  : ''
-              } ${
-                currentTranslator?.users?.login === participant.users.login
-                  ? `${participant.color.bg} ${participant.color.border}`
-                  : `${participant.color.text} text-th-text-primary`
-              }`}
-            >
-              <div className="w-7 h-7 min-w-[2rem]">
-                <TranslatorImage item={participant} />
-              </div>
-              <div>
-                <p className="text-lg">{participant?.users?.login}</p>
-                <div className="text-sm">
-                  {participant.is_moderator ? (
-                    <p>{t('Moderator')}</p>
-                  ) : (
-                    <p>{t('Translator')}</p>
-                  )}
-                </div>
-              </div>
-            </div>
-            <div className="w-1/6">
-              <Switch
-                disabled={assignedVerseTranslators?.includes(participant.id)}
-                checked={assignedTranslatorsIds?.includes(participant.id) ?? false}
-                onChange={() => {
-                  if (!assignedVerseTranslators?.includes(participant.id)) {
-                    translatorsSelecting(participant)
-                  }
-                  if (
-                    participant.id === currentTranslator?.id &&
-                    !assignedVerseTranslators?.includes(participant.id)
-                  ) {
-                    setCurrentTranslator(null)
-                  }
-                }}
-                className={`${
-                  assignedTranslatorsIds?.includes(participant.id)
-                    ? 'bg-secondary-10'
-                    : 'bg-th-secondary-200 border-th-secondary-200'
-                } relative inline-flex h-7 w-12 items-center border rounded-full`}
-              >
-                <span
-                  className={`${
-                    assignedTranslatorsIds?.includes(participant.id)
-                      ? 'translate-x-6'
-                      : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full ${
-                    assignedVerseTranslators?.includes(participant.id)
-                      ? 'bg-th-secondary-10 cursor-default'
-                      : 'bg-th-primary-100'
-                  } transition`}
-                />
-              </Switch>
-            </div>
-          </div>
-        ))
-      ) : (
-        <>
-          {[...Array(4).keys()].map((el) => (
-            <div role="status" className="w-full animate-pulse" key={el}>
-              <div className="h-[68px] bg-th-secondary-100 rounded-2xl w-full"></div>
-            </div>
-          ))}
-        </>
-      )}
-    </div>
-  )
-}
-
-function DividingButtons({
-  translators,
-  setVersesDivided,
-  versesDivided,
-  isChapterStarted,
-  assignedTranslatorsIds,
-  choosedVerses,
-  isNotAllVersesDivided,
-  assign,
-  reset,
-  isTranslatorChoosed,
-  currTranslator,
-}) {
-  const { t } = useTranslation(['common', 'chapters'])
-  function fastDivideVerses(verses, translators) {
-    const freeTranslators = translators.filter(
-      (translator) => !assignedTranslatorsIds.includes(translator.id)
-    )
-    const totalVerses = verses.length
-    const baseCount = Math.floor(totalVerses / freeTranslators.length)
-    let remainingVerses = totalVerses % freeTranslators.length
-    let currentStartIndex = 0
-    const indexIntervals = freeTranslators.map((_translator, index) => {
-      const versesForCurrentTranslator = baseCount + (index < remainingVerses ? 1 : 0)
-      const interval = {
-        start: currentStartIndex,
-        end: currentStartIndex + versesForCurrentTranslator,
-      }
-      currentStartIndex += versesForCurrentTranslator
-      return interval
-    })
-    return verses.map((verse, index) => {
-      const currentTranslatorIndex = indexIntervals.findIndex(
-        (interval) => index >= interval.start && index < interval.end
-      )
-      const assignedTranslator = freeTranslators[currentTranslatorIndex]
-
-      return {
-        ...verse,
-        project_translator_id: assignedTranslator.id,
-        color: assignedTranslator.color,
-        translator_name: assignedTranslator?.users?.login,
-      }
-    })
-  }
-
-  function assignVersesToTranslator(verses, translator) {
-    return verses.map((verse) => {
-      if (verse.project_translator_id) {
-        return verse
-      }
-
-      return {
-        ...verse,
-        project_translator_id: translator.id,
-        color: translator.color,
-        translator_name: translator.users?.login,
-      }
-    })
-  }
-
-  const deselectAllVerses = () => {
-    const updatedVerses = versesDivided.map((verse) => ({
-      ...verse,
-      project_translator_id: null,
-      translator_name: '',
-      color: defaultColor,
-    }))
-    setVersesDivided(updatedVerses)
-  }
-
-  return (
-    <>
-      <ButtonLoading
-        onClick={() => {
-          const verses = fastDivideVerses(versesDivided, translators)
-          if (!verses) {
-            return
-          }
-          setVersesDivided(verses)
-        }}
-        disabled={
-          !translators?.length ||
-          isChapterStarted ||
-          assignedTranslatorsIds?.length === translators?.length
-        }
-        className="relative btn-primary"
-      >
-        {t('chapters:FastDivide')}
-      </ButtonLoading>
-
-      <div className="flex gap-4">
-        <ButtonLoading
-          onClick={() => {
-            const assignedVerses = assignVersesToTranslator(versesDivided, currTranslator)
-            if (!assignedVerses) {
-              return
-            }
-            setVersesDivided(assignedVerses)
-          }}
-          disabled={!translators?.length || !isTranslatorChoosed || isChapterStarted}
-          className="flex-1 relative btn-primary w-fit"
-        >
-          {t('chapters:SelectAll')}
-        </ButtonLoading>
-        <ButtonLoading
-          onClick={deselectAllVerses}
-          disabled={!translators?.length || !choosedVerses || isChapterStarted}
-          className="flex-1 relative btn-primary w-fit"
-        >
-          {t('chapters:Deselect')}
-        </ButtonLoading>
-      </div>
-
-      <div className="flex gap-4">
-        <ButtonLoading
-          onClick={() => {
-            assign()
-          }}
-          disabled={!translators?.length || isNotAllVersesDivided || isChapterStarted}
-          className="flex-1 relative btn-primary w-fit"
-        >
-          {t('Assign')}
-        </ButtonLoading>
-        <ButtonLoading
-          onClick={() => reset()}
-          disabled={!translators?.length || !choosedVerses || isChapterStarted}
-          className="flex-1 relative btn-primary w-fit"
-        >
-          {t('Reset')}
-        </ButtonLoading>
-      </div>
-    </>
-  )
-}
-
-function ManageChapterButtons({
-  chapter,
-  isValidating,
-  isLoading,
-  verses,
-  supabase,
-  project,
-  mutateChapter,
-  mutateChapters,
-  setIsChapterStarted,
-}) {
-  const { t } = useTranslation(['common', 'chapters'])
-  const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
-
-  const changeFinishChapter = () => {
-    setIsLoadingCancelFinish(true)
-    supabase
-      .rpc('change_finish_chapter', {
-        chapter_id: chapter?.id,
-        project_id: project?.id,
-      })
-      .then(() => {
-        mutateChapter()
-        mutateChapters()
-      })
-      .catch(console.log)
-      .finally(() => setIsLoadingCancelFinish(false))
-  }
-  const changeStartChapter = () => {
-    supabase
-      .rpc('change_start_chapter', {
-        chapter_id: chapter?.id,
-        project_id: project?.id,
-      })
-      .then(() => {
-        mutateChapter()
-        mutateChapters()
-        setIsChapterStarted(true)
-      })
-      .catch(console.log)
-  }
-  return (
-    <>
-      {!chapter?.finished_at &&
-        (!chapter?.started_at ? (
-          <ButtonLoading
-            onClick={changeStartChapter}
-            isLoading={isValidating || isLoading}
-            disabled={
-              chapter?.finished_at ||
-              isValidating ||
-              verses?.some((verse) => {
-                return verse.project_translator_id === null
-              })
-            }
-            className="relative btn-primary"
-          >
-            {t('chapters:StartChapter')}
-          </ButtonLoading>
-        ) : (
-          ''
-        ))}
-      {chapter?.started_at && (
-        <ButtonLoading
-          onClick={changeFinishChapter}
-          color={!chapter?.finished_at ? 'secondary' : 'primary'}
-          className="relative btn-primary"
-          disabled={isValidating}
-          isLoading={isLoadingCancelFinish}
-        >
-          {!chapter?.finished_at
-            ? t('chapters:FinishedChapter')
-            : t('chapters:CancelFinishedChapter')}
-        </ButtonLoading>
-      )}
-    </>
-  )
 }
