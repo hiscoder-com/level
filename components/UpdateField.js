@@ -22,10 +22,10 @@ function UpdateField({
   }, [value])
   const props = {
     className,
-    value: valueField,
+    value: valueField ?? '',
     onChange: (e) => setValueField(e.target.value),
     onBlur: () => {
-      updateValue({ value: valueField.trim(), index, subIndex, fieldName })
+      updateValue({ value: valueField?.trim(), index, subIndex, fieldName })
     },
     disabled: !editable,
     rows: 6,
