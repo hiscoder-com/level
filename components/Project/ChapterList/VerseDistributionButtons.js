@@ -90,7 +90,8 @@ function VerseDistributionButtons({
         disabled={
           !translators?.length ||
           isChapterStarted ||
-          assignedTranslatorsIds?.length === translators?.length
+          assignedTranslatorsIds?.length === translators?.length ||
+          isDivide
         }
         className="relative btn-primary"
       >
