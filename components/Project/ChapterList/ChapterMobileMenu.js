@@ -24,6 +24,7 @@ function ChapterMobileMenu({
 }) {
   const {
     mutateChapter,
+    defaultColor,
     isLoading,
     supabase,
     chapter,
@@ -123,9 +124,11 @@ function ChapterMobileMenu({
                         isNotAllVersesDivided={isNotAllVersesDivided}
                         assign={assign}
                         reset={reset}
+                        defaultColor={defaultColor}
                         translator={currentTranslator}
                         isTranslatorSelected={!!currentTranslator}
                         t={t}
+                        isDivide={!!assignedVerseTranslators?.length}
                       />
 
                       <ChapterProgressControls

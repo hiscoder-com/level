@@ -14,6 +14,7 @@ function VerseDistributionButtons({
   translator,
   defaultColor,
   t,
+  isDivide,
 }) {
   function fastDivideVerses(verses, translators) {
     const freeTranslators = translators.filter(
@@ -71,6 +72,11 @@ function VerseDistributionButtons({
     }))
     setVersesDivided(updatedVerses)
   }
+
+  function hasUnassignedVerses(verses) {
+    return verses.some((verse) => !verse.project_translator_id)
+  }
+
   return (
     <>
       <ButtonLoading
@@ -104,7 +110,8 @@ function VerseDistributionButtons({
             !translators?.length ||
             !isTranslatorSelected ||
             isChapterStarted ||
-            assignedTranslatorsIds?.includes(translator.id)
+            assignedTranslatorsIds?.includes(translator.id) ||
+            !hasUnassignedVerses(versesDivided)
           }
           className="flex-1 relative btn-primary w-fit"
         >
@@ -112,7 +119,9 @@ function VerseDistributionButtons({
         </ButtonLoading>
         <ButtonLoading
           onClick={deselectAllVerses}
-          disabled={!translators?.length || !choosedVerses || isChapterStarted}
+          disabled={
+            !translators?.length || !choosedVerses || isChapterStarted || isDivide
+          }
           className="flex-1 relative btn-primary w-fit"
         >
           {t('chapters:Deselect')}

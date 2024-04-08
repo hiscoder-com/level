@@ -114,6 +114,7 @@ function ChapterVersesPage() {
         ?.map((verse) => verse.project_translator_id),
     [verses]
   )
+
   const isNotAllVersesDivided = useMemo(
     () => versesDivided?.some((verse) => !verse.project_translator_id),
     [versesDivided]
@@ -289,6 +290,7 @@ function ChapterVersesPage() {
     verses,
     supabase,
     project,
+    defaultColor,
     mutateChapter,
     mutateChapters,
     isChapterStarted,
@@ -448,6 +450,7 @@ function ChapterVersesPage() {
                   defaultColor={defaultColor}
                   translator={currentTranslator}
                   isTranslatorSelected={!!currentTranslator}
+                  isDivide={!!assignedVerseTranslators?.length}
                 />
               </div>
             </Card>
