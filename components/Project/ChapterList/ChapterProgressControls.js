@@ -15,13 +15,17 @@ function ChapterProgressControls({
   t,
 }) {
   const [isLoadingCancelFinish, setIsLoadingCancelFinish] = useState(false)
+  const chapterId = chapter?.id
+  const isChapterStarted = chapter?.started_at
+  const isChapterFinished = chapter?.finished_at
+  const projectId = project?.id
 
   const changeFinishChapter = () => {
     setIsLoadingCancelFinish(true)
     supabase
       .rpc('change_finish_chapter', {
-        chapter_id: chapter?.id,
-        project_id: project?.id,
+        chapter_id: chapterId,
+        project_id: projectId,
       })
       .then(() => {
         mutateChapter()
@@ -30,11 +34,12 @@ function ChapterProgressControls({
       .catch(console.log)
       .finally(() => setIsLoadingCancelFinish(false))
   }
+
   const changeStartChapter = () => {
     supabase
       .rpc('change_start_chapter', {
-        chapter_id: chapter?.id,
-        project_id: project?.id,
+        chapter_id: chapterId,
+        project_id: projectId,
       })
       .then(() => {
         mutateChapter()
@@ -43,36 +48,32 @@ function ChapterProgressControls({
       })
       .catch(console.log)
   }
+
   return (
     <>
-      {!chapter?.finished_at &&
-        (!chapter?.started_at ? (
-          <ButtonLoading
-            onClick={changeStartChapter}
-            isLoading={isValidating || isLoading}
-            disabled={
-              chapter?.finished_at ||
-              isValidating ||
-              verses?.some((verse) => {
-                return verse.project_translator_id === null
-              })
-            }
-            className="relative btn-primary"
-          >
-            {t('chapters:StartChapter')}
-          </ButtonLoading>
-        ) : (
-          ''
-        ))}
-      {chapter?.started_at && (
+      {!isChapterStarted ? (
+        <ButtonLoading
+          onClick={changeStartChapter}
+          isLoading={isValidating || isLoading}
+          disabled={
+            isValidating ||
+            verses?.some((verse) => {
+              return verse.project_translator_id === null
+            })
+          }
+          className="relative btn-primary"
+        >
+          {t('chapters:StartChapter')}
+        </ButtonLoading>
+      ) : (
         <ButtonLoading
           onClick={changeFinishChapter}
-          color={!chapter?.finished_at ? 'secondary' : 'primary'}
+          color={!isChapterFinished ? 'secondary' : 'primary'}
           className="relative btn-primary"
           disabled={isValidating}
           isLoading={isLoadingCancelFinish}
         >
-          {!chapter?.finished_at
+          {!isChapterFinished
             ? t('chapters:FinishedChapter')
             : t('chapters:CancelFinishedChapter')}
         </ButtonLoading>

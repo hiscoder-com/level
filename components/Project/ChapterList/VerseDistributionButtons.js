@@ -100,7 +100,12 @@ function VerseDistributionButtons({
             }
             setVersesDivided(assignedVerses)
           }}
-          disabled={!translators?.length || !isTranslatorSelected || isChapterStarted}
+          disabled={
+            !translators?.length ||
+            !isTranslatorSelected ||
+            isChapterStarted ||
+            assignedTranslatorsIds?.includes(translator.id)
+          }
           className="flex-1 relative btn-primary w-fit"
         >
           {t('chapters:SelectAll')}
@@ -116,16 +121,14 @@ function VerseDistributionButtons({
 
       <div className="flex gap-4">
         <ButtonLoading
-          onClick={() => {
-            assign()
-          }}
+          onClick={assign}
           disabled={!translators?.length || isNotAllVersesDivided || isChapterStarted}
           className="flex-1 relative btn-primary w-fit"
         >
           {t('Assign')}
         </ButtonLoading>
         <ButtonLoading
-          onClick={() => reset()}
+          onClick={reset}
           disabled={!translators?.length || !choosedVerses || isChapterStarted}
           className="flex-1 relative btn-primary w-fit"
         >

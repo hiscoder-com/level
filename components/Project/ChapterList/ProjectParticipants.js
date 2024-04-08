@@ -52,6 +52,7 @@ function ProjectParticipants({
             </div>
             <div className="w-1/6">
               <Switch
+                onClick={(e) => e.stopPropagation()}
                 disabled={assignedVerseTranslators?.includes(participant.id)}
                 checked={assignedTranslatorsIds?.includes(participant.id) ?? false}
                 onChange={() => {
