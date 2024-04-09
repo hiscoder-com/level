@@ -14,7 +14,7 @@ function ListBox({ options, selectedOption, setSelectedOption }) {
               <Down className="w-6 h-6 min-w-[1.5rem] stroke-th-text-primary" />
             </Listbox.Button>
             <div className={`-mt-2 pt-5 ${open ? 'bg-th-secondary-10' : ''}`}>
-              <Listbox.Options className="absolute w-full max-h-[40vh] bg-th-secondary-10 rounded-b-lg overflow-y-scroll z-10">
+              <Listbox.Options className="absolute w-full max-h-[40vh] bg-th-secondary-10 rounded-b-lg overflow-y-auto z-10">
                 {options.map((el) => (
                   <Listbox.Option
                     className="relative px-5 py-1 bg-th-secondary-10 cursor-pointer last:pb-3 hover:bg-th-secondary-100"

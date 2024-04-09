@@ -1,3 +1,10 @@
+# Versión 0.16.0
+## Fecha: 03/29/2024
+
+### **Añadido:**
+- En la configuración del proyecto, se ha agregado el autocompletado al seleccionar traductores, coordinadores y al elegir un idioma
+- Se agregó autocompletar a la navegación de BookReader al seleccionar un libro
+
 # Versión 0.15.1
 ## Fecha: 03/21/2024
 

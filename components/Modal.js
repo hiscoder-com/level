@@ -17,8 +17,8 @@ function Modal({
       dialogPanel:
         'w-full max-w-md p-6 align-middle transform overflow-y-auto shadow-xl transition-all bg-th-primary-100 text-th-text-secondary-100 rounded-3xl',
       transitionChild: 'fixed inset-0 bg-opacity-25 backdrop-brightness-90',
-      backdrop: 'inset-0 fixed overflow-y-auto backdrop-blur',
-      content: 'flex items-center justify-center p-4 min-h-full',
+      content:
+        'inset-0 fixed flex items-center justify-center p-4 min-h-full overflow-y-auto',
     },
     ...propsClassNames,
   }
@@ -30,6 +30,7 @@ function Modal({
         className={classNames.main}
         onClose={() => !handleCloseDisabled && closeHandle()}
       >
+        <div className="inset-0 fixed backdrop-blur" />
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"
@@ -41,25 +42,23 @@ function Modal({
         >
           <div className={classNames.transitionChild} />
         </Transition.Child>
-        <div className={classNames.backdrop}>
-          <div className={classNames.content}>
-            <Transition.Child
-              as={Fragment}
-              leaveFrom="opacity-100 scale-100"
-              enterFrom="opacity-100 scale-95"
-              enterTo="opacity-100 scale-100"
-              enter="ease-out duration-300"
-              leaveTo="opacity-0 scale-95"
-              leave="ease-in duration-200"
-            >
-              <Dialog.Panel className={classNames.dialogPanel}>
-                <Dialog.Title as="h3" className={classNames.dialogTitle}>
-                  {title}
-                </Dialog.Title>
-                {children}
-              </Dialog.Panel>
-            </Transition.Child>
-          </div>
+        <div className={classNames.content}>
+          <Transition.Child
+            as={Fragment}
+            leaveFrom="opacity-100 scale-100"
+            enterFrom="opacity-100 scale-95"
+            enterTo="opacity-100 scale-100"
+            enter="ease-out duration-300"
+            leaveTo="opacity-0 scale-95"
+            leave="ease-in duration-200"
+          >
+            <Dialog.Panel className={classNames.dialogPanel}>
+              <Dialog.Title as="h3" className={classNames.dialogTitle}>
+                {title}
+              </Dialog.Title>
+              {children}
+            </Dialog.Panel>
+          </Transition.Child>
         </div>
       </Dialog>
     </Transition>

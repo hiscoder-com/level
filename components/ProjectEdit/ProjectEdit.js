@@ -84,6 +84,7 @@ function ProjectEdit() {
   )
   const {
     register,
+    setValue,
     handleSubmit,
     formState: { errors },
     getValues,
@@ -96,6 +97,7 @@ function ProjectEdit() {
   })
   const {
     register: registerSmall,
+    setValue: setValueSmall,
     handleSubmit: handleSubmitSmall,
     formState: { errors: errorsSmall },
     getValues: getValuesSmall,
@@ -187,9 +189,11 @@ function ProjectEdit() {
               <form className="space-y-7" onSubmit={handleSubmit(saveBasicToDb)}>
                 <BasicInformation
                   register={register}
+                  setValue={setValue}
                   errors={errors}
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValues('code') !== code}
+                  project={project}
                 />
                 <ButtonLoading isLoading={isSavingBasic}>{t('Save')}</ButtonLoading>
               </form>
@@ -375,6 +379,9 @@ function ProjectEdit() {
                   errors={errorsSmall}
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValuesSmall('code') !== code}
+                  setValue={setValueSmall}
+                  project={project}
+                  isProjectEdit={true}
                 />
                 <input className="btn-primary" type="submit" value={t('Save')} />
               </form>
