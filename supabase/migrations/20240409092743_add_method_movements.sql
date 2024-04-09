@@ -60,7 +60,7 @@ INSERT INTO
     "subtitle": "STUDY THE TEXT",
     "description": "a. Switch to the “First step” of V-CANA\nb. Each team member begins by reading the selected chapters silently to note the broad context\nStudy the Text\n - Switch to OBSERVATION QUESTIONS to note the details of the text. One reader should read aloud through the “tQUESTIONS” tab of each verse. The other team members should answer from the Literal-text (ULT).\n- The reader should add questions as necessary to ensure that at least one question is asked for each verse and interesting details are not missed.\n- Discuss any unclear or confusing parts of the text.\n- Move to “TRANSLATION QUESTIONS” using the  “tQUESTIONS” tab and work through the chunks again. Consider each of the key terms/phrases listed for each chunk in the “tWORDS” tab. (Do not study the terms definitions at this point – that will be done prior to the oral practice translation).\n- Discuss unclear or confusing parts of the key terms/phrases.\n- Repeat this sequence until all chunks have been discussed through the selected chapters.",
     "whole_chapter": true,
-    "count_of_users": 1,
+    "count_of_users": 0,
     "is_awaiting_team": false
   },
   {
@@ -117,7 +117,7 @@ INSERT INTO
     "subtitle": "DISCOURSE",
     "description": "a. Move to “DISCOURSE QUESTIONS” and consider the following:\n- Identify and discuss the major themes and ideas presented in the text\n- Make application and connections as appropriate to the church today\n- Review the brief summary of the book in the “GENERAL INFORMATION” tab\nb. As necessary, spend some time resolving uncertainties of meaning in the text.\nc. Move to the THEOLOGICAL QUESTIONs as outlined below and discuss each in turn:\n- What do we learn about God’s character, nature and heart and His interaction with man?\n- What do we learn about man’s character, nature and heart and his interaction with God?\n- What do we learn about man’s sin problem, its effects, and the ultimate solution?\nd. Before moving to translation, review as a team the “GENERAL INFORMATION” section for each chapter in focus, to acquaint yourselves with potential translation issues.",
     "whole_chapter": true,
-    "count_of_users": 4,
+    "count_of_users": 0,
     "is_awaiting_team": false
   },
   {
@@ -161,7 +161,7 @@ INSERT INTO
     "subtitle": "PREPARE TO TRANSLATE",
     "description": "- Team members work in pairs\n- Each person reviews his first text chunk from the “LITERAL TEXT” version, studying tNotes and tWords as necessary for help in preparing for translation.\n- If necessary, also review the “SIMPLIFIED TEXT” tool for clarity of meaning. (Do NOT translate from the simplified text – always translate from the literal text)\n- Without looking at the text, tell each other what the chunk says in the target language, as naturally as possible, as if retelling a story to a friend.\n- Each person again reviews his frame for 1 minute\n- Without looking at the text, again tell each other what the chunk says, in the target language\n- Repeat as necessary until both are reasonably comfortable with the oral practice translation\n- NOTE: do not memorize the source text and focus on NATURAL speech. Just retell the content.",
     "whole_chapter": false,
-    "count_of_users": 2,
+    "count_of_users": 0,
     "is_awaiting_team": false
   },
   {
@@ -205,7 +205,7 @@ INSERT INTO
     "subtitle": "CLOSED-BOOK DRAFT",
     "description": "- Each person reviews again his text chunk for 1 minute\n- Click on the pencil icon in the editor panel of V-CANA and type the translation. Retell it from memory, and concentrate on using natural and clear language",
     "whole_chapter": false,
-    "count_of_users": 1,
+    "count_of_users": 0,
     "is_awaiting_team": false
   },
   {
@@ -255,7 +255,7 @@ INSERT INTO
     "subtitle": "SELF-CHECK",
     "description": " Correct the translation. Compare the translation to the source “literal text” and repair accuracy first: anything added? Anything missing? Anything changed?\n- Next, focus on the clarity and naturalness of the translation, using the tNotes and tWords for help and the translation rules to ensure proper focus.",
     "whole_chapter": false,
-    "count_of_users": 2,
+    "count_of_users": 0,
     "is_awaiting_team": false
   },
   {
@@ -314,7 +314,7 @@ INSERT INTO
     "subtitle": "PEER-CHECK",
     "description": "- Read the translation aloud to the partner while the partner follows in the source literal text, first checking for accuracy\n- Discuss and make relevant changes, referring to tNOTES and tWORDS as appropriate\n- Read the translation again with the partner just listening. This time check for clarity and naturalness\n- Discuss and make relevant changes to the text, referring to the TRANSLATION RULES as appropriate.\n- Where disagreement exists, utilize relevant links to tAcademy that may exist in the Words, Notes or the Chapter overview to better understand related translation issues.\n- Where disagreement remains, make a note and move on, leaving the translation as is.\n- Switch roles to review the partner’s chunk translation in a similar way.\n- Repeat the oral practice translation, the drafting/self check, and the peer reviews until all assigned chunks are completed.",
     "whole_chapter": false,
-    "count_of_users": 2,
+    "count_of_users": 0,
     "is_awaiting_team": false
   },
   {
@@ -352,7 +352,7 @@ INSERT INTO
     "subtitle": "PERSONAL REFLECTION",
     "description": "a. Switch from translational thinking to personal reflection by considering the following questions:  \n- How does our increased understanding help change our thinking about God?\n- What does God want me to do with this new understanding?\n- Is there something He has shown me of which I need to repent?\n- What area of my life must I submit to His Lordship?\n- For what am I grateful to the Lord? In what can my heart rejoice? Express this to Him.\nb. Briefly journal some key thoughts\nc. Make notes if applicable for edits to the translated text as informed by my reflections\nd. Share our reflections with one another; confess sin as God leads; pray for each other",
     "whole_chapter": true,
-    "count_of_users": 4,
+    "count_of_users": 0,
     "is_awaiting_team": false
   },
   {
