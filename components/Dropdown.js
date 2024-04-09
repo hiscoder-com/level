@@ -11,7 +11,7 @@ import { projectIdState } from './state/atoms'
 
 import Tools from 'public/tools.svg'
 
-function Dropdown({ description, user }) {
+function Dropdown({ description }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -110,15 +110,17 @@ function Dropdown({ description, user }) {
         >
           {t('AboutStep').toUpperCase()}
         </button>
-        <button
-          className="px-2 rounded-r-lg hover:opacity-70"
-          onClick={(e) => {
-            setShowModalTranslationGoal(true)
-            e.stopPropagation()
-          }}
-        >
-          {t('AboutTranslation').toUpperCase()}
-        </button>
+        {brief?.is_enable && (
+          <button
+            className="px-2 rounded-r-lg hover:opacity-70"
+            onClick={(e) => {
+              setShowModalTranslationGoal(true)
+              e.stopPropagation()
+            }}
+          >
+            {t('AboutTranslation').toUpperCase()}
+          </button>
+        )}
       </div>
     </div>
   )

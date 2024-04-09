@@ -1,9 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import {
-  ObservationQuestions,
-  TheologicalQuestions,
-  DiscourseQuestions,
+  Questions,
   PersonalNotes,
   CommandEditor,
   BlindEditor,
@@ -18,9 +16,8 @@ import {
   TWL,
   TN,
   TQ,
-  ReflectionQuestions,
-  TranslationRules,
 } from './'
+import { questions } from 'utils/config'
 
 function Tool({ config, toolName, tnLink, editable = false }) {
   const { t } = useTranslation(['common', 'books'])
@@ -167,28 +164,27 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       break
 
     case 'observationQuestions':
-      CurrentTool = ObservationQuestions
+      CurrentTool = Questions
+      config.questions = questions.observation
       title = t('observationQuestions')
       break
 
     case 'discourseQuestions':
-      CurrentTool = DiscourseQuestions
+      CurrentTool = Questions
+      config.questions = questions.discourse
       title = t('discourseQuestions')
       break
 
     case 'theologicalQuestions':
-      CurrentTool = TheologicalQuestions
+      CurrentTool = Questions
+      config.questions = questions.theological
       title = t('theologicalQuestions')
       break
 
     case 'reflectionQuestions':
-      CurrentTool = ReflectionQuestions
+      CurrentTool = Questions
+      config.questions = questions.reflection
       title = t('reflectionQuestions')
-      break
-
-    case 'translationRules':
-      CurrentTool = TranslationRules
-      title = t('translationRules')
       break
 
     default:
@@ -204,7 +200,7 @@ function Tool({ config, toolName, tnLink, editable = false }) {
             'draftTranslate',
             'teamNotes',
             'personalNotes',
-            'audio',
+            'retelling',
             'dictionary',
           ].includes(toolName) &&
             `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
