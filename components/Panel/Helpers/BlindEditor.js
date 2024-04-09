@@ -128,7 +128,6 @@ function BlindEditor({ config }) {
       saveVerse(ref)
     }
   }
-
   return (
     <>
       <div>
@@ -188,7 +187,7 @@ function BlindEditor({ config }) {
                   ref={(el) => (textAreaRef.current[index] = el)}
                   dir={config?.isRtl ? 'rtl' : 'ltr'}
                   autoFocus
-                  rows={!isSingleBlockTranslation ? 1 : verseObjects?.length}
+                  rows={!isSingleBlockTranslation ? 1 : 10}
                   className={`mt-3 w-full resize-none focus:outline-none focus:inline-none ${
                     isSingleBlockTranslation ? 'border mx-4' : ''
                   }`}
@@ -254,6 +253,7 @@ function BlindEditor({ config }) {
             <button
               className="btn-secondary flex-1"
               onClick={() => {
+                setIsHideAllVerses(true)
                 setIsOpenModal(false)
                 saveVerse(firstStepRef)
                 setTimeout(() => {
