@@ -380,10 +380,14 @@ function ProjectEdit() {
               </form>
             </div>
           )}
-          <div className="space-y-7">
-            <h3 className="mt-7 text-lg font-bold">{t('project-edit:EditBriefTitle')}</h3>
-            <Brief access={isCoordinatorAccess} />
-          </div>
+          {(brief?.is_enable || isAdminAccess) && (
+            <div className="space-y-7">
+              <h3 className="mt-7 text-lg font-bold">
+                {getBriefName(brief?.name, t('project-edit:EditBriefTitle'))}
+              </h3>
+              <Brief access={isCoordinatorAccess} />
+            </div>
+          )}
           {isCoordinatorAccess && (
             <div className="space-y-7">
               <h3 className="mt-7 text-lg font-bold">{t('Participants')}</h3>

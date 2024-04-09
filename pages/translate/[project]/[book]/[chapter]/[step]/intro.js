@@ -24,7 +24,9 @@ export default function IntroPage() {
   const fetchStepsData = async (project, step) => {
     const stepsData = await supabase
       .from('steps')
-      .select('title, subtitle, intro, is_awaiting_team,sorting, projects!inner(code,id)')
+      .select(
+        'title, subtitle, intro, is_awaiting_team, sorting, projects!inner(code, id)'
+      )
       .match({ 'projects.code': project, sorting: step })
       .single()
     return stepsData.data

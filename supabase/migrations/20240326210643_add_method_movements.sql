@@ -152,7 +152,7 @@ INSERT INTO
           {
             "name": "retelling",
             "config": {
-              "yourself": false
+              "alone": false
             }
           }
         ]

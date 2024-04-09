@@ -29,6 +29,7 @@ function BlindEditor({ config }) {
   const { t } = useTranslation(['common'])
   const textAreaRef = useRef([])
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
+  //When it's true - we have 1 block translation and it save to first verse of divided verses
   const isSingleBlockTranslation = config?.config?.is_single_block_translation
 
   useEffect(() => {

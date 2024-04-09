@@ -15,6 +15,8 @@ export default function Retelling({ config }) {
   const [audioState, setAudioState] = useState('Main')
   const setInactive = useSetRecoilState(inactiveState)
   const router = useRouter()
+  // When isAlone true - user can retell in audio
+  const isAlone = config?.config?.is_alone
 
   useEffect(() => {
     const handleRouteChange = () => {
@@ -31,11 +33,8 @@ export default function Retelling({ config }) {
     <>
       {audioState === 'Retell Yourself' ? (
         <RetellYourself setAudioState={setAudioState} />
-      ) : audioState === 'Retell Partner' || !config?.config?.yourself ? (
-        <RetellPartner
-          setAudioState={setAudioState}
-          isYourselfRetelling={config?.config?.yourself}
-        />
+      ) : audioState === 'Retell Partner' || !isAlone ? (
+        <RetellPartner setAudioState={setAudioState} isYourselfRetelling={isAlone} />
       ) : (
         <Main setAudioState={setAudioState} />
       )}

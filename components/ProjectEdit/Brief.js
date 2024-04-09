@@ -15,11 +15,10 @@ import BriefEditQuestions from 'components/BriefEditQuestions'
 import ButtonLoading from 'components/ButtonLoading'
 
 import { useGetBrief, useProject } from 'utils/hooks'
-
 import useSupabaseClient from 'utils/supabaseClient'
+import { getBriefName } from 'utils/helper'
 
 import Pencil from 'public/editor-pencil.svg'
-import { getBriefName } from 'utils/helper'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
