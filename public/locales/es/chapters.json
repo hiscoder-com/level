@@ -3,11 +3,12 @@
   "CancelFinishedChapter": "Отменить 'Закончить главу'",
   "CancelStartChapter": "Отменить 'Начать главу'",
   "Created": "Создано",
+  "Deselect": "Deselect",
+  "FastDivide": "Fast divide",
   "FinishedAt": "Закончена",
   "FinishedChapter": "Закончить главу",
-  "FastDivide": "Fast divide",
   "ReadOnly": "Modo de sólo lectura",
-  "SelectAllVerses": "Seleccionar todos los versículos",
+  "SelectAll": "Select all",
   "StartChapter": "Начать главу",
   "StartedAt": "Начата"
 }
