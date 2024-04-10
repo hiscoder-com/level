@@ -3,12 +3,12 @@
   "CancelFinishedChapter": "Отменить 'Закончить главу'",
   "CancelStartChapter": "Отменить 'Начать главу'",
   "Created": "Создано",
-  "Deselect": "Deselect",
+  "Deselect": "Снять выделение",
   "FastDivide": "Быстрое распределение",
   "FinishedAt": "Закончена",
   "FinishedChapter": "Закончить главу",
   "ReadOnly": "Режим только для чтения",
-  "SelectAll": "Select all",
+  "SelectAll": "Выделить все",
   "StartChapter": "Начать главу",
   "StartedAt": "Начата"
 }
