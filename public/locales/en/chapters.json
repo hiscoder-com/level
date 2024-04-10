@@ -3,11 +3,12 @@
   "CancelFinishedChapter": "Cancel finished chapter",
   "CancelStartChapter": "Cancel started chapter",
   "Created": "Created",
+  "Deselect": "Deselect",
+  "FastDivide": "Fast divide",
   "FinishedAt": "Finished at",
   "FinishedChapter": "Finish the chapter",
-  "FastDivide": "Fast divide",
   "ReadOnly": "Read-only mode",
-  "SelectAllVerses": "Select all verses",
+  "SelectAll": "Select all",
   "StartChapter": "Start the chapter",
   "StartedAt": "Started at"
 }

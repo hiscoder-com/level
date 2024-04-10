@@ -1,3 +1,12 @@
+# Versión 0.17.0
+## Fecha: 04/10/2024
+
+### **Añadido:**
+- Se agregaron los botones "Seleccionar todo" y "Deseleccionar" en la página de asignación de versos.
+
+### **Corregido:**
+- Se corrigió la edición del código del proyecto en la sección "Configuración del proyecto".
+
 # Versión 0.16.0
 ## Fecha: 03/29/2024
 

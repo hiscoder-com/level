@@ -41,10 +41,11 @@ export default async function projectHandler(req, res) {
           project_code: code,
         })
         if (error) throw error
+
+        return res.status(200).json({ success: 'updated' })
       } catch (error) {
         return res.status(404).json({ error })
       }
-      return res.status(200).json({ success: 'updated' })
 
     default:
       res.setHeader('Allow', ['GET', 'PUT'])

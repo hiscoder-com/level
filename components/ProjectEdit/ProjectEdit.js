@@ -175,7 +175,6 @@ function ProjectEdit() {
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValues('code') !== code}
                   project={project}
-                  isProjectEdit={true}
                 />
                 <ButtonLoading isLoading={isSavingBasic}>{t('Save')}</ButtonLoading>
               </form>
@@ -354,7 +353,6 @@ function ProjectEdit() {
                 uniqueCheck={getValuesSmall('code') !== code}
                 setValue={setValueSmall}
                 project={project}
-                isProjectEdit={true}
               />
               <input className="btn-primary" type="submit" value={t('Save')} />
             </form>
