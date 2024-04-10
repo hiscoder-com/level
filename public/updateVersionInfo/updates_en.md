@@ -1,3 +1,12 @@
+# Version 0.17.0
+## Date: 04/10/2024
+
+### **Added:**
+- added "Select all" and "Deselect" buttons on the verse assignment page
+
+### **Fixed:**
+- Fixed editing the Project Code in the "Project Settings" section
+
 # Version 0.16.0
 ## Date: 03/29/2024
 
