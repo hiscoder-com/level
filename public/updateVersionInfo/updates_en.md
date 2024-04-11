@@ -1,18 +1,32 @@
+# Version 0.18.0
+## Date: 04/11/2024
+
+### **Added:**
+- method "Movements"
+- support RTL direction in PersonalNotes, TeamNotes, Dictionary, BlindEditor, Editor, CommandEditor
+- renaming brief
+- hiding brief in Account, Project page, AppBar
+- option single block for translation in BlindEditor
+- subtitle for steps
+
+### **Changed:**
+- renamed component Audio in Retelling
+
 # Version 0.17.0
 ## Date: 04/10/2024
 
 ### **Added:**
-- added "Select all" and "Deselect" buttons on the verse assignment page
+- "Select all" and "Deselect" buttons on the verse assignment page
 
 ### **Fixed:**
-- Fixed editing the Project Code in the "Project Settings" section
+- editing the Project Code in the "Project Settings" section
 
 # Version 0.16.0
 ## Date: 03/29/2024
 
 ### **Added:**
-- In the project settings, auto-completion has been added when selecting translators, coordinators and when choosing a language
-- Added autocomplete book selection to BookReader navigation
+- in the project settings, auto-completion has been added when selecting translators, coordinators and when choosing a language
+- autocomplete book selection to BookReader navigation
 
 # Version 0.15.1
 ## Date: 03/21/2024
