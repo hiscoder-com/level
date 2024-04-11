@@ -3,11 +3,12 @@
   "CancelFinishedChapter": "Отменить 'Закончить главу'",
   "CancelStartChapter": "Отменить 'Начать главу'",
   "Created": "Создано",
+  "Deselect": "Снять выделение",
+  "FastDivide": "Быстрое распределение",
   "FinishedAt": "Закончена",
   "FinishedChapter": "Закончить главу",
-  "FastDivide": "Быстрое распределение",
   "ReadOnly": "Режим только для чтения",
-  "SelectAllVerses": "Выбрать все стихи",
+  "SelectAll": "Выделить все",
   "StartChapter": "Начать главу",
   "StartedAt": "Начата"
 }
