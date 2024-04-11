@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-function AutoSizeTextArea({ disabled = false, updateVerse, index, verseObject }) {
+function AutoSizeTextArea({ updateVerse, index, verseObject, disabled = false }) {
   const [startValue, setStartValue] = useState(false)
   useEffect(() => {
     if (startValue === false || disabled) {

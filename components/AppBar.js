@@ -76,25 +76,30 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         {isStepPage && (
           <>
             <div
-              className={`block md:flex text-center text-th-text-secondary-100 ${
+              className={`block md:flex flex-col text-center text-th-text-secondary-100 ${
                 showFullAppbar ? '' : 'hidden'
               }`}
             >
-              {stepConfig.title}
+              <div>{stepConfig.title}</div>
+              {stepConfig.subtitle && (
+                <div className="text-xs">{stepConfig.subtitle}</div>
+              )}
             </div>
             <div
               className={`block md:flex items-center gap-4 justify-center md:justify-start text-th-text-primary ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
-              <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-10 rounded-3xl">
-                <User className="w-4 h-4 stroke-th-text-primary" />
-                {stepConfig.count_of_users}
-              </div>
+              {stepConfig.count_of_users > 0 && (
+                <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-10 rounded-3xl">
+                  <User className="w-4 h-4 stroke-th-text-primary" />
+                  {stepConfig.count_of_users}
+                </div>
+              )}
               <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
-              <Dropdown description={stepConfig?.description} user={user} />
+              <Dropdown description={stepConfig?.description} />
             </div>
           </>
         )}

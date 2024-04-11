@@ -1,6 +1,6 @@
 {
-  "version": "0.17.0",
-  "date": "2024-04-10",
+  "version": "0.18.0",
+  "date": "2024-04-11",
   "dependencies": [
     "npm/@texttree/notepad-rcl",
     "npm/@texttree/obs-format-convert-rcl",

@@ -13,7 +13,7 @@ import { inactiveState } from './state/atoms'
 import Dict from 'public/dictionary.svg'
 import TeamNote from 'public/team-note.svg'
 import Notepad from 'public/notepad.svg'
-import Audio from 'public/audio.svg'
+import Retelling from 'public/audio.svg'
 import Pencil from 'public/editor-pencil.svg'
 import Info from 'public/info.svg'
 
@@ -32,7 +32,7 @@ const icons = {
   personalNotes: <Notepad className="w-5 inline" />,
   teamNotes: <TeamNote className="w-5 inline" />,
   dictionary: <Dict className="w-5 inline" />,
-  audio: <Audio className="w-5 inline" />,
+  retelling: <Retelling className="w-5 inline" />,
   info: <Info className="w-5 inline" />,
   commandTranslate: translateIcon,
   draftTranslate: translateIcon,
@@ -85,6 +85,7 @@ function Workspace({ stepConfig, reference, editable = false }) {
               tnLink={tnLink}
               wholeChapter={stepConfig.whole_chapter}
               editable={editable}
+              isRtl={stepConfig.is_rtl}
             />
           </div>
         )
@@ -114,6 +115,7 @@ function Panel({
   mainResource,
   tnLink,
   wholeChapter,
+  isRtl = false,
   editable = false,
 }) {
   const { t } = useTranslation('common')
@@ -140,13 +142,22 @@ function Panel({
               'draftTranslate',
               'teamNotes',
               'personalNotes',
-              'audio',
+              'retelling',
               'dictionary',
               'info',
+              'tnotes',
+              'tquestions',
+              'twords',
             ].includes(tool.name) ? (
               <span title={t(tool.name)}>
                 {icons[tool.name]}
-                <span className="hidden ml-2 sm:inline">{t(tool.name)}</span>
+                <span
+                  className={`${
+                    tool.name && icons[tool.name] ? 'hidden' : ''
+                  } ml-2 sm:inline`}
+                >
+                  {t(tool.name)}
+                </span>
               </span>
             ) : (
               tool.name
@@ -170,6 +181,7 @@ function Panel({
                     resource: resources[tool.name]
                       ? resources[tool.name]
                       : { manifest: { dublin_core: { subject: tool.name } } },
+                    isRtl,
                   }}
                   toolName={tool.name}
                 />

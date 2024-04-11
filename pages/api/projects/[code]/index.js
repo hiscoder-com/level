@@ -30,7 +30,7 @@ export default async function projectHandler(req, res) {
       }
       return res.status(200).json({ ...data })
     case 'PUT':
-      const { code: new_code, title, orig_title, language_id } = basicInfo
+      const { code: new_code, title, orig_title, language_id, is_rtl } = basicInfo
 
       try {
         const { error } = await supabase.rpc('update_project_basic', {
@@ -39,6 +39,7 @@ export default async function projectHandler(req, res) {
           title,
           code: new_code,
           project_code: code,
+          is_rtl,
         })
         if (error) throw error
 

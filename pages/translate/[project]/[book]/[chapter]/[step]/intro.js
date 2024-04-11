@@ -18,13 +18,15 @@ export default function IntroPage() {
   const { query, replace } = useRouter()
   const { project, book, chapter, step } = query
   const [introMd, setIntroMd] = useState('')
-  const [title, setTitle] = useState('')
+  const [title, setTitle] = useState({})
   const [isOpenModal, setIsOpenModal] = useState(false)
 
   const fetchStepsData = async (project, step) => {
     const stepsData = await supabase
       .from('steps')
-      .select('title,intro,is_awaiting_team,sorting,projects!inner(code,id)')
+      .select(
+        'title, subtitle, intro, is_awaiting_team, sorting, projects!inner(code, id)'
+      )
       .match({ 'projects.code': project, sorting: step })
       .single()
     return stepsData.data
@@ -57,7 +59,7 @@ export default function IntroPage() {
       try {
         const stepsData = await fetchStepsData(project, step)
         setIntroMd(stepsData.intro)
-        setTitle(stepsData.title)
+        setTitle({ title: stepsData.title, subtitle: stepsData.subtitle })
         const curentSteps = await fetchCurrentSteps(stepsData.projects.id)
         const current_step = curentSteps.filter(
           (el) => el.book === book && el.chapter.toString() === chapter.toString()
@@ -92,7 +94,7 @@ export default function IntroPage() {
   return (
     <div className="layout-appbar">
       <Head>
-        <title>{title}</title>
+        <title>{title?.title}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

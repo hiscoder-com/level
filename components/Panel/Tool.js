@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import {
+  Questions,
   PersonalNotes,
   CommandEditor,
   BlindEditor,
@@ -8,7 +9,7 @@ import {
   TeamNotes,
   Editor,
   Reader,
-  Audio,
+  Retelling,
   Bible,
   OBSTN,
   Info,
@@ -16,6 +17,7 @@ import {
   TN,
   TQ,
 } from './'
+import { questions } from 'utils/config'
 
 function Tool({ config, toolName, tnLink, editable = false }) {
   const { t } = useTranslation(['common', 'books'])
@@ -143,9 +145,9 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       title = t('personalNotes')
       break
 
-    case 'audio':
-      CurrentTool = Audio
-      title = t('audio')
+    case 'retelling':
+      CurrentTool = Retelling
+      title = t('retelling')
       break
 
     case 'dictionary':
@@ -161,6 +163,26 @@ function Tool({ config, toolName, tnLink, editable = false }) {
       url = '/api/git/info'
       break
 
+    case 'observationQuestions':
+      CurrentTool = Questions
+      title = t('observationQuestions')
+      break
+
+    case 'discourseQuestions':
+      CurrentTool = Questions
+      title = t('discourseQuestions')
+      break
+
+    case 'theologicalQuestions':
+      CurrentTool = Questions
+      title = t('theologicalQuestions')
+      break
+
+    case 'reflectionQuestions':
+      CurrentTool = Questions
+      title = t('reflectionQuestions')
+      break
+
     default:
       return <div>{t('WrongResource')}</div>
   }
@@ -174,7 +196,7 @@ function Tool({ config, toolName, tnLink, editable = false }) {
             'draftTranslate',
             'teamNotes',
             'personalNotes',
-            'audio',
+            'retelling',
             'dictionary',
           ].includes(toolName) &&
             `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}

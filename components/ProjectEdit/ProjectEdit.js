@@ -19,8 +19,19 @@ import BasicInformation from '../BasicInformation'
 import LanguageCreate from '../LanguageCreate'
 import ButtonLoading from '../ButtonLoading'
 
-import { useAccess, useGetSteps, useLanguages, useProject, useUsers } from 'utils/hooks'
+const classNameTabField =
+  'p-3 sm:py-5 sm:px-8 border border-th-secondary-300 shadow-md bg-th-secondary-10 rounded-t-none rounded-b-2xl space-y-7'
+
+import {
+  useAccess,
+  useGetBrief,
+  useGetSteps,
+  useLanguages,
+  useProject,
+  useUsers,
+} from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+import { getBriefName } from 'utils/helper'
 const sizeTabs = {
   1: 'w-1/6',
   2: 'w-2/6',
@@ -54,6 +65,9 @@ function ProjectEdit() {
   })
 
   const [project, { mutate: mutateProject }] = useProject({ code })
+  const [brief] = useGetBrief({
+    project_id: project?.id,
+  })
   const [{ isCoordinatorAccess, isModeratorAccess, isAdminAccess, isTranslatorAccess }] =
     useAccess({
       user_id: user?.id,
@@ -100,6 +114,10 @@ function ProjectEdit() {
     if (!title || !codeProject || !languageId || !origtitle) {
       return
     }
+    const language = languages.find((el) => el.id.toString() === languageId.toString())
+    if (!language) {
+      return
+    }
     setIsSavingBasic(true)
     axios
       .put(`/api/projects/${code}`, {
@@ -108,6 +126,7 @@ function ProjectEdit() {
           code: codeProject,
           language_id: languageId,
           orig_title: origtitle,
+          is_rtl: language.is_rtl,
         },
       })
       .then(() => {
@@ -131,7 +150,7 @@ function ProjectEdit() {
   }
 
   const saveStepToDb = async (updatedStep) => {
-    const step = ['title', 'intro', 'description'].reduce(
+    const step = ['title', 'intro', 'description', 'subtitle'].reduce(
       (acc, key) => ({ ...acc, [key]: updatedStep[key] }),
       {}
     )
@@ -182,12 +201,6 @@ function ProjectEdit() {
           ),
         },
         {
-          id: 'brief',
-          access: isTranslatorAccess,
-          label: 'project-edit:Brief',
-          panel: <Brief access={isCoordinatorAccess} title />,
-        },
-        {
           id: 'participants',
           access: isModeratorAccess,
           label: 'Participants',
@@ -236,6 +249,12 @@ function ProjectEdit() {
             </>
           ),
         },
+        {
+          id: 'brief',
+          access: isAdminAccess || (isTranslatorAccess && brief?.is_enable),
+          label: getBriefName(brief?.name, t('project-edit:EditBriefTitle')),
+          panel: <Brief access={isCoordinatorAccess} title />,
+        },
       ].filter((el) => el.access),
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -249,16 +268,20 @@ function ProjectEdit() {
       users,
       customSteps,
       getValues,
+      brief?.is_enable,
+      brief?.name,
     ]
   )
-
   const idTabs = useMemo(() => tabs.map((tab) => tab.id), [tabs])
 
   const saveStepsToDb = async ({ steps }) => {
-    const _steps = steps.map((step) => {
-      const { id, description, intro, title } = step
-      return { id, description, intro, title }
-    })
+    const _steps = steps.map(({ id, description, intro, title, subtitle }) => ({
+      id,
+      description,
+      intro,
+      title,
+      subtitle,
+    }))
     setIsSavingSteps(true)
     axios
       .put(`/api/projects/${code}/steps`, {
@@ -324,13 +347,17 @@ function ProjectEdit() {
 
             <div className="px-5 h-12 bg-th-primary-500 rounded-t-3xl" />
             <Tab.Panels>
-              {tabs.map((tab, idx) => (
-                <Tab.Panel key={idx}>
-                  <div className="p-3 sm:py-5 sm:px-8 border border-th-secondary-300 shadow-md bg-th-secondary-10 rounded-t-none rounded-b-2xl space-y-7">
-                    {tab.panel}
-                  </div>
-                </Tab.Panel>
-              ))}
+              <>
+                {tabs.length > 0 ? (
+                  tabs.map((tab) => (
+                    <Tab.Panel key={tab.id}>
+                      <div className={classNameTabField}>{tab.panel}</div>
+                    </Tab.Panel>
+                  ))
+                ) : (
+                  <div className={classNameTabField}></div>
+                )}
+              </>
             </Tab.Panels>
           </Tab.Group>
         )}
@@ -343,40 +370,53 @@ function ProjectEdit() {
           ]}
         />
         <div className="space-y-7 divide-y divide-th-text-primary">
-          <div className="space-y-7">
-            <h3 className="text-lg font-bold">{t('project-edit:BasicInformation')}</h3>
-            <form className="space-y-7" onSubmit={handleSubmitSmall(saveBasicToDb)}>
-              <BasicInformation
-                register={registerSmall}
-                errors={errorsSmall}
-                setIsOpenLanguageCreate={setIsOpenLanguageCreate}
-                uniqueCheck={getValuesSmall('code') !== code}
-                setValue={setValueSmall}
-                project={project}
+          {isAdminAccess && (
+            <div className="space-y-7">
+              <h3 className="text-lg font-bold">{t('project-edit:BasicInformation')}</h3>
+              <form className="space-y-7" onSubmit={handleSubmitSmall(saveBasicToDb)}>
+                <BasicInformation
+                  register={registerSmall}
+                  errors={errorsSmall}
+                  setIsOpenLanguageCreate={setIsOpenLanguageCreate}
+                  uniqueCheck={getValuesSmall('code') !== code}
+                  setValue={setValueSmall}
+                  project={project}
+                  isProjectEdit={true}
+                />
+                <input className="btn-primary" type="submit" value={t('Save')} />
+              </form>
+            </div>
+          )}
+          {(brief?.is_enable || isAdminAccess) && (
+            <div className="space-y-7">
+              <h3 className="mt-7 text-lg font-bold">
+                {getBriefName(brief?.name, t('project-edit:EditBriefTitle'))}
+              </h3>
+              <Brief access={isCoordinatorAccess} />
+            </div>
+          )}
+          {isCoordinatorAccess && (
+            <div className="space-y-7">
+              <h3 className="mt-7 text-lg font-bold">{t('Participants')}</h3>
+              <Participants
+                user={user}
+                users={users}
+                access={{ isCoordinatorAccess, isAdminAccess }}
               />
-              <input className="btn-primary" type="submit" value={t('Save')} />
-            </form>
-          </div>
-          <div className="space-y-7">
-            <h3 className="mt-7 text-lg font-bold">{t('project-edit:EditBriefTitle')}</h3>
-            <Brief access={isCoordinatorAccess} />
-          </div>
-          <div className="space-y-7">
-            <h3 className="mt-7 text-lg font-bold">{t('Participants')}</h3>
-            <Participants
-              user={user}
-              users={users}
-              access={{ isCoordinatorAccess, isAdminAccess }}
-            />
-          </div>
-          <div className="space-y-7">
-            <h3 className="mt-7 text-lg font-bold">{t('ListResources')}</h3>
-            <ResourceSettings />
-          </div>
-          <div className="space-y-7">
-            <h3 className="mt-7 text-lg font-bold">{t('Steps')}</h3>
-            <Steps customSteps={customSteps} updateSteps={updateSteps} />
-          </div>
+            </div>
+          )}
+          {isCoordinatorAccess && (
+            <div className="space-y-7">
+              <h3 className="mt-7 text-lg font-bold">{t('ListResources')}</h3>
+              <ResourceSettings />
+            </div>
+          )}
+          {isCoordinatorAccess && (
+            <div className="space-y-7">
+              <h3 className="mt-7 text-lg font-bold">{t('Steps')}</h3>
+              <Steps customSteps={customSteps} updateSteps={updateSteps} />
+            </div>
+          )}
         </div>
       </div>
       <LanguageCreate
