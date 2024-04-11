@@ -115,7 +115,7 @@ function Panel({
   mainResource,
   tnLink,
   wholeChapter,
-  isRtl,
+  isRtl = false,
   editable = false,
 }) {
   const { t } = useTranslation('common')

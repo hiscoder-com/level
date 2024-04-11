@@ -191,6 +191,7 @@ function CommandEditor({ config }) {
           id={'commandTranslate' + verseObject.num}
           key={verseObject.verse_id}
           className="flex my-3"
+          dir={config?.isRtl ? 'rtl' : 'ltr'}
         >
           <div
             className={

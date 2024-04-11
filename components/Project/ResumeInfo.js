@@ -12,7 +12,8 @@ function ResumeInfo({ project }) {
 
   const titleBrief = useMemo(() => {
     return getBriefName(brief?.name, `${t('TranslationGoal')} / ${t('projects:Resume')}`)
-  }, [brief?.name, t])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brief?.name])
 
   return (
     <Card

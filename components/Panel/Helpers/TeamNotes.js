@@ -70,7 +70,7 @@ function TeamNotes({ config }) {
     return checkLSVal('activeTeamNote', {}, 'object')
   })
   const [isOpenModal, setIsOpenModal] = useState(false)
-  const { t } = useTranslation(['common, error'])
+  const { t } = useTranslation(['common', 'error'])
   const [term, setTerm] = useState('')
   const { user } = useCurrentUser()
   const [allNotes] = useAllTeamlNotes()
@@ -251,7 +251,7 @@ function TeamNotes({ config }) {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('common:SaveFailed'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
@@ -263,7 +263,7 @@ function TeamNotes({ config }) {
 
   const addNode = (isFolder = false) => {
     const id = generateUniqueId(allNotes)
-    const title = isFolder ? t('common:NewFolder') : t('common:NewNote')
+    const title = isFolder ? t('NewFolder') : t('NewNote')
 
     axios
       .post('/api/team_notes', {
@@ -278,7 +278,7 @@ function TeamNotes({ config }) {
 
   const handleRenameNode = (newTitle, id) => {
     if (!newTitle.trim()) {
-      newTitle = t('common:EmptyTitle')
+      newTitle = t('EmptyTitle')
     }
     axios
       .put(`/api/team_notes/${id}`, { title: newTitle })
@@ -356,16 +356,14 @@ function TeamNotes({ config }) {
     }
   }
 
-  const classNameButtonIcon = `flex items-center gap-2.5 py-1 pl-2.5 ${
-    isRtl ? 'pr-2' : 'pr-7'
-  }`
+  const classNameButtonIcon = 'flex items-center gap-2.5 py-1 pl-2.5 ltr:pr-7 rtl:pr-2'
   const menuItems = {
     contextMenu: [
       {
         id: 'adding_note',
         buttonContent: (
           <span className={classNameButtonIcon}>
-            <FileIcon /> {t('common:NewDocument')}
+            <FileIcon /> {t('NewDocument')}
           </span>
         ),
         action: () => addNode(),
@@ -374,7 +372,7 @@ function TeamNotes({ config }) {
         id: 'adding_folder',
         buttonContent: (
           <span className={classNameButtonIcon}>
-            <CloseFolder /> {t('common:NewFolder')}
+            <CloseFolder /> {t('NewFolder')}
           </span>
         ),
         action: () => addNode(true),
@@ -383,7 +381,7 @@ function TeamNotes({ config }) {
         id: 'rename',
         buttonContent: (
           <span className={classNameButtonIcon}>
-            <Rename /> {t('common:Rename')}
+            <Rename /> {t('Rename')}
           </span>
         ),
         action: handleRename,
@@ -392,7 +390,7 @@ function TeamNotes({ config }) {
         id: 'delete',
         buttonContent: (
           <span className={classNameButtonIcon}>
-            <Trash className="w-4" /> {t('common:Delete')}
+            <Trash className="w-4" /> {t('Delete')}
           </span>
         ),
         action: () => setIsOpenModal(true),
@@ -403,7 +401,7 @@ function TeamNotes({ config }) {
         id: 'export',
         buttonContent: (
           <span className={classNameButtonIcon}>
-            <Export className="w-4 stroke-2" /> {t('common:Export')}
+            <Export className="w-4 stroke-2" /> {t('Export')}
           </span>
         ),
         action: () => exportNotes(),
@@ -412,7 +410,7 @@ function TeamNotes({ config }) {
         id: 'import',
         buttonContent: (
           <span className={classNameButtonIcon}>
-            <Import className="w-4 stroke-2" /> {t('common:Import')}
+            <Import className="w-4 stroke-2" /> {t('Import')}
           </span>
         ),
         action: () => importNotes(true),
@@ -421,7 +419,7 @@ function TeamNotes({ config }) {
         id: 'remove',
         buttonContent: (
           <span className={classNameButtonIcon}>
-            <Trash className="w-4 stroke-2" /> {t('common:RemoveAll')}
+            <Trash className="w-4 stroke-2" /> {t('RemoveAll')}
           </span>
         ),
         action: () => setIsOpenModal(true),
@@ -444,30 +442,24 @@ function TeamNotes({ config }) {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   return (
-    <div className="relative">
+    <div dir={isRtl ? 'rtl' : 'ltr'} className="relative">
       {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
           {isModeratorAccess && (
-            <div className="flex justify-end w-full">
-              <MenuButtons
-                classNames={dropMenuClassNames}
-                menuItems={dropMenuItems}
-                isRtl={isRtl}
-              />
+            <div className="flex ltr:justify-end rtl:justify-start w-full">
+              <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
             </div>
           )}
-          <div className="relative flex items-center mb-4" dir={isRtl ? 'rtl' : 'ltr'}>
+          <div className="relative flex items-center mb-4">
             <input
               className="input-primary flex-1"
               value={term}
               onChange={(event) => setTerm(event.target.value)}
-              placeholder={t('common:Search')}
+              placeholder={t('Search')}
             />
             {term && (
               <Close
-                className={`absolute р-6 w-6 z-10 cursor-pointer ${
-                  isRtl ? 'left-1' : 'right-1 '
-                }`}
+                className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1"
                 onClick={() => setTerm('')}
               />
             )}
@@ -478,15 +470,14 @@ function TeamNotes({ config }) {
               selection={noteId}
               handleDeleteNode={handleRemoveNode}
               classes={{
-                nodeWrapper: `px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ${
-                  isRtl ? '' : 'flex'
-                }`,
+                nodeWrapper:
+                  'px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex',
                 nodeTextBlock: 'items-center truncate',
               }}
               data={dataForTreeView}
               setSelectedNodeId={setNoteId}
               selectedNodeId={noteId}
-              treeWidth={'w-full'}
+              treeWidth="w-full"
               icons={icons}
               handleOnClick={changeNode}
               handleContextMenu={handleContextMenu}
@@ -539,8 +530,8 @@ function TeamNotes({ config }) {
             activeNote={activeNote}
             setActiveNote={setActiveNote}
             readOnly={!isModeratorAccess}
-            placeholder={isModeratorAccess ? t('common:TextNewNote') : ''}
-            emptyTitle={t('common:EmptyTitle')}
+            placeholder={isModeratorAccess ? t('TextNewNote') : ''}
+            emptyTitle={t('EmptyTitle')}
             isSelectableTitle
             isRtl={isRtl}
           />
@@ -549,8 +540,7 @@ function TeamNotes({ config }) {
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('common:AreYouSureDelete') + ' ' + currentNodeProps?.node.data.name ||
-              '' + '?'}
+            {t('AreYouSureDelete') + ' ' + currentNodeProps?.node.data.name || '' + '?'}
           </div>
           <div className="flex gap-7 w-1/2">
             <button
@@ -560,13 +550,13 @@ function TeamNotes({ config }) {
                 removeNode()
               }}
             >
-              {t('common:Yes')}
+              {t('Yes')}
             </button>
             <button
               className="btn-secondary flex-1"
               onClick={() => setIsOpenModal(false)}
             >
-              {t('common:No')}
+              {t('No')}
             </button>
           </div>
         </div>

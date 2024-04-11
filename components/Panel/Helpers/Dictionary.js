@@ -391,13 +391,13 @@ function Dictionary({ config }) {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   return (
-    <div className="relative">
+    <div dir={isRtl ? 'rtl' : 'ltr'} className="relative">
       {!activeWord ? (
         <>
           <div className="flex gap-4 items-start">
             {isModeratorAccess && (
               <>
-                <div className="flex w-full justify-end gap-2">
+                <div className="flex w-full gap-2 justify-end ltr:flex-row rtl:flex-row-reverse">
                   <button
                     className="btn-tertiary p-3"
                     onClick={addNote}
@@ -408,7 +408,6 @@ function Dictionary({ config }) {
                   <MenuButtons
                     classNames={dropMenuClassNames}
                     menuItems={dropMenuItems}
-                    isRtl={isRtl}
                   />
                 </div>
               </>
@@ -423,10 +422,7 @@ function Dictionary({ config }) {
               t={t}
               isRtl={isRtl}
             />
-            <div
-              className="relative flex items-center mt-2 ml-2"
-              dir={isRtl ? 'rtl' : 'ltr'}
-            >
+            <div className="relative flex items-center mt-2 ml-2">
               <input
                 className="input-primary"
                 value={searchQuery}
@@ -568,18 +564,11 @@ function Dictionary({ config }) {
 
 export default Dictionary
 
-function Alphabet({
-  alphabet,
-  getAll,
-  setCurrentPageWords,
-  setSearchQuery,
-  t,
-  isRtl = false,
-}) {
+function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) {
   const uniqueAlphabet = [...new Set(alphabet)]
 
   return (
-    <div className="flex flex-wrap" dir={isRtl ? 'rtl' : 'ltr'}>
+    <div className="flex flex-wrap">
       {uniqueAlphabet &&
         uniqueAlphabet
           .sort((a, b) => a.localeCompare(b))

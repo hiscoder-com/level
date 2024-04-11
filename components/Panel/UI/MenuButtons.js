@@ -2,7 +2,7 @@ import { useState } from 'react'
 import DropdownMenu from './DropdownMenu'
 import Plus from 'public/plus.svg'
 
-function MenuButtons({ classNames, menuItems, isRtl = false }) {
+function MenuButtons({ classNames, menuItems }) {
   const [isOpenDotsMenu, setIsOpenDotsMenu] = useState(false)
   const [isOpenPlusMenu, setIsOpenPlusMenu] = useState(false)
 
@@ -17,7 +17,7 @@ function MenuButtons({ classNames, menuItems, isRtl = false }) {
     {
       id: 'dots',
       icon: (
-        <div className="flex items-center justify-center w-6 h-6 space-x-1">
+        <div className="flex items-center justify-center w-6 h-6 gap-1">
           {[...Array(3).keys()].map((key) => (
             <div key={key} className="h-1 w-1 bg-th-secondary-10 rounded-full" />
           ))}
@@ -29,7 +29,7 @@ function MenuButtons({ classNames, menuItems, isRtl = false }) {
     },
   ].filter((item) => Object.keys(menuItems).includes(item.id))
   return (
-    <div className="flex gap-2 relative">
+    <div className="flex gap-2 relative ltr:flex-row rtl:flex-row-reverse">
       {buttons.map((button) => (
         <div key={button.id} className="relative">
           <button
@@ -43,7 +43,6 @@ function MenuButtons({ classNames, menuItems, isRtl = false }) {
             classNames={classNames}
             isOpenMenu={button.isOpen}
             setIsOpenMenu={button.action}
-            isRtl={isRtl}
           />
         </div>
       ))}

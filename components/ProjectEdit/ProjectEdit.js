@@ -126,7 +126,7 @@ function ProjectEdit() {
           code: codeProject,
           language_id: languageId,
           orig_title: origtitle,
-          is_rtl: language?.is_rtl,
+          is_rtl: language.is_rtl,
         },
       })
       .then(() => {

@@ -165,25 +165,21 @@ function Tool({ config, toolName, tnLink, editable = false }) {
 
     case 'observationQuestions':
       CurrentTool = Questions
-      config.questions = questions.observation
       title = t('observationQuestions')
       break
 
     case 'discourseQuestions':
       CurrentTool = Questions
-      config.questions = questions.discourse
       title = t('discourseQuestions')
       break
 
     case 'theologicalQuestions':
       CurrentTool = Questions
-      config.questions = questions.theological
       title = t('theologicalQuestions')
       break
 
     case 'reflectionQuestions':
       CurrentTool = Questions
-      config.questions = questions.reflection
       title = t('reflectionQuestions')
       break
 

@@ -23,7 +23,8 @@ function ProjectCard({ project, user }) {
       briefName,
       t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
     )
-  }, [briefName, isCoordinatorAccess, t])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [briefName, isCoordinatorAccess])
   return (
     <>
       {!project?.code || isLoading || !user?.id ? (

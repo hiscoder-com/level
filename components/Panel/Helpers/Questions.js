@@ -1,4 +1,8 @@
-function Questions({ config: { questions } }) {
+function Questions({
+  config: {
+    config: { questions },
+  },
+}) {
   return (
     <ul className="space-y-2">
       {questions.map((question) => (

@@ -51,13 +51,13 @@ function Editor({ config }) {
           key={verseObject.verse_id}
           id={'translate' + verseObject.num}
           className="flex my-3 pt-1"
+          dir={config?.isRtl ? 'rtl' : 'ltr'}
         >
           <div>{obsCheckAdditionalVerses(verseObject.num)}</div>
           <AutoSizeTextArea
             verseObject={verseObject}
             index={index}
             updateVerse={updateVerse}
-            isRtl={config?.isRtl}
           />
         </div>
       ))}

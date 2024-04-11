@@ -75,7 +75,7 @@ function ChapterList() {
   const nameButtonBrief = useMemo(() => {
     return getBriefName(
       briefName,
-      t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
+      t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
     )
   }, [briefName, isCoordinatorAccess, t])
 

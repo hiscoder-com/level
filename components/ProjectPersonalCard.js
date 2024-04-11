@@ -114,9 +114,10 @@ function ProjectPersonalCard({ project, user }) {
   const nameButtonBrief = useMemo(() => {
     return getBriefName(
       briefName,
-      t(`common:${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
+      t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
     )
-  }, [briefName, isCoordinatorAccess, t])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [briefName, isCoordinatorAccess])
 
   return (
     <>

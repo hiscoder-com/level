@@ -258,28 +258,3 @@ export const bookChapters = {
   rev: 22,
   obs: 50,
 }
-
-export const questions = {
-  reflection: [
-    'How does our increased understanding help change our thinking about God?',
-    'What does God want me to do with this new understanding?',
-    'Is there something He has shown me of which I need to repent?',
-    'What area of my life must I submit to His Lordship?',
-    'For what am I grateful to the Lord? In what can my heart rejoice? Express this to Him',
-  ],
-  theological: [
-    'What do we learn about God’s character, nature and heart and His interaction with man?',
-    'What do we learn about man’s character, nature and heart and his interaction with God?',
-    'What do we learn about man’s sin problem, its effects, and the ultimate solution?',
-  ],
-  observation: [
-    'Switch to OBSERVATION QUESTIONS to note the details of the text. One reader should read aloud through the “tQUESTIONS” tab of each verse. The other team members should answer from the Literal-text (ULT).',
-    'The reader should add questions as necessary to ensure that at least one question is asked for each verse and interesting details are not missed.',
-    'Discuss any unclear or confusing parts of the text.',
-  ],
-  discourse: [
-    'Identify and discuss the major themes and ideas presented in the text',
-    'Make application and connections as appropriate to the church today',
-    'Review the brief summary of the book in the “GENERAL INFORMATION” tab',
-  ],
-}
