@@ -6,8 +6,6 @@ import toast from 'react-hot-toast'
 
 import { useTranslation } from 'next-i18next'
 
-import { Switch } from '@headlessui/react'
-
 import axios from 'axios'
 
 import UpdateField from 'components/UpdateField'
@@ -17,6 +15,7 @@ import ButtonLoading from 'components/ButtonLoading'
 import { useGetBrief, useProject } from 'utils/hooks'
 
 import useSupabaseClient from 'utils/supabaseClient'
+import SwitchLoading from 'components/Panel/UI/SwitchLoading'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
@@ -112,58 +111,32 @@ function BriefBlock({ access, title = false }) {
               <span className="mr-3">
                 {t(`project-edit:${brief?.is_enable ? 'DisableBrief' : 'EnableBrief'}`)}
               </span>
-              <Switch
+              <SwitchLoading
+                id="brief-switch"
                 checked={brief?.is_enable || false}
                 onChange={handleSwitch}
-                className={`${
-                  brief?.is_enable ? 'bg-th-primary-100' : 'bg-th-secondary-100'
-                } relative inline-flex h-7 w-12 items-center rounded-full`}
-              >
-                <span
-                  className={`${
-                    brief?.is_enable ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
-                />
-              </Switch>
+              />
             </div>
           )}
           <div className="flex items-center">
             <span className="mr-3">{t('Detailed')}</span>
-            <Switch
+            <SwitchLoading
+              id="detail-switch"
               disabled={editableMode}
               checked={!hidden}
               onChange={() => {
                 setHidden((prev) => !prev)
               }}
-              className={`${
-                !hidden && !editableMode ? 'bg-th-primary-100' : 'bg-th-secondary-100'
-              } relative inline-flex h-7 w-12 items-center rounded-full`}
-            >
-              <span
-                className={`${
-                  !hidden ? 'translate-x-6' : 'translate-x-1'
-                } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
-              />
-            </Switch>
+            />
           </div>
           {access && (
             <div className="flex items-center">
               <span className="mr-3">{t('project-edit:EditableMode')}</span>
-              <Switch
+              <SwitchLoading
+                id="editable-mode-switch"
                 checked={editableMode}
-                onChange={() => {
-                  setEditableMode((prev) => !prev)
-                }}
-                className={`${
-                  editableMode ? 'bg-th-primary-100' : 'bg-th-secondary-100'
-                } relative inline-flex h-7 w-12 items-center rounded-full`}
-              >
-                <span
-                  className={`${
-                    editableMode ? 'translate-x-6' : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full bg-th-secondary-10 transition`}
-                />
-              </Switch>
+                onChange={(value) => setEditableMode(value)}
+              />
             </div>
           )}
         </div>

@@ -10,14 +10,13 @@ import { toast } from 'react-hot-toast'
 
 import axios from 'axios'
 
-import { Switch } from '@headlessui/react'
-
 import CommitsList from './CommitsList'
 import Steps from './Steps'
 import BasicInformation from './BasicInformation'
 import LanguageCreate from './LanguageCreate'
 import BriefEditQuestions from './BriefEditQuestions'
 import ButtonLoading from './ButtonLoading'
+import SwitchLoading from './Panel/UI/SwitchLoading'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
@@ -168,19 +167,12 @@ function ProjectCreate() {
                 <span className="mr-3 text-sm md:text-base">
                   {t(`project-edit:${isBriefEnable ? 'DisableBrief' : 'EnableBrief'}`)}
                 </span>
-                <Switch
+                <SwitchLoading
+                  id="brief-enable-switch"
                   checked={isBriefEnable}
-                  onChange={() => setIsBriefEnable((prev) => !prev)}
-                  className={`${
-                    isBriefEnable ? 'bg-th-primary-100' : 'bg-th-secondary-100'
-                  } relative inline-flex h-6 w-11 items-center rounded-full`}
-                >
-                  <span
-                    className={`${
-                      isBriefEnable ? 'translate-x-6' : 'translate-x-1'
-                    } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                  />
-                </Switch>
+                  onChange={(value) => setIsBriefEnable(value)}
+                  backgroundColor="bg-th-secondary-200"
+                />
               </div>
             </div>
             <BriefEditQuestions
