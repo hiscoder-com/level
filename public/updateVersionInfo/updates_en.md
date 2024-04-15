@@ -2,7 +2,7 @@
 ## Date: 04/15/2024
 
 ### **Added:**
-- added animation of changing the state of switches (Brief, moderator appointments among translators)
+- added animation of changing the state of the switches (Brief, switching the "Read-only mode" when assigning verses)
 
 # Version 0.18.0
 ## Date: 04/11/2024
