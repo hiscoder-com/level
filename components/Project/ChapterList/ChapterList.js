@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -18,7 +18,7 @@ import {
   useProject,
 } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-import { readableDate } from 'utils/helper'
+import { getBriefName, readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -43,7 +43,7 @@ function ChapterList() {
   const [downloadingChapter, setDownloadingChapter] = useState(null)
   const [currentSteps, setCurrentSteps] = useState([])
   const [project] = useProject({ code })
-  const { briefResume, isBrief } = useBriefState({
+  const { briefResume, isBrief, briefName } = useBriefState({
     project_id: project?.id,
   })
 
@@ -72,6 +72,12 @@ function ChapterList() {
         .then((res) => setCurrentSteps(res.data))
     }
   }, [project?.id, supabase])
+  const nameButtonBrief = useMemo(() => {
+    return getBriefName(
+      briefName,
+      t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
+    )
+  }, [briefName, isCoordinatorAccess, t])
 
   const getCurrentStep = (chapter) => {
     const step = currentSteps
@@ -85,7 +91,7 @@ function ChapterList() {
               href={`/projects/${project?.code}/edit?setting=brief`}
               onClick={(e) => e.stopPropagation()}
             >
-              {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
+              {nameButtonBrief}
             </Link>
           ) : (
             <Link

@@ -28,6 +28,7 @@ import Export from 'public/export.svg'
 import Import from 'public/import.svg'
 import Rename from 'public/rename.svg'
 import Close from 'public/close.svg'
+import Progress from 'public/progress.svg'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -58,7 +59,7 @@ const icons = {
   closeFolder: <CloseFolder className="w-6 h-6" />,
 }
 
-function PersonalNotes() {
+function PersonalNotes({ config }) {
   const projectId = useRecoilValue(projectIdState)
   const [contextMenuEvent, setContextMenuEvent] = useState(null)
   const [hoveredNodeId, setHoveredNodeId] = useState(null)
@@ -72,17 +73,17 @@ function PersonalNotes() {
   const [isOpenModal, setIsOpenModal] = useState(false)
 
   const [currentNodeProps, setCurrentNodeProps] = useState(null)
-  const { t } = useTranslation(['common, error'])
+  const { t } = useTranslation(['common', 'error'])
   const { user } = useCurrentUser()
   const [allNotes] = useAllPersonalNotes()
 
-  const [notes, { mutate }] = usePersonalNotes({
+  const [notes, { isLoading, mutate }] = usePersonalNotes({
     sort: 'sorting',
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
   const supabase = useSupabaseClient()
-
+  const isRtl = config?.isRtl || false
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
@@ -240,7 +241,7 @@ function PersonalNotes() {
         mutate()
       })
       .catch((err) => {
-        toast.error(t('common:SaveFailed'))
+        toast.error(t('SaveFailed'))
         console.log(err)
       })
   }
@@ -261,7 +262,7 @@ function PersonalNotes() {
 
   const addNode = (isFolder = false) => {
     const id = generateUniqueId(allNotes)
-    const title = isFolder ? t('common:NewFolder') : t('common:NewNote')
+    const title = isFolder ? t('NewFolder') : t('NewNote')
     axios
       .post('/api/personal_notes', {
         id,
@@ -275,7 +276,7 @@ function PersonalNotes() {
 
   const handleRenameNode = (newTitle, id) => {
     if (!newTitle.trim()) {
-      newTitle = t('common:EmptyTitle')
+      newTitle = t('EmptyTitle')
     }
     axios
       .put(`/api/personal_notes/${id}`, { title: newTitle })
@@ -361,14 +362,14 @@ function PersonalNotes() {
       mutate()
     }
   }
-
+  const classNameButtonIcon = 'flex items-center gap-2.5 py-1 pl-2.5 ltr:pr-7 rtl:pr-2'
   const menuItems = {
     contextMenu: [
       {
         id: 'adding_note',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-            <FileIcon /> {t('common:NewDocument')}
+          <span className={classNameButtonIcon}>
+            <FileIcon /> {t('NewDocument')}
           </span>
         ),
         action: () => addNode(),
@@ -376,8 +377,8 @@ function PersonalNotes() {
       {
         id: 'adding_folder',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-            <CloseFolder /> {t('common:NewFolder')}
+          <span className={classNameButtonIcon}>
+            <CloseFolder /> {t('NewFolder')}
           </span>
         ),
         action: () => addNode(true),
@@ -385,8 +386,8 @@ function PersonalNotes() {
       {
         id: 'rename',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-            <Rename /> {t('common:Rename')}
+          <span className={classNameButtonIcon}>
+            <Rename /> {t('Rename')}
           </span>
         ),
         action: handleRename,
@@ -394,8 +395,8 @@ function PersonalNotes() {
       {
         id: 'delete',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-            <Trash className="w-4" /> {t('common:Delete')}
+          <span className={classNameButtonIcon}>
+            <Trash className="w-4" /> {t('Delete')}
           </span>
         ),
         action: () => setIsOpenModal(true),
@@ -405,8 +406,8 @@ function PersonalNotes() {
       {
         id: 'export',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-            <Export className="w-4 stroke-2" /> {t('common:Export')}
+          <span className={classNameButtonIcon}>
+            <Export className="w-4 stroke-2" /> {t('Export')}
           </span>
         ),
         action: () => exportNotes(),
@@ -414,8 +415,8 @@ function PersonalNotes() {
       {
         id: 'import',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-            <Import className="w-4 stroke-2" /> {t('common:Import')}
+          <span className={classNameButtonIcon}>
+            <Import className="w-4 stroke-2" /> {t('Import')}
           </span>
         ),
         action: () => importNotes(true),
@@ -423,8 +424,8 @@ function PersonalNotes() {
       {
         id: 'remove',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
-            <Trash className="w-4 stroke-2" /> {t('common:RemoveAll')}
+          <span className={classNameButtonIcon}>
+            <Trash className="w-4 stroke-2" /> {t('RemoveAll')}
           </span>
         ),
         action: () => {
@@ -450,10 +451,10 @@ function PersonalNotes() {
 
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
   return (
-    <div className="relative">
+    <div dir={isRtl ? 'rtl' : 'ltr'} className="relative">
       {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
-          <div className="flex justify-end w-full">
+          <div className="flex ltr:justify-end rtl:justify-start w-full">
             <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
           </div>
           <div className="relative flex items-center mb-4">
@@ -461,50 +462,58 @@ function PersonalNotes() {
               className="input-primary flex-1"
               value={term}
               onChange={(event) => setTerm(event.target.value)}
-              placeholder={t('common:Search')}
+              placeholder={t('Search')}
             />
             {term && (
               <Close
-                className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+                className="absolute р-6 w-6 z-10 cursor-pointer  ltr:right-1 rtl:left-1"
                 onClick={() => setTerm('')}
               />
             )}
           </div>
-          <TreeView
-            term={term}
-            selection={noteId}
-            handleDeleteNode={handleRemoveNode}
-            classes={{
-              nodeWrapper:
-                'flex px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200',
-              nodeTextBlock: 'items-center truncate',
-            }}
-            data={dataForTreeView}
-            setSelectedNodeId={setNoteId}
-            selectedNodeId={noteId}
-            treeWidth={'w-full'}
-            icons={icons}
-            handleOnClick={changeNode}
-            handleContextMenu={handleContextMenu}
-            hoveredNodeId={hoveredNodeId}
-            setHoveredNodeId={setHoveredNodeId}
-            getCurrentNodeProps={setCurrentNodeProps}
-            handleRenameNode={handleRenameNode}
-            handleDragDrop={handleDragDrop}
-            openByDefault={false}
-          />
-          <ContextMenu
-            setIsVisible={setIsShowMenu}
-            isVisible={isShowMenu}
-            nodeProps={currentNodeProps}
-            menuItems={menuItems.contextMenu}
-            clickMenuEvent={contextMenuEvent}
-            classes={{
-              menuItem: menuItems.item.className,
-              menuContainer: menuItems.container.className,
-              emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
-            }}
-          />
+          {!isLoading || notes?.length ? (
+            <>
+              <TreeView
+                term={term}
+                selection={noteId}
+                handleDeleteNode={handleRemoveNode}
+                classes={{
+                  nodeWrapper:
+                    'px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex',
+                  nodeTextBlock: 'items-center truncate',
+                }}
+                data={dataForTreeView}
+                setSelectedNodeId={setNoteId}
+                selectedNodeId={noteId}
+                treeWidth={'w-full'}
+                icons={icons}
+                handleOnClick={changeNode}
+                handleContextMenu={handleContextMenu}
+                hoveredNodeId={hoveredNodeId}
+                setHoveredNodeId={setHoveredNodeId}
+                getCurrentNodeProps={setCurrentNodeProps}
+                handleRenameNode={handleRenameNode}
+                handleDragDrop={handleDragDrop}
+                openByDefault={false}
+                isRtl={isRtl}
+              />
+              <ContextMenu
+                setIsVisible={setIsShowMenu}
+                isVisible={isShowMenu}
+                nodeProps={currentNodeProps}
+                menuItems={menuItems.contextMenu}
+                clickMenuEvent={contextMenuEvent}
+                classes={{
+                  menuItem: menuItems.item.className,
+                  menuContainer: menuItems.container.className,
+                  emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
+                }}
+                isRtl={isRtl}
+              />
+            </>
+          ) : (
+            <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100 mx-auto" />
+          )}
         </div>
       ) : (
         <>
@@ -527,21 +536,22 @@ function PersonalNotes() {
             }}
             activeNote={activeNote}
             setActiveNote={setActiveNote}
-            placeholder={t('common:TextNewNote')}
-            emptyTitle={t('common:EmptyTitle')}
+            placeholder={t('TextNewNote')}
+            emptyTitle={t('EmptyTitle')}
             isSelectableTitle
+            isRtl={isRtl}
           />
         </>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
-            {t('common:AreYouSureDelete') +
+            {t('AreYouSureDelete') +
               ' ' +
               t(
                 currentNodeProps
                   ? currentNodeProps.node.data.name
-                  : t('common:AllNotes').toLowerCase()
+                  : t('AllNotes').toLowerCase()
               ) +
               '?'}
           </div>
@@ -553,13 +563,13 @@ function PersonalNotes() {
                 currentNodeProps ? removeNode() : removeAllNote()
               }}
             >
-              {t('common:Yes')}
+              {t('Yes')}
             </button>
             <button
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => setIsOpenModal(false)}
             >
-              {t('common:No')}
+              {t('No')}
             </button>
           </div>
         </div>

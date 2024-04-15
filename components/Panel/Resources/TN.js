@@ -20,7 +20,7 @@ function TN({ config, url, toolName }) {
     tnotes: data,
     usfm: {
       link:
-        config.config.quote_resource ??
+        config?.config?.quote_resource ??
         (process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org') +
           '/' +
           config.mainResource.owner +
