@@ -53,6 +53,7 @@ function ProjectParticipants({
               <SwitchLoading
                 id={`translator-${participant.id}`}
                 checked={assignedTranslatorsIds?.includes(participant.id) ?? false}
+                withDelay={true}
                 onChange={() => {
                   if (!assignedVerseTranslators?.includes(participant.id)) {
                     translatorsSelecting(participant)

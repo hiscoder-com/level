@@ -170,6 +170,7 @@ function ProjectCreate() {
                 <SwitchLoading
                   id="brief-enable-switch"
                   checked={isBriefEnable}
+                  withDelay={true}
                   onChange={(value) => setIsBriefEnable(value)}
                   backgroundColor="bg-th-secondary-200"
                 />

@@ -11,11 +11,11 @@ import axios from 'axios'
 import UpdateField from 'components/UpdateField'
 import BriefEditQuestions from 'components/BriefEditQuestions'
 import ButtonLoading from 'components/ButtonLoading'
+import SwitchLoading from 'components/Panel/UI/SwitchLoading'
 
 import { useGetBrief, useProject } from 'utils/hooks'
 
 import useSupabaseClient from 'utils/supabaseClient'
-import SwitchLoading from 'components/Panel/UI/SwitchLoading'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
@@ -70,12 +70,23 @@ function BriefBlock({ access, title = false }) {
     }
   }, [supabase])
 
-  const handleSwitch = () => {
+  const handleSwitch = async () => {
     if (brief) {
-      axios
-        .put(`/api/briefs/switch/${project?.id}`, { is_enable: !brief?.is_enable })
-        .then(mutate)
-        .catch(console.log)
+      try {
+        await axios.put(`/api/briefs/switch/${project?.id}`, {
+          is_enable: !brief?.is_enable,
+        })
+        mutate()
+        toast.success(
+          t('project-edit:BriefToggleSuccess', {
+            state: !brief?.is_enable ? 'enabled' : 'disabled',
+          })
+        )
+      } catch (error) {
+        console.error(error)
+        toast.error(t('project-edit:BriefToggleError'))
+        return await Promise.reject()
+      }
     }
   }
 
@@ -124,6 +135,7 @@ function BriefBlock({ access, title = false }) {
               id="detail-switch"
               disabled={editableMode}
               checked={!hidden}
+              withDelay={true}
               onChange={() => {
                 setHidden((prev) => !prev)
               }}
@@ -135,6 +147,7 @@ function BriefBlock({ access, title = false }) {
               <SwitchLoading
                 id="editable-mode-switch"
                 checked={editableMode}
+                withDelay={true}
                 onChange={(value) => setEditableMode(value)}
               />
             </div>

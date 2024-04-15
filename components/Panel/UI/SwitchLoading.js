@@ -7,6 +7,8 @@ const SwitchLoading = ({
   id,
   backgroundColor = 'bg-th-secondary-100',
   disabled = false,
+  withDelay = false,
+  delayTime = 500,
 }) => {
   const [switchState, setSwitchState] = useState('unchecked')
 
@@ -22,13 +24,34 @@ const SwitchLoading = ({
     if (!disabled) {
       if (switchState === 'unchecked') {
         setSwitchState('loading')
-        setTimeout(() => {
-          setSwitchState('checked')
+        if (withDelay) {
+          setTimeout(() => {
+            onChange(true)
+          }, delayTime)
+        } else {
           onChange(true)
-        }, 500)
+            .then(() => {
+              setSwitchState('checked')
+            })
+            .catch(() => {
+              setSwitchState('unchecked')
+            })
+        }
       } else {
-        setSwitchState('unchecked')
-        onChange(false)
+        setSwitchState('loading')
+        if (withDelay) {
+          setTimeout(() => {
+            onChange(false)
+          }, delayTime)
+        } else {
+          onChange(false)
+            .then(() => {
+              setSwitchState('unchecked')
+            })
+            .catch(() => {
+              setSwitchState('checked')
+            })
+        }
       }
     }
   }
