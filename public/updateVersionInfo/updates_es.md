@@ -1,3 +1,9 @@
+# Version 0.18.1
+## Date: 04/15/2024
+
+### **Añadido:**
+- Se agregó animación para cambiar el estado de los interruptores (breve, cambiar el "modo de solo lectura" al asignar versos)
+
 # Version 0.18.0
 ## Date: 04/11/2024
 
