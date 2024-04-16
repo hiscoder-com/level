@@ -13,11 +13,7 @@ const SwitchLoading = ({
   const [switchState, setSwitchState] = useState('unchecked')
 
   useEffect(() => {
-    if (checked) {
-      setSwitchState('checked')
-    } else {
-      setSwitchState('unchecked')
-    }
+    setSwitchState(checked ? 'checked' : 'unchecked')
   }, [checked])
 
   const handleToggle = () => {

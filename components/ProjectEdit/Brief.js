@@ -82,12 +82,12 @@ function BriefBlock({ access, title = false }) {
     if (brief) {
       try {
         await axios.put(`/api/briefs/switch/${project?.id}`, {
-          is_enable: !brief?.is_enable,
+          is_enable: !brief.is_enable,
         })
         mutate()
         toast.success(
           t('project-edit:BriefToggleSuccess', {
-            state: !brief?.is_enable ? 'enabled' : 'disabled',
+            state: !brief.is_enable ? 'enabled' : 'disabled',
           })
         )
       } catch (error) {
@@ -97,6 +97,7 @@ function BriefBlock({ access, title = false }) {
       }
     }
   }
+
   const handleSaveBriefName = () => {
     if (briefName && brief?.id) {
       axios
