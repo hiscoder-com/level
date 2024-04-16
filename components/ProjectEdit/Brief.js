@@ -86,9 +86,7 @@ function BriefBlock({ access, title = false }) {
         })
         mutate()
         toast.success(
-          t('project-edit:BriefToggleSuccess', {
-            state: !brief.is_enable ? 'enabled' : 'disabled',
-          })
+          t(`project-edit:BriefToggleSuccess${!brief.is_enable ? 'Enabled' : 'Disabled'}`)
         )
       } catch (error) {
         console.error(error)
