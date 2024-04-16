@@ -17,38 +17,24 @@ const SwitchLoading = ({
   }, [checked])
 
   const handleToggle = () => {
-    if (!disabled) {
-      if (switchState === 'unchecked') {
-        setSwitchState('loading')
-        if (withDelay) {
-          setTimeout(() => {
-            onChange(true)
-          }, delayTime)
-        } else {
-          onChange(true)
-            .then(() => {
-              setSwitchState('checked')
-            })
-            .catch(() => {
-              setSwitchState('unchecked')
-            })
-        }
-      } else {
-        setSwitchState('loading')
-        if (withDelay) {
-          setTimeout(() => {
-            onChange(false)
-          }, delayTime)
-        } else {
-          onChange(false)
-            .then(() => {
-              setSwitchState('unchecked')
-            })
-            .catch(() => {
-              setSwitchState('checked')
-            })
-        }
+    if (disabled) return
+
+    const isChecked = switchState === 'unchecked'
+    const handleChange = async (isChecked) => {
+      try {
+        await onChange(isChecked)
+        setSwitchState(isChecked ? 'checked' : 'unchecked')
+      } catch {
+        setSwitchState(isChecked ? 'unchecked' : 'checked')
       }
+    }
+
+    if (withDelay) {
+      setSwitchState('loading')
+      setTimeout(() => handleChange(isChecked), delayTime)
+    } else {
+      setSwitchState('loading')
+      handleChange(isChecked)
     }
   }
 
