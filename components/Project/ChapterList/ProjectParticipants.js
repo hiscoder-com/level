@@ -1,5 +1,4 @@
-import { Switch } from '@headlessui/react'
-
+import SwitchLoading from 'components/Panel/UI/SwitchLoading'
 import TranslatorImage from 'components/TranslatorImage'
 
 function ProjectParticipants({
@@ -50,11 +49,11 @@ function ProjectParticipants({
                 </div>
               </div>
             </div>
-            <div className="w-1/6">
-              <Switch
-                onClick={(e) => e.stopPropagation()}
-                disabled={assignedVerseTranslators?.includes(participant.id)}
+            <div onClick={(e) => e.stopPropagation()} className="w-1/6">
+              <SwitchLoading
+                id={`translator-${participant.id}`}
                 checked={assignedTranslatorsIds?.includes(participant.id) ?? false}
+                withDelay={true}
                 onChange={() => {
                   if (!assignedVerseTranslators?.includes(participant.id)) {
                     translatorsSelecting(participant)
@@ -66,24 +65,8 @@ function ProjectParticipants({
                     setCurrentTranslator(null)
                   }
                 }}
-                className={`${
-                  assignedTranslatorsIds?.includes(participant.id)
-                    ? 'bg-secondary-10'
-                    : 'bg-th-secondary-200 border-th-secondary-200'
-                } relative inline-flex h-7 w-12 items-center border rounded-full`}
-              >
-                <span
-                  className={`${
-                    assignedTranslatorsIds?.includes(participant.id)
-                      ? 'translate-x-6'
-                      : 'translate-x-1'
-                  } inline-block h-5 w-5 transform rounded-full ${
-                    assignedVerseTranslators?.includes(participant.id)
-                      ? 'bg-th-secondary-10 cursor-default'
-                      : 'bg-th-primary-100'
-                  } transition`}
-                />
-              </Switch>
+                disabled={assignedVerseTranslators?.includes(participant.id)}
+              />
             </div>
           </div>
         ))
