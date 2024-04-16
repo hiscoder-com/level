@@ -1,3 +1,16 @@
+# Version 0.18.0
+## Date: 04/11/2024
+
+### **Añadido:**
+- método "Movimientos"
+- admite dirección RTL en Notas Personales, Notas de Equipo, Diccionario, Editor Ciego, Editor, Editor de Comandos
+- cambio de nombre breve
+- ocultar resumen en Cuenta, página de proyecto, Barra de aplicaciones
+- opción de bloque único para traducción en Editor ciego
+- subtítulo para los pasos
+### **Modificado:**
+- audio componente renombrado en Recuento
+
 # Versión 0.17.0
 ## Fecha: 04/10/2024
 

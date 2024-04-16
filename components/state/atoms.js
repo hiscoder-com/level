@@ -32,6 +32,7 @@ export const stepConfigState = atom({
     time: 0,
     description: '',
     title: '',
+    subtitle: '',
     last_step: 8,
     current_step: 1,
     project_code: '',
@@ -60,4 +61,9 @@ export const modalsSidebar = atom({
     avatarSelector: false,
     notepad: false,
   },
+})
+
+export const isHideAllVersesState = atom({
+  key: 'isHideAllVersesState',
+  default: false,
 })

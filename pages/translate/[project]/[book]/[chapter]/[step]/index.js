@@ -88,7 +88,17 @@ export default function ProgressPage({ last_step }) {
         if (!stepsData) {
           return replace('/')
         }
-        const curentSteps = await fetchCurrentSteps(stepsData.projects.id)
+        const {
+          projects,
+          title,
+          subtitle,
+          config,
+          whole_chapter,
+          count_of_users,
+          time,
+          description,
+        } = stepsData
+        const curentSteps = await fetchCurrentSteps(projects.id)
         const currentStepObject = curentSteps.find(
           (el) => el.book === book && el.chapter.toString() === chapter.toString()
         )
@@ -115,19 +125,22 @@ export default function ProgressPage({ last_step }) {
             )
           }
         }
-        setProjectId(stepsData.projects?.id)
+        setProjectId(projects?.id)
         let stepConfig = {
-          title: stepsData.title,
-          config: [...stepsData.config],
-          whole_chapter: stepsData.whole_chapter,
-          resources: { ...stepsData.projects?.resources },
-          base_manifest: stepsData.projects?.base_manifest?.resource,
+          title,
+          subtitle,
+          config: [...config],
+          whole_chapter,
+          resources: { ...projects?.resources },
+          base_manifest: projects?.base_manifest?.resource,
+          is_rtl: projects?.is_rtl,
         }
         setStepConfigData({
-          count_of_users: stepsData.count_of_users,
-          time: stepsData.time,
-          title: stepsData.title,
-          description: stepsData.description,
+          count_of_users: count_of_users,
+          time,
+          title,
+          subtitle,
+          description,
           last_step,
           current_step: step,
           project_code: project,

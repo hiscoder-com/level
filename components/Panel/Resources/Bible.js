@@ -7,7 +7,7 @@ import { useRecoilValue } from 'recoil'
 import { Placeholder } from '../UI'
 import MarkdownExtended from 'components/MarkdownExtended'
 
-import { checkedVersesBibleState } from '../../state/atoms'
+import { checkedVersesBibleState, isHideAllVersesState } from '../../state/atoms'
 import { useGetResource, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
@@ -75,8 +75,9 @@ function VersesExtended({
   toolName,
 }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
+  const isHideAllVerses = useRecoilValue(isHideAllVersesState)
   return (
-    <>
+    <div className={isHideAllVerses ? 'bg-th-secondary-100 text-th-secondary-100' : ''}>
       {verseObjects?.map((verseObject) => {
         const checkedCurrent = checkedVersesBible.includes(verseObject.verse)
         return (
@@ -100,7 +101,7 @@ function VersesExtended({
           </div>
         )
       })}
-    </>
+    </div>
   )
 }
 

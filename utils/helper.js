@@ -844,3 +844,14 @@ export function formationJSONToTree(data) {
 
   return transformedData
 }
+
+export const getBriefName = (briefName, defautlName) => {
+  if (!defautlName) {
+    return 'Brief'
+  }
+  if (!briefName || briefName === 'Brief') {
+    return defautlName
+  } else {
+    return briefName
+  }
+}

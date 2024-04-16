@@ -44,7 +44,6 @@ function ProjectCreate() {
     formState: { errors },
   } = useForm({ mode: 'onChange' })
   const methodId = useWatch({ control, name: 'methodId' })
-
   useEffect(() => {
     if (methods && methodId) {
       const selectedMethod = methods.find(
@@ -64,6 +63,12 @@ function ProjectCreate() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [methods?.[0]?.id])
+  useEffect(() => {
+    if (languages) {
+      setValue('languageId', languages?.[0]?.id)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [languages?.[0]?.id])
 
   useEffect(() => {
     if (!methods && _methods) {
@@ -80,6 +85,8 @@ function ProjectCreate() {
     if (!title || !code || !languageId) {
       return
     }
+    const language = languages.find((el) => el.id.toString() === languageId.toString())
+
     setIsCreating(true)
     axios
       .post('/api/projects', {
@@ -87,7 +94,7 @@ function ProjectCreate() {
         custom_brief_questions: customBriefQuestions,
         title,
         orig_title: origtitle,
-        language_id: languageId,
+        language: { id: languageId, is_rtl: language.is_rtl },
         code,
         method_id: method.id,
         steps: method.steps,

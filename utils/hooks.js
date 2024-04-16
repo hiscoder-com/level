@@ -332,12 +332,16 @@ export function useBriefState({ project_id }) {
   const [brief, { isLoading }] = useGetBrief({
     project_id,
   })
+
+  const dataCollection = useMemo(() => {
+    return brief?.is_enable ? brief?.data_collection : []
+  }, [brief?.data_collection, brief?.is_enable])
+
   useEffect(() => {
-    if (brief?.is_enable) {
-      setBriefResume(brief.data_collection?.reduce((final, el) => final + el.resume, ''))
-    }
-  }, [brief])
-  return { briefResume, isBrief: brief?.is_enable, isLoading }
+    setBriefResume(dataCollection.reduce((final, el) => final + el.resume, ''))
+  }, [dataCollection])
+
+  return { briefResume, isBrief: brief?.is_enable, isLoading, briefName: brief?.name }
 }
 
 /**

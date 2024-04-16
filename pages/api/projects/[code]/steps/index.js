@@ -22,7 +22,7 @@ export default async function stepsHandler(req, res) {
         const { data: value, error } = await supabase
           .from('steps')
           .select(
-            'id, projects!inner(code), description, intro, title, count_of_users, time, config, is_awaiting_team'
+            'id, projects!inner(code), description, intro, title, subtitle, count_of_users, time, config, is_awaiting_team'
           )
           .eq('projects.code', code)
           .order('sorting', { ascending: true })

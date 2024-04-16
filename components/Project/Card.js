@@ -11,7 +11,7 @@ function Card({ children, title, access, link = '/', isOpen = true, isHidden = f
   const { t } = useTranslation('common')
 
   return (
-    <div className="card flex flex-col gap-3 sm:gap-7 bg-th-secondary-10 !pb-4">
+    <div className="card flex flex-col w-full gap-3 sm:gap-7 bg-th-secondary-10 !pb-4">
       <div className="flex justify-between items-start gap-7">
         <div className="text-lg sm:text-xl font-bold truncate">{title}</div>
         {access && (

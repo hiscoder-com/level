@@ -81,13 +81,16 @@ export default async function languagesHandler(req, res) {
   }
   let data = {}
   const {
-    body: { eng, code, origName: orig_name, isGl: is_gl },
+    body: { eng, code, origName: orig_name, isGl: is_gl, isRtl: is_rtl },
     method,
   } = req
   switch (method) {
     case 'GET':
       try {
-        const { data: value, error } = await supabase.from('languages').select('*')
+        const { data: value, error } = await supabase
+          .from('languages')
+          .select('*')
+          .order('id', { ascending: false })
         if (error) throw error
         data = value
       } catch (error) {
@@ -99,7 +102,7 @@ export default async function languagesHandler(req, res) {
       try {
         const { data: value, error } = await supabase
           .from('languages')
-          .insert([{ eng, code, orig_name, is_gl }])
+          .insert([{ eng, code, orig_name, is_gl, is_rtl }])
           .select()
         if (error) throw error
         data = value

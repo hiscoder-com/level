@@ -39,7 +39,7 @@ const ListOfNotes = dynamic(
   }
 )
 
-function Dictionary() {
+function Dictionary({ config }) {
   const [currentPageWords, setCurrentPageWords] = useState(0)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
@@ -47,6 +47,7 @@ function Dictionary() {
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
+  const isRtl = config?.isRtl || false
 
   const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
@@ -352,12 +353,15 @@ function Dictionary() {
     setAlphabetProject(project?.dictionaries_alphabet)
   }, [project])
 
+  const classNameButtonIcon = `flex items-center gap-2.5 py-1 pl-2.5 ${
+    isRtl ? 'pr-2' : 'pr-7'
+  }`
   const menuItems = {
     menu: [
       {
         id: 'export',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Export className="w-4 stroke-2" /> {t('common:Export')}
           </span>
         ),
@@ -366,7 +370,7 @@ function Dictionary() {
       {
         id: 'import',
         buttonContent: (
-          <span className="flex items-center gap-2.5 py-1 pr-7 pl-2.5">
+          <span className={classNameButtonIcon}>
             <Import className="w-4 stroke-2" /> {t('common:Import')}
           </span>
         ),
@@ -387,13 +391,13 @@ function Dictionary() {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   return (
-    <div className="relative">
+    <div dir={isRtl ? 'rtl' : 'ltr'} className="relative">
       {!activeWord ? (
         <>
           <div className="flex gap-4 items-start">
             {isModeratorAccess && (
               <>
-                <div className="flex w-full justify-end gap-2">
+                <div className="flex w-full gap-2 justify-end ltr:flex-row rtl:flex-row-reverse">
                   <button
                     className="btn-tertiary p-3"
                     onClick={addNote}
@@ -416,6 +420,7 @@ function Dictionary() {
               setSearchQuery={setSearchQuery}
               setCurrentPageWords={setCurrentPageWords}
               t={t}
+              isRtl={isRtl}
             />
             <div className="relative flex items-center mt-2 ml-2">
               <input
@@ -429,7 +434,9 @@ function Dictionary() {
               />
               {searchQuery && (
                 <Close
-                  className="absolute р-6 w-6 right-1 z-10 cursor-pointer"
+                  className={`absolute р-6 w-6 z-10 cursor-pointer ${
+                    isRtl ? 'left-1' : 'right-1 '
+                  }`}
                   onClick={getAll}
                 />
               )}
@@ -452,7 +459,8 @@ function Dictionary() {
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
                 }}
                 isShowDelBtn={isModeratorAccess}
-                delBtnChildren={<Trash className={'w-4 h-4 stroke-th-text-primary'} />}
+                delBtnChildren={<Trash className="w-4 h-4 stroke-th-text-primary" />}
+                isRtl={isRtl}
               />
               {totalPageCount > 1 && (
                 <div className="flex justify-around bottom-0 left-0">
@@ -511,6 +519,7 @@ function Dictionary() {
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('common:TextDescriptionWord') : ''}
             isSelectableTitle
+            isRtl={isRtl}
           />
         </>
       )}
