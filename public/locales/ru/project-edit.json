@@ -12,7 +12,7 @@
   "Basic": "Основное",
   "BasicInformation": "Общая информация",
   "Brief": "Бриф",
-  "BriefToggleError": "Failed to toggle the brief",
+  "BriefToggleError": "Не удалось переключить бриф",
   "BriefToggleSuccess": "The brief has been {{state}}",
   "CodeLanguageNotUnique": "Название языка не является уникальным",
   "CodeLanguageRequired": "Необходимо ввести код языка",
