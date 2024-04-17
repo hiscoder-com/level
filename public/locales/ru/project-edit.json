@@ -13,7 +13,7 @@
   "BasicInformation": "Общая информация",
   "Brief": "Бриф",
   "BriefToggleError": "Не удалось переключить бриф",
-  "BriefToggleSuccess": "The brief has been {{state}}",
+  "BriefToggleSuccess": "Бриф {{state}}",
   "CodeLanguageNotUnique": "Название языка не является уникальным",
   "CodeLanguageRequired": "Необходимо ввести код языка",
   "CreateNewProject": "Создать новый проект",
