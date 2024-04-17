@@ -1,3 +1,9 @@
+# Version 0.19.0
+## Date: 04/17/2024
+
+### **Fixed:**
+- the menu of the mobile version has a general appearance on the “Account” and “Assignment of verses” pages
+
 # Version 0.18.1
 ## Date: 04/15/2024
 
