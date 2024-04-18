@@ -13,6 +13,7 @@
   "BasicInformation": "Общая информация",
   "Brief": "Бриф",
   "BriefToggleError": "Не удалось переключить бриф",
+  "BriefToggleSuccess": "Бриф {{state}}",
   "BriefToggleSuccessDisabled": "The brief has been disabled",
   "BriefToggleSuccessEnabled": "The brief has been enabled",
   "CodeLanguageNotUnique": "Название языка не является уникальным",
