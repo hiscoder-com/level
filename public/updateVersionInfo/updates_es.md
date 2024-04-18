@@ -1,3 +1,9 @@
+# Version 0.18.2
+## Date: 04/16/2024
+
+### **Fijo:**
+- desplazamiento de contenido fijo cuando aparece la barra de desplazamiento
+
 # Version 0.18.1
 ## Date: 04/15/2024
 
