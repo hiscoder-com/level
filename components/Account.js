@@ -117,18 +117,17 @@ function Account() {
       </div>
       {user?.is_admin && (
         <MobileMenu
-          height="15vh"
           onClose={() => setOpenInternalMenu(false)}
           hideCloseButton={openInternalMenu}
+          btnPositionHeight="bottom-[15vh]"
+          mainHeight="h-[15vh]"
         >
-          <Menu.Items
-            className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md`}
-          >
-            <Menu.Item as="div" className="flex flex-col justify-center items-center">
+          <Menu.Items>
+            <Menu.Item as="div" className="flex justify-center items-center h-[15vh]">
               <Menu>
                 <Menu.Button>
                   <div
-                    className={`py-2 px-7 text-center text-th-text-secondary-100 cursor-pointer bg-th-primary-100 rounded-3xl ${
+                    className={`py-2 px-7 text-th-text-secondary-100 cursor-pointer bg-th-primary-100 rounded-3xl ${
                       openInternalMenu ? 'hidden' : 'block'
                     }`}
                     onClick={() => setOpenInternalMenu(true)}

@@ -44,7 +44,7 @@ function ChapterMobileMenu({
   } = translatorsProps
 
   return (
-    <MobileMenu height="80vh">
+    <MobileMenu>
       <Menu.Items>
         <div className="flex gap-2 items-center pt-6">
           <div className="p-4 text-xl font-bold">{t('Participants')}</div>

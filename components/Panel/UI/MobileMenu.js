@@ -3,19 +3,25 @@ import { Menu, Transition } from '@headlessui/react'
 
 import Plus from 'public/plus.svg'
 
-const MobileMenu = ({ children, height, hideCloseButton, onClose = () => {} }) => {
+const MobileMenu = ({
+  children,
+  hideCloseButton,
+  btnPositionHeight = 'bottom-[80vh]',
+  mainHeight = 'h-[80vh]',
+  onClose = () => {},
+}) => {
   return (
     <Menu>
       {({ open }) => (
         <>
           <div
-            className={`${
+            className={`inset-0 bg-zink-500 bg-opacity-10 backdrop-blur z-20 backdrop-filter ${
               open ? 'fixed' : 'hidden'
-            } inset-0 bg-zink-500 bg-opacity-10 backdrop-blur z-20 backdrop-filter`}
+            }`}
           ></div>
           <Menu.Button
             className={`fixed sm:hidden right-5 ${
-              open ? `bottom-[${height}]` : 'bottom-24'
+              open ? btnPositionHeight : 'bottom-24'
             } p-4 translate-y-1/2 z-30 rounded-full transition-all duration-700 bg-th-primary-100 text-th-text-secondary-100 ${
               hideCloseButton ? '!hidden' : ''
             }`}
@@ -38,7 +44,7 @@ const MobileMenu = ({ children, height, hideCloseButton, onClose = () => {} }) =
             leaveTo="translate-y-full"
           >
             <div
-              className={`fixed bottom-0 left-0 w-full h-[${height}] overflow-y-auto rounded-t-2xl z-20 bg-th-secondary-10`}
+              className={`fixed bottom-0 left-0 w-full ${mainHeight} overflow-y-auto rounded-t-2xl z-20 bg-th-secondary-10`}
             >
               {open && children}
             </div>
