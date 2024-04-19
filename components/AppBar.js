@@ -67,7 +67,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
                 <Timer time={stepConfig.time} />
               </div>
               <Down
-                className="w-6 h-6 stroke-th-text-secondary-100"
+                className={`w-6 h-6 stroke-th-text-secondary-100 transition-transform ${
+                  showFullAppbar ? 'rotate-180' : ''
+                }`}
                 onClick={() => setShowFullAppbar((prev) => !prev)}
               />
             </div>

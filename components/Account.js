@@ -4,10 +4,11 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import { Menu, Tab, Transition } from '@headlessui/react'
+import { Menu, Tab } from '@headlessui/react'
 
 import ProjectCreate from './ProjectCreate'
 import Projects from './Projects'
+import MobileMenu from './Panel/UI/MobileMenu'
 
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -115,81 +116,39 @@ function Account() {
         )}
       </div>
       {user?.is_admin && (
-        <Menu>
-          {({ open }) => (
-            <>
-              <div
-                className={`inset-0 bg-th-secondary-100 bg-opacity-25 backdrop-filter backdrop-blur ${
-                  open ? 'fixed' : 'hidden'
-                }`}
-              ></div>
-              <Menu.Button
-                className={`block sm:hidden p-4 translate-y-1/2 right-5 text-th-text-secondary-100 rounded-full bg-th-primary-100 transition-all duration-700 shadow-2xl bottom-[15vh] ${
-                  openInternalMenu ? 'hidden' : 'fixed'
-                }`}
-                onClick={() => setOpenInternalMenu(false)}
-              >
-                <Plus
-                  className={`w-7 h-7 transition-all duration-700 ${
-                    open ? 'rotate-45' : 'rotate-0'
-                  }`}
-                />
-              </Menu.Button>
-              <Transition
-                as={Fragment}
-                show={open}
-                enter="transition-all duration-700 ease-in-out transform"
-                enterFrom="translate-y-full"
-                enterTo="translate-y-0"
-                leave="transition-all duration-700 ease-in-out transform"
-                leaveFrom="translate-y-0"
-                leaveTo="translate-y-full"
-              >
-                <Menu.Items
-                  className={`fixed flex justify-center bottom-0 left-0 w-full min-h-[15vh] overflow-y-auto rounded-t-2xl shadow-md ${
-                    openInternalMenu ? 'bg-inherit' : 'bg-th-secondary-10'
-                  }`}
-                >
-                  <Menu.Item
-                    as="div"
-                    className="flex flex-col justify-center items-center"
-                  >
-                    <Menu>
-                      <Menu.Button>
-                        <div
-                          className={`py-2 px-7 text-center text-th-text-secondary-100 cursor-pointer bg-th-primary-100 rounded-3xl ${
-                            openInternalMenu ? 'hidden' : 'block'
-                          }`}
-                          onClick={() => setOpenInternalMenu(true)}
-                        >
-                          {t('project-edit:CreateNewProject')}
-                        </div>
-                      </Menu.Button>
-                    </Menu>
-                  </Menu.Item>
-                </Menu.Items>
-              </Transition>
-            </>
-          )}
-        </Menu>
-      )}
-      {openInternalMenu && (
-        <div
-          className="fixed px-5 pb-4 mt-14
-          inset-0 min-h-screen overflow-y-scroll bg-th-secondary-10"
+        <MobileMenu
+          onClose={() => setOpenInternalMenu(false)}
+          hideCloseButton={openInternalMenu}
+          btnPositionHeight="bottom-[15vh]"
+          mainHeight="h-[15vh]"
         >
-          <div className="flex justify-end">
+          <Menu.Items>
+            <Menu.Item as="div" className="flex justify-center items-center h-[15vh]">
+              <Menu>
+                <Menu.Button>
+                  <div
+                    className={`py-2 px-7 text-th-text-secondary-100 cursor-pointer bg-th-primary-100 rounded-3xl ${
+                      openInternalMenu ? 'hidden' : 'block'
+                    }`}
+                    onClick={() => setOpenInternalMenu(true)}
+                  >
+                    {t('project-edit:CreateNewProject')}
+                  </div>
+                </Menu.Button>
+              </Menu>
+            </Menu.Item>
+          </Menu.Items>
+        </MobileMenu>
+      )}
+
+      {openInternalMenu && (
+        <div className="fixed inset-0 px-5 pb-4 mt-14 min-h-screen z-20 overflow-y-scroll bg-th-secondary-10">
+          <div className="flex justify-end -mb-7">
             <button
-              className={`p-4 mt-4 text-th-text-secondary-100 rounded-full bg-th-primary-100 shadow-2xl ${
-                openInternalMenu ? 'block' : 'hidden'
-              }`}
+              className="p-4 mt-4 rounded-full shadow-2xl text-th-text-secondary-100 bg-th-primary-100"
               onClick={() => setOpenInternalMenu(false)}
             >
-              <Plus
-                className={`w-7 h-7 transition-all duration-700 ${
-                  open || openInternalMenu ? 'rotate-45' : 'rotate-0'
-                }`}
-              />
+              <Plus className="w-7 h-7 rotate-45" />
             </button>
           </div>
           <ProjectCreate />
