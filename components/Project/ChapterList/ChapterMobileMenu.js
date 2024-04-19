@@ -48,7 +48,7 @@ function ChapterMobileMenu({
       <Menu.Items>
         <div className="flex gap-2 items-center pt-6">
           <div className="p-4 text-xl font-bold">{t('Participants')}</div>
-          <Link href={`/projects/${project?.code}/edit?setting=participants`}>
+          <Link href={`/projects/${project?.code}/edit#participants`}>
             <Gear className="w-6 h-6 min-w-[1.5rem] stroke-th-text-primary" />
           </Link>
         </div>
