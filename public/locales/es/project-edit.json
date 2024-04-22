@@ -13,7 +13,6 @@
   "BasicInformation": "Información básica",
   "Brief": "Breve",
   "BriefToggleError": "Error al alternar el breve",
-  "BriefToggleSuccess": "Breve {{state}}",
   "CodeLanguageNotUnique": "El nombre del idioma no es único",
   "CodeLanguageRequired": "El código del idioma es requerido",
   "CreateNewProject": "Crear un proyecto",
