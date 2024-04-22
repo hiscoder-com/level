@@ -12,6 +12,8 @@
   "Basic": "Основное",
   "BasicInformation": "Общая информация",
   "Brief": "Бриф",
+  "BriefToggleSuccessDisabled": "Бриф отключен",
+  "BriefToggleSuccessEnabled": "Бриф включен",
   "BriefToggleError": "Не удалось переключить бриф",  
   "CodeLanguageNotUnique": "Название языка не является уникальным",
   "CodeLanguageRequired": "Необходимо ввести код языка",
