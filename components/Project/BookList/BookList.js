@@ -58,8 +58,8 @@ function BookList({ user, project, access }) {
                             project?.type === 'obs'
                               ? 'bg-th-secondary-10 cursor-default'
                               : selected
-                              ? 'bg-th-primary-100 text-th-text-secondary-100'
-                              : ''
+                                ? 'bg-th-primary-100 text-th-text-secondary-100'
+                                : ''
                           }
                       `}
                         >

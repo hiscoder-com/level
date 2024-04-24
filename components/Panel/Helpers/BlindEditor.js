@@ -170,8 +170,8 @@ function BlindEditor({ config }) {
                       disabledButton
                         ? 'stroke-th-secondary-300'
                         : !isTranslating
-                        ? 'fill-th-secondary-100'
-                        : 'stroke-th-text-secondary-100'
+                          ? 'fill-th-secondary-100'
+                          : 'stroke-th-text-secondary-100'
                     }`}
                   />
                 )}

@@ -13,8 +13,8 @@ export default function ProgressBar({ amountSteps, currentStep, isStartPage }) {
                       ? 'w-2.5 h-2.5 bg-th-primary-100'
                       : 'w-4 h-4 bg-th-primary-100'
                     : isStartPage
-                    ? 'w-1.5 h-1.5 bg-th-secondary-100'
-                    : 'w-2.5 h-2.5 bg-th-secondary-10'
+                      ? 'w-1.5 h-1.5 bg-th-secondary-100'
+                      : 'w-2.5 h-2.5 bg-th-secondary-10'
                 }`}
               ></div>
             )

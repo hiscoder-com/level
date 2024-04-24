@@ -378,8 +378,8 @@ function ChapterVersesPage() {
                             {verse.num === 0
                               ? t('Title')
                               : verse.num === 200
-                              ? t('Reference')
-                              : verse.num}
+                                ? t('Reference')
+                                : verse.num}
                           </div>
                           <div className="text-ellipsis overflow-hidden">
                             {verse.translator_name}

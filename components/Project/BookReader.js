@@ -604,12 +604,12 @@ function BookListReader({ books, setReference, reference, project }) {
                                       index === reference?.chapter
                                         ? 'cursor-default bg-th-primary-100 text-th-text-secondary-100 rounded-md'
                                         : checkChapterVersesExist(
-                                            book.code,
-                                            index,
-                                            chapters
-                                          ) || reference?.checks
-                                        ? 'hover:opacity-70 bg-th-secondary-200'
-                                        : ''
+                                              book.code,
+                                              index,
+                                              chapters
+                                            ) || reference?.checks
+                                          ? 'hover:opacity-70 bg-th-secondary-200'
+                                          : ''
                                     }`}
                                     key={index}
                                     onClick={() =>

@@ -52,8 +52,8 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
         errors?.eng?.type === 'notUnique'
           ? t('project-edit:NameLanguageNotUnique')
           : errors?.eng?.type === 'required'
-          ? t('project-edit:NameLanguageRequired')
-          : '',
+            ? t('project-edit:NameLanguageRequired')
+            : '',
     },
     {
       id: 2,
@@ -84,8 +84,8 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
         errors?.code?.type === 'notUnique'
           ? t('project-edit:CodeLanguageNotUnique')
           : errors?.code?.type === 'required'
-          ? t('project-edit:CodeLanguageRequired')
-          : '',
+            ? t('project-edit:CodeLanguageRequired')
+            : '',
     },
   ]
   return (

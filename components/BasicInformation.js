@@ -80,8 +80,8 @@ function BasicInformation({
         errors?.code?.type === 'wrongTypeCode'
           ? t('CodeMessageErrorWrongType')
           : errors?.code?.type === 'notUniqueProject'
-          ? t('CodeMessageErrorNotUniqueProject')
-          : '',
+            ? t('CodeMessageErrorNotUniqueProject')
+            : '',
     },
   ]
 
