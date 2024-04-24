@@ -23,8 +23,6 @@ const supabaseApi = async ({ req, res }) => {
 
     if (!session) {
       throw Error('Access denied!')
-    } else {
-      console.log('Session:', session)
     }
   } catch (error) {
     throw error
