@@ -5,6 +5,9 @@
   "author": {
     "name": "TextTree"
   },
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "description": "App to translate Scripture step by step",
   "homepage": "https://v-cana.com/",
   "private": true,
