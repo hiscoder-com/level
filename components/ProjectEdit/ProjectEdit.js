@@ -305,6 +305,20 @@ function ProjectEdit() {
   }, [steps])
 
   const index = useMemo(() => idTabs.indexOf(setting), [idTabs, setting])
+
+  useEffect(() => {
+    setTimeout(() => {
+      const hash = window.location.hash
+      if (hash) {
+        const id = hash.replace('#', '')
+        const element = document.getElementById(id)
+        if (element) {
+          element.scrollIntoView()
+        }
+      }
+    }, 500)
+  }, [])
+
   return (
     <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
       <div className="hidden md:block">
@@ -396,7 +410,7 @@ function ProjectEdit() {
             </div>
           )}
           {isCoordinatorAccess && (
-            <div className="space-y-7">
+            <div className="space-y-7" id="participants">
               <h3 className="mt-7 text-lg font-bold">{t('Participants')}</h3>
               <Participants
                 user={user}
