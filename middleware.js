@@ -61,7 +61,16 @@ export async function middleware(request) {
   } = await supabase.auth.getUser()
 
   if (!user) {
-    return NextResponse.redirect(new URL('/', request.url))
+    const currentUrl = request.nextUrl.pathname
+
+    if (
+      currentUrl !== '/' &&
+      currentUrl !== '/en' &&
+      currentUrl !== '/ru' &&
+      currentUrl !== '/es'
+    ) {
+      return NextResponse.redirect(new URL('/', request.url))
+    }
   }
 
   return response
