@@ -5,52 +5,76 @@ import axios from 'axios'
 import { useGetAquiferNotes } from 'utils/hooks'
 import { useRecoilValue } from 'recoil'
 import toast from 'react-hot-toast'
-
-import { currentVerse } from '../../state/atoms'
 import { useTranslation } from 'react-i18next'
 
-import SearchIcon from 'public/search.svg'
+import { currentVerse } from '../../state/atoms'
+import { TNTWLContent } from '../UI'
+
+import Down from '/public/arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
-import Down from '/public/arrow-down.svg'
+import SearchIcon from 'public/search.svg'
 
 function Aquifer(config) {
   const { t } = useTranslation()
-
   const [search, setSearch] = useState('')
+  const [selectedNote, setSelectedNote] = useState(null)
   const [isLoadingSearch, setIsLoadingSearch] = useState(false)
+
   return (
     <>
-      <Search setSearch={setSearch} isLoading={isLoadingSearch} />
+      {selectedNote ? (
+        <div className="relative h-full">
+          <TNTWLContent
+            setItem={setSelectedNote}
+            item={{
+              text: selectedNote.text,
+              title: selectedNote.title,
+            }}
+          />
+        </div>
+      ) : (
+        <>
+          <Search setSearch={setSearch} isLoading={isLoadingSearch} />
+          <h3 className="font-bold text-xl my-3.5">{t('dictionary')}</h3>
 
-      <h3 className="font-bold text-xl my-3.5">{t('dictionary')}</h3>
-
-      <Notes
-        resourceType="Dictionary"
-        reference={config.config.reference}
-        languageCode={config.config.config.languageCode}
-        query={search}
-        setIsLoadingSearch={setIsLoadingSearch}
-      />
-      <h3 className="font-bold text-xl my-3.5">StudyNotes</h3>
-      {/*TODO нужен перевод*/}
-      <Notes
-        resourceType="StudyNotes"
-        reference={config.config.reference}
-        languageCode={config.config.config.languageCode}
-        query={search}
-        setIsLoadingSearch={setIsLoadingSearch}
-      />
+          <Notes
+            resourceType="Dictionary"
+            reference={config.config.reference}
+            languageCode={config.config.config.languageCode}
+            query={search}
+            setIsLoadingSearch={setIsLoadingSearch}
+            setSelectedNote={setSelectedNote}
+          />
+          <h3 className="font-bold text-xl my-3.5">StudyNotes</h3>
+          {/*TODO нужен перевод*/}
+          <Notes
+            resourceType="StudyNotes"
+            reference={config.config.reference}
+            languageCode={config.config.config.languageCode}
+            query={search}
+            setIsLoadingSearch={setIsLoadingSearch}
+            setSelectedNote={setSelectedNote}
+          />
+        </>
+      )}
     </>
   )
 }
 
 export default Aquifer
 
-function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearch }) {
+function Notes({
+  resourceType,
+  reference,
+  languageCode,
+  query,
+  setSelectedNote,
+  setIsLoadingSearch,
+}) {
   const verse = useRecoilValue(currentVerse)
-  const [isLoadingNote, setIsLoadingNote] = useState(false)
-  const [note, setNote] = useState(null)
+  const [loadingNoteId, setLoadingNoteId] = useState(null)
+
   const { notes, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
     useGetAquiferNotes({
       book_code: reference.book,
@@ -68,13 +92,34 @@ function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearc
   }, [isLoading, query, setIsLoadingSearch])
 
   const getNoteContent = async (id) => {
-    setIsLoadingNote(true)
-    const currentNote = await axios.get(`api/aquaphier/notes/${id}`)
-    if (currentNote) {
-      setNote(currentNote.data)
+    setLoadingNoteId(id)
+
+    try {
+      const response = await axios.get(`/api/aquifer/notes/${id}`)
+      const { name, content } = response.data
+
+      const text = content
+        .map((item) => {
+          const paragraphs = item.tiptap.content.map((node) => {
+            if (node.type === 'paragraph') {
+              return node.content.map((textNode) => textNode.text).join('')
+            }
+            return ''
+          })
+          return paragraphs.join('\n\n')
+        })
+        .join('')
+
+      const formattedNote = { text, title: name }
+
+      setSelectedNote(formattedNote)
+    } catch (error) {
+      console.error('Error fetching note:', error)
+    } finally {
+      setLoadingNoteId(null)
     }
-    setIsLoadingNote(false)
   }
+
   return (
     <>
       {isLoading && !notes?.length ? (
@@ -84,13 +129,39 @@ function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearc
           {notes.map((note) => (
             <li
               key={note.id}
-              onClick={() => getNoteContent(note.id)}
-              className="flex justify-between items-center px-5 mt-2.5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex"
+              onClick={() => {
+                if (loadingNoteId !== note.id) {
+                  getNoteContent(note.id)
+                }
+              }}
+              className={`flex justify-between items-center px-5 mt-2.5 leading-[47px] text-lg rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex ${
+                loadingNoteId === note.id
+                  ? 'opacity-70 cursor-not-allowed'
+                  : 'cursor-pointer'
+              }`}
             >
-              <span className="truncate">{note.name}</span>
-              <span>
-                <ArrowRight className="stroke-2" />
-              </span>
+              <div
+                className={`relative flex-1 overflow-hidden whitespace-nowrap ${
+                  loadingNoteId === note.id ? '' : 'text-ellipsis'
+                }`}
+              >
+                <span
+                  className={`${loadingNoteId === note.id ? 'opacity-0' : 'opacity-100'}`}
+                >
+                  {note.name}
+                </span>
+                {loadingNoteId === note.id && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loading className="w-6 h-6 animate-spin stroke-th-primary-100" />
+                  </div>
+                )}
+              </div>
+
+              {loadingNoteId !== note.id && (
+                <span>
+                  <ArrowRight className="stroke-2" />
+                </span>
+              )}
             </li>
           ))}
         </ul>
