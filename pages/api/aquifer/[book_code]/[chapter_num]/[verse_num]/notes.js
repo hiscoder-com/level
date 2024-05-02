@@ -17,14 +17,15 @@ export default async function handler(req, res) {
       resourceType: resource_type,
       limit,
       offset,
-      query: query ? query : '',
+    }
+    if (query) {
+      searchParams.query = query
     }
 
     const response = await axios.get('https://api.aquifer.bible/resources/search', {
       params: searchParams,
       headers: { 'api-key': AQUIFER_API_KEY },
     })
-
     res.status(200).json(response.data)
   } catch (error) {
     console.log('Error fetching data from Aquifer API:', error)

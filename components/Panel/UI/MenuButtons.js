@@ -33,7 +33,7 @@ function MenuButtons({ classNames, menuItems }) {
       {buttons.map((button) => (
         <div key={button.id} className="relative">
           <button
-            className="btn-tertiary p-3"
+            className="btn-tertiary p-3 mb-3"
             onClick={() => button.action((prev) => !prev)}
           >
             {button.icon}
