@@ -622,7 +622,7 @@ export function useGetTheme() {
   return theme
 }
 
-export function useGetAquaphierNotes({
+export function useGetAquiferNotes({
   book_code,
   chapter_num,
   verse_num,
@@ -643,17 +643,22 @@ export function useGetAquaphierNotes({
     fetcher,
     { revalidateOnFocus: true, revalidateIfStale: true }
   )
-
   const loadMore = () => {
-    console.log(size)
     setSize(size + 1)
   }
+
+  const isLoadingMore =
+    isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
+
   let notes = []
   let isShowLoadMoreButton = false
   if (data) {
     notes = data.reduce((acc, curr) => [...acc, ...curr.items], [])
-    if (data.totalItemCount > notes.length || limit <= notes.length)
+    if (data[0].totalItemCount > notes.length && limit < data[0].totalItemCount) {
       isShowLoadMoreButton = true
+    } else {
+      isShowLoadMoreButton = false
+    }
   }
 
   return {
@@ -666,5 +671,6 @@ export function useGetAquaphierNotes({
     size,
     setSize,
     isShowLoadMoreButton,
+    isLoadingMore,
   }
 }

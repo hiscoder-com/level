@@ -26,7 +26,6 @@ export default async function handler(req, res) {
       params: searchParams,
       headers: { 'api-key': AQUIFER_API_KEY },
     })
-
     res.status(200).json(response.data)
   } catch (error) {
     console.log('Error fetching data from Aquifer API:', error)
