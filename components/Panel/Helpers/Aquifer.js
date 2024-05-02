@@ -11,6 +11,7 @@ import { TNTWLContent } from '../UI'
 
 import Close from 'public/close.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
+import Loading from 'public/progress.svg'
 
 function Aquifer(config) {
   const { t } = useTranslation()
@@ -21,13 +22,15 @@ function Aquifer(config) {
   return (
     <>
       {selectedNote ? (
-        <TNTWLContent
-          setItem={setSelectedNote}
-          item={{
-            text: selectedNote.text,
-            title: selectedNote.title,
-          }}
-        />
+        <div className="relative h-full">
+          <TNTWLContent
+            setItem={setSelectedNote}
+            item={{
+              text: selectedNote.text,
+              title: selectedNote.title,
+            }}
+          />
+        </div>
       ) : (
         <>
           <div className="relative flex items-center">
@@ -81,7 +84,7 @@ export default Aquifer
 
 function Notes({ resourceType, reference, languageCode, query, setSelectedNote }) {
   const verse = useRecoilValue(currentVerse)
-  const [isLoadingNote, setIsLoadingNote] = useState(false)
+  const [loadingNoteId, setLoadingNoteId] = useState(null)
 
   const {
     notes,
@@ -103,7 +106,8 @@ function Notes({ resourceType, reference, languageCode, query, setSelectedNote }
   })
 
   const getNoteContent = async (id) => {
-    setIsLoadingNote(true)
+    setLoadingNoteId(id)
+
     try {
       const response = await axios.get(`/api/aquifer/notes/${id}`)
       const { name, content } = response.data
@@ -126,7 +130,7 @@ function Notes({ resourceType, reference, languageCode, query, setSelectedNote }
     } catch (error) {
       console.error('Error fetching note:', error)
     } finally {
-      setIsLoadingNote(false)
+      setLoadingNoteId(null)
     }
   }
 
@@ -136,13 +140,39 @@ function Notes({ resourceType, reference, languageCode, query, setSelectedNote }
         {notes.map((note) => (
           <li
             key={note.id}
-            onClick={() => getNoteContent(note.id)}
-            className="flex justify-between items-center px-5 mt-2.5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex"
+            onClick={() => {
+              if (loadingNoteId !== note.id) {
+                getNoteContent(note.id)
+              }
+            }}
+            className={`flex justify-between items-center px-5 mt-2.5 leading-[47px] text-lg rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex ${
+              loadingNoteId === note.id
+                ? 'opacity-70 cursor-not-allowed'
+                : 'cursor-pointer'
+            }`}
           >
-            <span>{note.name}</span>
-            <span>
-              <ArrowRight className="stroke-2" />
-            </span>
+            <div
+              className={`relative flex-1 overflow-hidden whitespace-nowrap ${
+                loadingNoteId === note.id ? '' : 'text-ellipsis'
+              }`}
+            >
+              <span
+                className={`${loadingNoteId === note.id ? 'opacity-0' : 'opacity-100'}`}
+              >
+                {note.name}
+              </span>
+              {loadingNoteId === note.id && (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Loading className="w-6 h-6 animate-spin stroke-th-primary-100" />
+                </div>
+              )}
+            </div>
+
+            {loadingNoteId !== note.id && (
+              <span>
+                <ArrowRight className="stroke-2" />
+              </span>
+            )}
           </li>
         ))}
       </ul>
