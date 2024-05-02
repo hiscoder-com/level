@@ -2,22 +2,14 @@ import { useCallback, useEffect, useState } from 'react'
 
 import axios from 'axios'
 
-<<<<<<< HEAD
 import { useGetAquiferNotes } from 'utils/hooks'
 import { useRecoilValue } from 'recoil'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
-=======
-import { useTranslation } from 'react-i18next'
-import { useGetAquiferNotes } from 'utils/hooks'
-import { useRecoilValue } from 'recoil'
-import toast from 'react-hot-toast'
->>>>>>> ccc6eac42a520bdd9bba13c6602a13197972abb4
 
 import { currentVerse } from '../../state/atoms'
 import { TNTWLContent } from '../UI'
 
-<<<<<<< HEAD
 import Down from '/public/arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
@@ -29,19 +21,6 @@ function Aquifer(config) {
   const [selectedNote, setSelectedNote] = useState(null)
   const [isLoadingSearch, setIsLoadingSearch] = useState(false)
 
-=======
-import SearchIcon from 'public/search.svg'
-import ArrowRight from 'public/folder-arrow-right.svg'
-import Loading from 'public/progress.svg'
-import Down from '/public/arrow-down.svg'
-
-function Aquifer(config) {
-  const { t } = useTranslation()
-  const [query, setQuery] = useState('')
-  const [selectedNote, setSelectedNote] = useState(null)
-  const [search, setSearch] = useState('')
-  const [isLoadingSearch, setIsLoadingSearch] = useState(false)
->>>>>>> ccc6eac42a520bdd9bba13c6602a13197972abb4
   return (
     <>
       {selectedNote ? (
@@ -65,26 +44,17 @@ function Aquifer(config) {
             languageCode={config.config.config.languageCode}
             query={search}
             setIsLoadingSearch={setIsLoadingSearch}
-<<<<<<< HEAD
             setSelectedNote={setSelectedNote}
           />
           <h3 className="font-bold text-xl my-3.5">StudyNotes</h3>
           {/*TODO нужен перевод*/}
-=======
-          />
-          <h3 className="font-bold text-xl my-3.5">StudyNotes</h3>
- {/*TODO нужен перевод*/}
->>>>>>> ccc6eac42a520bdd9bba13c6602a13197972abb4
           <Notes
             resourceType="StudyNotes"
             reference={config.config.reference}
             languageCode={config.config.config.languageCode}
             query={search}
             setIsLoadingSearch={setIsLoadingSearch}
-<<<<<<< HEAD
             setSelectedNote={setSelectedNote}
-=======
->>>>>>> ccc6eac42a520bdd9bba13c6602a13197972abb4
           />
         </>
       )}
@@ -94,7 +64,6 @@ function Aquifer(config) {
 
 export default Aquifer
 
-<<<<<<< HEAD
 function Notes({
   resourceType,
   reference,
@@ -103,12 +72,9 @@ function Notes({
   setSelectedNote,
   setIsLoadingSearch,
 }) {
-=======
-function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearch }) {
->>>>>>> ccc6eac42a520bdd9bba13c6602a13197972abb4
   const verse = useRecoilValue(currentVerse)
   const [loadingNoteId, setLoadingNoteId] = useState(null)
-  const [note, setNote] = useState(null)
+
   const { notes, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
     useGetAquiferNotes({
       book_code: reference.book,
@@ -119,19 +85,6 @@ function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearc
       resource_type: resourceType,
     })
 
-<<<<<<< HEAD
-  const { notes, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
-    useGetAquiferNotes({
-      book_code: reference.book,
-      chapter_num: reference.chapter,
-      verse_num: verse,
-      query,
-      language_code: languageCode,
-      resource_type: resourceType,
-    })
-
-=======
->>>>>>> ccc6eac42a520bdd9bba13c6602a13197972abb4
   useEffect(() => {
     if (query.length > 2) {
       setIsLoadingSearch(isLoading)
@@ -139,12 +92,6 @@ function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearc
   }, [isLoading, query, setIsLoadingSearch])
 
   const getNoteContent = async (id) => {
-    setIsLoadingNote(true)
-    const currentNote = await axios.get(`api/aquaphier/notes/${id}`)
-    if (currentNote) {
-      setNote(currentNote.data)
-
-      const getNoteContent = async (id) => {
     setLoadingNoteId(id)
 
     try {
@@ -178,7 +125,6 @@ function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearc
       {isLoading && !notes?.length ? (
         <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 right-2" />
       ) : (
-<<<<<<< HEAD
         <ul>
           {notes.map((note) => (
             <li
@@ -219,34 +165,6 @@ function Notes({ resourceType, reference, languageCode, query, setIsLoadingSearc
             </li>
           ))}
         </ul>
-=======
-        const getNoteContent = async (id) => {
-    setLoadingNoteId(id)
-
-    try {
-      const response = await axios.get(`/api/aquifer/notes/${id}`)
-      const { name, content } = response.data
-
-      const text = content
-        .map((item) => {
-          const paragraphs = item.tiptap.content.map((node) => {
-            if (node.type === 'paragraph') {
-              return node.content.map((textNode) => textNode.text).join('')
-            }
-            return ''
-          })
-          return paragraphs.join('\n\n')
-        })
-        .join('')
-
-      const formattedNote = { text, title: name }
-
-      setSelectedNote(formattedNote)
-    } catch (error) {
-      console.error('Error fetching note:', error)
-    } finally {
-      setLoadingNoteId(null)
->>>>>>> ccc6eac42a520bdd9bba13c6602a13197972abb4
       )}
       {isShowLoadMoreButton && (
         <button
