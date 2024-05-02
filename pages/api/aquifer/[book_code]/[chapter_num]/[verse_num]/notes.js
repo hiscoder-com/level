@@ -17,7 +17,9 @@ export default async function handler(req, res) {
       resourceType: resource_type,
       limit,
       offset,
-      query: query ? query : '',
+    }
+    if (query) {
+      searchParams.query = query
     }
 
     const response = await axios.get('https://api.aquifer.bible/resources/search', {
