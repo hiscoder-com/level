@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import axios from 'axios'
 import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
 import { checkLSVal } from './helper'
 import { useRecoilState } from 'recoil'
 
@@ -619,4 +620,51 @@ export function useGetTheme() {
     }
   }, [])
   return theme
+}
+
+export function useGetAquaphierNotes({
+  book_code,
+  chapter_num,
+  verse_num,
+  query,
+  language_code,
+  resource_type,
+}) {
+  const limit = 10
+  const getKey = (index) => {
+    const offset = index * limit
+    return book_code && language_code
+      ? `/api/aquifer/${book_code}/${chapter_num}/${verse_num}/notes?query=${query}&limit=${limit}&offset=${offset}&language_code=${language_code}&resource_type=${resource_type}`
+      : null
+  }
+
+  const { data, error, isLoading, isValidating, mutate, size, setSize } = useSWRInfinite(
+    getKey,
+    fetcher,
+    { revalidateOnFocus: true, revalidateIfStale: true }
+  )
+
+  const loadMore = () => {
+    console.log(size)
+    setSize(size + 1)
+  }
+  let notes = []
+  let isShowLoadMoreButton = false
+  if (data) {
+    notes = data.reduce((acc, curr) => [...acc, ...curr.items], [])
+    if (data.totalItemCount > notes.length || limit <= notes.length)
+      isShowLoadMoreButton = true
+  }
+
+  return {
+    notes,
+    loadMore,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    size,
+    setSize,
+    isShowLoadMoreButton,
+  }
 }
