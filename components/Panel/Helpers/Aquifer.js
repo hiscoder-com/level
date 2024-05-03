@@ -122,11 +122,9 @@ function Notes({
 
   const getNoteContent = async (id) => {
     setLoadingNoteId(id)
-
     try {
       const response = await axios.get(`/api/aquifer/notes/${id}`)
       const { name, content } = response.data
-
       const text = content
         .map((item) => {
           const paragraphs = item.tiptap.content.map((node) => {
@@ -140,7 +138,6 @@ function Notes({
         .join('')
 
       const formattedNote = { text, title: name }
-
       setSelectedNote(formattedNote)
     } catch (error) {
       console.error('Error fetching note:', error)
@@ -223,59 +220,6 @@ function Images({
   setSelectedNote,
   setIsLoadingSearch,
 }) {
-  const imgArray = [
-    {
-      id: 1,
-      name: 'WEB-0050_babylon_exil_fugel',
-      url: 'http://localhost:3000/aquifer/WEB-0050_babylon_exil_fugel.jpg',
-    },
-    {
-      id: 2,
-      name: 'WEB-0121_fire',
-      url: 'http://localhost:3000/aquifer/WEB-0121_fire.jpg',
-    },
-    {
-      id: 3,
-      name: 'WEB-0136_city_gate',
-      url: 'http://localhost:3000/aquifer/WEB-0136_city_gate.jpg',
-    },
-    {
-      id: 4,
-      name: 'WEB-0206_exile_capture_lachish',
-      url: 'http://localhost:3000/aquifer/WEB-0206_exile_capture_lachish copy.jpg',
-    },
-    {
-      id: 5,
-      name: 'WEB-0221_fire copy 2',
-      url: 'http://localhost:3000/aquifer/WEB-0221_fire copy 2.jpg',
-    },
-    {
-      id: 6,
-      name: 'WEB-0422_city_gate_en',
-      url: 'http://localhost:3000/aquifer/WEB-0422_city_gate_en.jpg',
-    },
-    {
-      id: 7,
-      name: 'WEB-0506_exile_capture_lachish',
-      url: 'http://localhost:3000/aquifer/WEB-0506_exile_capture_lachish.jpg',
-    },
-    {
-      id: 8,
-      name: 'WEB-0544_jehu_obelisk',
-      url: 'http://localhost:3000/aquifer/WEB-0544_jehu_obelisk.jpg',
-    },
-    {
-      id: 9,
-      name: 'WEB-0575_lachish_relief_exile',
-      url: 'http://localhost:3000/aquifer/WEB-0575_lachish_relief_exile.jpg',
-    },
-    {
-      id: 10,
-      name: 'WEB-0621_fire copy',
-      url: 'http://localhost:3000/aquifer/WEB-0621_fire copy.jpg',
-    },
-  ]
-
   const verse = useRecoilValue(currentVerse)
 
   const { resources, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
@@ -284,15 +228,17 @@ function Images({
       chapter_num: reference.chapter,
       verse_num: verse,
       query,
-      language_code: null, //закрыл, чтобы не было лишних запросов
+      language_code: languageCode,
       resource_type: resourceType,
     })
-  console.log(resources, 'этот массив брать для карусели')
-  // loadMore - это для дозагрузки
   return (
     <>
-      {/* <div className="mb-10">Тут будут картинки</div> */}
-      <Carousel images={imgArray} />
+      <Carousel
+        images={resources}
+        isShowLoadMoreButton={isShowLoadMoreButton}
+        loadMore={loadMore}
+        isLoadingMore={isLoadingMore}
+      />
     </>
   )
 }
@@ -445,7 +391,7 @@ function ListBoxMultiple({
   )
 }
 
-function Carousel({ images }) {
+function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const containerRef = useRef(null)
   const containerWidth = useRef(null)
@@ -500,7 +446,11 @@ function Carousel({ images }) {
               <div className="text-left text-sm mt-2.5 truncate">{image.name}</div>
             </div>
           ))}
-          <LoadMoreButton />
+          <LoadMoreButton
+            isShowLoadMoreButton={isShowLoadMoreButton}
+            loadMore={loadMore}
+            isLoadingMore={isLoadingMore}
+          />
         </div>
 
         <div className="flex justify-between">
@@ -524,12 +474,21 @@ function Carousel({ images }) {
   )
 }
 
-const LoadMoreButton = () => {
+const LoadMoreButton = ({ loadMore, isShowLoadMoreButton, isLoadingMore = false }) => {
   return (
     <div className="flex-none w-[134px] h-[83px] mr-2.5 bg-gray-200 hover:bg-gray-300 rounded-[5px] flex items-center justify-center">
-      <button className="text-gray-800 font-bold py-2 px-4 rounded">
-        Подгрузить еще
+      <button
+        className="text-gray-800 font-bold py-2 px-4 rounded"
+        onClick={loadMore}
+        disabled={!isShowLoadMoreButton}
+      >
+        {isLoadingMore ? (
+          <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 opacity-70" />
+        ) : (
+          <span>Подгрузить еще</span>
+        )}
       </button>
+      {/* TODO:добавить перевод*/}
     </div>
   )
 }
