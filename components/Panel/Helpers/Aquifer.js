@@ -16,6 +16,10 @@ import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
 import SearchIcon from 'public/search.svg'
 import Check from 'public/check.svg'
+import PrevImage from 'public/arrow-left.svg'
+import NextImage from 'public/arrow-right.svg'
+import Close from 'public/close.svg'
+import Modal from 'components/Modal'
 
 function Aquifer(config) {
   const { t } = useTranslation()
@@ -393,6 +397,8 @@ function ListBoxMultiple({
 
 function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [initialImageIndex, setInitialImageIndex] = useState(0)
+  const [isOpenModal, setIsOpenModal] = useState(false)
   const containerRef = useRef(null)
   const containerWidth = useRef(null)
   const cardWidth = 144
@@ -437,7 +443,11 @@ function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
       <div className="relative overflow-hidden">
         <div className="flex pb-10" ref={containerRef}>
           {images.map((image) => (
-            <div key={image.id} className="flex-none w-[134px] h-[83px] mr-2.5">
+            <div
+              key={image.id}
+              className="flex-none w-[134px] h-[83px] mr-2.5"
+              onClick={() => setIsOpenModal(true)}
+            >
               <img
                 src={image.url}
                 alt={image.name}
@@ -470,6 +480,30 @@ function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
           </button>
         </div>
       </div>
+      <Modal
+        isOpen={isOpenModal}
+        closeHandle={() => {
+          setIsOpenModal(false)
+        }}
+        className={{
+          main: 'z-50 relative',
+          dialogTitle: 'text-center text-2xl font-medium leading-6',
+          dialogPanel:
+            'w-full max-w-5xl p-6 align-middle transform overflow-y-auto transition-all text-th-text-primary-100 rounded-3xl',
+          transitionChild: 'fixed inset-0 bg-[#424242] bg-opacity-90',
+          content:
+            'inset-0 fixed flex items-center justify-center p-4 min-h-full  overflow-y-auto',
+        }}
+      >
+        <FullSizeImageCarousel
+          loadMore={loadMore}
+          images={images}
+          initialIndex={initialImageIndex}
+          onClose={() => setIsOpenModal(false)}
+          isShowLoadMoreButton={isShowLoadMoreButton}
+          isLoadingMore={isLoadingMore}
+        />
+      </Modal>
     </>
   )
 }
@@ -489,6 +523,87 @@ const LoadMoreButton = ({ loadMore, isShowLoadMoreButton, isLoadingMore = false 
         )}
       </button>
       {/* TODO:добавить перевод*/}
+    </div>
+  )
+}
+
+function FullSizeImageCarousel({
+  images,
+  initialIndex = 0,
+  onClose,
+  isShowLoadMoreButton,
+  loadMore,
+  isLoadingMore,
+}) {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex)
+  const goToPrevious = () => {
+    setCurrentIndex(currentIndex - 1)
+  }
+
+  const goToNext = () => {
+    const lastIndex = images.length - 1
+    if (currentIndex >= lastIndex && isShowLoadMoreButton) {
+      loadMore()
+    } else {
+      setCurrentIndex((prevIndex) => (prevIndex < lastIndex ? prevIndex + 1 : prevIndex))
+    }
+  }
+
+  return (
+    <div className="relative w-full flex items-center justify-center">
+      <div className="mb-4 absolute top-0 w-full">
+        <div className="relative flex justify-center items-center">
+          <h3 className="text-th-secondary-10">{images[currentIndex].name}</h3>
+          <button
+            onClick={onClose}
+            className="absolute right-14 w-5  cursor-pointer bg-th-text-primary rounded-full p-1"
+          >
+            <Close className="stroke-th-secondary-10" />
+          </button>
+        </div>
+      </div>
+      <div className="max-w-full h-[70vh] text-center flex flex-col justify-center items-center py-10">
+        <img
+          src={images[currentIndex].url}
+          alt={`Slide ${currentIndex}`}
+          className="mx-auto px-12 object-contain h-full w-auto"
+        />
+      </div>
+      <div className="absolute bottom-0 flex w-full justify-around">
+        <button
+          onClick={goToPrevious}
+          className="bg-th-text-primary rounded-full p-1 disabled:bg-th-secondary-100"
+          disabled={currentIndex === 0}
+        >
+          <PrevImage
+            className={`w-4 ${
+              currentIndex === 0 ? 'stroke-th-secondary-300' : 'stroke-th-secondary-10'
+            }`}
+          />
+        </button>
+        <button
+          onClick={goToNext}
+          className="bg-th-text-primary rounded-full p-1 disabled:bg-th-secondary-100"
+          disabled={
+            (currentIndex === images.length - 1 && !isShowLoadMoreButton) || isLoadingMore
+          }
+        >
+          <>
+            {isLoadingMore ? (
+              <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 opacity-70" />
+            ) : (
+              <NextImage
+                className={`w-4 ${
+                  (currentIndex === images.length - 1 && !isShowLoadMoreButton) ||
+                  isLoadingMore
+                    ? 'stroke-th-secondary-300'
+                    : 'stroke-th-secondary-10'
+                }`}
+              />
+            )}
+          </>
+        </button>
+      </div>
     </div>
   )
 }
