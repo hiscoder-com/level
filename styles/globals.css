@@ -4,6 +4,7 @@
 
 :root {
   --secondary-10: theme('colors.white');
+  --secondary-50: theme('colors.gray.50');
   --secondary-100: theme('colors.gray.150');
   --secondary-200:  theme('colors.gray.250');
   --secondary-300:  theme('colors.gray.450');
