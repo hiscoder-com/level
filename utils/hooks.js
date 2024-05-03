@@ -643,7 +643,7 @@ export function useGetAquiferResources({
   const { data, error, isLoading, isValidating, mutate, size, setSize } = useSWRInfinite(
     getKey,
     fetcher,
-    { revalidateOnFocus: true, revalidateIfStale: true }
+    { revalidateOnFocus: false, revalidateIfStale: false }
   )
   const loadMore = () => {
     setSize(size + 1)

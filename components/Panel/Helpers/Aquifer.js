@@ -3,12 +3,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import axios from 'axios'
 
 import { useGetAquiferResources } from 'utils/hooks'
-import { useRecoilValue } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
-import { Listbox } from '@headlessui/react'
+import { Listbox, Switch } from '@headlessui/react'
 
-import { currentVerse } from '../../state/atoms'
+import { currentVerse, indexImageCarousel } from '../../state/atoms'
 import { TNTWLContent } from '../UI'
 
 import Down from '/public/arrow-down.svg'
@@ -16,8 +16,7 @@ import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
 import SearchIcon from 'public/search.svg'
 import Check from 'public/check.svg'
-import PrevImage from 'public/arrow-left.svg'
-import NextImage from 'public/arrow-right.svg'
+
 import Close from 'public/close.svg'
 import Modal from 'components/Modal'
 
@@ -26,6 +25,7 @@ function Aquifer(config) {
   const [search, setSearch] = useState('')
   const [selectedNote, setSelectedNote] = useState(null)
   const [isLoadingSearch, setIsLoadingSearch] = useState(false)
+  const [isShowAllChapter, setIsShowAllChapter] = useState(false)
 
   function createTool(name, Component) {
     return {
@@ -38,6 +38,7 @@ function Aquifer(config) {
           query={search}
           setIsLoadingSearch={setIsLoadingSearch}
           setSelectedNote={setSelectedNote}
+          isShowAllChapter={isShowAllChapter}
         />
       ),
     }
@@ -45,8 +46,8 @@ function Aquifer(config) {
 
   const tools = [
     createTool('images', Images),
-    // createTool('dictionary', Notes), //закрыл, чтобы не было лишних запросов
-    // createTool('studyNotes', Notes), //закрыл, чтобы не было лишних запросов
+    createTool('dictionary', Notes),
+    createTool('studyNotes', Notes),
   ]
 
   const options = tools.map((item) => item.name)
@@ -66,16 +67,34 @@ function Aquifer(config) {
         </div>
       ) : (
         <>
-          <div className="flex items-center gap-2.5 border-b border-th-secondary-300 pb-5 mb-7">
-            <ListBoxMultiple
-              options={options}
-              selectedOptions={selectedOptions}
-              setSelectedOptions={setSelectedOptions}
-              placeholderEmpty={t('ChooseResources')}
-              placeholderFull={t('AllResources')}
-            />
-            {/*TODO нужен перевод - AllResources*/}
-            <Search setSearch={setSearch} isLoading={isLoadingSearch} />
+          <div className="flex flex-col gap-2.5 border-b border-th-secondary-300 pb-5 mb-7">
+            <div className="flex items-center gap-3.5">
+              <ListBoxMultiple
+                options={options}
+                selectedOptions={selectedOptions}
+                setSelectedOptions={setSelectedOptions}
+                placeholderEmpty={t('ChooseResources')}
+                placeholderFull={t('AllResources')}
+              />
+              {/*TODO нужен перевод - AllResources*/}
+              <Search setSearch={setSearch} isLoading={isLoadingSearch} />
+            </div>
+            <div className="flex items-center justify-between">
+              <span>{t('ShowAllChapter')}</span> {/*TODO нужен перевод - ShowAllChapter*/}
+              <Switch
+                checked={isShowAllChapter}
+                onChange={() => setIsShowAllChapter((prev) => !prev)}
+                className={`relative inline-flex items-center h-6 w-12 rounded-full ${
+                  isShowAllChapter ? 'bg-th-primary-100' : 'bg-th-secondary-100'
+                }`}
+              >
+                <span
+                  className={`inline-block h-4 w-4 transform rounded-full bg-th-secondary-10 transition ${
+                    isShowAllChapter ? 'translate-x-6' : 'translate-x-1'
+                  }`}
+                />
+              </Switch>
+            </div>
           </div>
           {tools.map((tool) => {
             if (selectedOptions.includes(tool.name)) {
@@ -104,6 +123,7 @@ function Notes({
   query,
   setSelectedNote,
   setIsLoadingSearch,
+  isShowAllChapter,
 }) {
   const verse = useRecoilValue(currentVerse)
   const [loadingNoteId, setLoadingNoteId] = useState(null)
@@ -111,8 +131,8 @@ function Notes({
   const { resources, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
     useGetAquiferResources({
       book_code: reference.book,
-      chapter_num: reference.chapter,
-      verse_num: verse,
+      chapter_num: isShowAllChapter ? 0 : reference.chapter,
+      verse_num: isShowAllChapter ? 0 : verse,
       query,
       language_code: languageCode,
       resource_type: resourceType,
@@ -216,21 +236,14 @@ function Notes({
   )
 }
 
-function Images({
-  resourceType,
-  reference,
-  languageCode,
-  query,
-  setSelectedNote,
-  setIsLoadingSearch,
-}) {
+function Images({ resourceType, reference, languageCode, query, isShowAllChapter }) {
   const verse = useRecoilValue(currentVerse)
 
   const { resources, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
     useGetAquiferResources({
       book_code: reference.book,
-      chapter_num: reference.chapter,
-      verse_num: verse,
+      chapter_num: isShowAllChapter ? 0 : reference.chapter,
+      verse_num: isShowAllChapter ? 0 : verse,
       query,
       language_code: languageCode,
       resource_type: resourceType,
@@ -395,14 +408,18 @@ function ListBoxMultiple({
   )
 }
 
-function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [initialImageIndex, setInitialImageIndex] = useState(0)
+function Carousel({
+  images,
+  isShowLoadMoreButton,
+  loadMore,
+  isLoadingMore,
+  insideBigCarousel = false,
+}) {
+  const [currentIndex, setCurrentIndex] = useRecoilState(indexImageCarousel)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const containerRef = useRef(null)
   const containerWidth = useRef(null)
   const cardWidth = 144
-
   const lastIndex = images.length - 1
   const visibleCards = containerWidth.current
     ? Math.floor(containerWidth.current / cardWidth)
@@ -442,18 +459,29 @@ function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
     <>
       <div className="relative overflow-hidden">
         <div className="flex pb-10" ref={containerRef}>
-          {images.map((image) => (
+          {images.map((image, index) => (
             <div
               key={image.id}
               className="flex-none w-[134px] h-[83px] mr-2.5"
-              onClick={() => setIsOpenModal(true)}
+              onClick={() => {
+                setCurrentIndex(index)
+                if (!insideBigCarousel) {
+                  setIsOpenModal(true)
+                }
+              }}
             >
               <img
                 src={image.url}
                 alt={image.name}
                 className="w-[134px] h-[83px] rounded-[5px]"
               />
-              <div className="text-left text-sm mt-2.5 truncate">{image.name}</div>
+              <div
+                className={`text-left text-sm mt-2.5 truncate ${
+                  insideBigCarousel ? 'text-th-secondary-10' : 'text-th-text-primary'
+                }`}
+              >
+                {image.name}
+              </div>
             </div>
           ))}
           <LoadMoreButton
@@ -474,7 +502,7 @@ function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
           <button
             className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
             onClick={handleNextClick}
-            disabled={currentIndex === maxVisibleIndex}
+            disabled={currentIndex === maxVisibleIndex || currentIndex === lastIndex}
           >
             <ArrowRight className="stroke-2" />
           </button>
@@ -498,7 +526,6 @@ function Carousel({ images, isShowLoadMoreButton, loadMore, isLoadingMore }) {
         <FullSizeImageCarousel
           loadMore={loadMore}
           images={images}
-          initialIndex={initialImageIndex}
           onClose={() => setIsOpenModal(false)}
           isShowLoadMoreButton={isShowLoadMoreButton}
           isLoadingMore={isLoadingMore}
@@ -529,26 +556,12 @@ const LoadMoreButton = ({ loadMore, isShowLoadMoreButton, isLoadingMore = false 
 
 function FullSizeImageCarousel({
   images,
-  initialIndex = 0,
   onClose,
   isShowLoadMoreButton,
   loadMore,
   isLoadingMore,
 }) {
-  const [currentIndex, setCurrentIndex] = useState(initialIndex)
-  const goToPrevious = () => {
-    setCurrentIndex(currentIndex - 1)
-  }
-
-  const goToNext = () => {
-    const lastIndex = images.length - 1
-    if (currentIndex >= lastIndex && isShowLoadMoreButton) {
-      loadMore()
-    } else {
-      setCurrentIndex((prevIndex) => (prevIndex < lastIndex ? prevIndex + 1 : prevIndex))
-    }
-  }
-
+  const currentIndex = useRecoilValue(indexImageCarousel)
   return (
     <div className="relative w-full flex items-center justify-center">
       <div className="mb-4 absolute top-0 w-full">
@@ -570,39 +583,13 @@ function FullSizeImageCarousel({
         />
       </div>
       <div className="absolute bottom-0 flex w-full justify-around">
-        <button
-          onClick={goToPrevious}
-          className="bg-th-text-primary rounded-full p-1 disabled:bg-th-secondary-100"
-          disabled={currentIndex === 0}
-        >
-          <PrevImage
-            className={`w-4 ${
-              currentIndex === 0 ? 'stroke-th-secondary-300' : 'stroke-th-secondary-10'
-            }`}
-          />
-        </button>
-        <button
-          onClick={goToNext}
-          className="bg-th-text-primary rounded-full p-1 disabled:bg-th-secondary-100"
-          disabled={
-            (currentIndex === images.length - 1 && !isShowLoadMoreButton) || isLoadingMore
-          }
-        >
-          <>
-            {isLoadingMore ? (
-              <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 opacity-70" />
-            ) : (
-              <NextImage
-                className={`w-4 ${
-                  (currentIndex === images.length - 1 && !isShowLoadMoreButton) ||
-                  isLoadingMore
-                    ? 'stroke-th-secondary-300'
-                    : 'stroke-th-secondary-10'
-                }`}
-              />
-            )}
-          </>
-        </button>
+        <Carousel
+          images={images}
+          isShowLoadMoreButton={isShowLoadMoreButton}
+          loadMore={loadMore}
+          isLoadingMore={isLoadingMore}
+          insideBigCarousel
+        />
       </div>
     </div>
   )

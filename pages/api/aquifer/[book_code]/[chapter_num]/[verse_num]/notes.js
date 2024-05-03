@@ -4,7 +4,6 @@ const AQUIFER_API_KEY = process.env.NEXT_API_KEY_AQUIFER
 
 export default async function handler(req, res) {
   const { book_code, chapter_num, verse_num } = req.query
-
   try {
     const { limit = 10, offset = 0, language_code, resource_type, query } = req.query
     const searchParams = {
