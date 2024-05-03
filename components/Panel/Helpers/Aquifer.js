@@ -6,6 +6,7 @@ import { useGetAquiferNotes } from 'utils/hooks'
 import { useRecoilValue } from 'recoil'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import { Listbox } from '@headlessui/react'
 
 import { currentVerse } from '../../state/atoms'
 import { TNTWLContent } from '../UI'
@@ -14,12 +15,45 @@ import Down from '/public/arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
 import SearchIcon from 'public/search.svg'
+import Check from 'public/check.svg'
 
 function Aquifer(config) {
   const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [selectedNote, setSelectedNote] = useState(null)
   const [isLoadingSearch, setIsLoadingSearch] = useState(false)
+
+  const resources = [
+    { name: 'Images', node: <Images /> },
+    {
+      name: 'Dictionary',
+      node: (
+        <Notes
+          resourceType="Dictionary"
+          reference={config.config.reference}
+          languageCode={config.config.config.languageCode}
+          query={search}
+          setIsLoadingSearch={setIsLoadingSearch}
+          setSelectedNote={setSelectedNote}
+        />
+      ),
+    },
+    {
+      name: 'StudyNotes',
+      node: (
+        <Notes
+          resourceType="StudyNotes"
+          reference={config.config.reference}
+          languageCode={config.config.config.languageCode}
+          query={search}
+          setIsLoadingSearch={setIsLoadingSearch}
+          setSelectedNote={setSelectedNote}
+        />
+      ),
+    },
+  ]
+  const options = resources.map((item) => item.name)
+  const [selectedOptions, setSelectedOptions] = useState(options)
 
   return (
     <>
@@ -35,27 +69,29 @@ function Aquifer(config) {
         </div>
       ) : (
         <>
-          <Search setSearch={setSearch} isLoading={isLoadingSearch} />
-          <h3 className="font-bold text-xl my-3.5">{t('dictionary')}</h3>
+          <div className="flex items-center gap-2 border-b border-th-secondary-300 pb-4">
+            <ListBoxMultiple
+              options={options}
+              selectedOptions={selectedOptions}
+              setSelectedOptions={setSelectedOptions}
+              placeholderEmpty={t('ChooseResources')}
+              placeholderFull={t('AllResources')}
+            />
+            {/*TODO нужен перевод - AllResources*/}
+            <Search setSearch={setSearch} isLoading={isLoadingSearch} />
+          </div>
+          {resources.map((resource) => {
+            if (selectedOptions.includes(resource.name)) {
+              return (
+                <div key={resource.name}>
+                  <h3 className="font-bold text-xl my-3.5">{t(resource.name)}</h3>
+                  {resource.node}
+                </div>
+              )
+            }
 
-          <Notes
-            resourceType="Dictionary"
-            reference={config.config.reference}
-            languageCode={config.config.config.languageCode}
-            query={search}
-            setIsLoadingSearch={setIsLoadingSearch}
-            setSelectedNote={setSelectedNote}
-          />
-          <h3 className="font-bold text-xl my-3.5">StudyNotes</h3>
-          {/*TODO нужен перевод*/}
-          <Notes
-            resourceType="StudyNotes"
-            reference={config.config.reference}
-            languageCode={config.config.config.languageCode}
-            query={search}
-            setIsLoadingSearch={setIsLoadingSearch}
-            setSelectedNote={setSelectedNote}
-          />
+            return null
+          })}
         </>
       )}
     </>
@@ -192,26 +228,26 @@ function Images() {
 
 //TODO
 /*
-1. Сделать api для загрузки конкретной note по id
+  1. Сделать api для загрузки конкретной note по id  - готово
   2. Сделать список на клиенте по дизайну. - готово
-3. Сделать открытие конкретной note по клику, используя наш комопнент TNTWLContent
-4. Подумать, как показывать TNTWLContent на весь компонент Aquifer
-5. Переделать кнопку "Подгрузить всё"  
-  6. Проверить правильную работу компонента, меняя параметры.//Саша - готово
-  7. Убрать значения по-умолчанию в хуке, передавать в компонент Aquifer референс и languageCode.//Саша - готово
+  3 . Сделать открытие конкретной note по клику, используя наш комопнент TNTWLContent - готово
+  4. Подумать, как показывать TNTWLContent на весь компонент Aquifer - готово
+  5. Переделать кнопку "Подгрузить всё"  - готово
+  6. Проверить правильную работу компонента, меняя параметры.// готово
+  7. Убрать значения по-умолчанию в хуке, передавать в компонент Aquifer референс и languageCode.// готово
 8. Добавить фильтр, который отключает разные типы ресурсов
   9. Добавить поиск // Саша - готово
   10. Возвращать кол-во всех записей с запроса (параметр totalItemCount) из хука и на клиенте сравнивать с кол-вом всех записей в масиве Notes
   и если значение равны - кнопку "подгрузить ещё" не показывать. также не показывать эту кнопку, если длина массива notes больше или равна limits.
   может быть делать эти расчёты внутри хука а выдавать параметр - isShowLoadMoreButton  - готово
   11. Сделать лоадинг, когда грузятся записи. //готово
-12 Сделать лоадинг, когда грузится 1 запись 
+  12 Сделать лоадинг, когда грузится 1 запись 
   13. Сделать лоадинг и сделать неактивным нажатие кнопки "подгрузить ещё" в момент загрузки. -готово
+14. Запоминать позицию скролла - если останется время. Когда много элементов в словаре , открывается контент, а потом возвращается - скроллится в начало.
+15. Исправить баг с лоадингом - когда вводишь первые 3 символа.
 
 
-Владу задачи - вопросы
-Кнопка дозагрузки
-Кнопка для начала поиска
+
 
 */
 
@@ -220,11 +256,13 @@ function Search({ setSearch, isLoading = false }) {
   const [query, setQuery] = useState('')
   const handleSearch = useCallback(() => {
     if (!query || query.length < 3) {
+      //TODO Нужен перевод
       toast(t('Please enter at least 3 characters'), {
         icon: <SearchIcon className="w-6" />,
       })
+      return
     }
-    setSearch(query)
+    setSearch(query.trim())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query])
   useEffect(() => {
@@ -257,5 +295,65 @@ function Search({ setSearch, isLoading = false }) {
         <SearchIcon className=" р-6 w-6 stroke-2" onClick={handleSearch} />
       </button>
     </div>
+  )
+}
+
+function ListBoxMultiple({
+  options,
+  selectedOptions,
+  setSelectedOptions,
+  placeholderFull = '',
+  placeholderEmpty = '',
+}) {
+  const isSelected = (value) => selectedOptions.includes(value)
+
+  const handleOptionClicked = (value) => {
+    if (isSelected(value)) {
+      setSelectedOptions(selectedOptions.filter((option) => option !== value))
+    } else {
+      setSelectedOptions([...selectedOptions, value])
+    }
+  }
+
+  return (
+    <Listbox value={selectedOptions} onChange={() => {}} multiple>
+      {/** TODO Проверить - нужен ли open, если нет- убрать */}
+      {({ open }) => (
+        <div className="relative text-th-text-primary flex items-center w-full">
+          <Listbox.Button className="relative flex items-center w-full">
+            <input
+              className="input-primary truncate bg-th-secondary-100 w-full pr-4"
+              value={
+                options.length === selectedOptions.length
+                  ? placeholderFull
+                  : selectedOptions.length > 0
+                  ? selectedOptions.join(', ')
+                  : placeholderEmpty
+              }
+              readOnly
+            />
+            {/*TODO нужен перевод */}
+
+            <ArrowRight className="absolute min-w-[1.5rem] stroke-th-text-primary right-2 rotate-90" />
+          </Listbox.Button>
+          <div className="mt-8">
+            <Listbox.Options className="absolute w-full left-0 max-h-[40vh] bg-th-secondary-10 rounded-b-lg overflow-y-auto z-10 border-r border-l border-b">
+              {options.map((el) => (
+                <Listbox.Option
+                  as="div"
+                  className="relative flex justify-between items-center px-5 py-1 bg-th-secondary-10 cursor-pointer last:pb-3 hover:bg-th-secondary-100"
+                  key={el}
+                  value={el}
+                  onClick={() => handleOptionClicked(el)}
+                >
+                  <span>{el}</span>
+                  {selectedOptions.includes(el) && <Check className="w-6 h-6" />}
+                </Listbox.Option>
+              ))}
+            </Listbox.Options>
+          </div>
+        </div>
+      )}
+    </Listbox>
   )
 }
