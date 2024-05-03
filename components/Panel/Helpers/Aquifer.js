@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import axios from 'axios'
 
@@ -223,6 +223,59 @@ function Images({
   setSelectedNote,
   setIsLoadingSearch,
 }) {
+  const imgArray = [
+    {
+      id: 1,
+      name: 'WEB-0050_babylon_exil_fugel',
+      url: 'http://localhost:3000/aquifer/WEB-0050_babylon_exil_fugel.jpg',
+    },
+    {
+      id: 2,
+      name: 'WEB-0121_fire',
+      url: 'http://localhost:3000/aquifer/WEB-0121_fire.jpg',
+    },
+    {
+      id: 3,
+      name: 'WEB-0136_city_gate',
+      url: 'http://localhost:3000/aquifer/WEB-0136_city_gate.jpg',
+    },
+    {
+      id: 4,
+      name: 'WEB-0206_exile_capture_lachish',
+      url: 'http://localhost:3000/aquifer/WEB-0206_exile_capture_lachish copy.jpg',
+    },
+    {
+      id: 5,
+      name: 'WEB-0221_fire copy 2',
+      url: 'http://localhost:3000/aquifer/WEB-0221_fire copy 2.jpg',
+    },
+    {
+      id: 6,
+      name: 'WEB-0422_city_gate_en',
+      url: 'http://localhost:3000/aquifer/WEB-0422_city_gate_en.jpg',
+    },
+    {
+      id: 7,
+      name: 'WEB-0506_exile_capture_lachish',
+      url: 'http://localhost:3000/aquifer/WEB-0506_exile_capture_lachish.jpg',
+    },
+    {
+      id: 8,
+      name: 'WEB-0544_jehu_obelisk',
+      url: 'http://localhost:3000/aquifer/WEB-0544_jehu_obelisk.jpg',
+    },
+    {
+      id: 9,
+      name: 'WEB-0575_lachish_relief_exile',
+      url: 'http://localhost:3000/aquifer/WEB-0575_lachish_relief_exile.jpg',
+    },
+    {
+      id: 10,
+      name: 'WEB-0621_fire copy',
+      url: 'http://localhost:3000/aquifer/WEB-0621_fire copy.jpg',
+    },
+  ]
+
   const verse = useRecoilValue(currentVerse)
 
   const { resources, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
@@ -236,7 +289,12 @@ function Images({
     })
   console.log(resources, 'этот массив брать для карусели')
   // loadMore - это для дозагрузки
-  return <div className="mb-10">Тут будет карусель</div>
+  return (
+    <>
+      {/* <div className="mb-10">Тут будут картинки</div> */}
+      <Carousel images={imgArray} />
+    </>
+  )
 }
 
 //TODO
@@ -248,7 +306,7 @@ function Images({
   5. Переделать кнопку "Подгрузить всё"  - готово
   6. Проверить правильную работу компонента, меняя параметры.// готово
   7. Убрать значения по-умолчанию в хуке, передавать в компонент Aquifer референс и languageCode.// готово
-8. Добавить фильтр, который отключает разные типы ресурсов
+  8. Добавить фильтр, который отключает разные типы ресурсов
   9. Добавить поиск // Саша - готово
   10. Возвращать кол-во всех записей с запроса (параметр totalItemCount) из хука и на клиенте сравнивать с кол-вом всех записей в масиве Notes
   и если значение равны - кнопку "подгрузить ещё" не показывать. также не показывать эту кнопку, если длина массива notes больше или равна limits.
@@ -260,18 +318,19 @@ function Images({
   15. Исправить баг с лоадингом - когда вводишь первые 3 символа. готово
 16. проверить все переводы и перевести, если нужно
   17. дизайн фильтра и поиска привести к виду в фигме - готово
-  18. поправить дизайн готово 
+  18. поправить дизайн готово
 
 
 РАБОТА С КАРТИНКАМИ
-1. сделать малую карусель с моковыми данными (взять 10 элементов разных форматов)
+  1. сделать малую карусель с моковыми данными (взять 10 элементов разных форматов) в работе
 2. отображение миниатюр
 3. кнопки навигации
 4. карусель большая
 5. в большую карусель добавить малую карусель
-6. сделать API для загрузки списка, который создаёт массив из id и запрос к каждой картинке по id, чтобы на клиент получить название картинки, id url Саша / готово
-7. написать хук для дозагрузки картинок, если их больше лимита / готово -  
-
+  6. сделать API для загрузки списка, который создаёт массив из id и запрос к каждой картинке по id, чтобы на клиент получить название картинки, id url Саша / готово
+  7. написать хук для дозагрузки картинок, если их больше лимита / готово -
+8. После настройки карусели удалить моковые картинки
+9. Сделать рефакторинг - создать папку Aquifer и в неё перенести компоненты
 
 */
 
@@ -383,5 +442,94 @@ function ListBoxMultiple({
         </div>
       )}
     </Listbox>
+  )
+}
+
+function Carousel({ images }) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const containerRef = useRef(null)
+  const containerWidth = useRef(null)
+  const cardWidth = 144
+
+  const lastIndex = images.length - 1
+  const visibleCards = containerWidth.current
+    ? Math.floor(containerWidth.current / cardWidth)
+    : 0
+  const maxVisibleIndex = lastIndex - visibleCards + 2
+
+  const handlePrevClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? 0 : prevIndex - 1))
+  }
+
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) => {
+      if (prevIndex === maxVisibleIndex) {
+        return prevIndex
+      } else {
+        return prevIndex + 1
+      }
+    })
+  }
+
+  useEffect(() => {
+    if (containerRef.current && containerWidth.current === null) {
+      containerWidth.current = containerRef.current.offsetWidth
+    }
+  }, [])
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const containerElement = containerRef.current
+
+      containerElement.style.transform = `translateX(-${currentIndex * cardWidth}px)`
+      containerElement.style.transition = 'transform 0.3s ease-in-out'
+    }
+  }, [currentIndex])
+
+  return (
+    <>
+      <div className="relative overflow-hidden">
+        <div className="flex pb-10" ref={containerRef}>
+          {images.map((image) => (
+            <div key={image.id} className="flex-none w-[134px] h-[83px] mr-2.5">
+              <img
+                src={image.url}
+                alt={image.name}
+                className="w-[134px] h-[83px] rounded-[5px]"
+              />
+              <div className="text-left text-sm mt-2.5 truncate">{image.name}</div>
+            </div>
+          ))}
+          <LoadMoreButton />
+        </div>
+
+        <div className="flex justify-between">
+          <button
+            className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            onClick={handlePrevClick}
+            disabled={currentIndex === 0}
+          >
+            <ArrowRight className="stroke-2 rotate-180" />
+          </button>
+          <button
+            className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            onClick={handleNextClick}
+            disabled={currentIndex === maxVisibleIndex}
+          >
+            <ArrowRight className="stroke-2" />
+          </button>
+        </div>
+      </div>
+    </>
+  )
+}
+
+const LoadMoreButton = () => {
+  return (
+    <div className="flex-none w-[134px] h-[83px] mr-2.5 bg-gray-200 hover:bg-gray-300 rounded-[5px] flex items-center justify-center">
+      <button className="text-gray-800 font-bold py-2 px-4 rounded">
+        Подгрузить еще
+      </button>
+    </div>
   )
 }
