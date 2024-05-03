@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import axios from 'axios'
 
-import { useGetAquiferNotes } from 'utils/hooks'
+import { useGetAquiferResources } from 'utils/hooks'
 import { useRecoilValue } from 'recoil'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
@@ -23,13 +23,12 @@ function Aquifer(config) {
   const [selectedNote, setSelectedNote] = useState(null)
   const [isLoadingSearch, setIsLoadingSearch] = useState(false)
 
-  const resources = [
-    { name: 'Images', node: <Images /> },
-    {
-      name: 'Dictionary',
+  function createTool(name, Component) {
+    return {
+      name,
       node: (
-        <Notes
-          resourceType="Dictionary"
+        <Component
+          resourceType={name}
           reference={config.config.reference}
           languageCode={config.config.config.languageCode}
           query={search}
@@ -37,22 +36,16 @@ function Aquifer(config) {
           setSelectedNote={setSelectedNote}
         />
       ),
-    },
-    {
-      name: 'StudyNotes',
-      node: (
-        <Notes
-          resourceType="StudyNotes"
-          reference={config.config.reference}
-          languageCode={config.config.config.languageCode}
-          query={search}
-          setIsLoadingSearch={setIsLoadingSearch}
-          setSelectedNote={setSelectedNote}
-        />
-      ),
-    },
+    }
+  }
+
+  const tools = [
+    createTool('images', Images),
+    // createTool('dictionary', Notes), //закрыл, чтобы не было лишних запросов
+    // createTool('studyNotes', Notes), //закрыл, чтобы не было лишних запросов
   ]
-  const options = resources.map((item) => item.name)
+
+  const options = tools.map((item) => item.name)
   const [selectedOptions, setSelectedOptions] = useState(options)
 
   return (
@@ -80,12 +73,12 @@ function Aquifer(config) {
             {/*TODO нужен перевод - AllResources*/}
             <Search setSearch={setSearch} isLoading={isLoadingSearch} />
           </div>
-          {resources.map((resource) => {
-            if (selectedOptions.includes(resource.name)) {
+          {tools.map((tool) => {
+            if (selectedOptions.includes(tool.name)) {
               return (
-                <div key={resource.name}>
-                  <h3 className="font-bold text-xl my-3.5">{t(resource.name)}</h3>
-                  {resource.node}
+                <div key={tool.name}>
+                  <h3 className="font-bold text-xl my-3.5">{t(tool.name)}</h3>
+                  {tool.node}
                 </div>
               )
             }
@@ -111,8 +104,8 @@ function Notes({
   const verse = useRecoilValue(currentVerse)
   const [loadingNoteId, setLoadingNoteId] = useState(null)
 
-  const { notes, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
-    useGetAquiferNotes({
+  const { resources, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
+    useGetAquiferResources({
       book_code: reference.book,
       chapter_num: reference.chapter,
       verse_num: verse,
@@ -158,11 +151,11 @@ function Notes({
 
   return (
     <>
-      {isLoading && !notes?.length ? (
+      {isLoading && !resources?.length ? (
         <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 right-2" />
       ) : (
         <ul>
-          {notes.map((note) => (
+          {resources.map((note) => (
             <li
               key={note.id}
               onClick={() => {
@@ -222,8 +215,28 @@ function Notes({
   )
 }
 
-function Images() {
-  return <div className="mb-10">Тут будут картинки</div>
+function Images({
+  resourceType,
+  reference,
+  languageCode,
+  query,
+  setSelectedNote,
+  setIsLoadingSearch,
+}) {
+  const verse = useRecoilValue(currentVerse)
+
+  const { resources, loadMore, error, isLoading, isShowLoadMoreButton, isLoadingMore } =
+    useGetAquiferResources({
+      book_code: reference.book,
+      chapter_num: reference.chapter,
+      verse_num: verse,
+      query,
+      language_code: null, //закрыл, чтобы не было лишних запросов
+      resource_type: resourceType,
+    })
+  console.log(resources, 'этот массив брать для карусели')
+  // loadMore - это для дозагрузки
+  return <div className="mb-10">Тут будет карусель</div>
 }
 
 //TODO
@@ -256,8 +269,8 @@ function Images() {
 3. кнопки навигации
 4. карусель большая
 5. в большую карусель добавить малую карусель
-6. сделать API для загрузки списка, который создаёт массив из id и запрос к каждой картинке по id, чтобы на клиент получить название картинки, id url Саша
-7. написать хук для дозагрузки картинок, если их больше лимита
+6. сделать API для загрузки списка, который создаёт массив из id и запрос к каждой картинке по id, чтобы на клиент получить название картинки, id url Саша / готово
+7. написать хук для дозагрузки картинок, если их больше лимита / готово -  
 
 
 */

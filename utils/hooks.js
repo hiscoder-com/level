@@ -622,7 +622,7 @@ export function useGetTheme() {
   return theme
 }
 
-export function useGetAquiferNotes({
+export function useGetAquiferResources({
   book_code,
   chapter_num,
   verse_num,
@@ -652,11 +652,11 @@ export function useGetAquiferNotes({
   const isLoadingMore =
     isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
 
-  let notes = []
+  let resources = []
   let isShowLoadMoreButton = false
   if (data) {
-    notes = data.reduce((acc, curr) => [...acc, ...curr.items], [])
-    if (data[0].totalItemCount > notes.length && limit < data[0].totalItemCount) {
+    resources = data.reduce((acc, curr) => [...acc, ...curr.items], [])
+    if (data[0].totalItemCount > resources.length && limit < data[0].totalItemCount) {
       isShowLoadMoreButton = true
     } else {
       isShowLoadMoreButton = false
@@ -664,7 +664,7 @@ export function useGetAquiferNotes({
   }
 
   return {
-    notes,
+    resources,
     loadMore,
     error,
     isLoading,
