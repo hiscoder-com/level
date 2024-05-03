@@ -28,6 +28,6 @@ export default async function handler(req, res) {
     })
     res.status(200).json(response.data)
   } catch (error) {
-    console.log('Error fetching data from Aquifer API:', error)
+    res.status(400).json(error)
   }
 }
