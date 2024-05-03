@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import axios from 'axios'
 
@@ -447,48 +447,89 @@ function ListBoxMultiple({
 
 function Carousel({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0)
+  const containerRef = useRef(null)
+  const containerWidth = useRef(null)
+  const cardWidth = 144
+
+  const lastIndex = images.length - 1
+  const visibleCards = containerWidth.current
+    ? Math.floor(containerWidth.current / cardWidth)
+    : 0
+  const maxVisibleIndex = lastIndex - visibleCards + 2
 
   const handlePrevClick = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1))
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? 0 : prevIndex - 1))
   }
 
   const handleNextClick = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1))
+    setCurrentIndex((prevIndex) => {
+      if (prevIndex === maxVisibleIndex) {
+        return prevIndex
+      } else {
+        return prevIndex + 1
+      }
+    })
   }
 
+  useEffect(() => {
+    if (containerRef.current && containerWidth.current === null) {
+      containerWidth.current = containerRef.current.offsetWidth
+    }
+  }, [])
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const containerElement = containerRef.current
+
+      containerElement.style.transform = `translateX(-${currentIndex * cardWidth}px)`
+      containerElement.style.transition = 'transform 0.3s ease-in-out'
+    }
+  }, [currentIndex])
+
   return (
-    <div className="relative">
-      <div className="flex overflow-hidden">
-        {images.map((image, index) => (
-          <div
-            key={image.id}
-            className={`flex-none w-full md:w-1/3 ${
-              index === currentIndex ? 'block' : 'hidden md:block'
-            }`}
+    <>
+      <div className="relative overflow-hidden">
+        <div className="flex pb-10" ref={containerRef}>
+          {images.map((image) => (
+            <div key={image.id} className="flex-none w-[134px] h-[83px] mr-2.5">
+              <img
+                src={image.url}
+                alt={image.name}
+                className="w-[134px] h-[83px] rounded-[5px]"
+              />
+              <div className="text-left text-sm mt-2.5 truncate">{image.name}</div>
+            </div>
+          ))}
+          <LoadMoreButton />
+        </div>
+
+        <div className="flex justify-between">
+          <button
+            className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            onClick={handlePrevClick}
+            disabled={currentIndex === 0}
           >
-            <img
-              src={image.url}
-              alt={image.name}
-              className="w-[134px] h-[83px] rounded-[5px]"
-            />
-            <div className="text-center mt-2">{image.name}</div>
-          </div>
-        ))}
+            <ArrowRight className="stroke-2 rotate-180" />
+          </button>
+          <button
+            className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+            onClick={handleNextClick}
+            disabled={currentIndex === maxVisibleIndex}
+          >
+            <ArrowRight className="stroke-2" />
+          </button>
+        </div>
       </div>
-      <div className="flex justify-center mt-4">
-        <button
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
-          onClick={handlePrevClick}
-        >
-          Prev
-        </button>
-        <button
-          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
-          onClick={handleNextClick}
-        >
-          Next
-        </button>
-      </div>
+    </>
+  )
+}
+
+const LoadMoreButton = () => {
+  return (
+    <div className="flex-none w-[134px] h-[83px] mr-2.5 bg-gray-200 hover:bg-gray-300 rounded-[5px] flex items-center justify-center">
+      <button className="text-gray-800 font-bold py-2 px-4 rounded">
+        Подгрузить еще
+      </button>
     </div>
   )
 }
