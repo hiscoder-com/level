@@ -69,7 +69,7 @@ function Aquifer(config) {
         </div>
       ) : (
         <>
-          <div className="flex items-center gap-2 border-b border-th-secondary-300 pb-4">
+          <div className="flex items-center gap-2.5 border-b border-th-secondary-300 pb-5 mb-7">
             <ListBoxMultiple
               options={options}
               selectedOptions={selectedOptions}
@@ -241,12 +241,23 @@ function Images() {
   и если значение равны - кнопку "подгрузить ещё" не показывать. также не показывать эту кнопку, если длина массива notes больше или равна limits.
   может быть делать эти расчёты внутри хука а выдавать параметр - isShowLoadMoreButton  - готово
   11. Сделать лоадинг, когда грузятся записи. //готово
-  12 Сделать лоадинг, когда грузится 1 запись 
+  12 Сделать лоадинг, когда грузится 1 запись
   13. Сделать лоадинг и сделать неактивным нажатие кнопки "подгрузить ещё" в момент загрузки. -готово
 14. Запоминать позицию скролла - если останется время. Когда много элементов в словаре , открывается контент, а потом возвращается - скроллится в начало.
-15. Исправить баг с лоадингом - когда вводишь первые 3 символа.
+  15. Исправить баг с лоадингом - когда вводишь первые 3 символа. готово
+16. проверить все переводы и перевести, если нужно
+  17. дизайн фильтра и поиска привести к виду в фигме - готово
+  18. поправить дизайн готово 
 
 
+РАБОТА С КАРТИНКАМИ
+1. сделать малую карусель с моковыми данными (взять 10 элементов разных форматов)
+2. отображение миниатюр
+3. кнопки навигации
+4. карусель большая
+5. в большую карусель добавить малую карусель
+6. сделать API для загрузки списка, который создаёт массив из id и запрос к каждой картинке по id, чтобы на клиент получить название картинки, id url Саша
+7. написать хук для дозагрузки картинок, если их больше лимита
 
 
 */
@@ -280,7 +291,7 @@ function Search({ setSearch, isLoading = false }) {
   return (
     <div className="relative flex items-center w-full">
       <input
-        className="input-primary "
+        className="input-primary bg-th-secondary-50"
         placeholder={t('Search')}
         onChange={(e) => {
           const text = e.target.value
@@ -292,7 +303,10 @@ function Search({ setSearch, isLoading = false }) {
         value={query}
       />
       <button className="absolute right-2 z-10 cursor-pointer disabled={isLoading}">
-        <SearchIcon className=" р-6 w-6 stroke-2" onClick={handleSearch} />
+        <SearchIcon
+          className="р-6 w-6 stroke-2 stroke-th-secondary-300"
+          onClick={handleSearch}
+        />
       </button>
     </div>
   )
@@ -317,12 +331,13 @@ function ListBoxMultiple({
 
   return (
     <Listbox value={selectedOptions} onChange={() => {}} multiple>
-      {/** TODO Проверить - нужен ли open, если нет- убрать */}
       {({ open }) => (
         <div className="relative text-th-text-primary flex items-center w-full">
           <Listbox.Button className="relative flex items-center w-full">
             <input
-              className="input-primary truncate bg-th-secondary-100 w-full pr-4"
+              className={`input-primary !text-th-secondary-300 truncate bg-th-secondary-50 w-full !pr-8 ${
+                open ? '!rounded-b-none' : ''
+              }`}
               value={
                 options.length === selectedOptions.length
                   ? placeholderFull
@@ -334,14 +349,14 @@ function ListBoxMultiple({
             />
             {/*TODO нужен перевод */}
 
-            <ArrowRight className="absolute min-w-[1.5rem] stroke-th-text-primary right-2 rotate-90" />
+            <ArrowRight className="absolute min-w-[1.5rem] stroke-th-secondary-300 right-2 stroke-2 rotate-90" />
           </Listbox.Button>
           <div className="mt-8">
-            <Listbox.Options className="absolute w-full left-0 max-h-[40vh] bg-th-secondary-10 rounded-b-lg overflow-y-auto z-10 border-r border-l border-b">
+            <Listbox.Options className="absolute w-full left-0 max-h-[40vh] bg-th-secondary-10 border-th-secondary-300 rounded-b-lg overflow-y-auto z-10 border-r border-l border-b">
               {options.map((el) => (
                 <Listbox.Option
                   as="div"
-                  className="relative flex justify-between items-center px-5 py-1 bg-th-secondary-10 cursor-pointer last:pb-3 hover:bg-th-secondary-100"
+                  className="relative flex justify-between items-center px-5 py-1 bg-th-secondary-50 cursor-pointer last:pb-3 hover:bg-th-secondary-100"
                   key={el}
                   value={el}
                   onClick={() => handleOptionClicked(el)}
