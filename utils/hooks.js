@@ -634,7 +634,9 @@ export function useGetAquiferNotes({
   const getKey = (index) => {
     const offset = index * limit
     return book_code && language_code
-      ? `/api/aquifer/${book_code}/${chapter_num}/${verse_num}/notes?query=${query}&limit=${limit}&offset=${offset}&language_code=${language_code}&resource_type=${resource_type}`
+      ? `/api/aquifer/${book_code}/${chapter_num}/${verse_num}/${
+          resource_type === 'images' ? 'images' : 'notes'
+        }?query=${query}&limit=${limit}&offset=${offset}&language_code=${language_code}&resource_type=${resource_type}`
       : null
   }
 
