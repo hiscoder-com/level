@@ -1,0 +1,837 @@
+{
+  "x-generator": "NSwag v14.0.0.0 (NJsonSchema v11.0.0.0 (Newtonsoft.Json v13.0.0.0))",
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Aquifer API",
+    "description": "All endpoints require an API key in the 'api-key' header.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.aquifer.bible"
+    }
+  ],
+  "paths": {
+    "/resources/types": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Get a list of available resource types and collections.",
+        "description": "Get a list of resource types that are available. Within each resource type will be a list of resource collections\r\nthat belong to that resource type. For example, Dictionary is a resource type, and \"Bible Dictionary (Tyndale)\"\r\nis a collection of resources within that type. The resource type and collection code can be used in other queries.",
+        "operationId": "AquiferPublicAPIEndpointsResourcesTypesListEndpoint",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Response"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/search": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Search resources by keyword query, passage, or both.",
+        "description": "For a given query, language, and content type, search for matching resources. Can narrow results by resource type or collection.",
+        "operationId": "AquiferPublicAPIEndpointsResourcesSearchGetResourcesEndpoint",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "description": "The keyword to search on. Currently only searches against content names (not inside content).\nNon-English names are supported. Must be at least 3 characters in length. Optional if bookCode is provided.\n            ",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "bookCode",
+            "in": "query",
+            "description": "Book code based off USFM book identifier (e.g. GEN, EXO, etc.). Can get a list of available books and identifiers\nfrom the /bible-books endpoint. Use this by itself to search across an entire book. Required if no query parameter provided.\n            ",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "startChapter",
+            "in": "query",
+            "description": "Optional start chapter to search from. If included, must also provide an end chapter. Required with verses.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "endChapter",
+            "in": "query",
+            "description": "Optional end chapter to search from. Required with start chapter and verses.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "startVerse",
+            "in": "query",
+            "description": "Optional start verse to search from. If included, must also provide an end verse and chapters.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "endVerse",
+            "in": "query",
+            "description": "Optional end verse to search from. Required with start verse.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "languageId",
+            "in": "query",
+            "description": "Optional language id internal to Aquifer. If not specified, language code is required.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "languageCode",
+            "in": "query",
+            "description": "Optional ISO 639-3 code that is 3 characters in length (e.g. \"eng\"). If not specified, language id is required.\n            ",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "resourceType",
+            "in": "query",
+            "description": "The type of resource to search for, such as \"Dictionary\". If none specified, will default to None.\nIf sending resourceType, do not send resourceCollectionCode.\n            ",
+            "schema": {
+              "default": 0,
+              "$ref": "#/components/schemas/ResourceType2"
+            }
+          },
+          {
+            "name": "resourceCollectionCode",
+            "in": "query",
+            "description": "Optional resource collection code to search for. Search by code retrieved from /resources/types endpoint such as\n\"TyndaleBibleDictionary\". If sending resourceCollectionCode, do not send resourceType.\n            ",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The number of results to return. Max is 100.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 10
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Records to skip if paging through results.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response2"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/resources/{ContentId}": {
+      "get": {
+        "tags": [
+          "Resources"
+        ],
+        "summary": "Get specific resource information.",
+        "description": "For a given resource id, return the data for that resource. This can be text content as well as CDN links for image, audio, and video media types.",
+        "operationId": "AquiferPublicAPIEndpointsResourcesGetItemEndpoint",
+        "parameters": [
+          {
+            "name": "contentId",
+            "in": "path",
+            "required": true,
+            "description": "The resource id to return content for. This is included at the end of the path.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "contentTextType",
+            "in": "query",
+            "description": "The type of text content to return in the `content` property of the response (JSON is always sent back for the response as a\nwhole by default). This parameter is optional and defaults to `None`.\n\nIf `None` is passed, it wil return JSON specifically for the Tiptap Editor, if `Json` is specified, it will return a simplified\nversion with mention of Tiptap removed. `Markdown` and 'Html' can also be requested.\n\nNote that this will be ignored for non-text resources. Content such as images will always return as JSON.\n            ",
+            "schema": {
+              "default": 0,
+              "$ref": "#/components/schemas/TiptapContentType"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Response3"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/languages": {
+      "get": {
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Return language list",
+        "description": "Return a list of languages that can have associated resources in the Aquifer.",
+        "operationId": "AquiferPublicAPIEndpointsLanguagesListEndpoint",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Response4"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/languages/available-resources": {
+      "get": {
+        "tags": [
+          "Languages"
+        ],
+        "summary": "Get count of resource types per language",
+        "description": "For a given range, get a count of resources available per language and type.",
+        "operationId": "AquiferPublicAPIEndpointsLanguagesAvailableResourcesListEndpoint",
+        "parameters": [
+          {
+            "name": "bookCode",
+            "in": "query",
+            "required": true,
+            "description": "Required book code based off USFM book identifier (e.g. GEN, EXO, etc.). Can get a list of available books and identifiers\nfrom the /bible-books endpoint. Use this by itself to search across an entire book.\n            ",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          },
+          {
+            "name": "startChapter",
+            "in": "query",
+            "description": "Optional start chapter to search from. If included, must also provide an end chapter. Required with verses.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "endChapter",
+            "in": "query",
+            "description": "Optional end chapter to search from. Required with start chapter and verses.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "startVerse",
+            "in": "query",
+            "description": "Optional start verse to search from. If included, must also provide an end verse and chapters.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "endVerse",
+            "in": "query",
+            "description": "Optional end verse to search from. Required with start verse.\n            ",
+            "schema": {
+              "type": "integer",
+              "format": "int32",
+              "default": 0
+            }
+          },
+          {
+            "name": "languageCodes",
+            "in": "query",
+            "style": "form",
+            "explode": true,
+            "description": "    Optional list of language codes to filter the results to.\n\n\n    Example: `languageCodes=eng&languageCodes=fra`\n\n            ",
+            "schema": {
+              "type": "array",
+              "default": "",
+              "nullable": true,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Response5"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/bible-books": {
+      "get": {
+        "tags": [
+          "Bible-Books"
+        ],
+        "summary": "Get a list of Bible books.",
+        "description": "Returns the list of Bible books in the system and their corresponding book number to be used in other calls.",
+        "operationId": "AquiferPublicAPIEndpointsBibleBooksListEndpoint",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Response6"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Response": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "collections": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AvailableResourceCollection"
+            }
+          }
+        }
+      },
+      "AvailableResourceCollection": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "licenseInformation": {
+            "nullable": true
+          }
+        }
+      },
+      "Response2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "totalItemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "returnedItemCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "offset": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResponseContent"
+            }
+          }
+        }
+      },
+      "ResponseContent": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "localizedName": {
+            "type": "string"
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/ResourceContentMediaType"
+          },
+          "languageCode": {
+            "type": "string"
+          },
+          "grouping": {
+            "$ref": "#/components/schemas/ResourceTypeMetadata"
+          }
+        }
+      },
+      "ResourceContentMediaType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Text",
+          "Audio",
+          "Video",
+          "Image"
+        ],
+        "enum": [
+          "None",
+          "Text",
+          "Audio",
+          "Video",
+          "Image"
+        ]
+      },
+      "ResourceTypeMetadata": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ResourceType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "collectionTitle": {
+            "type": "string"
+          },
+          "collectionCode": {
+            "type": "string"
+          }
+        }
+      },
+      "ResourceType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Guide",
+          "Dictionary",
+          "StudyNotes",
+          "Images",
+          "Videos"
+        ],
+        "enum": [
+          "None",
+          "Guide",
+          "Dictionary",
+          "StudyNotes",
+          "Images",
+          "Videos"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "statusCode": {
+            "type": "integer",
+            "format": "int32",
+            "default": 400
+          },
+          "message": {
+            "type": "string",
+            "default": "One or more errors occurred!"
+          },
+          "errors": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Request": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "ResourceType2": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Guide",
+          "Dictionary",
+          "StudyNotes",
+          "Images",
+          "Videos"
+        ],
+        "enum": [
+          "None",
+          "Guide",
+          "Dictionary",
+          "StudyNotes",
+          "Images",
+          "Videos"
+        ]
+      },
+      "Response3": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string"
+          },
+          "localizedName": {
+            "type": "string"
+          },
+          "content": {},
+          "grouping": {
+            "$ref": "#/components/schemas/ResourceTypeMetadata2"
+          },
+          "language": {
+            "$ref": "#/components/schemas/ResourceContentLanguage"
+          }
+        }
+      },
+      "ResourceTypeMetadata2": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "$ref": "#/components/schemas/ResourceType"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mediaType": {
+            "type": "string"
+          },
+          "licenseInfo": {
+            "nullable": true
+          }
+        }
+      },
+      "ResourceContentLanguage": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "scriptDirection": {
+            "$ref": "#/components/schemas/ScriptDirection"
+          }
+        }
+      },
+      "ScriptDirection": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "LTR",
+          "RTL"
+        ],
+        "enum": [
+          "None",
+          "LTR",
+          "RTL"
+        ]
+      },
+      "Request2": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "TiptapContentType": {
+        "type": "string",
+        "description": "",
+        "x-enumNames": [
+          "None",
+          "Json",
+          "Html",
+          "Markdown"
+        ],
+        "enum": [
+          "None",
+          "Json",
+          "Html",
+          "Markdown"
+        ]
+      },
+      "Response4": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "code": {
+            "type": "string"
+          },
+          "englishDisplay": {
+            "type": "string"
+          },
+          "localizedDisplay": {
+            "type": "string"
+          },
+          "scriptDirection": {
+            "type": "string"
+          }
+        }
+      },
+      "Response5": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "languageId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "languageCode": {
+            "type": "string"
+          },
+          "resourceCounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ResourceCountByType"
+            }
+          }
+        }
+      },
+      "ResourceCountByType": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "Request3": {
+        "type": "object",
+        "additionalProperties": false
+      },
+      "Response6": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "ApiKey": {
+        "type": "apiKey",
+        "name": "api-key",
+        "in": "header"
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Resources",
+      "description": "These endpoints allow searching for resources and pulling down the associated content for each one.\r\nAn individual resource is the individual content of a resource, such as a specific study note within\r\na collection of associated study notes. A collection of resources is a group of individual resources belonging\r\nto the same collection. A resource type is the category to which a collection of resources can belong.\r\n\r\nAs an example, for the Tyndale Bible Dictionary article for \"Aaronn\", the resource is \"Aaronn\", the\r\ntitle of the collection to which it belongs is \"Bible Dictionary (Tyndale)\", and the resource type\r\nis \"Dictionary\"."
+    },
+    {
+      "name": "Languages",
+      "description": "Endpoints for pulling data specific to languages."
+    },
+    {
+      "name": "Bible-Books",
+      "description": "Endpoints for pulling data specific to Bible books."
+    },
+    {
+      "name": "Resources",
+      "description": "These endpoints allow searching for resources and pulling down the associated content for each one.\r\nAn individual resource is the individual content of a resource, such as a specific study note within\r\na collection of associated study notes. A collection of resources is a group of individual resources belonging\r\nto the same collection. A resource type is the category to which a collection of resources can belong.\r\n\r\nAs an example, for the Tyndale Bible Dictionary article for \"Aaronn\", the resource is \"Aaronn\", the\r\ntitle of the collection to which it belongs is \"Bible Dictionary (Tyndale)\", and the resource type\r\nis \"Dictionary\"."
+    },
+    {
+      "name": "Languages",
+      "description": "Endpoints for pulling data specific to languages."
+    },
+    {
+      "name": "Bible-Books",
+      "description": "Endpoints for pulling data specific to Bible books."
+    },
+    {
+      "name": "Resources",
+      "description": "These endpoints allow searching for resources and pulling down the associated content for each one.\r\nAn individual resource is the individual content of a resource, such as a specific study note within\r\na collection of associated study notes. A collection of resources is a group of individual resources belonging\r\nto the same collection. A resource type is the category to which a collection of resources can belong.\r\n\r\nAs an example, for the Tyndale Bible Dictionary article for \"Aaronn\", the resource is \"Aaronn\", the\r\ntitle of the collection to which it belongs is \"Bible Dictionary (Tyndale)\", and the resource type\r\nis \"Dictionary\"."
+    },
+    {
+      "name": "Languages",
+      "description": "Endpoints for pulling data specific to languages."
+    },
+    {
+      "name": "Bible-Books",
+      "description": "Endpoints for pulling data specific to Bible books."
+    },
+    {
+      "name": "Resources",
+      "description": "These endpoints allow searching for resources and pulling down the associated content for each one.\r\nAn individual resource is the individual content of a resource, such as a specific study note within\r\na collection of associated study notes. A collection of resources is a group of individual resources belonging\r\nto the same collection. A resource type is the category to which a collection of resources can belong.\r\n\r\nAs an example, for the Tyndale Bible Dictionary article for \"Aaronn\", the resource is \"Aaronn\", the\r\ntitle of the collection to which it belongs is \"Bible Dictionary (Tyndale)\", and the resource type\r\nis \"Dictionary\"."
+    },
+    {
+      "name": "Languages",
+      "description": "Endpoints for pulling data specific to languages."
+    },
+    {
+      "name": "Bible-Books",
+      "description": "Endpoints for pulling data specific to Bible books."
+    },
+    {
+      "name": "Resources",
+      "description": "These endpoints allow searching for resources and pulling down the associated content for each one.\r\nAn individual resource is the individual content of a resource, such as a specific study note within\r\na collection of associated study notes. A collection of resources is a group of individual resources belonging\r\nto the same collection. A resource type is the category to which a collection of resources can belong.\r\n\r\nAs an example, for the Tyndale Bible Dictionary article for \"Aaronn\", the resource is \"Aaronn\", the\r\ntitle of the collection to which it belongs is \"Bible Dictionary (Tyndale)\", and the resource type\r\nis \"Dictionary\"."
+    },
+    {
+      "name": "Languages",
+      "description": "Endpoints for pulling data specific to languages."
+    },
+    {
+      "name": "Bible-Books",
+      "description": "Endpoints for pulling data specific to Bible books."
+    },
+    {
+      "name": "Resources",
+      "description": "These endpoints allow searching for resources and pulling down the associated content for each one.\r\nAn individual resource is the individual content of a resource, such as a specific study note within\r\na collection of associated study notes. A collection of resources is a group of individual resources belonging\r\nto the same collection. A resource type is the category to which a collection of resources can belong.\r\n\r\nAs an example, for the Tyndale Bible Dictionary article for \"Aaronn\", the resource is \"Aaronn\", the\r\ntitle of the collection to which it belongs is \"Bible Dictionary (Tyndale)\", and the resource type\r\nis \"Dictionary\"."
+    },
+    {
+      "name": "Languages",
+      "description": "Endpoints for pulling data specific to languages."
+    },
+    {
+      "name": "Bible-Books",
+      "description": "Endpoints for pulling data specific to Bible books."
+    }
+  ]
+}
