@@ -223,7 +223,64 @@ function Notes({
 }
 
 function Images() {
-  return <div className="mb-10">Тут будут картинки</div>
+  const imgArray = [
+    {
+      id: 1,
+      name: 'WEB-0050_babylon_exil_fugel',
+      url: 'http://localhost:3000/aquifer/WEB-0050_babylon_exil_fugel.jpg',
+    },
+    {
+      id: 2,
+      name: 'WEB-0121_fire',
+      url: 'http://localhost:3000/aquifer/WEB-0121_fire.jpg',
+    },
+    {
+      id: 3,
+      name: 'WEB-0136_city_gate',
+      url: 'http://localhost:3000/aquifer/WEB-0136_city_gate.jpg',
+    },
+    {
+      id: 4,
+      name: 'WEB-0206_exile_capture_lachish',
+      url: 'http://localhost:3000/aquifer/WEB-0206_exile_capture_lachish copy.jpg',
+    },
+    {
+      id: 5,
+      name: 'WEB-0221_fire copy 2',
+      url: 'http://localhost:3000/aquifer/WEB-0221_fire copy 2.jpg',
+    },
+    {
+      id: 6,
+      name: 'WEB-0422_city_gate_en',
+      url: 'http://localhost:3000/aquifer/WEB-0422_city_gate_en.jpg',
+    },
+    {
+      id: 7,
+      name: 'WEB-0506_exile_capture_lachish',
+      url: 'http://localhost:3000/aquifer/WEB-0506_exile_capture_lachish.jpg',
+    },
+    {
+      id: 8,
+      name: 'WEB-0544_jehu_obelisk',
+      url: 'http://localhost:3000/aquifer/WEB-0544_jehu_obelisk.jpg',
+    },
+    {
+      id: 9,
+      name: 'WEB-0575_lachish_relief_exile',
+      url: 'http://localhost:3000/aquifer/WEB-0575_lachish_relief_exile.jpg',
+    },
+    {
+      id: 10,
+      name: 'WEB-0621_fire copy',
+      url: 'http://localhost:3000/aquifer/WEB-0621_fire copy.jpg',
+    },
+  ]
+  return (
+    <>
+      {/* <div className="mb-10">Тут будут картинки</div> */}
+      <Carousel images={imgArray} />
+    </>
+  )
 }
 
 //TODO
@@ -235,7 +292,7 @@ function Images() {
   5. Переделать кнопку "Подгрузить всё"  - готово
   6. Проверить правильную работу компонента, меняя параметры.// готово
   7. Убрать значения по-умолчанию в хуке, передавать в компонент Aquifer референс и languageCode.// готово
-8. Добавить фильтр, который отключает разные типы ресурсов
+  8. Добавить фильтр, который отключает разные типы ресурсов
   9. Добавить поиск // Саша - готово
   10. Возвращать кол-во всех записей с запроса (параметр totalItemCount) из хука и на клиенте сравнивать с кол-вом всех записей в масиве Notes
   и если значение равны - кнопку "подгрузить ещё" не показывать. также не показывать эту кнопку, если длина массива notes больше или равна limits.
@@ -247,18 +304,19 @@ function Images() {
   15. Исправить баг с лоадингом - когда вводишь первые 3 символа. готово
 16. проверить все переводы и перевести, если нужно
   17. дизайн фильтра и поиска привести к виду в фигме - готово
-  18. поправить дизайн готово 
+  18. поправить дизайн готово
 
 
 РАБОТА С КАРТИНКАМИ
-1. сделать малую карусель с моковыми данными (взять 10 элементов разных форматов)
+  1. сделать малую карусель с моковыми данными (взять 10 элементов разных форматов) в работе
 2. отображение миниатюр
 3. кнопки навигации
 4. карусель большая
 5. в большую карусель добавить малую карусель
-6. сделать API для загрузки списка, который создаёт массив из id и запрос к каждой картинке по id, чтобы на клиент получить название картинки, id url Саша
+  6. сделать API для загрузки списка, который создаёт массив из id и запрос к каждой картинке по id, чтобы на клиент получить название картинки, id url Саша
 7. написать хук для дозагрузки картинок, если их больше лимита
-
+8. После настройки карусели удалить моковые картинки
+9. Сделать рефакторинг - создать папку Aquifer и в неё перенести компоненты
 
 */
 
@@ -370,5 +428,53 @@ function ListBoxMultiple({
         </div>
       )}
     </Listbox>
+  )
+}
+
+function Carousel({ images }) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+
+  const handlePrevClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? images.length - 1 : prevIndex - 1))
+  }
+
+  const handleNextClick = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === images.length - 1 ? 0 : prevIndex + 1))
+  }
+
+  return (
+    <div className="relative">
+      <div className="flex overflow-hidden">
+        {images.map((image, index) => (
+          <div
+            key={image.id}
+            className={`flex-none w-full md:w-1/3 ${
+              index === currentIndex ? 'block' : 'hidden md:block'
+            }`}
+          >
+            <img
+              src={image.url}
+              alt={image.name}
+              className="w-[134px] h-[83px] rounded-[5px]"
+            />
+            <div className="text-center mt-2">{image.name}</div>
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-center mt-4">
+        <button
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-l"
+          onClick={handlePrevClick}
+        >
+          Prev
+        </button>
+        <button
+          className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-r"
+          onClick={handleNextClick}
+        >
+          Next
+        </button>
+      </div>
+    </div>
   )
 }
