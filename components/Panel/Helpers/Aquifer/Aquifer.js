@@ -7,7 +7,7 @@ import Search from './Search'
 import Images from './Images'
 import Notes from './Notes'
 
-function Aquifer(config) {
+function Aquifer({ config }) {
   const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [selectedNote, setSelectedNote] = useState(null)
@@ -20,8 +20,8 @@ function Aquifer(config) {
       node: (
         <Component
           resourceType={name}
-          reference={config.config.reference}
-          languageCode={'rus'}
+          reference={config.reference}
+          languageCode={config.config.languageCode}
           query={search}
           setIsLoadingSearch={setIsLoadingSearch}
           setSelectedNote={setSelectedNote}
