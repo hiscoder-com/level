@@ -8,7 +8,7 @@ import { currentVerse } from '../../../state/atoms'
 function Images({ resourceType, reference, languageCode, query, isShowAllChapter }) {
   const verse = useRecoilValue(currentVerse)
 
-  const { resources, loadMore, isShowLoadMoreButton, isLoadingMore } =
+  const { resources, loadMore, isShowLoadMoreButton, isLoadingMore, isLoading } =
     useGetAquiferResources({
       book_code: reference.book,
       chapter_num: isShowAllChapter ? 0 : reference.chapter,
@@ -17,6 +17,7 @@ function Images({ resourceType, reference, languageCode, query, isShowAllChapter
       language_code: languageCode,
       resource_type: resourceType,
     })
+
   return (
     <>
       <Carousel
@@ -24,6 +25,7 @@ function Images({ resourceType, reference, languageCode, query, isShowAllChapter
         isShowLoadMoreButton={isShowLoadMoreButton}
         loadMore={loadMore}
         isLoadingMore={isLoadingMore}
+        isLoading={isLoading}
       />
     </>
   )
