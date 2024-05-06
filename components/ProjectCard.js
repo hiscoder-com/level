@@ -15,7 +15,7 @@ function ProjectCard({ project, user }) {
     user_id: user?.id,
     code: project?.code,
   })
-  const { briefResume, isLoading, briefName } = useBriefState({
+  const { briefResume, isLoading, briefName, isBrief } = useBriefState({
     project_id: project?.id,
   })
   const nameButtonBrief = useMemo(() => {
@@ -34,7 +34,7 @@ function ProjectCard({ project, user }) {
           <div className="card flex justify-between items-start h-full bg-th-secondary-10 sm:bg-th-secondary-100 cursor-pointer">
             <div className="flex flex-col gap-9">
               <div className="text-xl font-bold">{project.title}</div>{' '}
-              {briefResume === '' && (
+              {briefResume === '' && isBrief && (
                 <Link
                   href={`/projects/${project?.code}/edit?setting=brief`}
                   className="btn-primary w-fit"
