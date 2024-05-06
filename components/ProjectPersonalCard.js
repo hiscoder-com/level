@@ -237,7 +237,7 @@ function ProjectPersonalCard({ project, user }) {
                           </button>
                         )
                       })}
-                      {briefResume === '' && (
+                      {briefResume === '' && isBrief && (
                         <Link
                           href={`/projects/${project?.code}/edit?setting=brief`}
                           className="btn-primary flex justify-center gap-1 sm:gap-2"
