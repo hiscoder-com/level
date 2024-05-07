@@ -58,7 +58,7 @@ function Aquifer({ config }) {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-2.5 border-b pb-5 mb-7 border-th-secondary-300">
+          <div className="flex flex-col gap-3.5 border-b pb-5 mb-7 border-th-secondary-300">
             <div className="flex items-center gap-3.5">
               <ListBoxMultiple
                 options={options}
@@ -80,7 +80,7 @@ function Aquifer({ config }) {
               >
                 <span
                   className={`inline-block h-4 w-4 transform rounded-full bg-th-secondary-10 transition ${
-                    isShowAllChapter ? 'translate-x-6' : 'translate-x-1'
+                    isShowAllChapter ? 'translate-x-7' : 'translate-x-1'
                   }`}
                 />
               </Switch>
@@ -90,7 +90,7 @@ function Aquifer({ config }) {
             if (selectedOptions.includes(tool.name)) {
               return (
                 <div key={tool.name}>
-                  <h3 className="font-bold text-xl my-3.5">{tool.name}</h3>
+                  <h3 className="font-bold text-xl my-4">{tool.name}</h3>
                   {tool.node}
                 </div>
               )
