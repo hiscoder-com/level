@@ -6,8 +6,8 @@ import { useRecoilState } from 'recoil'
 import Modal from 'components/Modal'
 import { indexImageCarousel } from 'components/state/atoms'
 import FullSizeImageCarousel from './FullSizeImageCarousel'
+import ImageCard from './ImageCard'
 import LoadMoreButton from './LoadMoreButton'
-import { getImageUrl } from 'utils/helper'
 
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
@@ -101,50 +101,20 @@ function Carousel({
                   className={`flex ${insideBigCarousel ? 'pb-10' : 'pb-3.5'}`}
                   ref={containerRef}
                 >
-                  {images.map((image, index) =>
-                    insideBigCarousel ? (
-                      <div
-                        key={image.id}
-                        className="flex-none mr-2 rounded-md cursor-pointer"
-                        style={{
-                          width: `${cardSize}px`,
-                          height: `${cardSize * 0.62}px`,
-                        }}
-                        onClick={() => setCurrentIndex(index)}
-                      >
-                        <div
-                          className="bg-cover bg-center rounded-md"
-                          style={{
-                            backgroundImage: `url(${getImageUrl(image.url)})`,
-                            paddingBottom: `${cardSize * 0.62}px`,
-                          }}
-                        />
-                        <div className="text-left text-sm mt-2 truncate text-th-text-primary">
-                          {image.name}
-                        </div>
-                      </div>
-                    ) : (
-                      <div
-                        key={image.id}
-                        className="relative flex-none mr-2.5 rounded-md overflow-hidden bg-cover bg-center cursor-pointer"
-                        style={{
-                          backgroundImage: `url(${getImageUrl(image.url)})`,
-                          width: `${cardSize}px`,
-                          height: `${cardSize * 0.62}px`,
-                        }}
-                        onClick={() => {
-                          setCurrentIndex(index)
+                  {images.map((image, index) => (
+                    <ImageCard
+                      key={image.id}
+                      image={image}
+                      isInsideBigCarousel={insideBigCarousel}
+                      cardSize={cardSize}
+                      onClick={() => {
+                        setCurrentIndex(index)
+                        if (!insideBigCarousel) {
                           setIsOpenModal(true)
-                        }}
-                      >
-                        <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2">
-                          <div className="text-left text-sm truncate text-white">
-                            {image.name}
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  )}
+                        }
+                      }}
+                    />
+                  ))}
 
                   {images.length !== 0 && isShowLoadMoreButton && (
                     <LoadMoreButton
