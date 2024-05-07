@@ -26,6 +26,8 @@ function Images({ resourceType, reference, languageCode, query, isShowAllChapter
         loadMore={loadMore}
         isLoadingMore={isLoadingMore}
         isLoading={isLoading}
+        query={query}
+        isShowAllChapter={isShowAllChapter}
       />
     </>
   )

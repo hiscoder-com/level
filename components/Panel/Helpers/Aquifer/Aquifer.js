@@ -1,6 +1,8 @@
 import { useState } from 'react'
+
 import { Switch } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
+
 import { TNTWLContent } from 'components/Panel/UI'
 import ListBoxMultiple from './ListBoxMultiple'
 import Search from './Search'
@@ -8,20 +10,22 @@ import Images from './Images'
 import Notes from './Notes'
 
 function Aquifer({ config }) {
-  const { t } = useTranslation()
+  const { t } = useTranslation(['aquifer', 'common'])
   const [search, setSearch] = useState('')
   const [selectedNote, setSelectedNote] = useState(null)
   const [isLoadingSearch, setIsLoadingSearch] = useState(false)
   const [isShowAllChapter, setIsShowAllChapter] = useState(false)
 
-  function createTool(name, Component) {
+  function createTool(name, Component, resourceType) {
+    const defaultLanguageCode = 'eng'
+
     return {
-      name,
+      name: t(name),
       node: (
         <Component
-          resourceType={name}
+          resourceType={resourceType}
           reference={config.reference}
-          languageCode={config.config.languageCode}
+          languageCode={config.config.languageCode ?? defaultLanguageCode}
           query={search}
           setIsLoadingSearch={setIsLoadingSearch}
           setSelectedNote={setSelectedNote}
@@ -32,9 +36,9 @@ function Aquifer({ config }) {
   }
 
   const tools = [
-    createTool('images', Images),
-    createTool('dictionary', Notes),
-    createTool('studyNotes', Notes),
+    createTool('common:Images', Images, 'images'),
+    createTool('common:dictionary', Notes, 'dictionary'),
+    createTool('common:StudyNotes', Notes, 'studyNotes'),
   ]
 
   const options = tools.map((item) => item.name)
@@ -54,7 +58,7 @@ function Aquifer({ config }) {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-2.5 border-b border-th-secondary-300 pb-5 mb-7">
+          <div className="flex flex-col gap-2.5 border-b pb-5 mb-7 border-th-secondary-300">
             <div className="flex items-center gap-3.5">
               <ListBoxMultiple
                 options={options}
@@ -63,11 +67,10 @@ function Aquifer({ config }) {
                 placeholderEmpty={t('ChooseResources')}
                 placeholderFull={t('AllResources')}
               />
-              {/*TODO нужен перевод - AllResources*/}
               <Search setSearch={setSearch} isLoading={isLoadingSearch} />
             </div>
             <div className="flex items-center justify-between">
-              <span>{t('ShowAllChapter')}</span> {/*TODO нужен перевод - ShowAllChapter*/}
+              <span>{t('ShowAllChapter')}</span>
               <Switch
                 checked={isShowAllChapter}
                 onChange={() => setIsShowAllChapter((prev) => !prev)}
@@ -87,7 +90,7 @@ function Aquifer({ config }) {
             if (selectedOptions.includes(tool.name)) {
               return (
                 <div key={tool.name}>
-                  <h3 className="font-bold text-xl my-3.5">{t(tool.name)}</h3>
+                  <h3 className="font-bold text-xl my-3.5">{tool.name}</h3>
                   {tool.node}
                 </div>
               )

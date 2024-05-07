@@ -1,11 +1,12 @@
 import Loading from 'public/progress.svg'
 
-const LoadMoreButton = ({
+function LoadMoreButton({
   loadMore,
   insideBigCarousel,
+  t,
   isLoadingMore = false,
   cardSize = 134,
-}) => {
+}) {
   return (
     <button
       className={`flex-none ${
@@ -20,7 +21,7 @@ const LoadMoreButton = ({
       {isLoadingMore ? (
         <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 opacity-70" />
       ) : (
-        <span>Load more</span>
+        <span>{t('LoadMore')}</span>
       )}
     </button>
   )

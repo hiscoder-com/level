@@ -3,13 +3,13 @@ import { useCallback, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 
-function Search({ setSearch }) {
-  const { t } = useTranslation()
+function Search({ setSearch, isLoading }) {
+  const { t } = useTranslation('common')
   const [query, setQuery] = useState('')
+
   const handleSearch = useCallback(() => {
     if (!query || query.length < 3) {
-      //TODO Нужен перевод
-      toast(t('Please enter at least 3 characters'), {
+      toast(t('SearchError'), {
         icon: <SearchIcon className="w-6" />,
       })
       return
@@ -17,6 +17,7 @@ function Search({ setSearch }) {
     setSearch(query.trim())
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query])
+
   useEffect(() => {
     const keyDownHandler = (event) => {
       if (event.key === 'Enter') {
@@ -29,6 +30,7 @@ function Search({ setSearch }) {
       document.removeEventListener('keydown', keyDownHandler)
     }
   }, [handleSearch])
+
   return (
     <div className="relative flex items-center w-full">
       <input
@@ -43,7 +45,7 @@ function Search({ setSearch }) {
         }}
         value={query}
       />
-      <button className="absolute right-2 z-10 cursor-pointer disabled={isLoading}">
+      <button className="absolute right-2 z-10 cursor-pointer" disabled={isLoading}>
         <SearchIcon
           className="р-6 w-6 stroke-2 stroke-th-secondary-300"
           onClick={handleSearch}

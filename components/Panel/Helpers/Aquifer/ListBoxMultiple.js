@@ -22,10 +22,10 @@ function ListBoxMultiple({
   return (
     <Listbox value={selectedOptions} onChange={() => {}} multiple>
       {({ open }) => (
-        <div className="relative text-th-text-primary flex items-center w-full">
+        <div className="relative flex items-center w-full text-th-text-primary">
           <Listbox.Button className="relative flex items-center w-full">
             <input
-              className={`input-primary !text-th-secondary-300 truncate bg-th-secondary-50 w-full !pr-8 ${
+              className={`input-primary w-full !pr-8 !text-th-secondary-300 truncate bg-th-secondary-50 ${
                 open ? '!rounded-b-none' : ''
               }`}
               value={
@@ -37,12 +37,11 @@ function ListBoxMultiple({
               }
               readOnly
             />
-            {/*TODO нужен перевод */}
 
             <ArrowRight className="absolute min-w-[1.5rem] stroke-th-secondary-300 right-2 stroke-2 rotate-90" />
           </Listbox.Button>
           <div className="mt-8">
-            <Listbox.Options className="absolute w-full left-0 max-h-[40vh] bg-th-secondary-10 border-th-secondary-300 rounded-b-lg overflow-y-auto z-10 border-r border-l border-b">
+            <Listbox.Options className="absolute w-full left-0 max-h-[40vh] rounded-b-lg overflow-y-auto z-10 border-r border-l border-b bg-th-secondary-10 border-th-secondary-300">
               {options.map((el) => (
                 <Listbox.Option
                   as="div"

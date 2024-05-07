@@ -1,8 +1,12 @@
 import { useEffect, useState } from 'react'
-import { useRecoilValue } from 'recoil'
+
 import axios from 'axios'
+import { useRecoilValue } from 'recoil'
+import { useTranslation } from 'react-i18next'
+
 import { currentVerse } from '../../../state/atoms'
 import { useGetAquiferResources } from 'utils/hooks'
+
 import Down from '/public/arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
@@ -16,6 +20,7 @@ function Notes({
   setIsLoadingSearch,
   isShowAllChapter,
 }) {
+  const { t } = useTranslation('common')
   const verse = useRecoilValue(currentVerse)
   const [loadingNoteId, setLoadingNoteId] = useState(null)
 
@@ -117,7 +122,7 @@ function Notes({
             <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 opacity-70" />
           ) : (
             <>
-              <span> Подгрузить ещё{/*TODO нужен перевод*/}</span>
+              <span>{t('LoadMore')}</span>
               <Down className="w-6 max-w-[1.5rem] stroke-th-secondary-300" />
             </>
           )}

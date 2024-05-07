@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { useTranslation } from 'react-i18next'
 import { useRecoilState } from 'recoil'
 
 import Modal from 'components/Modal'
@@ -18,16 +19,18 @@ function Carousel({
   loadMore,
   isLoadingMore,
   isLoading,
-
+  query,
+  isShowAllChapter,
   insideBigCarousel = false,
   cardSize = 134,
 }) {
+  const { t } = useTranslation('common')
   const [currentIndex, setCurrentIndex] = useRecoilState(indexImageCarousel)
+  const [maxVisibleIndex, setMaxVisibleIndex] = useState(0)
   const [isOpenModal, setIsOpenModal] = useState(false)
   const containerRef = useRef(null)
   const containerWidth = useRef(null)
   const lastIndex = images.length - 1
-  const [maxVisibleIndex, setMaxVisibleIndex] = useState(0)
 
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? 0 : prevIndex - 1))
@@ -48,6 +51,10 @@ function Carousel({
   }
 
   useEffect(() => {
+    !insideBigCarousel && setCurrentIndex(0)
+  }, [query, isShowAllChapter])
+
+  useEffect(() => {
     if (containerRef.current && containerWidth.current === null) {
       containerWidth.current = containerRef.current.offsetWidth
     }
@@ -59,7 +66,8 @@ function Carousel({
     let calculatedMaxVisibleIndex = lastIndex
 
     if (calculatedVisibleCards < images.length) {
-      calculatedMaxVisibleIndex = lastIndex - calculatedVisibleCards + 2
+      calculatedMaxVisibleIndex =
+        lastIndex - calculatedVisibleCards + (isShowLoadMoreButton ? 2 : 1)
     } else {
       calculatedMaxVisibleIndex = currentIndex
     }
@@ -86,7 +94,7 @@ function Carousel({
         <>
           <div className="relative overflow-hidden">
             {images.length === 0 ? (
-              <div className="text-center text-th-text-primary">No content available</div>
+              <div className="text-center text-th-text-primary">{t('NoContent')}</div>
             ) : (
               <>
                 <div
@@ -144,6 +152,7 @@ function Carousel({
                       isLoadingMore={isLoadingMore}
                       cardSize={insideBigCarousel ? 80 : 134}
                       insideBigCarousel={insideBigCarousel}
+                      t={t}
                     />
                   )}
                 </div>

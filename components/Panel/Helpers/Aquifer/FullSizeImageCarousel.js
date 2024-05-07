@@ -1,7 +1,9 @@
 import { useRecoilValue } from 'recoil'
-import Carousel from './Carousel'
-import Close from 'public/close.svg'
+
 import { indexImageCarousel } from 'components/state/atoms'
+import Carousel from './Carousel'
+
+import Close from 'public/close.svg'
 
 function FullSizeImageCarousel({
   images,
