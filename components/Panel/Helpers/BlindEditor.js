@@ -253,7 +253,9 @@ function BlindEditor({ config }) {
             <button
               className="btn-secondary flex-1"
               onClick={() => {
-                setIsHideAllVerses(true)
+                if (isSingleBlockTranslation) {
+                  setIsHideAllVerses(true)
+                }
                 setIsOpenModal(false)
                 saveVerse(firstStepRef)
                 setTimeout(() => {
