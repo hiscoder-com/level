@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { useTranslation } from 'react-i18next'
-import { useRecoilState } from 'recoil'
+import { useRecoilState, useRecoilValue } from 'recoil'
 
 import Modal from 'components/Modal'
-import { indexImageCarousel } from 'components/state/atoms'
+import { currentVerse, indexImageCarousel } from 'components/state/atoms'
 import FullSizeImageCarousel from './FullSizeImageCarousel'
 import ImageCard from './ImageCard'
 import LoadMoreButton from './LoadMoreButton'
@@ -25,6 +25,7 @@ function Carousel({
   cardSize = 134,
 }) {
   const { t } = useTranslation('common')
+  const verse = useRecoilValue(currentVerse)
   const [currentIndex, setCurrentIndex] = useRecoilState(indexImageCarousel)
   const [maxVisibleIndex, setMaxVisibleIndex] = useState(0)
   const [isOpenModal, setIsOpenModal] = useState(false)
@@ -52,7 +53,7 @@ function Carousel({
 
   useEffect(() => {
     !insideBigCarousel && setCurrentIndex(0)
-  }, [query, isShowAllChapter])
+  }, [query, isShowAllChapter, verse])
 
   useEffect(() => {
     if (containerRef.current && containerWidth.current === null) {
