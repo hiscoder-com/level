@@ -26,13 +26,15 @@ function ImageCard({ image, isInsideBigCarousel, cardSize, onClick }) {
               paddingBottom: `${cardSize * 0.62}px`,
             }}
           />
-          <div className="text-left text-sm mt-2 truncate text-th-text-primary">
+          <div className="text-left text-sm mt-2 truncate text-th-secondary-10">
             {image.name}
           </div>
         </>
       ) : (
         <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 p-2">
-          <div className="text-left text-sm truncate text-white">{image.name}</div>
+          <div className="text-left text-sm truncate text-th-secondary-10">
+            {image.name}
+          </div>
         </div>
       )}
     </div>
