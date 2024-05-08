@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router'
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import Project from 'components/Project/Project'
 
 function ProjectPage() {
@@ -13,6 +15,15 @@ export default ProjectPage
 
 export async function getServerSideProps({ locale }) {
   return {
-    props: { locale },
+    props: {
+      ...(await serverSideTranslations(locale, [
+        'projects',
+        'common',
+        'books',
+        'chapters',
+        'book-properties',
+        'users',
+      ])),
+    },
   }
 }
