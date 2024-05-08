@@ -48,7 +48,8 @@ export default function ProgressPage({ last_step }) {
           setVersesRange(res.data.filter((el) => el.translator === user.login))
         })
     }
-  }, [book, chapter, project, supabase, user?.login])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [book, chapter, project, user?.login])
 
   const fetchStepsData = async (project, step) => {
     const stepsData = await supabase
