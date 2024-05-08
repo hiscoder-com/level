@@ -207,6 +207,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
 
       newImage.src = URL.createObjectURL(selectedFile)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cropArea, selectedFile])
 
   useEffect(() => {
@@ -247,6 +248,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
 
     return () => {
       if (rangeSliderRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         rangeSliderRef.current.removeEventListener('input', updateSliderTrack)
       }
     }
