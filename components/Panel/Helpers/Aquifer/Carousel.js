@@ -32,6 +32,7 @@ function Carousel({
   const containerRef = useRef(null)
   const containerWidth = useRef(null)
   const lastIndex = images.length - 1
+  const imagesGap = insideBigCarousel ? 8 : 10
 
   const handlePrevClick = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? 0 : prevIndex - 1))
@@ -61,7 +62,7 @@ function Carousel({
     }
 
     const calculatedVisibleCards = containerWidth.current
-      ? Math.floor(containerWidth.current / (cardSize + 10))
+      ? Math.floor(containerWidth.current / (cardSize + imagesGap))
       : 0
 
     let calculatedMaxVisibleIndex = lastIndex
@@ -81,7 +82,7 @@ function Carousel({
       const containerElement = containerRef.current
 
       containerElement.style.transform = `translateX(-${
-        currentIndex * (cardSize + 10)
+        currentIndex * (cardSize + imagesGap)
       }px)`
       containerElement.style.transition = 'transform 0.3s ease-in-out'
     }

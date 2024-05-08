@@ -4,8 +4,8 @@ function LoadMoreButton({
   loadMore,
   insideBigCarousel,
   t,
+  cardSize,
   isLoadingMore = false,
-  cardSize = 134,
 }) {
   return (
     <button

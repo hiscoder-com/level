@@ -1,7 +1,9 @@
-import SearchIcon from 'public/search.svg'
 import { useCallback, useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
+
+import SearchIcon from 'public/search.svg'
 
 function Search({ setSearch, isLoading }) {
   const { t } = useTranslation('common')
