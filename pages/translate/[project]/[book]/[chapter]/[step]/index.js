@@ -4,7 +4,6 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useSetRecoilState } from 'recoil'
 
@@ -313,14 +312,6 @@ export async function getServerSideProps({ locale, params }) {
 
   return {
     props: {
-      ...(await serverSideTranslations(locale, [
-        'common',
-        'steps',
-        'audio',
-        'books',
-        'users',
-        'error',
-      ])),
       last_step: steps.data.sorting,
     },
   }
