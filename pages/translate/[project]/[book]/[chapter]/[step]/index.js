@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
+// import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import { useSetRecoilState } from 'recoil'
 
@@ -36,6 +37,7 @@ export default function ProgressPage({ last_step }) {
   const [isAwaitTeamState, setIsAwaitTeamState] = useState(false)
 
   useEffect(() => {
+    console.log(book, chapter, project, user?.login)
     if (user?.login) {
       supabase
         .rpc('get_whole_chapter', {
@@ -47,7 +49,8 @@ export default function ProgressPage({ last_step }) {
           setVersesRange(res.data.filter((el) => el.translator === user.login))
         })
     }
-  }, [book, chapter, project, supabase, user?.login])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [book, chapter, project, user?.login])
 
   const fetchStepsData = async (project, step) => {
     const stepsData = await supabase
@@ -312,6 +315,14 @@ export async function getServerSideProps({ locale, params }) {
 
   return {
     props: {
+      // ...(await serverSideTranslations(locale, [
+      //   'common',
+      //   'steps',
+      //   'audio',
+      //   'books',
+      //   'users',
+      //   'error',
+      // ])),
       last_step: steps.data.sorting,
     },
   }
