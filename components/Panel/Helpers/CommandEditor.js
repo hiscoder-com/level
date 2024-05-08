@@ -115,13 +115,13 @@ function CommandEditor({ config }) {
       }
     }
     fetchVerseData()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     book,
     chapter_num,
     config?.config.getFromResource,
     config?.mainResource,
     config?.reference?.verses,
-    copyVersesFromResource,
     project,
     supabase,
   ])

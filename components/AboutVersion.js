@@ -43,11 +43,13 @@ function AboutVersion({ isStartPage = false }) {
   const fullAboutVersion = useMemo(() => {
     const content = getAboutVersionByLanguage(locale)
     return content ? processText(content) : ''
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale])
 
   const currentAboutVersion = useMemo(() => {
     const content = getAboutVersionByLanguage(locale).match(/^#\s([\s\S]+?)\n#\s/g)
     return content?.length ? processText(content[0]) : ''
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [locale])
 
   if (isStartPage) {
