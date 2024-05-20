@@ -11,7 +11,7 @@ function LoadMoreButton({
     <button
       className={`flex-none ${
         insideBigCarousel ? 'py-1 px-2 text-xs' : 'py-2 px-4'
-      } font-bold rounded-md cursor-pointer text-gray-800 bg-gray-200 hover:bg-gray-300`}
+      } font-bold rounded-md cursor-pointer text-th-text-primary bg-th-secondary-200 hover:opacity-70`}
       onClick={loadMore}
       style={{
         width: `${cardSize}px`,

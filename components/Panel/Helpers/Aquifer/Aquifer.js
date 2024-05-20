@@ -1,7 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Switch } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
+
+import { checkLSVal } from 'utils/helper'
 
 import { TNTWLContent } from 'components/Panel/UI'
 import ListBoxMultiple from './ListBoxMultiple'
@@ -42,7 +44,14 @@ function Aquifer({ config }) {
   ]
 
   const options = tools.map((item) => item.name)
-  const [selectedOptions, setSelectedOptions] = useState(options)
+  const [selectedOptions, setSelectedOptions] = useState(() => {
+    const savedOptions = checkLSVal('selectedOptions', options, 'object')
+    return savedOptions
+  })
+
+  useEffect(() => {
+    localStorage.setItem('selectedOptions', JSON.stringify(selectedOptions))
+  }, [selectedOptions])
 
   return (
     <>

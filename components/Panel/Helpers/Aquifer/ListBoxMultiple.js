@@ -21,7 +21,7 @@ function ListBoxMultiple({
   }
 
   return (
-    <Listbox value={selectedOptions} onChange={() => {}} multiple>
+    <Listbox value={selectedOptions} multiple>
       {({ open }) => (
         <div className="relative flex items-center w-full text-th-text-primary">
           <Listbox.Button className="relative flex items-center w-full">

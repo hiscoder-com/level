@@ -40,20 +40,17 @@ function Carousel({
 
   const handleNextClick = () => {
     setCurrentIndex((prevIndex) => {
-      if (insideBigCarousel) {
+      if (insideBigCarousel || prevIndex < maxVisibleIndex) {
         return prevIndex + 1
       } else {
-        if (prevIndex === maxVisibleIndex) {
-          return prevIndex
-        } else {
-          return prevIndex + 1
-        }
+        return prevIndex
       }
     })
   }
 
   useEffect(() => {
     !insideBigCarousel && setCurrentIndex(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query, isShowAllChapter, verse])
 
   useEffect(() => {
@@ -75,7 +72,7 @@ function Carousel({
     }
 
     setMaxVisibleIndex(calculatedMaxVisibleIndex)
-  }, [images, currentIndex, lastIndex, cardSize])
+  }, [images, currentIndex, lastIndex, cardSize, imagesGap, isShowLoadMoreButton])
 
   useEffect(() => {
     if (containerRef.current) {
@@ -86,7 +83,7 @@ function Carousel({
       }px)`
       containerElement.style.transition = 'transform 0.3s ease-in-out'
     }
-  }, [currentIndex, cardSize])
+  }, [currentIndex, cardSize, imagesGap])
 
   return (
     <>
@@ -135,21 +132,21 @@ function Carousel({
                   }`}
                 >
                   <button
-                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-th-secondary-300 disabled:cursor-not-allowed"
                     onClick={handlePrevClick}
                     disabled={currentIndex === 0 || images.length === 0}
                   >
                     <ArrowRight className="stroke-2 rotate-180" />
                   </button>
                   <button
-                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3 rounded-full disabled:bg-th-secondary-100 disabled:text-th-secondary-300 disabled:cursor-not-allowed"
                     onClick={() => setCurrentIndex(0)}
                     disabled={currentIndex === 0 || images.length === 0}
                   >
                     <Return />
                   </button>
                   <button
-                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-gray-400 disabled:cursor-not-allowed"
+                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-th-secondary-300 disabled:cursor-not-allowed"
                     onClick={handleNextClick}
                     disabled={
                       (!insideBigCarousel && currentIndex === maxVisibleIndex) ||
@@ -173,7 +170,7 @@ function Carousel({
               dialogTitle: 'text-center text-2xl font-medium leading-6',
               dialogPanel:
                 'w-full h-full flex max-w-5xl p-6 transform overflow-y-auto transition-all text-th-text-primary-100 rounded-3xl',
-              transitionChild: 'fixed inset-0 bg-[#424242] bg-opacity-90',
+              transitionChild: 'fixed inset-0 bg-opacity-5 backdrop-brightness-50',
               content:
                 'inset-0 top-4 fixed flex items-center justify-center p-4 min-h-full overflow-y-auto',
             }}
