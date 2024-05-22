@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import axios from 'axios'
 import useSWR from 'swr'
+import useSWRInfinite from 'swr/infinite'
 import { checkLSVal } from './helper'
 import { useRecoilState } from 'recoil'
 
@@ -619,4 +620,59 @@ export function useGetTheme() {
     }
   }, [])
   return theme
+}
+
+export function useGetAquiferResources({
+  book_code,
+  chapter_num,
+  verse_num,
+  query,
+  language_code,
+  resource_type,
+}) {
+  const limit = 10
+  const getKey = (index) => {
+    const offset = index * limit
+    return book_code && language_code
+      ? `/api/aquifer/${book_code}/${chapter_num}/${verse_num}/${
+          resource_type === 'images' ? 'images' : 'notes'
+        }?query=${query}&limit=${limit}&offset=${offset}&language_code=${language_code}&resource_type=${resource_type}`
+      : null
+  }
+
+  const { data, error, isLoading, isValidating, mutate, size, setSize } = useSWRInfinite(
+    getKey,
+    fetcher,
+    { revalidateOnFocus: false, revalidateIfStale: false }
+  )
+  const loadMore = () => {
+    setSize(size + 1)
+  }
+
+  const isLoadingMore =
+    isLoading || (size > 0 && data && typeof data[size - 1] === 'undefined')
+
+  let resources = []
+  let isShowLoadMoreButton = false
+  if (data) {
+    resources = data.reduce((acc, curr) => [...acc, ...curr.items], [])
+    if (data[0].totalItemCount > resources.length && limit < data[0].totalItemCount) {
+      isShowLoadMoreButton = true
+    } else {
+      isShowLoadMoreButton = false
+    }
+  }
+
+  return {
+    resources,
+    loadMore,
+    error,
+    isLoading,
+    isValidating,
+    mutate,
+    size,
+    setSize,
+    isShowLoadMoreButton,
+    isLoadingMore,
+  }
 }

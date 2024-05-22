@@ -321,6 +321,7 @@ export async function getServerSideProps({ locale, params }) {
         'books',
         'users',
         'error',
+        'aquifer',
       ])),
       last_step: steps.data.sorting,
     },

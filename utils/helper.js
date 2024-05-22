@@ -855,3 +855,10 @@ export const getBriefName = (briefName, defautlName) => {
     return briefName
   }
 }
+
+export const getImageUrl = (imageUrl) => {
+  if (typeof imageUrl === 'string') {
+    return imageUrl
+  }
+  return ''
+}
