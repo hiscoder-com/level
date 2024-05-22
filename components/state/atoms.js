@@ -67,3 +67,8 @@ export const isHideAllVersesState = atom({
   key: 'isHideAllVersesState',
   default: false,
 })
+
+export const indexImageCarousel = atom({
+  key: 'indexImageCarousel',
+  default: 0,
+})

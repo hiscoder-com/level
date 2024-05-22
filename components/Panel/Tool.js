@@ -1,6 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import {
+  Aquifer,
   Questions,
   PersonalNotes,
   CommandEditor,
@@ -17,7 +18,6 @@ import {
   TN,
   TQ,
 } from './'
-import { questions } from 'utils/config'
 
 function Tool({ config, toolName, tnLink, editable = false }) {
   const { t } = useTranslation(['common', 'books'])
@@ -153,6 +153,11 @@ function Tool({ config, toolName, tnLink, editable = false }) {
     case 'dictionary':
       CurrentTool = Dictionary
       title = t('dictionary')
+      break
+
+    case 'aquifer':
+      CurrentTool = Aquifer
+      title = t('aquifer')
       break
 
     case 'info':

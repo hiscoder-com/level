@@ -55,6 +55,12 @@ INSERT INTO "public"."methods" ("title", "steps", "resources", "type", "brief") 
           {
             "name": "dictionary",
             "config": {}
+          },
+          {
+            "name": "aquifer",
+            "config": {
+              "languageCode": "eng"
+            }
           }
         ]
       }
@@ -109,6 +115,12 @@ INSERT INTO "public"."methods" ("title", "steps", "resources", "type", "brief") 
           {
             "name": "dictionary",
             "config": {}
+          },
+          {
+            "name": "aquifer",
+            "config": {
+              "languageCode": "eng"
+            }
           }
         ]
       }

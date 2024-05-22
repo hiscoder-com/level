@@ -1,3 +1,9 @@
+# Version 0.20.0
+## Date: 05/22/2024
+
+### **Corregido:**
+- Aquifer añadido
+
 # Version 0.19.0
 ## Date: 04/17/2024
 

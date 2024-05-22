@@ -399,7 +399,7 @@ function Dictionary({ config }) {
               <>
                 <div className="flex w-full gap-2 justify-end ltr:flex-row rtl:flex-row-reverse">
                   <button
-                    className="btn-tertiary p-3"
+                    className="btn-tertiary p-3 mb-3"
                     onClick={addNote}
                     title={t('common:AddWord')}
                   >
