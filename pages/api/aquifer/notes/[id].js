@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const AQUIFER_API_KEY = process.env.NEXT_API_KEY_AQUIFER
+const AQUIFER_API_KEY = process.env.API_KEY_AQUIFER
 
 export default async function handler(req, res) {
   const { id } = req.query
