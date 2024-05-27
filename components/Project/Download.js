@@ -2,12 +2,15 @@ import { useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
 import CheckBox from 'components/CheckBox'
+import ButtonLoading from 'components/ButtonLoading'
 
 import useSupabaseClient from 'utils/supabaseClient'
 import { usfmFileNames } from 'utils/config'
@@ -60,7 +63,10 @@ function Download({
         break
       default:
         if (isBook) {
-          extraOptions = [{ label: 'USFM', value: 'usfm' }]
+          extraOptions = [
+            { label: 'USFM', value: 'usfm' },
+            { label: 'Project', value: 'project' },
+          ]
         } else {
           extraOptions = [{ label: 'TXT', value: 'txt' }]
         }
@@ -179,80 +185,109 @@ function Download({
     },
   ]
 
+  const createAndDownloadArchive = async () => {
+    await axios
+      .get('/api/download/' + project?.code + '/' + bookCode, {
+        responseType: 'blob',
+      })
+      .then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]))
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'archive.zip')
+        document.body.appendChild(link)
+        link.click()
+      })
+      .catch((error) => {
+        toast.error(t('DownloadError'))
+        console.log(error)
+      })
+  }
   const handleSave = async () => {
-    const chapters = await getBookJson(book?.id)
-    setIsSaving(true)
+    try {
+      setIsSaving(true)
 
-    switch (downloadType) {
-      case 'txt':
-        downloadFile({
-          text: compileChapter(
-            {
-              json: chapter?.text,
-              title: `${project?.title}\n${book?.properties.scripture.toc1}\n${book?.properties.scripture.chapter_label} ${chapterNum}`,
-              subtitle: `${t(`books:${book?.code}`)} ${t('Chapter')} ${chapterNum}`,
-              chapterNum,
-            },
-            'txt'
-          ),
-          title: `${project?.title}_${book?.properties.scripture.toc1}_chapter_${chapterNum}.txt`,
-        })
-        break
-      case 'pdf':
-        await downloadPdf({
-          ...(isBook ? { book } : {}),
-          ...(isBook ? { chapters } : {}),
-          downloadSettings,
-          projectTitle: project.title,
-          obs: project?.type === 'obs',
-          chapter: { json: chapter?.text, chapterNum: chapter?.num },
-          title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
-          projectLanguage: project.languages.orig_name,
-          fileName: `${project.title}_${
-            project?.type !== 'obs'
-              ? book?.properties?.scripture?.toc1 ?? t('Book')
-              : book?.properties?.obs?.title ?? t('OpenBibleStories')
-          }`,
-          t,
-        })
-
-        break
-      case 'markdown':
-        downloadFile({
-          text: JsonToMd(
-            createObjectToTransform({
-              json: chapter?.text,
-              chapterNum: chapter?.num,
-            })
-          ),
-          title: `${String(chapter?.num).padStart(2, '0')}.md`,
-          type: 'markdown/plain',
-        })
-        break
-      case 'zip':
-        downloadZip(book)
-        break
-      case 'usfm':
-        downloadFile({
-          text: convertToUsfm({
-            jsonChapters: chapters,
-            book,
-            project: {
-              code: project?.code,
-              title: project?.title,
-              language: {
-                code: project?.languages?.code,
-                orig_name: project?.languages?.orig_name,
+      switch (downloadType) {
+        case 'txt':
+          downloadFile({
+            text: compileChapter(
+              {
+                json: chapter?.text,
+                title: `${project?.title}\n${book?.properties.scripture.toc1}\n${book?.properties.scripture.chapter_label} ${chapterNum}`,
+                subtitle: `${t(`books:${book?.code}`)} ${t('Chapter')} ${chapterNum}`,
+                chapterNum,
               },
-            },
-          }),
-          title: usfmFileNames[book?.code],
-        })
-        break
-      default:
-        break
+              'txt'
+            ),
+            title: `${project?.title}_${book?.properties.scripture.toc1}_chapter_${chapterNum}.txt`,
+          })
+
+          break
+        case 'pdf':
+          await downloadPdf({
+            ...(isBook ? { book } : {}),
+            ...(isBook ? { chapters } : {}),
+            downloadSettings,
+            projectTitle: project.title,
+            obs: project?.type === 'obs',
+            chapter: { json: chapter?.text, chapterNum: chapter?.num },
+            title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
+            projectLanguage: project.languages.orig_name,
+            fileName: `${project.title}_${
+              project?.type !== 'obs'
+                ? book?.properties?.scripture?.toc1 ?? t('Book')
+                : book?.properties?.obs?.title ?? t('OpenBibleStories')
+            }`,
+            t,
+          })
+
+          break
+        case 'markdown':
+          downloadFile({
+            text: JsonToMd(
+              createObjectToTransform({
+                json: chapter?.text,
+                chapterNum: chapter?.num,
+              })
+            ),
+            title: `${String(chapter?.num).padStart(2, '0')}.md`,
+            type: 'markdown/plain',
+          })
+          break
+        case 'zip':
+          downloadZip(book)
+          break
+        case 'usfm':
+          const chapters = await getBookJson(book?.id)
+          downloadFile({
+            text: convertToUsfm({
+              jsonChapters: chapters,
+              book,
+              project: {
+                code: project?.code,
+                title: project?.title,
+                language: {
+                  code: project?.languages?.code,
+                  orig_name: project?.languages?.orig_name,
+                },
+              },
+            }),
+            title: usfmFileNames[book?.code],
+          })
+
+          break
+        case 'project':
+          await createAndDownloadArchive()
+          break
+        default:
+          break
+      }
+    } catch (error) {
+      toast.error(t('DownloadError'))
+      console.log(error)
+    } finally {
+      setIsSaving(false)
     }
-    setIsSaving(false)
   }
   return (
     <div className="flex flex-col gap-7">
@@ -307,13 +342,15 @@ function Download({
           >
             {t('Close')}
           </button>
-          <button
+
+          <ButtonLoading
             onClick={handleSave}
             disabled={isSaving}
-            className="btn-secondary flex-1"
+            isLoading={isSaving}
+            className="relative btn-secondary flex-1"
           >
-            {isSaving ? t('Saving') : t('Save')}
-          </button>
+            {t('Save')}
+          </ButtonLoading>
         </div>
       </div>
     </div>
