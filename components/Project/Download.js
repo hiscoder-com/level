@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import JSZip from 'jszip'
 
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
@@ -13,13 +14,14 @@ import CheckBox from 'components/CheckBox'
 import ButtonLoading from 'components/ButtonLoading'
 
 import useSupabaseClient from 'utils/supabaseClient'
-import { usfmFileNames } from 'utils/config'
+import { newTestamentList, usfmFileNames } from 'utils/config'
 import {
   createObjectToTransform,
   compileChapter,
   convertToUsfm,
   downloadFile,
   downloadPdf,
+  countOfChaptersAndVerses,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
 
@@ -184,24 +186,152 @@ function Download({
         : t('books:' + bookCode),
     },
   ]
+  const createChapters = async (bookLink) => {
+    if (bookLink) {
+      const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
+        await countOfChaptersAndVerses({
+          link: bookLink,
+        })
+      const newChapters = {}
+      for (const chapterNum in jsonChapterVerse) {
+        if (Object.hasOwnProperty.call(jsonChapterVerse, chapterNum)) {
+          const verses = jsonChapterVerse[chapterNum]
+          const newVerses = {}
+          for (let index = 1; index < verses + 1; index++) {
+            newVerses[index] = { text: '', enabled: false, history: [] }
+          }
+          newChapters[chapterNum] = newVerses
+        }
+      }
+      return newChapters
+    }
+  }
+  const getResourcesUrls = async (resources) => {
+    const urls = {}
+    for (const resource in resources) {
+      if (Object.hasOwnProperty.call(resources, resource)) {
+        const { owner, repo, commit, manifest } = resources[resource]
+        const bookPath = manifest.projects.find((el) => el.identifier === bookCode)?.path
+        let url = ''
+        if (bookPath.slice(0, 2) === './') {
+          url = `${
+            process.env.NODE_HOST ?? 'https://git.door43.org'
+          }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
+        } else {
+          url = `${
+            process.env.NODE_HOST ?? 'https://git.door43.org'
+          }/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
+        }
+        urls[resource] = url
+      }
+    }
+    return urls
+  }
+  const getTwords = async (url) => {
+    if (!url) {
+      return null
+    }
+    const parts = url.split('/')
+    const baseUrl = parts.slice(0, 3).join('/')
+    const repo = parts[4].slice(0, -1)
+    const owner = parts[3]
+    const newUrl = `${baseUrl}/${owner}/${repo}/archive/master.zip`
+    try {
+      const response = await axios.get(newUrl)
+      return response.data
+    } catch (error) {
+      return null
+    }
+  }
+  const getOriginal = async (bookCode) => {
+    if (!bookCode) {
+      return null
+    }
+    const isGreek = Object.keys(newTestamentList).includes(bookCode)
 
+    const newUrl = `https://git.door43.org/unfoldingWord/${
+      isGreek ? 'el-x-koine_ugnt' : 'hbo_uhb'
+    }/raw/master/${usfmFileNames[bookCode]}`
+    try {
+      const response = await axios.get(newUrl)
+      return response.data
+    } catch (error) {
+      console.log(error, 'error')
+      return null
+    }
+  }
+  const createConfig = async (method, projectName, chapters) => {
+    return JSON.stringify({})
+  }
+  const createOfflineProject = async (project, bookCode) => {
+    const bookLink = project.base_manifest.books.find(
+      (book) => book.name === bookCode
+    )?.link
+    if (!bookLink) {
+      return null
+    }
+    const chapters = await createChapters(bookLink)
+    const zip = new JSZip()
+
+    const files = ['personal-notes.json', 'dictionary.json', 'team-notes.json']
+    const folders = ['personal-notes', 'dictionary', 'team-notes', 'chapters']
+
+    files.forEach((filename) => {
+      zip.file(filename, JSON.stringify({}))
+    })
+
+    folders.forEach((foldername) => {
+      zip.folder(foldername)
+    })
+    const resourcesUrls = await getResourcesUrls(project.resources)
+    for (const resource in resourcesUrls) {
+      if (Object.hasOwnProperty.call(resourcesUrls, resource)) {
+        const url = resourcesUrls[resource]
+        try {
+          const response = await axios.get(url)
+          if (response.status === 200) {
+            const content = response.data
+            zip.file(`${resource}.${url.split('.').pop()}`, content)
+          } else {
+            console.error(`Не удалось загрузить: ${url}`)
+          }
+        } catch (error) {
+          console.error(`Ошибка при запросе к: ${url}`, error)
+        }
+      }
+    }
+    const tWords = await getTwords(resourcesUrls['twords'])
+    if (tWords) {
+      zip.file('twords.zip', tWords)
+    }
+    const original = await getOriginal(bookCode)
+    if (original) {
+      zip.file('original.usfm', original)
+    }
+    const chaptersFolder = zip.folder('chapters')
+    if (chapters) {
+      Object.keys(chapters).forEach((chapterNumber) => {
+        const chapterData = chapters[chapterNumber]
+        const chapterFileName = `${chapterNumber}.json`
+        chaptersFolder.file(chapterFileName, JSON.stringify(chapterData))
+      })
+    }
+    const config = await createConfig('cana', project.title, chapters)
+    zip.file('config.json', config)
+    return zip
+  }
   const createAndDownloadArchive = async () => {
-    await axios
-      .get('/api/download/' + project?.code + '/' + bookCode, {
-        responseType: 'blob',
-      })
-      .then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]))
-        const link = document.createElement('a')
-        link.href = url
-        link.setAttribute('download', 'archive.zip')
-        document.body.appendChild(link)
-        link.click()
-      })
-      .catch((error) => {
-        toast.error(t('DownloadError'))
-        console.log(error)
-      })
+    try {
+      const archive = await createOfflineProject(project, bookCode)
+      if (!archive) {
+        return
+      }
+      const content = await archive.generateAsync({ type: 'blob' })
+      saveAs(content, 'archive.zip')
+    } catch (error) {
+      toast.error(t('DownloadError'))
+      console.log(error)
+    }
   }
   const handleSave = async () => {
     try {
