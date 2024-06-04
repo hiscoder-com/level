@@ -24,6 +24,7 @@ import {
   countOfChaptersAndVerses,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
+import { saveAs } from 'file-saver'
 
 const downloadSettingsChapter = {
   withImages: true,
@@ -45,7 +46,7 @@ function Download({
 }) {
   const supabase = useSupabaseClient()
 
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'projects'])
   const {
     query: { code },
   } = useRouter()
@@ -67,7 +68,7 @@ function Download({
         if (isBook) {
           extraOptions = [
             { label: 'USFM', value: 'usfm' },
-            { label: 'Project', value: 'project' },
+            { label: t('projects:Project'), value: 'project' },
           ]
         } else {
           extraOptions = [{ label: 'TXT', value: 'txt' }]
@@ -76,6 +77,7 @@ function Download({
     }
 
     return [...options, ...extraOptions]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, isBook])
 
   const [chapters] = useGetChapters({
@@ -187,26 +189,29 @@ function Download({
     },
   ]
   const createChapters = async (bookLink) => {
-    if (bookLink) {
-      const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
-        await countOfChaptersAndVerses({
-          link: bookLink,
-        })
-      const newChapters = {}
-      for (const chapterNum in jsonChapterVerse) {
-        if (Object.hasOwnProperty.call(jsonChapterVerse, chapterNum)) {
-          const verses = jsonChapterVerse[chapterNum]
-          const newVerses = {}
-          for (let index = 1; index < verses + 1; index++) {
-            newVerses[index] = { text: '', enabled: false, history: [] }
-          }
-          newChapters[chapterNum] = newVerses
-        }
-      }
-      return newChapters
+    if (!bookLink) return null
+    const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
+      await countOfChaptersAndVerses({
+        link: bookLink,
+      })
+    if (errorJsonChapterVerse) {
+      return null
     }
+    const chapters = {}
+    for (const chapterNum in jsonChapterVerse) {
+      if (Object.hasOwnProperty.call(jsonChapterVerse, chapterNum)) {
+        const verses = jsonChapterVerse[chapterNum]
+        const newVerses = {}
+        for (let index = 1; index < verses + 1; index++) {
+          newVerses[index] = { text: '', enabled: false, history: [] }
+        }
+        chapters[chapterNum] = newVerses
+      }
+    }
+    return chapters
   }
   const getResourcesUrls = async (resources) => {
+    if (!resources) return null
     const urls = {}
     for (const resource in resources) {
       if (Object.hasOwnProperty.call(resources, resource)) {
@@ -227,6 +232,28 @@ function Download({
     }
     return urls
   }
+  const findBibleFolder = async (zip) => {
+    for (const topLevelName in zip.files) {
+      if (zip.files[topLevelName].dir) {
+        const potentialEnTwFolder = zip.folder(topLevelName)
+        const bibleFolder = potentialEnTwFolder.folder('bible')
+        if (bibleFolder) {
+          return bibleFolder
+        }
+      }
+    }
+    return null
+  }
+  const addResourceName = (resources) => {
+    if (!resources) return null
+    const names = { tnotes: 'tNotes', twords: 'tWords', tquestions: 'tQuestions' }
+    const resourceNames = Object.entries(resources).reduce((acc, [resource, value]) => {
+      acc[resource] =
+        names[resource] || resource.charAt(0).toUpperCase() + resource.slice(1)
+      return acc
+    }, {})
+    return resourceNames
+  }
   const getTwords = async (url) => {
     if (!url) {
       return null
@@ -237,9 +264,32 @@ function Download({
     const owner = parts[3]
     const newUrl = `${baseUrl}/${owner}/${repo}/archive/master.zip`
     try {
-      const response = await axios.get(newUrl)
-      return response.data
+      const response = await axios.get(newUrl, { responseType: 'arraybuffer' })
+      const zip = new JSZip()
+      await zip.loadAsync(response.data)
+      const bibleFolder = await findBibleFolder(zip)
+      if (!bibleFolder) {
+        throw new Error('Bible folder not found')
+      }
+      const newZip = new JSZip()
+      const tWordsFolder = newZip.folder('twords')
+      const filePromises = []
+      bibleFolder.forEach((relativePath, file) => {
+        if (!file.dir) {
+          const filePromise = bibleFolder
+            .file(relativePath)
+            .async('arraybuffer')
+            .then((content) => {
+              tWordsFolder.file(relativePath, content)
+            })
+          filePromises.push(filePromise)
+        }
+      })
+      await Promise.all(filePromises)
+      const tWordsArrayBuffer = await newZip.generateAsync({ type: 'uint8array' })
+      return Buffer.from(tWordsArrayBuffer)
     } catch (error) {
+      console.log(error, 'error')
       return null
     }
   }
@@ -248,7 +298,6 @@ function Download({
       return null
     }
     const isGreek = Object.keys(newTestamentList).includes(bookCode)
-
     const newUrl = `https://git.door43.org/unfoldingWord/${
       isGreek ? 'el-x-koine_ugnt' : 'hbo_uhb'
     }/raw/master/${usfmFileNames[bookCode]}`
@@ -256,13 +305,34 @@ function Download({
       const response = await axios.get(newUrl)
       return response.data
     } catch (error) {
-      console.log(error, 'error')
       return null
     }
   }
-  const createConfig = async (method, projectName, chapters) => {
-    return JSON.stringify({})
+  const createConfig = async (project, chapters) => {
+    if (!chapters || !project) {
+      return null
+    }
+    const initChapters = Object.keys(chapters).reduce((acc, chapter) => {
+      acc[chapter] = 0
+      return acc
+    }, {})
+    const methods = await axios.get('/api/methods')
+    const method = methods.data.find((method) => method.title === project.method)
+    if (!method?.offline_steps) {
+      return null
+    }
+    const config = {
+      steps: method.offline_steps,
+      method: method.title,
+      project: project.title,
+      chapters: initChapters,
+      book: { code: bookCode, name: bookCode },
+      resources: addResourceName(project.resources),
+      mainResource: project.base_manifest.resource,
+    }
+    return JSON.stringify(config)
   }
+
   const createOfflineProject = async (project, bookCode) => {
     const bookLink = project.base_manifest.books.find(
       (book) => book.name === bookCode
@@ -271,8 +341,10 @@ function Download({
       return null
     }
     const chapters = await createChapters(bookLink)
+    if (!chapters) {
+      return null
+    }
     const zip = new JSZip()
-
     const files = ['personal-notes.json', 'dictionary.json', 'team-notes.json']
     const folders = ['personal-notes', 'dictionary', 'team-notes', 'chapters']
 
@@ -284,6 +356,9 @@ function Download({
       zip.folder(foldername)
     })
     const resourcesUrls = await getResourcesUrls(project.resources)
+    if (!resourcesUrls) {
+      return null
+    }
     for (const resource in resourcesUrls) {
       if (Object.hasOwnProperty.call(resourcesUrls, resource)) {
         const url = resourcesUrls[resource]
@@ -293,16 +368,20 @@ function Download({
             const content = response.data
             zip.file(`${resource}.${url.split('.').pop()}`, content)
           } else {
-            console.error(`Не удалось загрузить: ${url}`)
+            console.error(`Cannot load: ${url}`)
           }
         } catch (error) {
-          console.error(`Ошибка при запросе к: ${url}`, error)
+          console.error(`Error loading: ${url}`, error)
         }
       }
     }
-    const tWords = await getTwords(resourcesUrls['twords'])
-    if (tWords) {
-      zip.file('twords.zip', tWords)
+    const tWordsBuffer = await getTwords(resourcesUrls['twords'])
+
+    if (tWordsBuffer) {
+      zip.file('twords.zip', tWordsBuffer)
+    } else {
+      console.log('Error loading tWords')
+      return null
     }
     const original = await getOriginal(bookCode)
     if (original) {
@@ -316,7 +395,7 @@ function Download({
         chaptersFolder.file(chapterFileName, JSON.stringify(chapterData))
       })
     }
-    const config = await createConfig('cana', project.title, chapters)
+    const config = await createConfig(project, chapters)
     zip.file('config.json', config)
     return zip
   }
@@ -324,7 +403,7 @@ function Download({
     try {
       const archive = await createOfflineProject(project, bookCode)
       if (!archive) {
-        return
+        throw new Error('Archive not created')
       }
       const content = await archive.generateAsync({ type: 'blob' })
       saveAs(content, 'archive.zip')
@@ -336,7 +415,6 @@ function Download({
   const handleSave = async () => {
     try {
       setIsSaving(true)
-
       switch (downloadType) {
         case 'txt':
           downloadFile({
