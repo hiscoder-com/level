@@ -27,5 +27,5 @@ jobs:
         with:
           version: latest
 
-      - run: supabase link --project-ref $SUPABASE_PROJECT_ID    
-      - run: yes | supabase db reset --linked
+      - run: supabase link --project-ref $SUPABASE_PROJECT_ID
+      - run: supabase db push
