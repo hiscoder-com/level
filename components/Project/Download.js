@@ -190,6 +190,7 @@ function Download({
   ]
   const createChapters = async (bookLink) => {
     if (!bookLink) return null
+
     const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
       await countOfChaptersAndVerses({
         link: bookLink,
@@ -217,33 +218,15 @@ function Download({
       if (Object.hasOwnProperty.call(resources, resource)) {
         const { owner, repo, commit, manifest } = resources[resource]
         const bookPath = manifest.projects.find((el) => el.identifier === bookCode)?.path
-        let url = ''
-        if (bookPath.slice(0, 2) === './') {
-          url = `${
-            process.env.NODE_HOST ?? 'https://git.door43.org'
-          }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
-        } else {
-          url = `${
-            process.env.NODE_HOST ?? 'https://git.door43.org'
-          }/${owner}/${repo}/raw/commit/${commit}/${bookPath}`
-        }
+        const url = ` ${
+          process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+        }/${owner}/${repo}/raw/commit/${commit}/${bookPath.replace(/^\.\//, '')}`
         urls[resource] = url
       }
     }
     return urls
   }
-  const findBibleFolder = async (zip) => {
-    for (const topLevelName in zip.files) {
-      if (zip.files[topLevelName].dir) {
-        const potentialEnTwFolder = zip.folder(topLevelName)
-        const bibleFolder = potentialEnTwFolder.folder('bible')
-        if (bibleFolder) {
-          return bibleFolder
-        }
-      }
-    }
-    return null
-  }
+
   const addResourceName = (resources) => {
     if (!resources) return null
     const names = { tnotes: 'tNotes', twords: 'tWords', tquestions: 'tQuestions' }
@@ -258,38 +241,38 @@ function Download({
     if (!url) {
       return null
     }
-    const parts = url.split('/')
-    const baseUrl = parts.slice(0, 3).join('/')
-    const repo = parts[4].slice(0, -1)
-    const owner = parts[3]
-    const newUrl = `${baseUrl}/${owner}/${repo}/archive/master.zip`
     try {
+      const parts = url.split('/')
+      const baseUrl = parts.slice(0, 3).join('/')
+      const repo = parts[4].slice(0, -1)
+      const owner = parts[3]
+      const newUrl = `${baseUrl}/${owner}/${repo}/archive/master.zip`
       const response = await axios.get(newUrl, { responseType: 'arraybuffer' })
       const zip = new JSZip()
       await zip.loadAsync(response.data)
-      const bibleFolder = await findBibleFolder(zip)
-      if (!bibleFolder) {
-        throw new Error('Bible folder not found')
-      }
       const newZip = new JSZip()
       const tWordsFolder = newZip.folder('twords')
       const filePromises = []
-      bibleFolder.forEach((relativePath, file) => {
-        if (!file.dir) {
-          const filePromise = bibleFolder
-            .file(relativePath)
-            .async('arraybuffer')
-            .then((content) => {
-              tWordsFolder.file(relativePath, content)
-            })
-          filePromises.push(filePromise)
+      const regularExpression = /^[^\/]+\/bible\//
+      for (const pathName in zip.files) {
+        if (Object.hasOwnProperty.call(zip.files, pathName)) {
+          regularExpression
+          const file = zip.files[pathName]
+          if (pathName.match(regularExpression)) {
+            if (!file.dir) {
+              const filePromise = file.async('arraybuffer').then((content) => {
+                tWordsFolder.file(pathName.replace(regularExpression, ''), content)
+              })
+              filePromises.push(filePromise)
+            }
+          }
         }
-      })
+      }
       await Promise.all(filePromises)
       const tWordsArrayBuffer = await newZip.generateAsync({ type: 'uint8array' })
       return Buffer.from(tWordsArrayBuffer)
     } catch (error) {
-      console.log(error, 'error')
+      console.error('Error fetching tWords:', error)
       return null
     }
   }
@@ -298,13 +281,16 @@ function Download({
       return null
     }
     const isGreek = Object.keys(newTestamentList).includes(bookCode)
-    const newUrl = `https://git.door43.org/unfoldingWord/${
-      isGreek ? 'el-x-koine_ugnt' : 'hbo_uhb'
-    }/raw/master/${usfmFileNames[bookCode]}`
+    const newUrl = `${
+      process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/unfoldingWord/${isGreek ? 'el-x-koine_ugnt' : 'hbo_uhb'}/raw/master/${
+      usfmFileNames[bookCode]
+    }`
     try {
       const response = await axios.get(newUrl)
       return response.data
     } catch (error) {
+      console.error('Error fetching original USFM:', error)
       return null
     }
   }
@@ -333,18 +319,35 @@ function Download({
     return JSON.stringify(config)
   }
 
-  const createOfflineProject = async (project, bookCode) => {
-    const bookLink = project.base_manifest.books.find(
-      (book) => book.name === bookCode
-    )?.link
-    if (!bookLink) {
-      return null
+  const downloadResources = async (resourcesUrls, zip) => {
+    for (const resource in resourcesUrls) {
+      if (Object.hasOwnProperty.call(resourcesUrls, resource)) {
+        const url = resourcesUrls[resource]
+        try {
+          const response = await axios.get(url)
+          if (response.status === 200) {
+            const content = response.data
+            zip.file(`${resource}.${url.split('.').pop()}`, content)
+          } else {
+            throw new Error(`Failed to fetch resource: ${url}`)
+          }
+        } catch (error) {
+          console.error(`Error loading: ${url}`, error)
+        }
+      }
     }
-    const chapters = await createChapters(bookLink)
-    if (!chapters) {
-      return null
+  }
+  const addChaptersToZip = (zip, chapters) => {
+    const chaptersFolder = zip.folder('chapters')
+    if (chapters) {
+      Object.keys(chapters).forEach((chapterNumber) => {
+        const chapterData = chapters[chapterNumber]
+        const chapterFileName = `${chapterNumber}.json`
+        chaptersFolder.file(chapterFileName, JSON.stringify(chapterData))
+      })
     }
-    const zip = new JSZip()
+  }
+  const createProjectFiles = (zip) => {
     const files = ['personal-notes.json', 'dictionary.json', 'team-notes.json']
     const folders = ['personal-notes', 'dictionary', 'team-notes', 'chapters']
 
@@ -355,49 +358,45 @@ function Download({
     folders.forEach((foldername) => {
       zip.folder(foldername)
     })
-    const resourcesUrls = await getResourcesUrls(project.resources)
-    if (!resourcesUrls) {
-      return null
-    }
-    for (const resource in resourcesUrls) {
-      if (Object.hasOwnProperty.call(resourcesUrls, resource)) {
-        const url = resourcesUrls[resource]
-        try {
-          const response = await axios.get(url)
-          if (response.status === 200) {
-            const content = response.data
-            zip.file(`${resource}.${url.split('.').pop()}`, content)
-          } else {
-            console.error(`Cannot load: ${url}`)
-          }
-        } catch (error) {
-          console.error(`Error loading: ${url}`, error)
-        }
+  }
+  const createOfflineProject = async (project, bookCode) => {
+    try {
+      const bookLink = project.base_manifest.books.find(
+        (book) => book.name === bookCode
+      )?.link
+      if (!bookLink) {
+        throw new Error('Book link not found')
       }
-    }
-    const tWordsBuffer = await getTwords(resourcesUrls['twords'])
+      const chapters = await createChapters(bookLink)
+      if (!chapters) {
+        throw new Error('Chapters not created')
+      }
+      const zip = new JSZip()
+      createProjectFiles(zip)
+      const resourcesUrls = await getResourcesUrls(project.resources)
+      if (!resourcesUrls) {
+        throw new Error('Resource URLs not found')
+      }
+      await downloadResources(resourcesUrls, zip)
+      const tWordsBuffer = await getTwords(resourcesUrls['twords'])
+      if (!tWordsBuffer) {
+        throw new Error('tWords not fetched')
+      }
 
-    if (tWordsBuffer) {
       zip.file('twords.zip', tWordsBuffer)
-    } else {
-      console.log('Error loading tWords')
+
+      const original = await getOriginal(bookCode)
+      if (original) {
+        zip.file('original.usfm', original)
+      }
+      addChaptersToZip(zip, chapters)
+      const config = await createConfig(project, chapters)
+      zip.file('config.json', config)
+      return zip
+    } catch (error) {
+      console.error(('Error creating offline project:', error))
       return null
     }
-    const original = await getOriginal(bookCode)
-    if (original) {
-      zip.file('original.usfm', original)
-    }
-    const chaptersFolder = zip.folder('chapters')
-    if (chapters) {
-      Object.keys(chapters).forEach((chapterNumber) => {
-        const chapterData = chapters[chapterNumber]
-        const chapterFileName = `${chapterNumber}.json`
-        chaptersFolder.file(chapterFileName, JSON.stringify(chapterData))
-      })
-    }
-    const config = await createConfig(project, chapters)
-    zip.file('config.json', config)
-    return zip
   }
   const createAndDownloadArchive = async () => {
     try {
@@ -409,7 +408,7 @@ function Download({
       saveAs(content, 'archive.zip')
     } catch (error) {
       toast.error(t('DownloadError'))
-      console.log(error)
+      console.error('Error downloading archive:', error)
     }
   }
   const handleSave = async () => {
@@ -492,7 +491,7 @@ function Download({
       }
     } catch (error) {
       toast.error(t('DownloadError'))
-      console.log(error)
+      console.error(error)
     } finally {
       setIsSaving(false)
     }
