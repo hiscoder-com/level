@@ -13,6 +13,8 @@ import { Tab } from '@headlessui/react'
 import Property from './Property'
 import ButtonLoading from 'components/ButtonLoading'
 import Breadcrumbs from 'components/Breadcrumbs'
+import TranslationCheck from './TranslationCheck'
+
 import CheckBox from 'components/CheckBox'
 
 import Reader from 'public/dictionary.svg'
@@ -102,6 +104,13 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
               `flex-1 ${selected ? 'tab-active' : 'tab-inactive'}`
             }
           >
+            {t('TranslationCheck')}
+          </Tab>
+          <Tab
+            className={({ selected }) =>
+              `flex-1 ${selected ? 'tab-active' : 'tab-inactive'}`
+            }
+          >
             {t('LevelTranslationChecks')}
           </Tab>
         </Tab.List>
@@ -116,6 +125,9 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
                 </ButtonLoading>
               </div>
             </div>
+          </Tab.Panel>
+          <Tab.Panel>
+            <TranslationCheck user={user} project={project} book={book} />
           </Tab.Panel>
           <Tab.Panel>
             <LevelChecks
