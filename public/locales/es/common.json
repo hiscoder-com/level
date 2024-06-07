@@ -1,6 +1,6 @@
 {
-  "AboutStep": "О шаге",
-  "AboutTranslation": "О переводе",
+  "AboutStep": "Acerca del paso",
+  "AboutTranslation": "Acerca de la traducción",
   "Added": "Добавить",
   "AddWord": "Añada palabra",
   "AllNotes": "Все заметки",
@@ -54,7 +54,7 @@
   "Disabled": "Отключен",
   "Done": "Выполнено",
   "Download": "Скачать",
-  "DownloadError": "Download error",
+  "DownloadError": "Error de descarga",
   "DoYouWantCreateBook": "¿Quieres crear un libro?",
   "DoYouWantCreateChapter": "¿Quieres crear un capítulo?",
   "draftTranslate": "Редактор",
