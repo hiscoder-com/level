@@ -1,5 +1,5 @@
 import { appWithTranslation } from 'next-i18next'
-
+import localFont from 'next/font/local'
 import { RecoilRoot } from 'recoil'
 
 import Layout from 'components/Layout'
@@ -11,6 +11,8 @@ import 'styles/globals.css'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useGetTheme } from 'utils/hooks'
 
+const roboto = localFont({ src: './RobotoFlex.ttf', variable: '--font-roboto' })
+
 function MyApp({ Component, pageProps }) {
   const supabaseClient = useSupabaseClient()
   useGetTheme()
@@ -18,7 +20,9 @@ function MyApp({ Component, pageProps }) {
     return (
       <UserContextProvider supabaseClient={supabaseClient}>
         <RecoilRoot>
-          <Component {...pageProps} />
+          <main className={`${roboto.variable} font-sans`}>
+            <Component {...pageProps} />
+          </main>
         </RecoilRoot>
       </UserContextProvider>
     )
@@ -27,9 +31,11 @@ function MyApp({ Component, pageProps }) {
   return (
     <UserContextProvider supabaseClient={supabaseClient}>
       <RecoilRoot>
-        <Layout backgroundColor={Component.backgroundColor ?? 'bg-th-secondary-100'}>
-          <Component {...pageProps} />
-        </Layout>
+        <main className={`${roboto.variable} font-sans`}>
+          <Layout backgroundColor={Component.backgroundColor ?? 'bg-th-secondary-100'}>
+            <Component {...pageProps} />
+          </Layout>
+        </main>
       </RecoilRoot>
     </UserContextProvider>
   )
