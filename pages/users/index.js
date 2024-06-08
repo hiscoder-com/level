@@ -17,7 +17,7 @@ export default function UsersPage() {
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl pb-10">
         <div>{t('Users')}</div>
         <UsersList />
         <Link href={'/users/create'} className="btn-primary">
