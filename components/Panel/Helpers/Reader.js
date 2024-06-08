@@ -88,7 +88,7 @@ function Reader({ config }) {
   }, [chapter?.id, supabase])
 
   return (
-    <div>
+    <div dir={config?.isRtl ? 'rtl' : 'ltr'}>
       {verseObjects.map((verseObject, index) => (
         <div key={verseObject.verse_id} className="flex my-3">
           <div>{obsCheckAdditionalVerses(verseObject.num)}</div>

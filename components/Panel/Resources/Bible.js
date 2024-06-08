@@ -96,7 +96,7 @@ function VersesExtended({
             {checkedCurrent ? (
               <Blur verse={verseObject.text} />
             ) : (
-              <ReactMarkdown className="ml-2">{verseObject.text}</ReactMarkdown>
+              <MarkdownExtended className="ml-2">{verseObject.text}</MarkdownExtended>
             )}
           </div>
         )

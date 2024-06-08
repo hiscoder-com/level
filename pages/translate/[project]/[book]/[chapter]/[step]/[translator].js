@@ -111,10 +111,12 @@ function TranslatorPage({ last_step }) {
         }
         let stepConfig = {
           title: stepsData.title,
+          subtitle: stepsData.subtitle,
           config: [...stepsData.config],
           whole_chapter: stepsData.whole_chapter,
           resources: { ...stepsData.projects?.resources },
           base_manifest: stepsData.projects?.base_manifest?.resource,
+          is_rtl: stepsData.projects?.is_rtl,
         }
         setStepConfigData({
           count_of_users: stepsData.count_of_users,
