@@ -202,6 +202,11 @@ function BlindEditor({ config }) {
                         .trim()
                     )
                   }}
+                  onBlur={() => {
+                    if (isSingleBlockTranslation) {
+                      sendToDb(filteredVerseObjects.length - 1)
+                    }
+                  }}
                   defaultValue={verseObject.verse ?? ''}
                 />
               ) : (

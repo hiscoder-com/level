@@ -1,13 +1,16 @@
 import { Html, Head, Main, NextScript } from 'next/document'
 
 export default function Document() {
+  const isIntranet = process.env.NEXT_PUBLIC_INTRANET ?? false
   return (
     <Html>
       <Head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
-          rel="stylesheet"
-        />
+        {!isIntranet && (
+          <link
+            href="https://fonts.googleapis.com/css2?family=Roboto&display=swap"
+            rel="stylesheet"
+          />
+        )}
       </Head>
       <body>
         <Main />
