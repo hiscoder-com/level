@@ -1,5 +1,7 @@
 import { Fragment } from 'react'
 
+import Link from 'next/link'
+
 import { useTranslation } from 'next-i18next'
 
 import { Menu, Transition } from '@headlessui/react'
@@ -25,10 +27,11 @@ import Notepad from 'public/notepad.svg'
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
 import Camera from 'public/camera.svg'
+import User from 'public/user.svg'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
-  const { t } = useTranslation('projects')
+  const { t } = useTranslation(['projects', 'users'])
   const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
 
   const openModal = (modalType) => {
@@ -147,6 +150,27 @@ function SideBar({ setIsOpenSideBar, access }) {
                         </ModalInSideBar>
                       </div>
                     </Menu.Item>
+                    {user?.is_admin && (
+                      <Menu.Item as="div" disabled>
+                        <Link href="/users" legacyBehavior>
+                          <a
+                            className="flex items-center gap-4 cursor-pointer"
+                            onClick={() => {
+                              closeModal()
+                              setIsOpenSideBar(false)
+                              close()
+                            }}
+                          >
+                            <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
+                              <User className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
+                            </div>
+                            <span className="hover:opacity-70">
+                              {t('users:UserManagement')}
+                            </span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
+                    )}
                   </div>
                   <AvatarSelector id={user?.id} />
                   <div className="space-y-5">

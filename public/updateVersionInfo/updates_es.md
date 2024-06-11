@@ -1,8 +1,14 @@
+# Version 0.21.0
+## Date: 06/04/2024
+
+### **Added:**
+- posibilidad de descargar el proyecto para la versión sin conexión
+
 # Version 0.20.0
 ## Date: 05/22/2024
 
 ### **Corregido:**
-- Aquifer añadido
+- Aquifer
 
 # Version 0.19.0
 ## Date: 04/17/2024
