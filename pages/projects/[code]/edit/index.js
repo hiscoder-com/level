@@ -16,6 +16,7 @@ export async function getServerSideProps({ locale }) {
         'project-edit',
         'projects',
         'users',
+        'books',
       ])),
     },
   }

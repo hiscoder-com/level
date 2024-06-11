@@ -13,7 +13,7 @@ import { Tab } from '@headlessui/react'
 import Property from './Property'
 import ButtonLoading from 'components/ButtonLoading'
 import Breadcrumbs from 'components/Breadcrumbs'
-import TranslationCheck from './TranslationCheck'
+import TranslationCheck from '../../TranslationCheck'
 
 import CheckBox from 'components/CheckBox'
 

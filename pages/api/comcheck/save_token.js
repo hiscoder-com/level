@@ -11,6 +11,7 @@ export default async function saveTokenHandler(req, res) {
     body: { token, project_id },
     method,
   } = req
+
   switch (method) {
     case 'POST':
       try {

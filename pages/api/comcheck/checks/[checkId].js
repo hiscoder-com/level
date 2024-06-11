@@ -1,4 +1,5 @@
 import supabaseApi from 'utils/supabaseServer'
+import axios from 'axios'
 
 export default async function saveTokenHandler(req, res) {
   let supabase
@@ -9,29 +10,30 @@ export default async function saveTokenHandler(req, res) {
     return res.status(401).json({ error })
   }
   const {
-    data: { session },
-  } = await supabase.auth.getSession()
-  const { data: user, error } = await supabase
-    .from('users')
-    .select('comcheck_token')
-    .eq('id', session.user.id)
+    query: { checkId, code, book, project: projectId },
+  } = req
+  console.log(checkId, code, book, projectId)
+  const { method } = req
+  const { data: project, error } = await supabase
+    .from('projects')
+    .select('comcheck_token,code')
+    .eq('code', code)
     .single()
   if (error) throw error
-  const { method } = req
-
   switch (method) {
     case 'GET':
       try {
         const response = await axios.get(
-          'https://develop--community-check.netlify.app/',
+          `https://community-check.netlify.app/api/projects/${projectId}/books/${book}/checks/${checkId}`,
           {
-            headers: { 'x-comcheck-token': user.comcheck_token },
+            headers: { 'x-comcheck-token': project.comcheck_token },
             accept: 'application/json',
           }
         )
 
         return res.status(200).json(response.data)
       } catch (error) {
+        console.log(error)
         return res.status(404).json({ error })
       }
     default:

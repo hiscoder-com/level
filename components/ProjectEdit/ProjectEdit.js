@@ -32,6 +32,7 @@ import {
 } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 import { getBriefName } from 'utils/helper'
+import Comcheck from './Comcheck'
 const sizeTabs = {
   1: 'w-1/6',
   2: 'w-2/6',
@@ -45,7 +46,7 @@ function ProjectEdit() {
   const {
     replace,
     query,
-    query: { code, setting },
+    query: { code, setting, book },
   } = useRouter()
   const { t } = useTranslation(['common', 'project-edit'])
 
@@ -252,8 +253,14 @@ function ProjectEdit() {
         {
           id: 'brief',
           access: isAdminAccess || (isTranslatorAccess && brief?.is_enable),
-          label: getBriefName(brief?.name, t('project-edit:EditBriefTitle')),
+          label: t('project-edit:EditBriefTitle'),
           panel: <Brief access={isCoordinatorAccess} title />,
+        },
+        {
+          id: 'comcheck',
+          access: isCoordinatorAccess,
+          label: getBriefName(brief?.name, t('project-edit:Comcheck')),
+          panel: <Comcheck access={isCoordinatorAccess} title />,
         },
       ].filter((el) => el.access),
 
