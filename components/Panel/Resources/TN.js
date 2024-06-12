@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { useTranslation } from 'react-i18next'
+
+import { useQuotesTranslation } from '@texttree/tn-quote'
+
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
-
-import { useQuotesTranslation } from '@texttree/tn-quote'
 
 import { filterNotes } from 'utils/helper'
 
@@ -37,7 +39,6 @@ function TN({ config, url, toolName }) {
       setTnotes(_data)
     }
   }, [extraTNotes])
-
   useEffect(() => {
     if (updateTnotes && data) {
       updateTnotes(data)
@@ -69,6 +70,7 @@ function TN({ config, url, toolName }) {
 export default TN
 
 function TNList({ setItem, data, toolName, isLoading }) {
+  const { t } = useTranslation()
   const [verses, setVerses] = useState([])
   const { highlightId, handleSaveScroll } = useScroll({
     toolName,
@@ -103,10 +105,15 @@ function TNList({ setItem, data, toolName, isLoading }) {
                         }`}
                         onClick={() => {
                           handleSaveScroll(verseNumber, note.ID)
-                          setItem({ text: note.Note, title: note.Quote })
+                          setItem({
+                            text: note.Note,
+                            title: note.Quote || note.origQuote,
+                          })
                         }}
                       >
-                        <ReactMarkdown>{note.Quote}</ReactMarkdown>
+                        <ReactMarkdown>
+                          {note.Quote || note.origQuote || t('GeneralInformation')}
+                        </ReactMarkdown>
                       </li>
                     )
                   })}
