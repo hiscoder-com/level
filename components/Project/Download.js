@@ -8,6 +8,8 @@ import JSZip from 'jszip'
 
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
+import { saveAs } from 'file-saver'
+
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
 import CheckBox from 'components/CheckBox'
@@ -24,7 +26,6 @@ import {
   countOfChaptersAndVerses,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
-import { saveAs } from 'file-saver'
 
 const downloadSettingsChapter = {
   withImages: true,
@@ -45,6 +46,7 @@ function Download({
   breadcrumbs = false,
 }) {
   const supabase = useSupabaseClient()
+  const isRtl = project?.is_rtl
 
   const { t } = useTranslation(['common', 'projects'])
   const {
@@ -53,7 +55,7 @@ function Download({
   const [book] = useGetBook({ code, book_code: bookCode })
 
   const options = useMemo(() => {
-    const options = [{ label: 'PDF', value: 'pdf' }]
+    const options = isRtl ? [] : [{ label: 'PDF', value: 'pdf' }]
     let extraOptions = []
 
     switch (project?.type) {
@@ -84,9 +86,22 @@ function Download({
     code,
     book_code: bookCode,
   })
-
+  const defaultDownloadType = () => {
+    switch (true) {
+      case !isRtl:
+        return 'pdf'
+      case isBook && project?.type === 'obs':
+        return 'zip'
+      case isBook && project?.type !== 'obs':
+        return 'usfm'
+      case !isBook && project?.type === 'obs':
+        return 'markdown'
+      default:
+        return 'txt'
+    }
+  }
   const [isSaving, setIsSaving] = useState(false)
-  const [downloadType, setDownloadType] = useState('pdf')
+  const [downloadType, setDownloadType] = useState(defaultDownloadType())
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
   )
