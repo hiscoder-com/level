@@ -51,8 +51,12 @@ function ListBoxMultiple({
                   value={el}
                   onClick={() => handleOptionClicked(el)}
                 >
-                  <span>{el}</span>
-                  {selectedOptions.includes(el) && <Check className="w-6 h-6" />}
+                  <span className="truncate">{el}</span>
+                  {selectedOptions.includes(el) && (
+                    <div>
+                      <Check className="w-6 h-6" />
+                    </div>
+                  )}
                 </Listbox.Option>
               ))}
             </Listbox.Options>
