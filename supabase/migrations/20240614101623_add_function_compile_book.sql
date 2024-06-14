@@ -1,4 +1,4 @@
-CREATE Or replace FUNCTION PUBLIC.compile_book(book_id BIGINT, project_id BIGINT) RETURNS TABLE (num SMALLINT, "text" JSONB, id BIGINT)
+CREATE OR REPLACE FUNCTION PUBLIC.compile_book(book_id BIGINT, project_id BIGINT) RETURNS TABLE (num SMALLINT, "text" JSONB, id BIGINT)
     LANGUAGE plpgsql SECURITY DEFINER AS $$
     DECLARE
       chapter JSONB;
