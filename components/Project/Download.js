@@ -411,7 +411,26 @@ function Download({
       console.error('Error downloading archive:', error)
     }
   }
+  const compileBook = async ({ projectId, bookId }) => {
+    try {
+      const { data } = await supabase.rpc('compile_book', {
+        project_id: projectId,
+        book_id: bookId,
+      })
+      return data
+    } catch (error) {
+      return null
+    }
+  }
   const handleSave = async () => {
+    let chapters = {}
+    if (isBook) {
+      chapters = await compileBook({ projectId: project.id, bookId: book.id })
+      if (!chapters) {
+        toast.error(t('DownloadError'))
+        return
+      }
+    }
     try {
       setIsSaving(true)
       switch (downloadType) {
@@ -465,7 +484,6 @@ function Download({
           downloadZip(book)
           break
         case 'usfm':
-          const chapters = await getBookJson(book?.id)
           downloadFile({
             text: convertToUsfm({
               jsonChapters: chapters,
