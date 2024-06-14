@@ -163,7 +163,10 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, brief }) {
           brief?.name === 'Brief' || !brief?.name ? t('TranslationGoal') : brief?.name
         }
       >
-        <div className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-th-secondary-10 overflow-y-auto">
+        <div
+          className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-th-secondary-10 overflow-y-auto"
+          dir={brief?.is_rtl ? 'rtl' : 'ltr'}
+        >
           {briefResume?.map((resumeItem, index) => (
             <li key={index}>{resumeItem}</li>
           ))}

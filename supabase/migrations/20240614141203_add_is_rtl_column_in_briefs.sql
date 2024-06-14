@@ -1,0 +1,2 @@
+ALTER TABLE public.briefs
+ADD COLUMN is_rtl BOOLEAN DEFAULT FALSE;

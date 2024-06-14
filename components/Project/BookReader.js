@@ -204,7 +204,10 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           reference?.chapter
         }`}</div>
       )}
-      <div className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}>
+      <div
+        className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}
+        dir={project?.is_rtl ? 'rtl' : 'ltr'}
+      >
         {!isLoading ? (
           verseObjects ? (
             <>
