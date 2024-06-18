@@ -87,18 +87,19 @@ function Download({
     book_code: bookCode,
   })
   const defaultDownloadType = () => {
-    switch (true) {
-      case !isRtl:
-        return 'pdf'
-      case isBook && project?.type === 'obs':
-        return 'zip'
-      case isBook && project?.type !== 'obs':
-        return 'usfm'
-      case !isBook && project?.type === 'obs':
-        return 'markdown'
-      default:
-        return 'txt'
+    if (!isRtl) {
+      return 'pdf'
     }
+    if (isBook && project?.type === 'obs') {
+      return 'zip'
+    }
+    if (isBook && project?.type !== 'obs') {
+      return 'usfm'
+    }
+    if (!isBook && project?.type === 'obs') {
+      return 'markdown'
+    }
+    return 'txt'
   }
   const [isSaving, setIsSaving] = useState(false)
   const [downloadType, setDownloadType] = useState(defaultDownloadType())
