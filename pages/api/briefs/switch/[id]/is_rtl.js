@@ -9,7 +9,7 @@ export default async function briefsToggleHandler(req, res) {
   }
   const {
     query: { id },
-    body: { is_enable },
+    body: { is_rtl },
     method,
   } = req
 
@@ -18,7 +18,7 @@ export default async function briefsToggleHandler(req, res) {
       try {
         const { data, error } = await supabase
           .from('briefs')
-          .update({ is_enable })
+          .update({ is_rtl: !!is_rtl })
           .match({ project_id: id })
           .select()
         if (error) throw error

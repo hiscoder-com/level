@@ -1,35 +1,45 @@
-# Version 0.21.0
-## Date: 06/04/2024
+# Versión 0.22.0
+## Fecha: 06/14/2024
 
-### **Added:**
+### **Añadido:**
+- soporte rtl en resumen, lector de libros
+- rango de soporte en verso para ver la Biblia
+
+### **Fijo:**
+- citas en TN
+
+# Versión 0.21.0
+## Fecha: 06/04/2024
+
+### **Añadido:**
 - posibilidad de descargar el proyecto para la versión sin conexión
 
-# Version 0.20.0
-## Date: 05/22/2024
+# Versión 0.20.0
+## Fecha: 05/22/2024
 
 ### **Corregido:**
 - Aquifer
 
-# Version 0.19.0
-## Date: 04/17/2024
+# Versión 0.19.0
+## Fecha: 04/17/2024
 
 ### **Corregido:**
 - el menú de la versión móvil tiene una apariencia general en las páginas “Cuenta” y “Asignación de versos”
 
-# Version 0.18.2
-## Date: 04/16/2024
+# Versión 0.18.2
+## Fecha: 04/16/2024
 
 ### **Fijo:**
 - desplazamiento de contenido fijo cuando aparece la barra de desplazamiento
 
-# Version 0.18.1
-## Date: 04/15/2024
+# Versión 0.18.1
+## Fecha: 04/15/2024
 
 ### **Añadido:**
 - Se agregó animación para cambiar el estado de los interruptores (breve, cambiar el "modo de solo lectura" al asignar versos)
 
-# Version 0.18.0
-## Date: 04/11/2024
+# Versión 0.18.0
+## Fecha: 04/11/2024
 
 ### **Añadido:**
 - método "Movimientos"
