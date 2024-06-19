@@ -21,7 +21,6 @@ function BasicInformation({
   const [languages] = useLanguages()
   const [selectedLanguage, setSelectedLanguage] = useState(null)
   const [query, setQuery] = useState('')
-
   useEffect(() => {
     if (project !== null && project !== undefined) {
       setSelectedLanguage(project.languages)
@@ -95,6 +94,7 @@ function BasicInformation({
           <div className="w-auto md:w-1/5 font-bold">{input.title}</div>
           <div className="flex flex-col gap-2 w-full md:w-4/5">
             <input
+              dir={project?.is_rtl && input.id === 2 ? 'rtl' : 'ltr'}
               className={
                 input?.errorCondition
                   ? 'input-invalid'

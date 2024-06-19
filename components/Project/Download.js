@@ -8,6 +8,8 @@ import JSZip from 'jszip'
 
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
+import { saveAs } from 'file-saver'
+
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
 import CheckBox from 'components/CheckBox'
@@ -24,7 +26,6 @@ import {
   countOfChaptersAndVerses,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
-import { saveAs } from 'file-saver'
 
 const downloadSettingsChapter = {
   withImages: true,
@@ -45,6 +46,7 @@ function Download({
   breadcrumbs = false,
 }) {
   const supabase = useSupabaseClient()
+  const isRtl = project?.is_rtl
 
   const { t } = useTranslation(['common', 'projects'])
   const {
@@ -53,7 +55,7 @@ function Download({
   const [book] = useGetBook({ code, book_code: bookCode })
 
   const options = useMemo(() => {
-    const options = [{ label: 'PDF', value: 'pdf' }]
+    const options = isRtl ? [] : [{ label: 'PDF', value: 'pdf' }]
     let extraOptions = []
 
     switch (project?.type) {
@@ -84,9 +86,23 @@ function Download({
     code,
     book_code: bookCode,
   })
-
+  const defaultDownloadType = () => {
+    if (!isRtl) {
+      return 'pdf'
+    }
+    if (isBook && project?.type === 'obs') {
+      return 'zip'
+    }
+    if (isBook && project?.type !== 'obs') {
+      return 'usfm'
+    }
+    if (!isBook && project?.type === 'obs') {
+      return 'markdown'
+    }
+    return 'txt'
+  }
   const [isSaving, setIsSaving] = useState(false)
-  const [downloadType, setDownloadType] = useState('pdf')
+  const [downloadType, setDownloadType] = useState(defaultDownloadType())
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
   )
@@ -411,7 +427,26 @@ function Download({
       console.error('Error downloading archive:', error)
     }
   }
+  const compileBook = async ({ projectId, bookId }) => {
+    try {
+      const { data } = await supabase.rpc('compile_book', {
+        project_id: projectId,
+        book_id: bookId,
+      })
+      return data
+    } catch (error) {
+      return null
+    }
+  }
   const handleSave = async () => {
+    let chapters = {}
+    if (isBook) {
+      chapters = await compileBook({ projectId: project.id, bookId: book.id })
+      if (!chapters) {
+        toast.error(t('DownloadError'))
+        return
+      }
+    }
     try {
       setIsSaving(true)
       switch (downloadType) {
@@ -465,7 +500,6 @@ function Download({
           downloadZip(book)
           break
         case 'usfm':
-          const chapters = await getBookJson(book?.id)
           downloadFile({
             text: convertToUsfm({
               jsonChapters: chapters,

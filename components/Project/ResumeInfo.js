@@ -22,7 +22,7 @@ function ResumeInfo({ project }) {
       isOpen={false}
       access
     >
-      <ul className="pl-6 text-lg list-decimal">
+      <ul className="pl-6 text-lg list-decimal" dir={brief?.is_rtl ? 'rtl' : 'ltr'}>
         {brief?.data_collection?.map(
           (el) => el?.resume && <li key={el.id}>{el?.resume}</li>
         )}

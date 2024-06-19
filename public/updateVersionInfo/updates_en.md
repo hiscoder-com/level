@@ -1,3 +1,13 @@
+# Version 0.22.0
+## Date: 06/14/2024
+
+### **Added:**
+- support rtl in Brief, BookReader
+- support range in verse for view Bible
+
+### **Fixed:**
+- quotes in TN
+
 # Version 0.21.0
 ## Date: 06/04/2024
 

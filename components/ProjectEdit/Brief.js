@@ -78,19 +78,28 @@ function BriefBlock({ access, title = false }) {
     }
   }, [supabase])
 
-  const handleSwitch = async () => {
+  const handleSwitchToggleBrief = async (toggleType) => {
     if (brief) {
       try {
-        await axios.put(`/api/briefs/switch/${project?.id}`, {
-          is_enable: !brief.is_enable,
+        const endpoint =
+          toggleType === 'is_enable'
+            ? `/api/briefs/switch/${project?.id}/is_enable`
+            : `/api/briefs/switch/${project?.id}/is_rtl`
+        const toggleValue = toggleType === 'is_enable' ? !brief.is_enable : !brief.is_rtl
+        await axios.put(endpoint, {
+          [toggleType]: toggleValue,
         })
         mutate()
         toast.success(
-          t(`project-edit:BriefToggleSuccess${!brief.is_enable ? 'Enabled' : 'Disabled'}`)
+          t(
+            `project-edit:BriefToggle${toggleType.split('_').join('')}Success${
+              !toggleValue ? 'Enabled' : 'Disabled'
+            }`
+          )
         )
       } catch (error) {
         console.error(error)
-        toast.error(t('project-edit:BriefToggleError'))
+        toast.error(t(`project-edit:BriefToggleError`))
         return await Promise.reject()
       }
     }
@@ -171,7 +180,7 @@ function BriefBlock({ access, title = false }) {
               <SwitchLoading
                 id="brief-switch"
                 checked={brief?.is_enable || false}
-                onChange={handleSwitch}
+                onChange={() => handleSwitchToggleBrief('is_enable')}
               />
             </div>
           )}
@@ -195,6 +204,17 @@ function BriefBlock({ access, title = false }) {
                 checked={editableMode}
                 withDelay={true}
                 onChange={(value) => setEditableMode(value)}
+              />
+            </div>
+          )}
+          {access && project?.is_rtl && (
+            <div className="flex items-center">
+              <span className="mr-3">{t('project-edit:Rtl')}</span>
+              <SwitchLoading
+                id="editable-rtl-switch"
+                checked={brief?.is_rtl}
+                withDelay={true}
+                onChange={() => handleSwitchToggleBrief('is_rtl')}
               />
             </div>
           )}
@@ -230,6 +250,7 @@ function BriefBlock({ access, title = false }) {
                                   subIndex={blockIndex}
                                   className="input-primary"
                                   editable={access}
+                                  isRtl={brief?.is_rtl}
                                 />
                               </div>
                             </div>
@@ -248,6 +269,7 @@ function BriefBlock({ access, title = false }) {
                           className="input-primary font-normal"
                           editable={access}
                           textarea
+                          isRtl={brief?.is_rtl}
                         />
                       </div>
                     </li>

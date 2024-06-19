@@ -11,6 +11,7 @@ function UpdateField({
   className,
   textarea = false,
   editable = true,
+  isRtl = false,
 }) {
   const { t } = useTranslation(['project-edit'])
 
@@ -30,6 +31,7 @@ function UpdateField({
     disabled: !editable,
     rows: 6,
     placeholder: access ? t('enterText') : '',
+    dir: isRtl ? 'rtl' : 'ltr',
   }
   return <>{textarea ? <textarea {...props} /> : <input {...props} />}</>
 }
