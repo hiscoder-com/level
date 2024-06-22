@@ -60,7 +60,7 @@ function TranslatorImage({
         <img
           src={userAvatarUrl}
           alt={`${item?.users?.login} avatar`}
-          className="rounded-full shadow-lg"
+          className="rounded-full"
           width={size}
           height={size}
         />
@@ -69,7 +69,7 @@ function TranslatorImage({
           viewBox="0 0 168 168"
           width={size}
           xmlns="http://www.w3.org/2000/svg"
-          className="rounded-full shadow-lg"
+          className="rounded-full"
         >
           <circle
             cx="84"
