@@ -136,6 +136,12 @@ export default function ProgressPage({ last_step }) {
           base_manifest: projects?.base_manifest?.resource,
           is_rtl: projects?.is_rtl,
         }
+
+        const { data: activeTranslators } = await supabase.rpc('get_active_translators', {
+          project_code: project,
+          book_code: book,
+          chapter_num: chapter,
+        })
         setStepConfigData({
           count_of_users: count_of_users,
           time,
@@ -145,6 +151,7 @@ export default function ProgressPage({ last_step }) {
           last_step,
           current_step: step,
           project_code: project,
+          activeTranslators: activeTranslators || [],
         })
         setStepConfig(stepConfig)
       } catch (error) {

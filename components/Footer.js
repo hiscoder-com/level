@@ -57,6 +57,8 @@ export default function Footer({
               clickable={true}
               className="mx-0.5"
               showModerator
+              isStep={true}
+              activeTranslators={stepConfig.activeTranslators}
             />
           </div>
         </>
