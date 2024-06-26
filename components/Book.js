@@ -22,7 +22,7 @@ function Book({ config, url }) {
   const chapters = useMemo(() => {
     if (!data && isLoading) {
       return (
-        <Loading className="absolute mx-auto my-auto inset-0 w-8 animate-spin stroke-th-primary-100" />
+        <Loading className="progress-light absolute mx-auto my-auto inset-0 w-12 animate-spin" />
       )
     }
     return Object.keys(data).map((key) => {
