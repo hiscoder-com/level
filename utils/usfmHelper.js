@@ -12,7 +12,7 @@ const getFootnote = (verseObject) => {
       ''
     )
     .trim()
-  return '<span style="color:gray"> [' + content + '] </span>'
+  return '<span style="color:#332f2c"> [' + content + '] </span>'
 }
 
 const getMilestone = (verseObject, showUnsupported) => {
