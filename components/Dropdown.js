@@ -1,19 +1,21 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
 import { useRecoilValue } from 'recoil'
-
+import Book from './Book'
 import Modal from './Modal'
 
-import { useGetBrief } from 'utils/hooks'
+import { useGetBrief, useProject } from 'utils/hooks'
 import { projectIdState } from './state/atoms'
 
 import Tools from 'public/tools.svg'
 
-function Dropdown({ description }) {
+function Dropdown({ description, isWholeBook = false }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
+  const [showModalFullBook, setShowModalFullBook] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
   const projectId = useRecoilValue(projectIdState)
   const [brief] = useGetBrief({
@@ -26,6 +28,7 @@ function Dropdown({ description }) {
   const closeModal = () => {
     setShowModalStepGoal(false)
     setShowModalTranslationGoal(false)
+    setShowModalFullBook(false)
   }
 
   useEffect(() => {
@@ -70,6 +73,18 @@ function Dropdown({ description }) {
             >
               {t('AboutStep').toUpperCase()}
             </button>
+            {isWholeBook && (
+              <button
+                className="px-4 py-2 rounded-t-lg hover:bg-th-secondary-100 active:bg-th-secondary-100"
+                onClick={(e) => {
+                  toggle()
+                  setShowModalFullBook(true)
+                  e.stopPropagation()
+                }}
+              >
+                {t('WholeBook').toUpperCase()}
+              </button>
+            )}
             {brief?.is_enable && (
               <button
                 className="px-4 py-2 rounded-b-lg hover:bg-th-secondary-100
@@ -93,6 +108,7 @@ function Dropdown({ description }) {
         closeModal={closeModal}
         description={description}
       />
+      <FullBook showModalFullBook={showModalFullBook} closeModal={closeModal} />
       {brief?.is_enable && (
         <TranslationGoal
           showModalTranslationGoal={showModalTranslationGoal}
@@ -178,5 +194,36 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, brief }) {
         </div>
       </Modal>
     </>
+  )
+}
+
+function FullBook({ showModalFullBook, closeModal }) {
+  const { t } = useTranslation(['common'])
+  const {
+    query: { project, book },
+  } = useRouter()
+  const [currentProject] = useProject({ code: project })
+  const mainResource = useMemo(() => {
+    if (currentProject) {
+      return currentProject?.resources[currentProject?.base_manifest?.resource]
+    }
+  }, [currentProject])
+  const bookPath = useMemo(() => {
+    if (mainResource) {
+      return mainResource.manifest.projects.find((project) => project.identifier === book)
+        .path
+    }
+  }, [book, mainResource])
+  return (
+    <Modal isOpen={showModalFullBook} closeHandle={closeModal} title={t('WholeBook')}>
+      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-auto min-h-[50vh]">
+        <Book url="/api/git/whole-book" config={{ mainResource, book, bookPath }} />
+      </div>
+      <div className="text-center">
+        <button className="btn-secondary" onClick={closeModal}>
+          {t('Close')}
+        </button>
+      </div>
+    </Modal>
   )
 }

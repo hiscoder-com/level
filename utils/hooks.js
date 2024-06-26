@@ -621,6 +621,24 @@ export function useGetTheme() {
   }, [])
   return theme
 }
+export function useGetWholeBook({ config, url }) {
+  const {
+    book,
+    bookPath,
+    resource: { owner, repo, commit },
+  } = config
+  const params = { owner, repo, commit, bookPath, book }
+  const fetcher = ([url, params]) => axios.get(url, { params }).then((res) => res.data)
+  const { isLoading, data, error } = useSWR(
+    url && owner && repo && commit && bookPath ? [url, params] : null,
+    fetcher,
+    {
+      revalidateOnFocus: false,
+      revalidateIfStale: false,
+    }
+  )
+  return { isLoading, data, error }
+}
 
 export function useGetAquiferResources({
   book_code,

@@ -5,7 +5,7 @@ import { useGetTheme } from 'utils/hooks'
 const themes = [
   {
     name: 'default',
-    className: 'bg-slate-550 before:bg-yellow-550',
+    className: 'bg-slate-550 before:bg-slate-550',
     outline: 'outline-slate-550',
   },
   {
@@ -19,9 +19,9 @@ const themes = [
     outline: 'outline-sky-900',
   },
   {
-    name: 'unfoldingWord',
-    className: 'bg-cyan-600 before:bg-cyan-800',
-    outline: 'outline-cyan-600',
+    name: 'GRA',
+    className: 'bg-blue-550 before:bg-blue-650',
+    outline: 'outline-blue-550',
   },
 ]
 
