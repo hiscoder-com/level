@@ -417,3 +417,7 @@
 .not-found path:last-child {
 @apply  fill-th-primary-300
 }
+
+.progress-light path {
+@apply stroke-th-secondary-10
+}
