@@ -6,7 +6,7 @@ DECLARE
 BEGIN
     SELECT id FROM projects WHERE projects.code = change_time_step.project_code INTO project;
     -- must be on the project
-    IF authorize(auth.uid(), project_id) NOT IN ( 'admin', 'coordinator', 'moderator') THEN
+    IF authorize(auth.uid(), project) NOT IN ( 'admin', 'coordinator', 'moderator') THEN
         RETURN FALSE;
     END IF;
 UPDATE public.steps
