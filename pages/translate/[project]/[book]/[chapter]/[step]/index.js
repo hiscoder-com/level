@@ -98,6 +98,7 @@ export default function ProgressPage({ last_step }) {
           count_of_users,
           time,
           description,
+          whole_book,
         } = stepsData
         const curentSteps = await fetchCurrentSteps(projects.id)
         const currentStepObject = curentSteps.find(
@@ -152,6 +153,7 @@ export default function ProgressPage({ last_step }) {
           current_step: step,
           project_code: project,
           activeTranslators: activeTranslators || [],
+          whole_book,
         })
         setStepConfig(stepConfig)
       } catch (error) {

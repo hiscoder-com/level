@@ -101,7 +101,10 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
-              <Dropdown description={stepConfig?.description} />
+              <Dropdown
+                description={stepConfig?.description}
+                isWholeBook={stepConfig?.whole_book}
+              />
             </div>
           </>
         )}

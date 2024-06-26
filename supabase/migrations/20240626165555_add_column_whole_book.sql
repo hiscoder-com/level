@@ -1,0 +1,2 @@
+ALTER TABLE public.steps
+ADD COLUMN whole_book BOOLEAN DEFAULT FALSE;
