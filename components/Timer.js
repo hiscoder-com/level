@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
+import { useRouter } from 'next/router'
+
 import useSupabaseClient from 'utils/supabaseClient'
 
-import { useRouter } from 'next/router'
 import { useAccess } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -81,16 +82,6 @@ function Timer({ time }) {
       setCurrentTime(parseInt(time))
     }
   }, [time])
-
-  useEffect(() => {
-    if (isCounting) {
-      timer.current = setTimeout(toggleTimer, 200)
-    }
-    return () => {
-      clearTimeout(timer.current)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isCounting])
 
   const toggleTimer = () => {
     isCounting ? handleStop() : handleStart()

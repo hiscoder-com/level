@@ -75,7 +75,7 @@ function Dropdown({ description, isWholeBook = false }) {
             </button>
             {isWholeBook && (
               <button
-                className="px-4 py-2 rounded-t-lg	hover:bg-th-secondary-100 active:bg-th-secondary-100"
+                className="px-4 py-2 rounded-t-lg hover:bg-th-secondary-100 active:bg-th-secondary-100"
                 onClick={(e) => {
                   toggle()
                   setShowModalFullBook(true)

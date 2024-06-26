@@ -48,13 +48,13 @@
   --secondary-400: theme('colors.yellow.500');
   --text-secondary-200:theme('colors.white');
 }
-.unfoldingWord {
-  --primary-100: theme('colors.cyan.600');
-  --primary-200:theme('colors.cyan.600');
-  --primary-300:theme('colors.cyan.800');
-  --primary-400: theme('colors.cyan.800');
-  --primary-500: theme('colors.cyan.600');
-  --secondary-400: theme('colors.yellow.500');
+.GRA {
+  --primary-100: theme('colors.blue.550');
+  --primary-200: theme('colors.blue.550');
+  --primary-300: theme('colors.blue.650');
+  --primary-400: theme('colors.blue.650');
+  --primary-500: theme('colors.blue.550');
+  --secondary-400: theme('colors.yellow.550');
   --text-secondary-200:theme('colors.white');
 }
 
