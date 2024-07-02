@@ -1,4 +1,6 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useCallback } from 'react'
+
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
@@ -21,17 +23,34 @@ function Translators({
   const [projectTranslators] = useTranslators({
     code: projectCode,
   })
+
+  const {
+    push,
+    query: { project, book, chapter, step, translator },
+  } = useRouter()
+
   const translators = useMemo(() => {
     if (!projectTranslators || (!isStep && activeTranslators?.length === 0)) {
       return projectTranslators || []
     }
-    return projectTranslators.filter((item) =>
-      activeTranslators?.some((translator) => translator.user_id === item.users.id)
+    return projectTranslators.filter((projectTranslator) =>
+      activeTranslators?.some(
+        (translator) => translator.user_id === projectTranslator.users.id
+      )
     )
   }, [activeTranslators, isStep, projectTranslators])
 
   const visibleTranslators = translators.slice(0, 4)
   const hiddenCount = Math.max(translators.length - 4, 0)
+
+  const handleTranslatorClick = useCallback(
+    (item) => {
+      if (clickable && (!translator || translator !== item.users?.login)) {
+        push(`/translate/${project}/${book}/${chapter}/${step}/${item.users?.login}`)
+      }
+    },
+    [clickable, translator, push, project, book, chapter, step]
+  )
 
   return (
     <>
@@ -40,13 +59,17 @@ function Translators({
           isStep ? 'max-w-xs p-2 overflow-x-auto' : 'max-w-full flex-wrap'
         }`}
       >
-        {visibleTranslators.map((item, key) => (
-          <div key={key} className={className}>
+        {visibleTranslators.map((translator, key) => (
+          <div
+            key={key}
+            className={className}
+            onClick={() => handleTranslatorClick(translator)}
+          >
             <TranslatorImage
-              clickable={clickable}
-              item={item}
+              item={translator}
               size={size}
               showModerator={showModerator}
+              isPointerCursor={clickable}
             />
           </div>
         ))}
@@ -75,20 +98,17 @@ function Translators({
           {translators.map((participant, index) => (
             <div
               key={index}
-              className="group flex items-center gap-2.5 pl-1 pr-3 py-1 border rounded-3xl"
+              className={`flex items-center gap-2.5 pl-1 pr-3 py-1 border rounded-3xl text-lg ${
+                clickable
+                  ? 'cursor-pointer transition-opacity duration-300 hover:opacity-70'
+                  : ''
+              }`}
+              onClick={() => handleTranslatorClick(participant)}
             >
-              <div
-                className={`w-8 h-8 ${
-                  clickable ? 'transition-opacity	duration-300 group-hover:opacity-50' : ''
-                }`}
-              >
-                <TranslatorImage
-                  item={participant}
-                  clickable={clickable}
-                  showModerator={showModerator}
-                />
+              <div className="w-8 h-8">
+                <TranslatorImage item={participant} showModerator={showModerator} />
               </div>
-              <p className="text-lg cursor-default">{participant.users.login}</p>
+              <p>{participant.users.login}</p>
             </div>
           ))}
         </div>
