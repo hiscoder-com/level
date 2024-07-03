@@ -47,7 +47,10 @@ function ProjectCard({ project, user }) {
                   <p>{t('Language')}:</p>
                   <p className="text-th-secondary-300">{project.languages.orig_name}</p>
                 </div>
-                <div className="flex gap-3">
+                <div
+                  className="flex gap-3 cursor-default"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <p>{t('common:Translator_other')}:</p>
                   <Translators
                     projectCode={project.code}

@@ -1,6 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
-
-import { useRouter } from 'next/router'
+import { useEffect, useState } from 'react'
 
 import { useRecoilValue } from 'recoil'
 import { userAvatarState } from './state/atoms'
@@ -17,24 +15,9 @@ const defaultColor = [
   'fill-th-divide-verse9',
 ]
 
-function TranslatorImage({
-  item,
-  size,
-  clickable,
-  showModerator = false,
-  isPointerCursor = false,
-}) {
+function TranslatorImage({ item, size, showModerator = false, isPointerCursor = false }) {
   const [userAvatarUrl, setUserAvatarUrl] = useState(item?.users?.avatar_url || null)
   const userAvatar = useRecoilValue(userAvatarState)
-  const {
-    push,
-    query: { project, book, chapter, step, translator },
-  } = useRouter()
-
-  const canClick = useMemo(
-    () => clickable && (!translator || translator !== item.users?.login),
-    [clickable, item.users?.login, translator]
-  )
 
   useEffect(() => {
     userAvatar?.id === item.users?.id
@@ -42,16 +25,11 @@ function TranslatorImage({
       : setUserAvatarUrl(item?.users?.avatar_url || null)
   }, [item.users?.id, item.users?.avatar_url, userAvatar])
 
-  const cursorStyle = isPointerCursor || canClick ? 'cursor-pointer' : 'cursor-default'
+  const cursorStyle = isPointerCursor ? 'cursor-pointer' : ''
 
   return (
     <div
       title={`${item?.users ? `${item.users?.login}` : ''}`}
-      onClick={() => {
-        if (canClick) {
-          push(`/translate/${project}/${book}/${chapter}/${step}/${item?.users?.login}`)
-        }
-      }}
       className={`relative ${cursorStyle} ${
         showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
       } rounded-full select-none`}

@@ -1,3 +1,12 @@
+# Versión 0.23.0
+## Fecha: 07/03/2024
+
+### **Añadido:**
+- ventana modal que muestra una lista de todos los traductores
+
+### **Fijo:**
+- visualización fija de la lista de traductores
+
 # Versión 0.22.0
 ## Fecha: 06/14/2024
 
