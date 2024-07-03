@@ -39,6 +39,7 @@ export default function Footer({
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.pathname])
+
   return (
     <div className="relative flex flex-col justify-between items-center py-4 md:py-0 mx-auto md:w-full max-w-7xl bg-th-secondary-100 md:flex-row lg:px-4 xl:px-0">
       {isStepPage && (

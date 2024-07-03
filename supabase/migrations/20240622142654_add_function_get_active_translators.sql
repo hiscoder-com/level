@@ -8,7 +8,7 @@ CREATE FUNCTION PUBLIC.get_active_translators(project_code TEXT, book_code PUBLI
 LANGUAGE plpgsql SECURITY DEFINER AS $$
 BEGIN
     -- must be on the project
-    IF authorize(auth.uid(), (SELECT id FROM projects WHERE code = get_active_translators.project_code)) NOT IN ('user', 'admin', 'coordinator', 'moderator') THEN
+    IF authorize(auth.uid(), (SELECT id FROM projects WHERE code = get_active_translators.project_code)) NOT IN ('user', 'admin', 'coordinator', 'moderator', 'translator') THEN
         RETURN;
     END IF;
 
