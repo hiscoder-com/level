@@ -1,3 +1,12 @@
+# Version 0.23.0
+## Date: 07/03/2024
+
+### **Added:**
+- modal window displaying a list of all translators
+
+### **Fixed:**
+- fixed display of the list of translators
+
 # Version 0.22.0
 ## Date: 06/14/2024
 
