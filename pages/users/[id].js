@@ -6,7 +6,6 @@ import axios from 'axios'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'next-i18next'
 
-import { useCurrentUser } from 'lib/UserContext'
 import { useUser } from 'utils/hooks'
 
 export default function UserPage() {
@@ -14,11 +13,9 @@ export default function UserPage() {
 
   const router = useRouter()
   const { id } = router.query
-  const { user: currentUser } = useCurrentUser()
-  const [user] = useUser(currentUser?.access_token, id)
+  const [user] = useUser(id)
 
   const handleBlock = (blocked) => {
-    axios.defaults.headers.common['token'] = currentUser?.access_token
     axios
       .post('/api/users/' + user?.id, { blocked })
       .then((res) => {

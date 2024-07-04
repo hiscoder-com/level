@@ -1,4 +1,4 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import supabaseApi from 'utils/supabaseServer'
 /**
  * @swagger
  * components:
@@ -73,19 +73,24 @@ import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
  */
 
 export default async function languagesHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-  const supabase = createPagesServerClient({ req, res })
   let data = {}
   const {
-    body: { eng, code, orig_name, is_gl },
+    body: { eng, code, origName: orig_name, isGl: is_gl, isRtl: is_rtl },
     method,
   } = req
   switch (method) {
     case 'GET':
       try {
-        const { data: value, error } = await supabase.from('languages').select('*')
+        const { data: value, error } = await supabase
+          .from('languages')
+          .select('*')
+          .order('id', { ascending: false })
         if (error) throw error
         data = value
       } catch (error) {
@@ -97,7 +102,7 @@ export default async function languagesHandler(req, res) {
       try {
         const { data: value, error } = await supabase
           .from('languages')
-          .insert([{ eng, code, orig_name, is_gl }])
+          .insert([{ eng, code, orig_name, is_gl, is_rtl }])
           .select()
         if (error) throw error
         data = value

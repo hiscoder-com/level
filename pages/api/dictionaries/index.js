@@ -1,11 +1,12 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+import supabaseApi from 'utils/supabaseServer'
 
 export default async function notesHandler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
+  let supabase
+  try {
+    supabase = await supabaseApi({ req, res })
+  } catch (error) {
+    return res.status(401).json({ error })
   }
-  const supabase = createPagesServerClient({ req, res })
-
   const { body, method } = req
   switch (method) {
     case 'POST':
@@ -25,7 +26,7 @@ export default async function notesHandler(req, res) {
                     data: {},
                   },
                 ],
-                version: '2.8.1',
+                version: '2.27.2',
               },
             },
           ])

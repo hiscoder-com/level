@@ -8,7 +8,7 @@ import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
 
-function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating }) {
+function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
   const { push } = useRouter()
 
   const { t } = useTranslation('common')
@@ -26,7 +26,6 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
       setTextModal(t('BookCreationError'))
       setTimeout(reset, 2000)
     }
-    axios.defaults.headers.common['token'] = user?.access_token
     try {
       setIsCreating(true)
       setTextModal(t('BookIsCreating'))
@@ -73,7 +72,14 @@ function BookCreate({ bookCode, project, user, mutateBooks, setBookCodeCreating 
       <Modal
         isOpen={typeof bookCode === 'string'}
         closeHandle={reset}
-        className={isCreated ? 'secondary' : 'primary'}
+        className={{
+          dialogPanel: `w-full max-w-md align-middle p-6 rounded-3xl ${
+            isCreated
+              ? 'bg-th-secondary-300 text-th-text-secondary-100'
+              : 'bg-th-primary-100 text-th-text-secondary-100'
+          }`,
+        }}
+        handleCloseDisabled={isCreating}
       >
         <div className="flex flex-col justify-center items-center gap-7 min-h-[10rem]">
           <div className="flex flex-row gap-2 mb-4 text-xl sm:text-2xl text-center">

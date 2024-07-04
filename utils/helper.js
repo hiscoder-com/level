@@ -5,9 +5,13 @@ import jsyaml from 'js-yaml'
 import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
 import { obsStoryVerses } from './config'
+const isServer = typeof window === 'undefined'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {
   let value
+  if (isServer) {
+    return val
+  }
   switch (type) {
     case 'object':
       try {
@@ -188,7 +192,6 @@ export const downloadPdf = async ({
     if (!fileName.endsWith('.pdf')) {
       fileName += '.pdf'
     }
-
     pdfOptions = {
       styles,
       fileName,
@@ -198,13 +201,18 @@ export const downloadPdf = async ({
         SubtitlePageTitle: title,
         back: ' ', // to display the page headers
       },
+      imageUrl: `${
+        process.env.NEXT_PUBLIC_INTRANET
+          ? process.env.NEXT_PUBLIC_NODE_HOST
+          : 'https://cdn.door43.org'
+      }/obs/jpg/360px/`,
     }
 
     if (downloadSettings?.withFront) {
       pdfOptions.bookPropertiesObs = {
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
-        copyright: 'unfoldingWord®',
+        copyright: 'TextTree Movement®',
         projectLanguage,
       }
     }
@@ -265,7 +273,7 @@ export const downloadPdf = async ({
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
         projectLanguage,
-        copyright: 'unfoldingWord®',
+        copyright: 'TextTree Movement®',
       }
     }
 
@@ -294,7 +302,6 @@ export const downloadPdf = async ({
   pdfOptions = obs
     ? createPdfOptionsObs(chapters, downloadSettings, book)
     : createPdfOptionsBible(chapters, downloadSettings, book)
-
   try {
     await JsonToPdf(pdfOptions)
   } catch (error) {
@@ -385,10 +392,18 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
 
 export const parseManifests = async ({ resources, current_method }) => {
   let baseResource = {}
-  const promises = Object.keys(resources).map(async (el) => {
-    const url = resources[el].replace('/src/', '/raw/') + '/manifest.yaml'
-    const { data } = await axios.get(url)
 
+  const getBaseResourceUrl = (urlArray) =>
+    `${process.env.NODE_HOST ?? 'https://git.door43.org'}/${urlArray[1]}/${
+      urlArray[2]
+    }/raw/commit/${urlArray[4]}`
+
+  const promises = Object.keys(resources).map(async (el) => {
+    const { pathname } = new URL(resources[el])
+    const urlArray = pathname.split('/')
+    const url = getBaseResourceUrl(urlArray)
+    const manifestUrl = getBaseResourceUrl(urlArray) + '/manifest.yaml'
+    const { data } = await axios.get(manifestUrl)
     const manifest = jsyaml.load(data, { json: true })
 
     if (current_method.resources[el]) {
@@ -396,7 +411,7 @@ export const parseManifests = async ({ resources, current_method }) => {
     }
     return {
       resource: el,
-      url: resources[el],
+      url,
       manifest,
     }
   })
@@ -405,7 +420,8 @@ export const parseManifests = async ({ resources, current_method }) => {
 
   let newResources = {}
   manifests.forEach((el) => {
-    const url = el.url.split('://')[1].split('/')
+    const { pathname } = new URL(el.url)
+    const url = pathname.split('/')
     newResources[el.resource] = {
       owner: url[1],
       repo: url[2],
@@ -413,10 +429,16 @@ export const parseManifests = async ({ resources, current_method }) => {
       manifest: el.manifest,
     }
   })
-  baseResource.books = baseResource.books.map((el) => ({
-    name: el.identifier,
-    link: resources[baseResource.name].replace('/src/', '/raw/') + el.path.substring(1),
-  }))
+  baseResource.books = baseResource.books.map((el) => {
+    const { pathname } = new URL(resources[baseResource.name])
+    const urlArray = pathname.split('/')
+    const url = getBaseResourceUrl(urlArray)
+
+    return {
+      name: el.identifier,
+      link: url + el.path.substring(1),
+    }
+  })
   return { baseResource, newResources }
 }
 
@@ -522,7 +544,6 @@ export const saveCacheNote = (key, note, user) => {
   const cache = JSON.parse(localStorage.getItem(key))
   if (!note?.data?.blocks?.length) {
     if (cache?.[note.id]?.length) {
-      axios.defaults.headers.common['token'] = user?.access_token
       axios
         .post(`/api/logs`, {
           message: `${key} saved empty`,
@@ -586,6 +607,10 @@ export const validateNote = (note) => {
   return true
 }
 
+export const validateTitle = (title) => {
+  return title && title.trim().length > 0
+}
+
 export const obsCheckAdditionalVerses = (numVerse) => {
   if (['0', '200'].includes(String(numVerse))) {
     return ''
@@ -611,6 +636,35 @@ export function filterNotes(newNote, verse, notes) {
     }
   }
 }
+export const validationBrief = (brief_data) => {
+  if (!brief_data) {
+    return { error: 'Properties is null or undefined' }
+  }
+  if (Array.isArray(brief_data)) {
+    const isValidKeys = brief_data.find((briefObj) => {
+      const isNotValid =
+        JSON.stringify(Object.keys(briefObj).sort()) !==
+        JSON.stringify(['block', 'id', 'resume', 'title'].sort())
+      if (isNotValid) {
+        return { error: 'brief_data is not valid', briefObj }
+      } else {
+        briefObj.block?.forEach((blockObj) => {
+          if (
+            JSON.stringify(Object.keys(blockObj).sort()) !==
+            JSON.stringify(['question', 'answer'].sort())
+          ) {
+            return { error: 'brief_data.block has different keys', blockObj }
+          }
+        })
+      }
+    })
+    if (isValidKeys) {
+      return { error: 'brief_data has different keys', isValidKeys }
+    }
+  }
+
+  return { error: null }
+}
 
 export const getWords = async ({ zip, repo, wordObjects }) => {
   if (!zip || !repo || !wordObjects) {
@@ -633,4 +687,178 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
     }
   })
   return await Promise.all(promises)
+}
+
+export const stepValidation = (step) => {
+  try {
+    const obj = JSON.parse(JSON.stringify(step))
+    if (!obj || typeof obj !== 'object') {
+      throw new Error('This is incorrect json')
+    }
+    const base = ['intro', 'description', 'title', 'id', 'is_awaiting_team']
+    if (!JSON.stringify(Object.keys(step).every((element) => base.includes(element)))) {
+      throw new Error('Step has different keys')
+    }
+  } catch (error) {
+    return { error }
+  }
+  return { error: null }
+}
+
+export const stepsValidation = (steps) => {
+  if (!steps?.length) {
+    return { error: 'This is incorrect json', steps }
+  }
+  for (const step of steps) {
+    try {
+      const { error } = stepValidation(step)
+      if (error) throw error
+    } catch (error) {
+      return { error }
+    }
+  }
+  return { error: null }
+}
+
+export const convertNotesToTree = (notes, parentId = null) => {
+  const filteredNotes = notes?.filter((note) => note.parent_id === parentId)
+
+  filteredNotes?.sort((a, b) => a.sorting - b.sorting)
+  return filteredNotes?.map((note) => ({
+    id: note.id,
+    name: note.title,
+    ...(note.is_folder && {
+      children: convertNotesToTree(notes, note.id),
+    }),
+  }))
+}
+
+export function checkBookCodeExists(bookCode, data) {
+  return Array.isArray(data) && data.some((book) => book.book_code === bookCode)
+}
+
+export function checkChapterVersesExist(bookCode, chapterNumber, data) {
+  if (!data) {
+    return false
+  }
+
+  return data.some(
+    (book) =>
+      book.book_code === bookCode &&
+      book.chapters &&
+      book.chapters[chapterNumber] &&
+      book.chapters[chapterNumber].verseObjects.length > 0
+  )
+}
+
+export function getVerseObjectsForBookAndChapter(chapters, bookCode, chapterNumber) {
+  if (chapters && Array.isArray(chapters)) {
+    const chapterData = chapters.find(
+      (chapter) => chapter.book_code === bookCode && chapter.level_check === null
+    )
+
+    if (chapterData) {
+      return chapterData.chapters[chapterNumber]
+    }
+  }
+
+  return []
+}
+
+export function getVerseCount(books, bookCode, chapterNumber) {
+  for (let i = 0; i < books?.length; i++) {
+    if (books[i].code === bookCode) {
+      const chapters = books[i].chapters
+      if (chapters.hasOwnProperty(chapterNumber)) {
+        return chapters[chapterNumber]
+      }
+    }
+  }
+  return null
+}
+
+export function getVerseCountOBS(chaptersData, chapterNumber) {
+  const chapterData = chaptersData?.[0].chapters
+  if (!chapterData) {
+    return
+  }
+
+  chapterNumber = chapterNumber < 10 ? `0${chapterNumber}` : `${chapterNumber}`
+  return chapterNumber in chapterData ? chapterData[chapterNumber] : 0
+}
+
+function buildTree(items) {
+  if (!items) {
+    return
+  }
+
+  const tree = []
+  const itemMap = {}
+
+  items.forEach((item) => {
+    item.children = []
+    itemMap[item.id] = item
+  })
+
+  items.forEach((item) => {
+    if (item?.parent_id) {
+      const parentItem = itemMap[item.parent_id]
+      if (parentItem) {
+        parentItem.children.push(item)
+      } else {
+        console.error(
+          `Parent item with id ${item.parent_id} not found for item with id ${item.id}`
+        )
+      }
+    } else {
+      tree.push(item)
+    }
+  })
+
+  return tree
+}
+
+function removeIdsFromTree(tree) {
+  function removeIdsFromItem(item) {
+    delete item.id
+    delete item.parent_id
+    delete item?.user_id
+    delete item?.project_id
+
+    item?.data?.blocks?.forEach((block) => delete block.id)
+    item.children.forEach((child) => removeIdsFromItem(child))
+  }
+
+  if (!tree) {
+    return
+  }
+
+  tree.forEach((item) => removeIdsFromItem(item))
+
+  return tree
+}
+
+export function formationJSONToTree(data) {
+  const treeData = buildTree(data)
+  const transformedData = removeIdsFromTree(treeData)
+
+  return transformedData
+}
+
+export const getBriefName = (briefName, defautlName) => {
+  if (!defautlName) {
+    return 'Brief'
+  }
+  if (!briefName || briefName === 'Brief') {
+    return defautlName
+  } else {
+    return briefName
+  }
+}
+
+export const getImageUrl = (imageUrl) => {
+  if (typeof imageUrl === 'string') {
+    return imageUrl
+  }
+  return ''
 }

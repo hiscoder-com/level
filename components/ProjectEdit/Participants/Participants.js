@@ -15,7 +15,7 @@ import AssignParticipant from './AssignPartiсipant'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
 
-function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAccess } }) {
+function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
   const supabase = useSupabaseClient()
 
   const { t } = useTranslation(['common', 'project-edit', 'projects'])
@@ -23,14 +23,12 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
     query: { code },
   } = useRouter()
   const [translators, { mutate: mutateTranslator }] = useTranslators({
-    token: user?.access_token,
     code,
   })
   const [coordinators, { mutate: mutateCoordinator }] = useCoordinators({
-    token: user?.access_token,
     code,
   })
-  const [project] = useProject({ token: user?.access_token, code })
+  const [project] = useProject({ code })
 
   const [listOfTranslators, setListOfTranslators] = useState([])
   const [listOfCoordinators, setListOfCoordinators] = useState([])
@@ -76,7 +74,6 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
     coordinators: { mutate: mutateCoordinator, reset: setSelectedCoordinator },
   }
   const assign = (role) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .post(`/api/projects/${code}/${role}/`, {
         user_id: selectedUser,
@@ -93,7 +90,6 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
     }
   }, [translators])
   const remove = (userId, role) => {
-    axios.defaults.headers.common['token'] = user?.access_token
     axios
       .delete(`/api/projects/${code}/${role}/${userId}`)
       .then(() => {
@@ -103,12 +99,11 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
       .catch(console.log)
   }
   return (
-    <div className="card text-slate-900">
-      <h3 className="hidden sm:block mb-5 text-xl font-bold">{t('Participants')}</h3>
-      <div className="hidden sm:block divide-y divide-black">
+    <>
+      <div className="hidden sm:block divide-y divide-th-text-primary">
         <div className="flex flex-col gap-7 pb-5">
           <div className="flex justify-between items-center gap-2">
-            <div>{t('projects:Coordinators')}</div>
+            <div className="font-bold">{t('projects:Coordinators')}</div>
             {isAdminAccess && (
               <button
                 onClick={() => {
@@ -129,7 +124,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
         </div>
         <div className="flex flex-col gap-7 pt-5">
           <div className="flex justify-between items-center">
-            <div>{t('projects:Translators')}</div>
+            <div className="font-bold">{t('projects:Translators')}</div>
             <button
               onClick={() => {
                 setOpenModalAssignTranslator(true)
@@ -152,7 +147,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
             closeHandle={() => setSelectedModerator(false)}
           >
             <div className="flex flex-col justify-center gap-7 min-h-[15vh]">
-              <div className="text-2xl text-center">
+              <div className="text-base md:text-xl text-center">
                 {moderatorIds?.includes(selectedModerator?.id)
                   ? t('project-edit:RemovingModerator')
                   : t('project-edit:AssigningModerator')}
@@ -186,7 +181,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
           </Modal>
         </div>
       </div>
-      <div className="block sm:hidden divide-y divide-black">
+      <div className="block sm:hidden divide-y divide-th-text-primary">
         <div className="flex flex-col gap-3 pb-5">
           <div className="flex justify-between items-center gap-2">
             <div>{t('Coordinator', { count: 0 })}</div>
@@ -283,7 +278,7 @@ function Parcticipants({ user, users, access: { isCoordinatorAccess, isAdminAcce
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
 export default Parcticipants

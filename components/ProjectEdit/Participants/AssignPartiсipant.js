@@ -1,7 +1,7 @@
 import { useTranslation } from 'next-i18next'
 
 import Modal from 'components/Modal'
-import ListBox from 'components/ListBox'
+import ComboboxAutocomplete from 'components/ComboboxAutocomplete'
 
 function AssignParticipant({
   openModalAssign,
@@ -14,6 +14,7 @@ function AssignParticipant({
   role,
 }) {
   const { t } = useTranslation()
+
   return (
     <Modal
       isOpen={openModalAssign}
@@ -21,14 +22,22 @@ function AssignParticipant({
         setOpenModalAssign(false)
         setSelectedUser('')
       }}
-      additionalClasses="overflow-y-visible"
+      className={{
+        dialogPanel:
+          'w-full max-w-md align-middle p-6 bg-th-primary-100 text-th-text-secondary-100 overflow-y-visible rounded-3xl',
+      }}
     >
       <div className="flex flex-col min-h-[15vh] gap-7">
-        <div className="text-xl sm:text-2xl text-center">{t(label)}</div>
-        <ListBox
-          options={listOfAssigned?.map((el) => ({ label: el.login, value: el.id }))}
-          selectedOption={selectedUser}
+        <div className="text-base sm:text-xl text-center">{t(label)}</div>
+        <ComboboxAutocomplete
+          options={listOfAssigned?.map((user) => ({
+            label: user.login,
+            value: user.id,
+            email: user.email,
+          }))}
           setSelectedOption={setSelectedUser}
+          selectedOption={selectedUser}
+          t={t}
         />
 
         <div className="flex justify-center self-center w-2/3 gap-7">

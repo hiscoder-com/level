@@ -1,9 +1,9 @@
 {
   "ContentError": "Error de contenido",
   "EmptyFileContent": "Contenido del archivo vacío",
-  "GoTo": "Вернуться на ",
-  "Homepage": "Главную Страницу",
+  "GoTo": "Go to ",
+  "Homepage": "Homepage",
   "NoData": "Sin datos",
   "NoFileSelected": "Ningún archivo seleccionado",
-  "PageNotFound": "Страница не найдена."
+  "PageNotFound": "Page not found."
 }

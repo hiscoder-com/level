@@ -2,20 +2,28 @@ import { useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
+import axios from 'axios'
+import toast from 'react-hot-toast'
+import JSZip from 'jszip'
 
 import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
 
+import { saveAs } from 'file-saver'
+
 import Breadcrumbs from 'components/Breadcrumbs'
 import ListBox from 'components/ListBox'
+import CheckBox from 'components/CheckBox'
+import ButtonLoading from 'components/ButtonLoading'
 
 import useSupabaseClient from 'utils/supabaseClient'
-import { usfmFileNames } from 'utils/config'
+import { newTestamentList, usfmFileNames } from 'utils/config'
 import {
   createObjectToTransform,
   compileChapter,
   convertToUsfm,
   downloadFile,
   downloadPdf,
+  countOfChaptersAndVerses,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
 
@@ -31,7 +39,6 @@ const downloadSettingsBook = {
 
 function Download({
   project,
-  user,
   chapterNum,
   setIsOpenDownloading,
   bookCode,
@@ -39,15 +46,16 @@ function Download({
   breadcrumbs = false,
 }) {
   const supabase = useSupabaseClient()
+  const isRtl = project?.is_rtl
 
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'projects'])
   const {
     query: { code },
   } = useRouter()
-  const [book] = useGetBook({ token: user?.access_token, code, book_code: bookCode })
+  const [book] = useGetBook({ code, book_code: bookCode })
 
   const options = useMemo(() => {
-    const options = [{ label: 'PDF', value: 'pdf' }]
+    const options = isRtl ? [] : [{ label: 'PDF', value: 'pdf' }]
     let extraOptions = []
 
     switch (project?.type) {
@@ -60,7 +68,10 @@ function Download({
         break
       default:
         if (isBook) {
-          extraOptions = [{ label: 'USFM', value: 'usfm' }]
+          extraOptions = [
+            { label: 'USFM', value: 'usfm' },
+            { label: t('projects:Project'), value: 'project' },
+          ]
         } else {
           extraOptions = [{ label: 'TXT', value: 'txt' }]
         }
@@ -68,16 +79,30 @@ function Download({
     }
 
     return [...options, ...extraOptions]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [project, isBook])
 
   const [chapters] = useGetChapters({
-    token: user?.access_token,
     code,
     book_code: bookCode,
   })
-
+  const defaultDownloadType = () => {
+    if (!isRtl) {
+      return 'pdf'
+    }
+    if (isBook && project?.type === 'obs') {
+      return 'zip'
+    }
+    if (isBook && project?.type !== 'obs') {
+      return 'usfm'
+    }
+    if (!isBook && project?.type === 'obs') {
+      return 'markdown'
+    }
+    return 'txt'
+  }
   const [isSaving, setIsSaving] = useState(false)
-  const [downloadType, setDownloadType] = useState('pdf')
+  const [downloadType, setDownloadType] = useState(defaultDownloadType())
   const [downloadSettings, setDownloadSettings] = useState(
     isBook ? downloadSettingsBook : downloadSettingsChapter
   )
@@ -179,83 +204,332 @@ function Download({
         : t('books:' + bookCode),
     },
   ]
+  const createChapters = async (bookLink) => {
+    if (!bookLink) return null
 
-  const handleSave = async () => {
-    const chapters = await getBookJson(book?.id)
-    setIsSaving(true)
-
-    switch (downloadType) {
-      case 'txt':
-        downloadFile({
-          text: compileChapter(
-            {
-              json: chapter?.text,
-              title: `${project?.title}\n${book?.properties.scripture.toc1}\n${book?.properties.scripture.chapter_label} ${chapterNum}`,
-              subtitle: `${t(`books:${book?.code}`)} ${t('Chapter')} ${chapterNum}`,
-              chapterNum,
-            },
-            'txt'
-          ),
-          title: `${project?.title}_${book?.properties.scripture.toc1}_chapter_${chapterNum}.txt`,
-        })
-        break
-      case 'pdf':
-        await downloadPdf({
-          ...(isBook ? { book } : {}),
-          ...(isBook ? { chapters } : {}),
-          downloadSettings,
-          projectTitle: project.title,
-          obs: project?.type === 'obs',
-          chapter: { json: chapter?.text, chapterNum: chapter?.num },
-          title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
-          projectLanguage: project.languages.orig_name,
-          fileName: `${project.title}_${
-            project?.type !== 'obs'
-              ? book?.properties?.scripture?.toc1 ?? t('Book')
-              : book?.properties?.obs?.title ?? t('OpenBibleStories')
-          }`,
-          t,
-        })
-
-        break
-      case 'markdown':
-        downloadFile({
-          text: JsonToMd(
-            createObjectToTransform({
-              json: chapter?.text,
-              chapterNum: chapter?.num,
-            })
-          ),
-          title: `${String(chapter?.num).padStart(2, '0')}.md`,
-          type: 'markdown/plain',
-        })
-        break
-      case 'zip':
-        downloadZip(book)
-        break
-      case 'usfm':
-        downloadFile({
-          text: convertToUsfm({
-            jsonChapters: chapters,
-            book,
-            project: {
-              code: project?.code,
-              title: project?.title,
-              language: {
-                code: project?.languages?.code,
-                orig_name: project?.languages?.orig_name,
-              },
-            },
-          }),
-          title: usfmFileNames[book?.code],
-        })
-        break
-      default:
-        break
+    const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
+      await countOfChaptersAndVerses({
+        link: bookLink,
+      })
+    if (errorJsonChapterVerse) {
+      return null
     }
-    setIsSaving(false)
+    const chapters = {}
+    for (const chapterNum in jsonChapterVerse) {
+      if (Object.hasOwnProperty.call(jsonChapterVerse, chapterNum)) {
+        const verses = jsonChapterVerse[chapterNum]
+        const newVerses = {}
+        for (let index = 1; index < verses + 1; index++) {
+          newVerses[index] = { text: '', enabled: false, history: [] }
+        }
+        chapters[chapterNum] = newVerses
+      }
+    }
+    return chapters
+  }
+  const getResourcesUrls = async (resources) => {
+    if (!resources) return null
+    const urls = {}
+    for (const resource in resources) {
+      if (Object.hasOwnProperty.call(resources, resource)) {
+        const { owner, repo, commit, manifest } = resources[resource]
+        const bookPath = manifest.projects.find((el) => el.identifier === bookCode)?.path
+        const url = ` ${
+          process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+        }/${owner}/${repo}/raw/commit/${commit}/${bookPath.replace(/^\.\//, '')}`
+        urls[resource] = url
+      }
+    }
+    return urls
   }
 
+  const addResourceName = (resources) => {
+    if (!resources) return null
+    const names = { tnotes: 'tNotes', twords: 'tWords', tquestions: 'tQuestions' }
+    const resourceNames = Object.entries(resources).reduce((acc, [resource, value]) => {
+      acc[resource] =
+        names[resource] || resource.charAt(0).toUpperCase() + resource.slice(1)
+      return acc
+    }, {})
+    return resourceNames
+  }
+  const getTwords = async (url) => {
+    if (!url) {
+      return null
+    }
+    try {
+      const parts = url.split('/')
+      const baseUrl = parts.slice(0, 3).join('/')
+      const repo = parts[4].slice(0, -1)
+      const owner = parts[3]
+      const newUrl = `${baseUrl}/${owner}/${repo}/archive/master.zip`
+      const response = await axios.get(newUrl, { responseType: 'arraybuffer' })
+      const zip = new JSZip()
+      await zip.loadAsync(response.data)
+      const newZip = new JSZip()
+      const tWordsFolder = newZip.folder('twords')
+      const filePromises = []
+      const regularExpression = /^[^\/]+\/bible\//
+      for (const pathName in zip.files) {
+        if (Object.hasOwnProperty.call(zip.files, pathName)) {
+          regularExpression
+          const file = zip.files[pathName]
+          if (pathName.match(regularExpression)) {
+            if (!file.dir) {
+              const filePromise = file.async('arraybuffer').then((content) => {
+                tWordsFolder.file(pathName.replace(regularExpression, ''), content)
+              })
+              filePromises.push(filePromise)
+            }
+          }
+        }
+      }
+      await Promise.all(filePromises)
+      const tWordsArrayBuffer = await newZip.generateAsync({ type: 'uint8array' })
+      return Buffer.from(tWordsArrayBuffer)
+    } catch (error) {
+      console.error('Error fetching tWords:', error)
+      return null
+    }
+  }
+  const getOriginal = async (bookCode) => {
+    if (!bookCode) {
+      return null
+    }
+    const isGreek = Object.keys(newTestamentList).includes(bookCode)
+    const newUrl = `${
+      process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    }/unfoldingWord/${isGreek ? 'el-x-koine_ugnt' : 'hbo_uhb'}/raw/master/${
+      usfmFileNames[bookCode]
+    }`
+    try {
+      const response = await axios.get(newUrl)
+      return response.data
+    } catch (error) {
+      console.error('Error fetching original USFM:', error)
+      return null
+    }
+  }
+  const createConfig = async (project, chapters) => {
+    if (!chapters || !project) {
+      return null
+    }
+    const initChapters = Object.keys(chapters).reduce((acc, chapter) => {
+      acc[chapter] = 0
+      return acc
+    }, {})
+    const methods = await axios.get('/api/methods')
+    const method = methods.data.find((method) => method.title === project.method)
+    if (!method?.offline_steps) {
+      return null
+    }
+    const config = {
+      steps: method.offline_steps,
+      method: method.title,
+      project: project.title,
+      chapters: initChapters,
+      book: { code: bookCode, name: bookCode },
+      resources: addResourceName(project.resources),
+      mainResource: project.base_manifest.resource,
+    }
+    return JSON.stringify(config)
+  }
+
+  const downloadResources = async (resourcesUrls, zip) => {
+    for (const resource in resourcesUrls) {
+      if (Object.hasOwnProperty.call(resourcesUrls, resource)) {
+        const url = resourcesUrls[resource]
+        try {
+          const response = await axios.get(url)
+          if (response.status === 200) {
+            const content = response.data
+            zip.file(`${resource}.${url.split('.').pop()}`, content)
+          } else {
+            throw new Error(`Failed to fetch resource: ${url}`)
+          }
+        } catch (error) {
+          console.error(`Error loading: ${url}`, error)
+        }
+      }
+    }
+  }
+  const addChaptersToZip = (zip, chapters) => {
+    const chaptersFolder = zip.folder('chapters')
+    if (chapters) {
+      Object.keys(chapters).forEach((chapterNumber) => {
+        const chapterData = chapters[chapterNumber]
+        const chapterFileName = `${chapterNumber}.json`
+        chaptersFolder.file(chapterFileName, JSON.stringify(chapterData))
+      })
+    }
+  }
+  const createProjectFiles = (zip) => {
+    const files = ['personal-notes.json', 'dictionary.json', 'team-notes.json']
+    const folders = ['personal-notes', 'dictionary', 'team-notes', 'chapters']
+
+    files.forEach((filename) => {
+      zip.file(filename, JSON.stringify({}))
+    })
+
+    folders.forEach((foldername) => {
+      zip.folder(foldername)
+    })
+  }
+  const createOfflineProject = async (project, bookCode) => {
+    try {
+      const bookLink = project.base_manifest.books.find(
+        (book) => book.name === bookCode
+      )?.link
+      if (!bookLink) {
+        throw new Error('Book link not found')
+      }
+      const chapters = await createChapters(bookLink)
+      if (!chapters) {
+        throw new Error('Chapters not created')
+      }
+      const zip = new JSZip()
+      createProjectFiles(zip)
+      const resourcesUrls = await getResourcesUrls(project.resources)
+      if (!resourcesUrls) {
+        throw new Error('Resource URLs not found')
+      }
+      await downloadResources(resourcesUrls, zip)
+      const tWordsBuffer = await getTwords(resourcesUrls['twords'])
+      if (!tWordsBuffer) {
+        throw new Error('tWords not fetched')
+      }
+
+      zip.file('twords.zip', tWordsBuffer)
+
+      const original = await getOriginal(bookCode)
+      if (original) {
+        zip.file('original.usfm', original)
+      }
+      addChaptersToZip(zip, chapters)
+      const config = await createConfig(project, chapters)
+      zip.file('config.json', config)
+      return zip
+    } catch (error) {
+      console.error(('Error creating offline project:', error))
+      return null
+    }
+  }
+  const createAndDownloadArchive = async () => {
+    try {
+      const archive = await createOfflineProject(project, bookCode)
+      if (!archive) {
+        throw new Error('Archive not created')
+      }
+      const content = await archive.generateAsync({ type: 'blob' })
+      saveAs(content, 'archive.zip')
+    } catch (error) {
+      toast.error(t('DownloadError'))
+      console.error('Error downloading archive:', error)
+    }
+  }
+  const compileBook = async ({ projectId, bookId }) => {
+    try {
+      const { data } = await supabase.rpc('compile_book', {
+        project_id: projectId,
+        book_id: bookId,
+      })
+      return data
+    } catch (error) {
+      return null
+    }
+  }
+  const handleSave = async () => {
+    let chapters = {}
+    if (isBook) {
+      chapters = await compileBook({ projectId: project.id, bookId: book.id })
+      if (!chapters) {
+        toast.error(t('DownloadError'))
+        return
+      }
+    }
+    try {
+      setIsSaving(true)
+      switch (downloadType) {
+        case 'txt':
+          downloadFile({
+            text: compileChapter(
+              {
+                json: chapter?.text,
+                title: `${project?.title}\n${book?.properties.scripture.toc1}\n${book?.properties.scripture.chapter_label} ${chapterNum}`,
+                subtitle: `${t(`books:${book?.code}`)} ${t('Chapter')} ${chapterNum}`,
+                chapterNum,
+              },
+              'txt'
+            ),
+            title: `${project?.title}_${book?.properties.scripture.toc1}_chapter_${chapterNum}.txt`,
+          })
+
+          break
+        case 'pdf':
+          await downloadPdf({
+            ...(isBook ? { book } : {}),
+            ...(isBook ? { chapters } : {}),
+            downloadSettings,
+            projectTitle: project.title,
+            obs: project?.type === 'obs',
+            chapter: { json: chapter?.text, chapterNum: chapter?.num },
+            title: book?.properties?.scripture?.toc1 || book?.properties?.obs?.title,
+            projectLanguage: project.languages.orig_name,
+            fileName: `${project.title}_${
+              project?.type !== 'obs'
+                ? book?.properties?.scripture?.toc1 ?? t('Book')
+                : book?.properties?.obs?.title ?? t('OpenBibleStories')
+            }`,
+            t,
+          })
+
+          break
+        case 'markdown':
+          downloadFile({
+            text: JsonToMd(
+              createObjectToTransform({
+                json: chapter?.text,
+                chapterNum: chapter?.num,
+              })
+            ),
+            title: `${String(chapter?.num).padStart(2, '0')}.md`,
+            type: 'markdown/plain',
+          })
+          break
+        case 'zip':
+          downloadZip(book)
+          break
+        case 'usfm':
+          downloadFile({
+            text: convertToUsfm({
+              jsonChapters: chapters,
+              book,
+              project: {
+                code: project?.code,
+                title: project?.title,
+                language: {
+                  code: project?.languages?.code,
+                  orig_name: project?.languages?.orig_name,
+                },
+              },
+            }),
+            title: usfmFileNames[book?.code],
+          })
+
+          break
+        case 'project':
+          await createAndDownloadArchive()
+          break
+        default:
+          break
+      }
+    } catch (error) {
+      toast.error(t('DownloadError'))
+      console.error(error)
+    } finally {
+      setIsSaving(false)
+    }
+  }
   return (
     <div className="flex flex-col gap-7">
       {breadcrumbs && (
@@ -267,7 +541,7 @@ function Download({
           }
         />
       )}
-      <div className="flex flex-col gap-7 text-white">
+      <div className="flex flex-col gap-7 text-th-secondary-10">
         <div className="text-xl font-bold">{t('Download')}</div>
         <ListBox
           options={options}
@@ -275,7 +549,11 @@ function Download({
           selectedOption={downloadType}
         />
         <div className="flex gap-7 items-end">
-          <div className="flex flex-col w-full">
+          <div
+            className={`flex flex-col w-full space-y-4 ${
+              downloadType === 'pdf' ? 'opacity-100' : 'opacity-0'
+            }`}
+          >
             {Object.keys(downloadSettings)
               .filter(
                 (key) =>
@@ -284,43 +562,16 @@ function Download({
               )
               .map((key, index) => {
                 return (
-                  <div className="inline-flex justify-between items-center" key={key}>
-                    <label htmlFor={key}>{t(key)}</label>
-
-                    <label
-                      className="relative flex cursor-pointer items-center rounded-full p-3"
-                      htmlFor={key}
-                      data-ripple-dark="true"
-                    >
-                      <input
-                        id={key}
-                        type="checkbox"
-                        className="w-7 h-7 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-cyan-700 bg-white checked:bg-cyan-700 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10"
-                        checked={downloadSettings[key]}
-                        onChange={() =>
-                          setDownloadSettings((prev) => {
-                            return { ...prev, [key]: !downloadSettings[key] }
-                          })
-                        }
-                      />
-                      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 text-white opacity-0 transition-opacity peer-checked:opacity-100 stroke-white fill-white">
-                        <svg
-                          width="15"
-                          height="11"
-                          viewBox="0 0 15 11"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M14.1449 0.762586C14.4429 1.06062 14.4429 1.54382 14.1449 1.84185L5.75017 10.2366C5.45214 10.5346 4.96894 10.5346 4.67091 10.2366L0.855116 6.4208C0.557084 6.12277 0.557084 5.63957 0.855116 5.34153C1.15315 5.0435 1.63635 5.0435 1.93438 5.34153L5.21054 8.61769L13.0656 0.762586C13.3637 0.464555 13.8469 0.464555 14.1449 0.762586Z"
-                            fill="white"
-                          />
-                        </svg>
-                      </div>
-                    </label>
-                  </div>
+                  <CheckBox
+                    key={key}
+                    onChange={() =>
+                      setDownloadSettings((prev) => {
+                        return { ...prev, [key]: !downloadSettings[key] }
+                      })
+                    }
+                    checked={downloadSettings[key]}
+                    label={t(key)}
+                  />
                 )
               })}
           </div>
@@ -332,13 +583,15 @@ function Download({
           >
             {t('Close')}
           </button>
-          <button
+
+          <ButtonLoading
             onClick={handleSave}
             disabled={isSaving}
-            className="btn-secondary flex-1"
+            isLoading={isSaving}
+            className="relative btn-secondary flex-1"
           >
-            {isSaving ? t('Saving') : t('Save')}
-          </button>
+            {t('Save')}
+          </ButtonLoading>
         </div>
       </div>
     </div>

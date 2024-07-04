@@ -9,6 +9,7 @@ import { Placeholder, TNTWLContent } from '../UI'
 import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal, filterNotes, getWords } from 'utils/helper'
 import { getFile } from 'utils/apiHelper'
+import Down from 'public/arrow-down.svg'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
@@ -31,6 +32,8 @@ function TWL({ config, url, toolName }) {
       })
       const finalData = {}
       words?.forEach((word) => {
+        if (!word) return null
+
         const {
           ID,
           Reference,
@@ -102,11 +105,12 @@ function TWLList({ setItem, data, toolName, isLoading }) {
 
   return (
     <div
-      className={`divide-y divide-gray-800 divide-dashed h-full overflow-auto ${
+      id={`container_${toolName}`}
+      className={`divide-y divide-th-text-primary divide-dashed h-full overflow-auto ${
         isLoading ? 'px-4' : ''
       }`}
     >
-      <div className="text-center">
+      <div className="text-center mb-2">
         {<FilterRepeated filter={filter} setFilter={setFilter} />}
       </div>
       {isLoading ? (
@@ -118,7 +122,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
           return (
             <div key={verseIndex} className="p-4 flex mx-4" id={'idtwl' + verseNumber}>
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1">
+              <div className="pl-7 flex-1">
                 <ul>
                   {words?.map((item, index) => {
                     let itemFilter
@@ -132,7 +136,6 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                       case 'book':
                         itemFilter = item.isRepeatedInBook
                         break
-
                       default:
                         break
                     }
@@ -141,10 +144,10 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                       <li
                         key={index}
                         id={'id' + item.id}
-                        className={`p-2 cursor-pointer ${
-                          itemFilter ? 'text-gray-400' : ''
-                        } hover:bg-gray-200
-                      ${highlightId === 'id' + item.id ? 'bg-gray-200' : ''}
+                        className={`p-2 rounded-lg cursor-pointer ${
+                          itemFilter ? 'text-th-secondary-300' : ''
+                        } hover:bg-th-secondary-100
+                      ${highlightId === 'id' + item.id ? 'bg-th-secondary-100' : ''}
                       `}
                         onClick={() => {
                           handleSaveScroll(verseNumber, item.id)
@@ -174,19 +177,23 @@ function FilterRepeated({ setFilter, filter }) {
   ]
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="">{t('FilterRepeatedWords')}</div>
-      <select
-        className="input m-2 !w-auto"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-      >
-        {options?.map((option) => (
-          <option value={option.value} key={option.value}>
-            {option.name}
-          </option>
-        ))}
-      </select>
+    <div className="flex items-center justify-center gap-2">
+      <div className="hidden sm:block md:w-1/2">{t('FilterRepeatedWords')}</div>
+      <div className="relative w-full sm:w-1/2 mr-2">
+        <select
+          className="input-primary appearance-none truncate"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          style={{ padding: '10px' }}
+        >
+          {options?.map((option) => (
+            <option className="mr-2" value={option.value} key={option.value}>
+              {option.name}
+            </option>
+          ))}
+        </select>
+        <Down className="w-5 h-5 absolute -translate-y-1/2 top-1/2 right-4 stroke-th-text-primary pointer-events-none" />
+      </div>
     </div>
   )
 }

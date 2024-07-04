@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -18,11 +18,11 @@ import {
   useProject,
 } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-import { readableDate } from 'utils/helper'
+import { getBriefName, readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
 
-import Plus from '/public/plus.svg'
+import Plus from 'public/plus.svg'
 
 function ChapterList() {
   const { user } = useCurrentUser()
@@ -34,7 +34,6 @@ function ChapterList() {
     push,
   } = useRouter()
   const [{ isCoordinatorAccess, isModeratorAccess }] = useAccess({
-    token: user?.access_token,
     user_id: user?.id,
     code,
   })
@@ -43,20 +42,18 @@ function ChapterList() {
   const [creatingChapter, setCreatingChapter] = useState(false)
   const [downloadingChapter, setDownloadingChapter] = useState(null)
   const [currentSteps, setCurrentSteps] = useState([])
-  const [project] = useProject({ token: user?.access_token, code })
-  const { briefResume, isBrief } = useBriefState({
-    token: user?.access_token,
+  const [project] = useProject({ code })
+  const { briefResume, isBrief, briefName } = useBriefState({
     project_id: project?.id,
   })
 
   const [chapters, { mutate: mutateChapters }] = useGetChapters({
-    token: user?.access_token,
     code,
     book_code: bookid,
+    revalidateIfStale: true,
   })
 
   const [createdChapters, { mutate: mutateCreatedChapters }] = useGetCreatedChapters({
-    token: user?.access_token,
     code,
     chapters: chapters?.map((el) => el.id),
   })
@@ -74,7 +71,13 @@ function ChapterList() {
         .rpc('get_current_steps', { project_id: project.id })
         .then((res) => setCurrentSteps(res.data))
     }
-  }, [project.id, supabase])
+  }, [project?.id, supabase])
+  const nameButtonBrief = useMemo(() => {
+    return getBriefName(
+      briefName,
+      t(`${isCoordinatorAccess ? 'EditBrief' : 'OpenBrief'}`)
+    )
+  }, [briefName, isCoordinatorAccess, t])
 
   const getCurrentStep = (chapter) => {
     const step = currentSteps
@@ -88,13 +91,13 @@ function ChapterList() {
               href={`/projects/${project?.code}/edit?setting=brief`}
               onClick={(e) => e.stopPropagation()}
             >
-              {t(isCoordinatorAccess ? 'EditBrief' : 'OpenBrief')}
+              {nameButtonBrief}
             </Link>
           ) : (
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
               onClick={(e) => e.stopPropagation()}
-              className="text-sm xl:text-lg"
+              className="w-fit text-sm xl:text-lg hover:opacity-70"
             >
               {step.step} {t('Step').toLowerCase()}
             </Link>
@@ -105,7 +108,7 @@ function ChapterList() {
   }
   return (
     <div className="pb-10">
-      <div className="card mx-auto max-w-7xl">
+      <div className="card bg-th-secondary-10 mx-auto max-w-7xl">
         <div className="flex flex-col gap-7 w-full">
           <Breadcrumbs
             links={[
@@ -138,10 +141,10 @@ function ChapterList() {
                           isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
                         } ${
                           finished_at
-                            ? 'bg-yellow-400 border-yellow-400'
+                            ? 'bg-th-secondary-400 border-th-secondary-400 text-th-text-secondary-100'
                             : isCreated
-                            ? 'text-white bg-slate-600 border-slate-600'
-                            : 'bg-white border-slate-600'
+                            ? 'text-th-text-secondary-100 bg-th-primary-100 border-th-primary-100'
+                            : 'bg-th-secondary-10 border-th-primary-100'
                         } border-2`}
                       >
                         <div className="flex justify-between">
@@ -149,18 +152,14 @@ function ChapterList() {
                           <div>
                             {started_at && (
                               <div
-                                className={`text-sm ${
-                                  !finished_at ? 'text-slate-400' : ''
-                                }`}
+                                className={`text-sm ${!finished_at ? 'opacity-70' : ''}`}
                               >
                                 {readableDate(started_at, locale)}
                               </div>
                             )}
                             {finished_at && (
                               <div
-                                className={`text-sm ${
-                                  !finished_at ? 'text-slate-400' : ''
-                                }`}
+                                className={`text-sm ${!finished_at ? 'opacity-70' : ''}`}
                               >
                                 {readableDate(finished_at, locale)}
                               </div>
@@ -177,7 +176,9 @@ function ChapterList() {
                               }
                             }}
                           >
-                            <p className="text-sm xl:text-lg">{t('Download')}</p>
+                            <p className="text-sm xl:text-lg hover:opacity-70">
+                              {t('Download')}
+                            </p>
                           </div>
                         ) : (
                           getCurrentStep(chapter)
@@ -186,13 +187,10 @@ function ChapterList() {
                       <div
                         className={`${
                           isCreated ? 'hidden' : 'hidden hover:block'
-                        } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer`}
-                        style={{
-                          background: 'linear-gradient(90deg, #B7C9E5 1%, #A5B5CE 98%)',
-                        }}
+                        } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer bg-th-primary-100 opacity-70`}
                         onClick={() => setCreatingChapter(chapter)}
                       >
-                        <div className="w-10 h-10 p-2 shadow-md text-slate-900 bg-white border-white border-2 rounded-full">
+                        <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secondary-10 border-2 rounded-full">
                           <Plus className="w-5 h-5" />
                         </div>
                       </div>
@@ -216,11 +214,13 @@ function ChapterList() {
         {
           <Modal
             isOpen={isOpenDownloading}
-            closeHandle={setIsOpenDownloading}
-            additionalClasses="overflow-y-visible"
+            closeHandle={() => setIsOpenDownloading(false)}
+            className={{
+              dialogPanel:
+                'w-full max-w-md align-middle p-6 bg-th-primary-100 text-th-text-secondary-100 overflow-y-visible rounded-3xl',
+            }}
           >
             <Download
-              user={user}
               project={project}
               bookCode={bookid}
               chapterNum={downloadingChapter}

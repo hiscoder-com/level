@@ -7,15 +7,15 @@ import Card from './Card'
 
 import { useCoordinators, useTranslators } from 'utils/hooks'
 
-function ParticipantInfo({ project, user, access }) {
+function ParticipantInfo({ project, access }) {
   const { t } = useTranslation()
   const [translators] = useTranslators({
-    token: user?.access_token,
     code: project?.code,
+    revalidateIfStale: true,
   })
   const [coordinators] = useCoordinators({
-    token: user?.access_token,
     code: project?.code,
+    revalidateIfStale: true,
   })
 
   const participants = useMemo(() => {
@@ -46,13 +46,13 @@ function ParticipantInfo({ project, user, access }) {
           {participants?.map((participant, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 px-4 py-1 border border-gray-350 rounded-3xl"
+              className="flex items-center gap-4 px-4 py-1 border border-th-primary-100-hover-background rounded-3xl"
             >
-              <div className="w-8 h-8 min-h-[2rem]">
+              <div className="w-7 h-7 min-w-[2rem]">
                 <TranslatorImage item={participant} />
               </div>
-              <div>
-                <p className="text-lg">{participant?.users?.login}</p>
+              <div className="truncate">
+                <p className="text-lg truncate">{participant?.users?.login}</p>
                 <div className="text-sm">
                   {participant.is_coordinator ? (
                     <p>{t('Coordinator')}</p>

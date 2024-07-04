@@ -1,7 +1,7 @@
 import axios from 'axios'
 
-import { filterNotes } from 'utils/helper'
 import { tsvToJson } from '@texttree/translation-words-helpers'
+import { filterNotes } from 'utils/helper'
 
 /**
  *  @swagger
@@ -75,7 +75,7 @@ export default async function obsTnHandler(req, res) {
     verses = verses.split(',').map((el) => el.trim())
   }
   const url = `${
-    process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+    process.env.NODE_HOST ?? 'https://git.door43.org'
   }/${owner}/${repo}/raw/commit/${commit}${bookPath.slice(1)}`
 
   try {

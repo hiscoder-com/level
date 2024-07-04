@@ -1,8 +1,8 @@
 import handler from '../../pages/api/users/index'
 import { supabase } from '../../utils/supabaseClient'
-import { supabaseService } from '../../utils/supabaseServer'
+import { supabaseService } from '../../utils/supabaseService'
 
-jest.mock('../../utils/supabaseServer', () => ({
+jest.mock('../../utils/supabaseService', () => ({
   __esModule: true,
   supabaseService: {
     auth: {

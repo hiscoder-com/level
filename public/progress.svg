@@ -1,0 +1,25 @@
+<svg id="gear"  viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+<!-- <style>
+	#gear{
+    animation-name: ckw;
+    animation-duration: 0s;
+    animation-iteration-count: infinite;
+    transform-origin: 50% 50%;
+    display: inline-block;
+}
+@keyframes ckw {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+</style> -->
+<path d="M 443 198 A 200 200 0 0 0 250 50" fill="none" stroke="#5BD8CA" stroke-width="40" />
+<path d="M 350 423 A 200 200 0 0 0 443 198" fill="none" stroke="#14B8A6" stroke-width="40" />
+<path d="M 108 391 A 200 200 0 0 0 350 423" fill="none" stroke="#388F86" stroke-width="40" />
+    <line x1="336" y1="300" x2="163" y2="300" stroke="current-color" stroke-width="20" stroke-linecap="round" />
+    <line x1="163" y1="300" x2="250" y2="150" stroke="current-color" stroke-width="20" stroke-linecap="round" />
+    <line x1="250" y1="150" x2="336" y2="300" stroke="current-color" stroke-width="20" stroke-linecap="round" />
+</svg>

@@ -46,21 +46,26 @@ function TNList({ setItem, data, toolName, isLoading }) {
   }, [data])
 
   return (
-    <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
+    <div
+      id={`container_${toolName}`}
+      className="divide-y divide-th-text-primary divide-dashed h-full overflow-auto"
+    >
       {data &&
         verses.map(([verseNumber, notes], index) => {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1" id={'idtn' + verseNumber}>
+              <div className="text-th-text-primary pl-7 flex-1" id={'idtn' + verseNumber}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.id}
                         id={'idtn' + note.id}
-                        className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                          highlightId === 'id' + note.id ? 'bg-gray-200' : ''
+                        className={`p-2 cursor-pointer hover:bg-th-secondary-100 ${
+                          highlightId === 'id' + note.id
+                            ? 'bg-th-secondary-100 rounded-lg'
+                            : ''
                         }`}
                         onClick={() => {
                           handleSaveScroll(verseNumber, note.id)

@@ -1,30 +1,34 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
 import { useRecoilValue } from 'recoil'
-
+import Book from './Book'
 import Modal from './Modal'
 
-import { useGetBrief } from 'utils/hooks'
-import { projectIdState } from './Panel/state/atoms'
+import { useGetBrief, useProject } from 'utils/hooks'
+import { projectIdState } from './state/atoms'
 
 import Tools from 'public/tools.svg'
 
-function Dropdown({ description, user }) {
+function Dropdown({ description, isWholeBook = false }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
   const [showModalStepGoal, setShowModalStepGoal] = useState(false)
+  const [showModalFullBook, setShowModalFullBook] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-
+  const projectId = useRecoilValue(projectIdState)
+  const [brief] = useGetBrief({
+    project_id: projectId,
+  })
   const dropdownMenu = useRef(null)
   const toolsButton = useRef(null)
   const { t } = useTranslation(['common'])
-
   const toggle = () => setIsOpen((prev) => !prev)
-
   const closeModal = () => {
     setShowModalStepGoal(false)
     setShowModalTranslationGoal(false)
+    setShowModalFullBook(false)
   }
 
   useEffect(() => {
@@ -50,18 +54,17 @@ function Dropdown({ description, user }) {
         onClick={toggle}
         ref={toolsButton}
       >
-        <Tools />
+        <Tools className="fill-th-text-secondary-100" />
       </div>
 
       {isOpen && (
         <>
           <div
             ref={dropdownMenu}
-            className="absolute flex flex-col justify-center right-5 xl:right-0 border-2 border-cyan-600 divide-y divide-solid bg-white rounded-md shadow-md z-40"
+            className="absolute flex flex-col justify-center right-5 xl:right-0 border border-th-primary-100-border divide-y divide-solid bg-th-secondary-10 rounded-md shadow-md z-40"
           >
             <button
-              className="px-4 py-2 rounded-t-lg	hover:bg-cyan-50
-			active:bg-cyan-200"
+              className="px-4 py-2 rounded-t-lg	hover:bg-th-secondary-100 active:bg-th-secondary-100"
               onClick={(e) => {
                 toggle()
                 setShowModalStepGoal(true)
@@ -70,18 +73,33 @@ function Dropdown({ description, user }) {
             >
               {t('AboutStep').toUpperCase()}
             </button>
-
-            <button
-              className="px-4 py-2 rounded-b-lg hover:bg-cyan-50
-			active:bg-cyan-200"
-              onClick={(e) => {
-                toggle()
-                setShowModalTranslationGoal(true)
-                e.stopPropagation()
-              }}
-            >
-              {t('AboutTranslation').toUpperCase()}
-            </button>
+            {isWholeBook && (
+              <button
+                className="px-4 py-2 rounded-t-lg hover:bg-th-secondary-100 active:bg-th-secondary-100"
+                onClick={(e) => {
+                  toggle()
+                  setShowModalFullBook(true)
+                  e.stopPropagation()
+                }}
+              >
+                {t('WholeBook').toUpperCase()}
+              </button>
+            )}
+            {brief?.is_enable && (
+              <button
+                className="px-4 py-2 rounded-b-lg hover:bg-th-secondary-100
+			active:bg-th-secondary-100"
+                onClick={(e) => {
+                  toggle()
+                  setShowModalTranslationGoal(true)
+                  e.stopPropagation()
+                }}
+              >
+                {brief?.name === 'Brief' || !brief?.name
+                  ? t('AboutTranslation').toUpperCase()
+                  : brief.name.toUpperCase()}
+              </button>
+            )}
           </div>
         </>
       )}
@@ -90,15 +108,17 @@ function Dropdown({ description, user }) {
         closeModal={closeModal}
         description={description}
       />
-      <TranslationGoal
-        showModalTranslationGoal={showModalTranslationGoal}
-        user={user}
-        closeModal={closeModal}
-      />
-
-      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold border-2 border-cyan-600 rounded-md divide-x divide-solid md:hidden">
+      <FullBook showModalFullBook={showModalFullBook} closeModal={closeModal} />
+      {brief?.is_enable && (
+        <TranslationGoal
+          showModalTranslationGoal={showModalTranslationGoal}
+          closeModal={closeModal}
+          brief={brief}
+        />
+      )}
+      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold rounded-md divide-x divide-solid md:hidden bg-th-secondary-10">
         <button
-          className="px-2 rounded-l-lg active:bg-cyan-50"
+          className="px-2 rounded-l-lg hover:opacity-70"
           onClick={(e) => {
             setShowModalStepGoal(true)
             e.stopPropagation()
@@ -106,16 +126,17 @@ function Dropdown({ description, user }) {
         >
           {t('AboutStep').toUpperCase()}
         </button>
-
-        <button
-          className="px-2 rounded-r-lg active:bg-cyan-50"
-          onClick={(e) => {
-            setShowModalTranslationGoal(true)
-            e.stopPropagation()
-          }}
-        >
-          {t('AboutTranslation').toUpperCase()}
-        </button>
+        {brief?.is_enable && (
+          <button
+            className="px-2 rounded-r-lg hover:opacity-70"
+            onClick={(e) => {
+              setShowModalTranslationGoal(true)
+              e.stopPropagation()
+            }}
+          >
+            {t('AboutTranslation').toUpperCase()}
+          </button>
+        )}
       </div>
     </div>
   )
@@ -128,8 +149,8 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
 
   return (
     <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal')}>
-      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-scroll">
-        <p className="text-sm text-white whitespace-pre-line">
+      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-auto">
+        <p className="text-sm text-th-secondary-10 whitespace-pre-line">
           {description.replaceAll('\n\n', '\n')}
         </p>
       </div>
@@ -142,15 +163,8 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
   )
 }
 
-function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
+function TranslationGoal({ showModalTranslationGoal, closeModal, brief }) {
   const { t } = useTranslation(['common'])
-
-  const projectId = useRecoilValue(projectIdState)
-
-  const [brief] = useGetBrief({
-    token: user?.access_token,
-    project_id: projectId,
-  })
 
   const briefResume = brief?.data_collection
     ?.map((obj) => obj.resume)
@@ -161,9 +175,14 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
       <Modal
         isOpen={showModalTranslationGoal}
         closeHandle={closeModal}
-        title={t('TranslationGoal')}
+        title={
+          brief?.name === 'Brief' || !brief?.name ? t('TranslationGoal') : brief?.name
+        }
       >
-        <div className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-white overflow-y-scroll">
+        <div
+          className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-th-secondary-10 overflow-y-auto"
+          dir={brief?.is_rtl ? 'rtl' : 'ltr'}
+        >
           {briefResume?.map((resumeItem, index) => (
             <li key={index}>{resumeItem}</li>
           ))}
@@ -175,5 +194,36 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, user }) {
         </div>
       </Modal>
     </>
+  )
+}
+
+function FullBook({ showModalFullBook, closeModal }) {
+  const { t } = useTranslation(['common'])
+  const {
+    query: { project, book },
+  } = useRouter()
+  const [currentProject] = useProject({ code: project })
+  const mainResource = useMemo(() => {
+    if (currentProject) {
+      return currentProject?.resources[currentProject?.base_manifest?.resource]
+    }
+  }, [currentProject])
+  const bookPath = useMemo(() => {
+    if (mainResource) {
+      return mainResource.manifest.projects.find((project) => project.identifier === book)
+        .path
+    }
+  }, [book, mainResource])
+  return (
+    <Modal isOpen={showModalFullBook} closeHandle={closeModal} title={t('WholeBook')}>
+      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-auto min-h-[50vh]">
+        <Book url="/api/git/whole-book" config={{ mainResource, book, bookPath }} />
+      </div>
+      <div className="text-center">
+        <button className="btn-secondary" onClick={closeModal}>
+          {t('Close')}
+        </button>
+      </div>
+    </Modal>
   )
 }

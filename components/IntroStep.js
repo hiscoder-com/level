@@ -7,7 +7,6 @@ import Footer from 'components/Footer'
 function IntroStep({ title, markdown, nextLink }) {
   const { t } = useTranslation('common')
   const router = useRouter()
-
   const saveStepLocalStorage = () => {
     let viewedSteps = JSON.parse(localStorage.getItem('viewedIntroSteps'))
 
@@ -40,10 +39,12 @@ function IntroStep({ title, markdown, nextLink }) {
     <div className="f-screen-appbar mb-4 w-full max-w-3xl">
       <div
         style={{ height: 'calc(100vh - 11rem)' }}
-        className="mb-4 mx-auto py-6 px-6 lg:px-8 bg-white overflow-auto rounded-lg"
+        className="mb-4 mx-auto py-6 px-6 lg:px-8 bg-th-secondary-10 overflow-auto rounded-lg"
       >
-        <h2 className="mb-4 text-3xl">{title}</h2>
-        <MarkdownExtended>{markdown}</MarkdownExtended>
+        <h2 className="mb-4 text-3xl">{title.title}</h2>
+        {title.subtitle && <h3 className="mb-4 text-xl">{title.subtitle}</h3>}
+
+        <MarkdownExtended className="markdown-body">{markdown}</MarkdownExtended>
       </div>
       <Footer
         textButton={t('Next')}

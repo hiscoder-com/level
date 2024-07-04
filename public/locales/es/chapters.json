@@ -1,14 +1,14 @@
 {
   "Assignment": "Asignación de versículos",
-  "CancelFinishedChapter": "Отменить 'Закончить главу'",
-  "CancelStartChapter": "Отменить 'Начать главу'",
-  "Created": "Создано",
+  "CancelFinishedChapter": "Cancel finished chapter",
+  "CancelStartChapter": "Cancel started chapter",
+  "Created": "Created",
   "Deselect": "Deseleccionar",
-  "FastDivide": "División rápida",
-  "FinishedAt": "Закончена",
-  "FinishedChapter": "Закончить главу",
+  "FastDivide": "Fast divide",
+  "FinishedAt": "Finished at",
+  "FinishedChapter": "Finish the chapter",
   "ReadOnly": "Modo de sólo lectura",
   "SelectAll": "Seleccionar todo",
-  "StartChapter": "Начать главу",
-  "StartedAt": "Начата"
+  "StartChapter": "Start the chapter",
+  "StartedAt": "Started at"
 }

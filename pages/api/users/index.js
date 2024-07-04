@@ -1,18 +1,22 @@
-import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
-import { supabaseService } from 'utils/supabaseServer'
+import supabaseApi from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 
 export default async function handler(req, res) {
-  if (!req?.headers?.token) {
-    return res.status(401).json({ error: 'Access denied!' })
-  }
-  const supabase = createPagesServerClient({ req, res })
   const { method } = req
   switch (method) {
     case 'GET':
+      let supabase
+      try {
+        supabase = await supabaseApi({ req, res })
+      } catch (error) {
+        return res.status(401).json({ error })
+      }
       try {
         const { data: users, error: errorGet } = await supabase
           .from('users')
-          .select('id, login, email, blocked, agreement, confession, is_admin')
+          .select(
+            'id, login, email, blocked, agreement, confession, is_admin, avatar_url'
+          )
           .order('login', { ascending: true })
         if (errorGet) throw errorGet
         return res.status(200).json(users)
@@ -32,6 +36,12 @@ export default async function handler(req, res) {
               .limit(1)
             if (errorUser) throw errorUser
             if (users?.length === 1) {
+              let supabase
+              try {
+                supabase = await supabaseApi({ req, res })
+              } catch (error) {
+                return res.status(401).json({ error })
+              }
               const { data: is_admin, error: error_rpc } = await supabase.rpc(
                 'admin_only'
               )
@@ -51,12 +61,13 @@ export default async function handler(req, res) {
       }
       const { email, password, login } = req.body
       try {
-        const { error: errorPost } = await supabaseService.auth.api.createUser({
+        const { error: errorPost } = await supabaseService.auth.admin.createUser({
           email,
           password,
           user_metadata: { login },
           email_confirm: true,
         })
+
         if (errorPost) throw errorPost
 
         const { data: users, error: errorUser } = await supabaseService

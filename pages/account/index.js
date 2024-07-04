@@ -1,37 +1,30 @@
+import { useEffect } from 'react'
+
 import Head from 'next/head'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import { Helmet } from 'react-helmet'
-
 import Account from 'components/Account'
 
 function AccountHomePage() {
   const { t } = useTranslation(['users', 'common'])
+  useEffect(() => {
+    document.body.classList.add('no-scrollbar')
 
+    return () => {
+      document.body.classList.remove('no-scrollbar')
+    }
+  }, [])
   return (
-    <div>
-      <Helmet>
-        <style>{`
-          html {
-            scrollbar-width: none;
-          }
-
-          html::-webkit-scrollbar {
-            display: none;
-          }
-        `}</style>
-      </Helmet>
-
+    <>
       <Head>
         <title>{t('V-CANAAccount')}</title>
         <meta name="description" content="VCANA" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
       <Account />
-    </div>
+    </>
   )
 }
 

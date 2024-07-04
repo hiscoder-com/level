@@ -1,6 +1,8 @@
 import { useTranslation } from 'next-i18next'
 
 import {
+  Aquifer,
+  Questions,
   PersonalNotes,
   CommandEditor,
   BlindEditor,
@@ -8,7 +10,7 @@ import {
   TeamNotes,
   Editor,
   Reader,
-  Audio,
+  Retelling,
   Bible,
   OBSTN,
   Info,
@@ -17,7 +19,7 @@ import {
   TQ,
 } from './'
 
-function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }) {
+function Tool({ config, toolName, tnLink, editable = false }) {
   const { t } = useTranslation(['common', 'books'])
   const {
     resource: {
@@ -83,7 +85,6 @@ function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }
         (el) => el.identifier === config.reference.book
       )?.path
 
-      config.targetResourceLink = targetResourceLink
       url = '/api/git/tn'
       break
 
@@ -144,14 +145,19 @@ function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }
       title = t('personalNotes')
       break
 
-    case 'audio':
-      CurrentTool = Audio
-      title = t('audio')
+    case 'retelling':
+      CurrentTool = Retelling
+      title = t('retelling')
       break
 
     case 'dictionary':
       CurrentTool = Dictionary
       title = t('dictionary')
+      break
+
+    case 'aquifer':
+      CurrentTool = Aquifer
+      title = t('aquifer')
       break
 
     case 'info':
@@ -162,26 +168,55 @@ function Tool({ config, toolName, targetResourceLink, tnLink, editable = false }
       url = '/api/git/info'
       break
 
+    case 'observationQuestions':
+      CurrentTool = Questions
+      title = t('observationQuestions')
+      break
+
+    case 'discourseQuestions':
+      CurrentTool = Questions
+      title = t('discourseQuestions')
+      break
+
+    case 'theologicalQuestions':
+      CurrentTool = Questions
+      title = t('theologicalQuestions')
+      break
+
+    case 'reflectionQuestions':
+      CurrentTool = Questions
+      title = t('reflectionQuestions')
+      break
+
     default:
       return <div>{t('WrongResource')}</div>
   }
   return (
     <>
-      <div className="pt-2.5 px-4 h-10 font-bold bg-blue-350 rounded-t-lg truncate">
-        {![
-          'translate',
-          'commandTranslate',
-          'draftTranslate',
-          'teamNotes',
-          'personalNotes',
-          'audio',
-          'dictionary',
-        ].includes(toolName) &&
-          `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
-        {title}
+      <div className="flex align-bottom-center px-4 h-10 font-bold bg-th-primary-500 text-th-text-secondary-200 text-center items-center justify-center rounded-t-lg">
+        <p className="truncate">
+          {![
+            'translate',
+            'commandTranslate',
+            'draftTranslate',
+            'teamNotes',
+            'personalNotes',
+            'retelling',
+            'dictionary',
+          ].includes(toolName) &&
+            `${t(`books:${config?.reference?.book}`)} ${config?.reference?.chapter}, `}
+          {title}
+        </p>
       </div>
-      <div className="adaptive-card">
-        <div className="h-full p-4 overflow-x-hidden overflow-y-auto">
+      <div className="adaptive-card overflow-hidden border border-b-th-secondary-300 border-l-th-secondary-300 border-r-th-secondary-300 rounded-b-lg box-border">
+        <div
+          id={
+            !['twords', 'tnotes'].includes(toolName)
+              ? 'container_' + toolName
+              : 'precontainer_' + toolName
+          }
+          className="relative h-full overflow-x-hidden overflow-y-auto p-4"
+        >
           <CurrentTool config={config} url={url} toolName={toolName} />
         </div>
       </div>

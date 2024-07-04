@@ -1,22 +1,28 @@
+import { useMemo } from 'react'
 import { useTranslation } from 'next-i18next'
 import { useGetBrief } from 'utils/hooks'
 import Card from './Card'
+import { getBriefName } from 'utils/helper'
 
-function ResumeInfo({ project, user }) {
+function ResumeInfo({ project }) {
   const { t } = useTranslation(['common', 'projects'])
   const [brief] = useGetBrief({
-    token: user?.access_token,
     project_id: project?.id,
   })
 
+  const titleBrief = useMemo(() => {
+    return getBriefName(brief?.name, `${t('TranslationGoal')} / ${t('projects:Resume')}`)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brief?.name])
+
   return (
     <Card
-      title={`${t('TranslationGoal')} / ${t('projects:Resume')}`}
+      title={titleBrief}
       link={`/projects/${project?.code}/edit?setting=brief`}
       isOpen={false}
       access
     >
-      <ul className="pl-6 text-lg list-decimal">
+      <ul className="pl-6 text-lg list-decimal" dir={brief?.is_rtl ? 'rtl' : 'ltr'}>
         {brief?.data_collection?.map(
           (el) => el?.resume && <li key={el.id}>{el?.resume}</li>
         )}

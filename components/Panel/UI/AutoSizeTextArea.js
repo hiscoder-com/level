@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react'
 
-function AutoSizeTextArea({ disabled = false, updateVerse, index, verseObject }) {
+function AutoSizeTextArea({ updateVerse, index, verseObject, disabled = false }) {
   const [startValue, setStartValue] = useState(false)
-
   useEffect(() => {
     if (startValue === false || disabled) {
-      setStartValue(verseObject.verse?.trim())
+      setStartValue(verseObject.verse ? verseObject.verse.trim() : false)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [verseObject.verse])
@@ -23,11 +22,12 @@ function AutoSizeTextArea({ disabled = false, updateVerse, index, verseObject })
           updateVerse(index, e.target.innerText.trim())
         }
       }}
-      className={`block w-full mx-3 focus:outline-none focus:inline-none whitespace-pre-line focus:bg-white  ${
-        verseObject.verse || disabled ? '' : 'bg-gray-300'
+      className={`block w-full mx-3 focus:outline-none focus:inline-none whitespace-pre-line focus:bg-th-secondary-10 ${
+        verseObject.verse || disabled ? '' : 'bg-th-secondary-100'
       }`}
-      // eslint-disable-next-line prettier/prettier
-    >{startValue}</div>
+    >
+      {startValue}
+    </div>
   )
 }
 

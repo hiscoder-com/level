@@ -51,7 +51,7 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, access }) {
                   <Menu.Button
                     className={`relative flex duration-200 ease-in-out transition-all`}
                   >
-                    <Elipsis className="block sm:hidden w-6 h-6 min-h-[1.5rem] transition" />
+                    <Elipsis className="block sm:hidden w-6 h-6 min-h-[1.5rem] transition stroke-th-text-primary" />
                   </Menu.Button>
                   <Transition
                     as={Fragment}

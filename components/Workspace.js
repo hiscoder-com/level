@@ -8,12 +8,12 @@ import { useRecoilValue } from 'recoil'
 
 import Tool from 'components/Panel/Tool'
 
-import { inactiveState } from './Panel/state/atoms'
+import { inactiveState } from './state/atoms'
 
 import Dict from 'public/dictionary.svg'
 import TeamNote from 'public/team-note.svg'
 import Notepad from 'public/notepad.svg'
-import Audio from 'public/audio.svg'
+import Retelling from 'public/audio.svg'
 import Pencil from 'public/editor-pencil.svg'
 import Info from 'public/info.svg'
 
@@ -32,7 +32,7 @@ const icons = {
   personalNotes: <Notepad className="w-5 inline" />,
   teamNotes: <TeamNote className="w-5 inline" />,
   dictionary: <Dict className="w-5 inline" />,
-  audio: <Audio className="w-5 inline" />,
+  retelling: <Retelling className="w-5 inline" />,
   info: <Info className="w-5 inline" />,
   commandTranslate: translateIcon,
   draftTranslate: translateIcon,
@@ -68,25 +68,24 @@ function Workspace({ stepConfig, reference, editable = false }) {
     }
   }, [reference?.book, stepConfig])
   return (
-    <div className="layout-step">
+    <div className="f-screen-appbar flex flex-col gap-3 xl:gap-7 items-center mx-auto lg:max-w-7xl lg:items-stretch lg:flex-row">
       {stepConfig.config.map((el, index) => {
         return (
           <div
             key={index}
-            className={`layout-step-col ${index === 0 && inactive ? 'inactive' : ''} ${
-              sizes[el.size]
-            }`}
+            className={`flex flex-col gap-1 lg:gap-5 w-full lg:px-2 xl:px-0 overflow-hidden ${
+              index === 0 && inactive ? 'inactive' : ''
+            } ${sizes[el.size]}`}
           >
             <Panel
               tools={el.tools}
               resources={stepConfig.resources}
               reference={reference}
-              targetResourceLink={`${
-                stepConfig.resources[stepConfig.base_manifest].owner
-              }/${stepConfig.resources[stepConfig.base_manifest].repo}`}
+              mainResource={stepConfig.resources[stepConfig.base_manifest]}
               tnLink={tnLink}
               wholeChapter={stepConfig.whole_chapter}
               editable={editable}
+              isRtl={stepConfig.is_rtl}
             />
           </div>
         )
@@ -100,28 +99,40 @@ export default Workspace
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ')
 }
+const sizeTabs = {
+  1: 'w-1/4',
+  2: 'w-full md:w-2/3 ',
+  3: 'w-full lg:w-full ',
+  4: 'w-full',
+  5: 'w-full',
+  6: 'w-full',
+}
 
 function Panel({
   tools,
   resources,
-  targetResourceLink,
-  tnLink,
   reference,
+  mainResource,
+  tnLink,
   wholeChapter,
+  isRtl = false,
   editable = false,
 }) {
   const { t } = useTranslation('common')
-
   return (
     <Tab.Group>
-      <Tab.List className="space-x-3 text-xs px-3 -mb-2 lg:-mb-7 flex overflow-auto">
+      <Tab.List
+        className={`flex px-3 -mb-2 gap-2 mt-2 lg:-mb-7 overflow-auto ${
+          sizeTabs[tools.length]
+        } text-center font-bold text-xs`}
+      >
         {tools?.map((tool) => (
           <Tab
             key={tool.name}
             className={({ selected }) =>
               classNames(
-                'btn text-xs p-1 lg:pb-3 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap',
-                selected ? 'btn-cyan' : 'btn-white'
+                'text-xs p-1 flex-1 lg:pb-3 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap',
+                selected ? 'tab-active' : 'tab-inactive'
               )
             }
           >
@@ -131,13 +142,22 @@ function Panel({
               'draftTranslate',
               'teamNotes',
               'personalNotes',
-              'audio',
+              'retelling',
               'dictionary',
               'info',
+              'tnotes',
+              'tquestions',
+              'twords',
             ].includes(tool.name) ? (
               <span title={t(tool.name)}>
                 {icons[tool.name]}
-                <span className="hidden ml-2 sm:inline">{t(tool.name)}</span>
+                <span
+                  className={`${
+                    tool.name && icons[tool.name] ? 'hidden' : ''
+                  } ml-2 sm:inline`}
+                >
+                  {t(tool.name)}
+                </span>
               </span>
             ) : (
               tool.name
@@ -149,18 +169,19 @@ function Panel({
         {tools.map((tool, index) => {
           return (
             <Tab.Panel key={index}>
-              <div className="flex flex-col bg-white rounded-lg h-full">
+              <div className="flex flex-col bg-th-secondary-10 rounded-lg h-full">
                 <Tool
                   editable={editable}
-                  targetResourceLink={targetResourceLink}
                   tnLink={tnLink}
                   config={{
                     reference,
                     wholeChapter,
+                    mainResource,
                     config: tool.config,
                     resource: resources[tool.name]
                       ? resources[tool.name]
                       : { manifest: { dublin_core: { subject: tool.name } } },
+                    isRtl,
                   }}
                   toolName={tool.name}
                 />

@@ -2,28 +2,32 @@ import { useEffect, useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
+import { useTranslation } from 'react-i18next'
+
+import { useQuotesTranslation } from '@texttree/tn-quote'
+
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
-
-import { useQuotesTranslation } from '@texttree/tn-quote'
 
 import { filterNotes } from 'utils/helper'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
   const [tnotes, setTnotes] = useState([])
-  const { isLoading, data, error } = useGetResource({ config, url })
-
+  const { isLoading, data } = useGetResource({ config, url })
   const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
     domain: process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org',
     book: config.reference.book,
     tnotes: data,
     usfm: {
       link:
+        config?.config?.quote_resource ??
         (process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org') +
-        '/' +
-        config.targetResourceLink,
+          '/' +
+          config.mainResource.owner +
+          '/' +
+          config.mainResource.repo,
     },
   })
   useEffect(() => {
@@ -35,7 +39,6 @@ function TN({ config, url, toolName }) {
       setTnotes(_data)
     }
   }, [extraTNotes])
-
   useEffect(() => {
     if (updateTnotes && data) {
       updateTnotes(data)
@@ -48,13 +51,16 @@ function TN({ config, url, toolName }) {
         <Placeholder />
       ) : (
         <div className="relative h-full">
-          <TNTWLContent setItem={setItem} item={item} />
-          <TNList
-            setItem={setItem}
-            data={tnotes}
-            toolName={toolName}
-            isLoading={isLoading || tnotes}
-          />
+          {item ? (
+            <TNTWLContent setItem={setItem} item={item} />
+          ) : (
+            <TNList
+              setItem={setItem}
+              data={tnotes}
+              toolName={toolName}
+              isLoading={isLoading || tnotes}
+            />
+          )}
         </div>
       )}
     </>
@@ -64,6 +70,7 @@ function TN({ config, url, toolName }) {
 export default TN
 
 function TNList({ setItem, data, toolName, isLoading }) {
+  const { t } = useTranslation()
   const [verses, setVerses] = useState([])
   const { highlightId, handleSaveScroll } = useScroll({
     toolName,
@@ -77,28 +84,36 @@ function TNList({ setItem, data, toolName, isLoading }) {
   }, [data])
 
   return (
-    <div className="divide-y divide-gray-800 divide-dashed h-full overflow-auto">
+    <div
+      id={`container_${toolName}`}
+      className="divide-y divide-th-text-primary divide-dashed h-full overflow-auto "
+    >
       {data &&
         verses.map(([verseNumber, notes], index) => {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-gray-700 pl-7 flex-1" id={'idtn' + verseNumber}>
+              <div className="pl-7 flex-1" id={'idtn' + verseNumber}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.ID}
                         id={'idtn' + note.ID}
-                        className={`p-2 cursor-pointer hover:bg-gray-200 ${
-                          highlightId === 'id' + note.ID ? 'bg-gray-200' : ''
+                        className={`p-2 cursor-pointer rounded-lg hover:bg-th-secondary-100 ${
+                          highlightId === 'id' + note.ID ? 'bg-th-secondary-100' : ''
                         }`}
                         onClick={() => {
                           handleSaveScroll(verseNumber, note.ID)
-                          setItem({ text: note.Note, title: note.Quote })
+                          setItem({
+                            text: note.Note,
+                            title: note.Quote || note.origQuote,
+                          })
                         }}
                       >
-                        <ReactMarkdown>{note.Quote}</ReactMarkdown>
+                        <ReactMarkdown>
+                          {note.Quote || note.origQuote || t('GeneralInformation')}
+                        </ReactMarkdown>
                       </li>
                     )
                   })}

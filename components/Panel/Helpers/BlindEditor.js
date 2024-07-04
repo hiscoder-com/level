@@ -1,14 +1,15 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
-import { useSetRecoilState } from 'recoil'
+import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
-import { toast, Toaster } from 'react-hot-toast'
+import { toast } from 'react-hot-toast'
+import { Switch } from '@headlessui/react'
 
-import { checkedVersesBibleState } from '../state/atoms'
+import { checkedVersesBibleState, isHideAllVersesState } from '../../state/atoms'
 import Modal from 'components/Modal'
 
 import { obsCheckAdditionalVerses } from 'utils/helper'
@@ -24,50 +25,55 @@ function BlindEditor({ config }) {
   const [verseObjects, setVerseObjects] = useState([])
   const [isOpenModal, setIsOpenModal] = useState(false)
   const [firstStepRef, setFirstStepRef] = useState({})
+  const [isHideAllVerses, setIsHideAllVerses] = useRecoilState(isHideAllVersesState)
   const { t } = useTranslation(['common'])
   const textAreaRef = useRef([])
-
   const setCheckedVersesBible = useSetRecoilState(checkedVersesBibleState)
+  //When it's true - we have 1 block translation and it save to first verse of divided verses
+  const isSingleBlockTranslation = config?.config?.is_single_block_translation
 
   useEffect(() => {
-    setVerseObjects(config.reference.verses)
-    let updatedArray = []
     const _verseObjects = config.reference.verses
-    config.reference.verses.forEach((el) => {
-      if (el.verse) {
-        updatedArray.push(el.num.toString())
-      }
-    })
-    setCheckedVersesBible(updatedArray)
+    setVerseObjects(_verseObjects)
+    const updatedArray = _verseObjects
+      .filter((verseObject) => verseObject.verse)
+      .map((verseObject) => verseObject.num.toString())
+    !isSingleBlockTranslation && setCheckedVersesBible(updatedArray)
     setTranslatedVerses(updatedArray)
     if (!updatedArray.length) {
       return
     }
-    if (updatedArray.length === _verseObjects.length) {
+    const lastNumInUpdatedArray = updatedArray[updatedArray.length - 1]
+    const nextIndex = _verseObjects.findIndex(
+      (verseObject, index) =>
+        verseObject.num.toString() === lastNumInUpdatedArray &&
+        index < _verseObjects.length - 1
+    )
+
+    if (nextIndex !== -1) {
+      setEnabledIcons([_verseObjects[nextIndex + 1].num.toString()])
+    } else if (updatedArray.length === _verseObjects.length) {
       setEnabledIcons(['0'])
-    } else {
-      for (let index = 0; index < _verseObjects.length; index++) {
-        if (
-          _verseObjects[index].num.toString() === updatedArray[updatedArray.length - 1] &&
-          index < _verseObjects.length - 1
-        ) {
-          setEnabledIcons([_verseObjects[index + 1].num.toString()])
-        }
-      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  const filteredVerseObjects = useMemo(() => {
+    return isSingleBlockTranslation
+      ? verseObjects.filter((_, index) => index === 0)
+      : verseObjects
+  }, [isSingleBlockTranslation, verseObjects])
 
   useEffect(() => {
-    if (!verseObjects || !verseObjects.length) {
+    if (!filteredVerseObjects || !filteredVerseObjects.length) {
       return
     }
-    if (verseObjects[verseObjects.length - 1].verse) {
+    if (filteredVerseObjects[filteredVerseObjects.length - 1].verse) {
       setIsShowFinalButton(
-        enabledIcons?.[0] === verseObjects[verseObjects.length - 1].num.toString()
+        enabledIcons?.[0] ===
+          filteredVerseObjects[filteredVerseObjects.length - 1].num.toString()
       )
     }
-  }, [enabledIcons, verseObjects])
+  }, [enabledIcons, filteredVerseObjects])
 
   const updateVerse = (id, text) => {
     setVerseObjects((prev) => {
@@ -77,46 +83,43 @@ function BlindEditor({ config }) {
   }
 
   const sendToDb = async (index) => {
-    setTranslatedVerses((prev) => [...prev, verseObjects[index].num.toString()])
+    setTranslatedVerses((prev) => [...prev, filteredVerseObjects[index].num.toString()])
+
     const res = await supabase.rpc('save_verse', {
-      new_verse: verseObjects[index].verse,
-      verse_id: verseObjects[index].verse_id,
+      new_verse: filteredVerseObjects[index].verse,
+      verse_id: filteredVerseObjects[index].verse_id,
     })
     if (res.error || !res) {
-      toast.error(t('SaveFailed') + '. ' + t('PleaseCheckInternetConnection'), {
+      toast.error(t('SaveFailed') + '. ' + t('CheckInternet'), {
         duration: 8000,
       })
-      console.log(res)
     }
   }
+
   const saveVerse = (ref) => {
     const { index, currentNumVerse, nextNumVerse, prevNumVerse, isTranslating } = ref
     if ((index !== 0 && !verseObjects[index - 1].verse) || isTranslating) {
-      if (textAreaRef?.current?.[index - 1]) {
-        textAreaRef?.current[index - 1].focus()
-      } else {
-        textAreaRef?.current[index].focus()
-      }
+      const focusIndex = textAreaRef?.current?.[index - 1] ? index - 1 : index
+      textAreaRef?.current?.[focusIndex]?.focus()
       return
     }
-
     setEnabledIcons((prev) => {
       return [
         ...prev,
         ...(index === 0 ? [currentNumVerse, nextNumVerse] : [nextNumVerse]),
       ].filter((el) => el !== prevNumVerse)
     })
-    setCheckedVersesBible((prev) => [...prev, currentNumVerse])
-
+    !isSingleBlockTranslation &&
+      setCheckedVersesBible((prev) => [...prev, currentNumVerse])
     setEnabledInputs((prev) =>
       [...prev, currentNumVerse].filter((el) => el !== prevNumVerse)
     )
     if (index === 0) {
       return
     }
-
     sendToDb(index - 1)
   }
+
   const handleSaveVerse = (ref) => {
     if (ref.index === 0 && !ref.isTranslating) {
       setIsOpenModal(true)
@@ -125,15 +128,17 @@ function BlindEditor({ config }) {
       saveVerse(ref)
     }
   }
-
   return (
     <>
       <div>
-        {verseObjects.map((verseObject, index) => {
+        {filteredVerseObjects.map((verseObject, index) => {
           const currentNumVerse = verseObject.num.toString()
           const nextNumVerse =
-            index < verseObjects.length - 1 ? verseObjects[index + 1].num.toString() : ''
-          const prevNumVerse = index !== 0 ? verseObjects[index - 1].num.toString() : ''
+            index < filteredVerseObjects.length - 1
+              ? filteredVerseObjects[index + 1].num.toString()
+              : ''
+          const prevNumVerse =
+            index !== 0 ? filteredVerseObjects[index - 1].num.toString() : ''
           const disabledButton = !(
             (index === 0 && !enabledIcons.length) ||
             enabledIcons.includes(currentNumVerse)
@@ -152,31 +157,40 @@ function BlindEditor({ config }) {
                     isTranslating,
                   })
                 }
-                className={`${isTranslating ? 'btn-cyan' : 'btn-white'}`}
+                className={`p-3 rounded-2xl ${
+                  isTranslating ? 'bg-th-primary-100 cursor-auto' : 'bg-th-secondary-100'
+                }`}
                 disabled={disabledButton}
               >
                 {isTranslated ? (
-                  <Check className="w-4 h-4 stroke-2" />
+                  <Check className="w-5 h-5 stroke-2 stroke-th-secondary-300" />
                 ) : (
                   <Pencil
                     className={`w-5 h-5 stroke-2 ${
                       disabledButton
-                        ? 'fill-gray-200'
+                        ? 'stroke-th-secondary-300'
                         : !isTranslating
-                        ? 'fill-cyan-600'
-                        : 'fill-white'
+                        ? 'fill-th-secondary-100'
+                        : 'stroke-th-text-secondary-100'
                     }`}
                   />
                 )}
               </button>
 
-              <div className="mx-4">{obsCheckAdditionalVerses(verseObject.num)}</div>
+              {!isSingleBlockTranslation && (
+                <div className="mx-4 mt-3">
+                  {obsCheckAdditionalVerses(verseObject.num)}
+                </div>
+              )}
               {isTranslating ? (
                 <textarea
                   ref={(el) => (textAreaRef.current[index] = el)}
+                  dir={config?.isRtl ? 'rtl' : 'ltr'}
                   autoFocus
-                  rows={1}
-                  className="resize-none focus:outline-none focus:inline-none w-full"
+                  rows={!isSingleBlockTranslation ? 1 : 10}
+                  className={`mt-3 w-full resize-none focus:outline-none focus:inline-none ${
+                    isSingleBlockTranslation ? 'border mx-4' : ''
+                  }`}
                   onChange={(e) => {
                     e.target.style.height = 'inherit'
                     e.target.style.height = `${e.target.scrollHeight}px`
@@ -188,10 +202,20 @@ function BlindEditor({ config }) {
                         .trim()
                     )
                   }}
+                  onBlur={() => {
+                    if (isSingleBlockTranslation) {
+                      sendToDb(filteredVerseObjects.length - 1)
+                    }
+                  }}
                   defaultValue={verseObject.verse ?? ''}
                 />
               ) : (
-                <div className="whitespace-pre-line">{verseObject.verse}</div>
+                <div
+                  className="mt-3 whitespace-pre-line w-full"
+                  dir={config?.isRtl ? 'rtl' : 'ltr'}
+                >
+                  {verseObject.verse}
+                </div>
               )}
             </div>
           )
@@ -201,15 +225,32 @@ function BlindEditor({ config }) {
             onClick={() => {
               setEnabledIcons(['201'])
               setEnabledInputs([])
-              sendToDb(verseObjects.length - 1)
+              sendToDb(filteredVerseObjects.length - 1)
             }}
-            className="btn-white"
+            className="btn-base bg-th-primary-100 text-th-text-secondary-100 hover:opacity-70"
           >
             {t('Save')}
           </button>
         )}
-        <Toaster />
       </div>
+      {isSingleBlockTranslation && (
+        <div className="flex items-center gap-2 mt-2">
+          <span className="w-auto">{t('HideVerses')}</span>
+          <Switch
+            checked={isHideAllVerses}
+            onChange={() => setIsHideAllVerses((prev) => !prev)}
+            className={`${
+              isHideAllVerses ? 'bg-th-primary-100' : 'bg-th-secondary-100'
+            } relative inline-flex h-6 w-11 items-center rounded-full`}
+          >
+            <span
+              className={`${
+                isHideAllVerses ? 'translate-x-6' : 'translate-x-1'
+              } inline-block h-4 w-4 transform rounded-full bg-white transition`}
+            />
+          </Switch>
+        </div>
+      )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">{t('AreYouSureWantStartBlind')}</div>
@@ -217,11 +258,14 @@ function BlindEditor({ config }) {
             <button
               className="btn-secondary flex-1"
               onClick={() => {
+                if (isSingleBlockTranslation) {
+                  setIsHideAllVerses(true)
+                }
                 setIsOpenModal(false)
                 saveVerse(firstStepRef)
                 setTimeout(() => {
                   if (textAreaRef?.current) {
-                    textAreaRef?.current[0].focus()
+                    textAreaRef.current[0].focus()
                   }
                 }, 1000)
               }}
@@ -230,9 +274,7 @@ function BlindEditor({ config }) {
             </button>
             <button
               className="btn-secondary flex-1"
-              onClick={() => {
-                setIsOpenModal(false)
-              }}
+              onClick={() => setIsOpenModal(false)}
             >
               {t('No')}
             </button>
