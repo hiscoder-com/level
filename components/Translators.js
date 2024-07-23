@@ -60,16 +60,12 @@ function Translators({
         }`}
       >
         {visibleTranslators.map((translator, key) => (
-          <div
-            key={key}
-            className={className}
-            onClick={() => handleTranslatorClick(translator)}
-          >
+          <div key={key} className={className} onClick={() => setIsModalOpen(true)}>
             <TranslatorImage
               item={translator}
               size={size}
               showModerator={showModerator}
-              isPointerCursor={clickable}
+              isPointerCursor
             />
           </div>
         ))}
