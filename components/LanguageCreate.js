@@ -7,11 +7,15 @@ import { useTranslation } from 'next-i18next'
 import Modal from 'components/Modal'
 import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
 function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const [isSaving, setIsSaving] = useState(false)
-
+  const [inputDirections, setInputDirections] = useState({
+    eng: calculateRtlDirection('ltr'),
+    origName: calculateRtlDirection('ltr'),
+  })
   const {
     register,
     handleSubmit,
@@ -33,6 +37,14 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
     } finally {
       setIsSaving(false)
     }
+  }
+  const handleInputChange = (e, fieldName) => {
+    const value = e.target.value
+    const direction = calculateRtlDirection(value)
+    setInputDirections((prev) => ({
+      ...prev,
+      [fieldName]: direction,
+    }))
   }
   const inputs = [
     {
@@ -76,6 +88,7 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
         ...register('code', {
           required: true,
           validate: {
+            wrongTypeCode: (value) => /^[a-z-]+$/i.test(value),
             notUnique: (value) => !languages?.find((el) => el.code === value),
           },
         }),
@@ -85,6 +98,8 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
           ? t('project-edit:CodeLanguageNotUnique')
           : errors?.code?.type === 'required'
           ? t('project-edit:CodeLanguageRequired')
+          : errors?.code?.type === 'wrongTypeCode'
+          ? t('project-edit:LanguageCodeMessageErrorWrongType')
           : '',
     },
   ]
@@ -95,7 +110,12 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
           {inputs.map((input) => (
             <div key={input.id} className="space-y-2">
               <div>{input.title}</div>
-              <input {...input.register} className={input.className} />
+              <input
+                {...input.register}
+                className={input.className}
+                onChange={(e) => handleInputChange(e, input.register.name)}
+                dir={inputDirections[input.register.name]}
+              />
               <div className="text-th-invalid">{input.errorMessage}</div>
             </div>
           ))}
