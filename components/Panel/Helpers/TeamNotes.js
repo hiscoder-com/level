@@ -30,6 +30,7 @@ import Export from 'public/export.svg'
 import Import from 'public/import.svg'
 import Close from 'public/close.svg'
 import Progress from 'public/progress.svg'
+import { calculateRtlDirection } from '@texttree/notepad-rcl/dist/components'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -72,9 +73,9 @@ function TeamNotes({ config }) {
   const [isOpenModal, setIsOpenModal] = useState(false)
   const { t } = useTranslation(['common', 'error'])
   const [term, setTerm] = useState('')
+  const [termDirection, setTermDirection] = useState('ltr')
   const { user } = useCurrentUser()
   const [allNotes] = useAllTeamlNotes()
-  const isRtl = config?.isRtl || false
 
   const {
     query: { project: code },
@@ -356,7 +357,7 @@ function TeamNotes({ config }) {
     }
   }
 
-  const classNameButtonIcon = 'flex items-center gap-2.5 py-1 pl-2.5 ltr:pr-7 rtl:pr-2'
+  const classNameButtonIcon = 'flex items-center gap-2.5 py-1 pl-2.5'
   const menuItems = {
     contextMenu: [
       {
@@ -442,7 +443,7 @@ function TeamNotes({ config }) {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   return (
-    <div dir={isRtl ? 'rtl' : 'ltr'} className="relative">
+    <div className="relative">
       {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
           {isModeratorAccess && (
@@ -450,11 +451,14 @@ function TeamNotes({ config }) {
               <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
             </div>
           )}
-          <div className="relative flex items-center mb-4">
+          <div className="relative flex items-center mb-4" dir={termDirection}>
             <input
               className="input-primary flex-1"
               value={term}
-              onChange={(event) => setTerm(event.target.value)}
+              onChange={(event) => {
+                setTermDirection(calculateRtlDirection(event.target.value))
+                setTerm(event.target.value)
+              }}
               placeholder={t('Search')}
             />
             {term && (
@@ -487,7 +491,6 @@ function TeamNotes({ config }) {
               handleRenameNode={handleRenameNode}
               handleDragDrop={isModeratorAccess ? handleDragDrop : null}
               openByDefault={false}
-              isRtl={isRtl}
             />
           ) : (
             <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100 mx-auto" />
@@ -504,7 +507,6 @@ function TeamNotes({ config }) {
                 menuContainer: menuItems.container.className,
                 emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
               }}
-              isRtl={isRtl}
             />
           )}
         </div>
@@ -533,7 +535,6 @@ function TeamNotes({ config }) {
             placeholder={isModeratorAccess ? t('TextNewNote') : ''}
             emptyTitle={t('EmptyTitle')}
             isSelectableTitle
-            isRtl={isRtl}
           />
         </>
       )}
