@@ -9,7 +9,6 @@ function Property({ t, property, content, type, updateProperty }) {
   useEffect(() => {
     setPropertyContent(content)
   }, [content])
-
   const additionalLinks = {
     intro: 'https://git.door43.org/ru_gl/ru_obs/raw/branch/master/content/front/intro.md',
     back: 'https://git.door43.org/ru_gl/ru_obs/raw/branch/master/content/back/intro.md',
