@@ -24,6 +24,7 @@ import Plus from 'public/plus.svg'
 import Export from 'public/export.svg'
 import Import from 'public/import.svg'
 import Close from 'public/close.svg'
+import { calculateRtlDirection } from '@texttree/notepad-rcl/dist/components'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -47,7 +48,7 @@ function Dictionary({ config }) {
   const [activeWord, setActiveWord] = useState()
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
-  const isRtl = config?.isRtl || false
+  const [termDirection, setTermDirection] = useState('ltr')
 
   const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
@@ -353,9 +354,7 @@ function Dictionary({ config }) {
     setAlphabetProject(project?.dictionaries_alphabet)
   }, [project])
 
-  const classNameButtonIcon = `flex items-center gap-2.5 py-1 pl-2.5 ${
-    isRtl ? 'pr-2' : 'pr-7'
-  }`
+  const classNameButtonIcon = `flex items-center gap-2.5 py-1 pl-2.5`
   const menuItems = {
     menu: [
       {
@@ -391,7 +390,7 @@ function Dictionary({ config }) {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   return (
-    <div dir={isRtl ? 'rtl' : 'ltr'} className="relative">
+    <div className="relative">
       {!activeWord ? (
         <>
           <div className="flex gap-4 items-start">
@@ -420,13 +419,13 @@ function Dictionary({ config }) {
               setSearchQuery={setSearchQuery}
               setCurrentPageWords={setCurrentPageWords}
               t={t}
-              isRtl={isRtl}
             />
-            <div className="relative flex items-center mt-2 ml-2">
+            <div className="relative flex items-center mb-4" dir={termDirection}>
               <input
                 className="input-primary"
                 value={searchQuery}
                 onChange={(e) => {
+                  setTermDirection(calculateRtlDirection(e.target.value))
                   setCurrentPageWords(0)
                   setSearchQuery(e.target.value)
                 }}
@@ -434,9 +433,7 @@ function Dictionary({ config }) {
               />
               {searchQuery && (
                 <Close
-                  className={`absolute р-6 w-6 z-10 cursor-pointer ${
-                    isRtl ? 'left-1' : 'right-1 '
-                  }`}
+                  className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1"
                   onClick={getAll}
                 />
               )}
@@ -453,14 +450,14 @@ function Dictionary({ config }) {
                 }}
                 setNoteId={setWordId}
                 classes={{
-                  item: 'flex justify-between items-start rounded-lg cursor-pointer group hover:bg-th-secondary-100',
-                  title: 'font-bold p-2 mr-4',
+                  item: 'flex w-full rounded-lg cursor-pointer group hover:bg-th-secondary-100',
+                  title: 'font-bold p-2 mr-4 flex',
                   text: 'px-2 h-10 overflow-hidden',
                   delBtn: 'p-2 m-1 top-0 opacity-0 group-hover:opacity-100',
+                  titleBlock: 'flex justify-between items-center w-full',
                 }}
                 isShowDelBtn={isModeratorAccess}
                 delBtnChildren={<Trash className="w-4 h-4 stroke-th-text-primary" />}
-                isRtl={isRtl}
               />
               {totalPageCount > 1 && (
                 <div className="flex justify-around bottom-0 left-0">
@@ -519,7 +516,6 @@ function Dictionary({ config }) {
             readOnly={!isModeratorAccess}
             placeholder={isModeratorAccess ? t('common:TextDescriptionWord') : ''}
             isSelectableTitle
-            isRtl={isRtl}
           />
         </>
       )}
