@@ -3,6 +3,7 @@ import { Combobox, Transition } from '@headlessui/react'
 
 import { useTranslation } from 'next-i18next'
 import { useLanguages, useProjects } from 'utils/hooks'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
 import Plus from 'public/plus.svg'
 import Down from 'public/arrow-down.svg'
@@ -15,18 +16,37 @@ function BasicInformation({
   methods,
   setIsOpenLanguageCreate,
   uniqueCheck = false,
+  isCreate = false,
+  getValues = () => {},
 }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
   const [projects] = useProjects()
   const [languages] = useLanguages()
   const [selectedLanguage, setSelectedLanguage] = useState(null)
   const [query, setQuery] = useState('')
+  const [inputDirections, setInputDirections] = useState({
+    title: calculateRtlDirection(getValues('title') || ''),
+    origtitle: calculateRtlDirection(getValues('origtitle') || ''),
+    code: 'ltr',
+  })
+  const [languageDirection, setLanguageDirection] = useState(
+    calculateRtlDirection(selectedLanguage?.orig_name || '')
+  )
+
   useEffect(() => {
     if (project !== null && project !== undefined) {
       setSelectedLanguage(project.languages)
     }
   }, [project])
+  const handleInputChange = (e, fieldName) => {
+    const value = e.target.value
 
+    const direction = calculateRtlDirection(value)
+    setInputDirections((prev) => ({
+      ...prev,
+      [fieldName]: direction,
+    }))
+  }
   const filteredLanguages =
     query === ''
       ? languages
@@ -81,33 +101,37 @@ function BasicInformation({
           : errors?.code?.type === 'notUniqueProject'
           ? t('CodeMessageErrorNotUniqueProject')
           : '',
+      readOnly: !isCreate,
     },
   ]
 
   return (
     <div className="flex flex-col gap-3 text-base">
-      {inputs.map((input) => (
-        <div
-          className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 md:gap-2"
-          key={input.title}
-        >
-          <div className="w-auto md:w-1/5 font-bold">{input.title}</div>
-          <div className="flex flex-col gap-2 w-full md:w-4/5">
-            <input
-              dir={project?.is_rtl && input.id === 2 ? 'rtl' : 'ltr'}
-              className={
-                input?.errorCondition
-                  ? 'input-invalid'
-                  : 'input-primary bg-th-secondary-10'
-              }
-              placeholder={input.placeholder}
-              {...input.register}
-              readOnly={input.readOnly}
-            />
-            {input.errorMessage && <div>{' ' + input.errorMessage}</div>}
+      {inputs.map((input) => {
+        return (
+          <div
+            className="flex flex-col md:flex-row justify-start items-start md:items-center gap-4 md:gap-2"
+            key={input.title}
+          >
+            <div className="w-auto md:w-1/5 font-bold">{input.title}</div>
+            <div className="flex flex-col gap-2 w-full md:w-4/5">
+              <input
+                dir={inputDirections[input.register.name]}
+                className={
+                  input?.errorCondition
+                    ? 'input-invalid'
+                    : 'input-primary bg-th-secondary-10'
+                }
+                placeholder={input.placeholder}
+                {...input.register}
+                readOnly={input.readOnly}
+                onChange={(e) => handleInputChange(e, input.register.name)}
+              />
+              {input.errorMessage && <div>{' ' + input.errorMessage}</div>}
+            </div>
           </div>
-        </div>
-      ))}
+        )
+      })}
       <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-2">
         <div className="w-auto md:w-1/5 font-bold">{t('Language')}</div>
         <div className="flex flex-col md:flex-row gap-4 md:gap-2 w-full md:w-4/5">
@@ -118,7 +142,9 @@ function BasicInformation({
               onChange={(e) => {
                 setValue('languageId', e.id)
                 setSelectedLanguage(e)
+                setLanguageDirection(calculateRtlDirection(e.orig_name))
               }}
+              dir={languageDirection}
             >
               {({ open }) => (
                 <div className="relative text-th-text-primary">
@@ -128,7 +154,10 @@ function BasicInformation({
                         open ? 'rounded-t-lg border-b-0' : 'rounded-lg'
                       }`}
                       displayValue={(language) => language?.orig_name}
-                      onChange={(event) => setQuery(event.target.value)}
+                      onChange={(event) => {
+                        setLanguageDirection(calculateRtlDirection(event.target.value))
+                        setQuery(event.target.value)
+                      }}
                     />
                     <Combobox.Button className="absolute inset-y-0 right-0 pr-4">
                       <Down className="h-5 w-5 stroke-th-text-primary pointer-events-none" />

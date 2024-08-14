@@ -159,6 +159,7 @@ function ProjectCreate() {
               methods={methods}
               setIsOpenLanguageCreate={setIsOpenLanguageCreate}
               uniqueCheck
+              isCreate
             />
           </div>
           <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 py-7">

@@ -194,6 +194,7 @@ function ProjectEdit() {
                   setIsOpenLanguageCreate={setIsOpenLanguageCreate}
                   uniqueCheck={getValues('code') !== code}
                   project={project}
+                  getValues={getValues}
                 />
                 <ButtonLoading isLoading={isSavingBasic}>{t('Save')}</ButtonLoading>
               </form>
