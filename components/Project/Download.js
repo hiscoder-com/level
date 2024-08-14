@@ -247,8 +247,10 @@ function Download({
     if (!resources) return null
     const names = { tnotes: 'tNotes', twords: 'tWords', tquestions: 'tQuestions' }
     const resourceNames = Object.entries(resources).reduce((acc, [resource, value]) => {
-      acc[resource] =
-        names[resource] || resource.charAt(0).toUpperCase() + resource.slice(1)
+      acc[resource] = {
+        name: names[resource] || resource.charAt(0).toUpperCase() + resource.slice(1),
+        title: value?.manifest?.dublin_core?.title || '',
+      }
       return acc
     }, {})
     return resourceNames
@@ -311,6 +313,7 @@ function Download({
     }
   }
   const createConfig = async (project, chapters) => {
+    console.log(chapters, project)
     if (!chapters || !project) {
       return null
     }
@@ -407,6 +410,7 @@ function Download({
       }
       addChaptersToZip(zip, chapters)
       const config = await createConfig(project, chapters)
+      console.log({ config })
       zip.file('config.json', config)
       return zip
     } catch (error) {
