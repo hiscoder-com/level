@@ -48,12 +48,11 @@ function Download({
   const supabase = useSupabaseClient()
   const isRtl = project?.is_rtl
 
-  const { t } = useTranslation(['common', 'projects'])
+  const { t } = useTranslation(['common', 'projects', 'books'])
   const {
     query: { code },
   } = useRouter()
   const [book] = useGetBook({ code, book_code: bookCode })
-
   const options = useMemo(() => {
     const options = isRtl ? [] : [{ label: 'PDF', value: 'pdf' }]
     let extraOptions = []
@@ -247,8 +246,10 @@ function Download({
     if (!resources) return null
     const names = { tnotes: 'tNotes', twords: 'tWords', tquestions: 'tQuestions' }
     const resourceNames = Object.entries(resources).reduce((acc, [resource, value]) => {
-      acc[resource] =
-        names[resource] || resource.charAt(0).toUpperCase() + resource.slice(1)
+      acc[resource] = {
+        name: names[resource] || resource.charAt(0).toUpperCase() + resource.slice(1),
+        title: value?.manifest?.dublin_core?.title || '',
+      }
       return acc
     }, {})
     return resourceNames
@@ -323,12 +324,14 @@ function Download({
     if (!method?.offline_steps) {
       return null
     }
+    const bookName =
+      book.properties.scripture.toc2 || t('books:' + bookCode, { lng: 'en' })
     const config = {
       steps: method.offline_steps,
       method: method.title,
-      project: project.title,
+      project: { code: project.code, title: project.title },
       chapters: initChapters,
-      book: { code: bookCode, name: bookCode },
+      book: { code: bookCode, name: bookName },
       resources: addResourceName(project.resources),
       mainResource: project.base_manifest.resource,
     }
@@ -421,7 +424,8 @@ function Download({
         throw new Error('Archive not created')
       }
       const content = await archive.generateAsync({ type: 'blob' })
-      saveAs(content, 'archive.zip')
+      const fileName = `${project.code}_${bookCode}.zip`
+      saveAs(content, fileName)
     } catch (error) {
       toast.error(t('DownloadError'))
       console.error('Error downloading archive:', error)
