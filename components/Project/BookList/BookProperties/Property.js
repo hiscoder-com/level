@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import ReactTextareaAutosize from 'react-textarea-autosize'
-import { calculateRtlDirection } from '@texttree/notepad-rcl/dist/components'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
 function Property({ t, property, content, type, updateProperty }) {
   const [propertyContent, setPropertyContent] = useState()

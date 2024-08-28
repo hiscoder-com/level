@@ -30,7 +30,7 @@ import Export from 'public/export.svg'
 import Import from 'public/import.svg'
 import Close from 'public/close.svg'
 import Progress from 'public/progress.svg'
-import { calculateRtlDirection } from '@texttree/notepad-rcl/dist/components'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
