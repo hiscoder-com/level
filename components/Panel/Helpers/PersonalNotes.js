@@ -29,6 +29,7 @@ import Import from 'public/import.svg'
 import Rename from 'public/rename.svg'
 import Close from 'public/close.svg'
 import Progress from 'public/progress.svg'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -82,8 +83,8 @@ function PersonalNotes({ config }) {
   })
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
+  const [termDirection, setTermDirection] = useState('ltr')
   const supabase = useSupabaseClient()
-  const isRtl = config?.isRtl || false
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
   }
@@ -451,17 +452,20 @@ function PersonalNotes({ config }) {
 
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
   return (
-    <div dir={isRtl ? 'rtl' : 'ltr'} className="relative">
+    <div className="relative">
       {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
           <div className="flex ltr:justify-end rtl:justify-start w-full">
             <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
           </div>
-          <div className="relative flex items-center mb-4">
+          <div className="relative flex items-center mb-4" dir={termDirection}>
             <input
               className="input-primary flex-1"
               value={term}
-              onChange={(event) => setTerm(event.target.value)}
+              onChange={(event) => {
+                setTermDirection(calculateRtlDirection(event.target.value))
+                setTerm(event.target.value)
+              }}
               placeholder={t('Search')}
             />
             {term && (
@@ -495,7 +499,6 @@ function PersonalNotes({ config }) {
                 handleRenameNode={handleRenameNode}
                 handleDragDrop={handleDragDrop}
                 openByDefault={false}
-                isRtl={isRtl}
               />
               <ContextMenu
                 setIsVisible={setIsShowMenu}
@@ -508,7 +511,6 @@ function PersonalNotes({ config }) {
                   menuContainer: menuItems.container.className,
                   emptyMenu: 'p-2.5 cursor-pointer text-gray-300',
                 }}
-                isRtl={isRtl}
               />
             </>
           ) : (
@@ -539,7 +541,6 @@ function PersonalNotes({ config }) {
             placeholder={t('TextNewNote')}
             emptyTitle={t('EmptyTitle')}
             isSelectableTitle
-            isRtl={isRtl}
           />
         </>
       )}
