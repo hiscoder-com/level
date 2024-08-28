@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import ReactTextareaAutosize from 'react-textarea-autosize'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
 function Property({ t, property, content, type, updateProperty }) {
   const [propertyContent, setPropertyContent] = useState()
+  const [direction, setDirection] = useState(calculateRtlDirection(content || ''))
   useEffect(() => {
     setPropertyContent(content)
   }, [content])
@@ -36,8 +38,12 @@ function Property({ t, property, content, type, updateProperty }) {
           `book-properties:${property}_placeholder${type === 'obs' ? '_obs' : ''}`
         )}
         value={propertyContent}
-        onChange={(e) => setPropertyContent(e.target.value)}
+        onChange={(e) => {
+          setPropertyContent(e.target.value)
+          setDirection(calculateRtlDirection(e.target.value))
+        }}
         onBlur={() => updateProperty(propertyContent, property)}
+        dir={direction}
       />
     </>
   )

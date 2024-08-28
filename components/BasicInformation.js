@@ -34,7 +34,7 @@ function BasicInformation({
   )
 
   useEffect(() => {
-    if (project !== null && project !== undefined) {
+    if (project) {
       setSelectedLanguage(project.languages)
     }
   }, [project])

@@ -78,21 +78,17 @@ function BriefBlock({ access, title = false }) {
     }
   }, [supabase])
 
-  const handleSwitchToggleBrief = async (toggleType) => {
+  const handleSwitchToggleBrief = async () => {
     if (brief) {
+      const toggleValue = brief.is_enable
       try {
-        const endpoint =
-          toggleType === 'is_enable'
-            ? `/api/briefs/switch/${project?.id}/is_enable`
-            : `/api/briefs/switch/${project?.id}/is_rtl`
-        const toggleValue = toggleType === 'is_enable' ? !brief.is_enable : !brief.is_rtl
-        await axios.put(endpoint, {
-          [toggleType]: toggleValue,
+        await axios.put(`/api/briefs/switch/${project?.id}/is_enable`, {
+          is_enable: !toggleValue,
         })
         mutate()
         toast.success(
           t(
-            `project-edit:BriefToggle${toggleType.split('_').join('')}Success${
+            `project-edit:BriefToggleisenableSuccess${
               !toggleValue ? 'Enabled' : 'Disabled'
             }`
           )
@@ -180,7 +176,7 @@ function BriefBlock({ access, title = false }) {
               <SwitchLoading
                 id="brief-switch"
                 checked={brief?.is_enable || false}
-                onChange={() => handleSwitchToggleBrief('is_enable')}
+                onChange={handleSwitchToggleBrief}
               />
             </div>
           )}
@@ -204,17 +200,6 @@ function BriefBlock({ access, title = false }) {
                 checked={editableMode}
                 withDelay={true}
                 onChange={(value) => setEditableMode(value)}
-              />
-            </div>
-          )}
-          {access && project?.is_rtl && (
-            <div className="flex items-center">
-              <span className="mr-3">{t('project-edit:Rtl')}</span>
-              <SwitchLoading
-                id="editable-rtl-switch"
-                checked={brief?.is_rtl}
-                withDelay={true}
-                onChange={() => handleSwitchToggleBrief('is_rtl')}
               />
             </div>
           )}
@@ -250,7 +235,6 @@ function BriefBlock({ access, title = false }) {
                                   subIndex={blockIndex}
                                   className="input-primary"
                                   editable={access}
-                                  isRtl={brief?.is_rtl}
                                 />
                               </div>
                             </div>
@@ -269,7 +253,6 @@ function BriefBlock({ access, title = false }) {
                           className="input-primary font-normal"
                           editable={access}
                           textarea
-                          isRtl={brief?.is_rtl}
                         />
                       </div>
                     </li>
