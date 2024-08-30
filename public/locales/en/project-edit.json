@@ -28,7 +28,6 @@
   "LanguageCode": "Language code",
   "LanguageEngName": "Name of the language in English",
   "LanguageOrigName": "The name in the original language",
-  "LanguageCodeMessageErrorWrongType": "Please use Latin characters and hyphens only",
   "NameLanguageNotUnique": "The name of the language is not unique",
   "NameLanguageRequired": "The name of the language is required",
   "OrigNameLanguageRequired": "The name in the original language is required",
