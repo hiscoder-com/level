@@ -13,7 +13,7 @@
   "BasicInformation": "Basic information",
   "Brief": "Brief",
   "BriefToggleError": "Failed to toggle the brief",
-  "BriefToggleisenableSuccessDisabled": " The brief has been disabled",
+  "BriefToggleisenableSuccessDisabled": "The brief has been disabled",
   "BriefToggleisenableSuccessEnabled": "The brief has been enabled",
   "CodeLanguageNotUnique": "The code of the language is not unique",
   "CodeLanguageRequired": "The code of the language is required",
