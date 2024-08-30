@@ -14,6 +14,8 @@
   "Brief": "Brief",
   "BriefToggleError": "Failed to toggle the brief",
   "BriefToggleisenableSuccessDisabled": "The brief has been disabled",
+  "BriefToggleisrtlSuccessEnabled": "The direction rtl in the brief has been enabled",
+  "BriefToggleisrtlSuccessDisabled": "The direction rtl in the brief has been disabled",
   "BriefToggleisenableSuccessEnabled": "The brief has been enabled",
   "CodeLanguageNotUnique": "The name of the language is not unique",
   "CodeLanguageRequired": "The code of the language is required",
