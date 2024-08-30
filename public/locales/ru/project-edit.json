@@ -14,6 +14,8 @@
   "Brief": "Бриф",
   "BriefToggleError": "Не удалось переключить бриф",
   "BriefToggleisenableSuccessDisabled": "Бриф отключен",
+  "BriefToggleisrtlSuccessEnabled": "Направление rtl в брифе включено",
+  "BriefToggleisrtlSuccessDisabled": "Направление rtl в брифе отключено",
   "BriefToggleisenableSuccessEnabled": "Бриф включен",
   "CodeLanguageNotUnique": "Название языка не является уникальным",
   "CodeLanguageRequired": "Необходимо ввести код языка",
