@@ -20,6 +20,7 @@ import SectionBlock from './SectionBlock'
 
 import Close from 'public/close.svg'
 import VcanaLogo from 'public/vcana-logo-color.svg'
+import CookiesAproove from './CookiesAproove'
 
 function StartPage({ defaultContentKey = null }) {
   const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
@@ -93,7 +94,7 @@ function StartPage({ defaultContentKey = null }) {
 
   return (
     <>
-      <main className="hidden md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
+      <main className="hidden relative md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
           <div
             className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
@@ -174,10 +175,10 @@ function StartPage({ defaultContentKey = null }) {
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pl-3 xl:pl-6">
           <div className="h-32 rounded-2xl bg-slate-550">
             <p
-              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl uppercase cursor-pointer after:rounded-2xl"
-              onClick={() => handleContentClick('demo')}
+              className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10 cursor-pointer"
+              onClick={() => handleContentClick('signIn')}
             >
-              {t('Demo')}
+              {t('users:SignIn')}
             </p>
           </div>
           <div
@@ -194,17 +195,21 @@ function StartPage({ defaultContentKey = null }) {
               {t('Verse.Matthew')}
             </p>
           </div>
+
           <div className="h-32 rounded-2xl bg-slate-550">
             <p
-              className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10 cursor-pointer"
-              onClick={() => handleContentClick('signIn')}
+              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl uppercase cursor-pointer after:rounded-2xl"
+              onClick={() => handleContentClick('demo')}
             >
-              {t('users:SignIn')}
+              {t('Demo')}
             </p>
           </div>
         </aside>
+        <div className="hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2  z-10">
+          <CookiesAproove />
+        </div>
       </main>
-      <main className="flex md:hidden flex-col gap-5 p-5 font-medium text-lg">
+      <main className="relative flex md:hidden flex-col gap-5 p-5 font-medium text-lg">
         <SectionBlock
           sectionKey="logo"
           content={<Logo t={t} />}
@@ -213,24 +218,31 @@ function StartPage({ defaultContentKey = null }) {
           isLogo={true}
           label={<VcanaLogo className="h-7" />}
         />
-
         <div className="grid grid-cols-2 gap-5 text-center">
-          {!showSections.updates && (
+          {!showSections.signIn && (
             <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl z-20">
               <SwitchLocalization />
             </div>
           )}
-
           <div
-            className={`p-5 bg-th-secondary-10 rounded-xl ${
-              showSections.updates ? 'col-span-2' : ''
+            className={`p-5 rounded-xl ${
+              showSections.signIn
+                ? 'col-span-2 bg-th-secondary-10'
+                : 'bg-slate-550 text-th-text-secondary-100'
             }`}
-            onClick={() => toggleSection('updates')}
+            onClick={() => toggleSection('signIn')}
           >
-            {!showSections.updates ? (
-              <p>{t('Updates')}</p>
-            ) : (
-              <AboutVersion isStartPage={true} />
+            <p className={`${showSections.signIn ? 'mb-5 font-semibold' : ''}`}>
+              {showSections.signIn ? t('users:LoginToAccount') : t('users:SignIn')}
+            </p>
+            {showSections.signIn && (
+              <Login
+                handleClick={() => {
+                  toggleSection(
+                    showSections.signIn && showSections.feedback ? 'signIn' : 'feedback'
+                  )
+                }}
+              />
             )}
           </div>
         </div>
@@ -329,9 +341,8 @@ function StartPage({ defaultContentKey = null }) {
           showSection={showSections.feedback}
           toggleSection={toggleSection}
         />
-
         <div className="grid grid-cols-2 gap-5 text-center">
-          {!showSections.signIn && (
+          {!showSections.updates && (
             <div
               className={`p-5 bg-th-secondary-10 rounded-xl ${
                 showSections.demo ? 'col-span-2' : ''
@@ -347,27 +358,22 @@ function StartPage({ defaultContentKey = null }) {
 
           {!showSections.demo && (
             <div
-              className={`p-5 rounded-xl ${
-                showSections.signIn
-                  ? 'col-span-2 bg-th-secondary-10'
-                  : 'bg-slate-550 text-th-text-secondary-100'
+              className={`p-5 bg-th-secondary-10 rounded-xl ${
+                showSections.updates ? 'col-span-2' : ''
               }`}
-              onClick={() => toggleSection('signIn')}
+              onClick={() => toggleSection('updates')}
             >
-              <p className={`${showSections.signIn ? 'mb-5 font-semibold' : ''}`}>
-                {showSections.signIn ? t('users:LoginToAccount') : t('users:SignIn')}
-              </p>
-              {showSections.signIn && (
-                <Login
-                  handleClick={() => {
-                    toggleSection(
-                      showSections.signIn && showSections.feedback ? 'signIn' : 'feedback'
-                    )
-                  }}
-                />
+              {!showSections.updates ? (
+                <p>{t('Updates')}</p>
+              ) : (
+                <AboutVersion isStartPage={true} />
               )}
             </div>
           )}
+        </div>
+
+        <div className="md:hidden block absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
+          <CookiesAproove />
         </div>
       </main>
     </>
