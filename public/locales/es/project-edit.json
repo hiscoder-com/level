@@ -14,8 +14,6 @@
   "Brief": "Breve",
   "BriefToggleError": "Error al alternar el breve",
   "BriefToggleisenableSuccessDisabled": "El informe ha sido inhabilitado",
-  "BriefToggleisrtlSuccessEnabled": "La dirección de rtl en el resumen ha sido habilitada",
-  "BriefToggleisrtlSuccessDisabled": "La dirección de rtl en el resumen ha sido desactivada",
   "BriefToggleisenableSuccessEnabled": "El escrito ha sido habilitado",
   "CodeLanguageNotUnique": "El nombre del idioma no es único",
   "CodeLanguageRequired": "El código del idioma es requerido",
