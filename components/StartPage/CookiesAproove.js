@@ -23,9 +23,9 @@ function CookiesAproove() {
     <>
       {isShowCookiesModal && (
         <div className="max-w-sm bg-th-text-secondary-100 p-5 rounded-2xl shadow-2xl">
-          <p className="text-base font-bold">{t('cookies.title')}</p>
+          <p className="text-base font-bold">{t('Cookies.Title')}</p>
           <p className="text-sm font-medium">
-            {t('cookies.text')}{' '}
+            {t('Cookies.Text')}{' '}
             <a href="/privacy-policy" target="_blank" className="text-th-primary-100">
               {' '}
               {t('PrivacyPolicy')}
