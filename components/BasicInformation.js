@@ -41,7 +41,7 @@ function BasicInformation({
   const handleInputChange = (e, fieldName) => {
     const value = e.target.value
 
-    const direction = calculateRtlDirection(value)
+    const direction = calculateRtlDirection(value || '')
     setInputDirections((prev) => ({
       ...prev,
       [fieldName]: direction,
@@ -142,7 +142,7 @@ function BasicInformation({
               onChange={(e) => {
                 setValue('languageId', e.id)
                 setSelectedLanguage(e)
-                setLanguageDirection(calculateRtlDirection(e.orig_name))
+                setLanguageDirection(calculateRtlDirection(e.orig_name || ''))
               }}
               dir={languageDirection}
             >
@@ -155,7 +155,9 @@ function BasicInformation({
                       }`}
                       displayValue={(language) => language?.orig_name}
                       onChange={(event) => {
-                        setLanguageDirection(calculateRtlDirection(event.target.value))
+                        setLanguageDirection(
+                          calculateRtlDirection(event.target.value || '')
+                        )
                         setQuery(event.target.value)
                       }}
                     />

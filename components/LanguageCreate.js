@@ -40,7 +40,7 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   }
   const handleInputChange = (e, fieldName) => {
     const value = e.target.value
-    const direction = calculateRtlDirection(value)
+    const direction = calculateRtlDirection(value || '')
     setInputDirections((prev) => ({
       ...prev,
       [fieldName]: direction,
