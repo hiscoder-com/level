@@ -2,7 +2,7 @@ import { useState } from 'react'
 import DropdownMenu from './DropdownMenu'
 import Plus from 'public/plus.svg'
 
-function MenuButtons({ classNames, menuItems }) {
+function MenuButtons({ classNames, menuItems, disabled = false }) {
   const [isOpenDotsMenu, setIsOpenDotsMenu] = useState(false)
   const [isOpenPlusMenu, setIsOpenPlusMenu] = useState(false)
 
@@ -33,7 +33,8 @@ function MenuButtons({ classNames, menuItems }) {
       {buttons.map((button) => (
         <div key={button.id} className="relative">
           <button
-            className="btn-tertiary p-3 mb-3"
+            disabled={disabled}
+            className={`btn-tertiary p-3 mb-3 ${disabled ? 'opacity-70' : ''}`}
             onClick={() => button.action((prev) => !prev)}
           >
             {button.icon}

@@ -444,30 +444,37 @@ function TeamNotes({ config }) {
 
   return (
     <div className="relative">
+      <div className="flex gap-2 flex-row-reverse rtl:flex-row">
+        {isModeratorAccess && (
+          <div className="flex ltr:justify-end rtl:justify-start">
+            <MenuButtons
+              disabled={activeNote && Object.keys(activeNote)?.length}
+              classNames={dropMenuClassNames}
+              menuItems={dropMenuItems}
+            />
+          </div>
+        )}
+        <div className="relative flex items-center mb-3 grow " dir={termDirection}>
+          <input
+            disabled={activeNote && Object.keys(activeNote)?.length}
+            className="input-primary flex-1 h-full"
+            value={term}
+            onChange={(event) => {
+              setTermDirection(calculateRtlDirection(event.target.value))
+              setTerm(event.target.value)
+            }}
+            placeholder={t('Search')}
+          />
+          {term && (
+            <Close
+              className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1"
+              onClick={() => setTerm('')}
+            />
+          )}
+        </div>
+      </div>
       {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
-          {isModeratorAccess && (
-            <div className="flex ltr:justify-end rtl:justify-start w-full">
-              <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
-            </div>
-          )}
-          <div className="relative flex items-center mb-4" dir={termDirection}>
-            <input
-              className="input-primary flex-1"
-              value={term}
-              onChange={(event) => {
-                setTermDirection(calculateRtlDirection(event.target.value))
-                setTerm(event.target.value)
-              }}
-              placeholder={t('Search')}
-            />
-            {term && (
-              <Close
-                className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1"
-                onClick={() => setTerm('')}
-              />
-            )}
-          </div>
           {!isLoading || notes?.length ? (
             <TreeView
               term={term}
