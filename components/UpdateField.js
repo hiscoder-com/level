@@ -16,7 +16,7 @@ function UpdateField({
   const { t } = useTranslation(['project-edit'])
 
   const [valueField, setValueField] = useState(value)
-  const [direction, setDirection] = useState(calculateRtlDirection(value))
+  const [direction, setDirection] = useState(calculateRtlDirection(value || ''))
   useEffect(() => {
     if (value !== undefined && value !== null) {
       setValueField(value)
@@ -27,7 +27,7 @@ function UpdateField({
     value: valueField ?? '',
     onChange: (e) => {
       setValueField(e.target.value)
-      setDirection(calculateRtlDirection(e.target.value))
+      setDirection(calculateRtlDirection(e.target.value || ''))
     },
     onBlur: () => {
       updateValue({ value: valueField?.trim(), index, subIndex, fieldName })
