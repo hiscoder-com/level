@@ -525,9 +525,9 @@ function PersonalNotes({ config }) {
           )}
         </div>
       ) : (
-        <>
+        <div className="relative">
           <div
-            className="flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute top-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -539,7 +539,7 @@ function PersonalNotes({ config }) {
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 bg-th-secondary-100 font-bold rounded-lg shadow-md',
+              title: 'p-2 ms-12 mb-4 bg-th-secondary-100 font-bold rounded-lg shadow-md',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
@@ -549,7 +549,7 @@ function PersonalNotes({ config }) {
             emptyTitle={t('EmptyTitle')}
             isSelectableTitle
           />
-        </>
+        </div>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">

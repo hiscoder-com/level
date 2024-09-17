@@ -394,9 +394,9 @@ function Dictionary({ config }) {
 
   return (
     <div className="relative">
-      <div className="flex gap-4 items-start">
+      <div className="flex gap-4 items-start w-full">
         {isModeratorAccess && (
-          <div>
+          <div className="w-full">
             <div className="flex gap-2 rtl:flex-row-reverse w-full">
               <div className="relative flex items-center mb-3 grow" dir={termDirection}>
                 <input
@@ -412,6 +412,7 @@ function Dictionary({ config }) {
                 />
                 {searchQuery && (
                   <Close
+                    disabled={!!activeWord}
                     className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1"
                     onClick={getAll}
                   />
@@ -439,6 +440,7 @@ function Dictionary({ config }) {
                   <>
                     <Disclosure.Panel>
                       <Alphabet
+                        disabled={!!activeWord}
                         alphabet={alphabetProject}
                         getAll={getAll}
                         setSearchQuery={setSearchQuery}
@@ -446,11 +448,11 @@ function Dictionary({ config }) {
                         t={t}
                       />
                     </Disclosure.Panel>
-                    <Disclosure.Button className={'text-gray-450 w-full'}>
+                    <Disclosure.Button className="text-th-secondary-300 w-full">
                       <div className="w-full flex justify-center flex-col mb-4 items-center">
                         <div className="h-px bg-gray-450 mb-3 w-full" />
                         <div className="flex gap-2">
-                          <p>Символы</p>
+                          <p>{t('common:Symbols')}</p>
                           <ArrowDown
                             className={`w-5 h-5 stroke-gray-450  ${
                               open ? 'rotate-180' : ''
@@ -588,32 +590,34 @@ function Dictionary({ config }) {
 
 export default Dictionary
 
-function Alphabet({ alphabet, getAll, setCurrentPageWords, setSearchQuery, t }) {
+function Alphabet({
+  alphabet,
+  getAll,
+  setCurrentPageWords,
+  setSearchQuery,
+  t,
+  disabled,
+}) {
   const uniqueAlphabet = [...new Set(alphabet)]
 
   return (
-    <div className="w-full flex flex-wrap bg-gray-150 rounded-xl p-1 text-[#242424]">
+    <div className="w-full grid grid-cols-12 bg-th-secondary-100 rounded-xl p-1 text-th-text-primary">
       {uniqueAlphabet &&
         uniqueAlphabet
           .sort((a, b) => a.localeCompare(b))
           .map((letter, index) => (
-            <div
+            <button
               key={`${letter}_${index}`}
               onClick={() => {
                 setCurrentPageWords(0)
                 setSearchQuery(letter.toLowerCase())
               }}
-              className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-300"
+              disabled={disabled}
+              className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-300 disabled:cursor-auto "
             >
               {letter}
-            </div>
+            </button>
           ))}
-      {/* <div
-        className="py-1 px-3 rounded-md cursor-pointer hover:bg-th-secondary-100"
-        onClick={getAll}
-      >
-        {t('common:ShowAll')}
-      </div> */}
     </div>
   )
 }
