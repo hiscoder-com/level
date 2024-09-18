@@ -539,7 +539,9 @@ function PersonalNotes({ config }) {
           </div>
           <Redactor
             classes={{
-              title: 'p-2 ms-12 mb-4 bg-th-secondary-100 font-bold rounded-lg shadow-md',
+              wrapper: 'flex flex-col',
+              title:
+                'p-2 ms-12 mb-4 bg-th-secondary-100 font-bold rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}

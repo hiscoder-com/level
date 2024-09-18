@@ -532,7 +532,9 @@ function TeamNotes({ config }) {
           </div>
           <Redactor
             classes={{
-              title: 'ms-12 p-2 mb-4 font-bold bg-th-secondary-100 rounded-lg shadow-md',
+              wrapper: 'flex flex-col',
+              title:
+                'ms-12 p-2 mb-4 font-bold bg-th-secondary-100 rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}

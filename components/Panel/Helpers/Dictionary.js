@@ -411,11 +411,13 @@ function Dictionary({ config }) {
                   placeholder={t('common:Search')}
                 />
                 {searchQuery && (
-                  <Close
+                  <button
                     disabled={!!activeWord}
-                    className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1"
                     onClick={getAll}
-                  />
+                    className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1 opacity-70 disabled:cursor-auto"
+                  >
+                    <Close />
+                  </button>
                 )}
               </div>
               <div className="flex gap-2 justify-end ltr:flex-row rtl:flex-row-reverse">
@@ -536,8 +538,9 @@ function Dictionary({ config }) {
           </div>
           <Redactor
             classes={{
-              wrapper: '',
-              title: 'bg-th-secondary-100 ms-12 p-2 mb-4 font-bold rounded-lg shadow-md',
+              wrapper: 'flex flex-col',
+              title:
+                'bg-th-secondary-100 ms-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
               redactor:
                 'p-4 my-4 pb-20 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
@@ -613,7 +616,7 @@ function Alphabet({
                 setSearchQuery(letter.toLowerCase())
               }}
               disabled={disabled}
-              className="py-1 px-3 rounded-md cursor-pointer hover:bg-gray-300 disabled:cursor-auto "
+              className="py-1 rounded-md cursor-pointer disabled:cursor-auto disabled:hover:bg-th-secondary-100 hover:bg-th-secondary-200"
             >
               {letter}
             </button>
