@@ -414,7 +414,7 @@ function Dictionary({ config }) {
                   <button
                     disabled={!!activeWord}
                     onClick={getAll}
-                    className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1 opacity-70 disabled:cursor-auto"
+                    className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1 disabled:opacity-70 disabled:cursor-auto"
                   >
                     <Close />
                   </button>
@@ -527,7 +527,7 @@ function Dictionary({ config }) {
       ) : (
         <div className="relative">
           <div
-            className="absolute top-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveWord()
               setActiveWord(null)
@@ -540,7 +540,7 @@ function Dictionary({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'bg-th-secondary-100 ms-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
+                'bg-th-secondary-100 ms-12 rtl:ms-0 rtl:me-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
               redactor:
                 'p-4 my-4 pb-20 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}

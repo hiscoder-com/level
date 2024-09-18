@@ -466,10 +466,13 @@ function TeamNotes({ config }) {
             placeholder={t('Search')}
           />
           {term && (
-            <Close
-              className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1"
+            <button
+              disabled={activeNote && Object.keys(activeNote)?.length}
               onClick={() => setTerm('')}
-            />
+              className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1 disabled:opacity-70 disabled:cursor-auto"
+            >
+              <Close />
+            </button>
           )}
         </div>
       </div>
@@ -520,7 +523,7 @@ function TeamNotes({ config }) {
       ) : (
         <div className="relative">
           <div
-            className="absolute top-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -534,7 +537,7 @@ function TeamNotes({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'ms-12 p-2 mb-4 font-bold bg-th-secondary-100 rounded-lg shadow-md grow',
+                'ms-12 rtl:ms-0 rtl:me-12 p-2 mb-4 font-bold bg-th-secondary-100 rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
