@@ -74,6 +74,7 @@ function TeamNotes({ config }) {
   const { t } = useTranslation(['common', 'error'])
   const [term, setTerm] = useState('')
   const [termDirection, setTermDirection] = useState('ltr')
+  const [backBtnDirection, setBackBtnDirection] = useState('ltr')
   const { user } = useCurrentUser()
   const [allNotes] = useAllTeamlNotes()
 
@@ -442,6 +443,12 @@ function TeamNotes({ config }) {
 
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
+  useEffect(() => {
+    if (activeNote.title) {
+      setBackBtnDirection(calculateRtlDirection(activeNote.title))
+    }
+  }, [activeNote])
+
   return (
     <div className="relative">
       <div className="flex gap-2 flex-row-reverse rtl:flex-row">
@@ -521,7 +528,7 @@ function TeamNotes({ config }) {
           )}
         </div>
       ) : (
-        <div className="relative">
+        <div className="relative" dir={backBtnDirection}>
           <div
             className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
@@ -537,7 +544,7 @@ function TeamNotes({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'ms-12 rtl:ms-0 rtl:me-12 p-2 mb-4 font-bold bg-th-secondary-100 rounded-lg shadow-md grow',
+                'ms-12 p-2 mb-4 font-bold bg-th-secondary-100 rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}

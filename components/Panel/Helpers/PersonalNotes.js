@@ -84,6 +84,7 @@ function PersonalNotes({ config }) {
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
   const [termDirection, setTermDirection] = useState('ltr')
+  const [backBtnDirection, setBackBtnDirection] = useState('ltr')
   const supabase = useSupabaseClient()
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
@@ -450,6 +451,12 @@ function PersonalNotes({ config }) {
     ),
   }
 
+  useEffect(() => {
+    if (activeNote.title) {
+      setBackBtnDirection(calculateRtlDirection(activeNote?.title))
+    }
+  }, [activeNote])
+
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
   return (
     <div className="relative">
@@ -528,7 +535,7 @@ function PersonalNotes({ config }) {
           )}
         </div>
       ) : (
-        <div className="relative">
+        <div className="relative group" dir={backBtnDirection}>
           <div
             className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
@@ -544,7 +551,7 @@ function PersonalNotes({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'p-2 ms-12 rtl:ms-0 rtl:me-12 mb-4 bg-th-secondary-100 font-bold rounded-lg shadow-md grow',
+                'p-2 ms-12 mb-4 bg-th-secondary-100 font-bold rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}

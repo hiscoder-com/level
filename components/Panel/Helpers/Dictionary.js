@@ -52,6 +52,7 @@ function Dictionary({ config }) {
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
   const [termDirection, setTermDirection] = useState('ltr')
+  const [backBtnDirection, setBackBtnDirection] = useState('ltr')
 
   const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
@@ -392,6 +393,12 @@ function Dictionary({ config }) {
 
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
+  useEffect(() => {
+    if (activeWord?.title) {
+      setBackBtnDirection(calculateRtlDirection(activeWord.title))
+    }
+  }, [activeWord])
+
   return (
     <div className="relative">
       <div className="flex gap-4 items-start w-full">
@@ -525,7 +532,7 @@ function Dictionary({ config }) {
           )}
         </>
       ) : (
-        <div className="relative">
+        <div className="relative" dir={backBtnDirection}>
           <div
             className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
@@ -540,7 +547,7 @@ function Dictionary({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'bg-th-secondary-100 ms-12 rtl:ms-0 rtl:me-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
+                'bg-th-secondary-100 ms-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
               redactor:
                 'p-4 my-4 pb-20 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
