@@ -397,7 +397,7 @@ function Dictionary({ config }) {
     if (activeWord?.title) {
       setBackBtnDirection(calculateRtlDirection(activeWord.title))
     }
-  }, [activeWord])
+  }, [activeWord?.title])
 
   return (
     <div className="relative">

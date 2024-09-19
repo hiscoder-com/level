@@ -444,10 +444,10 @@ function TeamNotes({ config }) {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
 
   useEffect(() => {
-    if (activeNote.title) {
+    if (activeNote?.title) {
       setBackBtnDirection(calculateRtlDirection(activeNote.title))
     }
-  }, [activeNote])
+  }, [activeNote?.title])
 
   return (
     <div className="relative">

@@ -452,10 +452,10 @@ function PersonalNotes({ config }) {
   }
 
   useEffect(() => {
-    if (activeNote.title) {
+    if (activeNote?.title) {
       setBackBtnDirection(calculateRtlDirection(activeNote?.title))
     }
-  }, [activeNote])
+  }, [activeNote?.title])
 
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
   return (
