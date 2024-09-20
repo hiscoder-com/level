@@ -285,7 +285,7 @@
 }
 
 .btn-tertiary {
-  @apply right-0 bg-th-primary-100 text-th-text-secondary-100 font-bold rounded-xl cursor-pointer hover:opacity-70
+  @apply right-0 bg-th-primary-100 text-th-text-secondary-100 font-bold rounded-xl cursor-pointer hover:opacity-70 disabled:cursor-auto
 }
 
 .btn-quaternary {

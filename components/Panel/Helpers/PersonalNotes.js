@@ -84,6 +84,7 @@ function PersonalNotes({ config }) {
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
   const [termDirection, setTermDirection] = useState('ltr')
+  const [titleDirection, setTitleDirection] = useState('ltr')
   const supabase = useSupabaseClient()
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
@@ -450,31 +451,45 @@ function PersonalNotes({ config }) {
     ),
   }
 
+  useEffect(() => {
+    if (activeNote?.title) {
+      setTitleDirection(calculateRtlDirection(activeNote?.title))
+    }
+  }, [activeNote?.title])
+
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
   return (
     <div className="relative">
+      <div className="flex gap-2 flex-row-reverse rtl:flex-row">
+        <MenuButtons
+          disabled={activeNote && Object.keys(activeNote)?.length}
+          classNames={dropMenuClassNames}
+          menuItems={dropMenuItems}
+        />
+        <div className="relative flex items-center mb-3 grow" dir={termDirection}>
+          <input
+            disabled={activeNote && Object.keys(activeNote)?.length}
+            className="input-primary flex-1 h-full"
+            value={term}
+            onChange={(event) => {
+              setTermDirection(calculateRtlDirection(event.target.value))
+              setTerm(event.target.value)
+            }}
+            placeholder={t('Search')}
+          />
+          {term && (
+            <button
+              disabled={activeNote && Object.keys(activeNote)?.length}
+              onClick={() => setTerm('')}
+              className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1 disabled:opacity-70 disabled:cursor-auto"
+            >
+              <Close />
+            </button>
+          )}
+        </div>
+      </div>
       {!activeNote || !Object.keys(activeNote)?.length ? (
         <div>
-          <div className="flex ltr:justify-end rtl:justify-start w-full">
-            <MenuButtons classNames={dropMenuClassNames} menuItems={dropMenuItems} />
-          </div>
-          <div className="relative flex items-center mb-4" dir={termDirection}>
-            <input
-              className="input-primary flex-1"
-              value={term}
-              onChange={(event) => {
-                setTermDirection(calculateRtlDirection(event.target.value))
-                setTerm(event.target.value)
-              }}
-              placeholder={t('Search')}
-            />
-            {term && (
-              <Close
-                className="absolute р-6 w-6 z-10 cursor-pointer  ltr:right-1 rtl:left-1"
-                onClick={() => setTerm('')}
-              />
-            )}
-          </div>
           {!isLoading || notes?.length ? (
             <>
               <TreeView
@@ -518,9 +533,9 @@ function PersonalNotes({ config }) {
           )}
         </div>
       ) : (
-        <>
+        <div className="relative group" dir={titleDirection}>
           <div
-            className="flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute top-0 left-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -532,17 +547,20 @@ function PersonalNotes({ config }) {
           </div>
           <Redactor
             classes={{
-              title: 'p-2 my-4 bg-th-secondary-100 font-bold rounded-lg shadow-md',
+              wrapper: 'flex flex-col',
+              title:
+                'bg-th-secondary-100 ml-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
+            titleDirection={titleDirection}
             setActiveNote={setActiveNote}
             placeholder={t('TextNewNote')}
             emptyTitle={t('EmptyTitle')}
             isSelectableTitle
           />
-        </>
+        </div>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
         <div className="flex flex-col gap-7 items-center">
