@@ -8,8 +8,14 @@
   "Demo": "Demo",
   "Iagree": "I agree",
   "Idecline": "I decline",
-  "LogoHeader": "V-CANA platform created by TextTree Movement",
-  "LogoText": "The TextTree Movement is a movement that provides materials, software, and media resources for Bible translation and biblical content. TextTree Movement equips churches to create church-centered, open-license translations of Scripture.",
+  "LogoHeader": "V-CANA Platform Created by Glokas",
+  "LogoText": {
+    "p1": "Glokas is an AI-powered translation and localization platform specifically designed for Christian content and projects. Rapid, low-cost, efficient, and innovative.",
+    "p2": "At Glokas, our vision is to assist Christian ministries in spreading the Gospel of Jesus Christ through translation, localization tools, and services. We focus on all types of materials, and even small projects are equally important to us because even a small message of salvation can make a huge impact. That's why we are dedicated to creating an ecosystem that makes translation faster and more affordable without compromising quality.",
+    "p3": "Our slogan is 'One Gospel in different formats, to all languages, reaching billions of people.' We are not a translation agency but a platform that connects mission organizations with native translators, providing tools to make the translation process easy.",
+    "p4": "V-CANA's main goal is to help translate the Bible into all languages, using any translation methods and materials.",
+    "p5": "If you are interested in our tools and methods, please contact us."
+  },
   "MainBlocks": {
     "FAQ": "FAQ",
     "FAQBlock": {
