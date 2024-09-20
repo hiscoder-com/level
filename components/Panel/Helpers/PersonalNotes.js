@@ -84,7 +84,7 @@ function PersonalNotes({ config }) {
   const [dataForTreeView, setDataForTreeView] = useState(convertNotesToTree(notes))
   const [term, setTerm] = useState('')
   const [termDirection, setTermDirection] = useState('ltr')
-  const [backBtnDirection, setBackBtnDirection] = useState('ltr')
+  const [titleDirection, setTitleDirection] = useState('ltr')
   const supabase = useSupabaseClient()
   const removeCacheAllNotes = (key) => {
     localStorage.removeItem(key)
@@ -453,7 +453,7 @@ function PersonalNotes({ config }) {
 
   useEffect(() => {
     if (activeNote?.title) {
-      setBackBtnDirection(calculateRtlDirection(activeNote?.title))
+      setTitleDirection(calculateRtlDirection(activeNote?.title))
     }
   }, [activeNote?.title])
 
@@ -461,13 +461,11 @@ function PersonalNotes({ config }) {
   return (
     <div className="relative">
       <div className="flex gap-2 flex-row-reverse rtl:flex-row">
-        <div className="flex ltr:justify-end rtl:justify-start">
-          <MenuButtons
-            disabled={activeNote && Object.keys(activeNote)?.length}
-            classNames={dropMenuClassNames}
-            menuItems={dropMenuItems}
-          />
-        </div>
+        <MenuButtons
+          disabled={activeNote && Object.keys(activeNote)?.length}
+          classNames={dropMenuClassNames}
+          menuItems={dropMenuItems}
+        />
         <div className="relative flex items-center mb-3 grow" dir={termDirection}>
           <input
             disabled={activeNote && Object.keys(activeNote)?.length}
@@ -535,9 +533,9 @@ function PersonalNotes({ config }) {
           )}
         </div>
       ) : (
-        <div className="relative group" dir={backBtnDirection}>
+        <div className="relative group" dir={titleDirection}>
           <div
-            className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute top-0 left-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -551,11 +549,12 @@ function PersonalNotes({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'p-2 ms-12 mb-4 bg-th-secondary-100 font-bold rounded-lg shadow-md grow',
+                'bg-th-secondary-100 ml-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
             activeNote={activeNote}
+            titleDirection={titleDirection}
             setActiveNote={setActiveNote}
             placeholder={t('TextNewNote')}
             emptyTitle={t('EmptyTitle')}

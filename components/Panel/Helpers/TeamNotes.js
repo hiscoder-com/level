@@ -74,7 +74,7 @@ function TeamNotes({ config }) {
   const { t } = useTranslation(['common', 'error'])
   const [term, setTerm] = useState('')
   const [termDirection, setTermDirection] = useState('ltr')
-  const [backBtnDirection, setBackBtnDirection] = useState('ltr')
+  const [titleDirection, setTitleDirection] = useState('ltr')
   const { user } = useCurrentUser()
   const [allNotes] = useAllTeamlNotes()
 
@@ -445,7 +445,7 @@ function TeamNotes({ config }) {
 
   useEffect(() => {
     if (activeNote?.title) {
-      setBackBtnDirection(calculateRtlDirection(activeNote.title))
+      setTitleDirection(calculateRtlDirection(activeNote.title))
     }
   }, [activeNote?.title])
 
@@ -528,9 +528,9 @@ function TeamNotes({ config }) {
           )}
         </div>
       ) : (
-        <div className="relative" dir={backBtnDirection}>
+        <div className="relative" dir={titleDirection}>
           <div
-            className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute top-0 left-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -544,7 +544,7 @@ function TeamNotes({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'ms-12 p-2 mb-4 font-bold bg-th-secondary-100 rounded-lg shadow-md grow',
+                'bg-th-secondary-100 ml-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
               redactor:
                 'pb-20 pt-4 px-4 my-4 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}

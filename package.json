@@ -25,7 +25,7 @@
     "@headlessui/react": "^1.7.15",
     "@supabase/auth-helpers-nextjs": "^0.7.2",
     "@supabase/supabase-js": "^2.26.0",
-    "@texttree/notepad-rcl": "^2.6.3",
+    "@texttree/notepad-rcl": "2.6.4",
     "@texttree/obs-format-convert-rcl": "^0.4.2",
     "@texttree/tn-quote": "^0.5.0",
     "@texttree/translation-words-helpers": "^0.2.4",
@@ -75,5 +75,6 @@
     "prettier": "^2.8.8",
     "standard-version": "^9.5.0",
     "tailwindcss": "^3.3.2"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

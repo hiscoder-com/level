@@ -52,7 +52,7 @@ function Dictionary({ config }) {
   const [wordId, setWordId] = useState('')
   const [words, setWords] = useState(null)
   const [termDirection, setTermDirection] = useState('ltr')
-  const [backBtnDirection, setBackBtnDirection] = useState('ltr')
+  const [titleDirection, setTitleDirection] = useState('ltr')
 
   const { t } = useTranslation(['common, error'])
   const { user } = useCurrentUser()
@@ -395,7 +395,7 @@ function Dictionary({ config }) {
 
   useEffect(() => {
     if (activeWord?.title) {
-      setBackBtnDirection(calculateRtlDirection(activeWord.title))
+      setTitleDirection(calculateRtlDirection(activeWord.title))
     }
   }, [activeWord?.title])
 
@@ -427,7 +427,7 @@ function Dictionary({ config }) {
                   </button>
                 )}
               </div>
-              <div className="flex gap-2 justify-end ltr:flex-row rtl:flex-row-reverse">
+              <div className="flex gap-2">
                 <button
                   disabled={!!activeWord}
                   className={`btn-tertiary p-3 mb-3 ${!!activeWord ? 'opacity-70' : ''}`}
@@ -532,9 +532,9 @@ function Dictionary({ config }) {
           )}
         </>
       ) : (
-        <div className="relative" dir={backBtnDirection}>
+        <div className="relative" dir={titleDirection}>
           <div
-            className="absolute top-0 rtl:right-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute top-0 left-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveWord()
               setActiveWord(null)
@@ -547,7 +547,7 @@ function Dictionary({ config }) {
             classes={{
               wrapper: 'flex flex-col',
               title:
-                'bg-th-secondary-100 ms-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
+                'bg-th-secondary-100 ml-12 p-2 mb-4 font-bold rounded-lg shadow-md grow',
               redactor:
                 'p-4 my-4 pb-20 bg-th-secondary-100 overflow-hidden break-words rounded-lg shadow-md',
             }}
