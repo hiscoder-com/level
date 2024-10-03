@@ -13,7 +13,7 @@ import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-import VcanaLogo from 'public/vcana-logo.svg'
+import LevelLogo from 'public/level-logo.svg'
 import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 
@@ -57,7 +57,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             } md:ml-0 `}
           >
             <Link href={logoLink}>
-              <VcanaLogo className="h-6 fill-th-text-secondary-100" />
+              <LevelLogo className="h-11 fill-th-text-secondary-100" />
             </Link>
           </div>
 

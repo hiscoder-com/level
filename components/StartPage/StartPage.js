@@ -7,19 +7,19 @@ import { useTranslation } from 'next-i18next'
 import AboutVersion from 'components/AboutVersion'
 import Feedback from './Feedback'
 import Logo from './Logo'
-import Demo from './Demo'
+import Download from './Download'
 import Login from './Login'
 import Reviews from './Reviews'
 import PasswordRecovery from './PasswordRecovery'
 import HowItWorks from './HowItWorks'
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 import SwitchLocalization from 'components/SwitchLocalization'
-import VcanaIntro from './VcanaIntro'
+import LevelIntro from './LevelIntro'
 import Partners from './Partners'
 import SectionBlock from './SectionBlock'
 
 import Close from 'public/close.svg'
-import VcanaLogo from 'public/vcana-logo-color.svg'
+import LevelLogo from 'public/level-logo-color.svg'
 import CookiesAproove from './CookiesAproove'
 
 function StartPage({ defaultContentKey = null }) {
@@ -33,7 +33,7 @@ function StartPage({ defaultContentKey = null }) {
     partners: false,
     feedback: false,
     signIn: false,
-    demo: false,
+    download: false,
     passwordRecovery: false,
   })
 
@@ -73,11 +73,11 @@ function StartPage({ defaultContentKey = null }) {
     connect: <Feedback t={t} onClose={() => setContentKey(null)} />,
     updates: <AboutVersion isStartPage={true} />,
     partners: <Partners t={t} />,
-    intro: <VcanaIntro t={t} />,
+    intro: <LevelIntro t={t} />,
     reviews: <Reviews t={t} />,
     howItWork: <HowItWorks t={t} />,
     faq: <FrequentlyAskedQuestions t={t} />,
-    demo: <Demo t={t} />,
+    download: <Download t={t} />,
     logo: <Logo t={t} />,
     passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
@@ -100,7 +100,7 @@ function StartPage({ defaultContentKey = null }) {
             className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
             onClick={() => handleContentClick('logo')}
           >
-            <VcanaLogo className="w-44" />
+            <LevelLogo className="" />
           </div>
           <div className="flex justify-between items-center h-[4.4rem] p-5 lg:p-7 bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
             <p>{t('projects:Language')}</p>
@@ -129,7 +129,7 @@ function StartPage({ defaultContentKey = null }) {
               <div
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
                 onClick={() => setContentKey('intro')}
-                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsVcana') }}
+                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsLevel') }}
               ></div>
 
               <div
@@ -196,12 +196,12 @@ function StartPage({ defaultContentKey = null }) {
             </p>
           </div>
 
-          <div className="h-32 rounded-2xl bg-slate-550">
+          <div className="h-32 rounded-2xl bg-slate-550 cursor-pointer">
             <p
-              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl uppercase cursor-pointer after:rounded-2xl"
-              onClick={() => handleContentClick('demo')}
+              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl aftercursor-pointer after:rounded-2xl"
+              onClick={() => handleContentClick('download')}
             >
-              {t('Demo')}
+              {t('common:Download')}
             </p>
           </div>
         </aside>
@@ -216,7 +216,7 @@ function StartPage({ defaultContentKey = null }) {
           showSection={showSections.logo}
           toggleSection={toggleSection}
           isLogo={true}
-          label={<VcanaLogo className="h-7" />}
+          label={<LevelLogo className="h-7" />}
         />
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
@@ -260,11 +260,11 @@ function StartPage({ defaultContentKey = null }) {
           ></div>
           <div className="relative z-10">
             {blocks.intro.clicked ? (
-              <VcanaIntro t={t} opacity={blocks.intro.opacity} />
+              <LevelIntro t={t} opacity={blocks.intro.opacity} />
             ) : (
               <p
                 className="text-white"
-                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsVcana') }}
+                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsLevel') }}
               ></p>
             )}
           </div>
@@ -345,18 +345,18 @@ function StartPage({ defaultContentKey = null }) {
           {!showSections.updates && (
             <div
               className={`p-5 bg-th-secondary-10 rounded-xl ${
-                showSections.demo ? 'col-span-2' : ''
+                showSections.download ? 'col-span-2' : ''
               }`}
-              onClick={() => toggleSection('demo')}
+              onClick={() => toggleSection('download')}
             >
-              <p className={`uppercase ${showSections.demo ? 'font-semibold' : ''}`}>
-                {t('Demo')}
+              <p className={`uppercase ${showSections.download ? 'font-semibold' : ''}`}>
+                {t('Download')}
               </p>
-              {showSections.demo && <Demo t={t} />}
+              {showSections.download && <Download t={t} />}
             </div>
           )}
 
-          {!showSections.demo && (
+          {!showSections.download && (
             <div
               className={`p-5 bg-th-secondary-10 rounded-xl ${
                 showSections.updates ? 'col-span-2' : ''

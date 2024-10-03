@@ -5,7 +5,7 @@ function useSupabaseClient() {
   const [supabaseClient] = useState(() =>
     createPagesBrowserClient({
       cookieOptions: {
-        name: process.env.NEXT_PUBLIC_COOKIE_NAME ?? 'sb-vcana-cookies',
+        name: process.env.NEXT_PUBLIC_COOKIE_NAME ?? 'sb-level-cookies',
         sameSite: 'lax',
       },
     })

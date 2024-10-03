@@ -1,12 +1,12 @@
 {
-  "name": "v-cana",
-  "version": "0.23.0",
+  "name": "level",
+  "version": "0.24.0",
   "license": "MIT",
   "author": {
-    "name": "TextTree"
+    "name": "Glokas"
   },
   "description": "App to translate Scripture step by step",
-  "homepage": "https://v-cana.com/",
+  "homepage": "https://level.bible/",
   "private": true,
   "scripts": {
     "dev": "next dev",

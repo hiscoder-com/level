@@ -12,9 +12,9 @@ export default function UsersPage() {
     <>
       <Head>
         <title>
-          {t('common:V-CANA')} - {t('UsersList')}
+          {t('common:LEVEL')} - {t('UsersList')}
         </title>
-        <meta name="description" content="VCANA" />
+        <meta name="description" content="LEVEL" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="mx-auto max-w-7xl pb-10">

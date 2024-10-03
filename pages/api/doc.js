@@ -9,8 +9,8 @@ const swaggerHandler = withSwagger({
       securitySchemes: { ApiKeyAuth: { type: 'apiKey', in: 'header', name: 'token' } },
     },
     info: {
-      description: 'This documentation describes the V-Cana API.',
-      title: 'V-CANA API.',
+      description: 'This documentation describes the LEVEL API.',
+      title: 'LEVEL API.',
       license: {
         name: 'MIT',
         url: 'http://opensource.org/licenses/MIT',

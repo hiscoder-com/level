@@ -1,4 +1,13 @@
-# Version 0.23.0
+# Version 0.24.0
+## Date: 10/04/2024
+
+### **Added:**
+- download desktop version
+
+### **Changed:**
+- main logo
+- name of the project
+
 ## Date: 07/03/2024
 
 ### **Added:**
