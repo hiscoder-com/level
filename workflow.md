@@ -224,7 +224,7 @@ import { useRouter } from 'next/router'
 
 import Layout from '../components/Layout'
 
-import VcanaLogo from '../public/vcana-logo.svg'
+import LevelLogo from '../public/level-logo.svg'
 ```
 
 <br>

@@ -1,3 +1,13 @@
+# Versión 0.24.0
+## Fecha: 04/10/2024
+
+### **Agregado:**
+- descarga de la versión de escritorio
+
+### **Cambiado:**
+- logo principal
+- nombre del proyecto
+
 # Versión 0.23.0
 ## Fecha: 07/03/2024
 

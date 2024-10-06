@@ -1,12 +1,12 @@
-import VCanaIntro from 'public/v-cana-intro.svg'
+import LevelIntroImage from 'public/level-intro.svg'
 import Close from 'public/close.svg'
 
-function VcanaIntro({ t, opacity }) {
+function LevelIntro({ t, opacity }) {
   return (
     <div className="flex flex-col w-full">
       <p
         className="font-semibold md:font-bold"
-        dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsVcana') }}
+        dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsLevel') }}
       ></p>
       <Close
         className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
@@ -16,12 +16,12 @@ function VcanaIntro({ t, opacity }) {
           opacity || ''
         }`}
       >
-        {t('MainBlocks.VcanaText')}
+        {t('MainBlocks.LevelText')}
       </p>
       <div className="flex flex-grow flex-col justify-center items-center pb-6 md:pb-0">
-        <VCanaIntro className="w-full" />
+        <LevelIntroImage className="w-full" />
       </div>
     </div>
   )
 }
-export default VcanaIntro
+export default LevelIntro

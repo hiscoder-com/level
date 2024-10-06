@@ -140,7 +140,7 @@ function TranslatorPage({ last_step }) {
     <div>
       <Head>
         <title>{stepConfig?.title}</title>
-        <meta name="description" content="VCANA" />
+        <meta name="description" content="LEVEL" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {versesRange.length && stepConfig ? (

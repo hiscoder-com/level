@@ -28,23 +28,23 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/texttree/v-cana">
-    <img src="public/vcana-logo-color.svg" alt="Logo" width="200" height="80">
+  <a href="https://github.com/hiscoder-com/level">
+    <img src="public/level-logo-color.svg" alt="Logo" width="200" height="80">
   </a>
 
-<h3 align="center">V-CANA</h3>
+<h3 align="center">LEVEL</h3>
 
   <p align="center">
     App to translate Scripture step by step
     <br />
-    <a href="https://github.com/texttree/v-cana"><strong>Explore the docs »</strong></a>
+    <a href="https://github.com/hiscoder-com/level"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://v-cana.netlify.app/">View Demo</a>
+    <a href="https://level.bible/">View Demo</a>
     ·
-    <a href="https://github.com/texttree/v-cana/issues">Report Bug</a>
+    <a href="https://github.com/hiscoder-com/level/issues">Report Bug</a>
     ·
-    <a href="https://github.com/texttree/v-cana/issues">Request Feature</a>
+    <a href="https://github.com/hiscoder-com/level/issues">Request Feature</a>
   </p>
 </div>
 
@@ -64,10 +64,10 @@
       <a href="#getting-started">Getting Started</a>      
     </li>
     <li>
-      <a href="#installation-v-cana-online">Installation V-CANA Online</a>      
+      <a href="#installation-level-online">Installation LEVEL Online</a>      
     </li>
      <li>
-      <a href="#installation-v-cana-intranet">Installation V-CANA Intranet</a>      
+      <a href="#installation-level-intranet">Installation LEVEL Intranet</a>      
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
@@ -114,13 +114,13 @@ App to translate Scripture step by step
 
 <!-- GETTING STARTED -->
 ## Getting Started
-There are 2 versions to install: V-CANA Online and V-CANA Intranet.
+There are 2 versions to install: LEVEL Online and LEVEL Intranet.
 
-## Installation V-CANA Online
+## Installation LEVEL Online
 
 ### Prerequisites
 
-The online version of v-cana consists of 2 parts:
+The online version of level consists of 2 parts:
 1. The Supabase project, which allows you to store data.
 2. The NextJS application.
 
@@ -168,11 +168,11 @@ The online version of v-cana consists of 2 parts:
 #### Clone the repo
 
    ```sh
-   git clone https://github.com/texttree/v-cana.git
+   git clone https://github.com/hiscoder-com/level.git
    ```
-#### Go to the v-cana folder
+#### Go to the level folder
 
-    cd v-cana
+    cd level
 
 #### Install NPM packages
    `npm install `    or   `yarn`
@@ -291,7 +291,7 @@ Copy this information to `.env.local`
   After that, a link to the translate will appear in your personal account. 
 
      
-## Installation V-CANA Intranet
+## Installation LEVEL Intranet
 
   <ol>
     <li>
@@ -300,7 +300,7 @@ Copy this information to `.env.local`
     <li>
       <a href="#installation-of-the-necessary-environment">Installation of the necessary environment</a>      
     </li>
-    <li><a href="#installing-the-v-cana-intranet">Installing the V-cana Intranet</a></li>
+    <li><a href="#installing-the-level-intranet">Installing the LEVEL Intranet</a></li>
     <li><a href="#loading-local-resources">Loading local resources</a></li>
     <li><a href="#connecting-to-the-server">Connecting to the server</a></li>
     <li><a href="#creating-users">Creating users</a></li>
@@ -309,7 +309,7 @@ Copy this information to `.env.local`
 
 ### Recommendations and system requirements
 
-We recommend installing V-CANA Intranet on a computer with a Linux system (tested on Linux mint 21.3) and at least 16 GB of RAM.
+We recommend installing LEVEL Intranet on a computer with a Linux system (tested on Linux mint 21.3) and at least 16 GB of RAM.
 
 In this instruction, we assume that the installation is carried out on a clean system without previously installed docker images.
 
@@ -352,13 +352,13 @@ Example:
     newgrp docker
     service docker start
 
-### Installing the V-cana Intranet
+### Installing the LEVEL Intranet
 
 In our test, we emulated the installation on a computer that works completely without the Internet.
 
 For successful installation in this case, you need to prepare docker images on a computer with the Internet.
 
-#### Download the [archive](https://github.com/texttree/v-cana/releases/download/v0.1.0/intranet-server.zip)
+#### Download the [archive](https://github.com/hiscoder-com/level/releases/download/v0.1.0/intranet-server.zip)
 
 Unzip it. 
 
@@ -368,7 +368,7 @@ Unzip it.
 
 As a result, an archive will be saved in the root of the folder `docker-images.gz`.
 
-From this point on, you can copy the entire folder to the computer prepared for the installation of the V-CANA Intranet.
+From this point on, you can copy the entire folder to the computer prepared for the installation of the LEVEL Intranet.
 
 #### Run install-images.sh
 
@@ -380,7 +380,7 @@ It will unpack and install all the necessary docker images.
 
     bash install-vcana.sh
 
-It will download the latest version of the V-CANA application from github and configure the necessary folders for the server side to work.
+It will download the latest version of the LEVEL application from github and configure the necessary folders for the server side to work.
 
 #### Run prepare-network.sh
 
@@ -394,13 +394,13 @@ It will help you set up all the files responsible for configuring the server and
 
 The script runs all containers.
 
-Access to V-CANA on the server will be at `http://localhost:4004`
+Access to LEVEL on the server will be at `http://localhost:4004`
 
 Access to the server emulating dcs will be at `http://localhost:4008`
 
 ### Loading local resources
 
-For V-CANA Intranet to work successfully, you need locally downloaded archives of resources from which you will translate:
+For LEVEL Intranet to work successfully, you need locally downloaded archives of resources from which you will translate:
 literal Bible, simplified Bible, tNotes, tWords, tWordsLinks, tQuestions, Greek Bible and Hebrew Bible.
 
 You can download it on the https://git.door43.org.
@@ -418,8 +418,8 @@ Connect all devices to the same network. Then start the server. After successful
 
 The received ip address is entered into any client browser with the required port. 
 
-`[BASE_HOST]:4008` - V-CANA application
-
+`[BASE_HOST]:4008` -LEVEL application
+ LEVEL
 `[BASE_HOST]:4004` - resource settings and updates page.
 
 ### Creating users
@@ -496,7 +496,7 @@ Use this space to show useful examples of how a project can be used. Additional 
 - [] Feature 3
     - [] Nested Feature
 
-See the [open issues](https://github.com/texttree/v-cana/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/hiscoder-com/level/issues) for a full list of proposed features (and known issues).
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -534,9 +534,9 @@ Distributed under the MIT License. See [LICENSE][license-url] for more informati
 <!-- CONTACT -->
 ## Contact
 
-Discord: [V-CANA](https://discord.com/channels/867746700390563850/943625065415716905)
+Discord: [LEVEL](https://discord.com/channels/867746700390563850/943625065415716905)
 
-Project Link: [https://github.com/texttree/v-cana](https://github.com/texttree/v-cana)
+Project Link: [https://github.com/hiscoder-com/level](https://github.com/hiscoder-com/level)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -555,13 +555,13 @@ Project Link: [https://github.com/texttree/v-cana](https://github.com/texttree/v
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[contributors-shield]: https://img.shields.io/github/contributors/texttree/v-cana.svg?style=for-the-badge
-[contributors-url]: https://github.com/texttree/v-cana/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/texttree/v-cana.svg?style=for-the-badge
-[forks-url]: https://github.com/texttree/v-cana/network/members
-[stars-shield]: https://img.shields.io/github/stars/texttree/v-cana.svg?style=for-the-badge
-[stars-url]: https://github.com/texttree/v-cana/stargazers
-[issues-shield]: https://img.shields.io/github/issues/texttree/v-cana.svg?style=for-the-badge
-[issues-url]: https://github.com/texttree/v-cana/issues
-[license-shield]: https://img.shields.io/github/license/texttree/v-cana.svg?style=for-the-badge
-[license-url]: https://github.com/texttree/v-cana/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/hiscoder-com/level.svg?style=for-the-badge
+[contributors-url]: https://github.com/hiscoder-com/level/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/hiscoder-com/level.svg?style=for-the-badge
+[forks-url]: https://github.com/hiscoder-com/level/network/members
+[stars-shield]: https://img.shields.io/github/stars/hiscoder-com/level.svg?style=for-the-badge
+[stars-url]: https://github.com/hiscoder-com/level/stargazers
+[issues-shield]: https://img.shields.io/github/issues/hiscoder-com/level.svg?style=for-the-badge
+[issues-url]: https://github.com/hiscoder-com/level/issues
+[license-shield]: https://img.shields.io/github/license/hiscoder-com/level.svg?style=for-the-badge
+[license-url]: https://github.com/hiscoder-com/level/blob/master/LICENSE

@@ -5,46 +5,54 @@
     "Text": "Este sitio utiliza cookies para mejorar el rendimiento del sitio, analizar el tráfico y personalizar el contenido. Al continuar utilizando nuestro sitio, acepta el uso de cookies de acuerdo con nuestra",
     "Title": "Nosotros usamos cookies"
   },
-  "Demo": "Demo",
+  "Download": {
+    "p1": "¡Gracias por elegir la versión de escritorio de LEVEL! Actualmente disponible para Windows y Linux, esta versión le permite trabajar en proyectos de traducción de la Biblia sin conexión. Después de la instalación, podrás trabajar en proyectos de traducción bíblica sin conexión. Además, dentro del programa estará disponible un proyecto de prueba para que puedas explorar sus características.",
+    "Instruction": "Instrucciones",
+    "li1": "Descarga el archivo de instalación haciendo clic en el enlace de abajo.",
+    "li2": "Ejecuta el archivo y sigue las indicaciones del instalador.",
+    "li3": "Una vez instalada, abre el programa para explorar el proyecto de prueba y familiarizarte con la plataforma",
+    "p2": "¡Disfruta usando LEVEL! Mantente al tanto de las actualizaciones y futuras versiones para otros sistemas operativos.",
+    "link": "Descargar LEVEL Desktop"
+  },
   "Iagree": "Coincido",
   "Idecline": "Yo declino",
-  "LogoHeader": "Plataforma V-CANA creada por Glokas",
+  "LogoHeader": "Plataforma LEVEL creada por Glokas",
   "LogoText": {
     "p1": "Glokas es una plataforma de traducción y localización impulsada por IA diseñada específicamente para contenidos y proyectos cristianos. Rápida, de bajo coste, eficiente e innovadora.",
     "p2": "En Glokas, nuestra visión es ayudar a los ministerios cristianos a difundir el Evangelio de Jesucristo a través de herramientas y servicios de traducción y localización. Nos centramos en todo tipo de materiales, e incluso los proyectos pequeños son igual de importantes para nosotros porque incluso un pequeño mensaje de salvación puede tener un gran impacto. Por eso nos dedicamos a crear un ecosistema que haga la traducción más rápida y asequible sin comprometer la calidad.",
     "p3": "Nuestro lema es «Un Evangelio en diferentes formatos, a todos los idiomas, llegando a miles de millones de personas». No somos una agencia de traducción, sino una plataforma que conecta a organizaciones misioneras con traductores nativos, proporcionando herramientas para facilitar el proceso de traducción.",
-    "p4": "El principal objetivo de V-CANA es ayudar a traducir la Biblia a todos los idiomas, utilizando cualquier método y material de traducción.",
+    "p4": "El principal objetivo de LEVEL es ayudar a traducir la Biblia a todos los idiomas, utilizando cualquier método y material de traducción.",
     "p5": "Si está interesado en nuestras herramientas y métodos, póngase en contacto con nosotros."
   },
   "MainBlocks": {
     "FAQ": "FAQ",
     "FAQBlock": {
       "EighthQuestion": {
-        "Answer": "Pronto lanzaremos una página en el sitio web con detalles sobre cómo puede apoyar el desarrollo de la plataforma V-CANA. Mientras tanto, puede ponerse en contacto con nosotros a través del formulario de comentarios.",
-        "Question": "¿Cómo puedo apoyar el desarrollo de la plataforma V-CANA?"
+        "Answer": "Pronto lanzaremos una página en el sitio web con detalles sobre cómo puede apoyar el desarrollo de la plataforma LEVEL. Mientras tanto, puede ponerse en contacto con nosotros a través del formulario de comentarios.",
+        "Question": "¿Cómo puedo apoyar el desarrollo de la plataforma LEVEL?"
       },
       "FifthQuestion": {
         "Answer": "Actualmente ofrecemos materiales de UnfoldingWord - https://www.unfoldingword.org/. También estamos en conversaciones con otros socios que proporcionan materiales para el trabajo de traducción de la Biblia. Si es usted representante de un proyecto que está elaborando este tipo de materiales, póngase en contacto con nosotros a través del formulario de contacto.",
         "Question": "¿Qué materiales de los socios se utilizan actualmente en la plataforma?"
       },
       "FirstQuestion": {
-        "Answer": "La plataforma V-CANA está diseñada principalmente para traducir la Biblia y contenidos bíblicos. Por regla general, este trabajo lo realizan diversas misiones y sociedades bíblicas. La plataforma V-CANA también está diseñada para grupos de traducción locales.",
+        "Answer": "La plataforma LEVEL está diseñada principalmente para traducir la Biblia y contenidos bíblicos. Por regla general, este trabajo lo realizan diversas misiones y sociedades bíblicas. La plataforma LEVEL también está diseñada para grupos de traducción locales.",
         "Question": "¿A quién va dirigida esta plataforma?"
       },
       "FourthQuestion": {
-        "Answer": "En una primera fase, la plataforma V-CANA sólo puede ser utilizada por representantes de proyectos con los que tengamos un acuerdo preliminar. Si tiene previsto utilizar la plataforma en el marco de algún proyecto, póngase en contacto con nosotros a través del formulario de comentarios.",
-        "Question": "¿Cómo puedo empezar a utilizar la plataforma V-CANA?"
+        "Answer": "En una primera fase, la plataforma LEVEL sólo puede ser utilizada por representantes de proyectos con los que tengamos un acuerdo preliminar. Si tiene previsto utilizar la plataforma en el marco de algún proyecto, póngase en contacto con nosotros a través del formulario de comentarios.",
+        "Question": "¿Cómo puedo empezar a utilizar la plataforma LEVEL?"
       },
       "SecondQuestion": {
-        "Answer": "El uso de la plataforma V-CANA es gratuito para todos los usuarios.",
-        "Question": "¿Cuáles son las tarifas para los usuarios de V-CANA?"
+        "Answer": "El uso de la plataforma LEVEL es gratuito para todos los usuarios.",
+        "Question": "¿Cuáles son las tarifas para los usuarios de LEVEL?"
       },
       "SeventhQuestion": {
         "Answer": "Sí, si trabajas con la versión en línea de la plataforma. Pero si trabajas con la versión intranet, no es necesaria una conexión permanente a internet.",
-        "Question": "¿Necesito una conexión constante a Internet para utilizar la plataforma V-CANA?"
+        "Question": "¿Necesito una conexión constante a Internet para utilizar la plataforma LEVEL?"
       },
       "SixthQuestion": {
-        "Answer": "Si representa a un proyecto y tiene previsto utilizar la plataforma V-CANA con sus materiales, póngase en contacto con nosotros a través del formulario de contacto.",
+        "Answer": "Si representa a un proyecto y tiene previsto utilizar la plataforma LEVEL con sus materiales, póngase en contacto con nosotros a través del formulario de contacto.",
         "Question": "¿Puedo cargar mis propios materiales?"
       },
       "ThirdQuestion": {
@@ -59,22 +67,22 @@
       "FirstReview": {
         "Country": "Azerbajan",
         "Name": "Ramis",
-        "Text": "Tengo experiencia en traducción bíblica. Hicimos la traducción en diferentes programas. Pero ahora puedo decir con seguridad que V-CANA es la mejor herramienta para el trabajo en equipo en la traducción."
+        "Text": "Tengo experiencia en traducción bíblica. Hicimos la traducción en diferentes programas. Pero ahora puedo decir con seguridad que LEVEL es la mejor herramienta para el trabajo en equipo en la traducción."
       },
       "SecondReview": {
         "Country": "Rusia",
         "Name": "Lina",
-        "Text": "Mis impresiones sobre el trabajo en V-CANA - No sólo es cómodo. Es confortable."
+        "Text": "Mis impresiones sobre el trabajo en LEVEL - No sólo es cómodo. Es confortable."
       },
       "ThirdReview": {
         "Country": "Uzbekistán",
         "Name": "Bakhrom",
-        "Text": "V-CANA ha sido muy útil. Es muy conveniente que haya un diccionario de comandos, y cuando te encuentras con palabras similares, el diccionario te ayuda a usarlas de la misma manera en diferentes lugares.\nMuy conveniente que haya un diccionario bíblico y que haya explicaciones de cómo traducir mejor algunas frases complejas. Una herramienta muy útil."
+        "Text": "LEVEL ha sido muy útil. Es muy conveniente que haya un diccionario de comandos, y cuando te encuentras con palabras similares, el diccionario te ayuda a usarlas de la misma manera en diferentes lugares.\nMuy conveniente que haya un diccionario bíblico y que haya explicaciones de cómo traducir mejor algunas frases complejas. Una herramienta muy útil."
       }
     },
     "Screenshots": "Captura de pantalla",
-    "VcanaText": "V-CANA es una plataforma de traducción bíblica paso a paso que utiliza diversos materiales de referencia de nuestros socios.",
-    "WhatIsVcana": "¿Qué es V&#8209;CANA?"
+    "LevelText": "LEVEL es una plataforma de traducción bíblica paso a paso que utiliza diversos materiales de referencia de nuestros socios.",
+    "WhatIsLevel": "¿Qué es LEVEL?"
   },
   "NotAllFieldFull": "No todos los campos han sido rellenados!",
   "Partners": "Asociarse",

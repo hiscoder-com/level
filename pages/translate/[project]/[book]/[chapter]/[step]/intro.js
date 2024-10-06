@@ -95,7 +95,7 @@ export default function IntroPage() {
     <div className="layout-appbar">
       <Head>
         <title>{title?.title}</title>
-        <meta name="description" content="VCANA" />
+        <meta name="description" content="LEVEL" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <IntroStep
