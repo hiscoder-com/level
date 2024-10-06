@@ -334,7 +334,7 @@ export const convertToUsfm = ({ jsonChapters, book, project }) => {
       tag: 'id',
       content: `${book?.code.toUpperCase()} ${project?.code.toUpperCase()} ${
         project?.language.code
-      }_${capitalize(project?.language?.orig_name)}_${project?.title} ${Date()} v-cana`,
+      }_${capitalize(project?.language?.orig_name)}_${project?.title} ${Date()} level`,
     },
     {
       tag: 'usfm',

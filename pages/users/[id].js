@@ -29,9 +29,9 @@ export default function UserPage() {
     <>
       <Head>
         <title>
-          {t('V-CANA')} - {t('profile')}
+          {t('LEVEL')} - {t('profile')}
         </title>
-        <meta name="description" content="VCANA" />
+        <meta name="description" content="LEVEL" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {router.isFallback ? (

@@ -12,7 +12,7 @@ export default async function sendRecoveryHandler(req, res) {
       supabaseKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
       supabaseUrl: process.env.SUPABASE_URL,
       cookieOptions: {
-        name: process.env.NEXT_PUBLIC_COOKIE_NAME ?? 'sb-vcana-cookies',
+        name: process.env.NEXT_PUBLIC_COOKIE_NAME ?? 'sb-level-cookies',
       },
     }
   )

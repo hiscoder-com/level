@@ -8,7 +8,7 @@ export default function PrivacyPolicy() {
       <br />
 
       <h2>
-        At V-CANA, accessible from v-cana.com, we prioritize the privacy of our users.
+        At LEVEL, accessible from level.bible, we prioritize the privacy of our users.
         This Privacy Policy document outlines the types of information we collect, how we
         use it, and the measures we take to protect your information.
       </h2>
@@ -42,7 +42,7 @@ export default function PrivacyPolicy() {
         </li>
         <li>
           <strong>Improving the Platform:</strong> To analyze usage and enhance the
-          features, content, and performance of V-CANA.
+          features, content, and performance of LEVEL.
         </li>
         <li>
           <strong>Communication:</strong> To send you updates, newsletters, and other
@@ -122,7 +122,7 @@ export default function PrivacyPolicy() {
       </ul>
       <p>
         To exercise any of these rights, please contact us at{' '}
-        <a href="mailto:omg@v-cana.com">omg@v-cana.com</a>.
+        <a href="mailto:omg@level.bible">omg@level.bible</a>.
       </p>
       <br />
       <h3>7. Links to Other Websites</h3>
@@ -146,7 +146,7 @@ export default function PrivacyPolicy() {
         at:
       </p>
       <p>
-        Email: <a href="mailto:omg@v-cana.com">omg@v-cana.com</a>
+        Email: <a href="mailto:omg@level.bible">omg@level.bible</a>
       </p>
     </div>
   )

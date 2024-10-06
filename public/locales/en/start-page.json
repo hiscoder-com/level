@@ -5,46 +5,54 @@
     "Text": "This site uses cookies to improve the site's performance, analyze traffic, and personalize content. By continuing to use our site, you agree to the use of cookies in accordance with our",
     "Title": "We use cookies"
   },
-  "Demo": "Demo",
+  "Download": {
+    "p1": "Thank you for choosing the LEVEL desktop version! Currently available for Windows and Linux, this version allows you to work on Bible translation projects offline. After installation, you'll have access to a test project within the program to explore its features.",
+    "Instruction": "Instructions",
+    "li1": "Download the installation file by clicking the link below.",
+    "li2": "Run the file and follow the installation prompts.",
+    "li3": "Once installed, open the program to explore the test project and familiarize yourself with the platform.",
+    "p2": "We hope you enjoy using LEVEL! Stay tuned for updates and future releases for other operating systems.",
+    "link": "Download LEVEL Desktop"
+  },
   "Iagree": "I agree",
   "Idecline": "I decline",
-  "LogoHeader": "V-CANA Platform Created by Glokas",
+  "LogoHeader": "LEVEL Platform Created by Glokas",
   "LogoText": {
     "p1": "Glokas is an AI-powered translation and localization platform specifically designed for Christian content and projects. Rapid, low-cost, efficient, and innovative.",
     "p2": "At Glokas, our vision is to assist Christian ministries in spreading the Gospel of Jesus Christ through translation, localization tools, and services. We focus on all types of materials, and even small projects are equally important to us because even a small message of salvation can make a huge impact. That's why we are dedicated to creating an ecosystem that makes translation faster and more affordable without compromising quality.",
     "p3": "Our slogan is 'One Gospel in different formats, to all languages, reaching billions of people.' We are not a translation agency but a platform that connects mission organizations with native translators, providing tools to make the translation process easy.",
-    "p4": "V-CANA's main goal is to help translate the Bible into all languages, using any translation methods and materials.",
+    "p4": "LEVEL's main goal is to help translate the Bible into all languages, using any translation methods and materials.",
     "p5": "If you are interested in our tools and methods, please contact us."
   },
   "MainBlocks": {
     "FAQ": "FAQ",
     "FAQBlock": {
       "EighthQuestion": {
-        "Answer": "We will soon be creating a page on the website with details on how you can support the development of the V-CANA platform. In the meantime, you can contact us via the customer support form.",
-        "Question": "How can I support the development of the V-CANA platform?"
+        "Answer": "We will soon be creating a page on the website with details on how you can support the development of the LEVEL platform. In the meantime, you can contact us via the customer support form.",
+        "Question": "How can I support the development of the LEVEL platform?"
       },
       "FifthQuestion": {
         "Answer": "We currently offer UnfoldingWord materials - https://www.unfoldingword.org/ We are also in the process of contacting other partners who provide materials for Bible translation work. If you are a representative of a project that is developing such materials, please contact us through the contact form.",
         "Question": "What partners provide materials for the platform?"
       },
       "FirstQuestion": {
-        "Answer": "The V-CANA platform is designed primarily for translating the Bible and biblical content. As a rule, such work is done by various missions and Bible societies. The V-CANA platform is also designed for local translation groups.",
+        "Answer": "The LEVEL platform is designed primarily for translating the Bible and biblical content. As a rule, such work is done by various missions and Bible societies. The LEVEL platform is also designed for local translation groups.",
         "Question": "Who is this platform for?"
       },
       "FourthQuestion": {
-        "Answer": "At the first phase, the V-CANA platform can only be used by participants of projects with which we have a preliminary cooperation agreement. If you plan to use the platform within a project, please contact us via the customer support form.",
-        "Question": "How can I start using the V-CANA platform?"
+        "Answer": "At the first phase, the LEVEL platform can only be used by participants of projects with which we have a preliminary cooperation agreement. If you plan to use the platform within a project, please contact us via the customer support form.",
+        "Question": "How can I start using the LEVEL platform?"
       },
       "SecondQuestion": {
-        "Answer": "Use of the V-CANA platform is free for all users.",
-        "Question": "What are the pricing for users of V-CANA?"
+        "Answer": "Use of the LEVEL platform is free for all users.",
+        "Question": "What are the pricing for users of LEVEL?"
       },
       "SeventhQuestion": {
         "Answer": "Yes, if you work with the online version of the platform. But if you work with the intranet version, there is no need for a permanent internet connection.",
-        "Question": "Is it necessary to have a stable Internet connection for working with the V-CANA platform?"
+        "Question": "Is it necessary to have a stable Internet connection for working with the LEVEL platform?"
       },
       "SixthQuestion": {
-        "Answer": "If you represent a project and plan to using the V-CANA platform with your materials, please contact us via the customer support form.",
+        "Answer": "If you represent a project and plan to using the LEVEL platform with your materials, please contact us via the customer support form.",
         "Question": "Can I upload my own materials?"
       },
       "ThirdQuestion": {
@@ -59,22 +67,22 @@
       "FirstReview": {
         "Country": "Azerbajan",
         "Name": "Ramis",
-        "Text": "I have experience in Bible translation. We did the translation in different programs. But now I can say for sure that V-CANA is the best tool for teamwork in translation."
+        "Text": "I have experience in Bible translation. We did the translation in different programs. But now I can say for sure that LEVEL is the best tool for teamwork in translation."
       },
       "SecondReview": {
         "Country": "Russia",
         "Name": "Lina",
-        "Text": "My impressions of working in V-CANA - It's not just convenient. It's comfortable."
+        "Text": "My impressions of working in LEVEL - It's not just convenient. It's comfortable."
       },
       "ThirdReview": {
         "Country": "Uzbekistan",
         "Name": "Bakhrom",
-        "Text": "V-CANA is very much to my liking. It is very convenient that there is a command dictionary, and when you come across similar words, the dictionary helps you to use them in the same way in different places. It is very convenient that there is a biblical dictionary and there are explanations on how to better translate some difficult sentences. A very useful tool."
+        "Text": "LEVEL is very much to my liking. It is very convenient that there is a command dictionary, and when you come across similar words, the dictionary helps you to use them in the same way in different places. It is very convenient that there is a biblical dictionary and there are explanations on how to better translate some difficult sentences. A very useful tool."
       }
     },
     "Screenshots": "Screenshots",
-    "VcanaText": "V-CANA is a platform for step-by-step Bible translation using various helpful materials from our partners.",
-    "WhatIsVcana": "What is V&#8209;CANA?"
+    "LevelText": "LEVEL is a platform for step-by-step Bible translation using various helpful materials from our partners.",
+    "WhatIsLevel": "What is LEVEL?"
   },
   "NotAllFieldFull": "Not all fields are filled in!",
   "Partners": "Partners",
