@@ -303,7 +303,7 @@ function StartPage({ defaultContentKey = null }) {
             {blocks.reviews.clicked ? (
               <Reviews t={t} opacity={blocks.reviews.opacity} />
             ) : (
-              <p className="text-white">{t('Reviews')}</p>
+              <p className="text-white">{t('MainBlocks.Reviews')}</p>
             )}
           </div>
         </div>
@@ -349,8 +349,8 @@ function StartPage({ defaultContentKey = null }) {
               }`}
               onClick={() => toggleSection('download')}
             >
-              <p className={`uppercase ${showSections.download ? 'font-semibold' : ''}`}>
-                {t('Download')}
+              <p className={`mb-9 ${showSections.download ? 'font-semibold' : ''}`}>
+                {t('common:Download')}
               </p>
               {showSections.download && <Download t={t} />}
             </div>
