@@ -1,6 +1,8 @@
-import Close from 'public/close.svg'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import Close from 'public/close.svg'
+
+const availableOs = ['Windows', 'Linux']
 
 function Download({ t }) {
   const getOSAndArchitecture = () => {
@@ -39,8 +41,8 @@ function Download({ t }) {
           'https://api.github.com/repos/hiscoder-com/level-desktop/releases/latest'
         )
         const data = await response.json()
-        const latestVersion = data.tag_name // Получаем версию из GitHub (например, "v0.4.0")
-        setVersion(latestVersion.replace('v', '')) // Убираем "v" перед номером версии
+        const latestVersion = data.tag_name
+        setVersion(latestVersion.replace('v', ''))
       } catch (error) {
         console.error('Error fetching version:', error)
       }
@@ -52,16 +54,34 @@ function Download({ t }) {
   const getDownloadLink = () => {
     if (os.os === 'Windows') {
       return os.architecture === '64-bit'
-        ? `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/level-win-x64-${version}.exe`
-        : `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/level-win-ia32-${version}.exe`
+        ? `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-x64-${version}.exe`
+        : `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-ia32-${version}.exe`
     } else if (os.os === 'Linux') {
-      return `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/level_${version}.deb`
+      return `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}.deb`
     }
     return '#'
   }
-
+  const allLinks = [
+    {
+      label: 'Windows 64-bit',
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-x64-${version}.exe`,
+    },
+    {
+      label: 'Windows 32-bit',
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-ia32-${version}.exe`,
+    },
+    {
+      label: 'Linux .deb',
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}.deb`,
+    },
+    {
+      label: 'Linux AppImage',
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}.AppImage`,
+    },
+  ]
+  const isAvailableCurrentOs = availableOs.includes(os.os)
   return (
-    <div className="relative flex flex-col w-full">
+    <div className="relative flex flex-col w-full text-left">
       <p className="hidden md:block mb-9">{t('common:Download')}</p>
       <Close className="absolute md:hidden w-6 h-6 right-0 -top-7 stroke-black cursor-pointer" />
       <div className="text-base font-medium flex flex-col gap-6 overflow-y-auto">
@@ -73,9 +93,21 @@ function Download({ t }) {
           <li>{t('Download.li3')}</li>
         </ol>
         <p>{t('Download.p2')}</p>
-        <Link href={getDownloadLink()} className="font-bold text-th-primary-100">
-          {t('Download.link')}
-        </Link>
+        {isAvailableCurrentOs ? (
+          <Link href={getDownloadLink()} className="font-bold text-th-primary-100">
+            {t('Download.link')}
+          </Link>
+        ) : (
+          allLinks.map((download) => (
+            <Link
+              key={download.label}
+              href={download.link}
+              className="font-bold text-th-primary-100"
+            >
+              {download.label}
+            </Link>
+          ))
+        )}
       </div>
     </div>
   )
