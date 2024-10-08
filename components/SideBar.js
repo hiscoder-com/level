@@ -23,11 +23,17 @@ import { useCurrentUser } from 'lib/UserContext'
 
 import Localization from 'public/localization.svg'
 import VersionLogo from 'public/version.svg'
-import Notepad from 'public/notepad.svg'
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
 import Camera from 'public/camera.svg'
 import User from 'public/user.svg'
+
+import Account from 'public/account.svg'
+import Projects from 'public/projects.svg'
+import CreateProject from 'public/create-project.svg'
+import Notes from 'public/notes.svg'
+import Users from 'public/users.svg'
+import About from 'public/about.svg'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
@@ -65,7 +71,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               (!open ? (
                 <Burger className="h-10 stroke-th-text-secondary-100" />
               ) : (
-                <Close className="h-10 stroke-th-text-secondary-100" />
+                <Close className="h-10 stroke-th-text-secondary-100 lg:hidden" />
               ))}
           </Menu.Button>
           <Transition
@@ -76,11 +82,11 @@ function SideBar({ setIsOpenSideBar, access }) {
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className="fixed flex flex-col w-full md:w-1/2 lg:w-[48%] xl:w-[27rem] gap-7 top-14 sm:top-20 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 lg:pr-0"
+              className="fixed flex flex-col w-full md:w-1/2 lg:w-[48%] xl:w-[27rem] gap-7 top-14 sm:top-20 lg:top-0 lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 lg:pr-0"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl">
-                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-300">
+              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
+                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0">
                   <div
                     className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
@@ -92,42 +98,176 @@ function SideBar({ setIsOpenSideBar, access }) {
                   </div>
 
                   <div>
-                    <div className="text-2xl font-bold">{user?.login}</div>
-                    <div>{user?.email}</div>
+                    <div className="text-2xl font-bold lg:font-medium lg:text-base">
+                      {user?.login}
+                    </div>
+                    <div className="lg:text-xs">{user?.email}</div>
                   </div>
                 </div>
 
-                <div className="f-screen-appbar flex flex-col justify-between sm:min-h-[60vh]">
-                  <div className="flex flex-col gap-7">
-                    <Menu.Item
-                      as="div"
-                      disabled
-                      className="flex items-center justify-between gap-2 cursor-default"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100">
-                          <Localization className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
-                        </div>
-                        <span>{t('Language')}</span>
-                      </div>
-                      <SwitchLocalization />
-                    </Menu.Item>
+                <div className="f-screen-appbar flex flex-col justify-between sm:min-h-[60vh] grow">
+                  <div className="flex flex-col text-sm justify-between grow">
+                    <div className="flex flex-col gap-3">
+                      <Menu.Item as="div" disabled>
+                        <Link href="/account" legacyBehavior>
+                          <a
+                            className="flex items-center gap-2 cursor-pointer"
+                            onClick={() => {
+                              closeModal()
+                              setIsOpenSideBar(false)
+                              close()
+                            }}
+                          >
+                            <div className="p-2 rounded-[23rem] hover:opacity-70">
+                              <Account className="w-5 h-5 stroke-th-text-primary" />
+                            </div>
+                            <span className="hover:opacity-70">{'Account'}</span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
 
-                    <Menu.Item
-                      as="div"
-                      disabled
-                      className="flex items-center justify-between gap-2 cursor-default"
-                    >
-                      <div
-                        className="flex w-full items-center gap-4 cursor-pointer"
-                        onClick={() => openModal('aboutVersion')}
+                      <Menu.Item as="div" disabled>
+                        <Link href="/account" legacyBehavior>
+                          <a
+                            className="flex items-center gap-2 cursor-pointer"
+                            onClick={() => {
+                              closeModal()
+                              setIsOpenSideBar(false)
+                              close()
+                            }}
+                          >
+                            <div className="p-2 rounded-[23rem] hover:opacity-70">
+                              <Projects className="w-5 h-5 stroke-th-text-primary" />
+                            </div>
+                            <span className="hover:opacity-70">{'Projects'}</span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
+
+                      <Menu.Item as="div" disabled>
+                        <Link href="/users" legacyBehavior>
+                          <a
+                            className="flex items-center gap-2 cursor-pointer"
+                            onClick={() => {
+                              closeModal()
+                              setIsOpenSideBar(false)
+                              close()
+                            }}
+                          >
+                            <div className="p-2 rounded-[23rem] hover:opacity-70">
+                              <CreateProject className="w-5 h-5 stroke-th-text-primary" />
+                            </div>
+                            <span className="hover:opacity-70">{'Create Project'}</span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
+
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className="flex items-center justify-between gap-2 cursor-default"
                       >
-                        <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
-                          <VersionLogo className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
+                        <div
+                          className="flex w-full items-center gap-2 cursor-pointer"
+                          onClick={() => openModal('notepad')}
+                        >
+                          <div className="p-2 rounded-[23rem] hover:opacity-70">
+                            <Notes className="w-5 h-5 stroke-th-text-primary" />
+                          </div>
+                          <ModalInSideBar
+                            isOpen={modalsSidebarState.notepad}
+                            setIsOpen={(value) =>
+                              setModalsSidebarState((prev) => ({
+                                ...prev,
+                                notepad: value,
+                              }))
+                            }
+                          >
+                            <PersonalNotes />
+                          </ModalInSideBar>
                         </div>
-                        <AboutVersion />
-                      </div>
-                    </Menu.Item>
+                      </Menu.Item>
+
+                      {user?.is_admin && (
+                        <Menu.Item as="div" disabled>
+                          <Link href="/users" legacyBehavior>
+                            <a
+                              className="flex items-center gap-2 cursor-pointer"
+                              onClick={() => {
+                                closeModal()
+                                setIsOpenSideBar(false)
+                                close()
+                              }}
+                            >
+                              <div className="p-2 rounded-[23rem] hover:opacity-70">
+                                <Users className="w-5 h-5 stroke-th-text-primary" />
+                              </div>
+                              <span className="hover:opacity-70">
+                                {t('users:UserManagement')}
+                              </span>
+                            </a>
+                          </Link>
+                        </Menu.Item>
+                      )}
+                      <Menu.Item as="div" className={'mt-4'}>
+                        <ThemeSwitcher />
+                      </Menu.Item>
+                    </div>
+                    <div className="flex flex-col gap-3">
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className="flex items-center justify-between gap-2 cursor-default"
+                      >
+                        <div className="flex items-center gap-2">
+                          <div className="p-2 rounded-[23rem]">
+                            <Localization className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
+                          </div>
+                          <span>{t('Language')}</span>
+                        </div>
+                        <SwitchLocalization />
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className="flex items-center justify-between gap-2 cursor-default"
+                      >
+                        <div
+                          className="flex w-full items-center gap-2 cursor-pointer"
+                          onClick={() => openModal('aboutVersion')}
+                        >
+                          <div className="p-2 rounded-[23rem] hover:opacity-70">
+                            <About className="w-5 h-5 stroke-th-text-primary" />
+                          </div>
+                          {'About'}
+                        </div>
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className="flex items-center justify-between gap-2 cursor-default"
+                      >
+                        <div
+                          className="flex w-full items-center gap-2 cursor-pointer"
+                          onClick={() => openModal('aboutVersion')}
+                        >
+                          <div className="p-4 rounded-[23rem] hover:opacity-70">
+                            <VersionLogo className="w-5 h-5 stroke-th-text-primary" />
+                          </div>
+                          <AboutVersion />
+                        </div>
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className="flex items-center justify-between gap-2 cursor-default"
+                      >
+                        <SignOut />
+                      </Menu.Item>
+                    </div>
+                    {/*  */}
+                    {/*
+
                     <Menu.Item
                       as="div"
                       disabled
@@ -170,10 +310,10 @@ function SideBar({ setIsOpenSideBar, access }) {
                           </a>
                         </Link>
                       </Menu.Item>
-                    )}
+                    )} */}
                   </div>
                   <AvatarSelector id={user?.id} />
-                  <div className="space-y-5">
+                  {/* <div className="space-y-5">
                     <ThemeSwitcher />
                     <div
                       className="flex justify-center cursor-pointer"
@@ -188,7 +328,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                     >
                       <SignOut />
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </Menu.Items>
