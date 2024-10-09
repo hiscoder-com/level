@@ -2,7 +2,3 @@
 [functions]
 directory = "netlify/functions"
 node_bundler = "esbuild"
-
-[[redirects]]
-from = "v-cana.com/*"
-to = "level.bible/:splat"
