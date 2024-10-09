@@ -24,6 +24,7 @@ const sizeTabs = {
 }
 
 function Account() {
+  const [selectedTab, setSelectedTab] = useState(0)
   const { user, loading } = useCurrentUser()
   const router = useRouter()
   const [openInternalMenu, setOpenInternalMenu] = useState(false)
@@ -35,6 +36,13 @@ function Account() {
       router.push('/')
     }
   }, [router, user, loading])
+
+  useEffect(() => {
+    if (router.query?.tab) {
+      setSelectedTab(parseInt(router.query?.tab))
+    }
+  }, [router])
+
   const tabs = ['Account', 'projects:Projects', 'projects:CreateProject']
   return (
     <>
@@ -70,7 +78,12 @@ function Account() {
                 </Tab.Panel>
               </Tab.Panels>
             </Tab.Group>
-            <Tab.Group as="div" className="hidden sm:block">
+            <Tab.Group
+              as="div"
+              className="hidden sm:block"
+              selectedIndex={selectedTab}
+              onChange={setSelectedTab}
+            >
               <Tab.List
                 className={`flex px-5 ${
                   sizeTabs[

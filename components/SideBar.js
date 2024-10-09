@@ -86,7 +86,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
-                <div className="flex items-center gap-2 pb-5 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0">
+                <div className="flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0">
                   <div
                     className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
@@ -127,7 +127,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                       </Menu.Item>
 
                       <Menu.Item as="div" disabled>
-                        <Link href="/account" legacyBehavior>
+                        <Link href="/account?tab=1" legacyBehavior>
                           <a
                             className="flex items-center gap-2 cursor-pointer"
                             onClick={() => {
@@ -145,7 +145,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                       </Menu.Item>
 
                       <Menu.Item as="div" disabled>
-                        <Link href="/users" legacyBehavior>
+                        <Link href="/account?tab=2" legacyBehavior>
                           <a
                             className="flex items-center gap-2 cursor-pointer"
                             onClick={() => {
@@ -209,9 +209,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           </Link>
                         </Menu.Item>
                       )}
-                      <Menu.Item as="div" className={'mt-4'}>
-                        <ThemeSwitcher />
-                      </Menu.Item>
+                      <ThemeSwitcher />
                     </div>
                     <div className="flex flex-col gap-3">
                       <Menu.Item
@@ -251,7 +249,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => openModal('aboutVersion')}
                         >
-                          <div className="p-4 rounded-[23rem] hover:opacity-70">
+                          <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <VersionLogo className="w-5 h-5 stroke-th-text-primary" />
                           </div>
                           <AboutVersion />
