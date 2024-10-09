@@ -144,23 +144,25 @@ function SideBar({ setIsOpenSideBar, access }) {
                         </Link>
                       </Menu.Item>
 
-                      <Menu.Item as="div" disabled>
-                        <Link href="/account?tab=2" legacyBehavior>
-                          <a
-                            className="flex items-center gap-2 cursor-pointer"
-                            onClick={() => {
-                              closeModal()
-                              setIsOpenSideBar(false)
-                              close()
-                            }}
-                          >
-                            <div className="p-2 rounded-[23rem] hover:opacity-70">
-                              <CreateProject className="w-5 h-5 stroke-th-text-primary" />
-                            </div>
-                            <span className="hover:opacity-70">{'Create Project'}</span>
-                          </a>
-                        </Link>
-                      </Menu.Item>
+                      {user?.is_admin && (
+                        <Menu.Item as="div" disabled>
+                          <Link href="/account?tab=2" legacyBehavior>
+                            <a
+                              className="flex items-center gap-2 cursor-pointer"
+                              onClick={() => {
+                                closeModal()
+                                setIsOpenSideBar(false)
+                                close()
+                              }}
+                            >
+                              <div className="p-2 rounded-[23rem] hover:opacity-70">
+                                <CreateProject className="w-5 h-5 stroke-th-text-primary" />
+                              </div>
+                              <span className="hover:opacity-70">{'Create Project'}</span>
+                            </a>
+                          </Link>
+                        </Menu.Item>
+                      )}
 
                       <Menu.Item
                         as="div"
@@ -219,7 +221,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                       >
                         <div className="flex items-center gap-2">
                           <div className="p-2 rounded-[23rem]">
-                            <Localization className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
+                            <Localization className="w-5 h-5 stroke-th-text-primary" />
                           </div>
                           <span>{t('Language')}</span>
                         </div>
