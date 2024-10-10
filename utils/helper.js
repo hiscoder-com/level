@@ -212,7 +212,7 @@ export const downloadPdf = async ({
       pdfOptions.bookPropertiesObs = {
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
-        copyright: 'TextTree Movement®',
+        copyright: 'Glokas®',
         projectLanguage,
       }
     }
@@ -273,7 +273,7 @@ export const downloadPdf = async ({
         ...pdfOptions.bookPropertiesObs,
         titlePageTitle: projectTitle,
         projectLanguage,
-        copyright: 'TextTree Movement®',
+        copyright: 'Glokas®',
       }
     }
 
