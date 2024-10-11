@@ -47,7 +47,7 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
       {data &&
         Object.keys(data)?.map((key) => {
           return (
-            <div key={key} className="flex mx-4 p-4" id={'idtq' + key}>
+            <div key={key} className="flex mx-4 p-4" id={`idtq_${key}`}>
               <div className="text-2xl">{key}</div>
               <div className="pl-7 w-full text-th-text-primary">
                 <ul>

@@ -89,10 +89,21 @@ function VersesExtended({
 }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
   const isHideAllVerses = useRecoilValue(isHideAllVersesState)
+  const isVerseChecked = (verse) => {
+    const verseRange = String(verse).split('-').map(Number)
+    const [start, end] =
+      verseRange.length === 1 ? [verseRange[0], verseRange[0]] : verseRange
+
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i).some((v) =>
+      checkedVersesBible.includes(String(v))
+    )
+  }
+
   return (
     <div className={isHideAllVerses ? 'bg-th-secondary-100 text-th-secondary-100' : ''}>
       {verseObjects?.map((verseObject) => {
-        const checkedCurrent = checkedVersesBible.includes(verseObject.verse)
+        const checkedCurrent = isVerseChecked(verseObject.verse)
+        console.log(checkedCurrent)
         return (
           <div
             key={verseObject.verse}
