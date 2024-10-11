@@ -1,4 +1,4 @@
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 
 import Link from 'next/link'
 
@@ -26,7 +26,6 @@ import VersionLogo from 'public/version.svg'
 import Burger from 'public/burger.svg'
 import Close from 'public/close.svg'
 import Camera from 'public/camera.svg'
-import User from 'public/user.svg'
 
 import Account from 'public/account.svg'
 import Projects from 'public/projects.svg'
@@ -37,8 +36,9 @@ import About from 'public/about.svg'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
-  const { t } = useTranslation(['projects', 'users'])
+  const { t } = useTranslation(['common', 'projects', 'users'])
   const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
+  const [showAbout, setShowAbout] = useState(false)
 
   const openModal = (modalType) => {
     setModalsSidebarState((prevModals) => ({
@@ -75,6 +75,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               ))}
           </Menu.Button>
           <Transition
+            afterLeave={() => setShowAbout(false)}
             as={Fragment}
             appear={true}
             show={open}
@@ -86,7 +87,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
-                <div className="flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0">
+                <div className="flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4">
                   <div
                     className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
@@ -116,12 +117,13 @@ function SideBar({ setIsOpenSideBar, access }) {
                               closeModal()
                               setIsOpenSideBar(false)
                               close()
+                              setShowAbout(false)
                             }}
                           >
                             <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <Account className="w-5 h-5 stroke-th-text-primary" />
                             </div>
-                            <span className="hover:opacity-70">{'Account'}</span>
+                            <span className="hover:opacity-70">{t('Account')}</span>
                           </a>
                         </Link>
                       </Menu.Item>
@@ -134,12 +136,13 @@ function SideBar({ setIsOpenSideBar, access }) {
                               closeModal()
                               setIsOpenSideBar(false)
                               close()
+                              setShowAbout(false)
                             }}
                           >
                             <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <Projects className="w-5 h-5 stroke-th-text-primary" />
                             </div>
-                            <span className="hover:opacity-70">{'Projects'}</span>
+                            <span className="hover:opacity-70">{t('Projects')}</span>
                           </a>
                         </Link>
                       </Menu.Item>
@@ -153,12 +156,15 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 closeModal()
                                 setIsOpenSideBar(false)
                                 close()
+                                setShowAbout(false)
                               }}
                             >
                               <div className="p-2 rounded-[23rem] hover:opacity-70">
                                 <CreateProject className="w-5 h-5 stroke-th-text-primary" />
                               </div>
-                              <span className="hover:opacity-70">{'Create Project'}</span>
+                              <span className="hover:opacity-70">
+                                {t('CreateProject')}
+                              </span>
                             </a>
                           </Link>
                         </Menu.Item>
@@ -171,7 +177,10 @@ function SideBar({ setIsOpenSideBar, access }) {
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
-                          onClick={() => openModal('notepad')}
+                          onClick={() => {
+                            openModal('notepad')
+                            setShowAbout(false)
+                          }}
                         >
                           <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <Notes className="w-5 h-5 stroke-th-text-primary" />
@@ -184,6 +193,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 notepad: value,
                               }))
                             }
+                            label={t('personalNotes')}
                           >
                             <PersonalNotes />
                           </ModalInSideBar>
@@ -199,6 +209,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 closeModal()
                                 setIsOpenSideBar(false)
                                 close()
+                                setShowAbout(false)
                               }}
                             >
                               <div className="p-2 rounded-[23rem] hover:opacity-70">
@@ -234,12 +245,18 @@ function SideBar({ setIsOpenSideBar, access }) {
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
-                          onClick={() => openModal('aboutVersion')}
+                          onClick={() => setShowAbout((prev) => !prev)}
                         >
                           <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <About className="w-5 h-5 stroke-th-text-primary" />
                           </div>
-                          {'About'}
+                          <ModalInSideBar
+                            setIsOpen={setShowAbout}
+                            isOpen={showAbout}
+                            label={t('About')}
+                          >
+                            <h1>{t('About')}</h1>
+                          </ModalInSideBar>
                         </div>
                       </Menu.Item>
                       <Menu.Item
@@ -249,7 +266,10 @@ function SideBar({ setIsOpenSideBar, access }) {
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
-                          onClick={() => openModal('aboutVersion')}
+                          onClick={() => {
+                            openModal('aboutVersion')
+                            setShowAbout(false)
+                          }}
                         >
                           <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <VersionLogo className="w-5 h-5 stroke-th-text-primary" />
@@ -265,70 +285,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <SignOut />
                       </Menu.Item>
                     </div>
-                    {/*  */}
-                    {/*
-
-                    <Menu.Item
-                      as="div"
-                      disabled
-                      className="flex items-center justify-between gap-2 cursor-default"
-                    >
-                      <div
-                        className="flex w-full items-center gap-4 cursor-pointer"
-                        onClick={() => openModal('notepad')}
-                      >
-                        <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
-                          <Notepad className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
-                        </div>
-                        <ModalInSideBar
-                          isOpen={modalsSidebarState.notepad}
-                          setIsOpen={(value) =>
-                            setModalsSidebarState((prev) => ({ ...prev, notepad: value }))
-                          }
-                        >
-                          <PersonalNotes />
-                        </ModalInSideBar>
-                      </div>
-                    </Menu.Item>
-                    {user?.is_admin && (
-                      <Menu.Item as="div" disabled>
-                        <Link href="/users" legacyBehavior>
-                          <a
-                            className="flex items-center gap-4 cursor-pointer"
-                            onClick={() => {
-                              closeModal()
-                              setIsOpenSideBar(false)
-                              close()
-                            }}
-                          >
-                            <div className="px-4 py-2 rounded-[23rem] bg-th-secondary-100 hover:opacity-70">
-                              <User className="w-5 h-5 min-w-[1.5rem] stroke-th-text-primary" />
-                            </div>
-                            <span className="hover:opacity-70">
-                              {t('users:UserManagement')}
-                            </span>
-                          </a>
-                        </Link>
-                      </Menu.Item>
-                    )} */}
                   </div>
                   <AvatarSelector id={user?.id} />
-                  {/* <div className="space-y-5">
-                    <ThemeSwitcher />
-                    <div
-                      className="flex justify-center cursor-pointer"
-                      onClick={() => {
-                        setModalsSidebarState((prev) => ({
-                          ...prev,
-                          aboutVersion: false,
-                        }))
-                        setIsOpenSideBar((prev) => !prev)
-                        close()
-                      }}
-                    >
-                      <SignOut />
-                    </div>
-                  </div> */}
                 </div>
               </div>
             </Menu.Items>

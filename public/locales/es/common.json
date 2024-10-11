@@ -185,5 +185,10 @@
   "WordExist": "Duplicated word exists:",
   "WrongResource": "Wrong resource",
   "Yes": "Yes",
-  "Symbols": "Símbolos"
+  "Symbols": "Símbolos",
+  "Account": "Cuenta",
+  "Projects": "Proyectos",
+  "CreateProject": "Crear un proyecto",
+  "About": "Sobre el proyecto",
+  "Language": "Idioma"
 }

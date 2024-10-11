@@ -88,15 +88,15 @@ function AboutVersion({ isStartPage = false }) {
       </div>
       {modalsSidebarState.aboutVersion && (
         <div
-          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border md:max-h-full md:left-full md:ml-5 lg:ml-0"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="sticky top-0 flex items-center justify-between py-6 bg-th-secondary-10">
-            <p className="text-left text-2xl font-bold">
-              {t('Version')} {packageJson.version}
+          <div className="sticky top-0 flex items-center justify-center py-4 bg-th-primary-100 px-7">
+            <p className="text-left text-th-secondary-10 text-lg font-medium ml-auto">
+              {t('Version')}
             </p>
             <button
-              className="text-right"
+              className="text-right ml-auto"
               onClick={() =>
                 setModalsSidebarState((prev) => ({
                   ...prev,
@@ -104,13 +104,13 @@ function AboutVersion({ isStartPage = false }) {
                 }))
               }
             >
-              <Close className="h-8 stroke-th-primary-100" />
+              <Close className="h-8 stroke-th-secondary-10" />
             </button>
           </div>
-          <ReactMarkdown className="flex-grow pb-5 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
+          <ReactMarkdown className="flex-grow py-5 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto px-7">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
-          <div className="mt-auto flex justify-center pt-5 border-t border-th-secondary-300">
+          <div className="mt-auto flex justify-center pt-5">
             <button
               onClick={() => setShowAllUpdates((prev) => !prev)}
               className="btn-primary"
