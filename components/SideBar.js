@@ -39,6 +39,7 @@ function SideBar({ setIsOpenSideBar, access }) {
   const { t } = useTranslation(['common', 'projects', 'users'])
   const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
   const [showAbout, setShowAbout] = useState(false)
+  const [showSidebar, setShowSidebar] = useState(true)
 
   const openModal = (modalType) => {
     setModalsSidebarState((prevModals) => ({
@@ -69,7 +70,7 @@ function SideBar({ setIsOpenSideBar, access }) {
           >
             {access &&
               (!open ? (
-                <Burger className="h-10 stroke-th-text-secondary-100" />
+                <Burger className="h-10 stroke-th-text-secondary-100 lg:hidden" />
               ) : (
                 <Close className="h-10 stroke-th-text-secondary-100 lg:hidden" />
               ))}
@@ -78,16 +79,23 @@ function SideBar({ setIsOpenSideBar, access }) {
             afterLeave={() => setShowAbout(false)}
             as={Fragment}
             appear={true}
-            show={open}
+            show={showSidebar}
             enter="transition-opacity duration-200"
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className="fixed flex flex-col w-full md:w-1/2 lg:w-[48%] xl:w-[27rem] gap-7 top-14 sm:top-20 lg:top-0 lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 lg:pr-0"
+              className="group fixed flex flex-col w-full md:w-1/2 lg:w-fit lg:hover:w-[23rem] transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-0 lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3"
               onClick={(e) => e.stopPropagation()}
+              onMouseEnter={() => setIsOpenSideBar(true)}
+              onMouseLeave={() => {
+                setIsOpenSideBar(false)
+                closeModal()
+                close()
+                setShowAbout(false)
+              }}
             >
               <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
-                <div className="flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4">
+                <div className="flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4 lg:w-0 overflow-hidden lg:group-hover:w-auto">
                   <div
                     className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
@@ -123,7 +131,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <Account className="w-5 h-5 stroke-th-text-primary" />
                             </div>
-                            <span className="hover:opacity-70">{t('Account')}</span>
+                            <span className="hover:opacity-70 lg:hidden lg:group-hover:block">
+                              {t('Account')}
+                            </span>
                           </a>
                         </Link>
                       </Menu.Item>
@@ -142,7 +152,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <Projects className="w-5 h-5 stroke-th-text-primary" />
                             </div>
-                            <span className="hover:opacity-70">{t('Projects')}</span>
+                            <span className="hover:opacity-70 lg:hidden lg:group-hover:block">
+                              {t('Projects')}
+                            </span>
                           </a>
                         </Link>
                       </Menu.Item>
@@ -162,7 +174,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               <div className="p-2 rounded-[23rem] hover:opacity-70">
                                 <CreateProject className="w-5 h-5 stroke-th-text-primary" />
                               </div>
-                              <span className="hover:opacity-70">
+                              <span className="hover:opacity-70 lg:hidden lg:group-hover:block">
                                 {t('CreateProject')}
                               </span>
                             </a>
@@ -215,7 +227,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               <div className="p-2 rounded-[23rem] hover:opacity-70">
                                 <Users className="w-5 h-5 stroke-th-text-primary" />
                               </div>
-                              <span className="hover:opacity-70">
+                              <span className="hover:opacity-70 lg:hidden lg:group-hover:block">
                                 {t('users:UserManagement')}
                               </span>
                             </a>
@@ -234,9 +246,13 @@ function SideBar({ setIsOpenSideBar, access }) {
                           <div className="p-2 rounded-[23rem]">
                             <Localization className="w-5 h-5 stroke-th-text-primary" />
                           </div>
-                          <span>{t('Language')}</span>
+                          <span className="lg:hidden lg:group-hover:block">
+                            {t('Language')}
+                          </span>
                         </div>
-                        <SwitchLocalization />
+                        <div className="lg:hidden lg:group-hover:block">
+                          <SwitchLocalization />
+                        </div>
                       </Menu.Item>
                       <Menu.Item
                         as="div"

@@ -3,7 +3,9 @@ import Close from 'public/close.svg'
 function ModalInSideBar({ isOpen, setIsOpen, children, label }) {
   return (
     <>
-      <div className="cursor-pointer text-th-text-primary hover:opacity-70">{label}</div>
+      <div className="cursor-pointer text-th-text-primary hover:opacity-70  lg:hidden lg:group-hover:block">
+        {label}
+      </div>
 
       {isOpen && (
         <div

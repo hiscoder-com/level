@@ -69,10 +69,10 @@ const ThemeSwitcher = () => {
               <div className="p-2">
                 <Theme className="w-5 h-5" />
               </div>
-              <p>{t('ChooseTheme')}</p>
+              <p className="lg:hidden lg:group-hover:block">{t('ChooseTheme')}</p>
             </div>
             <ArrowDown
-              className={`w-5 h-5 transition-all duration-150 ${
+              className={`w-5 h-5 transition-all duration-150 lg:hidden lg:group-hover:block ${
                 open ? 'rotate-180' : ''
               }`}
             />
