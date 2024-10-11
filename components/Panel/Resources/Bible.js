@@ -46,24 +46,37 @@ function Bible({ config, url, toolName }) {
 export default Bible
 
 function Verses({ verseObjects, handleSaveScroll, currentScrollVerse, toolName }) {
+  const idTool = `${toolName}_${currentScrollVerse}`
+  const isEqual = (idTool, verse, idVerse) => {
+    if (verse.includes('-')) {
+      if (verse === currentScrollVerse) return true
+      const [start, end] = verse.split('-').map(Number)
+      if (currentScrollVerse >= start && currentScrollVerse <= end) {
+        return true
+      }
+    } else {
+      return idTool === idVerse
+    }
+  }
   return (
     <>
-      {verseObjects?.map((verseObject) => (
-        <div
-          key={verseObject.verse}
-          id={toolName + verseObject.verse}
-          className={`p-2 rounded-lg ${
-            toolName + currentScrollVerse === toolName + verseObject.verse
-              ? 'bg-th-secondary-100'
-              : ''
-          }`}
-          onClick={() => handleSaveScroll(String(verseObject.verse))}
-        >
-          <MarkdownExtended>
-            {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
-          </MarkdownExtended>
-        </div>
-      ))}
+      {verseObjects?.map((verseObject) => {
+        const idVerse = `${toolName}_${verseObject.verse}`
+        return (
+          <div
+            key={verseObject.verse}
+            id={idVerse}
+            className={`p-2 rounded-lg ${
+              isEqual(idTool, verseObject.verse, idVerse) ? 'bg-th-secondary-100' : ''
+            }`}
+            onClick={() => handleSaveScroll(String(verseObject.verse))}
+          >
+            <MarkdownExtended>
+              {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
+            </MarkdownExtended>
+          </div>
+        )
+      })}
     </>
   )
 }
