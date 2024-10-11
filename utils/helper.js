@@ -442,33 +442,42 @@ export const parseManifests = async ({ resources, current_method }) => {
   return { baseResource, newResources }
 }
 
-export const countOfChaptersAndVerses = async ({ link, book_code }) => {
+export const calculateChaptersAndVerses = (usfmData) => {
   let jsonChapterVerse = {}
-  let usfmData = ''
 
+  const jsonData = usfm.toJSON(usfmData)
+  if (jsonData?.chapters) {
+    Object.keys(jsonData?.chapters).forEach((chapterNum) => {
+      let verseCount = 0
+
+      Object.keys(jsonData?.chapters[chapterNum]).forEach((verse) => {
+        if (verse !== 'front') {
+          if (verse.includes('-')) {
+            const [start, end] = verse.split('-').map(Number)
+            verseCount += end - start + 1
+          } else {
+            verseCount += 1
+          }
+        }
+      })
+
+      jsonChapterVerse[chapterNum] = verseCount
+    })
+  }
+
+  return { data: jsonChapterVerse, error: null }
+}
+export const countOfChaptersAndVerses = async ({ link, book_code }) => {
   if (book_code === 'obs') {
     return { data: obsStoryVerses, error: null }
   }
 
   try {
-    usfmData = await axios.get(link)
+    const { data } = await axios.get(link)
+    return calculateChaptersAndVerses(data)
   } catch (error) {
     return { data: null, error }
   }
-  try {
-    const jsonData = usfm.toJSON(usfmData.data)
-    if (Object.entries(jsonData?.chapters).length > 0) {
-      Object.keys(jsonData?.chapters).forEach((chapterNum) => {
-        jsonChapterVerse[chapterNum] = Object.keys(jsonData?.chapters[chapterNum]).filter(
-          (verse) => verse !== 'front'
-        ).length
-      })
-    }
-  } catch (error) {
-    return { data: null, error }
-  }
-
-  return { data: jsonChapterVerse, error: null }
 }
 
 export const mdToJson = (md) => {
