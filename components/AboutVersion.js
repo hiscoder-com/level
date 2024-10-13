@@ -83,7 +83,7 @@ function AboutVersion({ isStartPage = false }) {
 
   return (
     <>
-      <div className="hover:opacity-70 lg:hidden lg:group-hover:block">
+      <div className="hover:opacity-70">
         {t('Version')} {packageJson.version}
       </div>
       {modalsSidebarState.aboutVersion && (

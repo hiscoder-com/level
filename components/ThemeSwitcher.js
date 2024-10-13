@@ -34,7 +34,7 @@ const ThemeSwitcher = () => {
   const [currentTheme, setCurrentTheme] = useState(theme || 'default')
   const [hoverTheme, setHoverTheme] = useState(false)
   const timeoutRef = useRef(null)
-  const { t } = useTranslation('common')
+  const { t } = useTranslation()
 
   useEffect(() => {
     setCurrentTheme(theme)
@@ -69,10 +69,10 @@ const ThemeSwitcher = () => {
               <div className="p-2">
                 <Theme className="w-5 h-5" />
               </div>
-              <p className="lg:hidden lg:group-hover:block">{t('ChooseTheme')}</p>
+              <p>{t('ChooseTheme')}</p>
             </div>
             <ArrowDown
-              className={`w-5 h-5 transition-all duration-150 lg:hidden lg:group-hover:block ${
+              className={`w-5 h-5 transition-all duration-150 ${
                 open ? 'rotate-180' : ''
               }`}
             />

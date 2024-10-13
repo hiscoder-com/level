@@ -38,7 +38,7 @@ export default function SignOut() {
       <div className="p-2 stroke-th-text-primary">
         <LogOut className="w-5 h-5 stroke-th-text-primary" />
       </div>
-      <p className="lg:hidden lg:group-hover:block">{t('users:SignOut')}</p>
+      <p>{t('users:SignOut')}</p>
     </button>
   )
 }
