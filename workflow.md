@@ -2,15 +2,12 @@
 
 <br />
 <div align="center">
-  <a href="https://github.com/texttree/v-cana">
-    <img src="images/logo.jpg" alt="Logo" width="80" height="80">
+  <a href="https://github.com/hiscoder-com/level">
+    <img src="public/level-logo.svg" alt="Logo" width="80" height="80">
   </a>
 
 <h1 align="center">Рабочий процесс департамента разработки</h1>
-
-  <p align="center">
-    <a href="https://github.com/texttree/v-cana/issues#workspaces/v-cana-project-620deae51595a40010a913fe/board">Zenhub Workspaces</a>
-  </p>
+ 
 </div>
 
 <br>

@@ -93,7 +93,7 @@ function TNList({ setItem, data, toolName, isLoading }) {
           return (
             <div key={index} className="p-4 flex mx-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="pl-7 flex-1" id={'idtn' + verseNumber}>
+              <div className="pl-7 flex-1" id={`idtn_${verseNumber}`}>
                 <ul>
                   {notes?.map((note) => {
                     return (

@@ -23,7 +23,7 @@ import {
   convertToUsfm,
   downloadFile,
   downloadPdf,
-  countOfChaptersAndVerses,
+  getCountChaptersAndVerses,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
 
@@ -207,7 +207,7 @@ function Download({
     if (!bookLink) return null
 
     const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
-      await countOfChaptersAndVerses({
+      await getCountChaptersAndVerses({
         link: bookLink,
       })
     if (errorJsonChapterVerse) {

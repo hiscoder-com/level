@@ -120,7 +120,7 @@ function TWLList({ setItem, data, toolName, isLoading }) {
       ) : (
         verses?.map(([verseNumber, words], verseIndex) => {
           return (
-            <div key={verseIndex} className="p-4 flex mx-4" id={'idtwl' + verseNumber}>
+            <div key={verseIndex} className="p-4 flex mx-4" id={`idtwl_${verseNumber}`}>
               <div className="text-2xl">{verseNumber}</div>
               <div className="pl-7 flex-1">
                 <ul>
