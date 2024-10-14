@@ -1,3 +1,10 @@
+# Versión 0.24.1
+## Fecha: 10/14/2024
+
+### **Fijo:**
+- сonteo de versículos para la traducción cuando los capítulos tienen rangos de versículos en sus títulos
+- сomportamiento del desplazamiento en las herramientas cuando se selecciona un versículo con un rango en su título
+
 # Versión 0.24.0
 ## Fecha: 04/10/2024
 

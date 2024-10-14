@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import axios from 'axios'
 import useSWR from 'swr'
@@ -296,10 +296,54 @@ export function useScroll({ toolName, isLoading, idPrefix }) {
   const [highlightIds, setHighlightIds] = useState(() => {
     return checkLSVal('highlightIds', {}, 'object')
   })
+  const findElementInRange = useCallback((idPrefix, currentScrollVerse) => {
+    const scrollVerseStr = String(currentScrollVerse)
+
+    if (scrollVerseStr.includes('-')) {
+      const [start, end] = scrollVerseStr.split('-').map(Number)
+
+      for (let i = start; i <= end; i++) {
+        let element = document.getElementById(`${idPrefix}_${i}`)
+        if (element) {
+          return element
+        }
+      }
+    } else {
+      let element = document.getElementById(`${idPrefix}_${scrollVerseStr}`)
+      if (element) {
+        return element
+      }
+    }
+
+    const elements = document.querySelectorAll(`[id^="${idPrefix}_"]`)
+    for (let el of elements) {
+      const range = el.id.replace(`${idPrefix}_`, '')
+
+      if (range.includes('-')) {
+        const [start, end] = range.split('-').map(Number)
+
+        if (scrollVerseStr.includes('-')) {
+          const [curStart, curEnd] = scrollVerseStr.split('-').map(Number)
+
+          for (let i = curStart; i <= curEnd; i++) {
+            if (i >= start && i <= end) {
+              return el
+            }
+          }
+        } else {
+          if (currentScrollVerse >= start && currentScrollVerse <= end) {
+            return el
+          }
+        }
+      }
+    }
+
+    return null
+  }, [])
 
   useEffect(() => {
     setTimeout(() => {
-      const element = document.getElementById(idPrefix + currentScrollVerse)
+      const element = findElementInRange(idPrefix, currentScrollVerse)
       const container = document.getElementById('container_' + toolName)
       if (element && container) {
         container.scrollBy({

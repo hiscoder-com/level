@@ -1,3 +1,10 @@
+# Version 0.24.1
+## Date: 10/14/2024
+
+### **Fixed:**
+- verse count for translation when chapters have verse ranges in their titles
+- scroll behavior in tools when a verse with a range in its title is selected
+
 # Version 0.24.0
 ## Date: 10/04/2024
 

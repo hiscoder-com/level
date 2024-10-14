@@ -49,7 +49,7 @@ function Editor({ config }) {
       {verseObjects.map((verseObject, index) => (
         <div
           key={verseObject.verse_id}
-          id={'translate' + verseObject.num}
+          id={`translate_${verseObject.num}`}
           className="flex my-3 pt-1"
           dir={config?.isRtl ? 'rtl' : 'ltr'}
         >

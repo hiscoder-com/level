@@ -1,6 +1,6 @@
 import supabaseApi from 'utils/supabaseServer'
 import { supabaseService } from 'utils/supabaseService'
-import { countOfChaptersAndVerses } from 'utils/helper'
+import { getCountChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
   let supabase
@@ -26,7 +26,7 @@ export default async function handler(req, res) {
 
       try {
         const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
-          await countOfChaptersAndVerses({
+          await getCountChaptersAndVerses({
             link,
             book_code,
           })

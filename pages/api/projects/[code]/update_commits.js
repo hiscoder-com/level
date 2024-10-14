@@ -1,4 +1,4 @@
-import { countOfChaptersAndVerses, parseManifests } from 'utils/helper'
+import { getCountChaptersAndVerses, parseManifests } from 'utils/helper'
 import supabaseApi from 'utils/supabaseServer'
 import { supabaseService } from 'utils/supabaseService'
 
@@ -86,7 +86,7 @@ export default async function updateCommitsHandler(req, res) {
         for (const book of books) {
           const bookFromGit = baseResource.books.find((el) => el.name === book.code)
           const { data: jsonFromGit, error: errorJsonFromGit } =
-            await countOfChaptersAndVerses({
+            await getCountChaptersAndVerses({
               link: bookFromGit.link,
               book_code: book.code,
             })
