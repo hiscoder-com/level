@@ -467,7 +467,7 @@ export const calculateChaptersAndVerses = (usfmData) => {
 
   return { data: jsonChapterVerse, error: null }
 }
-export const countOfChaptersAndVerses = async ({ link, book_code }) => {
+export const getCountChaptersAndVerses = async ({ link, book_code }) => {
   if (book_code === 'obs') {
     return { data: obsStoryVerses, error: null }
   }

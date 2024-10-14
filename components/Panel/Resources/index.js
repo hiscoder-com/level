@@ -1,4 +1,4 @@
-export { default as Bible } from './Bible'
+export { default as Bible } from './Bible/Bible'
 export { default as TN } from './TN'
 export { default as OBSTN } from './OBSTN'
 export { default as TWL } from './TWL'

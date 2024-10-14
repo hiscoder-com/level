@@ -5,13 +5,28 @@ const localStorageEffect =
   ({ setSelf, onSet }) => {
     const savedValue = localStorage.getItem(key)
     if (savedValue != null) {
-      setSelf(JSON.parse(savedValue))
+      try {
+        if (savedValue.startsWith('{') || savedValue.startsWith('[')) {
+          setSelf(JSON.parse(savedValue))
+        } else {
+          setSelf(savedValue)
+        }
+      } catch (error) {
+        console.error(`Error parsing localStorage key "${key}":`, error)
+        localStorage.removeItem(key)
+      }
     }
 
     onSet((newValue, _, isReset) => {
-      isReset
-        ? localStorage.removeItem(key)
-        : localStorage.setItem(key, JSON.stringify(newValue))
+      if (isReset) {
+        localStorage.removeItem(key)
+      } else {
+        if (typeof newValue === 'object') {
+          localStorage.setItem(key, JSON.stringify(newValue))
+        } else {
+          localStorage.setItem(key, String(newValue))
+        }
+      }
     })
   }
 
