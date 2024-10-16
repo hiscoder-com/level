@@ -188,7 +188,7 @@ function CommandEditor({ config }) {
     <>
       {verseObjects.map((verseObject, index) => (
         <div
-          id={'commandTranslate' + verseObject.num}
+          id={`commandTranslate_${verseObject.num}`}
           key={verseObject.verse_id}
           className="flex my-3"
           dir={config?.isRtl ? 'rtl' : 'ltr'}

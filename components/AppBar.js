@@ -57,7 +57,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             } md:ml-0 `}
           >
             <Link href={logoLink}>
-              <LevelLogo className="h-11 fill-th-text-secondary-100" />
+              <LevelLogo className="h-8 fill-th-text-secondary-100" />
             </Link>
           </div>
 

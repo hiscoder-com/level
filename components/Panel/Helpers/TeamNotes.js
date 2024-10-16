@@ -495,7 +495,7 @@ function TeamNotes({ config }) {
                   'px-5 leading-[47px] text-lg cursor-pointer rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex',
                 nodeTextBlock: 'items-center truncate',
               }}
-              data={dataForTreeView}
+              data={dataForTreeView || []}
               setSelectedNodeId={setNoteId}
               selectedNodeId={noteId}
               treeWidth="w-full"
