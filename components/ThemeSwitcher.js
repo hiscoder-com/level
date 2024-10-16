@@ -34,7 +34,6 @@ const ThemeSwitcher = ({ collapsed }) => {
   const [currentTheme, setCurrentTheme] = useState(theme || 'default')
   const [hoverTheme, setHoverTheme] = useState(false)
   const timeoutRef = useRef(null)
-  const [openSwitcher, setOpenSwitcher] = useState(true)
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -61,14 +60,8 @@ const ThemeSwitcher = ({ collapsed }) => {
     setHoverTheme(null)
   }, [])
 
-  useEffect(() => {
-    setOpenSwitcher(true)
-    if (collapsed) console.log('collapsed')
-    if (!collapsed) console.log('not collapsed')
-  }, [collapsed])
-
   return (
-    <Disclosure as="div" data-open={openSwitcher}>
+    <Disclosure as="div">
       {({ open }) => (
         <>
           <Disclosure.Button className="group flex justify-between items-center w-full">

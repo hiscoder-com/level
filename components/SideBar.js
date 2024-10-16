@@ -110,7 +110,7 @@ function SideBar({ setIsOpenSideBar, access }) {
           >
             <Menu.Items
               className={`fixed flex flex-col w-full md:w-1/2 lg:w-[23rem] transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-0 lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
-                collapsed && 'lg:w-fit'
+                collapsed && 'lg:w-8 lg:p-0 -mx-10 2xl:w-fit 2xl:pr-3 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -126,19 +126,21 @@ function SideBar({ setIsOpenSideBar, access }) {
                 setShowAbout(false)
               }}
             >
-              <div className="relative flex flex-col gap-4 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
+              <div className="relative flex flex-col gap-4 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none lg:p-12 2xl:p-7">
                 <div
                   className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4 overflow-hidden ${
                     collapsed ? 'lg:w-0' : 'lg:w-full'
                   }`}
                 >
                   <div
-                    className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
+                    className="relative w-16 h-16 min-w-[3rem] rounded-full shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
                   >
                     <TranslatorImage item={{ users: user }} isPointerCursor="true" />
-                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center cursor-pointer">
-                      <Camera className="w-4 text-white" />
+                    <div className="absolute top-0 start-0 w-full h-full rounded-full overflow-hidden">
+                      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center cursor-pointer">
+                        <Camera className="w-4 text-white" />
+                      </div>
                     </div>
                   </div>
 
@@ -390,15 +392,6 @@ function SideBar({ setIsOpenSideBar, access }) {
           </Transition>
         </>
       )}
-
-      {/* <div className="fixed inset-0 px-5 pb-4 mt-14 min-h-screen z-20 overflow-y-scroll bg-th-secondary-10">
-        <div className="flex justify-end -mb-7">
-          <button className="p-4 mt-4 rounded-full shadow-2xl text-th-text-secondary-100 bg-th-primary-100">
-            <Plus className="w-7 h-7 rotate-45" />
-          </button>
-        </div>
-        <ProjectCreate />
-      </div> */}
     </Menu>
   )
 }

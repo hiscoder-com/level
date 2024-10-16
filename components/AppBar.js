@@ -52,9 +52,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <div
-            className={`flex justify-center w-full lg:-ml-12 ${
+            className={`flex justify-center w-full 2xl:-ml-12 ${
               access && !isStepPage ? '-ml-10' : ''
-            } md:ml-0 `}
+            } md:ml-0 lg:ml-12 `}
           >
             <Link href={logoLink}>
               <LevelLogo className="h-8 fill-th-text-secondary-100" />
