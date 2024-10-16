@@ -16,6 +16,8 @@ import ThemeSwitcher from './ThemeSwitcher'
 import SignOut from './SignOut'
 import ModalInSideBar from './ModalInSideBar'
 import { PersonalNotes } from './Panel'
+import ProjectCreate from './ProjectCreate'
+import AboutProject from './AboutProject'
 
 import { modalsSidebar } from './state/atoms'
 
@@ -33,9 +35,6 @@ import CreateProject from 'public/create-project.svg'
 import Notes from 'public/notes.svg'
 import Users from 'public/users.svg'
 import About from 'public/about.svg'
-import Feedback from './StartPage/Feedback'
-import ProjectCreate from './ProjectCreate'
-import Plus from 'public/plus.svg'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
@@ -229,7 +228,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className="flex items-center justify-between gap-2 cursor-default"
+                          className="flex items-center justify-between gap-2 cursor-default md:hidden"
                         >
                           <div
                             className="flex w-full items-center gap-2 cursor-pointer"
@@ -244,7 +243,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <ModalInSideBar
                               setIsOpen={setShowCreate}
                               isOpen={showCreate}
-                              label={t('CreateProject')}
+                              buttonTitle={t('CreateProject')}
+                              modalTitle={t('CreateProject')}
                               collapsed={collapsed}
                             >
                               <ProjectCreate />
@@ -276,7 +276,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 notepad: value,
                               }))
                             }
-                            label={t('personalNotes')}
+                            modalTitle={t('personalNotes')}
+                            buttonTitle={t('personalNotes')}
                             collapsed={collapsed}
                           >
                             <PersonalNotes />
@@ -345,15 +346,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                           <ModalInSideBar
                             setIsOpen={setShowAbout}
                             isOpen={showAbout}
-                            label={t('About')}
+                            buttonTitle={t('About')}
+                            modalTitle={'LEVEL'}
                             collapsed={collapsed}
                           >
-                            <div>
-                              <h2 className="text-th-primary-100 uppercase font-medium">
-                                About
-                              </h2>
-                            </div>
-                            <Feedback t={t} />
+                            <AboutProject />
                           </ModalInSideBar>
                         </div>
                       </Menu.Item>

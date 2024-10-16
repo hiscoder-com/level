@@ -1,6 +1,13 @@
 import Close from 'public/close.svg'
 
-function ModalInSideBar({ isOpen, setIsOpen, children, label, collapsed }) {
+function ModalInSideBar({
+  isOpen,
+  setIsOpen,
+  children,
+  modalTitle,
+  buttonTitle,
+  collapsed,
+}) {
   return (
     <>
       <div
@@ -8,7 +15,7 @@ function ModalInSideBar({ isOpen, setIsOpen, children, label, collapsed }) {
           collapsed && 'lg:hidden'
         }`}
       >
-        {label}
+        {buttonTitle}
       </div>
 
       {isOpen && (
@@ -18,7 +25,7 @@ function ModalInSideBar({ isOpen, setIsOpen, children, label, collapsed }) {
         >
           <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 lg:px-7">
             <p className="text-th-text-secondary-100 font-medium text-lg ml-auto">
-              {label}
+              {modalTitle}
             </p>
             <button className="text-right ml-auto" onClick={() => setIsOpen(false)}>
               <Close className="h-8 stroke-th-secondary-10" />

@@ -84,7 +84,9 @@ const ThemeSwitcher = ({ collapsed }) => {
               } ${collapsed && 'lg:hidden'}`}
             />
           </Disclosure.Button>
-          <Disclosure.Panel className="flex space-x-4 box-border mx-1 my-4">
+          <Disclosure.Panel
+            className={`flex space-x-4 box-border mx-1 my-4 ${collapsed && 'lg:hidden'}`}
+          >
             {themes.map((theme) => (
               <div key={theme.name} className="relative">
                 <div
