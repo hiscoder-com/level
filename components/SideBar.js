@@ -33,13 +33,20 @@ import CreateProject from 'public/create-project.svg'
 import Notes from 'public/notes.svg'
 import Users from 'public/users.svg'
 import About from 'public/about.svg'
+import Feedback from './StartPage/Feedback'
+import ProjectCreate from './ProjectCreate'
+import Plus from 'public/plus.svg'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
-  const { t } = useTranslation(['common', 'projects', 'users'])
+  const { t } = useTranslation(['common', 'projects', 'users', 'start-page'])
   const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
+  const [collapsed, setCollapsed] = useState(true)
+  const [isLargeScreen, setIsLargeScreen] = useState(false)
+  const [isOpen, setIsOpen] = useState(false)
+
   const [showAbout, setShowAbout] = useState(false)
-  const [showSidebar, setShowSidebar] = useState(true)
+  const [showCreate, setShowCreate] = useState(false)
 
   const openModal = (modalType) => {
     setModalsSidebarState((prevModals) => ({
@@ -57,6 +64,21 @@ function SideBar({ setIsOpenSideBar, access }) {
     })
   }
 
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsLargeScreen(window.innerWidth > 1024)
+    }
+
+    checkScreenSize()
+    window.addEventListener('resize', checkScreenSize)
+
+    return () => window.removeEventListener('resize', checkScreenSize)
+  }, [])
+
+  useEffect(() => {
+    setIsOpen(isLargeScreen)
+  }, [isLargeScreen])
+
   return (
     <Menu>
       {({ open, close }) => (
@@ -70,32 +92,47 @@ function SideBar({ setIsOpenSideBar, access }) {
           >
             {access &&
               (!open ? (
-                <Burger className="h-10 stroke-th-text-secondary-100" />
+                <Burger className="h-10 stroke-th-text-secondary-100 lg:hidden" />
               ) : (
-                <Close className="h-10 stroke-th-text-secondary-100" />
+                <Close className="h-10 stroke-th-text-secondary-100 lg:hidden" />
               ))}
           </Menu.Button>
           <Transition
-            afterLeave={() => setShowAbout(false)}
+            afterLeave={() => {
+              setShowAbout(false)
+
+              setShowCreate(false)
+            }}
             as={Fragment}
             appear={open}
-            show={open}
+            show={isLargeScreen || open}
             enter="transition-opacity duration-200"
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className="group fixed flex flex-col w-full md:w-1/2 lg:w-[23rem] transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-0 lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3"
+              className={`fixed flex flex-col w-full md:w-1/2 lg:w-[23rem] transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-0 lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
+                collapsed && 'lg:w-fit'
+              }`}
               onClick={(e) => e.stopPropagation()}
-              // onMouseEnter={() => setIsOpenSideBar(true)}
-              // onMouseLeave={() => {
-              //   setIsOpenSideBar(false)
-              //   closeModal()
-              //   close()
-              //   setShowAbout(false)
-              // }}
+              onMouseEnter={() => {
+                setCollapsed(false)
+
+                setIsOpenSideBar(true)
+              }}
+              onMouseLeave={() => {
+                setCollapsed(true)
+                closeModal()
+                close()
+                setIsOpenSideBar(false)
+                setShowAbout(false)
+              }}
             >
-              <div className="relative flex flex-col gap-7 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
-                <div className="flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4 overflow-hidden">
+              <div className="relative flex flex-col gap-4 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
+                <div
+                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4 overflow-hidden ${
+                    collapsed ? 'lg:w-0' : 'lg:w-full'
+                  }`}
+                >
                   <div
                     className="relative w-16 h-16 min-w-[3rem] rounded-full overflow-hidden shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
@@ -115,10 +152,10 @@ function SideBar({ setIsOpenSideBar, access }) {
                 </div>
 
                 <div className="f-screen-appbar flex flex-col justify-between sm:min-h-[60vh] grow">
-                  <div className="flex flex-col text-sm justify-between grow">
+                  <div className="flex flex-col text-sm justify-between grow gap-8">
                     <div className="flex flex-col gap-3">
                       <Menu.Item as="div" disabled>
-                        <Link href="/account" legacyBehavior>
+                        <Link href="/account?tab=0" legacyBehavior>
                           <a
                             className="flex items-center gap-2 cursor-pointer"
                             onClick={() => {
@@ -131,7 +168,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <Account className="w-5 h-5 stroke-th-text-primary" />
                             </div>
-                            <span className="hover:opacity-70">{t('Account')}</span>
+                            <span
+                              className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
+                            >
+                              {t('Account')}
+                            </span>
                           </a>
                         </Link>
                       </Menu.Item>
@@ -150,13 +191,17 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <Projects className="w-5 h-5 stroke-th-text-primary" />
                             </div>
-                            <span className="hover:opacity-70">{t('Projects')}</span>
+                            <span
+                              className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
+                            >
+                              {t('Projects')}
+                            </span>
                           </a>
                         </Link>
                       </Menu.Item>
 
                       {user?.is_admin && (
-                        <Menu.Item as="div" disabled>
+                        <Menu.Item as="div" disabled className="hidden md:block">
                           <Link href="/account?tab=2" legacyBehavior>
                             <a
                               className="flex items-center gap-2 cursor-pointer"
@@ -170,11 +215,41 @@ function SideBar({ setIsOpenSideBar, access }) {
                               <div className="p-2 rounded-[23rem] hover:opacity-70">
                                 <CreateProject className="w-5 h-5 stroke-th-text-primary" />
                               </div>
-                              <span className="hover:opacity-70">
+                              <span
+                                className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
+                              >
                                 {t('CreateProject')}
                               </span>
                             </a>
                           </Link>
+                        </Menu.Item>
+                      )}
+
+                      {user?.is_admin && (
+                        <Menu.Item
+                          as="div"
+                          disabled
+                          className="flex items-center justify-between gap-2 cursor-default"
+                        >
+                          <div
+                            className="flex w-full items-center gap-2 cursor-pointer"
+                            onClick={() => {
+                              setShowCreate((prev) => !prev)
+                              openModal()
+                            }}
+                          >
+                            <div className="p-2 rounded-[23rem] hover:opacity-70">
+                              <CreateProject className="w-5 h-5 stroke-th-text-primary" />
+                            </div>
+                            <ModalInSideBar
+                              setIsOpen={setShowCreate}
+                              isOpen={showCreate}
+                              label={t('CreateProject')}
+                              collapsed={collapsed}
+                            >
+                              <ProjectCreate />
+                            </ModalInSideBar>
+                          </div>
                         </Menu.Item>
                       )}
 
@@ -202,6 +277,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               }))
                             }
                             label={t('personalNotes')}
+                            collapsed={collapsed}
                           >
                             <PersonalNotes />
                           </ModalInSideBar>
@@ -223,14 +299,16 @@ function SideBar({ setIsOpenSideBar, access }) {
                               <div className="p-2 rounded-[23rem] hover:opacity-70">
                                 <Users className="w-5 h-5 stroke-th-text-primary" />
                               </div>
-                              <span className="hover:opacity-70">
+                              <span
+                                className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
+                              >
                                 {t('users:UserManagement')}
                               </span>
                             </a>
                           </Link>
                         </Menu.Item>
                       )}
-                      <ThemeSwitcher />
+                      <ThemeSwitcher collapsed={collapsed} />
                     </div>
                     <div className="flex flex-col gap-3">
                       <Menu.Item
@@ -242,9 +320,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                           <div className="p-2 rounded-[23rem]">
                             <Localization className="w-5 h-5 stroke-th-text-primary" />
                           </div>
-                          <span>{t('Language')}</span>
+                          <span className={collapsed && 'lg:hidden'}>
+                            {t('Language')}
+                          </span>
                         </div>
-                        <SwitchLocalization />
+                        <SwitchLocalization collapsed={collapsed} />
                       </Menu.Item>
 
                       <Menu.Item
@@ -254,7 +334,10 @@ function SideBar({ setIsOpenSideBar, access }) {
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
-                          onClick={() => setShowAbout((prev) => !prev)}
+                          onClick={() => {
+                            setShowAbout((prev) => !prev)
+                            openModal()
+                          }}
                         >
                           <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <About className="w-5 h-5 stroke-th-text-primary" />
@@ -263,8 +346,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                             setIsOpen={setShowAbout}
                             isOpen={showAbout}
                             label={t('About')}
+                            collapsed={collapsed}
                           >
-                            <h1>{t('About')}</h1>
+                            <div>
+                              <h2 className="text-th-primary-100 uppercase font-medium">
+                                About
+                              </h2>
+                            </div>
+                            <Feedback t={t} />
                           </ModalInSideBar>
                         </div>
                       </Menu.Item>
@@ -284,7 +373,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <VersionLogo className="w-5 h-5 stroke-th-text-primary" />
                           </div>
-                          <AboutVersion />
+                          <AboutVersion collapsed={collapsed} />
                         </div>
                       </Menu.Item>
 
@@ -293,7 +382,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                         disabled
                         className="flex items-center justify-between gap-2 cursor-default"
                       >
-                        <SignOut />
+                        <SignOut collapsed={collapsed} />
                       </Menu.Item>
                     </div>
                   </div>
@@ -304,6 +393,15 @@ function SideBar({ setIsOpenSideBar, access }) {
           </Transition>
         </>
       )}
+
+      {/* <div className="fixed inset-0 px-5 pb-4 mt-14 min-h-screen z-20 overflow-y-scroll bg-th-secondary-10">
+        <div className="flex justify-end -mb-7">
+          <button className="p-4 mt-4 rounded-full shadow-2xl text-th-text-secondary-100 bg-th-primary-100">
+            <Plus className="w-7 h-7 rotate-45" />
+          </button>
+        </div>
+        <ProjectCreate />
+      </div> */}
     </Menu>
   )
 }

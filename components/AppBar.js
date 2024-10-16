@@ -52,7 +52,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <div
-            className={`flex justify-center w-full ${
+            className={`flex justify-center w-full lg:-ml-12 ${
               access && !isStepPage ? '-ml-10' : ''
             } md:ml-0 `}
           >

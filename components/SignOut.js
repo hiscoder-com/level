@@ -8,7 +8,7 @@ import useSupabaseClient from 'utils/supabaseClient'
 
 import LogOut from 'public/logout.svg'
 
-export default function SignOut() {
+export default function SignOut({ collapsed }) {
   const supabaseClient = useSupabaseClient()
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation('users')
@@ -38,7 +38,7 @@ export default function SignOut() {
       <div className="p-2 stroke-th-text-primary">
         <LogOut className="w-5 h-5 stroke-th-text-primary" />
       </div>
-      <p>{t('users:SignOut')}</p>
+      <p className={collapsed && 'lg:hidden'}>{t('users:SignOut')}</p>
     </button>
   )
 }

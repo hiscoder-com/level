@@ -29,11 +29,12 @@ const themes = [
   },
 ]
 
-const ThemeSwitcher = () => {
+const ThemeSwitcher = ({ collapsed }) => {
   const theme = useGetTheme()
   const [currentTheme, setCurrentTheme] = useState(theme || 'default')
   const [hoverTheme, setHoverTheme] = useState(false)
   const timeoutRef = useRef(null)
+  const [openSwitcher, setOpenSwitcher] = useState(true)
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -60,8 +61,14 @@ const ThemeSwitcher = () => {
     setHoverTheme(null)
   }, [])
 
+  useEffect(() => {
+    setOpenSwitcher(true)
+    if (collapsed) console.log('collapsed')
+    if (!collapsed) console.log('not collapsed')
+  }, [collapsed])
+
   return (
-    <Disclosure as="div" defaultOpen={false}>
+    <Disclosure as="div" data-open={openSwitcher}>
       {({ open }) => (
         <>
           <Disclosure.Button className="group flex justify-between items-center w-full">
@@ -69,12 +76,12 @@ const ThemeSwitcher = () => {
               <div className="p-2">
                 <Theme className="w-5 h-5" />
               </div>
-              <p>{t('ChooseTheme')}</p>
+              <p className={collapsed && 'lg:hidden'}>{t('ChooseTheme')}</p>
             </div>
             <ArrowDown
               className={`w-5 h-5 transition-all duration-150 ${
                 open ? 'rotate-180' : ''
-              }`}
+              } ${collapsed && 'lg:hidden'}`}
             />
           </Disclosure.Button>
           <Disclosure.Panel className="flex space-x-4 box-border mx-1 my-4">
