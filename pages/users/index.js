@@ -30,7 +30,12 @@ export default function UsersPage() {
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['users', 'common'])),
+      ...(await serverSideTranslations(locale, [
+        'users',
+        'common',
+        'about',
+        'start-page',
+      ])),
     },
   }
 }

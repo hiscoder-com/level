@@ -109,8 +109,8 @@ function SideBar({ setIsOpenSideBar, access }) {
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className={`fixed flex flex-col w-full md:w-1/2 lg:w-[23rem] transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-0 lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
-                collapsed && 'lg:w-8 lg:p-0 -mx-10 2xl:w-fit 2xl:pr-3 2xl:mx-0'
+              className={`fixed flex flex-col w-full md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-0 overflow-hidden lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
+                !collapsed ? 'lg:w-[23rem]' : 'lg:w-14 lg:ml-0 lg:p-0 2xl:w-14 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -126,10 +126,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                 setShowAbout(false)
               }}
             >
-              <div className="relative flex flex-col gap-4 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none lg:p-12 2xl:p-7">
+              <div
+                className={`relative flex flex-col gap-4 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 overflow-hidden bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none ${
+                  collapsed ? 'lg:p-2 2xl:p-2' : 'lg:p-8 2xl:p-7'
+                }`}
+              >
                 <div
                   className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4 overflow-hidden ${
-                    collapsed ? 'lg:w-0' : 'lg:w-full'
+                    collapsed ? 'lg:w-0' : 'lg:w-full px-4'
                   }`}
                 >
                   <div
@@ -166,8 +170,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                               setShowAbout(false)
                             }}
                           >
-                            <div className="p-2 rounded-[23rem] hover:opacity-70">
-                              <Account className="w-5 h-5 stroke-th-text-primary" />
+                            <div className="rounded-[23rem] hover:opacity-70">
+                              <Account
+                                className={`stroke-th-text-primary ${
+                                  collapsed && 'opacity-70'
+                                }`}
+                              />
                             </div>
                             <span
                               className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
@@ -189,8 +197,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                               setShowAbout(false)
                             }}
                           >
-                            <div className="p-2 rounded-[23rem] hover:opacity-70">
-                              <Projects className="w-5 h-5 stroke-th-text-primary" />
+                            <div className="rounded-[23rem] hover:opacity-70">
+                              <Projects
+                                className={`stroke-th-text-primary ${
+                                  collapsed && 'opacity-70'
+                                }`}
+                              />
                             </div>
                             <span
                               className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
@@ -213,8 +225,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 setShowAbout(false)
                               }}
                             >
-                              <div className="p-2 rounded-[23rem] hover:opacity-70">
-                                <CreateProject className="w-5 h-5 stroke-th-text-primary" />
+                              <div className="rounded-[23rem] hover:opacity-70">
+                                <CreateProject
+                                  className={`stroke-th-text-primary ${
+                                    collapsed && 'opacity-70'
+                                  }`}
+                                />
                               </div>
                               <span
                                 className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
@@ -239,8 +255,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                               openModal()
                             }}
                           >
-                            <div className="p-2 rounded-[23rem] hover:opacity-70">
-                              <CreateProject className="w-5 h-5 stroke-th-text-primary" />
+                            <div className="rounded-[23rem] hover:opacity-70">
+                              <CreateProject
+                                className={`stroke-th-text-primary ${
+                                  collapsed && 'opacity-70'
+                                }`}
+                              />
                             </div>
                             <ModalInSideBar
                               setIsOpen={setShowCreate}
@@ -267,8 +287,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                             setShowAbout(false)
                           }}
                         >
-                          <div className="p-2 rounded-[23rem] hover:opacity-70">
-                            <Notes className="w-5 h-5 stroke-th-text-primary" />
+                          <div className="rounded-[23rem] hover:opacity-70">
+                            <Notes
+                              className={`stroke-th-text-primary ${
+                                collapsed && 'opacity-70'
+                              }`}
+                            />
                           </div>
                           <ModalInSideBar
                             isOpen={modalsSidebarState.notepad}
@@ -299,8 +323,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 setShowAbout(false)
                               }}
                             >
-                              <div className="p-2 rounded-[23rem] hover:opacity-70">
-                                <Users className="w-5 h-5 stroke-th-text-primary" />
+                              <div className="rounded-[23rem] hover:opacity-70">
+                                <Users
+                                  className={`stroke-th-text-primary ${
+                                    collapsed && 'opacity-70'
+                                  }`}
+                                />
                               </div>
                               <span
                                 className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
@@ -311,7 +339,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                           </Link>
                         </Menu.Item>
                       )}
-                      <ThemeSwitcher collapsed={collapsed} />
+                      <div className="space-y-4">
+                        <div className="w-96 h-px bg-th-secondary-100 -mx-8" />
+                        <ThemeSwitcher collapsed={collapsed} />
+                        <div className="w-96 h-px bg-th-secondary-100 -mx-8" />
+                      </div>
                     </div>
                     <div className="flex flex-col gap-3">
                       <Menu.Item
@@ -320,8 +352,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                         className="flex items-center justify-between gap-2 cursor-default"
                       >
                         <div className="flex items-center gap-2">
-                          <div className="p-2 rounded-[23rem]">
-                            <Localization className="w-5 h-5 stroke-th-text-primary" />
+                          <div className="rounded-[23rem]">
+                            <Localization
+                              className={`stroke-th-text-primary ${
+                                collapsed && 'opacity-70'
+                              }`}
+                            />
                           </div>
                           <span className={collapsed && 'lg:hidden'}>
                             {t('Language')}
@@ -342,8 +378,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                             openModal()
                           }}
                         >
-                          <div className="p-2 rounded-[23rem] hover:opacity-70">
-                            <About className="w-5 h-5 stroke-th-text-primary" />
+                          <div className="rounded-[23rem] hover:opacity-70">
+                            <About
+                              className={`stroke-th-text-primary ${
+                                collapsed && 'opacity-70'
+                              }`}
+                            />
                           </div>
                           <ModalInSideBar
                             setIsOpen={setShowAbout}
@@ -369,8 +409,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                             setShowAbout(false)
                           }}
                         >
-                          <div className="p-2 rounded-[23rem] hover:opacity-70">
-                            <VersionLogo className="w-5 h-5 stroke-th-text-primary" />
+                          <div className="rounded-[23rem] hover:opacity-70">
+                            <VersionLogo
+                              className={`stroke-th-text-primary ${
+                                collapsed && 'opacity-70'
+                              }`}
+                            />
                           </div>
                           <AboutVersion collapsed={collapsed} />
                         </div>

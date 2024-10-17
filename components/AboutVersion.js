@@ -110,10 +110,10 @@ function AboutVersion({ isStartPage = false, collapsed }) {
           <ReactMarkdown className="flex-grow py-5 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto px-7">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
-          <div className="mt-auto flex justify-center pt-5">
+          <div className="mt-auto flex justify-center pt-5 px-4">
             <button
               onClick={() => setShowAllUpdates((prev) => !prev)}
-              className="btn-primary"
+              className="btn-primary w-full"
             >
               {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
             </button>

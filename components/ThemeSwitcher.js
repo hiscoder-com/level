@@ -66,8 +66,10 @@ const ThemeSwitcher = ({ collapsed }) => {
         <>
           <Disclosure.Button className="group flex justify-between items-center w-full">
             <div className="flex gap-2 items-center">
-              <div className="p-2">
-                <Theme className="w-5 h-5" />
+              <div>
+                <Theme
+                  className={`stroke-th-text-primary ${collapsed && 'opacity-70'}`}
+                />
               </div>
               <p className={collapsed && 'lg:hidden'}>{t('ChooseTheme')}</p>
             </div>
@@ -78,7 +80,9 @@ const ThemeSwitcher = ({ collapsed }) => {
             />
           </Disclosure.Button>
           <Disclosure.Panel
-            className={`flex space-x-4 box-border mx-1 my-4 ${collapsed && 'lg:hidden'}`}
+            className={`flex space-x-4 box-border mx-1 pl-2 my-4 ${
+              collapsed && 'lg:hidden'
+            }`}
           >
             {themes.map((theme) => (
               <div key={theme.name} className="relative">
