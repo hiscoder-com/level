@@ -185,5 +185,10 @@
   "WordExist": "Такое слово уже существует:",
   "WrongResource": "Ошибка загрузки ресурса",
   "Yes": "Да",
-  "Symbols": "Символы"
+  "Symbols": "Символы",
+  "Account": "Аккаунт",
+  "Projects": "Проекты",
+  "CreateProject": "Создать проект",
+  "About": "О проекте",
+  "Language": "Язык"
 }

@@ -1,3 +1,9 @@
+# Version 0.25.0
+## Date: 10/17/2024
+
+### **Changed:**
+- sidebar
+
 # Version 0.24.1
 ## Date: 10/14/2024
 
@@ -208,7 +214,7 @@
 ## Date: 09/18/2023
 
 ### **Added:**
-- loading status for clicking on the internal link 
+- loading status for clicking on the internal link
 - link to the ready-made books reading mode in account
 
 # Version 0.5.0

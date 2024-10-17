@@ -4,11 +4,11 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import ButtonLoading from './ButtonLoading'
-
 import useSupabaseClient from 'utils/supabaseClient'
 
-export default function SignOut() {
+import LogOut from 'public/logout.svg'
+
+export default function SignOut({ collapsed }) {
   const supabaseClient = useSupabaseClient()
   const [loading, setLoading] = useState(false)
   const { t } = useTranslation('users')
@@ -28,12 +28,17 @@ export default function SignOut() {
   }
 
   return (
-    <ButtonLoading
-      isLoading={loading}
+    <button
+      disabled={loading}
       onClick={handleLogout}
-      className="btn-primary w-full"
+      className={`flex w-full items-center gap-2 cursor-pointer ${
+        loading ? 'opacity-70' : ''
+      }`}
     >
-      {t('users:SignOut')}
-    </ButtonLoading>
+      <div className="stroke-th-text-primary">
+        <LogOut className={`stroke-th-text-primary ${collapsed && 'opacity-70'}`} />
+      </div>
+      <p className={collapsed && 'lg:hidden'}>{t('users:SignOut')}</p>
+    </button>
   )
 }
