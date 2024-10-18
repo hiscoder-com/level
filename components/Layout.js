@@ -40,7 +40,7 @@ function Layout({ backgroundColor, children }) {
             enter="transition-opacity duration-200"
             leave="transition-opacity duration-200"
           >
-            <div className="absolute flex justify-center items-center top-14 sm:top-16 left-0 bottom-0 right-0 backdrop-brightness-90 backdrop-blur z-20 overflow-y-hidden">
+            <div className="absolute flex justify-center items-center top-14 sm:top-16 left-0 bottom-0 right-0 bg-black bg-opacity-70 z-20 overflow-y-hidden">
               {loadingPage && (
                 <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
               )}

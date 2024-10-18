@@ -35,17 +35,20 @@ import CreateProject from 'public/create-project.svg'
 import Notes from 'public/notes.svg'
 import Users from 'public/users.svg'
 import About from 'public/about.svg'
+import { useRouter } from 'next/router'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation(['common', 'projects', 'users', 'start-page'])
   const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
+
   const [collapsed, setCollapsed] = useState(true)
   const [isLargeScreen, setIsLargeScreen] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
-
   const [showAbout, setShowAbout] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
+
+  const router = useRouter()
 
   const openModal = (modalType) => {
     setModalsSidebarState((prevModals) => ({
@@ -87,7 +90,7 @@ function SideBar({ setIsOpenSideBar, access }) {
               closeModal()
               setIsOpenSideBar((prev) => !prev)
             }}
-            className="z-30"
+            className="z-20"
           >
             {access &&
               (!open ? (
@@ -109,7 +112,7 @@ function SideBar({ setIsOpenSideBar, access }) {
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className={`fixed flex flex-col w-full md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-0 overflow-hidden lg:h-screen lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
+              className={`fixed flex flex-col w-full md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
                 !collapsed ? 'lg:w-[23rem]' : 'lg:w-14 lg:ml-0 lg:p-0 2xl:w-14 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
@@ -127,12 +130,12 @@ function SideBar({ setIsOpenSideBar, access }) {
               }}
             >
               <div
-                className={`relative flex flex-col gap-4 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 overflow-hidden bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none ${
-                  collapsed ? 'lg:p-2 2xl:p-2' : 'lg:p-8 2xl:p-7'
+                className={`relative flex flex-col gap-4 p-3 sm:p-7 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none ${
+                  collapsed ? 'lg:p-2 2xl:p-2' : 'lg:p-8 2xl:p-4'
                 }`}
               >
                 <div
-                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 py-4 overflow-hidden ${
+                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 pb-4 overflow-hidden ${
                     collapsed ? 'lg:w-0' : 'lg:w-full px-4'
                   }`}
                 >
@@ -159,7 +162,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                 <div className="f-screen-appbar flex flex-col justify-between sm:min-h-[60vh] grow">
                   <div className="flex flex-col text-sm justify-between grow gap-8">
                     <div className="flex flex-col gap-3">
-                      <Menu.Item as="div" disabled>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className={
+                          (router.pathname !== '/account' || router.query.tab !== '0') &&
+                          'opacity-70'
+                        }
+                      >
                         <Link href="/account?tab=0" legacyBehavior>
                           <a
                             className="flex items-center gap-2 cursor-pointer"
@@ -170,12 +180,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                               setShowAbout(false)
                             }}
                           >
-                            <div className="rounded-[23rem] hover:opacity-70">
-                              <Account
-                                className={`stroke-th-text-primary ${
-                                  collapsed && 'opacity-70'
-                                }`}
-                              />
+                            <div className="p-2 rounded-[23rem] hover:opacity-70">
+                              <Account className="stroke-th-text-primary" />
                             </div>
                             <span
                               className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
@@ -186,7 +192,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                         </Link>
                       </Menu.Item>
 
-                      <Menu.Item as="div" disabled>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className={router.query.tab !== '1' && 'opacity-70'}
+                      >
                         <Link href="/account?tab=1" legacyBehavior>
                           <a
                             className="flex items-center gap-2 cursor-pointer"
@@ -197,7 +207,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               setShowAbout(false)
                             }}
                           >
-                            <div className="rounded-[23rem] hover:opacity-70">
+                            <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <Projects
                                 className={`stroke-th-text-primary ${
                                   collapsed && 'opacity-70'
@@ -214,7 +224,13 @@ function SideBar({ setIsOpenSideBar, access }) {
                       </Menu.Item>
 
                       {user?.is_admin && (
-                        <Menu.Item as="div" disabled className="hidden md:block">
+                        <Menu.Item
+                          as="div"
+                          disabled
+                          className={`hidden md:block ${
+                            router.query.tab !== '2' && 'opacity-70'
+                          }`}
+                        >
                           <Link href="/account?tab=2" legacyBehavior>
                             <a
                               className="flex items-center gap-2 cursor-pointer"
@@ -225,7 +241,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 setShowAbout(false)
                               }}
                             >
-                              <div className="rounded-[23rem] hover:opacity-70">
+                              <div className="p-2 rounded-[23rem] hover:opacity-70">
                                 <CreateProject
                                   className={`stroke-th-text-primary ${
                                     collapsed && 'opacity-70'
@@ -246,7 +262,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className="flex items-center justify-between gap-2 cursor-default md:hidden"
+                          className={`flex items-center justify-between gap-2 cursor-default md:hidden ${
+                            !showCreate && 'opacity-70'
+                          }`}
                         >
                           <div
                             className="flex w-full items-center gap-2 cursor-pointer"
@@ -255,7 +273,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               openModal()
                             }}
                           >
-                            <div className="rounded-[23rem] hover:opacity-70">
+                            <div className="p-2 rounded-[23rem] hover:opacity-70">
                               <CreateProject
                                 className={`stroke-th-text-primary ${
                                   collapsed && 'opacity-70'
@@ -278,7 +296,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className="flex items-center justify-between gap-2 cursor-default"
+                        className={`flex items-center justify-between gap-2 cursor-default ${
+                          !modalsSidebarState.notepad && 'opacity-70'
+                        }`}
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
@@ -287,7 +307,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                             setShowAbout(false)
                           }}
                         >
-                          <div className="rounded-[23rem] hover:opacity-70">
+                          <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <Notes
                               className={`stroke-th-text-primary ${
                                 collapsed && 'opacity-70'
@@ -312,7 +332,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                       </Menu.Item>
 
                       {user?.is_admin && (
-                        <Menu.Item as="div" disabled>
+                        <Menu.Item
+                          as="div"
+                          disabled
+                          className={router.pathname !== '/users' && 'opacity-70'}
+                        >
                           <Link href="/users" legacyBehavior>
                             <a
                               className="flex items-center gap-2 cursor-pointer"
@@ -323,7 +347,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 setShowAbout(false)
                               }}
                             >
-                              <div className="rounded-[23rem] hover:opacity-70">
+                              <div className="p-2 rounded-[23rem] hover:opacity-70">
                                 <Users
                                   className={`stroke-th-text-primary ${
                                     collapsed && 'opacity-70'
@@ -340,9 +364,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                         </Menu.Item>
                       )}
                       <div className="space-y-4">
-                        <div className="w-96 h-px bg-th-secondary-100 -mx-8" />
+                        <div className="w-full h-px bg-th-secondary-100" />
                         <ThemeSwitcher collapsed={collapsed} />
-                        <div className="w-96 h-px bg-th-secondary-100 -mx-8" />
+                        <div className="w-full h-px bg-th-secondary-100" />
                       </div>
                     </div>
                     <div className="flex flex-col gap-3">
@@ -352,9 +376,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                         className="flex items-center justify-between gap-2 cursor-default"
                       >
                         <div className="flex items-center gap-2">
-                          <div className="rounded-[23rem]">
+                          <div className="p-2 rounded-[23rem]">
                             <Localization
-                              className={`stroke-th-text-primary ${
+                              className={`w-5 h-5 stroke-th-text-primary ${
                                 collapsed && 'opacity-70'
                               }`}
                             />
@@ -378,9 +402,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                             openModal()
                           }}
                         >
-                          <div className="rounded-[23rem] hover:opacity-70">
+                          <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <About
-                              className={`stroke-th-text-primary ${
+                              className={`w-5 h-5 stroke-th-text-primary ${
                                 collapsed && 'opacity-70'
                               }`}
                             />
@@ -409,9 +433,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                             setShowAbout(false)
                           }}
                         >
-                          <div className="rounded-[23rem] hover:opacity-70">
+                          <div className="p-2 rounded-[23rem] hover:opacity-70">
                             <VersionLogo
-                              className={`stroke-th-text-primary ${
+                              className={`w-5 h-5 stroke-th-text-primary ${
                                 collapsed && 'opacity-70'
                               }`}
                             />

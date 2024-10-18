@@ -64,12 +64,14 @@ const ThemeSwitcher = ({ collapsed }) => {
     <Disclosure as="div">
       {({ open }) => (
         <>
-          <Disclosure.Button className="group flex justify-between items-center w-full">
+          <Disclosure.Button
+            className={`group flex justify-between items-center w-full ${
+              !open && 'opacity-70'
+            }`}
+          >
             <div className="flex gap-2 items-center">
               <div>
-                <Theme
-                  className={`stroke-th-text-primary ${collapsed && 'opacity-70'}`}
-                />
+                <Theme className="stroke-th-text-primary" />
               </div>
               <p className={collapsed && 'lg:hidden'}>{t('ChooseTheme')}</p>
             </div>

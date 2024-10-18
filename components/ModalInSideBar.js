@@ -24,10 +24,8 @@ function ModalInSideBar({
           onClick={(e) => e.stopPropagation()}
         >
           <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 lg:px-7">
-            <p className="text-th-text-secondary-100 font-medium text-lg ml-auto">
-              {modalTitle}
-            </p>
-            <button className="text-right ml-auto" onClick={() => setIsOpen(false)}>
+            <p className="text-th-text-secondary-100 font-medium text-lg">{modalTitle}</p>
+            <button className="absolute right-4" onClick={() => setIsOpen(false)}>
               <Close className="h-8 stroke-th-secondary-10" />
             </button>
           </div>

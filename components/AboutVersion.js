@@ -92,11 +92,11 @@ function AboutVersion({ isStartPage = false, collapsed }) {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 px-7">
-            <p className="text-left text-th-secondary-10 text-lg font-medium ml-auto">
+            <p className="text-left text-th-secondary-10 text-lg font-medium">
               {t('Version')}
             </p>
             <button
-              className="text-right ml-auto"
+              className="absolute right-4"
               onClick={() =>
                 setModalsSidebarState((prev) => ({
                   ...prev,
