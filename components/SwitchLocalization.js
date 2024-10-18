@@ -5,7 +5,7 @@ import i18nextConfig from 'next-i18next.config'
 
 import { Menu } from '@headlessui/react'
 
-function SwitchLocalization() {
+function SwitchLocalization({ collapsed }) {
   const { locale, asPath, push } = useRouter()
   const { t } = useTranslation('common')
   const supportedLngs = i18nextConfig.i18n.locales
@@ -13,7 +13,11 @@ function SwitchLocalization() {
   const sortedLngs = [locale, ...supportedLngs.filter((lng) => lng !== locale)]
 
   return (
-    <div className="relative max-w-min text-xs lg:text-sm font-bold">
+    <div
+      className={`relative max-w-min text-xs lg:text-sm font-bold ${
+        collapsed && 'lg:hidden'
+      }`}
+    >
       <Menu>
         <Menu.Button
           className="px-4 py-2 text-sm bg-th-secondary-100 rounded-[9rem] hover:opacity-70"
@@ -21,7 +25,11 @@ function SwitchLocalization() {
         >
           {t(locale.toUpperCase())}
         </Menu.Button>
-        <Menu.Items className="absolute top-0 right-0 text-sm bg-th-secondary-100 rounded-2xl">
+        <Menu.Items
+          className={`absolute top-0 right-0 text-sm bg-th-secondary-100 rounded-2xl ${
+            collapsed && 'lg:hidden'
+          }`}
+        >
           <div className="flex flex-col">
             {sortedLngs.map((loc) => (
               <Menu.Item
