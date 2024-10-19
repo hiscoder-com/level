@@ -88,7 +88,7 @@ function AboutVersion({ isStartPage = false, collapsed }) {
       </div>
       {modalsSidebarState.aboutVersion && (
         <div
-          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border md:max-h-full md:left-full md:ml-5 lg:ml-0 lg:w-[30rem]"
+          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border md:max-h-full md:left-full md:ml-5 lg:ml-0 lg:w-[30rem] md:rounded-xl lg:rounded-none md:overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 px-7">

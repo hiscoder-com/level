@@ -8,11 +8,8 @@ import { Menu, Tab } from '@headlessui/react'
 
 import ProjectCreate from './ProjectCreate'
 import Projects from './Projects'
-import MobileMenu from './Panel/UI/MobileMenu'
 
 import { useCurrentUser } from 'lib/UserContext'
-
-import Plus from 'public/plus.svg'
 
 const sizeTabs = {
   1: 'w-1/6',
@@ -27,7 +24,6 @@ function Account() {
   const [selectedTab, setSelectedTab] = useState(0)
   const { user, loading } = useCurrentUser()
   const router = useRouter()
-  const [openInternalMenu, setOpenInternalMenu] = useState(false)
 
   const { t } = useTranslation(['users', 'project-edit'])
 
@@ -42,6 +38,10 @@ function Account() {
       setSelectedTab(parseInt(router.query?.tab))
     }
   }, [router])
+
+  useEffect(() => {
+    router.push(`?tab=${selectedTab}`, undefined, { shallow: true })
+  }, [selectedTab])
 
   const tabs = ['Account', 'projects:Projects', 'projects:CreateProject']
   return (

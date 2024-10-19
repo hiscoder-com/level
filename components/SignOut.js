@@ -31,11 +31,11 @@ export default function SignOut({ collapsed }) {
     <button
       disabled={loading}
       onClick={handleLogout}
-      className={`flex w-full items-center gap-2 cursor-pointer ${
+      className={`py-3 px-4 flex w-full items-center gap-2 cursor-pointer ${
         loading ? 'opacity-70' : ''
       }`}
     >
-      <div className="p-2 stroke-th-text-primary">
+      <div className="stroke-th-text-primary">
         <LogOut
           className={`w-5 h-4 stroke-th-text-primary ${collapsed && 'opacity-70'}`}
         />

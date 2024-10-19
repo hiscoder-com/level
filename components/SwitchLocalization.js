@@ -20,7 +20,7 @@ function SwitchLocalization({ collapsed }) {
     >
       <Menu>
         <Menu.Button
-          className="px-4 py-2 text-sm bg-th-secondary-100 rounded-[9rem] hover:opacity-70"
+          className="px-4 py-1 text-sm bg-th-secondary-100 rounded-[9rem] hover:opacity-70"
           onClick={(e) => e.stopPropagation()}
         >
           {t(locale.toUpperCase())}

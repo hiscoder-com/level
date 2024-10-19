@@ -65,13 +65,13 @@ const ThemeSwitcher = ({ collapsed }) => {
       {({ open }) => (
         <>
           <Disclosure.Button
-            className={`group flex justify-between items-center w-full ${
-              !open && 'opacity-70'
+            className={`group flex justify-between items-center w-full px-4 ${
+              (!open || collapsed) && 'opacity-70'
             }`}
           >
             <div className="flex gap-2 items-center">
-              <div>
-                <Theme className="stroke-th-text-primary" />
+              <div className="py-4">
+                <Theme className="w-5 h-5 stroke-th-text-primary" />
               </div>
               <p className={collapsed && 'lg:hidden'}>{t('ChooseTheme')}</p>
             </div>
@@ -82,7 +82,7 @@ const ThemeSwitcher = ({ collapsed }) => {
             />
           </Disclosure.Button>
           <Disclosure.Panel
-            className={`flex space-x-4 box-border mx-1 pl-2 my-4 ${
+            className={`flex space-x-4 box-border mx-1 pl-4 my-4 ${
               collapsed && 'lg:hidden'
             }`}
           >

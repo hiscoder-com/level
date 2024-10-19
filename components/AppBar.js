@@ -46,7 +46,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   }, [supabase, user])
 
   const logoLink = useMemo(() => {
-    return !user?.id ? '/' : access ? '/account' : '/agreements'
+    return !user?.id ? '/' : access ? '/account?tab=0' : '/agreements'
   }, [access, user])
 
   return (
@@ -56,7 +56,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
           <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
           <div
             className={`flex justify-center w-full  ${
-              access && !isStepPage ? '-ml-4 2xl:-ml-6' : ''
+              access && !isStepPage ? 'lg:-ml-4 xl:-ml-6' : ''
             }`}
           >
             <Link href={logoLink}>
