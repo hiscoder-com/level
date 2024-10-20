@@ -44,7 +44,7 @@ function Feedback({ t, onClose }) {
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-0">
-      <p className="font-semibold md:font-bold">{t('ConnectWithUs')}</p>
+      <p className="font-semibold md:font-bold uppercase mb-4">{t('ConnectWithUs')}</p>
       <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
         <Toaster />
         {!isSent ? (
