@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
@@ -35,7 +36,6 @@ import CreateProject from 'public/create-project.svg'
 import Notes from 'public/notes.svg'
 import Users from 'public/users.svg'
 import About from 'public/about.svg'
-import { useRouter } from 'next/router'
 
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
@@ -47,6 +47,8 @@ function SideBar({ setIsOpenSideBar, access }) {
   const [isOpen, setIsOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
+
+  const collapsedSideBar = collapsed ? 'lg:hidden' : ''
 
   const router = useRouter()
 
@@ -112,8 +114,8 @@ function SideBar({ setIsOpenSideBar, access }) {
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className={`fixed flex flex-col w-full md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
-                !collapsed ? 'lg:w-[23rem]' : 'lg:w-[50px] lg:ml-0 lg:p-0 2xl:mx-0'
+              className={`fixed flex flex-col w-full h-[calc(100vh-40px)] md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
+                !collapsed ? 'lg:w-56' : 'lg:w-[50px] lg:ml-0 lg:p-0 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -129,11 +131,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                 setShowAbout(false)
               }}
             >
-              <div
-                className={`relative flex flex-col gap-2 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none`}
-              >
+              <div className="relative h-full flex flex-col gap-2 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
                 <div
-                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 overflow-hidden py-4 px-4  ${
+                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 overflow-hidden py-4 px-4 ${
                     collapsed ? 'lg:w-0 lg:px-0' : 'lg:w-full'
                   }`}
                 >
@@ -181,14 +181,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                               <Account
                                 className={`w-5 h-5 ${
                                   router.query?.tab === '0'
-                                    ? 'stroke-th-primary-100'
-                                    : 'stroke-th-text-primary'
+                                    ? 'stroke-th-text-primary'
+                                    : 'stroke-gray-500'
                                 }`}
                               />
                             </div>
-                            <span
-                              className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
-                            >
+                            <span className={`hover:opacity-70 ${collapsedSideBar}`}>
                               {t('Account')}
                             </span>
                           </a>
@@ -216,14 +214,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                               <Projects
                                 className={`w-5 h-5 ${
                                   router.query?.tab === '1'
-                                    ? 'stroke-th-primary-100'
-                                    : 'stroke-th-text-primary'
+                                    ? 'stroke-th-text-primary'
+                                    : 'stroke-gray-500'
                                 }`}
                               />
                             </div>
-                            <span
-                              className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
-                            >
+                            <span className={`hover:opacity-70 ${collapsedSideBar}`}>
                               {t('Projects')}
                             </span>
                           </a>
@@ -254,14 +250,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 <CreateProject
                                   className={`w-5 h-5 ${
                                     router.query?.tab === '2'
-                                      ? 'stroke-th-primary-100'
-                                      : 'stroke-th-text-primary'
+                                      ? 'stroke-th-text-primary'
+                                      : 'stroke-gray-500'
                                   }`}
                                 />
                               </div>
-                              <span
-                                className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
-                              >
+                              <span className={`hover:opacity-70 ${collapsedSideBar}`}>
                                 {t('CreateProject')}
                               </span>
                             </a>
@@ -274,7 +268,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           as="div"
                           disabled
                           className={`flex px-4 py-3 items-center justify-between gap-2 cursor-default md:hidden ${
-                            !showCreate && 'opacity-70'
+                            !showCreate ? 'opacity-70' : ''
                           }`}
                         >
                           <div
@@ -288,8 +282,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                               <CreateProject
                                 className={`w-5 h-5 ${
                                   showCreate
-                                    ? 'stroke-th-primary-100'
-                                    : 'stroke-th-text-primary'
+                                    ? 'stroke-th-text-primary'
+                                    : 'stroke-gray-500'
                                 }`}
                               />
                             </div>
@@ -326,8 +320,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <Notes
                               className={`w-5 h-5 ${
                                 modalsSidebarState.notepad
-                                  ? 'stroke-th-primary-100'
-                                  : 'stroke-th-text-primary'
+                                  ? 'stroke-th-text-primary'
+                                  : 'stroke-gray-500'
                               }`}
                             />
                           </div>
@@ -372,14 +366,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 <Users
                                   className={`w-5 h-5 ${
                                     router.pathname === '/users'
-                                      ? 'stroke-th-primary-100'
-                                      : 'stroke-th-text-primary'
+                                      ? 'stroke-th-text-primary'
+                                      : 'stroke-gray-500'
                                   }`}
                                 />
                               </div>
-                              <span
-                                className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}
-                              >
+                              <span className={`hover:opacity-70 ${collapsedSideBar}`}>
                                 {t('users:UserManagement')}
                               </span>
                             </a>
@@ -401,14 +393,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <div className="flex items-center gap-2">
                           <div className="rounded-[23rem]">
                             <Localization
-                              className={`w-5 h-5 stroke-th-text-primary ${
-                                collapsed && 'opacity-70'
+                              className={`w-5 h-5 ${
+                                collapsed ? 'stroke-gray-500' : 'stroke-th-text-primary'
                               }`}
                             />
                           </div>
-                          <span className={collapsed && 'lg:hidden'}>
-                            {t('Language')}
-                          </span>
+                          <span className={collapsedSideBar}>{t('Language')}</span>
                         </div>
                         <SwitchLocalization collapsed={collapsed} />
                       </Menu.Item>
@@ -430,10 +420,8 @@ function SideBar({ setIsOpenSideBar, access }) {
                           <div className="rounded-[23rem] hover:opacity-70">
                             <About
                               className={`w-5 h-5 ${
-                                showAbout
-                                  ? 'stroke-th-primary-100'
-                                  : 'stroke-th-text-primary'
-                              } ${collapsed && 'opacity-70'}`}
+                                showAbout ? 'stroke-th-text-primary' : 'stroke-gray-500'
+                              }`}
                             />
                           </div>
                           <ModalInSideBar
@@ -452,9 +440,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                         as="div"
                         disabled
                         className={`py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
-                          modalsSidebarState.aboutVersion
-                            ? 'bg-th-secondary-200'
-                            : 'opacity-70'
+                          modalsSidebarState.aboutVersion ? 'bg-th-secondary-200' : ''
                         }`}
                       >
                         <div
@@ -468,9 +454,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <VersionLogo
                               className={`w-5 h-5 ${
                                 modalsSidebarState.aboutVersion
-                                  ? 'stroke-th-primary-100'
-                                  : 'stroke-th-text-primary'
-                              } ${collapsed && 'opacity-70'}`}
+                                  ? 'stroke-th-text-primary'
+                                  : 'stroke-gray-500'
+                              }`}
                             />
                           </div>
                           <AboutVersion collapsed={collapsed} />

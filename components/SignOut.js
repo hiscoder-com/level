@@ -37,10 +37,12 @@ export default function SignOut({ collapsed }) {
     >
       <div className="stroke-th-text-primary">
         <LogOut
-          className={`w-5 h-4 stroke-th-text-primary ${collapsed && 'opacity-70'}`}
+          className={`w-5 h-4 ${
+            collapsed ? 'stroke-gray-500' : 'stroke-th-text-primary'
+          }`}
         />
       </div>
-      <p className={collapsed && 'lg:hidden'}>{t('users:SignOut')}</p>
+      <p className={collapsed ? 'lg:hidden' : ''}>{t('users:SignOut')}</p>
     </button>
   )
 }

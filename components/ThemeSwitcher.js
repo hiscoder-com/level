@@ -1,7 +1,8 @@
-import { Disclosure } from '@headlessui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+
 import { useGetTheme } from 'utils/hooks'
+import { Disclosure } from '@headlessui/react'
+import { useTranslation } from 'react-i18next'
 
 import Theme from 'public/themes.svg'
 import ArrowDown from 'public/arrow-down.svg'
@@ -64,26 +65,26 @@ const ThemeSwitcher = ({ collapsed }) => {
     <Disclosure as="div">
       {({ open }) => (
         <>
-          <Disclosure.Button
-            className={`group flex justify-between items-center w-full px-4 ${
-              (!open || collapsed) && 'opacity-70'
-            }`}
-          >
+          <Disclosure.Button className="group flex justify-between items-center w-full px-4">
             <div className="flex gap-2 items-center">
               <div className="py-4">
-                <Theme className="w-5 h-5 stroke-th-text-primary" />
+                <Theme
+                  className={`w-5 h-5 ${
+                    collapsed ? 'stroke-th-text-primary' : 'stroke-gray-500'
+                  }`}
+                />
               </div>
-              <p className={collapsed && 'lg:hidden'}>{t('ChooseTheme')}</p>
+              <p className={collapsed ? 'lg:hidden' : ''}>{t('ChooseTheme')}</p>
             </div>
             <ArrowDown
               className={`w-5 h-5 transition-all duration-150 ${
                 open ? 'rotate-180' : ''
-              } ${collapsed && 'lg:hidden'}`}
+              } ${collapsed ? 'lg:hidden' : ''}`}
             />
           </Disclosure.Button>
           <Disclosure.Panel
-            className={`flex space-x-4 box-border mx-1 pl-4 my-4 ${
-              collapsed && 'lg:hidden'
+            className={`flex space-x-2 box-border mx-1 pl-4 my-4 ${
+              collapsed ? 'lg:hidden' : ''
             }`}
           >
             {themes.map((theme) => (
@@ -92,7 +93,7 @@ const ThemeSwitcher = ({ collapsed }) => {
                   onClick={() => switchTheme(theme.name)}
                   onMouseOver={() => handleMouseOver(theme.name)}
                   onMouseLeave={handleMouseLeave}
-                  className={`half-circle w-10 h-10 rotate-45 cursor-pointer ${
+                  className={`half-circle w-8 h-8 rotate-45 cursor-pointer ${
                     currentTheme === theme.name
                       ? `border-th-secondary-10 border-2 outline outline-3 ${theme.outline}`
                       : ''
