@@ -124,6 +124,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                 setIsOpenSideBar(true)
               }}
               onMouseLeave={() => {
+                if (
+                  modalsSidebarState.notepad ||
+                  modalsSidebarState.aboutVersion ||
+                  modalsSidebarState.avatarSelector ||
+                  showAbout
+                ) {
+                  return
+                }
                 setCollapsed(true)
                 closeModal()
                 close()
@@ -327,12 +335,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                           </div>
                           <ModalInSideBar
                             isOpen={modalsSidebarState.notepad}
-                            setIsOpen={(value) =>
+                            setIsOpen={(value) => {
                               setModalsSidebarState((prev) => ({
                                 ...prev,
                                 notepad: value,
                               }))
-                            }
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
                             modalTitle={t('personalNotes')}
                             buttonTitle={t('personalNotes')}
                             collapsed={collapsed}
@@ -425,7 +435,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                             />
                           </div>
                           <ModalInSideBar
-                            setIsOpen={setShowAbout}
+                            setIsOpen={(value) => {
+                              setShowAbout(value)
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
                             isOpen={showAbout}
                             buttonTitle={t('About')}
                             modalTitle={'LEVEL'}
@@ -459,7 +473,13 @@ function SideBar({ setIsOpenSideBar, access }) {
                               }`}
                             />
                           </div>
-                          <AboutVersion collapsed={collapsed} />
+                          <AboutVersion
+                            onClose={(value) => {
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
+                            collapsed={collapsed}
+                          />
                         </div>
                       </Menu.Item>
 

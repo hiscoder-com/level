@@ -38,7 +38,7 @@ function SwitchLocalization({ collapsed }) {
                 onClick={(e) => {
                   push(asPath, undefined, { locale: loc })
                 }}
-                className="cursor-pointer px-4 py-2 hover:bg-th-primary-100-hover-backgroung last:rounded-b-2xl first:rounded-t-2xl hover:opacity-70"
+                className="cursor-pointer px-4 py-2 hover:bg-th-primary-100-hover-backgroung last:rounded-b-2xl first:rounded-t-2xl hover:opacity-70 z-40"
               >
                 <div className={`${locale === loc ? 'text-th-secondary-300' : ''}`}>
                   {t(loc.toUpperCase())}

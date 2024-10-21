@@ -16,7 +16,7 @@ import updatesES from '../public/updateVersionInfo/updates_es.md'
 
 import Close from 'public/close.svg'
 
-function AboutVersion({ isStartPage = false, collapsed }) {
+function AboutVersion({ isStartPage = false, collapsed, onClose }) {
   const aboutVersion = {
     en: updatesEN,
     ru: updatesRU,
@@ -97,12 +97,13 @@ function AboutVersion({ isStartPage = false, collapsed }) {
             </p>
             <button
               className="absolute right-4"
-              onClick={() =>
+              onClick={() => {
                 setModalsSidebarState((prev) => ({
                   ...prev,
                   aboutVersion: false,
                 }))
-              }
+                onClose(false)
+              }}
             >
               <Close className="h-8 stroke-th-secondary-10" />
             </button>
