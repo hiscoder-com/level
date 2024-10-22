@@ -41,6 +41,7 @@ function Account() {
 
   useEffect(() => {
     router.push(`?tab=${selectedTab}`, undefined, { shallow: true })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedTab])
 
   const tabs = ['Account', 'projects:Projects', 'projects:CreateProject']

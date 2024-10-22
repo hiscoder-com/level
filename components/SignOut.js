@@ -35,14 +35,19 @@ export default function SignOut({ collapsed }) {
         loading ? 'opacity-70' : ''
       }`}
     >
-      <div className="stroke-th-text-primary">
-        <LogOut
-          className={`w-5 h-4 ${
-            collapsed ? 'stroke-gray-500' : 'stroke-th-text-primary'
-          }`}
-        />
-      </div>
-      <p className={collapsed ? 'lg:hidden' : ''}>{t('users:SignOut')}</p>
+      <LogOut
+        className={`w-5 stroke-th-text-primary lg:stroke-th-secondary-300 group-hover:stroke-th-text-primary group-hover:opacity-70 ${
+          collapsed ? 'opacity-70' : ''
+        }`}
+      />
+
+      <p
+        className={`opacity-70 lg:text-th-secondary-300 ${
+          collapsed ? 'lg:hidden' : ''
+        } group-hover:text-th-text-primary group-hover:opacity-70`}
+      >
+        {t('users:SignOut')}
+      </p>
     </button>
   )
 }

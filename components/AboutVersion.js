@@ -83,7 +83,13 @@ function AboutVersion({ isStartPage = false, collapsed, onClose }) {
 
   return (
     <>
-      <div className={`hover:opacity-70 ${collapsed && 'lg:hidden'}`}>
+      <div
+        className={`${collapsed && 'lg:hidden'} ${
+          modalsSidebarState.aboutVersion
+            ? 'text-th-text-primary'
+            : 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
+        }`}
+      >
         {t('Version')} {packageJson.version}
       </div>
       {modalsSidebarState.aboutVersion && (

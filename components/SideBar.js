@@ -37,6 +37,11 @@ import Notes from 'public/notes.svg'
 import Users from 'public/users.svg'
 import About from 'public/about.svg'
 
+const activeIconClass =
+  'stroke-th-text-primary lg:stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+const activeTextClass =
+  'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
+
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation(['common', 'projects', 'users', 'start-page'])
@@ -44,7 +49,6 @@ function SideBar({ setIsOpenSideBar, access }) {
 
   const [collapsed, setCollapsed] = useState(true)
   const [isLargeScreen, setIsLargeScreen] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
 
@@ -79,10 +83,6 @@ function SideBar({ setIsOpenSideBar, access }) {
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
-  useEffect(() => {
-    setIsOpen(isLargeScreen)
-  }, [isLargeScreen])
-
   return (
     <Menu>
       {({ open, close }) => (
@@ -114,8 +114,8 @@ function SideBar({ setIsOpenSideBar, access }) {
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className={`fixed flex flex-col w-full h-[calc(100vh-40px)] md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
-                !collapsed ? 'lg:w-56' : 'lg:w-[50px] lg:ml-0 lg:p-0 2xl:mx-0'
+              className={`fixed flex flex-col w-full md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
+                !collapsed ? 'lg:w-[23rem]' : 'lg:w-[3.25rem] lg:ml-0 lg:p-0 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -171,9 +171,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`py-3 px-4 ${
+                        className={`group py-3 px-4 ${
                           router.query?.tab !== '0' ? 'opacity-70' : 'bg-th-secondary-200'
-                        }`}
+                        } hover:bg-th-secondary-200`}
                       >
                         <Link href="/account?tab=0" legacyBehavior>
                           <a
@@ -185,16 +185,22 @@ function SideBar({ setIsOpenSideBar, access }) {
                               setShowAbout(false)
                             }}
                           >
-                            <div className="rounded-[23rem] hover:opacity-70">
+                            <div className="rounded-[23rem]">
                               <Account
-                                className={`w-5 h-5 ${
+                                className={`w-4 ml-0.5 ${
                                   router.query?.tab === '0'
                                     ? 'stroke-th-text-primary'
-                                    : 'stroke-gray-500'
+                                    : activeIconClass
                                 }`}
                               />
                             </div>
-                            <span className={`hover:opacity-70 ${collapsedSideBar}`}>
+                            <span
+                              className={`${collapsedSideBar} ${
+                                router.query?.tab === '0'
+                                  ? 'text-th-text-primary'
+                                  : activeTextClass
+                              }`}
+                            >
                               {t('Account')}
                             </span>
                           </a>
@@ -204,9 +210,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`py-3 px-4 ${
+                        className={`group py-3 px-4 ${
                           router.query?.tab !== '1' ? 'opacity-70' : 'bg-th-secondary-200'
-                        }`}
+                        } hover:bg-th-secondary-200`}
                       >
                         <Link href="/account?tab=1" legacyBehavior>
                           <a
@@ -218,16 +224,22 @@ function SideBar({ setIsOpenSideBar, access }) {
                               setShowAbout(false)
                             }}
                           >
-                            <div className="rounded-[23rem] hover:opacity-70">
+                            <div className="rounded-[23rem]">
                               <Projects
-                                className={`w-5 h-5 ${
+                                className={`w-5 ${
                                   router.query?.tab === '1'
                                     ? 'stroke-th-text-primary'
-                                    : 'stroke-gray-500'
+                                    : activeIconClass
                                 }`}
                               />
                             </div>
-                            <span className={`hover:opacity-70 ${collapsedSideBar}`}>
+                            <span
+                              className={`${collapsedSideBar} ${
+                                router.query?.tab === '1'
+                                  ? 'text-th-text-primary'
+                                  : activeTextClass
+                              }`}
+                            >
                               {t('Projects')}
                             </span>
                           </a>
@@ -238,11 +250,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className={`hidden md:block py-3 px-4 ${
+                          className={`group hidden md:block py-3 px-4 ${
                             router.query?.tab !== '2'
                               ? 'opacity-70'
                               : 'bg-th-secondary-200'
-                          }`}
+                          } hover:bg-th-secondary-200`}
                         >
                           <Link href="/account?tab=2" legacyBehavior>
                             <a
@@ -254,18 +266,32 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 setShowAbout(false)
                               }}
                             >
-                              <div className="rounded-[23rem] hover:opacity-70">
+                              <div className="rounded-[23rem]">
                                 <CreateProject
                                   className={`w-5 h-5 ${
                                     router.query?.tab === '2'
                                       ? 'stroke-th-text-primary'
-                                      : 'stroke-gray-500'
+                                      : activeIconClass
                                   }`}
                                 />
                               </div>
-                              <span className={`hover:opacity-70 ${collapsedSideBar}`}>
-                                {t('CreateProject')}
-                              </span>
+                              <div
+                                className={`overflow-hidden ${
+                                  collapsed
+                                    ? 'lg:w-0'
+                                    : 'lg:w-auto transition-all duration-700 delay-700'
+                                }`}
+                              >
+                                <span
+                                  className={`whitespace-nowrap ${collapsedSideBar} ${
+                                    router.query?.tab === '2'
+                                      ? 'text-th-text-primary'
+                                      : activeTextClass
+                                  }`}
+                                >
+                                  {t('CreateProject')}
+                                </span>
+                              </div>
                             </a>
                           </Link>
                         </Menu.Item>
@@ -289,9 +315,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <div className="rounded-[23rem] hover:opacity-70">
                               <CreateProject
                                 className={`w-5 h-5 ${
-                                  showCreate
-                                    ? 'stroke-th-text-primary'
-                                    : 'stroke-gray-500'
+                                  showCreate ? 'stroke-th-text-primary' : activeIconClass
                                 }`}
                               />
                             </div>
@@ -311,11 +335,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
+                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
                           modalsSidebarState.notepad
                             ? 'bg-th-secondary-200'
                             : 'opacity-70'
-                        }`}
+                        } hover:bg-th-secondary-200`}
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
@@ -324,12 +348,12 @@ function SideBar({ setIsOpenSideBar, access }) {
                             setShowAbout(false)
                           }}
                         >
-                          <div className="rounded-[23rem] hover:opacity-70">
+                          <div className="rounded-[23rem]">
                             <Notes
                               className={`w-5 h-5 ${
                                 modalsSidebarState.notepad
                                   ? 'stroke-th-text-primary'
-                                  : 'stroke-gray-500'
+                                  : 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
                               }`}
                             />
                           </div>
@@ -356,11 +380,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className={`py-3 px-4 ${
+                          className={`group py-3 px-4 ${
                             router.pathname === '/users'
                               ? 'bg-th-secondary-200'
                               : 'opacity-70'
-                          }`}
+                          } hover:bg-th-secondary-200`}
                         >
                           <Link href="/users" legacyBehavior>
                             <a
@@ -374,16 +398,28 @@ function SideBar({ setIsOpenSideBar, access }) {
                             >
                               <div className="rounded-[23rem]">
                                 <Users
-                                  className={`w-5 h-5 ${
+                                  className={`w-5 ${
                                     router.pathname === '/users'
                                       ? 'stroke-th-text-primary'
-                                      : 'stroke-gray-500'
+                                      : activeIconClass
                                   }`}
                                 />
                               </div>
-                              <span className={`hover:opacity-70 ${collapsedSideBar}`}>
-                                {t('users:UserManagement')}
-                              </span>
+                              <div
+                                className={`overflow-hidden ${
+                                  collapsed ? 'lg:w-0' : 'lg:w-auto'
+                                }`}
+                              >
+                                <span
+                                  className={`whitespace-nowrap ${collapsedSideBar} ${
+                                    router.pathname === '/users'
+                                      ? 'text-th-text-primary'
+                                      : activeTextClass
+                                  }`}
+                                >
+                                  {t('users:UserManagement')}
+                                </span>
+                              </div>
                             </a>
                           </Link>
                         </Menu.Item>
@@ -398,17 +434,21 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className="py-2 px-4 flex items-center justify-between gap-2 cursor-default"
+                        className="group py-2 px-4 flex items-center justify-between gap-2 cursor-default "
                       >
                         <div className="flex items-center gap-2">
                           <div className="rounded-[23rem]">
                             <Localization
-                              className={`w-5 h-5 ${
-                                collapsed ? 'stroke-gray-500' : 'stroke-th-text-primary'
-                              }`}
+                              className={`w-5 h-5 ${activeIconClass} ${
+                                collapsed && 'opacity-70'
+                              } group-hover:opacity-70`}
                             />
                           </div>
-                          <span className={collapsedSideBar}>{t('Language')}</span>
+                          <span
+                            className={`${collapsedSideBar} ${activeTextClass} opacity-70 lg:opacity-100 group-hover:opacity-70`}
+                          >
+                            {t('Language')}
+                          </span>
                         </div>
                         <SwitchLocalization collapsed={collapsed} />
                       </Menu.Item>
@@ -416,9 +456,9 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
+                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
                           showAbout ? 'bg-th-secondary-200' : 'opacity-70'
-                        }`}
+                        } hover:bg-th-secondary-200`}
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
@@ -427,11 +467,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                             openModal()
                           }}
                         >
-                          <div className="rounded-[23rem] hover:opacity-70">
+                          <div className="rounded-[23rem]">
                             <About
-                              className={`w-5 h-5 ${
-                                showAbout ? 'stroke-th-text-primary' : 'stroke-gray-500'
-                              }`}
+                              className={`w-5 ${
+                                showAbout ? 'stroke-th-text-primary' : activeIconClass
+                              } ${collapsed ? 'opacity-70' : ''}`}
                             />
                           </div>
                           <ModalInSideBar
@@ -453,9 +493,11 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
-                          modalsSidebarState.aboutVersion ? 'bg-th-secondary-200' : ''
-                        }`}
+                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
+                          modalsSidebarState.aboutVersion
+                            ? 'bg-th-secondary-200'
+                            : 'opacity-70'
+                        } hover:bg-th-secondary-200`}
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
@@ -464,13 +506,13 @@ function SideBar({ setIsOpenSideBar, access }) {
                             setShowAbout(false)
                           }}
                         >
-                          <div className="rounded-[23rem] hover:opacity-70">
+                          <div className="rounded-[23rem]">
                             <VersionLogo
                               className={`w-5 h-5 ${
                                 modalsSidebarState.aboutVersion
                                   ? 'stroke-th-text-primary'
-                                  : 'stroke-gray-500'
-                              }`}
+                                  : activeIconClass
+                              } ${collapsed ? 'opacity-70' : ''}`}
                             />
                           </div>
                           <AboutVersion
@@ -486,7 +528,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className="flex items-center justify-between gap-2 cursor-default"
+                        className="group flex items-center justify-between gap-2 cursor-default hover:bg-th-secondary-200 rounded-b-2xl lg:rounded-b-none"
                       >
                         <SignOut collapsed={collapsed} />
                       </Menu.Item>
