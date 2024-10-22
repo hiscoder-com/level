@@ -1,5 +1,5 @@
 {
-  "version": "0.24.1",
+  "version": "0.25.0",
   "date": "2024-10-14",
   "dependencies": [
     "npm/@texttree/notepad-rcl",

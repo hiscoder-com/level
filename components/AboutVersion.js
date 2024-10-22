@@ -16,7 +16,7 @@ import updatesES from '../public/updateVersionInfo/updates_es.md'
 
 import Close from 'public/close.svg'
 
-function AboutVersion({ isStartPage = false }) {
+function AboutVersion({ isStartPage = false, collapsed, onClose }) {
   const aboutVersion = {
     en: updatesEN,
     ru: updatesRU,
@@ -83,37 +83,44 @@ function AboutVersion({ isStartPage = false }) {
 
   return (
     <>
-      <div className="hover:opacity-70">
+      <div
+        className={`${collapsed && 'lg:hidden'} ${
+          modalsSidebarState.aboutVersion
+            ? 'text-th-text-primary'
+            : 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
+        }`}
+      >
         {t('Version')} {packageJson.version}
       </div>
       {modalsSidebarState.aboutVersion && (
         <div
-          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min px-3 sm:px-7 pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border md:max-h-full md:left-full md:ml-5 lg:ml-0 lg:w-[30rem] md:rounded-xl lg:rounded-none md:overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="sticky top-0 flex items-center justify-between py-6 bg-th-secondary-10">
-            <p className="text-left text-2xl font-bold">
-              {t('Version')} {packageJson.version}
+          <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 px-7">
+            <p className="text-left text-th-secondary-10 text-lg font-medium">
+              {t('Version')}
             </p>
             <button
-              className="text-right"
-              onClick={() =>
+              className="absolute right-4"
+              onClick={() => {
                 setModalsSidebarState((prev) => ({
                   ...prev,
                   aboutVersion: false,
                 }))
-              }
+                onClose(false)
+              }}
             >
-              <Close className="h-8 stroke-th-primary-100" />
+              <Close className="h-8 stroke-th-secondary-10" />
             </button>
           </div>
-          <ReactMarkdown className="flex-grow pb-5 pr-3 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto">
+          <ReactMarkdown className="flex-grow py-5 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto px-7">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
-          <div className="mt-auto flex justify-center pt-5 border-t border-th-secondary-300">
+          <div className="mt-auto flex justify-center pt-5 px-4">
             <button
               onClick={() => setShowAllUpdates((prev) => !prev)}
-              className="btn-primary"
+              className="btn-primary w-full"
             >
               {showAllUpdates ? t('ShowCurrUpdates') : t('ShowAllUpdates')}
             </button>

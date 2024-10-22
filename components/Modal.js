@@ -30,7 +30,7 @@ function Modal({
         className={classNames.main}
         onClose={() => !handleCloseDisabled && closeHandle()}
       >
-        <div className="inset-0 fixed backdrop-blur" />
+        <div className="inset-0 fixed bg-black bg-opacity-70" />
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

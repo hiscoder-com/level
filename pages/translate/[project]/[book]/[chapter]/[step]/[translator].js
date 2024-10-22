@@ -182,7 +182,14 @@ export async function getServerSideProps({ locale, params }) {
 
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'steps', 'audio', 'users'])),
+      ...(await serverSideTranslations(locale, [
+        'common',
+        'steps',
+        'audio',
+        'users',
+        'about',
+        'start-page',
+      ])),
       last_step: steps.data.sorting,
     },
   }

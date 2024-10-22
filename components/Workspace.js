@@ -12,7 +12,7 @@ import { inactiveState } from './state/atoms'
 
 import Dict from 'public/dictionary.svg'
 import TeamNote from 'public/team-note.svg'
-import Notepad from 'public/notepad.svg'
+import Notepad from 'public/notes.svg'
 import Retelling from 'public/audio.svg'
 import Pencil from 'public/editor-pencil.svg'
 import Info from 'public/info.svg'
@@ -29,7 +29,7 @@ const sizes = {
 const translateIcon = <Pencil className="w-5 inline" />
 
 const icons = {
-  personalNotes: <Notepad className="w-5 inline" />,
+  personalNotes: <Notepad className="w-[14px] inline" />,
   teamNotes: <TeamNote className="w-5 inline" />,
   dictionary: <Dict className="w-5 inline" />,
   retelling: <Retelling className="w-5 inline" />,

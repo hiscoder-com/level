@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import { useRouter } from 'next/router'
+
 import { toast, Toaster } from 'react-hot-toast'
 import axios from 'axios'
 
@@ -11,6 +13,8 @@ function Feedback({ t, onClose }) {
   const [isError, setIsError] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isSent, setIsSent] = useState(false)
+  const router = useRouter()
+  const isStartPage = router.asPath === '/'
 
   const handleChange = (e) => {
     setFeedback({ ...feedback, [e.target.name]: e.target.value })
@@ -44,7 +48,19 @@ function Feedback({ t, onClose }) {
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-0">
-      <p className="font-semibold md:font-bold">{t('ConnectWithUs')}</p>
+      {isStartPage ? (
+        <p className="font-semibold md:font-bold">{t('ConnectWithUs')}</p>
+      ) : (
+        !isSent && (
+          <p
+            className={`font-semibold md:font-bold uppercase mb-4 ${
+              isStartPage ? '' : 'text-th-primary-100'
+            }`}
+          >
+            {t('ConnectWithUs')}
+          </p>
+        )
+      )}
       <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
         <Toaster />
         {!isSent ? (
@@ -84,7 +100,9 @@ function Feedback({ t, onClose }) {
             <ButtonLoading
               type="submit"
               isLoading={isSaving}
-              className="relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
+              className={`relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 ${
+                isStartPage ? 'bg-slate-550' : 'bg-th-primary-100'
+              }`}
             >
               {t('users:Send')}
             </ButtonLoading>
@@ -96,7 +114,9 @@ function Feedback({ t, onClose }) {
           <div className="text-center w-full">
             <p>{t('users:YourMessageSentThankYou')}</p>
             <button
-              className="px-10 py-4 mt-14 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
+              className={`px-10 py-4 mt-14 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 ${
+                isStartPage ? 'bg-slate-550' : 'bg-th-primary-100'
+              }`}
               onClick={() => onClose()}
             >
               {t('common:Close')}

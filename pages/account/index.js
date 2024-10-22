@@ -39,6 +39,8 @@ export async function getServerSideProps({ locale }) {
         'books',
         'projects',
         'project-edit',
+        'about',
+        'start-page',
       ])),
     },
   }

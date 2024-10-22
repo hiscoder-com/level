@@ -497,6 +497,8 @@ export async function getServerSideProps({ locale }) {
         'chapters',
         'books',
         'users',
+        'about',
+        'start-page',
       ])),
     },
   }

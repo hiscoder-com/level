@@ -35,7 +35,7 @@
   "ChapterIsCreating": "Creando un capítulo",
   "CheckInternet": "Por favor, comprueba tu conexión a Internet. Para un mejor trabajo - actualiza la página, sólo entonces continúa traduciendo.",
   "CheckLinkResource": "Interrumpe el enlace de recursos",
-  "ChooseTheme": "Elija un tema:",
+  "ChooseTheme": "Tema:",
   "Clearing": "Clear",
   "Close": "Close",
   "Code": "Code",
@@ -139,8 +139,8 @@
   "Settings": "Settings",
   "SettingsEdit": "Edit settings",
   "ShowAll": "Show all",
-  "ShowAllUpdates": "Mostrar todas las actualizaciones",
-  "ShowCurrUpdates": "Mostrar actualizaciones actuales",
+  "ShowAllUpdates": "Historial de versiones",
+  "ShowCurrUpdates": "Última versión",
   "SomeTranslatorsNotFinish": "Algunos traductores todavía están trabajando en el paso anterior. Ahora serás redirigido automáticamente.",
   "Start": "Start",
   "Step": "Step",
@@ -185,5 +185,10 @@
   "WordExist": "Duplicated word exists:",
   "WrongResource": "Wrong resource",
   "Yes": "Yes",
-  "Symbols": "Símbolos"
+  "Symbols": "Símbolos",
+  "Account": "Cuenta",
+  "Projects": "Proyectos",
+  "CreateProject": "Crear un proyecto",
+  "About": "Sobre el proyecto",
+  "Language": "Idioma"
 }

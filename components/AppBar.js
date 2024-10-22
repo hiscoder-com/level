@@ -25,9 +25,11 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const supabase = useSupabaseClient()
   const { user } = useCurrentUser()
   const router = useRouter()
+
   useEffect(() => {
     setIsStepPage(router.pathname === '/translate/[project]/[book]/[chapter]/[step]')
   }, [router.pathname])
+
   useEffect(() => {
     const hasAccess = async () => {
       try {
@@ -44,17 +46,30 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   }, [supabase, user])
 
   const logoLink = useMemo(() => {
-    return !user?.id ? '/' : access ? '/account' : '/agreements'
+    return !user?.id ? '/' : access ? '/account?tab=0' : '/agreements'
   }, [access, user])
+
   return (
-    <div className={`bg-th-primary-100 ${isOpenSideBar ? 'sticky top-0 z-30' : ''}`}>
+    <div className="bg-th-primary-100 sticky top-0 z-30">
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
-          <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
+          {![
+            '/user-agreement',
+            '/confession-steps',
+            '/agreements',
+            '/404',
+            '/privacy-policy',
+          ].includes(router.pathname) && (
+            <SideBar
+              setIsOpenSideBar={setIsOpenSideBar}
+              access={access}
+              isOpenSideBar={isOpenSideBar}
+            />
+          )}
           <div
-            className={`flex justify-center w-full ${
-              access && !isStepPage ? '-ml-10' : ''
-            } md:ml-0 `}
+            className={`flex justify-center w-full  ${
+              access && !isStepPage ? 'lg:ms-4 xl:-ml-2 2xl:-ml-6' : ''
+            }`}
           >
             <Link href={logoLink}>
               <LevelLogo className="h-8 fill-th-text-secondary-100" />

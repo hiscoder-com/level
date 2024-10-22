@@ -23,6 +23,8 @@ export async function getServerSideProps({ locale }) {
         'chapters',
         'book-properties',
         'users',
+        'about',
+        'start-page',
       ])),
     },
   }
