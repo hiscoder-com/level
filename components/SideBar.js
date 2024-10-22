@@ -195,7 +195,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               />
                             </div>
                             <span
-                              className={`${collapsed ? 'lg:hidden' : ''} ${
+                              className={`${collapsedSideBar} ${
                                 router.query?.tab === '0'
                                   ? 'text-th-text-primary'
                                   : activeTextClass
@@ -234,7 +234,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               />
                             </div>
                             <span
-                              className={`${collapsed ? 'lg:hidden' : ''} ${
+                              className={`${collapsedSideBar} ${
                                 router.query?.tab === '1'
                                   ? 'text-th-text-primary'
                                   : activeTextClass
@@ -275,15 +275,23 @@ function SideBar({ setIsOpenSideBar, access }) {
                                   }`}
                                 />
                               </div>
-                              <span
-                                className={`${collapsed ? 'lg:hidden' : ''} ${
-                                  router.query?.tab === '2'
-                                    ? 'text-th-text-primary'
-                                    : activeTextClass
+                              <div
+                                className={`overflow-hidden ${
+                                  collapsed
+                                    ? 'lg:w-0'
+                                    : 'lg:w-auto transition-all duration-700 delay-700'
                                 }`}
                               >
-                                {t('CreateProject')}
-                              </span>
+                                <span
+                                  className={`whitespace-nowrap ${collapsedSideBar} ${
+                                    router.query?.tab === '2'
+                                      ? 'text-th-text-primary'
+                                      : activeTextClass
+                                  }`}
+                                >
+                                  {t('CreateProject')}
+                                </span>
+                              </div>
                             </a>
                           </Link>
                         </Menu.Item>
@@ -393,22 +401,17 @@ function SideBar({ setIsOpenSideBar, access }) {
                                   className={`w-5 ${
                                     router.pathname === '/users'
                                       ? 'stroke-th-text-primary'
-
                                       : activeIconClass
                                   }`}
                                 />
                               </div>
                               <div
                                 className={`overflow-hidden ${
-                                  collapsed
-                                    ? 'lg:w-0'
-                                    : 'lg:w-auto transition-all duration-700'
+                                  collapsed ? 'lg:w-0' : 'lg:w-auto'
                                 }`}
                               >
                                 <span
-                                  className={`whitespace-nowrap ${
-                                    collapsed ? 'lg:hidden' : ''
-                                  } ${
+                                  className={`whitespace-nowrap ${collapsedSideBar} ${
                                     router.pathname === '/users'
                                       ? 'text-th-text-primary'
                                       : activeTextClass
@@ -442,9 +445,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                             />
                           </div>
                           <span
-                            className={`${
-                              collapsed ? 'lg:hidden' : ''
-                            } ${activeTextClass} opacity-70 lg:opacity-100 group-hover:opacity-70`}
+                            className={`${collapsedSideBar} ${activeTextClass} opacity-70 lg:opacity-100 group-hover:opacity-70`}
                           >
                             {t('Language')}
                           </span>

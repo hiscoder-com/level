@@ -63,7 +63,6 @@ export default function UserAgreement() {
     </div>
   )
 }
-UserAgreement.layoutType = 'hideSidebar'
 export async function getStaticProps({ locale }) {
   return {
     props: {

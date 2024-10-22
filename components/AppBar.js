@@ -17,11 +17,7 @@ import LevelLogo from 'public/level-logo.svg'
 import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 
-export default function AppBar({
-  setIsOpenSideBar,
-  isOpenSideBar,
-  isHideSidebar = false,
-}) {
+export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -57,9 +53,15 @@ export default function AppBar({
     <div className="bg-th-primary-100 sticky top-0 z-30">
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
-          {!['/user-agreement', '/confession-steps', 'agreements'].includes(
-            router.pathname
-          ) && <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />}
+          {![
+            '/user-agreement',
+            '/confession-steps',
+            '/agreements',
+            '/404',
+            '/privacy-policy',
+          ].includes(router.pathname) && (
+            <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
+          )}
           <div
             className={`flex justify-center w-full  ${
               access && !isStepPage ? 'lg:-ml-4 xl:-ml-6' : ''

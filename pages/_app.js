@@ -23,7 +23,6 @@ function MyApp({ Component, pageProps }) {
 
     const layoutProps = {
       backgroundColor: Component.backgroundColor ?? 'bg-th-secondary-100',
-      isHideSidebar: Component.layoutType === 'hideSidebar',
     }
 
     return (

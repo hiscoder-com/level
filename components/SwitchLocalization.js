@@ -15,7 +15,7 @@ function SwitchLocalization({ collapsed }) {
   return (
     <div
       className={`relative max-w-min text-xs lg:text-sm font-bold ${
-        collapsed ? 'lg:hidden' : '' 
+        collapsed ? 'lg:hidden' : ''
       } z-10`}
     >
       <Menu>

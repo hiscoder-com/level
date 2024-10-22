@@ -11,11 +11,13 @@ function ModalInSideBar({
   return (
     <>
       <div
-        className={`cursor-pointer ${
+        className={`overflow-hidden ${
+          collapsed ? 'lg:w-0' : 'lg:w-auto'
+        } cursor-pointer ${
           isOpen ? 'text-th-text-primary' : 'lg:text-th-secondary-300'
         } group-hover:text-th-text-primary ${collapsed ? 'lg:hidden' : ''}`}
       >
-        {buttonTitle}
+        <span className="whitespace-nowrap">{buttonTitle}</span>
       </div>
 
       {isOpen && (

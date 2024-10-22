@@ -73,7 +73,6 @@ export default function Agreements() {
     </div>
   )
 }
-Agreements.layoutType = 'hideSidebar'
 
 Agreements.backgroundColor = 'bg-th-secondary-100'
 
