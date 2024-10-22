@@ -129,6 +129,7 @@ export default function ConfessionSteps() {
     </div>
   )
 }
+ConfessionSteps.layoutType = 'hideSidebar'
 
 export async function getStaticProps({ locale }) {
   return {

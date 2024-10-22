@@ -26,6 +26,8 @@ export default function PageNotFound() {
   )
 }
 
+PageNotFound.layoutType = 'hideSidebar'
+
 PageNotFound.backgroundColor = 'bg-th-primary-100'
 
 export async function getStaticProps({ locale }) {

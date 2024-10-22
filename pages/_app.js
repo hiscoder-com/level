@@ -16,26 +16,27 @@ function MyApp({ Component, pageProps }) {
   const isIntranet = process.env.NEXT_PUBLIC_INTRANET ?? false
   const supabaseClient = useSupabaseClient()
   useGetTheme()
-  if (Component.layoutType == 'empty') {
+  const renderContent = () => {
+    if (Component.layoutType === 'empty') {
+      return <Component {...pageProps} />
+    }
+
+    const layoutProps = {
+      backgroundColor: Component.backgroundColor ?? 'bg-th-secondary-100',
+      isHideSidebar: Component.layoutType === 'hideSidebar',
+    }
+
     return (
-      <UserContextProvider supabaseClient={supabaseClient}>
-        <RecoilRoot>
-          <main className={isIntranet ? roboto.className : ''}>
-            <Component {...pageProps} />
-          </main>
-        </RecoilRoot>
-      </UserContextProvider>
+      <Layout {...layoutProps}>
+        <Component {...pageProps} />
+      </Layout>
     )
   }
 
   return (
     <UserContextProvider supabaseClient={supabaseClient}>
       <RecoilRoot>
-        <main className={isIntranet ? roboto.className : ''}>
-          <Layout backgroundColor={Component.backgroundColor ?? 'bg-th-secondary-100'}>
-            <Component {...pageProps} />
-          </Layout>
-        </main>
+        <main className={isIntranet ? roboto.className : ''}>{renderContent()}</main>
       </RecoilRoot>
     </UserContextProvider>
   )

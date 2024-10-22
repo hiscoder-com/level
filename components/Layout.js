@@ -9,7 +9,7 @@ import { Transition } from '@headlessui/react'
 import AppBar from 'components/AppBar'
 import Progress from 'public/progress.svg'
 
-function Layout({ backgroundColor, children }) {
+function Layout({ backgroundColor, children, isHideSidebar }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
   const [loadingPage, setLoadingPage] = useState(false)
   const router = useRouter()
@@ -31,7 +31,11 @@ function Layout({ backgroundColor, children }) {
           isOpenSideBar || loadingPage ? 'overflow-y-hidden h-[100vh]' : ''
         } `}
       >
-        <AppBar setIsOpenSideBar={setIsOpenSideBar} isOpenSideBar={isOpenSideBar} />
+        <AppBar
+          setIsOpenSideBar={setIsOpenSideBar}
+          isOpenSideBar={isOpenSideBar}
+          isHideSidebar={isHideSidebar}
+        />
         <div onClick={() => setIsOpenSideBar(false)}>
           <Transition
             as={Fragment}

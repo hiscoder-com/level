@@ -17,7 +17,11 @@ import LevelLogo from 'public/level-logo.svg'
 import Down from 'public/arrow-down.svg'
 import User from 'public/user.svg'
 
-export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
+export default function AppBar({
+  setIsOpenSideBar,
+  isOpenSideBar,
+  isHideSidebar = false,
+}) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
   const [isStepPage, setIsStepPage] = useState(false)
   const [access, setAccess] = useState(false)
@@ -53,7 +57,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
     <div className={`bg-th-primary-100 sticky top-0 z-30`}>
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
-          <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
+          {!isHideSidebar && (
+            <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
+          )}
           <div
             className={`flex justify-center w-full  ${
               access && !isStepPage ? 'lg:-ml-4 xl:-ml-6' : ''
