@@ -38,7 +38,7 @@ export default function Agreements() {
               onClick={() => push(agreement.link)}
             >
               <div
-                className={`absolute top-0 right-0 w-0 h-0 border-[24px] border-solid border-transparent 
+                className={`absolute top-0 right-0 w-0 h-0 border-[24px] border-solid border-transparent
               ${
                 agreement.done
                   ? 'border-b-th-primary-400 border-l-th-primary-400'
@@ -79,7 +79,13 @@ Agreements.backgroundColor = 'bg-th-secondary-100'
 export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['users', 'common', 'user-agreement'])),
+      ...(await serverSideTranslations(locale, [
+        'users',
+        'common',
+        'user-agreement',
+        'about',
+        'start-page',
+      ])),
     },
   }
 }

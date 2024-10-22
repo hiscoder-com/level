@@ -16,6 +16,8 @@ export async function getServerSideProps({ locale }) {
         'project-edit',
         'projects',
         'users',
+        'about',
+        'start-page',
       ])),
     },
   }

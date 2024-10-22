@@ -198,9 +198,9 @@ function ProjectCreate() {
               resourcesUrl={resourcesUrl}
               setResourcesUrl={setResourcesUrl}
             />
-            <div className="flex w-fit items-center justify-center">
+            <div className="flex items-center justify-center">
               <ButtonLoading
-                className="btn-primary relative"
+                className="btn-primary relative w-full"
                 disabled={isCreating}
                 value={t('CreateProject')}
                 isLoading={isCreating}
