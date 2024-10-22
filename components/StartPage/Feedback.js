@@ -84,7 +84,7 @@ function Feedback({ t, onClose }) {
             <ButtonLoading
               type="submit"
               isLoading={isSaving}
-              className="relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
+              className="relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-th-primary-100"
             >
               {t('users:Send')}
             </ButtonLoading>

@@ -54,12 +54,12 @@ export default function AppBar({
   }, [access, user])
 
   return (
-    <div className={`bg-th-primary-100 sticky top-0 z-30`}>
+    <div className="bg-th-primary-100 sticky top-0 z-30">
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
         <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
-          {!isHideSidebar && (
-            <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
-          )}
+          {!['/user-agreement', '/confession-steps', 'agreements'].includes(
+            router.pathname
+          ) && <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />}
           <div
             className={`flex justify-center w-full  ${
               access && !isStepPage ? 'lg:-ml-4 xl:-ml-6' : ''

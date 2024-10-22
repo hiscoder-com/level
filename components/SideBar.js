@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useState } from 'react'
 
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
@@ -35,7 +36,6 @@ import CreateProject from 'public/create-project.svg'
 import Notes from 'public/notes.svg'
 import Users from 'public/users.svg'
 import About from 'public/about.svg'
-import { useRouter } from 'next/router'
 
 const activeIconClass =
   'stroke-th-text-primary lg:stroke-th-secondary-300 group-hover:stroke-th-text-primary'
@@ -51,6 +51,8 @@ function SideBar({ setIsOpenSideBar, access }) {
   const [isLargeScreen, setIsLargeScreen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
+
+  const collapsedSideBar = collapsed ? 'lg:hidden' : ''
 
   const router = useRouter()
 
@@ -122,6 +124,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                 setIsOpenSideBar(true)
               }}
               onMouseLeave={() => {
+                if (
+                  modalsSidebarState.notepad ||
+                  modalsSidebarState.aboutVersion ||
+                  modalsSidebarState.avatarSelector ||
+                  showAbout
+                ) {
+                  return
+                }
                 setCollapsed(true)
                 closeModal()
                 close()
@@ -129,9 +139,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                 setShowAbout(false)
               }}
             >
-              <div
-                className={`relative flex flex-col gap-2 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none`}
-              >
+              <div className="relative h-full flex flex-col gap-2 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
                 <div
                   className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 overflow-hidden py-4 px-4 ${
                     collapsed ? 'lg:w-0 lg:px-0' : 'lg:w-full'
@@ -187,7 +195,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               />
                             </div>
                             <span
-                              className={`${collapsed && 'lg:hidden'} ${
+                              className={`${collapsed ? 'lg:hidden' : ''} ${
                                 router.query?.tab === '0'
                                   ? 'text-th-text-primary'
                                   : activeTextClass
@@ -226,7 +234,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               />
                             </div>
                             <span
-                              className={`${collapsed && 'lg:hidden'} ${
+                              className={`${collapsed ? 'lg:hidden' : ''} ${
                                 router.query?.tab === '1'
                                   ? 'text-th-text-primary'
                                   : activeTextClass
@@ -268,7 +276,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 />
                               </div>
                               <span
-                                className={`${collapsed && 'lg:hidden'} ${
+                                className={`${collapsed ? 'lg:hidden' : ''} ${
                                   router.query?.tab === '2'
                                     ? 'text-th-text-primary'
                                     : activeTextClass
@@ -286,7 +294,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           as="div"
                           disabled
                           className={`flex px-4 py-3 items-center justify-between gap-2 cursor-default md:hidden ${
-                            !showCreate && 'opacity-70'
+                            !showCreate ? 'opacity-70' : ''
                           }`}
                         >
                           <div
@@ -343,12 +351,14 @@ function SideBar({ setIsOpenSideBar, access }) {
                           </div>
                           <ModalInSideBar
                             isOpen={modalsSidebarState.notepad}
-                            setIsOpen={(value) =>
+                            setIsOpen={(value) => {
                               setModalsSidebarState((prev) => ({
                                 ...prev,
                                 notepad: value,
                               }))
-                            }
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
                             modalTitle={t('personalNotes')}
                             buttonTitle={t('personalNotes')}
                             collapsed={collapsed}
@@ -383,6 +393,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                   className={`w-5 ${
                                     router.pathname === '/users'
                                       ? 'stroke-th-text-primary'
+
                                       : activeIconClass
                                   }`}
                                 />
@@ -396,7 +407,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               >
                                 <span
                                   className={`whitespace-nowrap ${
-                                    collapsed && 'lg:hidden'
+                                    collapsed ? 'lg:hidden' : ''
                                   } ${
                                     router.pathname === '/users'
                                       ? 'text-th-text-primary'
@@ -432,7 +443,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           </div>
                           <span
                             className={`${
-                              collapsed && 'lg:hidden'
+                              collapsed ? 'lg:hidden' : ''
                             } ${activeTextClass} opacity-70 lg:opacity-100 group-hover:opacity-70`}
                           >
                             {t('Language')}
@@ -459,11 +470,15 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <About
                               className={`w-5 ${
                                 showAbout ? 'stroke-th-text-primary' : activeIconClass
-                              } ${collapsed && 'opacity-70'}`}
+                              } ${collapsed ? 'opacity-70' : ''}`}
                             />
                           </div>
                           <ModalInSideBar
-                            setIsOpen={setShowAbout}
+                            setIsOpen={(value) => {
+                              setShowAbout(value)
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
                             isOpen={showAbout}
                             buttonTitle={t('About')}
                             modalTitle={'LEVEL'}
@@ -496,10 +511,16 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 modalsSidebarState.aboutVersion
                                   ? 'stroke-th-text-primary'
                                   : activeIconClass
-                              } ${collapsed && 'opacity-70'}`}
+                              } ${collapsed ? 'opacity-70' : ''}`}
                             />
                           </div>
-                          <AboutVersion collapsed={collapsed} />
+                          <AboutVersion
+                            onClose={(value) => {
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
+                            collapsed={collapsed}
+                          />
                         </div>
                       </Menu.Item>
 

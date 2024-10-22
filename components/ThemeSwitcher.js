@@ -1,7 +1,8 @@
-import { Disclosure } from '@headlessui/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { useTranslation } from 'react-i18next'
+
 import { useGetTheme } from 'utils/hooks'
+import { Disclosure } from '@headlessui/react'
+import { useTranslation } from 'react-i18next'
 
 import Theme from 'public/themes.svg'
 import ArrowDown from 'public/arrow-down.svg'
@@ -101,8 +102,8 @@ const ThemeSwitcher = ({ collapsed }) => {
           </Disclosure.Button>
 
           <Disclosure.Panel
-            className={`flex space-x-4 box-border mx-1 pl-4 my-4 ${
-              collapsed && 'lg:hidden'
+            className={`flex space-x-2 box-border mx-1 pl-4 my-4 ${
+              collapsed ? 'lg:hidden' : ''
             }`}
           >
             {themes.map((theme) => (
@@ -111,7 +112,7 @@ const ThemeSwitcher = ({ collapsed }) => {
                   onClick={() => switchTheme(theme.name)}
                   onMouseOver={() => handleMouseOver(theme.name)}
                   onMouseLeave={handleMouseLeave}
-                  className={`half-circle w-10 h-10 rotate-45 cursor-pointer ${
+                  className={`half-circle w-8 h-8 rotate-45 cursor-pointer ${
                     currentTheme === theme.name
                       ? `border-th-secondary-10 border-2 outline outline-3 ${theme.outline}`
                       : ''

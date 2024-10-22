@@ -11,7 +11,13 @@ export default ChapterListPage
 export async function getServerSideProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(locale, ['common', 'books', 'users'])),
+      ...(await serverSideTranslations(locale, [
+        'common',
+        'books',
+        'users',
+        'about',
+        'start-page',
+      ])),
     },
   }
 }
