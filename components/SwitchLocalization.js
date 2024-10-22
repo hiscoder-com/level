@@ -16,7 +16,7 @@ function SwitchLocalization({ collapsed }) {
     <div
       className={`relative max-w-min text-xs lg:text-sm font-bold ${
         collapsed ? 'lg:hidden' : ''
-      } z-10`}
+      } z-[1]`}
     >
       <Menu>
         <Menu.Button
@@ -26,7 +26,7 @@ function SwitchLocalization({ collapsed }) {
           {t(locale.toUpperCase())}
         </Menu.Button>
         <Menu.Items
-          className={`absolute top-0 right-0 text-sm bg-th-secondary-100 rounded-2xl ${
+          className={`absolute top-0 right-0 text-sm bg-th-text-primary rounded-2xl ${
             collapsed ? 'lg:hidden' : ''
           }`}
         >

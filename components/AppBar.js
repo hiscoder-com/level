@@ -60,11 +60,15 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             '/404',
             '/privacy-policy',
           ].includes(router.pathname) && (
-            <SideBar setIsOpenSideBar={setIsOpenSideBar} access={access} />
+            <SideBar
+              setIsOpenSideBar={setIsOpenSideBar}
+              access={access}
+              isOpenSideBar={isOpenSideBar}
+            />
           )}
           <div
             className={`flex justify-center w-full  ${
-              access && !isStepPage ? 'lg:-ml-4 xl:-ml-6' : ''
+              access && !isStepPage ? 'lg:ms-4 xl:-ml-2 2xl:-ml-6' : ''
             }`}
           >
             <Link href={logoLink}>

@@ -42,7 +42,7 @@ const activeIconClass =
 const activeTextClass =
   'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
 
-function SideBar({ setIsOpenSideBar, access }) {
+function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation(['common', 'projects', 'users', 'start-page'])
   const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
@@ -83,6 +83,14 @@ function SideBar({ setIsOpenSideBar, access }) {
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
 
+  useEffect(() => {
+    if (!isOpenSideBar) {
+      setCollapsed(true)
+      closeModal()
+      setShowAbout(false)
+    }
+  }, [isOpenSideBar])
+
   return (
     <Menu>
       {({ open, close }) => (
@@ -114,8 +122,8 @@ function SideBar({ setIsOpenSideBar, access }) {
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className={`fixed flex flex-col w-full md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
-                !collapsed ? 'lg:w-[23rem]' : 'lg:w-[3.25rem] lg:ml-0 lg:p-0 2xl:mx-0'
+              className={`fixed flex flex-col w-full h-[calc(100vh-52px)] md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
+                !collapsed ? 'lg:w-56' : 'lg:w-[3.25rem] lg:ml-0 lg:p-0 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -424,7 +432,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           </Link>
                         </Menu.Item>
                       )}
-                      <div className="space-y-2 mt-6">
+                      <div className="space-y-2 mt-2">
                         <div className="w-full h-px bg-th-secondary-100" />
                         <ThemeSwitcher collapsed={collapsed} />
                         <div className="w-full h-px bg-th-secondary-100" />
