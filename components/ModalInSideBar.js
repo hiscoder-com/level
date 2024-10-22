@@ -11,9 +11,9 @@ function ModalInSideBar({
   return (
     <>
       <div
-        className={`cursor-pointer text-th-text-primary hover:opacity-70 ${
-          collapsed && 'lg:hidden'
-        }`}
+        className={`cursor-pointer ${
+          isOpen ? 'text-th-text-primary' : 'text-th-secondary-300'
+        } group-hover:text-th-text-primary ${collapsed && 'lg:hidden'}`}
       >
         {buttonTitle}
       </div>

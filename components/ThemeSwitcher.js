@@ -66,14 +66,29 @@ const ThemeSwitcher = ({ collapsed }) => {
         <>
           <Disclosure.Button
             className={`group flex justify-between items-center w-full px-4 ${
-              (!open || collapsed) && 'opacity-70'
-            }`}
+              !open || collapsed ? 'stroke-th-text-primary' : ''
+            } ${open ? 'bg-th-secondary-200' : ''}
+            } hover:bg-th-secondary-200 hover:opacity-70`}
           >
             <div className="flex gap-2 items-center">
               <div className="py-4">
-                <Theme className="w-5 h-5 stroke-th-text-primary" />
+                <Theme
+                  className={`w-5 h-5 ${
+                    !open
+                      ? 'stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+                      : 'stroke-th-text-primary'
+                  }`}
+                />
               </div>
-              <p className={collapsed && 'lg:hidden'}>{t('ChooseTheme')}</p>
+              <p
+                className={`${collapsed && 'lg:hidden'} ${
+                  !open
+                    ? 'text-th-secondary-300 group-hover:text-th-text-primary'
+                    : 'text-th-text-primary'
+                }`}
+              >
+                {t('ChooseTheme')}
+              </p>
             </div>
             <ArrowDown
               className={`w-5 h-5 transition-all duration-150 ${
