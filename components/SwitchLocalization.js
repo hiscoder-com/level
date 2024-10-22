@@ -16,17 +16,17 @@ function SwitchLocalization({ collapsed }) {
     <div
       className={`relative max-w-min text-xs lg:text-sm font-bold ${
         collapsed && 'lg:hidden'
-      }`}
+      } z-10`}
     >
       <Menu>
         <Menu.Button
-          className="px-4 py-1 text-sm bg-th-secondary-100 rounded-[9rem] hover:opacity-70"
+          className="px-4 py-1 text-sm bg-th-text-primary rounded-[9rem] text-th-secondary-10"
           onClick={(e) => e.stopPropagation()}
         >
           {t(locale.toUpperCase())}
         </Menu.Button>
         <Menu.Items
-          className={`absolute top-0 right-0 text-sm bg-th-secondary-100 rounded-2xl ${
+          className={`absolute top-0 right-0 text-sm bg-th-text-primary rounded-2xl ${
             collapsed && 'lg:hidden'
           }`}
         >
@@ -38,9 +38,13 @@ function SwitchLocalization({ collapsed }) {
                 onClick={(e) => {
                   push(asPath, undefined, { locale: loc })
                 }}
-                className="cursor-pointer px-4 py-2 hover:bg-th-primary-100-hover-backgroung last:rounded-b-2xl first:rounded-t-2xl hover:opacity-70"
+                className="cursor-pointer px-4 py-2 last:rounded-b-2xl first:rounded-t-2xl hover:opacity-70"
               >
-                <div className={`${locale === loc ? 'text-th-secondary-300' : ''}`}>
+                <div
+                  className={`${
+                    locale === loc ? 'text-th-secondary-10' : 'text-th-secondary-300'
+                  }`}
+                >
                   {t(loc.toUpperCase())}
                 </div>
               </Menu.Item>

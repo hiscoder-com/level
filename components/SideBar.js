@@ -37,6 +37,11 @@ import Users from 'public/users.svg'
 import About from 'public/about.svg'
 import { useRouter } from 'next/router'
 
+const activeIconClass =
+  'stroke-th-text-primary lg:stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+const activeTextClass =
+  'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
+
 function SideBar({ setIsOpenSideBar, access }) {
   const { user } = useCurrentUser()
   const { t } = useTranslation(['common', 'projects', 'users', 'start-page'])
@@ -44,7 +49,6 @@ function SideBar({ setIsOpenSideBar, access }) {
 
   const [collapsed, setCollapsed] = useState(true)
   const [isLargeScreen, setIsLargeScreen] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
 
@@ -76,10 +80,6 @@ function SideBar({ setIsOpenSideBar, access }) {
 
     return () => window.removeEventListener('resize', checkScreenSize)
   }, [])
-
-  useEffect(() => {
-    setIsOpen(isLargeScreen)
-  }, [isLargeScreen])
 
   return (
     <Menu>
@@ -133,7 +133,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                 className={`relative flex flex-col gap-2 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none`}
               >
                 <div
-                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 overflow-hidden py-4 px-4  ${
+                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 overflow-hidden py-4 px-4 ${
                     collapsed ? 'lg:w-0 lg:px-0' : 'lg:w-full'
                   }`}
                 >
@@ -182,7 +182,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 className={`w-4 ml-0.5 ${
                                   router.query?.tab === '0'
                                     ? 'stroke-th-text-primary'
-                                    : 'stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+                                    : activeIconClass
                                 }`}
                               />
                             </div>
@@ -190,7 +190,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               className={`${collapsed && 'lg:hidden'} ${
                                 router.query?.tab === '0'
                                   ? 'text-th-text-primary'
-                                  : 'text-th-secondary-300 group-hover:text-th-text-primary'
+                                  : activeTextClass
                               }`}
                             >
                               {t('Account')}
@@ -221,7 +221,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 className={`w-5 ${
                                   router.query?.tab === '1'
                                     ? 'stroke-th-text-primary'
-                                    : 'stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+                                    : activeIconClass
                                 }`}
                               />
                             </div>
@@ -229,7 +229,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               className={`${collapsed && 'lg:hidden'} ${
                                 router.query?.tab === '1'
                                   ? 'text-th-text-primary'
-                                  : 'text-th-secondary-300 group-hover:text-th-text-primary'
+                                  : activeTextClass
                               }`}
                             >
                               {t('Projects')}
@@ -263,7 +263,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                   className={`w-5 h-5 ${
                                     router.query?.tab === '2'
                                       ? 'stroke-th-text-primary'
-                                      : 'stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+                                      : activeIconClass
                                   }`}
                                 />
                               </div>
@@ -271,7 +271,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                                 className={`${collapsed && 'lg:hidden'} ${
                                   router.query?.tab === '2'
                                     ? 'text-th-text-primary'
-                                    : 'text-th-secondary-300 group-hover:text-th-text-primary'
+                                    : activeTextClass
                                 }`}
                               >
                                 {t('CreateProject')}
@@ -299,9 +299,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                             <div className="rounded-[23rem] hover:opacity-70">
                               <CreateProject
                                 className={`w-5 h-5 ${
-                                  showCreate
-                                    ? 'stroke-th-text-primary'
-                                    : 'stroke-th-secondary-300'
+                                  showCreate ? 'stroke-th-text-primary' : activeIconClass
                                 }`}
                               />
                             </div>
@@ -339,7 +337,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               className={`w-5 h-5 ${
                                 modalsSidebarState.notepad
                                   ? 'stroke-th-text-primary'
-                                  : 'stroke-th-secondary-300 group-hover:stroke-th-primary-300'
+                                  : 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
                               }`}
                             />
                           </div>
@@ -385,19 +383,29 @@ function SideBar({ setIsOpenSideBar, access }) {
                                   className={`w-5 ${
                                     router.pathname === '/users'
                                       ? 'stroke-th-text-primary'
-                                      : 'stroke-th-secondary-300 group-hover:stroke-th-primary-300'
+                                      : activeIconClass
                                   }`}
                                 />
                               </div>
-                              <span
-                                className={`${collapsed && 'lg:hidden'} ${
-                                  router.pathname === '/users'
-                                    ? 'text-th-text-primary'
-                                    : 'text-th-secondary-300 group-hover:text-th-text-primary'
+                              <div
+                                className={`overflow-hidden ${
+                                  collapsed
+                                    ? 'lg:w-0'
+                                    : 'lg:w-auto transition-all duration-700'
                                 }`}
                               >
-                                {t('users:UserManagement')}
-                              </span>
+                                <span
+                                  className={`whitespace-nowrap ${
+                                    collapsed && 'lg:hidden'
+                                  } ${
+                                    router.pathname === '/users'
+                                      ? 'text-th-text-primary'
+                                      : activeTextClass
+                                  }`}
+                                >
+                                  {t('users:UserManagement')}
+                                </span>
+                              </div>
                             </a>
                           </Link>
                         </Menu.Item>
@@ -412,20 +420,20 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className="group py-2 px-4 flex items-center justify-between gap-2 cursor-default hover:bg-th-secondary-200 hover:opacity-70"
+                        className="group py-2 px-4 flex items-center justify-between gap-2 cursor-default "
                       >
                         <div className="flex items-center gap-2">
                           <div className="rounded-[23rem]">
                             <Localization
-                              className={`w-5 h-5 stroke-th-secondary-300 group-hover:stroke-th-text-primary ${
+                              className={`w-5 h-5 ${activeIconClass} ${
                                 collapsed && 'opacity-70'
-                              }`}
+                              } group-hover:opacity-70`}
                             />
                           </div>
                           <span
                             className={`${
                               collapsed && 'lg:hidden'
-                            } text-th-secondary-300 group-hover:text-th-text-primary`}
+                            } ${activeTextClass} opacity-70 lg:opacity-100 group-hover:opacity-70`}
                           >
                             {t('Language')}
                           </span>
@@ -450,9 +458,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                           <div className="rounded-[23rem]">
                             <About
                               className={`w-5 ${
-                                showAbout
-                                  ? 'stroke-th-text-primary'
-                                  : 'stroke-th-secondary-300 group-hover:stroke-th-primary-300'
+                                showAbout ? 'stroke-th-text-primary' : activeIconClass
                               } ${collapsed && 'opacity-70'}`}
                             />
                           </div>
@@ -489,7 +495,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                               className={`w-5 h-5 ${
                                 modalsSidebarState.aboutVersion
                                   ? 'stroke-th-text-primary'
-                                  : 'stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+                                  : activeIconClass
                               } ${collapsed && 'opacity-70'}`}
                             />
                           </div>
@@ -500,7 +506,7 @@ function SideBar({ setIsOpenSideBar, access }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className="group flex items-center justify-between gap-2 cursor-default hover:bg-th-secondary-200"
+                        className="group flex items-center justify-between gap-2 cursor-default hover:bg-th-secondary-200 rounded-b-2xl lg:rounded-b-none"
                       >
                         <SignOut collapsed={collapsed} />
                       </Menu.Item>

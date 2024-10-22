@@ -87,7 +87,7 @@ function AboutVersion({ isStartPage = false, collapsed }) {
         className={`${collapsed && 'lg:hidden'} ${
           modalsSidebarState.aboutVersion
             ? 'text-th-text-primary'
-            : 'text-th-secondary-300 group-hover:text-th-text-primary'
+            : 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
         }`}
       >
         {t('Version')} {packageJson.version}
