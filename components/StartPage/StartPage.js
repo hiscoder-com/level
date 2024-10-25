@@ -11,7 +11,7 @@ import Download from './Download'
 import Login from './Login'
 import Reviews from './Reviews'
 import PasswordRecovery from './PasswordRecovery'
-import HowItWorks from './HowItWorks'
+// import HowItWorks from './HowItWorks'
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 import SwitchLocalization from 'components/SwitchLocalization'
 import LevelIntro from './LevelIntro'
@@ -57,11 +57,24 @@ function StartPage({ defaultContentKey = null }) {
     }
   }, [defaultContentKey])
 
+  useEffect(() => {
+    if (defaultContentKey) {
+      setBlocks((prev) => ({
+        ...prev,
+        [defaultContentKey]: {
+          clicked: true,
+          opacity: 'opacity-100',
+        },
+      }))
+    }
+  }, [defaultContentKey])
+
   const handleContentClick = (newContentKey) => {
     if (contentKey === newContentKey) {
       setContentKey(null)
     } else {
       setContentKey(newContentKey)
+      handleClick(newContentKey)
     }
     if (defaultContentKey) {
       router.replace('/', undefined, { shallow: true })
@@ -75,21 +88,30 @@ function StartPage({ defaultContentKey = null }) {
     partners: <Partners t={t} />,
     intro: <LevelIntro t={t} />,
     reviews: <Reviews t={t} />,
-    howItWork: <HowItWorks t={t} />,
+    howItWork: <Reviews t={t} />, // <HowItWorks t={t} />,
     faq: <FrequentlyAskedQuestions t={t} />,
     download: <Download t={t} />,
     logo: <Logo t={t} />,
     passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
 
-  const toggleBlock = (key) => {
-    setBlocks((prev) => ({
-      ...prev,
-      [key]: {
-        clicked: !prev[key].clicked,
-        opacity: prev[key].clicked ? 'opacity-0' : 'opacity-100',
-      },
-    }))
+  const contentRoutes = {
+    signIn: 'sign-in',
+    connect: 'connect-with-us',
+    updates: 'updates',
+    partners: 'partners',
+    intro: 'what-is-level',
+    reviews: 'reviews',
+    howItWork: 'how-it-works',
+    faq: 'faq',
+    download: 'download',
+    logo: 'about',
+  }
+
+  const handleClick = (contentKey) => {
+    if (contentKey && contentRoutes[contentKey]) {
+      router.push(`/${contentRoutes[contentKey]}`)
+    }
   }
 
   return (
@@ -128,13 +150,13 @@ function StartPage({ defaultContentKey = null }) {
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
               <div
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('intro')}
+                onClick={() => handleContentClick('intro')}
                 dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsLevel') }}
               ></div>
 
               <div
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('reviews')}
+                onClick={() => handleContentClick('reviews')}
               >
                 {t('MainBlocks.Reviews')}
               </div>
@@ -142,14 +164,14 @@ function StartPage({ defaultContentKey = null }) {
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
               <div
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('howItWork')}
+                onClick={() => handleContentClick('howItWork')}
               >
                 {t('MainBlocks.HowItWorks')}
               </div>
 
               <div
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/faq.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('faq')}
+                onClick={() => handleContentClick('faq')}
               >
                 {t('MainBlocks.FAQ')}
               </div>
@@ -251,7 +273,7 @@ function StartPage({ defaultContentKey = null }) {
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.intro.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('intro')}
+          onClick={() => handleContentClick('intro')}
         >
           <div
             className={`absolute inset-0 bg-[url("../public/about-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
@@ -273,7 +295,7 @@ function StartPage({ defaultContentKey = null }) {
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.howItWork.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('howItWork')}
+          onClick={() => handleContentClick('howItWork')}
         >
           <div
             className={`absolute inset-0 bg-[url("../public/inside-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
@@ -282,7 +304,7 @@ function StartPage({ defaultContentKey = null }) {
           ></div>
           <div className="relative z-10">
             {blocks.howItWork.clicked ? (
-              <HowItWorks t={t} opacity={blocks.howItWork.opacity} />
+              <Reviews t={t} opacity={blocks.howItWork.opacity} /> //HowItWorks
             ) : (
               <p className="text-white">{t('MainBlocks.HowItWorks')}</p>
             )}
@@ -292,7 +314,7 @@ function StartPage({ defaultContentKey = null }) {
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.reviews.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('reviews')}
+          onClick={() => handleContentClick('reviews')}
         >
           <div
             className={`absolute inset-0 bg-[url("../public/reviews-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
@@ -311,7 +333,7 @@ function StartPage({ defaultContentKey = null }) {
           className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
             blocks.faq.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('faq')}
+          onClick={() => handleContentClick('faq')}
         >
           <div
             className={`absolute inset-0 bg-[url("../public/faq-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
