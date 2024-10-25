@@ -21,6 +21,7 @@ import SectionBlock from './SectionBlock'
 import Close from 'public/close.svg'
 import LevelLogo from 'public/level-logo-color.svg'
 import CookiesAproove from './CookiesAproove'
+import SectionContainer from './SectionContainer'
 
 function StartPage({ defaultContentKey = null }) {
   const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
@@ -31,7 +32,7 @@ function StartPage({ defaultContentKey = null }) {
     logo: false,
     updates: false,
     partners: false,
-    feedback: false,
+    connect: false,
     signIn: false,
     download: false,
     passwordRecovery: false,
@@ -43,6 +44,15 @@ function StartPage({ defaultContentKey = null }) {
     reviews: { clicked: false, opacity: 'opacity-0' },
     faq: { clicked: false, opacity: 'opacity-0' },
   })
+
+  useEffect(() => {
+    if (defaultContentKey) {
+      setShowSections((prev) => ({
+        ...prev,
+        [defaultContentKey]: true,
+      }))
+    }
+  }, [defaultContentKey])
 
   const toggleSection = (section) => {
     setShowSections((prev) => ({
@@ -261,7 +271,7 @@ function StartPage({ defaultContentKey = null }) {
               <Login
                 handleClick={() => {
                   toggleSection(
-                    showSections.signIn && showSections.feedback ? 'signIn' : 'feedback'
+                    showSections.signIn && showSections.connect ? 'signIn' : 'connect'
                   )
                 }}
               />
@@ -357,42 +367,18 @@ function StartPage({ defaultContentKey = null }) {
           toggleSection={toggleSection}
         />
         <SectionBlock
-          sectionKey="feedback"
+          sectionKey="connect"
           label={t('ConnectWithUs')}
           content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
-          showSection={showSections.feedback}
+          showSection={showSections.connect}
           toggleSection={toggleSection}
         />
-        <div className="grid grid-cols-2 gap-5 text-center">
-          {!showSections.updates && (
-            <div
-              className={`p-5 bg-th-secondary-10 rounded-xl ${
-                showSections.download ? 'col-span-2' : ''
-              }`}
-              onClick={() => toggleSection('download')}
-            >
-              <p className={`mb-9 ${showSections.download ? 'font-semibold' : ''}`}>
-                {t('common:Download')}
-              </p>
-              {showSections.download && <Download t={t} />}
-            </div>
-          )}
-
-          {!showSections.download && (
-            <div
-              className={`p-5 bg-th-secondary-10 rounded-xl ${
-                showSections.updates ? 'col-span-2' : ''
-              }`}
-              onClick={() => toggleSection('updates')}
-            >
-              {!showSections.updates ? (
-                <p>{t('Updates')}</p>
-              ) : (
-                <AboutVersion isStartPage={true} />
-              )}
-            </div>
-          )}
-        </div>
+        <SectionContainer
+          showSections={showSections}
+          toggleSection={toggleSection}
+          setContentKey={setContentKey}
+          t={t}
+        />
 
         <div className="md:hidden block absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
           <CookiesAproove />
