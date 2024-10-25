@@ -443,7 +443,7 @@ function Navigation({ books, reference, setReference }) {
   )
 }
 
-function BookListReader({ books, setReference, reference, project }) {
+export function BookListReader({ books, setReference, reference, project }) {
   const [createdOldTestamentBooks, createdNewTestamentBooks] = books
   const [currentBook, setCurrentBook] = useState(null)
   const { query, replace } = useRouter()
