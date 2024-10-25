@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import Close from 'public/close.svg'
 
 function SectionBlock({
@@ -8,12 +9,24 @@ function SectionBlock({
   toggleSection,
   isLogo = false,
 }) {
+  const router = useRouter()
+
+  const handleSectionToggle = () => {
+    toggleSection(sectionKey)
+
+    if (!showSection) {
+      router.push(`/${sectionKey}`, undefined, { shallow: true })
+    } else {
+      router.push('/', undefined, { shallow: true })
+    }
+  }
+
   return (
     <div
       className={`relative p-5 bg-th-secondary-10 rounded-xl ${
         isLogo ? 'flex justify-center' : 'text-center'
       }`}
-      onClick={() => toggleSection(sectionKey)}
+      onClick={handleSectionToggle}
     >
       {showSection ? content : isLogo ? label : <p>{label}</p>}
       <Close
