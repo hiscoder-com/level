@@ -8,16 +8,16 @@ const SlugPage = () => {
   const router = useRouter()
   const { slug } = router.query
   const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
-
   const contentKeyMap = {
+    'sign-in': 'signIn',
+    'connect-with-us': 'connect',
+    updates: 'updates',
     'what-is-level': 'intro',
     reviews: 'reviews',
-    faq: 'faq',
-    partners: 'partners',
-    'connect-with-us': 'connect',
     'how-it-works': 'howItWork',
+    faq: 'faq',
     download: 'download',
-    'sign-in': 'signIn',
+    partners: 'partners',
     about: 'logo',
   }
 
@@ -39,6 +39,7 @@ export default SlugPage
 
 export async function getStaticPaths() {
   const paths = [
+    //TODO: add more pages
     { params: { slug: 'what-is-level' } },
     { params: { slug: 'how-it-works' } },
   ]
