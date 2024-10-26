@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
+import Verses from './Verses'
 import BookListReader from './BookListReader'
 import ParticipantInfo from 'components/Project/ParticipantInfo'
 import { useCurrentUser } from 'lib/UserContext'
@@ -15,6 +17,7 @@ import {
 
 import { newTestamentList, oldTestamentList, usfmFileNames } from 'utils/config'
 import { checkBookCodeExists, getVerseObjectsForBookAndChapter } from 'utils/helper'
+import Left from '/public/left.svg'
 
 function CommunityAudio() {
   const { user } = useCurrentUser()
@@ -132,7 +135,30 @@ function CommunityAudio() {
           <ParticipantInfo project={project} access={isCoordinatorAccess} />
         </div>
       </div>
-      <div className="w-full xl:w-2/3"></div>
+      <div className="w-full xl:w-2/3">
+        <div className="card flex flex-col gap-7 bg-th-secondary-10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
+            <Link href={'/projects/' + project?.code} className="p-3">
+              <Left className="w-5 h-5 stroke-th-primary-200 hover:opacity-70" />
+            </Link>
+            {/* <Navigation
+              books={
+                project?.type === 'obs'
+                  ? books
+                  : [...createdOldTestamentBooks, ...createdNewTestamentBooks]
+              }
+              reference={reference}
+              setReference={setReference}
+            /> */}
+          </div>
+          <Verses
+            verseObjects={verseObjectsToUse}
+            user={user}
+            reference={reference}
+            isLoading={isLoading}
+          />
+        </div>
+      </div>
     </div>
   )
 }
