@@ -1,7 +1,8 @@
+import { useRouter } from 'next/router'
+
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
-import CommunityAudio from 'components/CommunityAudio/ComunityAudio'
-import { useRouter } from 'next/router'
+import CommunityAudio from 'components/CommunityAudio/CommunityAudio'
 
 function CommunityAudioPage() {
   const router = useRouter()
