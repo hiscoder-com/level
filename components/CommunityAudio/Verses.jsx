@@ -9,27 +9,10 @@ import { Disclosure, Combobox, Tab, Transition } from '@headlessui/react'
 
 import Breadcrumbs from 'components/Breadcrumbs'
 
-import { useCurrentUser } from 'lib/UserContext'
-import {
-  useAccess,
-  useGetBooks,
-  useGetChaptersTranslate,
-  useGetResource,
-  useProject,
-} from 'utils/hooks'
+import { useAccess, useGetBooks, useProject } from 'utils/hooks'
 
-import {
-  checkBookCodeExists,
-  checkChapterVersesExist,
-  getVerseCount,
-  getVerseCountOBS,
-  getVerseObjectsForBookAndChapter,
-} from 'utils/helper'
+import { getVerseCount, getVerseCountOBS } from 'utils/helper'
 
-import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
-
-import Down from '/public/arrow-down.svg'
-import Left from '/public/left.svg'
 import Gear from '/public/gear.svg'
 
 function Verses({ verseObjects, user, reference, isLoading }) {
