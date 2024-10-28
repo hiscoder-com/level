@@ -145,32 +145,32 @@ function StartPage({ defaultContentKey = null }) {
       <main className="hidden relative md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
         {/* Левый сайдбар с логотипом, локализацией и другими элементами */}
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
-          <div
+          <Link
+            href={`/${contentRoutes['logo']}`}
             className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
-            onClick={() => handleContentClick('logo')}
           >
             <LevelLogo className="" />
-          </div>
+          </Link>
           <div className="flex justify-between items-center h-[4.4rem] p-5 lg:p-7 bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
             <p>{t('projects:Language')}</p>
             <SwitchLocalization />
           </div>
-          <div className="h-[19.4rem] rounded-2xl bg-slate-550">
-            <p
-              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl cursor-pointer"
-              onClick={() => handleContentClick('updates')}
-            >
+          <Link
+            href={`/${contentRoutes['updates']}`}
+            className="h-[19.4rem] rounded-2xl bg-slate-550 cursor-pointer"
+          >
+            <p className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl">
               {t('common:Updates')}
             </p>
-          </div>
-          <div className="h-[19.4rem] rounded-2xl bg-white">
-            <p
-              className="gray-two-layers p-5 lg:p-7 h-full w-full z-10 rounded-2xl after:rounded-2xl cursor-pointer"
-              onClick={() => handleContentClick('partners')}
-            >
+          </Link>
+          <Link
+            href={`/${contentRoutes['partners']}`}
+            className="h-[19.4rem] rounded-2xl bg-white cursor-pointer"
+          >
+            <p className="gray-two-layers p-5 lg:p-7 h-full w-full z-10 rounded-2xl after:rounded-2xl">
               {t('Partners')}
             </p>
-          </div>
+          </Link>
         </aside>
 
         {/* Секция с центральным контентом */}
@@ -226,20 +226,20 @@ function StartPage({ defaultContentKey = null }) {
 
         {/* Правый сайдбар */}
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pl-3 xl:pl-6">
-          <div className="h-32 rounded-2xl bg-slate-550">
-            <p
-              className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10 cursor-pointer"
-              onClick={() => handleContentClick('signIn')}
-            >
+          <Link
+            href={`/${contentRoutes['signIn']}`}
+            className="h-32 rounded-2xl bg-slate-550 cursor-pointer"
+          >
+            <p className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10">
               {t('users:SignIn')}
             </p>
-          </div>
-          <div
+          </Link>
+          <Link
+            href={`/${contentRoutes['connect']}`}
             className="p-5 lg:p-7 bg-th-secondary-10 rounded-2xl cursor-pointer h-auto xl:h-32"
-            onClick={() => handleContentClick('connect')}
           >
             {t('ConnectWithUs')}
-          </div>
+          </Link>
           <div className="p-3 lg:p-5 2xl:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 2xl:space-y-4 overflow-hidden">
             <p className="text-xs 2xl:text-base overflow-auto font-normal">
               {t('Verse.text')}
@@ -249,14 +249,14 @@ function StartPage({ defaultContentKey = null }) {
             </p>
           </div>
 
-          <div className="h-32 rounded-2xl bg-slate-550 cursor-pointer">
-            <p
-              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl aftercursor-pointer after:rounded-2xl"
-              onClick={() => handleContentClick('download')}
-            >
+          <Link
+            href={`/${contentRoutes['download']}`}
+            className="h-32 rounded-2xl bg-slate-550 cursor-pointer"
+          >
+            <p className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl">
               {t('common:Download')}
             </p>
-          </div>
+          </Link>
         </aside>
         <div className="hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2  z-10">
           <CookiesAproove />
