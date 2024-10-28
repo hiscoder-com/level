@@ -16,7 +16,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
         <meta property="og:title" content={t('LEVEL')} />
         <meta property="og:description" content={t('MainBlocks.LevelText')} />
-        <meta property="og:image" content="/level.jpg" />
+        <meta property="og:image" content="/social.webp" />
       </Head>
       <StartPage defaultContentKey={query?.contentKey || null} />
     </main>
