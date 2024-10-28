@@ -10,19 +10,7 @@ export const metadata = {
     template: '%s | LEVEL',
   },
   description: 'LEVEL is an innovative platform for Bible translation.',
-  openGraph: {
-    title: openGraph.title,
-    description: openGraph.description,
-    siteName: openGraph.siteName,
-    type: openGraph.type,
-    images: [
-      {
-        url: openGraph.images[0]?.url || '/social.webp',
-        width: openGraph.images[0]?.width || 1200,
-        height: openGraph.images[0]?.height || 630,
-      },
-    ],
-  },
+  openGraph: { ...openGraph },
   icons: {
     icon: '/favicon.ico',
   },

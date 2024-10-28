@@ -4,7 +4,7 @@ export const openGraph = {
   siteName: 'LEVEL',
   images: [
     {
-      url: 'https://level.bible/social.webp', // Must be an absolute URL
+      url: 'https://deploy-preview-721--level-bible.netlify.app/social.webp', // Must be an absolute URL
       width: 1200,
       height: 630,
     },
