@@ -14,6 +14,9 @@ export default function Home() {
         <title>{t('LEVEL')}</title>
         <meta name="description" content={t('MainBlocks.LevelText')} />
         <link rel="icon" href="/favicon.ico" />
+        <meta property="og:title" content={t('LEVEL')} />
+        <meta property="og:description" content={t('MainBlocks.LevelText')} />
+        <meta property="og:image" content="/level.jpg" />
       </Head>
       <StartPage defaultContentKey={query?.contentKey || null} />
     </main>
