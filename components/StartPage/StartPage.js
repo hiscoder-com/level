@@ -6,7 +6,6 @@ import { useTranslation } from 'next-i18next'
 
 import Link from 'next/link'
 
-// Импортируем компоненты и SVG для отображения разных частей страницы
 import AboutVersion from 'components/AboutVersion'
 import Feedback from './Feedback'
 import Logo from './Logo'
@@ -26,13 +25,11 @@ import LevelLogo from 'public/level-logo-color.svg'
 import CookiesAproove from './CookiesAproove'
 import SectionContainer from './SectionContainer'
 
-// Компонент StartPage
 function StartPage({ defaultContentKey = null }) {
-  const { t } = useTranslation(['start-page', 'projects', 'users', 'common']) // Подключаем перевод текста
-  const router = useRouter() // Подключаем роутинг для навигации
-  const [contentKey, setContentKey] = useState(defaultContentKey) // Хранение текущего контента
+  const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
+  const router = useRouter()
+  const [contentKey, setContentKey] = useState(defaultContentKey)
 
-  // Объект состояния, показывающий, какие секции открыты
   const [showSections, setShowSections] = useState({
     logo: false,
     updates: false,
@@ -43,7 +40,6 @@ function StartPage({ defaultContentKey = null }) {
     passwordRecovery: false,
   })
 
-  // Объект для управления состоянием блоков, таких как intro, faq и т.д.
   const [blocks, setBlocks] = useState({
     intro: { clicked: false, opacity: 'opacity-0' },
     howItWork: { clicked: false, opacity: 'opacity-0' },
@@ -51,7 +47,6 @@ function StartPage({ defaultContentKey = null }) {
     faq: { clicked: false, opacity: 'opacity-0' },
   })
 
-  // Хук эффекта: если есть defaultContentKey, то включаем соответствующий раздел
   useEffect(() => {
     if (defaultContentKey) {
       setShowSections((prev) => ({
@@ -61,22 +56,28 @@ function StartPage({ defaultContentKey = null }) {
     }
   }, [defaultContentKey])
 
-  // Переключение видимости разделов
   const toggleSection = (section) => {
-    setShowSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }))
+    setShowSections((prev) => {
+      const isCurrentlyVisible = prev[section]
+      return {
+        logo: false,
+        updates: false,
+        partners: false,
+        connect: false,
+        signIn: false,
+        download: false,
+        passwordRecovery: false,
+        [section]: !isCurrentlyVisible,
+      }
+    })
   }
 
-  // Если defaultContentKey задан, обновляем contentKey
   useEffect(() => {
     if (defaultContentKey) {
       setContentKey(defaultContentKey)
     }
   }, [defaultContentKey])
 
-  // Обновляем блоки в зависимости от defaultContentKey
   useEffect(() => {
     if (defaultContentKey) {
       setBlocks((prev) => ({
@@ -89,13 +90,11 @@ function StartPage({ defaultContentKey = null }) {
     }
   }, [defaultContentKey])
 
-  // Обработка кликов на элементы контента
   const handleContentClick = (newContentKey) => {
-    console.log(newContentKey, 92)
     if (contentKey === newContentKey) {
-      setContentKey(null) // Закрываем, если уже выбран
+      setContentKey(null)
     } else {
-      setContentKey(newContentKey) // Открываем, если не выбран
+      setContentKey(newContentKey)
       handleClick(newContentKey)
     }
     if (defaultContentKey) {
@@ -103,7 +102,6 @@ function StartPage({ defaultContentKey = null }) {
     }
   }
 
-  // Объекты контента для рендеринга при выборе контентного ключа
   const contentObjects = {
     signIn: <Login handleClick={() => handleContentClick('connect')} />,
     connect: <Feedback t={t} onClose={() => setContentKey(null)} />,
@@ -111,14 +109,13 @@ function StartPage({ defaultContentKey = null }) {
     partners: <Partners t={t} />,
     intro: <LevelIntro t={t} />,
     reviews: <Reviews t={t} />,
-    howItWork: <Reviews t={t} />, // <HowItWorks t={t} />, используется Reviews в качестве примера
+    howItWork: <Reviews t={t} />, // <HowItWorks t={t} />,
     faq: <FrequentlyAskedQuestions t={t} />,
     download: <Download t={t} />,
     logo: <Logo t={t} />,
     passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
 
-  // Сопоставление контентного ключа с маршрутом для навигации
   const contentRoutes = {
     signIn: 'sign-in',
     connect: 'connect-with-us',
@@ -132,7 +129,6 @@ function StartPage({ defaultContentKey = null }) {
     logo: 'about',
   }
 
-  // Обработчик клика на контентный ключ для перехода по маршрутам
   const handleClick = (contentKey) => {
     if (contentKey && contentRoutes[contentKey]) {
       router.push(`/${contentRoutes[contentKey]}`)
@@ -141,9 +137,7 @@ function StartPage({ defaultContentKey = null }) {
 
   return (
     <>
-      {/* Главный контейнер с основным содержимым */}
       <main className="hidden relative md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
-        {/* Левый сайдбар с логотипом, локализацией и другими элементами */}
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
           <Link
             href={`/${contentRoutes['logo']}`}
@@ -173,7 +167,6 @@ function StartPage({ defaultContentKey = null }) {
           </Link>
         </aside>
 
-        {/* Секция с центральным контентом */}
         <section className="w-1/2 px-1 text-white">
           <div className={`${contentKey ? 'hidden' : 'flex'} h-full gap-4 xl:gap-7`}>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
@@ -224,7 +217,6 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </section>
 
-        {/* Правый сайдбар */}
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pl-3 xl:pl-6">
           <Link
             href={`/${contentRoutes['signIn']}`}
@@ -263,27 +255,31 @@ function StartPage({ defaultContentKey = null }) {
         </div>
       </main>
       <main className="relative flex md:hidden flex-col gap-5 p-5 font-medium text-lg">
-        <SectionBlock
-          sectionKey="logo"
-          content={<Logo t={t} />}
-          showSection={showSections.logo}
-          toggleSection={toggleSection}
-          isLogo={true}
-          label={<LevelLogo className="h-7" />}
-        />
+        <Link href={`/${contentRoutes['logo']}`}>
+          <SectionBlock
+            sectionKey="logo"
+            content={<Logo t={t} />}
+            showSection={showSections.logo}
+            toggleSection={toggleSection}
+            isLogo={true}
+            label={<LevelLogo className="h-7" />}
+          />
+        </Link>
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
             <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl z-20">
               <SwitchLocalization />
             </div>
           )}
-          <div
+          <Link
+            href={`/${contentRoutes['signIn']}`}
+            shallow
+            onClick={() => toggleSection('signIn')}
             className={`p-5 rounded-xl ${
               showSections.signIn
                 ? 'col-span-2 bg-th-secondary-10'
                 : 'bg-slate-550 text-th-text-secondary-100'
             }`}
-            onClick={() => toggleSection('signIn')}
           >
             <p className={`${showSections.signIn ? 'mb-5 font-semibold' : ''}`}>
               {showSections.signIn ? t('users:LoginToAccount') : t('users:SignIn')}
@@ -297,7 +293,7 @@ function StartPage({ defaultContentKey = null }) {
                 }}
               />
             )}
-          </div>
+          </Link>
         </div>
 
         <div
@@ -379,21 +375,24 @@ function StartPage({ defaultContentKey = null }) {
             )}
           </div>
         </div>
-
-        <SectionBlock
-          sectionKey="partners"
-          label={t('Partners')}
-          content={<Partners t={t} />}
-          showSection={showSections.partners}
-          toggleSection={toggleSection}
-        />
-        <SectionBlock
-          sectionKey="connect"
-          label={t('ConnectWithUs')}
-          content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
-          showSection={showSections.connect}
-          toggleSection={toggleSection}
-        />
+        <Link href={`/${contentRoutes['partners']}`}>
+          <SectionBlock
+            sectionKey="partners"
+            label={t('Partners')}
+            content={<Partners t={t} />}
+            showSection={showSections.partners}
+            toggleSection={toggleSection}
+          />
+        </Link>
+        <Link href={`/${contentRoutes['connect']}`}>
+          <SectionBlock
+            sectionKey="connect"
+            label={t('ConnectWithUs')}
+            content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
+            showSection={showSections.connect}
+            toggleSection={toggleSection}
+          />
+        </Link>
         <SectionContainer
           showSections={showSections}
           toggleSection={toggleSection}

@@ -12,12 +12,10 @@ function SectionBlock({
   const router = useRouter()
 
   const handleSectionToggle = () => {
-    toggleSection(sectionKey)
-
-    if (!showSection) {
-      router.push(`/${sectionKey}`, undefined, { shallow: true })
+    if (showSection) {
+      router.push('/')
     } else {
-      router.push('/', undefined, { shallow: true })
+      toggleSection(sectionKey)
     }
   }
 
