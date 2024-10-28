@@ -1,7 +1,76 @@
-import { useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 function CommunityAudioRecorder() {
-  const [isPlaying, setIsPlaying] = useState(false)
+  const [isRecording, setIsRecording] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
+  const [audioUrl, setAudioUrl] = useState(null)
+  const [preview, setPreview] = useState(null)
+
+  const mediaRecorder = useRef(null)
+  const audioChunks = useRef([])
+
+  const startRecording = useCallback(async () => {
+    audioChunks.current = []
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      mediaRecorder.current = new MediaRecorder(stream)
+
+      mediaRecorder.current.ondataavailable = (event) => {
+        audioChunks.current.push(event.data)
+      }
+
+      mediaRecorder.current.onstop = () => {
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' })
+        const audioUrl = URL.createObjectURL(audioBlob)
+        setAudioUrl(audioUrl)
+      }
+
+      mediaRecorder.current.start()
+      setIsRecording(true)
+      setIsPaused(false)
+    } catch (error) {
+      console.error('Error accessing microphone:', error)
+    }
+  }, [])
+
+  const stopRecording = useCallback(async () => {
+    if (mediaRecorder.current) {
+      mediaRecorder.current.stop()
+      setIsRecording(false)
+      setIsPaused(false)
+    }
+  }, [])
+
+  const pauseRecording = useCallback(() => {
+    if (mediaRecorder.current) {
+      console.log('pause')
+      mediaRecorder.current.pause()
+
+      setIsPaused(true)
+    }
+  }, [])
+
+  const resumeRecording = useCallback(() => {
+    if (mediaRecorder.current) {
+      mediaRecorder.current.resume()
+
+      setIsPaused(false)
+    }
+  }, [])
+
+  const playRecording = useCallback(() => {
+    if (preview) {
+      preview.play()
+    }
+  }, [preview])
+
+  useEffect(() => {
+    if (audioUrl) {
+      const audio = new Audio(audioUrl)
+
+      setPreview(audio)
+    }
+  }, [audioUrl])
 
   return (
     <div className="card flex justify-between w-full gap-3 sm:gap-7 bg-th-secondary-10 !pb-4">
@@ -11,8 +80,9 @@ function CommunityAudioRecorder() {
       </div>
       <div className="flex items-end">
         <button
-          className="flex justify-center items-center bg-th-text-primary rounded-full w-10 h-10 disabled:bg-gray-400"
-          disabled={!isPlaying}
+          className="flex justify-center items-center bg-th-text-primary rounded-full w-10 h-10 disabled:bg-gray-400 transition-all duration-150"
+          disabled={!isRecording}
+          onClick={pauseRecording}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -28,10 +98,14 @@ function CommunityAudioRecorder() {
           </svg>
         </button>
         <button
-          className={`flex justify-center items-center rounded-full w-20 h-20 ${
-            isPlaying ? 'bg-red-500' : 'bg-th-primary-100'
+          className={`flex justify-center items-center rounded-full w-20 h-20 transition-all duration-150 ${
+            isPaused
+              ? 'bg-th-secondary-400'
+              : isRecording
+              ? 'bg-red-500'
+              : 'bg-th-primary-100'
           }`}
-          onClick={() => setIsPlaying(!isPlaying)}
+          onClick={isPaused ? resumeRecording : startRecording}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -44,8 +118,9 @@ function CommunityAudioRecorder() {
           </svg>
         </button>
         <button
-          className="flex justify-center items-center bg-th-text-primary rounded-full w-10 h-10 disabled:bg-gray-400"
-          disabled={!isPlaying}
+          className="flex justify-center items-center bg-th-text-primary rounded-full w-10 h-10 disabled:bg-gray-400 transition-all duration-150"
+          disabled={!isRecording}
+          onClick={stopRecording}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -62,9 +137,13 @@ function CommunityAudioRecorder() {
         </button>
       </div>
       <div className="flex items-center">
-        <div className="flex items-center border border-th-text-primary p-2 rounded-full gap-2">
+        <div
+          className={`flex items-center border border-th-text-primary p-2 rounded-full gap-2 ${
+            !audioUrl ? 'opacity-70' : ''
+          }`}
+        >
           <p>FILENAME</p>
-          <button>
+          <a href={audioUrl} download={'recording.mp3'}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -77,8 +156,13 @@ function CommunityAudioRecorder() {
                 clipRule="evenodd"
               />
             </svg>
-          </button>
-          <button className="p-2 bg-th-text-primary rounded-full">
+          </a>
+          <button
+            className={`p-2 rounded-full ${
+              audioUrl ? 'bg-th-secondary-400' : 'bg-th-text-primary'
+            }`}
+            onClick={playRecording}
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
