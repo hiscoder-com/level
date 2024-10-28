@@ -13,7 +13,7 @@ import Download from './Download'
 import Login from './Login'
 import Reviews from './Reviews'
 import PasswordRecovery from './PasswordRecovery'
-// import HowItWorks from './HowItWorks'
+import HowItWorks from './HowItWorks'
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 import SwitchLocalization from 'components/SwitchLocalization'
 import LevelIntro from './LevelIntro'
@@ -109,7 +109,7 @@ function StartPage({ defaultContentKey = null }) {
     partners: <Partners t={t} />,
     intro: <LevelIntro t={t} />,
     reviews: <Reviews t={t} />,
-    howItWork: <Reviews t={t} />, // <HowItWorks t={t} />,
+    howItWork: <HowItWorks t={t} />,
     faq: <FrequentlyAskedQuestions t={t} />,
     download: <Download t={t} />,
     logo: <Logo t={t} />,
@@ -331,7 +331,7 @@ function StartPage({ defaultContentKey = null }) {
           ></div>
           <div className="relative z-10">
             {blocks.howItWork.clicked ? (
-              <Reviews t={t} opacity={blocks.howItWork.opacity} /> //HowItWorks
+              <HowItWorks t={t} opacity={blocks.howItWork.opacity} />
             ) : (
               <p className="text-white">{t('MainBlocks.HowItWorks')}</p>
             )}
