@@ -3,7 +3,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useCurrentUser } from 'lib/UserContext'
-import Check from 'public/check.svg'
+import Check from 'public/icons/check.svg'
 
 export default function Agreements() {
   const { t } = useTranslation('users', 'common', 'user-agreement')

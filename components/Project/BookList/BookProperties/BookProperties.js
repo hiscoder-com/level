@@ -15,7 +15,7 @@ import ButtonLoading from 'components/ButtonLoading'
 import Breadcrumbs from 'components/Breadcrumbs'
 import CheckBox from 'components/CheckBox'
 
-import Reader from 'public/dictionary.svg'
+import Reader from 'public/icons/dictionary.svg'
 
 function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { query } = useRouter()

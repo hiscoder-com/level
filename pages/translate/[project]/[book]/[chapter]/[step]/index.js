@@ -16,7 +16,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseService'
 import useSupabaseClient from 'utils/supabaseClient'
 import { projectIdState, stepConfigState, currentVerse } from 'components/state/atoms'
-import Progress from 'public/progress.svg'
+import Progress from 'public/icons/progress.svg'
 
 export default function ProgressPage({ last_step }) {
   const supabase = useSupabaseClient()

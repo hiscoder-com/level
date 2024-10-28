@@ -17,7 +17,7 @@ import { useGetBrief, useProject } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
 import { getBriefName } from 'utils/helper'
 
-import Pencil from 'public/editor-pencil.svg'
+import Pencil from 'public/icons/editor-pencil.svg'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()

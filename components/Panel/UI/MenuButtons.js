@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import DropdownMenu from './DropdownMenu'
-import Plus from 'public/plus.svg'
+import Plus from 'public/icons/plus.svg'
 
 function MenuButtons({ classNames, menuItems, disabled = false }) {
   const [isOpenDotsMenu, setIsOpenDotsMenu] = useState(false)

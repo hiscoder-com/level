@@ -22,7 +22,7 @@ import { getBriefName, readableDate } from 'utils/helper'
 
 import { useCurrentUser } from 'lib/UserContext'
 
-import Plus from 'public/plus.svg'
+import Plus from 'public/icons/plus.svg'
 
 function ChapterList() {
   const { user } = useCurrentUser()

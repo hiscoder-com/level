@@ -20,8 +20,8 @@ import LevelIntro from './LevelIntro'
 import Partners from './Partners'
 import SectionBlock from './SectionBlock'
 
-import Close from 'public/close.svg'
-import LevelLogo from 'public/level-logo-color.svg'
+import Close from 'public/icons/close.svg'
+import LevelLogo from 'public/icons/level-logo-color.svg'
 import CookiesAproove from './CookiesAproove'
 import SectionContainer from './SectionContainer'
 

@@ -27,8 +27,8 @@ import {
   useAccess,
 } from 'utils/hooks'
 
-import Plus from 'public/plus.svg'
-import Minus from 'public/minus.svg'
+import Plus from 'public/icons/plus.svg'
+import Minus from 'public/icons/minus.svg'
 
 const translatorColors = [
   {

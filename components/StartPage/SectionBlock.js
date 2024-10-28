@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import Close from 'public/close.svg'
+import Close from 'public/icons/close.svg'
 
 function SectionBlock({
   sectionKey,

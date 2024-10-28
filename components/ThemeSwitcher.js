@@ -4,8 +4,8 @@ import { useGetTheme } from 'utils/hooks'
 import { Disclosure } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 
-import Theme from 'public/themes.svg'
-import ArrowDown from 'public/arrow-down.svg'
+import Theme from 'public/icons/themes.svg'
+import ArrowDown from 'public/icons/arrow-down.svg'
 
 const themes = [
   {

@@ -1,7 +1,7 @@
 import { Fragment } from 'react'
 import { Menu, Transition } from '@headlessui/react'
 
-import Plus from 'public/plus.svg'
+import Plus from 'public/icons/plus.svg'
 
 const MobileMenu = ({
   children,

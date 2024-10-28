@@ -12,9 +12,9 @@ import InputField from 'components/Panel/UI/InputField'
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
-import Report from 'public/error-outline.svg'
-import Loading from 'public/progress.svg'
-import Close from 'public/close.svg'
+import Report from 'public/icons/error-outline.svg'
+import Loading from 'public/icons/progress.svg'
+import Close from 'public/icons/close.svg'
 import Link from 'next/link'
 
 function Login({ handleClick = () => {} }) {

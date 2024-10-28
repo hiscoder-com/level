@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next'
 
 import useSupabaseClient from 'utils/supabaseClient'
 
-import LogOut from 'public/logout.svg'
+import LogOut from 'public/icons/logout.svg'
 
 export default function SignOut({ collapsed }) {
   const supabaseClient = useSupabaseClient()

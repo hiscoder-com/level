@@ -7,8 +7,8 @@ import useSupabaseClient from 'utils/supabaseClient'
 import { useAccess } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
 
-import Time from 'public/time.svg'
-import Check from 'public/check.svg'
+import Time from 'public/icons/time.svg'
+import Check from 'public/icons/check.svg'
 
 function Timer({ time }) {
   const supabase = useSupabaseClient()

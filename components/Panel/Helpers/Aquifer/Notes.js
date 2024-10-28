@@ -7,9 +7,9 @@ import { useTranslation } from 'react-i18next'
 import { currentVerse } from '../../../state/atoms'
 import { useGetAquiferResources } from 'utils/hooks'
 
-import Down from '/public/arrow-down.svg'
-import ArrowRight from 'public/folder-arrow-right.svg'
-import Loading from 'public/progress.svg'
+import Down from '/public/icons/arrow-down.svg'
+import ArrowRight from 'public/icons/folder-arrow-right.svg'
+import Loading from 'public/icons/progress.svg'
 
 function Notes({
   resourceType,

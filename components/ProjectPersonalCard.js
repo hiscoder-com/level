@@ -17,7 +17,7 @@ import {
 import { getBriefName, readableDate } from 'utils/helper'
 import useSupabaseClient from 'utils/supabaseClient'
 
-import Reader from '/public/dictionary.svg'
+import Reader from '/public/icons/dictionary.svg'
 
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()

@@ -3,8 +3,8 @@ import Image from 'next/image'
 
 import ProgressBar from 'components/ProgressBar'
 
-import LeftArrow from 'public/arrow-left.svg'
-import Close from 'public/close.svg'
+import LeftArrow from 'public/icons/arrow-left.svg'
+import Close from 'public/icons/close.svg'
 import HowItWorkImage1 from 'public/how-it-work-01.png'
 import HowItWorkImage2 from 'public/how-it-work-02.png'
 import HowItWorkImage3 from 'public/how-it-work-03.png'

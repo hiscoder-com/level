@@ -14,7 +14,7 @@ import updatesEN from '../public/updateVersionInfo/updates_en.md'
 import updatesRU from '../public/updateVersionInfo/updates_ru.md'
 import updatesES from '../public/updateVersionInfo/updates_es.md'
 
-import Close from 'public/close.svg'
+import Close from 'public/icons/close.svg'
 
 function AboutVersion({ isStartPage = false, collapsed, onClose }) {
   const aboutVersion = {

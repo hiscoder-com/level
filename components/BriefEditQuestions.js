@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 
 import UpdateField from './UpdateField'
 
-import Down from 'public/arrow-down.svg'
-import Trash from 'public/trash-rounded.svg'
-import Plus from 'public/plus.svg'
+import Down from 'public/icons/arrow-down.svg'
+import Trash from 'public/icons/trash-rounded.svg'
+import Plus from 'public/icons/plus.svg'
 
 function BriefEditQuestions({
   setCustomBriefQuestions,

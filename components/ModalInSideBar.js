@@ -1,4 +1,4 @@
-import Close from 'public/close.svg'
+import Close from 'public/icons/close.svg'
 
 function ModalInSideBar({
   isOpen,

@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import UnfoldingWord from 'public/unfolding-word.svg'
+import UnfoldingWord from 'public/icons/unfolding-word.svg'
 
 function Partners({ t }) {
   return (

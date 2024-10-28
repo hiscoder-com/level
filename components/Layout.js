@@ -7,7 +7,7 @@ import { Toaster } from 'react-hot-toast'
 import { Transition } from '@headlessui/react'
 
 import AppBar from 'components/AppBar'
-import Progress from 'public/progress.svg'
+import Progress from 'public/icons/progress.svg'
 
 function Layout({ backgroundColor, children }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)

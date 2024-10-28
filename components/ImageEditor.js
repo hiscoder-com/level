@@ -5,7 +5,7 @@ import toast from 'react-hot-toast'
 
 import ButtonLoading from './ButtonLoading'
 
-import Resize from 'public/minimize_icon.svg'
+import Resize from 'public/icons/minimize_icon.svg'
 
 function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const canvasRef = useRef(null)

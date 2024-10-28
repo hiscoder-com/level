@@ -4,8 +4,8 @@ import { useTranslation } from 'next-i18next'
 
 import { Disclosure } from '@headlessui/react'
 
-import Gear from '/public/gear.svg'
-import Down from '/public/arrow-down.svg'
+import Gear from '/public/icons/gear.svg'
+import Down from '/public/icons/arrow-down.svg'
 
 function Card({ children, title, access, link = '/', isOpen = true, isHidden = false }) {
   const { t } = useTranslation('common')

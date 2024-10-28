@@ -13,9 +13,9 @@ import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-import LevelLogo from 'public/level-logo.svg'
-import Down from 'public/arrow-down.svg'
-import User from 'public/user.svg'
+import LevelLogo from 'public/icons/level-logo.svg'
+import Down from 'public/icons/arrow-down.svg'
+import User from 'public/icons/user.svg'
 
 export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)

@@ -15,7 +15,7 @@ import { stepConfigState } from 'components/state/atoms'
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
-import Progress from 'public/progress.svg'
+import Progress from 'public/icons/progress.svg'
 
 /**
  * что если тут мы заменим все инструменты на обычную читалку, и так же надо подгрузить чужие стихи

@@ -8,12 +8,12 @@ import { inactiveState } from './state/atoms'
 
 import Modal from './Modal'
 
-import RecorderButton from 'public/recorder.svg'
-import StopButton from 'public/stop.svg'
-import RecorderCrossedButton from 'public/error-outline.svg'
-import TrashButton from 'public/trash.svg'
-import PlayButton from 'public/play.svg'
-import PauseButton from 'public/pause.svg'
+import RecorderButton from 'public/icons/recorder.svg'
+import StopButton from 'public/icons/stop.svg'
+import RecorderCrossedButton from 'public/icons/error-outline.svg'
+import TrashButton from 'public/icons/trash.svg'
+import PlayButton from 'public/icons/play.svg'
+import PauseButton from 'public/icons/pause.svg'
 
 export default function Recorder() {
   const { t } = useTranslation(['audio', 'common'])

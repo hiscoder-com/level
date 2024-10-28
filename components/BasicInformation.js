@@ -5,8 +5,8 @@ import { useTranslation } from 'next-i18next'
 import { useLanguages, useProjects } from 'utils/hooks'
 import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
-import Plus from 'public/plus.svg'
-import Down from 'public/arrow-down.svg'
+import Plus from 'public/icons/plus.svg'
+import Down from 'public/icons/arrow-down.svg'
 
 function BasicInformation({
   errors,
