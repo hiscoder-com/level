@@ -4,6 +4,9 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import Link from 'next/link'
+
+// Импортируем компоненты и SVG для отображения разных частей страницы
 import AboutVersion from 'components/AboutVersion'
 import Feedback from './Feedback'
 import Logo from './Logo'
@@ -23,11 +26,13 @@ import LevelLogo from 'public/level-logo-color.svg'
 import CookiesAproove from './CookiesAproove'
 import SectionContainer from './SectionContainer'
 
+// Компонент StartPage
 function StartPage({ defaultContentKey = null }) {
-  const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
-  const router = useRouter()
-  const [contentKey, setContentKey] = useState(defaultContentKey)
+  const { t } = useTranslation(['start-page', 'projects', 'users', 'common']) // Подключаем перевод текста
+  const router = useRouter() // Подключаем роутинг для навигации
+  const [contentKey, setContentKey] = useState(defaultContentKey) // Хранение текущего контента
 
+  // Объект состояния, показывающий, какие секции открыты
   const [showSections, setShowSections] = useState({
     logo: false,
     updates: false,
@@ -38,6 +43,7 @@ function StartPage({ defaultContentKey = null }) {
     passwordRecovery: false,
   })
 
+  // Объект для управления состоянием блоков, таких как intro, faq и т.д.
   const [blocks, setBlocks] = useState({
     intro: { clicked: false, opacity: 'opacity-0' },
     howItWork: { clicked: false, opacity: 'opacity-0' },
@@ -45,6 +51,7 @@ function StartPage({ defaultContentKey = null }) {
     faq: { clicked: false, opacity: 'opacity-0' },
   })
 
+  // Хук эффекта: если есть defaultContentKey, то включаем соответствующий раздел
   useEffect(() => {
     if (defaultContentKey) {
       setShowSections((prev) => ({
@@ -54,6 +61,7 @@ function StartPage({ defaultContentKey = null }) {
     }
   }, [defaultContentKey])
 
+  // Переключение видимости разделов
   const toggleSection = (section) => {
     setShowSections((prev) => ({
       ...prev,
@@ -61,12 +69,14 @@ function StartPage({ defaultContentKey = null }) {
     }))
   }
 
+  // Если defaultContentKey задан, обновляем contentKey
   useEffect(() => {
     if (defaultContentKey) {
       setContentKey(defaultContentKey)
     }
   }, [defaultContentKey])
 
+  // Обновляем блоки в зависимости от defaultContentKey
   useEffect(() => {
     if (defaultContentKey) {
       setBlocks((prev) => ({
@@ -79,11 +89,13 @@ function StartPage({ defaultContentKey = null }) {
     }
   }, [defaultContentKey])
 
+  // Обработка кликов на элементы контента
   const handleContentClick = (newContentKey) => {
+    console.log(newContentKey, 92)
     if (contentKey === newContentKey) {
-      setContentKey(null)
+      setContentKey(null) // Закрываем, если уже выбран
     } else {
-      setContentKey(newContentKey)
+      setContentKey(newContentKey) // Открываем, если не выбран
       handleClick(newContentKey)
     }
     if (defaultContentKey) {
@@ -91,6 +103,7 @@ function StartPage({ defaultContentKey = null }) {
     }
   }
 
+  // Объекты контента для рендеринга при выборе контентного ключа
   const contentObjects = {
     signIn: <Login handleClick={() => handleContentClick('connect')} />,
     connect: <Feedback t={t} onClose={() => setContentKey(null)} />,
@@ -98,13 +111,14 @@ function StartPage({ defaultContentKey = null }) {
     partners: <Partners t={t} />,
     intro: <LevelIntro t={t} />,
     reviews: <Reviews t={t} />,
-    howItWork: <Reviews t={t} />, // <HowItWorks t={t} />,
+    howItWork: <Reviews t={t} />, // <HowItWorks t={t} />, используется Reviews в качестве примера
     faq: <FrequentlyAskedQuestions t={t} />,
     download: <Download t={t} />,
     logo: <Logo t={t} />,
     passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
 
+  // Сопоставление контентного ключа с маршрутом для навигации
   const contentRoutes = {
     signIn: 'sign-in',
     connect: 'connect-with-us',
@@ -118,6 +132,7 @@ function StartPage({ defaultContentKey = null }) {
     logo: 'about',
   }
 
+  // Обработчик клика на контентный ключ для перехода по маршрутам
   const handleClick = (contentKey) => {
     if (contentKey && contentRoutes[contentKey]) {
       router.push(`/${contentRoutes[contentKey]}`)
@@ -126,7 +141,9 @@ function StartPage({ defaultContentKey = null }) {
 
   return (
     <>
+      {/* Главный контейнер с основным содержимым */}
       <main className="hidden relative md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
+        {/* Левый сайдбар с логотипом, локализацией и другими элементами */}
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
           <div
             className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
@@ -155,36 +172,38 @@ function StartPage({ defaultContentKey = null }) {
             </p>
           </div>
         </aside>
+
+        {/* Секция с центральным контентом */}
         <section className="w-1/2 px-1 text-white">
           <div className={`${contentKey ? 'hidden' : 'flex'} h-full gap-4 xl:gap-7`}>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
-              <div
+              <Link
+                href={`/${contentRoutes['intro']}`}
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => handleContentClick('intro')}
-                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsLevel') }}
-              ></div>
-
-              <div
+              >
+                {t('MainBlocks.WhatIsLevel')}
+              </Link>
+              <Link
+                href={`/${contentRoutes['reviews']}`}
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => handleContentClick('reviews')}
               >
                 {t('MainBlocks.Reviews')}
-              </div>
+              </Link>
             </div>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
-              <div
+              <Link
+                href={`/${contentRoutes['howItWork']}`}
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => handleContentClick('howItWork')}
               >
                 {t('MainBlocks.HowItWorks')}
-              </div>
+              </Link>
 
-              <div
+              <Link
+                href={`/${contentRoutes['faq']}`}
                 className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/faq.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => handleContentClick('faq')}
               >
                 {t('MainBlocks.FAQ')}
-              </div>
+              </Link>
             </div>
           </div>
           <div
@@ -204,6 +223,8 @@ function StartPage({ defaultContentKey = null }) {
             />
           </div>
         </section>
+
+        {/* Правый сайдбар */}
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pl-3 xl:pl-6">
           <div className="h-32 rounded-2xl bg-slate-550">
             <p
