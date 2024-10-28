@@ -172,13 +172,13 @@ function StartPage({ defaultContentKey = null }) {
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
               <Link
                 href={`/${contentRoutes['intro']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/about.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
               >
                 {t('MainBlocks.WhatIsLevel')}
               </Link>
               <Link
                 href={`/${contentRoutes['reviews']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/reviews.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
               >
                 {t('MainBlocks.Reviews')}
               </Link>
@@ -186,14 +186,14 @@ function StartPage({ defaultContentKey = null }) {
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
               <Link
                 href={`/${contentRoutes['howItWork']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/inside.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
               >
                 {t('MainBlocks.HowItWorks')}
               </Link>
 
               <Link
                 href={`/${contentRoutes['faq']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/faq.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/faq.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
               >
                 {t('MainBlocks.FAQ')}
               </Link>
@@ -303,7 +303,7 @@ function StartPage({ defaultContentKey = null }) {
           onClick={() => handleContentClick('intro')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/about-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/about-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.intro.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -325,7 +325,7 @@ function StartPage({ defaultContentKey = null }) {
           onClick={() => handleContentClick('howItWork')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/inside-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/inside-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.howItWork.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -344,7 +344,7 @@ function StartPage({ defaultContentKey = null }) {
           onClick={() => handleContentClick('reviews')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/reviews-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/reviews-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.reviews.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -363,7 +363,7 @@ function StartPage({ defaultContentKey = null }) {
           onClick={() => handleContentClick('faq')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/faq-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/faq-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.faq.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
