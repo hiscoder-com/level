@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import StartPage from 'components/StartPage/StartPage'
-import { openGraph } from './meta'
+import { openGraph } from '../utils/openGraph'
 
 export default function Home() {
   const { t } = useTranslation('common')
