@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router'
+import Link from 'next/link'
 import Close from 'public/close.svg'
 
 function SectionBlock({
@@ -9,11 +9,9 @@ function SectionBlock({
   toggleSection,
   isLogo = false,
 }) {
-  const router = useRouter()
-
   const handleSectionToggle = () => {
     if (showSection) {
-      router.push('/')
+      toggleSection(sectionKey)
     } else {
       toggleSection(sectionKey)
     }
@@ -32,6 +30,13 @@ function SectionBlock({
           showSection ? '' : 'hidden'
         }`}
       />
+      {showSection && (
+        <Link
+          href="/"
+          className="absolute inset-0 z-10 cursor-pointer"
+          onClick={(e) => e.stopPropagation()}
+        ></Link>
+      )}
     </div>
   )
 }
