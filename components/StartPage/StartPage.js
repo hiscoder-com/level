@@ -275,7 +275,7 @@ function StartPage({ defaultContentKey = null }) {
             href={`/${contentRoutes['signIn']}`}
             shallow
             onClick={() => toggleSection('signIn')}
-            className={`p-5 rounded-xl ${
+            className={`p-5 rounded-xl cursor-pointer ${
               showSections.signIn
                 ? 'col-span-2 bg-th-secondary-10'
                 : 'bg-slate-550 text-th-text-secondary-100'
@@ -297,7 +297,7 @@ function StartPage({ defaultContentKey = null }) {
         </div>
 
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.intro.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('intro')}
@@ -319,7 +319,7 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.howItWork.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('howItWork')}
@@ -338,7 +338,7 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.reviews.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('reviews')}
@@ -357,7 +357,7 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.faq.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('faq')}
