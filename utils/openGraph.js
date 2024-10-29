@@ -1,4 +1,4 @@
-export const urlGlobal = 'https://deploy-preview-721--level-bible.netlify.app'
+export const urlGlobal = 'https://level.bible'
 
 export const openGraph = {
   title: 'LEVEL Bible Translation Platform | Step-by-Step Bible Translation',
