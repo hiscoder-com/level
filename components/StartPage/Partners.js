@@ -1,5 +1,5 @@
+import Image from 'next/image'
 import Link from 'next/link'
-import UnfoldingWord from 'public/icons/unfolding-word.svg'
 
 function Partners({ t }) {
   return (
@@ -10,7 +10,12 @@ function Partners({ t }) {
         onClick={(e) => e.stopPropagation()}
       >
         <Link href="https://www.unfoldingword.org/" target="_blank">
-          <UnfoldingWord />
+          <Image
+            src="/icons/unfolding-word.svg"
+            alt="Unfolding Word"
+            width={201}
+            height={35}
+          />
         </Link>
       </div>
     </div>
