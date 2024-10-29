@@ -1,4 +1,4 @@
-import LevelIntroImage from 'public/icons/level-intro.svg'
+import LevelIntroImage from 'public/main/level-intro.svg'
 import Close from 'public/icons/close.svg'
 
 function LevelIntro({ t, opacity }) {

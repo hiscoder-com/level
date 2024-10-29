@@ -1,8 +1,11 @@
-import StartPage from 'components/StartPage/StartPage'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Head from 'next/head'
+
 import { useRouter } from 'next/router'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { useTranslation } from 'react-i18next'
+
+import StartPage from 'components/StartPage/StartPage'
 
 const SlugPage = () => {
   const router = useRouter()
@@ -75,12 +78,12 @@ const SlugPage = () => {
   const pageContent = contentMap[slug] || {}
 
   return (
-    <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100 mt-[-20px]">
+    <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
       <Head>
         <title>{pageContent.title || t('LEVEL')}</title>
         <meta
           name="description"
-          content={pageContent.description || t('MainBlocks.LevelText')}
+          content={pageContent.description || t('MainBlocks.LevelText') || 'LEVEL'}
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -88,6 +91,8 @@ const SlugPage = () => {
     </main>
   )
 }
+
+SlugPage.layoutType = 'empty'
 
 export default SlugPage
 

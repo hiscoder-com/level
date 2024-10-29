@@ -10,11 +10,7 @@ function SectionBlock({
   isLogo = false,
 }) {
   const handleSectionToggle = () => {
-    if (showSection) {
-      toggleSection(sectionKey)
-    } else {
-      toggleSection(sectionKey)
-    }
+    toggleSection(sectionKey)
   }
 
   return (

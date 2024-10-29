@@ -49,10 +49,6 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
     return !user?.id ? '/' : access ? '/account?tab=0' : '/agreements'
   }, [access, user])
 
-  if (router.pathname === '/[slug]') {
-    return null
-  }
-
   return (
     <div className="bg-th-primary-100 sticky top-0 z-30">
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
