@@ -29,6 +29,7 @@ export default function Home() {
         <meta property="og:image" content={metadata.openGraph.images[0].url} />
         <meta property="og:image:width" content={metadata.openGraph.images[0].width} />
         <meta property="og:image:height" content={metadata.openGraph.images[0].height} />
+        <meta property="og:image:type" content="image/webp" />
         <link rel="icon" href={metadata.icons.icon} />
       </Head>
       <StartPage defaultContentKey={query?.contentKey || null} />
