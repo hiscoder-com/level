@@ -1,10 +1,10 @@
+import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import StartPage from 'components/StartPage/StartPage'
 import { openGraph } from '../utils/openGraph'
 
-export const metadata = {
+const metadata = {
   title: {
     default: 'LEVEL',
     template: '%s | LEVEL',
@@ -17,10 +17,17 @@ export const metadata = {
 }
 
 export default function Home() {
-  const { t } = useTranslation('common')
   const { query } = useRouter()
+
   return (
     <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
+      <Head>
+        <title>{metadata.title.template.replace('%s', metadata.title.default)}</title>
+        <meta name="description" content={metadata.description} />
+        <meta property="og:title" content={metadata.openGraph.title} />
+        <meta property="og:description" content={metadata.openGraph.description} />
+        <link rel="icon" href={metadata.icons.icon} />
+      </Head>
       <StartPage defaultContentKey={query?.contentKey || null} />
     </main>
   )
