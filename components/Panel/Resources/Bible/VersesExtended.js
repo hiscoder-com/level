@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { useRecoilValue } from 'recoil'
 
@@ -16,7 +16,7 @@ function VersesExtended({
 }) {
   const checkedVersesBible = useRecoilValue(checkedVersesBibleState)
   const isHideAllVerses = useRecoilValue(isHideAllVersesState)
-  const isVerseChecked = useMemo(
+  const isVerseChecked = useCallback(
     (verse) => {
       const verseRange = String(verse).split('-').map(Number)
       const [start, end] =
