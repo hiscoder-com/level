@@ -103,15 +103,15 @@ function StartPage({ defaultContentKey = null }) {
     }
   }, [defaultContentKey])
 
-  const handleContentClick = (newContentKey) => {
+  const handleContentClick = async (newContentKey) => {
+    if (defaultContentKey) {
+      await router.replace('/', undefined, { shallow: true, scroll: false })
+    }
     if (contentKey === newContentKey) {
       setContentKey(null)
     } else {
       setContentKey(newContentKey)
       handleClick(newContentKey)
-    }
-    if (defaultContentKey) {
-      router.replace('/', undefined, { shallow: true, scroll: false })
     }
   }
 
