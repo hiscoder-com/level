@@ -6,12 +6,8 @@ import Download from './Download'
 function SectionContainer({ showSections, toggleSection, t }) {
   const router = useRouter()
 
-  const handleRouteChange = (section) => {
-    toggleSection(section)
-  }
-
   const onClose = () => {
-    router.push('/')
+    router.replace('/', undefined, { shallow: true, scroll: false })
     toggleSection({ download: false, updates: false })
   }
   return (
@@ -20,7 +16,7 @@ function SectionContainer({ showSections, toggleSection, t }) {
         <Link
           href="/download"
           shallow
-          onClick={() => handleRouteChange('download')}
+          scroll={false}
           className={`p-5 bg-th-secondary-10 rounded-xl ${
             showSections.download ? 'col-span-2' : ''
           }`}
@@ -36,7 +32,7 @@ function SectionContainer({ showSections, toggleSection, t }) {
         <Link
           href="/updates"
           shallow
-          onClick={() => handleRouteChange('updates')}
+          scroll={false}
           className={`p-5 bg-th-secondary-10 rounded-xl ${
             showSections.updates ? 'col-span-2' : ''
           }`}
