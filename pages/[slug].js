@@ -76,6 +76,7 @@ const SlugPage = () => {
   }
 
   const pageContent = contentMap[slug] || {}
+  const imageUrl = 'https://deploy-preview-721--level-bible.netlify.app/social.webp'
 
   return (
     <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
@@ -85,6 +86,31 @@ const SlugPage = () => {
           name="description"
           content={pageContent.description || t('MainBlocks.LevelText') || 'LEVEL'}
         />
+
+        <meta property="og:title" content={pageContent.title || t('LEVEL')} />
+        <meta
+          property="og:description"
+          content={pageContent.description || t('MainBlocks.LevelText') || 'LEVEL'}
+        />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content={`https://deploy-preview-721--level-bible.netlify.app/${slug}`}
+        />
+        <meta property="og:site_name" content="LEVEL" />
+        <meta property="og:image" content={imageUrl} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:type" content="image/webp" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageContent.title || t('LEVEL')} />
+        <meta
+          name="twitter:description"
+          content={pageContent.description || t('MainBlocks.LevelText') || 'LEVEL'}
+        />
+        <meta name="twitter:image" content={imageUrl} />
+
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <StartPage defaultContentKey={pageContent.contentKey || null} />
