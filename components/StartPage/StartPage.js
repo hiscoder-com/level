@@ -25,6 +25,19 @@ import LevelLogo from 'public/icons/level-logo-color.svg'
 import CookiesAproove from './CookiesAproove'
 import SectionContainer from './SectionContainer'
 
+const contentRoutes = {
+  signIn: 'sign-in',
+  connect: 'connect-with-us',
+  updates: 'updates',
+  partners: 'partners',
+  intro: 'what-is-level',
+  reviews: 'reviews',
+  howItWork: 'how-it-works',
+  faq: 'faq',
+  download: 'download',
+  logo: 'about',
+}
+
 function StartPage({ defaultContentKey = null }) {
   const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
   const router = useRouter()
@@ -115,20 +128,6 @@ function StartPage({ defaultContentKey = null }) {
     logo: <Logo t={t} />,
     passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
-
-  const contentRoutes = {
-    signIn: 'sign-in',
-    connect: 'connect-with-us',
-    updates: 'updates',
-    partners: 'partners',
-    intro: 'what-is-level',
-    reviews: 'reviews',
-    howItWork: 'how-it-works',
-    faq: 'faq',
-    download: 'download',
-    logo: 'about',
-  }
-
   const handleClick = (contentKey) => {
     if (contentKey && contentRoutes[contentKey]) {
       router.push(`/${contentRoutes[contentKey]}`)
