@@ -29,7 +29,7 @@ function SectionBlock({
       {showSection && (
         <Link
           href="/"
-          className="absolute inset-0 z-10 cursor-pointer"
+          className="absolute z-10 cursor-pointer"
           onClick={(e) => e.stopPropagation()}
           scroll={false}
         ></Link>
