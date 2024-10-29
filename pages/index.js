@@ -35,7 +35,7 @@ export default function Home() {
         <meta property="og:image" content={metadata.openGraph.images[0].url} />
         <meta property="og:image:width" content={metadata.openGraph.images[0].width} />
         <meta property="og:image:height" content={metadata.openGraph.images[0].height} />
-        <meta property="og:image:type" content="image/jpg" />
+        <meta property="og:image:type" content="image/webp" />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={metadata.openGraph.title} />
