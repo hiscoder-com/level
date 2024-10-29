@@ -2,7 +2,7 @@ import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import StartPage from 'components/StartPage/StartPage'
-import { openGraph } from '../utils/openGraph'
+import { openGraph, urlGlobal } from '../utils/openGraph'
 
 const metadata = {
   title: {
@@ -27,10 +27,7 @@ export default function Home() {
         <meta property="og:title" content={metadata.openGraph.title} />
         <meta property="og:description" content={metadata.openGraph.description} />
         <meta property="og:type" content="website" />
-        <meta
-          property="og:url"
-          content="https://deploy-preview-721--level-bible.netlify.app"
-        />
+        <meta property="og:url" content={`${urlGlobal}`} />
         <meta property="og:site_name" content={metadata.title.default} />
         <meta property="og:image" content={metadata.openGraph.images[0].url} />
         <meta property="og:image:width" content={metadata.openGraph.images[0].width} />

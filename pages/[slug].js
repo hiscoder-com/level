@@ -6,6 +6,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'react-i18next'
 
 import StartPage from 'components/StartPage/StartPage'
+import { urlGlobal } from 'utils/openGraph'
 
 const SlugPage = () => {
   const router = useRouter()
@@ -76,7 +77,7 @@ const SlugPage = () => {
   }
 
   const pageContent = contentMap[slug] || {}
-  const imageUrl = 'https://deploy-preview-721--level-bible.netlify.app/social.webp'
+  const imageUrl = `${urlGlobal}/social.webp`
 
   return (
     <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
