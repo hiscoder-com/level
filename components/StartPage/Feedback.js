@@ -2,13 +2,15 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
 import { toast, Toaster } from 'react-hot-toast'
 import axios from 'axios'
 
 import ButtonLoading from 'components/ButtonLoading'
 import InputField from 'components/Panel/UI/InputField'
 
-function Feedback({ t, onClose }) {
+function Feedback({ onClose }) {
+  const { t } = useTranslation(['common', 'users', 'start-page'])
   const [feedback, setFeedback] = useState({ name: '', email: '', message: '' })
   const [isError, setIsError] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
@@ -48,18 +50,8 @@ function Feedback({ t, onClose }) {
 
   return (
     <div className="flex flex-col w-full gap-6 md:gap-0">
-      {isStartPage ? (
-        <p className="font-semibold md:font-bold">{t('ConnectWithUs')}</p>
-      ) : (
-        !isSent && (
-          <p
-            className={`font-semibold md:font-bold uppercase mb-4 ${
-              isStartPage ? '' : 'text-th-primary-100'
-            }`}
-          >
-            {t('ConnectWithUs')}
-          </p>
-        )
+      {isStartPage && (
+        <p className="font-semibold md:font-bold">{t('start-page:WriteToUs')}</p>
       )}
       <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
         <Toaster />

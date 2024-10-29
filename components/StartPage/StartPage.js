@@ -185,7 +185,7 @@ function StartPage({ defaultContentKey = null }) {
             className="p-5 lg:p-7 bg-th-secondary-10 rounded-2xl cursor-pointer h-auto xl:h-32"
             onClick={() => handleContentClick('connect')}
           >
-            {t('ConnectWithUs')}
+            {t('WriteToUs')}
           </div>
           <div className="p-3 lg:p-5 2xl:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 2xl:space-y-4 overflow-hidden">
             <p className="text-xs 2xl:text-base overflow-auto font-normal">
@@ -336,7 +336,7 @@ function StartPage({ defaultContentKey = null }) {
         />
         <SectionBlock
           sectionKey="feedback"
-          label={t('ConnectWithUs')}
+          label={t('WriteToUs')}
           content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
           showSection={showSections.feedback}
           toggleSection={toggleSection}
