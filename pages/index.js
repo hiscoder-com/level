@@ -22,11 +22,9 @@ export default function Home() {
   return (
     <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
       <Head>
-        <title>{metadata.title.template.replace('%s', metadata.title.default)}</title>
-        <meta name="description" content={metadata.description} />
-        <meta property="og:title" content={metadata.openGraph.title} />
-        <meta property="og:description" content={metadata.openGraph.description} />
-        <link rel="icon" href={metadata.icons.icon} />
+        <title>{'LEVEL'}</title>
+        <meta name="description" content={'LEVEL content'} />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       <StartPage defaultContentKey={query?.contentKey || null} />
     </main>
