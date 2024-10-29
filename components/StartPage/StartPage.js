@@ -111,7 +111,7 @@ function StartPage({ defaultContentKey = null }) {
       handleClick(newContentKey)
     }
     if (defaultContentKey) {
-      router.replace('/', undefined, { shallow: true })
+      router.replace('/', undefined, { shallow: true, scroll: false })
     }
   }
 
@@ -130,7 +130,10 @@ function StartPage({ defaultContentKey = null }) {
   }
   const handleClick = (contentKey) => {
     if (contentKey && contentRoutes[contentKey]) {
-      router.push(`/${contentRoutes[contentKey]}`)
+      router.replace(`/${contentRoutes[contentKey]}`, undefined, {
+        shallow: true,
+        scroll: false,
+      })
     }
   }
 
@@ -271,6 +274,7 @@ function StartPage({ defaultContentKey = null }) {
             </div>
           )}
           <Link
+            scroll={false}
             href={`/${contentRoutes['signIn']}`}
             shallow
             onClick={() => toggleSection('signIn')}
@@ -374,7 +378,7 @@ function StartPage({ defaultContentKey = null }) {
             )}
           </div>
         </div>
-        <Link href={`/${contentRoutes['partners']}`}>
+        <Link scroll={false} href={`/${contentRoutes['partners']}`}>
           <SectionBlock
             sectionKey="partners"
             label={t('Partners')}
@@ -383,7 +387,7 @@ function StartPage({ defaultContentKey = null }) {
             toggleSection={toggleSection}
           />
         </Link>
-        <Link href={`/${contentRoutes['connect']}`}>
+        <Link scroll={false} href={`/${contentRoutes['connect']}`}>
           <SectionBlock
             sectionKey="connect"
             label={t('ConnectWithUs')}
