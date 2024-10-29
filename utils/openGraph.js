@@ -5,10 +5,10 @@ export const openGraph = {
   url: 'https://deploy-preview-721--level-bible.netlify.app/',
   images: [
     {
-      url: 'https://deploy-preview-721--level-bible.netlify.app/social.webp', // Must be an absolute URL
+      url: 'https://deploy-preview-721--level-bible.netlify.app/social.jpg', // Must be an absolute URL
       width: 1200,
       height: 630,
-      type: 'image/webp',
+      type: 'image/jpg',
     },
   ],
   type: 'website',
