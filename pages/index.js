@@ -26,11 +26,17 @@ export default function Home() {
         <meta name="description" content={metadata.description} />
         <meta property="og:title" content={metadata.openGraph.title} />
         <meta property="og:description" content={metadata.openGraph.description} />
+        <meta property="og:type" content="website" />
+        <meta
+          property="og:url"
+          content="https://deploy-preview-721--level-bible.netlify.app"
+        />
+        <meta property="og:site_name" content={metadata.title.default} />
         <meta property="og:image" content={metadata.openGraph.images[0].url} />
         <meta property="og:image:width" content={metadata.openGraph.images[0].width} />
         <meta property="og:image:height" content={metadata.openGraph.images[0].height} />
         <meta property="og:image:type" content="image/webp" />
-        <link rel="icon" href={metadata.icons.icon} />
+        <link rel="icon" href={metadata.icons.icon} sizes="any" />
       </Head>
       <StartPage defaultContentKey={query?.contentKey || null} />
     </main>
