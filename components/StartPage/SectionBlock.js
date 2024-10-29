@@ -31,6 +31,7 @@ function SectionBlock({
           href="/"
           className="absolute inset-0 z-10 cursor-pointer"
           onClick={(e) => e.stopPropagation()}
+          scroll={false}
         ></Link>
       )}
     </div>
