@@ -15,7 +15,7 @@ import { getVerseCount, getVerseCountOBS } from 'utils/helper'
 
 import Gear from '/public/gear.svg'
 
-function Verses({ verseObjects, user, reference, isLoading }) {
+function Verses({ verseObjects, user, reference, isLoading, fontSize }) {
   const {
     push,
     query: { bookid, code },
@@ -54,9 +54,13 @@ function Verses({ verseObjects, user, reference, isLoading }) {
           reference?.chapter
         }`}</div>
       )}
+
+      {/*  */}
+
       <div
         className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}
         dir={project?.is_rtl ? 'rtl' : 'ltr'}
+        style={{ fontSize: `${fontSize}px`, lineHeight: `${fontSize * 1.5}px` }}
       >
         {!isLoading ? (
           verseObjects ? (

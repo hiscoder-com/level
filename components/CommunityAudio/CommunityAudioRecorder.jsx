@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
-function CommunityAudioRecorder() {
+function CommunityAudioRecorder({ fontSize, setFontSize }) {
   const {
     isRecording,
     isPaused,
@@ -17,7 +17,7 @@ function CommunityAudioRecorder() {
     <div className="card flex justify-between w-full gap-3 sm:gap-7 bg-th-secondary-10 !pb-4">
       <div className="flex flex-col gap-4 justify-between">
         <SpeedSetting />
-        <FontSizeSetting />
+        <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
       </div>
       <div className="flex items-end">
         <PauseButton
@@ -113,8 +113,7 @@ function SpeedSetting() {
   )
 }
 
-function FontSizeSetting() {
-  const [fontSize, setFontSize] = useState(16)
+function FontSizeSetting({ fontSize, setFontSize }) {
   const [isMounted, setIsMounted] = useState(false)
 
   const { t } = useTranslation(['common'])

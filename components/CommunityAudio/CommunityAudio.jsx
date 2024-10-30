@@ -21,6 +21,8 @@ import Left from '/public/left.svg'
 import CommunityAudioRecorder from './CommunityAudioRecorder'
 
 function CommunityAudio() {
+  const [fontSize, setFontSize] = useState(16)
+
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
   const {
@@ -137,7 +139,7 @@ function CommunityAudio() {
         </div>
       </div>
       <div className="w-full xl:w-2/3 space-y-7">
-        <CommunityAudioRecorder />
+        <CommunityAudioRecorder fontSize={fontSize} setFontSize={setFontSize} />
         <div className="card flex flex-col gap-7 bg-th-secondary-10">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code} className="p-3">
@@ -145,6 +147,7 @@ function CommunityAudio() {
             </Link>
           </div>
           <Verses
+            fontSize={fontSize}
             verseObjects={verseObjectsToUse}
             user={user}
             reference={reference}
