@@ -2,14 +2,12 @@ import { Fragment, useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-
 import { Menu, Tab } from '@headlessui/react'
+import { useCurrentUser } from 'lib/UserContext'
+import { useTranslation } from 'next-i18next'
 
 import ProjectCreate from './ProjectCreate'
 import Projects from './Projects'
-
-import { useCurrentUser } from 'lib/UserContext'
 
 const sizeTabs = {
   1: 'w-1/6',
@@ -56,17 +54,16 @@ function Account() {
               selectedIndex={selectedTab}
               onChange={setSelectedTab}
             >
-              <Tab.List className="flex p-1 w-full bg-th-secondary-10 border border-th-secondary-300 rounded-3xl shadow-md">
+              <Tab.List className="flex w-full rounded-3xl border border-th-secondary-300 bg-th-secondary-10 p-1 shadow-md">
                 {tabs
                   .filter((el) => el !== 'projects:CreateProject')
                   .map((tab) => (
                     <Tab as={Fragment} key={tab}>
                       {({ selected }) => (
                         <div
-                          className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
+                          className={`w-full cursor-pointer rounded-3xl p-2 text-center ${
                             selected ? 'bg-th-primary-100 text-th-text-secondary-100' : ''
-                          }
-                      `}
+                          } `}
                         >
                           {t(tab)}
                         </div>
@@ -99,7 +96,7 @@ function Account() {
                         tab !== 'projects:CreateProject'
                     ).length
                   ]
-                } gap-4 mt-2 text-center font-bold`}
+                } mt-2 gap-4 text-center font-bold`}
               >
                 {tabs.map(
                   (tab) =>
@@ -117,8 +114,8 @@ function Account() {
                 )}
               </Tab.List>
               <Tab.Panels className="pb-10">
-                <div className="px-10 h-10 bg-th-primary-500 rounded-t-3xl"></div>
-                <div className="px-5 border border-th-secondary-300 bg-th-secondary-10 rounded-b-2xl">
+                <div className="h-10 rounded-t-3xl bg-th-primary-500 px-10"></div>
+                <div className="rounded-b-2xl border border-th-secondary-300 bg-th-secondary-10 px-5">
                   <Tab.Panel>
                     <Projects type={'account'} />
                   </Tab.Panel>

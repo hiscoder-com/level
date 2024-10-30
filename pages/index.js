@@ -1,15 +1,15 @@
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
+import StartPage from 'components/StartPage/StartPage'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import StartPage from 'components/StartPage/StartPage'
 
 export default function Home() {
   const { t } = useTranslation('common')
   const { query } = useRouter()
   return (
-    <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
+    <main className="flex min-h-screen flex-col justify-center bg-th-secondary-100 font-sans">
       <Head>
         <title>{t('LEVEL')}</title>
         <meta name="description" content={t('MainBlocks.LevelText')} />

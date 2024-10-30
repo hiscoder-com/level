@@ -1,13 +1,12 @@
-import { useMemo, useState, useCallback } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import TranslatorImage from 'components/TranslatorImage'
 import { useTranslation } from 'next-i18next'
+import { useTranslators } from 'utils/hooks'
 
 import Modal from './Modal'
-import TranslatorImage from 'components/TranslatorImage'
-
-import { useTranslators } from 'utils/hooks'
 
 function Translators({
   projectCode,
@@ -55,8 +54,8 @@ function Translators({
   return (
     <>
       <div
-        className={`flex items-center z-10 ${
-          isStep ? 'max-w-xs p-2 overflow-x-auto' : 'max-w-full flex-wrap'
+        className={`z-10 flex items-center ${
+          isStep ? 'max-w-xs overflow-x-auto p-2' : 'max-w-full flex-wrap'
         }`}
       >
         {visibleTranslators.map((translator, key) => (
@@ -71,7 +70,7 @@ function Translators({
         ))}
         {hiddenCount > 0 && (
           <div
-            className={`${className} flex items-center justify-center bg-th-primary-500 text-th-text-secondary-100 rounded-full text-xs z-10 cursor-pointer`}
+            className={`${className} z-10 flex cursor-pointer items-center justify-center rounded-full bg-th-primary-500 text-xs text-th-text-secondary-100`}
             style={{ width: size, height: size }}
             onClick={() => setIsModalOpen(true)}
           >
@@ -87,21 +86,21 @@ function Translators({
         className={{
           dialogTitle: 'text-2xl font-medium leading-6',
           dialogPanel:
-            'w-full max-w-md px-7 py-10 align-middle transform overflow-y-auto shadow-xl transition-all bg-th-primary-100 text-th-text-secondary-100 rounded-3xl',
+            'w-full max-w-md transform overflow-y-auto rounded-3xl bg-th-primary-100 px-7 py-10 align-middle text-th-text-secondary-100 shadow-xl transition-all',
         }}
       >
-        <div className="flex flex-wrap gap-x-1.5 gap-y-2.5 my-6 py-3 max-h-[50vh] overflow-y-auto">
+        <div className="my-6 flex max-h-[50vh] flex-wrap gap-x-1.5 gap-y-2.5 overflow-y-auto py-3">
           {translators.map((participant, index) => (
             <div
               key={index}
-              className={`flex items-center gap-2.5 pl-1 pr-3 py-1 border rounded-3xl text-lg ${
+              className={`flex items-center gap-2.5 rounded-3xl border py-1 pl-1 pr-3 text-lg ${
                 clickable
                   ? 'cursor-pointer transition-opacity duration-300 hover:opacity-70'
                   : ''
               }`}
               onClick={() => handleTranslatorClick(participant)}
             >
-              <div className="w-8 h-8">
+              <div className="h-8 w-8">
                 <TranslatorImage item={participant} showModerator={showModerator} />
               </div>
               <p>{participant.users.login}</p>

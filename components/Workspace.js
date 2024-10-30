@@ -1,21 +1,17 @@
 import { useEffect, useState } from 'react'
 
-import { useTranslation } from 'next-i18next'
-
 import { Tab } from '@headlessui/react'
-
-import { useRecoilValue } from 'recoil'
-
 import Tool from 'components/Panel/Tool'
-
-import { inactiveState } from './state/atoms'
-
-import Dict from 'public/dictionary.svg'
-import TeamNote from 'public/team-note.svg'
-import Notepad from 'public/notes.svg'
+import { useTranslation } from 'next-i18next'
 import Retelling from 'public/audio.svg'
+import Dict from 'public/dictionary.svg'
 import Pencil from 'public/editor-pencil.svg'
 import Info from 'public/info.svg'
+import Notepad from 'public/notes.svg'
+import TeamNote from 'public/team-note.svg'
+import { useRecoilValue } from 'recoil'
+
+import { inactiveState } from './state/atoms'
 
 const sizes = {
   '1': 'lg:w-1/6',
@@ -26,14 +22,14 @@ const sizes = {
   '6': 'lg:w-full',
 }
 
-const translateIcon = <Pencil className="w-5 inline" />
+const translateIcon = <Pencil className="inline w-5" />
 
 const icons = {
-  personalNotes: <Notepad className="w-[14px] inline" />,
-  teamNotes: <TeamNote className="w-5 inline" />,
-  dictionary: <Dict className="w-5 inline" />,
-  retelling: <Retelling className="w-5 inline" />,
-  info: <Info className="w-5 inline" />,
+  personalNotes: <Notepad className="inline w-[14px]" />,
+  teamNotes: <TeamNote className="inline w-5" />,
+  dictionary: <Dict className="inline w-5" />,
+  retelling: <Retelling className="inline w-5" />,
+  info: <Info className="inline w-5" />,
   commandTranslate: translateIcon,
   draftTranslate: translateIcon,
   translate: translateIcon,
@@ -68,12 +64,12 @@ function Workspace({ stepConfig, reference, editable = false }) {
     }
   }, [reference?.book, stepConfig])
   return (
-    <div className="f-screen-appbar flex flex-col gap-3 xl:gap-7 items-center mx-auto lg:max-w-7xl lg:items-stretch lg:flex-row">
+    <div className="f-screen-appbar mx-auto flex flex-col items-center gap-3 lg:max-w-7xl lg:flex-row lg:items-stretch xl:gap-7">
       {stepConfig.config.map((el, index) => {
         return (
           <div
             key={index}
-            className={`flex flex-col gap-1 lg:gap-5 w-full lg:px-2 xl:px-0 overflow-hidden ${
+            className={`flex w-full flex-col gap-1 overflow-hidden lg:gap-5 lg:px-2 xl:px-0 ${
               index === 0 && inactive ? 'inactive' : ''
             } ${sizes[el.size]}`}
           >
@@ -122,16 +118,16 @@ function Panel({
   return (
     <Tab.Group>
       <Tab.List
-        className={`flex px-3 -mb-2 gap-2 mt-2 lg:-mb-7 overflow-auto ${
+        className={`-mb-2 mt-2 flex gap-2 overflow-auto px-3 lg:-mb-7 ${
           sizeTabs[tools.length]
-        } text-center font-bold text-xs`}
+        } text-center text-xs font-bold`}
       >
         {tools?.map((tool) => (
           <Tab
             key={tool.name}
             className={({ selected }) =>
               classNames(
-                'text-xs p-1 flex-1 lg:pb-3 md:p-2 md:text-sm lg:text-base text-ellipsis overflow-hidden whitespace-nowrap',
+                'flex-1 overflow-hidden text-ellipsis whitespace-nowrap p-1 text-xs md:p-2 md:text-sm lg:pb-3 lg:text-base',
                 selected ? 'tab-active' : 'tab-inactive'
               )
             }
@@ -169,7 +165,7 @@ function Panel({
         {tools.map((tool, index) => {
           return (
             <Tab.Panel key={index}>
-              <div className="flex flex-col bg-th-secondary-10 rounded-lg h-full">
+              <div className="flex h-full flex-col rounded-lg bg-th-secondary-10">
                 <Tool
                   editable={editable}
                   tnLink={tnLink}

@@ -1,9 +1,9 @@
 import Head from 'next/head'
 import Link from 'next/link'
 
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import { useTranslation } from 'next-i18next'
 import UsersList from 'components/Users/UsersList'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 export default function UsersPage() {
   const { t } = useTranslation(['users', 'common'])

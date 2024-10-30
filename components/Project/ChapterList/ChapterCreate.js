@@ -2,9 +2,8 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-
 import Modal from 'components/Modal'
+import { useTranslation } from 'next-i18next'
 import useSupabaseClient from 'utils/supabaseClient'
 
 function ChapterCreate({
@@ -69,7 +68,7 @@ function ChapterCreate({
       isOpen={typeof creatingChapter === 'object'}
       closeHandle={reset}
       className={{
-        dialogPanel: `w-full max-w-md align-middle p-6 rounded-3xl ${
+        dialogPanel: `w-full max-w-md rounded-3xl p-6 align-middle ${
           isCreated
             ? 'bg-th-secondary-300 text-th-secondary-10'
             : 'bg-th-primary-100 text-th-text-secondary-100'
@@ -77,13 +76,13 @@ function ChapterCreate({
       }}
       handleCloseDisabled={isCreating}
     >
-      <div className="flex flex-col justify-center items-center gap-7 min-h-[15vh]">
-        <div className="flex flex-row gap-2 mb-4 text-xl text-center">
+      <div className="flex min-h-[15vh] flex-col items-center justify-center gap-7">
+        <div className="mb-4 flex flex-row gap-2 text-center text-xl">
           <p>{textModal}</p>
           {isCreating && !isCreated && <p className="animate-pulse">...</p>}
         </div>
         {!isCreating && !isCreated && (
-          <div className="flex justify-center gap-4 w-1/2 text-xl">
+          <div className="flex w-1/2 justify-center gap-4 text-xl">
             <button
               className="btn-secondary flex-1"
               onClick={() =>

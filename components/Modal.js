@@ -1,6 +1,6 @@
 import { Fragment } from 'react'
 
-import { Transition, Dialog } from '@headlessui/react'
+import { Dialog, Transition } from '@headlessui/react'
 
 function Modal({
   title,
@@ -30,7 +30,7 @@ function Modal({
         className={classNames.main}
         onClose={() => !handleCloseDisabled && closeHandle()}
       >
-        <div className="inset-0 fixed bg-black bg-opacity-70" />
+        <div className="fixed inset-0 bg-black bg-opacity-70" />
         <Transition.Child
           as={Fragment}
           enter="ease-out duration-300"

@@ -1,13 +1,13 @@
-import Link from 'next/link'
 import { useMemo } from 'react'
 
+import Link from 'next/link'
+
 import { useTranslation } from 'next-i18next'
-
-import Translators from './Translators'
-import Placeholder from './Placeholder'
-
-import { useBriefState, useAccess } from 'utils/hooks'
 import { getBriefName } from 'utils/helper'
+import { useAccess, useBriefState } from 'utils/hooks'
+
+import Placeholder from './Placeholder'
+import Translators from './Translators'
 
 function ProjectCard({ project, user }) {
   const { t } = useTranslation(['projects', 'common'])
@@ -31,7 +31,7 @@ function ProjectCard({ project, user }) {
         <Placeholder />
       ) : (
         <Link href={`/projects/${project.code}`} legacyBehavior>
-          <div className="card flex justify-between items-start h-full bg-th-secondary-10 sm:bg-th-secondary-100 cursor-pointer">
+          <div className="card flex h-full cursor-pointer items-start justify-between bg-th-secondary-10 sm:bg-th-secondary-100">
             <div className="flex flex-col gap-9">
               <div className="text-xl font-bold">{project.title}</div>{' '}
               {briefResume === '' && isBrief && (
@@ -48,7 +48,7 @@ function ProjectCard({ project, user }) {
                   <p className="text-th-secondary-300">{project.languages.orig_name}</p>
                 </div>
                 <div
-                  className="flex gap-3 cursor-default"
+                  className="flex cursor-default gap-3"
                   onClick={(e) => e.stopPropagation()}
                 >
                   <p>{t('common:Translator_other')}:</p>

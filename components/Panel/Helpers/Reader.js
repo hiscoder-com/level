@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import AutoSizeTextArea from '../UI/AutoSizeTextArea'
-
-import useSupabaseClient from 'utils/supabaseClient'
-import { useGetChapter } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
+import { useGetChapter } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
+
+import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 function Reader({ config }) {
   const supabase = useSupabaseClient()
@@ -90,7 +90,7 @@ function Reader({ config }) {
   return (
     <div dir={config?.isRtl ? 'rtl' : 'ltr'}>
       {verseObjects.map((verseObject, index) => (
-        <div key={verseObject.verse_id} className="flex my-3">
+        <div key={verseObject.verse_id} className="my-3 flex">
           <div>{obsCheckAdditionalVerses(verseObject.num)}</div>
           <AutoSizeTextArea
             disabled={true}

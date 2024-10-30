@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import axios from 'axios'
+import { useRecoilState } from 'recoil'
 import useSWR from 'swr'
 import useSWRInfinite from 'swr/infinite'
-import { checkLSVal } from './helper'
-import { useRecoilState } from 'recoil'
 
 import { currentVerse } from '../components/state/atoms'
+import { checkLSVal } from './helper'
 
 const SCROLL_TOP_OFFSET = 20
 

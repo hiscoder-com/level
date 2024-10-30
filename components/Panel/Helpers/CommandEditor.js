@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
+
 import { useRouter } from 'next/router'
+
 import axios from 'axios'
+import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-hot-toast'
-import useSupabaseClient from 'utils/supabaseClient'
-import AutoSizeTextArea from '../UI/AutoSizeTextArea'
-import { useCurrentUser } from 'lib/UserContext'
-import { useGetChapter, useProject, useScroll } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
+import { useGetChapter, useProject, useScroll } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
+
+import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 // getFromResource - если true  - то все стихи копируются из главного ресурса в эдитор
 
@@ -190,7 +193,7 @@ function CommandEditor({ config }) {
         <div
           id={`commandTranslate_${verseObject.num}`}
           key={verseObject.verse_id}
-          className="flex my-3"
+          className="my-3 flex"
           dir={config?.isRtl ? 'rtl' : 'ltr'}
         >
           <div

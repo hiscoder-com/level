@@ -1,12 +1,10 @@
 import { useMemo } from 'react'
 
-import { useTranslation } from 'react-i18next'
-
 import MarkdownExtended from 'components/MarkdownExtended'
-
-import { useGetWholeBook } from 'utils/hooks'
-import { obsCheckAdditionalVerses } from 'utils/helper'
 import Loading from 'public/progress.svg'
+import { useTranslation } from 'react-i18next'
+import { obsCheckAdditionalVerses } from 'utils/helper'
+import { useGetWholeBook } from 'utils/hooks'
 
 function Book({ config, url }) {
   const { t } = useTranslation()
@@ -22,7 +20,7 @@ function Book({ config, url }) {
   const chapters = useMemo(() => {
     if (!data && isLoading) {
       return (
-        <Loading className="progress-light absolute mx-auto my-auto inset-0 w-12 animate-spin" />
+        <Loading className="progress-light absolute inset-0 mx-auto my-auto w-12 animate-spin" />
       )
     }
     return Object.keys(data).map((key) => {
@@ -44,7 +42,7 @@ function Verses({ verseObjects }) {
   return (
     <>
       {verseObjects?.map((verseObject) => (
-        <div key={verseObject.verse} className="p-2 rounded-lg">
+        <div key={verseObject.verse} className="rounded-lg p-2">
           <MarkdownExtended>
             {obsCheckAdditionalVerses(verseObject.verse) + ' ' + verseObject.text}
           </MarkdownExtended>

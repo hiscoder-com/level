@@ -1,31 +1,28 @@
 import { useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import { useTranslation } from 'next-i18next'
+
+import { JsonToMd, MdToZip } from '@texttree/obs-format-convert-rcl'
 import axios from 'axios'
-import toast from 'react-hot-toast'
-import JSZip from 'jszip'
-
-import { MdToZip, JsonToMd } from '@texttree/obs-format-convert-rcl'
-
-import { saveAs } from 'file-saver'
-
 import Breadcrumbs from 'components/Breadcrumbs'
-import ListBox from 'components/ListBox'
-import CheckBox from 'components/CheckBox'
 import ButtonLoading from 'components/ButtonLoading'
-
-import useSupabaseClient from 'utils/supabaseClient'
+import CheckBox from 'components/CheckBox'
+import ListBox from 'components/ListBox'
+import { saveAs } from 'file-saver'
+import JSZip from 'jszip'
+import { useTranslation } from 'next-i18next'
+import toast from 'react-hot-toast'
 import { newTestamentList, usfmFileNames } from 'utils/config'
 import {
-  createObjectToTransform,
   compileChapter,
   convertToUsfm,
+  createObjectToTransform,
   downloadFile,
   downloadPdf,
   getCountChaptersAndVerses,
 } from 'utils/helper'
 import { useGetBook, useGetChapters } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
 
 const downloadSettingsChapter = {
   withImages: true,
@@ -481,8 +478,8 @@ function Download({
             projectLanguage: project.languages.orig_name,
             fileName: `${project.title}_${
               project?.type !== 'obs'
-                ? book?.properties?.scripture?.toc1 ?? t('Book')
-                : book?.properties?.obs?.title ?? t('OpenBibleStories')
+                ? (book?.properties?.scripture?.toc1 ?? t('Book'))
+                : (book?.properties?.obs?.title ?? t('OpenBibleStories'))
             }`,
             t,
           })
@@ -552,9 +549,9 @@ function Download({
           setSelectedOption={setDownloadType}
           selectedOption={downloadType}
         />
-        <div className="flex gap-7 items-end">
+        <div className="flex items-end gap-7">
           <div
-            className={`flex flex-col w-full space-y-4 ${
+            className={`flex w-full flex-col space-y-4 ${
               downloadType === 'pdf' ? 'opacity-100' : 'opacity-0'
             }`}
           >
@@ -580,7 +577,7 @@ function Download({
               })}
           </div>
         </div>
-        <div className="flex self-center gap-7 w-auto sm:w-3/4">
+        <div className="flex w-auto gap-7 self-center sm:w-3/4">
           <button
             className="btn-secondary flex-1"
             onClick={() => setIsOpenDownloading(false)}
@@ -592,7 +589,7 @@ function Download({
             onClick={handleSave}
             disabled={isSaving}
             isLoading={isSaving}
-            className="relative btn-secondary flex-1"
+            className="btn-secondary relative flex-1"
           >
             {t('Save')}
           </ButtonLoading>

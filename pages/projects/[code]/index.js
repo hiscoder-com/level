@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router'
 
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
 import Project from 'components/Project/Project'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 function ProjectPage() {
   const router = useRouter()

@@ -1,10 +1,9 @@
-import { useRecoilValue } from 'recoil'
-
 import MarkdownExtended from 'components/MarkdownExtended'
-import Blur from './Blur'
-
+import { useRecoilValue } from 'recoil'
 import { obsCheckAdditionalVerses } from 'utils/helper'
+
 import { checkedVersesBibleState, isHideAllVersesState } from '../../../state/atoms'
+import Blur from './Blur'
 
 function VersesExtended({
   verseObjects,
@@ -17,7 +16,8 @@ function VersesExtended({
 
   const isVerseChecked = (verse) => {
     const verseRange = String(verse).split('-').map(Number)
-    const [start, end] = verseRange.length === 1 ? [verseRange[0], verseRange[0]] : verseRange
+    const [start, end] =
+      verseRange.length === 1 ? [verseRange[0], verseRange[0]] : verseRange
 
     return Array.from({ length: end - start + 1 }, (_, i) => start + i).some((v) =>
       checkedVersesBible.includes(String(v))
@@ -32,7 +32,7 @@ function VersesExtended({
           <div
             key={verseObject.verse}
             onClick={() => handleSaveScroll(verseObject.verse)}
-            className={`flex items-start my-3 select-none rounded-lg ${
+            className={`my-3 flex select-none items-start rounded-lg ${
               toolName + currentScrollVerse === toolName + verseObject.verse
                 ? 'bg-th-secondary-100'
                 : ''

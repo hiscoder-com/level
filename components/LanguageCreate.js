@@ -1,13 +1,13 @@
 import { useState } from 'react'
-import axios from 'axios'
-import toast from 'react-hot-toast'
-import { useForm } from 'react-hook-form'
-import { useTranslation } from 'next-i18next'
 
-import Modal from 'components/Modal'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
+import axios from 'axios'
 import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
+import Modal from 'components/Modal'
+import { useTranslation } from 'next-i18next'
+import { useForm } from 'react-hook-form'
+import toast from 'react-hot-toast'
 
 function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -64,8 +64,8 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
         errors?.eng?.type === 'notUnique'
           ? t('project-edit:NameLanguageNotUnique')
           : errors?.eng?.type === 'required'
-          ? t('project-edit:NameLanguageRequired')
-          : '',
+            ? t('project-edit:NameLanguageRequired')
+            : '',
     },
     {
       id: 2,
@@ -97,10 +97,10 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
         errors?.code?.type === 'notUnique'
           ? t('project-edit:CodeLanguageNotUnique')
           : errors?.code?.type === 'required'
-          ? t('project-edit:CodeLanguageRequired')
-          : errors?.code?.type === 'wrongTypeCode'
-          ? t('project-edit:LanguageCodeMessageErrorWrongType')
-          : '',
+            ? t('project-edit:CodeLanguageRequired')
+            : errors?.code?.type === 'wrongTypeCode'
+              ? t('project-edit:LanguageCodeMessageErrorWrongType')
+              : '',
     },
   ]
   return (
@@ -124,7 +124,7 @@ function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
 
           <div className="flex justify-center">
             <div className="flex gap-4 text-xl">
-              <ButtonLoading className="relative btn-secondary" isLoading={isSaving}>
+              <ButtonLoading className="btn-secondary relative" isLoading={isSaving}>
                 {t('common:Save')}
               </ButtonLoading>
               <button type="button" className="btn-secondary" onClick={closeHandle}>

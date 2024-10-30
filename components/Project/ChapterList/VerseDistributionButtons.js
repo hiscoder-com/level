@@ -93,7 +93,7 @@ function VerseDistributionButtons({
           assignedTranslatorsIds?.length === translators?.length ||
           isDivide
         }
-        className="relative btn-primary"
+        className="btn-primary relative"
       >
         {t('chapters:FastDivide')}
       </ButtonLoading>
@@ -114,7 +114,7 @@ function VerseDistributionButtons({
             assignedTranslatorsIds?.includes(translator.id) ||
             !hasUnassignedVerses(versesDivided)
           }
-          className="flex-1 relative btn-primary w-fit"
+          className="btn-primary relative w-fit flex-1"
         >
           {t('chapters:SelectAll')}
         </ButtonLoading>
@@ -123,7 +123,7 @@ function VerseDistributionButtons({
           disabled={
             !translators?.length || !choosedVerses || isChapterStarted || isDivide
           }
-          className="flex-1 relative btn-primary w-fit"
+          className="btn-primary relative w-fit flex-1"
         >
           {t('chapters:Deselect')}
         </ButtonLoading>
@@ -133,14 +133,14 @@ function VerseDistributionButtons({
         <ButtonLoading
           onClick={assign}
           disabled={!translators?.length || isNotAllVersesDivided || isChapterStarted}
-          className="flex-1 relative btn-primary w-fit"
+          className="btn-primary relative w-fit flex-1"
         >
           {t('Assign')}
         </ButtonLoading>
         <ButtonLoading
           onClick={reset}
           disabled={!translators?.length || !choosedVerses || isChapterStarted}
-          className="flex-1 relative btn-primary w-fit"
+          className="btn-primary relative w-fit flex-1"
         >
           {t('Reset')}
         </ButtonLoading>

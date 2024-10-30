@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+
 import { Combobox, Transition } from '@headlessui/react'
 import Down from 'public/arrow-down.svg'
 
@@ -26,7 +27,7 @@ function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t })
       {({ open }) => (
         <div className="relative mt-1 text-th-text-primary">
           <div
-            className={`relative w-full bg-th-secondary-10 cursor-default overflow-hidden transition-all duration-100 ease-in-out ${
+            className={`relative w-full cursor-default overflow-hidden bg-th-secondary-10 transition-all duration-100 ease-in-out ${
               open ? 'rounded-t-lg' : 'rounded-lg'
             }`}
           >
@@ -38,7 +39,7 @@ function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t })
               onChange={(event) => setQuery(event.target.value)}
             />
             <Combobox.Button className="absolute inset-y-0 right-0 pr-5">
-              <Down className="w-6 h-6 min-w-[1.5rem] stroke-th-text-primary" />
+              <Down className="h-6 w-6 min-w-[1.5rem] stroke-th-text-primary" />
             </Combobox.Button>
           </div>
           <Transition
@@ -48,7 +49,7 @@ function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t })
             leaveTo="opacity-0"
             afterLeave={() => setQuery('')}
           >
-            <Combobox.Options className="absolute w-full max-h-[40vh] overflow-y-auto rounded-b-lg bg-th-secondary-10 z-10">
+            <Combobox.Options className="absolute z-10 max-h-[40vh] w-full overflow-y-auto rounded-b-lg bg-th-secondary-10">
               {filteredPeople.length === 0 && query !== '' ? (
                 <div className="relative select-none px-5 py-2">{t('NothingFound')}</div>
               ) : (
@@ -56,7 +57,7 @@ function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t })
                   <Combobox.Option
                     key={person.value}
                     className={({ active }) =>
-                      `relative cursor-pointer select-none py-2 px-5 ${
+                      `relative cursor-pointer select-none px-5 py-2 ${
                         active ? 'bg-th-secondary-100' : ''
                       }`
                     }

@@ -1,9 +1,8 @@
+import { indexImageCarousel } from 'components/state/atoms'
+import Close from 'public/close.svg'
 import { useRecoilValue } from 'recoil'
 
-import { indexImageCarousel } from 'components/state/atoms'
 import Carousel from './Carousel'
-
-import Close from 'public/close.svg'
 
 function FullSizeImageCarousel({
   images,
@@ -15,23 +14,23 @@ function FullSizeImageCarousel({
   const currentIndex = useRecoilValue(indexImageCarousel)
 
   return (
-    <div className="w-full flex flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-center">
       <div className="w-full">
-        <div className="relative flex justify-center items-center">
+        <div className="relative flex items-center justify-center">
           <h3 className="text-th-secondary-10">{images[currentIndex].name}</h3>
           <button
             onClick={onClose}
-            className="absolute right-0 w-6 cursor-pointer bg-th-text-primary rounded-full p-1"
+            className="absolute right-0 w-6 cursor-pointer rounded-full bg-th-text-primary p-1"
           >
             <Close className="stroke-th-secondary-10" />
           </button>
         </div>
       </div>
-      <div className="max-w-full text-center flex flex-col justify-center items-center py-10">
+      <div className="flex max-w-full flex-col items-center justify-center py-10 text-center">
         <img
           src={images[currentIndex].url}
           alt={`Slide ${currentIndex}`}
-          className="mx-auto px-12 object-contain h-[60vh] w-auto"
+          className="mx-auto h-[60vh] w-auto object-contain px-12"
         />
       </div>
       <div className="w-full">

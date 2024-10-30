@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import Loading from 'public/progress.svg'
 
 const SwitchLoading = ({
@@ -62,8 +63,8 @@ const SwitchLoading = ({
     <div className="flex items-center">
       <label
         htmlFor={id}
-        className={`relative inline-flex items-center cursor-pointer ${
-          disabled ? 'opacity-50 cursor-not-allowed' : ''
+        className={`relative inline-flex cursor-pointer items-center ${
+          disabled ? 'cursor-not-allowed opacity-50' : ''
         }`}
       >
         <input
@@ -87,7 +88,7 @@ const SwitchLoading = ({
           className={`absolute transition-all duration-300 ${styles.loading[switchState]}`}
         >
           <Loading
-            className={`w-7 animate-spin stroke-th-primary-100 progress-custom-colors transition-all duration-300 ${
+            className={`progress-custom-colors w-7 animate-spin stroke-th-primary-100 transition-all duration-300 ${
               switchState === 'loading' ? '' : 'opacity-0'
             }`}
           />

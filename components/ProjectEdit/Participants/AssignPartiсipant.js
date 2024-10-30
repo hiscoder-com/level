@@ -1,7 +1,6 @@
-import { useTranslation } from 'next-i18next'
-
-import Modal from 'components/Modal'
 import ComboboxAutocomplete from 'components/ComboboxAutocomplete'
+import Modal from 'components/Modal'
+import { useTranslation } from 'next-i18next'
 
 function AssignParticipant({
   openModalAssign,
@@ -24,11 +23,11 @@ function AssignParticipant({
       }}
       className={{
         dialogPanel:
-          'w-full max-w-md align-middle p-6 bg-th-primary-100 text-th-text-secondary-100 overflow-y-visible rounded-3xl',
+          'w-full max-w-md overflow-y-visible rounded-3xl bg-th-primary-100 p-6 align-middle text-th-text-secondary-100',
       }}
     >
-      <div className="flex flex-col min-h-[15vh] gap-7">
-        <div className="text-base sm:text-xl text-center">{t(label)}</div>
+      <div className="flex min-h-[15vh] flex-col gap-7">
+        <div className="text-center text-base sm:text-xl">{t(label)}</div>
         <ComboboxAutocomplete
           options={listOfAssigned?.map((user) => ({
             label: user.login,
@@ -40,7 +39,7 @@ function AssignParticipant({
           t={t}
         />
 
-        <div className="flex justify-center self-center w-2/3 gap-7">
+        <div className="flex w-2/3 justify-center gap-7 self-center">
           <button
             onClick={() => {
               assign(role)

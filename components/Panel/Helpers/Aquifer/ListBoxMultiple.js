@@ -1,5 +1,4 @@
 import { Listbox } from '@headlessui/react'
-
 import Check from 'public/check.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
 
@@ -23,30 +22,30 @@ function ListBoxMultiple({
   return (
     <Listbox value={selectedOptions} multiple>
       {({ open }) => (
-        <div className="relative flex items-center w-full text-th-text-primary">
-          <Listbox.Button className="relative flex items-center w-full">
+        <div className="relative flex w-full items-center text-th-text-primary">
+          <Listbox.Button className="relative flex w-full items-center">
             <input
-              className={`input-primary w-full !pr-8 !text-th-secondary-300 truncate bg-th-secondary-50 ${
+              className={`input-primary w-full truncate bg-th-secondary-50 !pr-8 !text-th-secondary-300 ${
                 open ? '!rounded-b-none' : ''
               }`}
               value={
                 options.length === selectedOptions.length
                   ? placeholderFull
                   : selectedOptions.length > 0
-                  ? selectedOptions.join(', ')
-                  : placeholderEmpty
+                    ? selectedOptions.join(', ')
+                    : placeholderEmpty
               }
               readOnly
             />
 
-            <ArrowRight className="absolute min-w-[1.5rem] stroke-th-secondary-300 right-2 stroke-2 rotate-90" />
+            <ArrowRight className="absolute right-2 min-w-[1.5rem] rotate-90 stroke-th-secondary-300 stroke-2" />
           </Listbox.Button>
           <div className="mt-8">
-            <Listbox.Options className="absolute w-full left-0 max-h-[40vh] rounded-b-lg overflow-y-auto z-10 border-r border-l border-b bg-th-secondary-10 border-th-secondary-300">
+            <Listbox.Options className="absolute left-0 z-10 max-h-[40vh] w-full overflow-y-auto rounded-b-lg border-b border-l border-r border-th-secondary-300 bg-th-secondary-10">
               {options.map((el) => (
                 <Listbox.Option
                   as="div"
-                  className="relative flex justify-between items-center px-5 py-1 bg-th-secondary-50 cursor-pointer last:pb-3 hover:bg-th-secondary-100"
+                  className="relative flex cursor-pointer items-center justify-between bg-th-secondary-50 px-5 py-1 last:pb-3 hover:bg-th-secondary-100"
                   key={el}
                   value={el}
                   onClick={() => handleOptionClicked(el)}
@@ -54,7 +53,7 @@ function ListBoxMultiple({
                   <span className="truncate">{el}</span>
                   {selectedOptions.includes(el) && (
                     <div>
-                      <Check className="w-6 h-6" />
+                      <Check className="h-6 w-6" />
                     </div>
                   )}
                 </Listbox.Option>

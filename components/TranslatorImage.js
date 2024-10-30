@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useRecoilValue } from 'recoil'
+
 import { userAvatarState } from './state/atoms'
 
 const defaultColor = [
@@ -31,8 +32,8 @@ function TranslatorImage({ item, size, showModerator = false, isPointerCursor = 
     <div
       title={`${item?.users ? `${item.users?.login}` : ''}`}
       className={`relative ${cursorStyle} ${
-        showModerator && item.is_moderator ? 'border-th-secondary-400 border-2' : ''
-      } rounded-full select-none`}
+        showModerator && item.is_moderator ? 'border-2 border-th-secondary-400' : ''
+      } select-none rounded-full`}
     >
       {userAvatarUrl ? (
         <img
@@ -61,7 +62,7 @@ function TranslatorImage({ item, size, showModerator = false, isPointerCursor = 
             x="84"
             y="110"
             textAnchor="middle"
-            className="text-7xl fill-th-text-primary font-bold"
+            className="fill-th-text-primary text-7xl font-bold"
           >
             {item?.users?.login?.toUpperCase().slice(0, 2)}
           </text>

@@ -2,16 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-
-import { toast } from 'react-hot-toast'
-
 import axios from 'axios'
-
-import CommitsList from 'components/CommitsList'
 import ButtonLoading from 'components/ButtonLoading'
-
-import { useProject, useMethod, useGetProjectResources } from 'utils/hooks'
+import CommitsList from 'components/CommitsList'
+import { useTranslation } from 'next-i18next'
+import { toast } from 'react-hot-toast'
+import { useGetProjectResources, useMethod, useProject } from 'utils/hooks'
 
 function ResourceSettings() {
   const [methods] = useMethod()

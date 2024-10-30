@@ -2,24 +2,20 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-
-import { useForm, useWatch } from 'react-hook-form'
-
-import { toast } from 'react-hot-toast'
-
 import axios from 'axios'
+import { useCurrentUser } from 'lib/UserContext'
+import { useTranslation } from 'next-i18next'
+import { useForm, useWatch } from 'react-hook-form'
+import { toast } from 'react-hot-toast'
+import { useLanguages, useMethod } from 'utils/hooks'
 
-import CommitsList from './CommitsList'
-import Steps from './Steps'
 import BasicInformation from './BasicInformation'
-import LanguageCreate from './LanguageCreate'
 import BriefEditQuestions from './BriefEditQuestions'
 import ButtonLoading from './ButtonLoading'
+import CommitsList from './CommitsList'
+import LanguageCreate from './LanguageCreate'
 import SwitchLoading from './Panel/UI/SwitchLoading'
-
-import { useLanguages, useMethod } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
+import Steps from './Steps'
 
 function ProjectCreate() {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])
@@ -146,9 +142,9 @@ function ProjectCreate() {
 
   return (
     <>
-      <div className="pt-0 pb-8 sm:py-5" onClick={(e) => e.stopPropagation()}>
+      <div className="pb-8 pt-0 sm:py-5" onClick={(e) => e.stopPropagation()}>
         <form className="flex flex-col gap-0 md:gap-7" onSubmit={handleSubmit(onSubmit)}>
-          <div className="card-md py-7 space-y-7 bg-transparent sm:bg-th-secondary-100">
+          <div className="card-md space-y-7 bg-transparent py-7 sm:bg-th-secondary-100">
             <h3 className="text-xl font-bold">{t('project-edit:BasicInformation')}</h3>
             <BasicInformation
               t={t}
@@ -162,13 +158,13 @@ function ProjectCreate() {
               isCreate
             />
           </div>
-          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 py-7">
+          <div className="card-md flex flex-col gap-7 bg-transparent py-7 sm:bg-th-secondary-100">
             <h3 className="text-xl font-bold">{t('project-edit:Steps')}</h3>
             <div className="flex flex-col gap-7 text-sm md:text-base">
               <Steps customSteps={customSteps} updateSteps={updateSteps} />
             </div>
           </div>
-          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 py-7">
+          <div className="card-md flex flex-col gap-7 bg-transparent py-7 sm:bg-th-secondary-100">
             <div className="flex justify-between">
               <h3 className="text-xl font-bold">{t('Brief')}</h3>
               <div className="flex items-center gap-2">
@@ -191,7 +187,7 @@ function ProjectCreate() {
               autoSave
             />
           </div>
-          <div className="card-md bg-transparent sm:bg-th-secondary-100 flex flex-col gap-7 pb-7 border-b border-th-secondary-300">
+          <div className="card-md flex flex-col gap-7 border-b border-th-secondary-300 bg-transparent pb-7 sm:bg-th-secondary-100">
             <h3 className="text-xl font-bold">{t('common:ListResources')}</h3>
             <CommitsList
               methodId={methodId}

@@ -1,21 +1,18 @@
 import { useEffect, useState } from 'react'
 
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
-
-import { useSetRecoilState } from 'recoil'
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-
-import Workspace from 'components/Workspace'
+import { useRouter } from 'next/router'
 
 import { stepConfigState } from 'components/state/atoms'
-
+import Workspace from 'components/Workspace'
 import { useCurrentUser } from 'lib/UserContext'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import Progress from 'public/progress.svg'
+import { useSetRecoilState } from 'recoil'
 import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
-import Progress from 'public/progress.svg'
 
 /**
  * что если тут мы заменим все инструменты на обычную читалку, и так же надо подгрузить чужие стихи
@@ -149,14 +146,14 @@ function TranslatorPage({ last_step }) {
           stepConfig={stepConfig}
         />
       ) : (
-        <div className="h-empty-screen flex items-center justify-center mx-auto max-w-7xl py-5">
-          <Progress className=" progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
+        <div className="h-empty-screen mx-auto flex max-w-7xl items-center justify-center py-5">
+          <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
         </div>
       )}
 
-      <div className="flex justify-end px-0 mx-auto w-full max-w-7xl lg:px-4 xl:px-0 bg-th-secondary-100">
+      <div className="mx-auto flex w-full max-w-7xl justify-end bg-th-secondary-100 px-0 lg:px-4 xl:px-0">
         <Link href={`/translate/${project}/${book}/${chapter}/${step}`} legacyBehavior>
-          <button className="my-2 btn-quaternary !px-6">{t('BackTo')}</button>
+          <button className="btn-quaternary my-2 !px-6">{t('BackTo')}</button>
         </Link>
       </div>
     </div>

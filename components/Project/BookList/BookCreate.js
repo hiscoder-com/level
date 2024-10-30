@@ -3,10 +3,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-
-import { useTranslation } from 'next-i18next'
-
 import Modal from 'components/Modal'
+import { useTranslation } from 'next-i18next'
 
 function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
   const { push } = useRouter()
@@ -73,7 +71,7 @@ function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
         isOpen={typeof bookCode === 'string'}
         closeHandle={reset}
         className={{
-          dialogPanel: `w-full max-w-md align-middle p-6 rounded-3xl ${
+          dialogPanel: `w-full max-w-md rounded-3xl p-6 align-middle ${
             isCreated
               ? 'bg-th-secondary-300 text-th-text-secondary-100'
               : 'bg-th-primary-100 text-th-text-secondary-100'
@@ -81,13 +79,13 @@ function BookCreate({ bookCode, project, mutateBooks, setBookCodeCreating }) {
         }}
         handleCloseDisabled={isCreating}
       >
-        <div className="flex flex-col justify-center items-center gap-7 min-h-[10rem]">
-          <div className="flex flex-row gap-2 mb-4 text-xl sm:text-2xl text-center">
+        <div className="flex min-h-[10rem] flex-col items-center justify-center gap-7">
+          <div className="mb-4 flex flex-row gap-2 text-center text-xl sm:text-2xl">
             <p>{textModal}</p>
             {isCreating && !isCreated && <p className="animate-pulse">...</p>}
           </div>
           {!isCreating && !isCreated && (
-            <div className="flex justify-center gap-4 w-1/2">
+            <div className="flex w-1/2 justify-center gap-4">
               <button
                 className="btn-secondary flex-1"
                 onClick={() => handleCreate(bookCode)}

@@ -1,15 +1,14 @@
 import { useEffect, useState } from 'react'
 
 import { Switch } from '@headlessui/react'
+import { TNTWLContent } from 'components/Panel/UI'
 import { useTranslation } from 'react-i18next'
-
 import { checkLSVal } from 'utils/helper'
 
-import { TNTWLContent } from 'components/Panel/UI'
-import ListBoxMultiple from './ListBoxMultiple'
-import Search from './Search'
 import Images from './Images'
+import ListBoxMultiple from './ListBoxMultiple'
 import Notes from './Notes'
+import Search from './Search'
 
 function Aquifer({ config }) {
   const { t } = useTranslation(['aquifer', 'common'])
@@ -67,7 +66,7 @@ function Aquifer({ config }) {
         </div>
       ) : (
         <>
-          <div className="flex flex-col gap-3.5 border-b pb-5 mb-7 border-th-secondary-300">
+          <div className="mb-7 flex flex-col gap-3.5 border-b border-th-secondary-300 pb-5">
             <div className="flex items-center gap-3.5">
               <ListBoxMultiple
                 options={options}
@@ -83,7 +82,7 @@ function Aquifer({ config }) {
               <Switch
                 checked={isShowAllChapter}
                 onChange={() => setIsShowAllChapter((prev) => !prev)}
-                className={`relative inline-flex items-center h-6 w-12 rounded-full ${
+                className={`relative inline-flex h-6 w-12 items-center rounded-full ${
                   isShowAllChapter ? 'bg-th-primary-100' : 'bg-th-secondary-100'
                 }`}
               >
@@ -99,7 +98,7 @@ function Aquifer({ config }) {
             if (selectedOptions.includes(tool.name)) {
               return (
                 <div key={tool.name}>
-                  <h3 className="font-bold text-xl my-4">{tool.name}</h3>
+                  <h3 className="my-4 text-xl font-bold">{tool.name}</h3>
                   {tool.node}
                 </div>
               )

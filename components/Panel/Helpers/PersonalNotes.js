@@ -2,34 +2,37 @@ import { useEffect, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
-import { useTranslation } from 'next-i18next'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 import axios from 'axios'
-import { toast } from 'react-hot-toast'
-import { useRecoilValue } from 'recoil'
-
 import Modal from 'components/Modal'
-import MenuButtons from '../UI/MenuButtons'
-
-import { useCurrentUser } from 'lib/UserContext'
-import useSupabaseClient from 'utils/supabaseClient'
-import { checkLSVal, convertNotesToTree, formationJSONToTree } from 'utils/helper'
-import { useAllPersonalNotes, usePersonalNotes } from 'utils/hooks'
-import { removeCacheNote, saveCacheNote } from 'utils/helper'
 import { projectIdState } from 'components/state/atoms'
-
-import Back from 'public/left.svg'
-import Trash from 'public/trash.svg'
-import FileIcon from 'public/file-icon.svg'
+import { useCurrentUser } from 'lib/UserContext'
+import { useTranslation } from 'next-i18next'
 import CloseFolder from 'public/close-folder.svg'
-import OpenFolder from 'public/open-folder.svg'
+import Close from 'public/close.svg'
+import Export from 'public/export.svg'
+import FileIcon from 'public/file-icon.svg'
 import ArrowDown from 'public/folder-arrow-down.svg'
 import ArrowRight from 'public/folder-arrow-right.svg'
-import Export from 'public/export.svg'
 import Import from 'public/import.svg'
-import Rename from 'public/rename.svg'
-import Close from 'public/close.svg'
+import Back from 'public/left.svg'
+import OpenFolder from 'public/open-folder.svg'
 import Progress from 'public/progress.svg'
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
+import Rename from 'public/rename.svg'
+import Trash from 'public/trash.svg'
+import { toast } from 'react-hot-toast'
+import { useRecoilValue } from 'recoil'
+import {
+  checkLSVal,
+  convertNotesToTree,
+  formationJSONToTree,
+  removeCacheNote,
+  saveCacheNote,
+} from 'utils/helper'
+import { useAllPersonalNotes, usePersonalNotes } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
+
+import MenuButtons from '../UI/MenuButtons'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -53,11 +56,11 @@ const TreeView = dynamic(
 )
 
 const icons = {
-  file: <FileIcon className="w-6 h-6" />,
+  file: <FileIcon className="h-6 w-6" />,
   arrowDown: <ArrowDown className="stroke-2" />,
   arrowRight: <ArrowRight className="stroke-2" />,
-  openFolder: <OpenFolder className="w-6 h-6 stroke-[1.7]" />,
-  closeFolder: <CloseFolder className="w-6 h-6" />,
+  openFolder: <OpenFolder className="h-6 w-6 stroke-[1.7]" />,
+  closeFolder: <CloseFolder className="h-6 w-6" />,
 }
 
 function PersonalNotes({ config }) {
@@ -460,16 +463,16 @@ function PersonalNotes({ config }) {
   const dropMenuClassNames = { container: menuItems.container, item: menuItems.item }
   return (
     <div className="relative">
-      <div className="flex gap-2 flex-row-reverse rtl:flex-row">
+      <div className="flex flex-row-reverse gap-2 rtl:flex-row">
         <MenuButtons
           disabled={activeNote && Object.keys(activeNote)?.length}
           classNames={dropMenuClassNames}
           menuItems={dropMenuItems}
         />
-        <div className="relative flex items-center mb-3 grow" dir={termDirection}>
+        <div className="relative mb-3 flex grow items-center" dir={termDirection}>
           <input
             disabled={activeNote && Object.keys(activeNote)?.length}
-            className="input-primary flex-1 h-full"
+            className="input-primary h-full flex-1"
             value={term}
             onChange={(event) => {
               setTermDirection(calculateRtlDirection(event.target.value))
@@ -481,7 +484,7 @@ function PersonalNotes({ config }) {
             <button
               disabled={activeNote && Object.keys(activeNote)?.length}
               onClick={() => setTerm('')}
-              className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1 disabled:opacity-70 disabled:cursor-auto"
+              className="р-6 absolute z-10 w-6 cursor-pointer disabled:cursor-auto disabled:opacity-70 ltr:right-1 rtl:left-1"
             >
               <Close />
             </button>
@@ -529,13 +532,13 @@ function PersonalNotes({ config }) {
               />
             </>
           ) : (
-            <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100 mx-auto" />
+            <Progress className="progress-custom-colors mx-auto w-14 animate-spin stroke-th-primary-100" />
           )}
         </div>
       ) : (
-        <div className="relative group" dir={titleDirection}>
+        <div className="group relative" dir={titleDirection}>
           <div
-            className="absolute top-0 left-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
+            className="absolute left-0 top-0 flex w-fit cursor-pointer rounded-full bg-th-secondary-100 p-1 hover:opacity-70"
             onClick={() => {
               saveNote()
               setActiveNote(null)
@@ -563,7 +566,7 @@ function PersonalNotes({ config }) {
         </div>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        <div className="flex flex-col gap-7 items-center">
+        <div className="flex flex-col items-center gap-7">
           <div className="text-center text-2xl">
             {t('AreYouSureDelete') +
               ' ' +
@@ -574,7 +577,7 @@ function PersonalNotes({ config }) {
               ) +
               '?'}
           </div>
-          <div className="flex gap-7 w-1/2 text-th-text-primary">
+          <div className="flex w-1/2 gap-7 text-th-text-primary">
             <button
               className="btn-base flex-1 bg-th-secondary-10 hover:opacity-70"
               onClick={() => {

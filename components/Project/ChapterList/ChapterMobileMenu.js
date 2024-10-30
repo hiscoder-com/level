@@ -1,13 +1,12 @@
-import { Menu } from '@headlessui/react'
-
 import Link from 'next/link'
 
+import { Menu } from '@headlessui/react'
+import MobileMenu from 'components/Panel/UI/MobileMenu'
+import Gear from 'public/gear.svg'
+
+import ChapterProgressControls from './ChapterProgressControls'
 import ProjectParticipants from './ProjectParticipants'
 import VerseDistributionButtons from './VerseDistributionButtons'
-import ChapterProgressControls from './ChapterProgressControls'
-import MobileMenu from 'components/Panel/UI/MobileMenu'
-
-import Gear from 'public/gear.svg'
 
 function ChapterMobileMenu({
   assign,
@@ -46,19 +45,19 @@ function ChapterMobileMenu({
   return (
     <MobileMenu>
       <Menu.Items>
-        <div className="flex gap-2 items-center pt-6">
+        <div className="flex items-center gap-2 pt-6">
           <div className="p-4 text-xl font-bold">{t('Participants')}</div>
           <Link href={`/projects/${project?.code}/edit#participants`}>
-            <Gear className="w-6 h-6 min-w-[1.5rem] stroke-th-text-primary" />
+            <Gear className="h-6 w-6 min-w-[1.5rem] stroke-th-text-primary" />
           </Link>
         </div>
 
         <Menu.Item
           as="div"
-          className="px-4 h-full w-full"
+          className="h-full w-full px-4"
           onClick={(e) => e.preventDefault()}
         >
-          <div className="flex flex-col gap-3 pb-3 h-full w-full">
+          <div className="flex h-full w-full flex-col gap-3 pb-3">
             {translators.length > 0 ? (
               <div>
                 <ProjectParticipants
@@ -75,7 +74,7 @@ function ChapterMobileMenu({
               <>
                 {[...Array(4).keys()].map((el) => (
                   <div role="status" className="w-full animate-pulse" key={el}>
-                    <div className="h-[68px] bg-th-secondary-100 rounded-2xl w-full"></div>
+                    <div className="h-[68px] w-full rounded-2xl bg-th-secondary-100"></div>
                   </div>
                 ))}
               </>

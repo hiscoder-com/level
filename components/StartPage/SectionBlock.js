@@ -10,14 +10,14 @@ function SectionBlock({
 }) {
   return (
     <div
-      className={`relative p-5 bg-th-secondary-10 rounded-xl ${
+      className={`relative rounded-xl bg-th-secondary-10 p-5 ${
         isLogo ? 'flex justify-center' : 'text-center'
       }`}
       onClick={() => toggleSection(sectionKey)}
     >
       {showSection ? content : isLogo ? label : <p>{label}</p>}
       <Close
-        className={`absolute w-6 h-6 right-5 top-5 stroke-black cursor-pointer ${
+        className={`absolute right-5 top-5 h-6 w-6 cursor-pointer stroke-black ${
           showSection ? '' : 'hidden'
         }`}
       />

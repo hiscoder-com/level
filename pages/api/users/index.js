@@ -42,9 +42,8 @@ export default async function handler(req, res) {
               } catch (error) {
                 return res.status(401).json({ error })
               }
-              const { data: is_admin, error: error_rpc } = await supabase.rpc(
-                'admin_only'
-              )
+              const { data: is_admin, error: error_rpc } =
+                await supabase.rpc('admin_only')
               if (error_rpc) throw error_rpc
               if (!is_admin) {
                 return res.status(404).json({ error: 'Access denied!' })

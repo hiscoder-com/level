@@ -2,13 +2,11 @@ import { useEffect, useState } from 'react'
 
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { useTranslation } from 'react-i18next'
-
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import IntroStep from 'components/IntroStep'
 import Modal from 'components/Modal'
-
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+import { useTranslation } from 'react-i18next'
 import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
 

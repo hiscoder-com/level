@@ -1,6 +1,5 @@
-import { useTranslation } from 'next-i18next'
-
 import Modal from 'components/Modal'
+import { useTranslation } from 'next-i18next'
 
 function RemoveParticipant({ selected, setSelected, remove, label, role }) {
   const { t } = useTranslation()
@@ -9,9 +8,9 @@ function RemoveParticipant({ selected, setSelected, remove, label, role }) {
       isOpen={selected ? Object.keys(selected).length > 0 : false}
       closeHandle={() => setSelected(false)}
     >
-      <div className="flex flex-col justify-center gap-16 min-h-[15vh]">
-        <div className="text-2xl text-center">{t(label)}</div>
-        <div className="flex justify-center self-center gap-7 w-2/3">
+      <div className="flex min-h-[15vh] flex-col justify-center gap-16">
+        <div className="text-center text-2xl">{t(label)}</div>
+        <div className="flex w-2/3 justify-center gap-7 self-center">
           <button
             onClick={() => remove(selected.id, role)}
             disabled={!selected}

@@ -2,12 +2,10 @@ import { Fragment, useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { Toaster } from 'react-hot-toast'
-
 import { Transition } from '@headlessui/react'
-
 import AppBar from 'components/AppBar'
 import Progress from 'public/progress.svg'
+import { Toaster } from 'react-hot-toast'
 
 function Layout({ backgroundColor, children }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)
@@ -28,7 +26,7 @@ function Layout({ backgroundColor, children }) {
     <>
       <div
         className={`mx-auto min-h-screen ${backgroundColor} ${
-          isOpenSideBar || loadingPage ? 'overflow-y-hidden h-[100vh]' : ''
+          isOpenSideBar || loadingPage ? 'h-[100vh] overflow-y-hidden' : ''
         } `}
       >
         <AppBar setIsOpenSideBar={setIsOpenSideBar} isOpenSideBar={isOpenSideBar} />
@@ -40,7 +38,7 @@ function Layout({ backgroundColor, children }) {
             enter="transition-opacity duration-200"
             leave="transition-opacity duration-200"
           >
-            <div className="absolute flex justify-center items-center top-14 sm:top-16 left-0 bottom-0 right-0 bg-black bg-opacity-70 z-20 overflow-y-hidden">
+            <div className="absolute bottom-0 left-0 right-0 top-14 z-20 flex items-center justify-center overflow-y-hidden bg-black bg-opacity-70 sm:top-16">
               {loadingPage && (
                 <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
               )}
@@ -48,7 +46,7 @@ function Layout({ backgroundColor, children }) {
           </Transition>
         </div>
         <main>
-          <div className="pt-5 px-5 lg:px-8 lg:ms-10 2xl:ms-0 mt-14 sm:mt-auto">
+          <div className="mt-14 px-5 pt-5 sm:mt-auto lg:ms-10 lg:px-8 2xl:ms-0">
             {children}
           </div>
         </main>

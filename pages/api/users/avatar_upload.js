@@ -1,6 +1,5 @@
-import { IncomingForm } from 'formidable'
 import { decode } from 'base64-arraybuffer'
-
+import { IncomingForm } from 'formidable'
 import { supabaseService } from 'utils/supabaseService'
 
 export const config = {

@@ -1,11 +1,10 @@
 import { useMemo } from 'react'
 
-import { useTranslation } from 'next-i18next'
-
 import TranslatorImage from 'components/TranslatorImage'
-import Card from './Card'
-
+import { useTranslation } from 'next-i18next'
 import { useCoordinators, useTranslators } from 'utils/hooks'
+
+import Card from './Card'
 
 function ParticipantInfo({ project, access }) {
   const { t } = useTranslation()
@@ -42,17 +41,17 @@ function ParticipantInfo({ project, access }) {
       access={access}
     >
       {project && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 auto-rows-fr gap-2">
+        <div className="grid auto-rows-fr grid-cols-1 gap-2 lg:grid-cols-2">
           {participants?.map((participant, index) => (
             <div
               key={index}
-              className="flex items-center gap-4 px-4 py-1 border border-th-primary-100-hover-background rounded-3xl"
+              className="border-th-primary-100-hover-background flex items-center gap-4 rounded-3xl border px-4 py-1"
             >
-              <div className="w-7 h-7 min-w-[2rem]">
+              <div className="h-7 w-7 min-w-[2rem]">
                 <TranslatorImage item={participant} />
               </div>
               <div className="truncate">
-                <p className="text-lg truncate">{participant?.users?.login}</p>
+                <p className="truncate text-lg">{participant?.users?.login}</p>
                 <div className="text-sm">
                   {participant.is_coordinator ? (
                     <p>{t('Coordinator')}</p>
