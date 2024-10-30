@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 import Close from 'public/icons/close.svg'
 
 function SectionBlock({
@@ -9,8 +10,20 @@ function SectionBlock({
   toggleSection,
   isLogo = false,
 }) {
-  const handleSectionToggle = () => {
+  const router = useRouter()
+
+  const updateRoute = async () => {
+    await router.replace('/', undefined, { shallow: true, scroll: false })
+  }
+
+  const handleSectionToggle = async () => {
+    await updateRoute()
     toggleSection(sectionKey)
+  }
+
+  const handleCloseClick = async (e) => {
+    e.stopPropagation()
+    await updateRoute()
   }
 
   return (
@@ -22,6 +35,7 @@ function SectionBlock({
     >
       {showSection ? content : isLogo ? label : <p>{label}</p>}
       <Close
+        onClick={handleCloseClick}
         className={`absolute w-6 h-6 right-5 top-5 stroke-black cursor-pointer ${
           showSection ? '' : 'hidden'
         }`}
