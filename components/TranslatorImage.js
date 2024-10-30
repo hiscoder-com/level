@@ -54,7 +54,7 @@ function TranslatorImage({ item, size, showModerator = false, isPointerCursor = 
             cy="84"
             r="84"
             className={
-              defaultColor[item?.users?.login.length % 6] ?? 'fill-th-divide-verse1'
+              defaultColor[item?.users?.login?.length % 6] ?? 'fill-th-divide-verse1'
             }
           />
           <text
@@ -63,7 +63,7 @@ function TranslatorImage({ item, size, showModerator = false, isPointerCursor = 
             textAnchor="middle"
             className="text-7xl fill-th-text-primary font-bold"
           >
-            {item?.users?.login.toUpperCase().slice(0, 2)}
+            {item?.users?.login?.toUpperCase().slice(0, 2)}
           </text>
         </svg>
       )}
