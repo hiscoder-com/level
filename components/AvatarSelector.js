@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react'
 import { useTranslation } from 'next-i18next'
+import Close from 'public/close.svg'
 
 import axios from 'axios'
 import toast from 'react-hot-toast'
@@ -15,7 +16,7 @@ import Trash from 'public/trash.svg'
 function AvatarSelector({ id }) {
   const { t } = useTranslation('common')
   const fileInputRef = useRef(null)
-  const modalsSidebarState = useRecoilValue(modalsSidebar)
+  const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
   const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [avatars, setAvatars] = useState([])
   const [isLoading, setIsLoading] = useState(true)
@@ -197,13 +198,29 @@ function AvatarSelector({ id }) {
           </div>
         ) : (
           <div
-            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-5 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min pb-3 sm:pb-5 overflow-auto min-h-full sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border-b sm:border-x sm:rounded-2xl md:max-h-full md:left-full md:ml-5 lg:w-[30rem] rounded-none md:rounded-xl lg:rounded-none lg:ml-0 z-20"
             onClick={(e) => e.stopPropagation()}
             onDragEnter={handleDragEnterOver}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragEnterOver}
           >
-            <div className="sticky top-0 flex justify-center py-6 border-b border-th-secondary-300 bg-th-secondary-10">
+            <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 lg:px-7 h-[3.75rem] md:rounded-t-xl lg:rounded-none">
+              <button
+                className="absolute right-4"
+                onClick={() => {
+                  setModalsSidebarState({
+                    aboutVersion: false,
+                    avatarSelector: false,
+                    notepad: false,
+                    writeToUs: false,
+                    about: false,
+                  })
+                }}
+              >
+                <Close className="h-8 stroke-th-secondary-10" />
+              </button>
+            </div>
+            <div className="sticky top-0 flex justify-center py-6 border-b border-th-secondary-300 bg-th-secondary-10 px-7">
               <button
                 onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
                 className="btn-primary w-full"
@@ -212,7 +229,7 @@ function AvatarSelector({ id }) {
               </button>
             </div>
             {isLoading ? (
-              <div role="status" className="w-full animate-pulse py-6">
+              <div role="status" className="w-full animate-pulse py-6 px-7">
                 <div className="flex flex-wrap gap-3 justify-between">
                   {[...Array(4)].map((_, index) => (
                     <div
@@ -232,7 +249,7 @@ function AvatarSelector({ id }) {
               />
             ) : (
               <>
-                <div className="flex flex-wrap items-center justify-start gap-4 overflow-y-auto py-6 z-10 bg-white">
+                <div className="flex flex-wrap items-center justify-start gap-4 overflow-y-auto py-6 z-10 bg-white px-7">
                   {avatars?.map((avatar, index) => (
                     <div
                       key={index}

@@ -51,7 +51,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
 
   const [collapsed, setCollapsed] = useState(true)
   const [isLargeScreen, setIsLargeScreen] = useState(false)
-  const [showAbout, setShowAbout] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
 
   const collapsedSideBar = collapsed ? 'lg:hidden' : ''
@@ -65,6 +64,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
         avatarSelector: false,
         notepad: false,
         writeToUs: false,
+        about: false,
       }
 
       newModals[modalType] = !prevModals[modalType]
@@ -79,6 +79,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
       avatarSelector: false,
       notepad: false,
       writeToUs: false,
+      about: false,
     })
   }, [setModalsSidebarState])
 
@@ -97,14 +98,12 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
     if (!isOpenSideBar) {
       setCollapsed(true)
       closeModal()
-      setShowAbout(false)
     }
   }, [closeModal, isOpenSideBar])
   const clear = (close) => {
     closeModal()
     setIsOpenSideBar(false)
     close && close()
-    setShowAbout(false)
   }
 
   return (
@@ -127,8 +126,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
           </Menu.Button>
           <Transition
             afterLeave={() => {
-              setShowAbout(false)
-
               setShowCreate(false)
             }}
             as={Fragment}
@@ -144,7 +141,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
                 setCollapsed(false)
-
                 setIsOpenSideBar(true)
               }}
               onMouseLeave={() => {
@@ -152,7 +148,8 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                   modalsSidebarState.notepad ||
                   modalsSidebarState.aboutVersion ||
                   modalsSidebarState.avatarSelector ||
-                  showAbout
+                  modalsSidebarState.writeToUs ||
+                  modalsSidebarState.about
                 ) {
                   return
                 }
@@ -160,7 +157,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                 closeModal()
                 close()
                 setIsOpenSideBar(false)
-                setShowAbout(false)
               }}
             >
               <div className="relative h-full flex flex-col gap-2 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
@@ -266,7 +262,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => {
                             openModal('notepad')
-                            setShowAbout(false)
                           }}
                         >
                           <div className="rounded-[23rem]">
@@ -314,7 +309,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                                 closeModal()
                                 setIsOpenSideBar(false)
                                 close()
-                                setShowAbout(false)
                               }}
                             >
                               <div className="rounded-[23rem]">
@@ -378,30 +372,34 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         as="div"
                         disabled
                         className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
-                          showAbout ? 'bg-th-secondary-200' : 'opacity-70'
+                          modalsSidebarState.about ? 'bg-th-secondary-200' : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => {
-                            setShowAbout((prev) => !prev)
-                            openModal()
+                            openModal('about')
                           }}
                         >
                           <div className="rounded-[23rem]">
                             <About
                               className={`w-5 ${
-                                showAbout ? 'stroke-th-text-primary' : activeIconClass
+                                modalsSidebarState.about
+                                  ? 'stroke-th-text-primary'
+                                  : activeIconClass
                               } ${collapsed ? 'opacity-70' : ''}`}
                             />
                           </div>
                           <ModalInSideBar
                             setIsOpen={(value) => {
-                              setShowAbout(value)
+                              setModalsSidebarState((prev) => ({
+                                ...prev,
+                                about: value,
+                              }))
                               setCollapsed(!value)
                               setIsOpenSideBar(value)
                             }}
-                            isOpen={showAbout}
+                            isOpen={modalsSidebarState.about}
                             buttonTitle={t('About')}
                             modalTitle={'LEVEL'}
                             collapsed={collapsed}
@@ -422,7 +420,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         <div
                           className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => {
-                            setShowAbout(false)
                             openModal('writeToUs')
                           }}
                         >
@@ -467,7 +464,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => {
                             openModal('aboutVersion')
-                            setShowAbout(false)
                           }}
                         >
                           <div className="rounded-[23rem]">
