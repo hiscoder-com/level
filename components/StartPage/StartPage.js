@@ -275,9 +275,13 @@ function StartPage({ defaultContentKey = null }) {
           )}
           <Link
             scroll={false}
-            href={`/${contentRoutes['signIn']}`}
+            href="/"
             shallow
-            onClick={() => toggleSection('signIn')}
+            onClick={async (e) => {
+              e.preventDefault()
+              await router.push('/')
+              router.push(`/${contentRoutes['signIn']}`)
+            }}
             className={`p-5 rounded-xl cursor-pointer ${
               showSections.signIn
                 ? 'col-span-2 bg-th-secondary-10'

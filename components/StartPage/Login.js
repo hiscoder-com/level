@@ -123,6 +123,10 @@ function Login({ handleClick = () => {} }) {
       <p className="hidden md:block">{t('LoginToAccount')}</p>
       <Close
         className={`absolute md:hidden w-6 h-6 right-0 -top-12 stroke-black cursor-pointer`}
+        onClick={(e) => {
+          e.stopPropagation()
+          router.push('/')
+        }}
       />
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
