@@ -204,7 +204,7 @@ function AvatarSelector({ id }) {
             onDragLeave={handleDragLeave}
             onDragOver={handleDragEnterOver}
           >
-            <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 lg:px-7 h-[3.75rem] md:rounded-t-xl lg:rounded-none">
+            <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 lg:px-7 h-[3.75rem] md:rounded-t-xl lg:rounded-none rounded-none sm:rounded-t-xl">
               <button
                 className="absolute right-4"
                 onClick={() => {

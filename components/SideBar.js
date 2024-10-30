@@ -218,12 +218,12 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className={`flex px-4 py-3 items-center justify-between gap-2 cursor-default md:hidden ${
+                          className={`flex px-4 items-center justify-between gap-2 cursor-default md:hidden ${
                             !showCreate ? 'opacity-70' : ''
                           }`}
                         >
                           <div
-                            className="flex w-full items-center gap-2 cursor-pointer"
+                            className="flex w-full items-center gap-2 cursor-pointer py-3"
                             onClick={() => {
                               setShowCreate((prev) => !prev)
                               openModal()
@@ -252,14 +252,14 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
+                        className={`group px-4 flex items-center justify-between gap-2 cursor-default ${
                           modalsSidebarState.notepad
                             ? 'bg-th-secondary-200'
                             : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
-                          className="flex w-full items-center gap-2 cursor-pointer"
+                          className="flex w-full items-center gap-2 cursor-pointer py-3"
                           onClick={() => {
                             openModal('notepad')
                           }}
@@ -296,7 +296,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className={`group py-3 px-4 ${
+                          className={`group px-4 ${
                             router.pathname === '/users'
                               ? 'bg-th-secondary-200'
                               : 'opacity-70'
@@ -304,7 +304,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         >
                           <Link href="/users" legacyBehavior>
                             <a
-                              className="flex items-center gap-2 cursor-pointer"
+                              className="flex items-center gap-2 cursor-pointer py-3"
                               onClick={() => {
                                 closeModal()
                                 setIsOpenSideBar(false)
@@ -371,12 +371,12 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
+                        className={`group px-4 flex items-center justify-between gap-2 cursor-default ${
                           modalsSidebarState.about ? 'bg-th-secondary-200' : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
-                          className="flex w-full items-center gap-2 cursor-pointer"
+                          className="flex w-full items-center gap-2 cursor-pointer py-3"
                           onClick={() => {
                             openModal('about')
                           }}
@@ -411,14 +411,14 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
+                        className={`group px-4 flex items-center justify-between gap-2 cursor-default ${
                           modalsSidebarState.writeToUs
                             ? 'bg-th-secondary-200'
                             : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
-                          className="flex w-full items-center gap-2 cursor-pointer"
+                          className="flex w-full items-center gap-2 cursor-pointer py-3"
                           onClick={() => {
                             openModal('writeToUs')
                           }}
@@ -454,14 +454,14 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
+                        className={`group px-4 flex items-center justify-between gap-2 cursor-default ${
                           modalsSidebarState.aboutVersion
                             ? 'bg-th-secondary-200'
                             : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
-                          className="flex w-full items-center gap-2 cursor-pointer"
+                          className="flex w-full items-center gap-2 cursor-pointer py-3"
                           onClick={() => {
                             openModal('aboutVersion')
                           }}
@@ -516,12 +516,12 @@ function MenuItemLink({ collapsedSideBar, tab, clear, Icon, name, additionalClas
     <Menu.Item
       as="div"
       disabled
-      className={`group py-3 px-4 ${
+      className={`group px-4 ${
         router.query?.tab !== tab ? 'opacity-70' : 'bg-th-secondary-200'
       } hover:bg-th-secondary-200 ${additionalClassName}`}
     >
       <Link href={`/account?tab=${tab}`} legacyBehavior shallow>
-        <a className="flex items-center gap-2 cursor-pointer" onClick={clear}>
+        <a className="flex items-center gap-2 cursor-pointer py-3 " onClick={clear}>
           <div className="rounded-[23rem]">
             <Icon className={iconClassName} />
           </div>
