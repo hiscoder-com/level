@@ -14,11 +14,11 @@ import Download from '../Download'
 import { useGetBooks, useGetChaptersTranslate } from 'utils/hooks'
 import { checkBookCodeExists } from 'utils/helper'
 
-import Gear from 'public/gear.svg'
-import Reader from 'public/dictionary.svg'
-import DownloadIcon from 'public/download.svg'
-import Play from 'public/play.svg'
-import Elipsis from 'public/elipsis.svg'
+import Gear from 'public/icons/gear.svg'
+import Reader from 'public/icons/dictionary.svg'
+import DownloadIcon from 'public/icons/download.svg'
+import Play from 'public/icons/play.svg'
+import Elipsis from 'public/icons/elipsis.svg'
 
 function Testament({
   bookList,

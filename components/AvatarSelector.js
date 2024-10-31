@@ -10,7 +10,7 @@ import ImageEditor from './ImageEditor'
 import { userAvatarState, modalsSidebar } from './state/atoms'
 import { useUser } from 'utils/hooks'
 
-import Trash from 'public/trash.svg'
+import Trash from 'public/icons/trash.svg'
 
 function AvatarSelector({ id }) {
   const { t } = useTranslation('common')

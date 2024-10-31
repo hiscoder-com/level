@@ -7,7 +7,7 @@ import VerseDistributionButtons from './VerseDistributionButtons'
 import ChapterProgressControls from './ChapterProgressControls'
 import MobileMenu from 'components/Panel/UI/MobileMenu'
 
-import Gear from 'public/gear.svg'
+import Gear from 'public/icons/gear.svg'
 
 function ChapterMobileMenu({
   assign,

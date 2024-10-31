@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import Close from 'public/close.svg'
+import Close from 'public/icons/close.svg'
 
 function FrequentlyAskedQuestions({ t, opacity }) {
   const faqData = [

@@ -14,7 +14,7 @@ import updatesEN from '../public/updateVersionInfo/updates_en.md'
 import updatesRU from '../public/updateVersionInfo/updates_ru.md'
 import updatesES from '../public/updateVersionInfo/updates_es.md'
 
-import Close from 'public/close.svg'
+import Close from 'public/icons/close.svg'
 
 function AboutVersion({ isStartPage = false, collapsed, onClose }) {
   const aboutVersion = {
@@ -60,6 +60,7 @@ function AboutVersion({ isStartPage = false, collapsed, onClose }) {
         </p>
         <Close
           className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+          onClick={() => onClose && onClose()}
         />
         <div className="overflow-auto" onClick={(e) => e.stopPropagation()}>
           <ReactMarkdown className="flex-grow text-left overflow-auto md:pr-5 text-sm font-normal whitespace-pre-line leading-5">
@@ -108,7 +109,7 @@ function AboutVersion({ isStartPage = false, collapsed, onClose }) {
                   ...prev,
                   aboutVersion: false,
                 }))
-                onClose(false)
+                if (onClose) onClose()
               }}
             >
               <Close className="h-8 stroke-th-secondary-10" />

@@ -6,7 +6,7 @@ import axios from 'axios'
 
 import UpdateField from './UpdateField'
 
-import Down from 'public/arrow-down.svg'
+import Down from 'public/icons/arrow-down.svg'
 
 function Steps({
   updateSteps,

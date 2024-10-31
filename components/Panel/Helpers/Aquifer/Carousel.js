@@ -9,9 +9,9 @@ import FullSizeImageCarousel from './FullSizeImageCarousel'
 import ImageCard from './ImageCard'
 import LoadMoreButton from './LoadMoreButton'
 
-import ArrowRight from 'public/folder-arrow-right.svg'
-import Loading from 'public/progress.svg'
-import Return from 'public/return.svg'
+import ArrowRight from 'public/icons/folder-arrow-right.svg'
+import Loading from 'public/icons/progress.svg'
+import Return from 'public/icons/return.svg'
 
 function Carousel({
   images,

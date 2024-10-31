@@ -12,9 +12,10 @@ import InputField from 'components/Panel/UI/InputField'
 import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
 
-import Report from 'public/error-outline.svg'
-import Loading from 'public/progress.svg'
-import Close from 'public/close.svg'
+import Report from 'public/icons/error-outline.svg'
+import Loading from 'public/icons/progress.svg'
+import Close from 'public/icons/close.svg'
+import Link from 'next/link'
 
 function Login({ handleClick = () => {} }) {
   const supabase = useSupabaseClient()
@@ -122,6 +123,10 @@ function Login({ handleClick = () => {} }) {
       <p className="hidden md:block">{t('LoginToAccount')}</p>
       <Close
         className={`absolute md:hidden w-6 h-6 right-0 -top-12 stroke-black cursor-pointer`}
+        onClick={(e) => {
+          e.stopPropagation()
+          router.push('/')
+        }}
       />
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
@@ -193,9 +198,14 @@ function Login({ handleClick = () => {} }) {
 
             <p className="text-base text-center font-medium">
               {t('RegistrationTextStart')}{' '}
-              <span className="text-th-primary-200 cursor-pointer" onClick={handleClick}>
+              <Link
+                href="/connect-with-us"
+                shallow
+                className="text-th-primary-200 cursor-pointer"
+                onClick={handleClick}
+              >
                 {t('RegistrationTextEnd')}
-              </span>
+              </Link>
             </p>
           </form>
         )}

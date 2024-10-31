@@ -6,7 +6,7 @@ import MarkdownExtended from 'components/MarkdownExtended'
 
 import { useGetWholeBook } from 'utils/hooks'
 import { obsCheckAdditionalVerses } from 'utils/helper'
-import Loading from 'public/progress.svg'
+import Loading from 'public/icons/progress.svg'
 
 function Book({ config, url }) {
   const { t } = useTranslation()

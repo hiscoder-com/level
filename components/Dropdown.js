@@ -10,7 +10,7 @@ import Modal from './Modal'
 import { useGetBrief, useProject } from 'utils/hooks'
 import { projectIdState } from './state/atoms'
 
-import Tools from 'public/tools.svg'
+import Tools from 'public/icons/tools.svg'
 
 function Dropdown({ description, isWholeBook = false }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)

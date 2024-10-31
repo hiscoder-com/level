@@ -1,5 +1,5 @@
 import { Listbox } from '@headlessui/react'
-import Down from 'public/arrow-down.svg'
+import Down from 'public/icons/arrow-down.svg'
 
 function ListBox({ options, selectedOption, setSelectedOption }) {
   return (

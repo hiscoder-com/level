@@ -13,8 +13,8 @@ import { checkedVersesBibleState, isHideAllVersesState } from '../../state/atoms
 import Modal from 'components/Modal'
 
 import { obsCheckAdditionalVerses } from 'utils/helper'
-import Pencil from 'public/pencil.svg'
-import Check from 'public/check.svg'
+import Pencil from 'public/icons/pencil.svg'
+import Check from 'public/icons/check.svg'
 
 function BlindEditor({ config }) {
   const supabase = useSupabaseClient()

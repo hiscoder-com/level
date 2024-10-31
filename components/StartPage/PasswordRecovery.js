@@ -14,7 +14,7 @@ import InputField from '../Panel/UI/InputField'
 import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
 
-import Progress from 'public/progress.svg'
+import Progress from 'public/icons/progress.svg'
 
 function PasswordRecovery() {
   const supabase = useSupabaseClient()

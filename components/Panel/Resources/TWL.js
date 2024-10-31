@@ -9,7 +9,7 @@ import { Placeholder, TNTWLContent } from '../UI'
 import { useGetResource, useScroll } from 'utils/hooks'
 import { checkLSVal, filterNotes, getWords } from 'utils/helper'
 import { getFile } from 'utils/apiHelper'
-import Down from 'public/arrow-down.svg'
+import Down from 'public/icons/arrow-down.svg'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)

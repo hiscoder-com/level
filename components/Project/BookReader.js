@@ -30,9 +30,9 @@ import {
 
 import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
 
-import Down from '/public/arrow-down.svg'
-import Left from '/public/left.svg'
-import Gear from '/public/gear.svg'
+import Down from '/public/icons/arrow-down.svg'
+import Left from '/public/icons/left.svg'
+import Gear from '/public/icons/gear.svg'
 import Card from './Card'
 
 function BookReader() {

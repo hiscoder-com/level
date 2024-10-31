@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import Link from 'next/link'
+
 import AboutVersion from 'components/AboutVersion'
 import Feedback from './Feedback'
 import Logo from './Logo'
@@ -18,9 +20,23 @@ import LevelIntro from './LevelIntro'
 import Partners from './Partners'
 import SectionBlock from './SectionBlock'
 
-import Close from 'public/close.svg'
-import LevelLogo from 'public/level-logo-color.svg'
+import Close from 'public/icons/close.svg'
+import LevelLogo from 'public/icons/level-logo-color.svg'
 import CookiesAproove from './CookiesAproove'
+import SectionContainer from './SectionContainer'
+
+const contentRoutes = {
+  signIn: 'sign-in',
+  connect: 'connect-with-us',
+  updates: 'updates',
+  partners: 'partners',
+  intro: 'what-is-level',
+  reviews: 'reviews',
+  howItWork: 'how-it-works',
+  faq: 'faq',
+  download: 'download',
+  logo: 'about',
+}
 
 function StartPage({ defaultContentKey = null }) {
   const { t } = useTranslation(['start-page', 'projects', 'users', 'common'])
@@ -31,7 +47,7 @@ function StartPage({ defaultContentKey = null }) {
     logo: false,
     updates: false,
     partners: false,
-    feedback: false,
+    connect: false,
     signIn: false,
     download: false,
     passwordRecovery: false,
@@ -44,11 +60,29 @@ function StartPage({ defaultContentKey = null }) {
     faq: { clicked: false, opacity: 'opacity-0' },
   })
 
+  useEffect(() => {
+    if (defaultContentKey) {
+      setShowSections((prev) => ({
+        ...prev,
+        [defaultContentKey]: true,
+      }))
+    }
+  }, [defaultContentKey])
+
   const toggleSection = (section) => {
-    setShowSections((prev) => ({
-      ...prev,
-      [section]: !prev[section],
-    }))
+    setShowSections((prev) => {
+      const isCurrentlyVisible = prev[section]
+      return {
+        logo: false,
+        updates: false,
+        partners: false,
+        connect: false,
+        signIn: false,
+        download: false,
+        passwordRecovery: false,
+        [section]: !isCurrentlyVisible,
+      }
+    })
   }
 
   useEffect(() => {
@@ -57,14 +91,27 @@ function StartPage({ defaultContentKey = null }) {
     }
   }, [defaultContentKey])
 
-  const handleContentClick = (newContentKey) => {
+  useEffect(() => {
+    if (defaultContentKey) {
+      setBlocks((prev) => ({
+        ...prev,
+        [defaultContentKey]: {
+          clicked: true,
+          opacity: 'opacity-100',
+        },
+      }))
+    }
+  }, [defaultContentKey])
+
+  const handleContentClick = async (newContentKey) => {
+    if (defaultContentKey) {
+      await router.replace('/', undefined, { shallow: true, scroll: false })
+    }
     if (contentKey === newContentKey) {
       setContentKey(null)
     } else {
       setContentKey(newContentKey)
-    }
-    if (defaultContentKey) {
-      router.replace('/', undefined, { shallow: true })
+      handleClick(newContentKey)
     }
   }
 
@@ -81,78 +128,77 @@ function StartPage({ defaultContentKey = null }) {
     logo: <Logo t={t} />,
     passwordRecovery: <PasswordRecovery contentKey={contentKey} />,
   }
-
-  const toggleBlock = (key) => {
-    setBlocks((prev) => ({
-      ...prev,
-      [key]: {
-        clicked: !prev[key].clicked,
-        opacity: prev[key].clicked ? 'opacity-0' : 'opacity-100',
-      },
-    }))
+  const handleClick = (contentKey) => {
+    if (contentKey && contentRoutes[contentKey]) {
+      router.replace(`/${contentRoutes[contentKey]}`, undefined, {
+        shallow: true,
+        scroll: false,
+      })
+    }
   }
 
   return (
     <>
       <main className="hidden relative md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
-          <div
+          <Link
+            href={`/${contentRoutes['logo']}`}
             className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
-            onClick={() => handleContentClick('logo')}
           >
             <LevelLogo className="" />
-          </div>
+          </Link>
           <div className="flex justify-between items-center h-[4.4rem] p-5 lg:p-7 bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
             <p>{t('projects:Language')}</p>
             <SwitchLocalization />
           </div>
-          <div className="h-[19.4rem] rounded-2xl bg-slate-550">
-            <p
-              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl cursor-pointer"
-              onClick={() => handleContentClick('updates')}
-            >
+          <Link
+            href={`/${contentRoutes['updates']}`}
+            className="h-[19.4rem] rounded-2xl bg-slate-550 cursor-pointer"
+          >
+            <p className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl">
               {t('common:Updates')}
             </p>
-          </div>
-          <div className="h-[19.4rem] rounded-2xl bg-white">
-            <p
-              className="gray-two-layers p-5 lg:p-7 h-full w-full z-10 rounded-2xl after:rounded-2xl cursor-pointer"
-              onClick={() => handleContentClick('partners')}
-            >
+          </Link>
+          <Link
+            href={`/${contentRoutes['partners']}`}
+            className="h-[19.4rem] rounded-2xl bg-white cursor-pointer"
+          >
+            <p className="gray-two-layers p-5 lg:p-7 h-full w-full z-10 rounded-2xl after:rounded-2xl">
               {t('Partners')}
             </p>
-          </div>
+          </Link>
         </aside>
+
         <section className="w-1/2 px-1 text-white">
           <div className={`${contentKey ? 'hidden' : 'flex'} h-full gap-4 xl:gap-7`}>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
-              <div
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/about.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('intro')}
-                dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsLevel') }}
-              ></div>
-
-              <div
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/reviews.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('reviews')}
+              <Link
+                href={`/${contentRoutes['intro']}`}
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/about.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+              >
+                {t('MainBlocks.WhatIsLevel')}
+              </Link>
+              <Link
+                href={`/${contentRoutes['reviews']}`}
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/reviews.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
               >
                 {t('MainBlocks.Reviews')}
-              </div>
+              </Link>
             </div>
             <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
-              <div
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/inside.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('howItWork')}
+              <Link
+                href={`/${contentRoutes['howItWork']}`}
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/inside.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
               >
                 {t('MainBlocks.HowItWorks')}
-              </div>
+              </Link>
 
-              <div
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/faq.jpg')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
-                onClick={() => setContentKey('faq')}
+              <Link
+                href={`/${contentRoutes['faq']}`}
+                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/faq.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
               >
                 {t('MainBlocks.FAQ')}
-              </div>
+              </Link>
             </div>
           </div>
           <div
@@ -172,21 +218,22 @@ function StartPage({ defaultContentKey = null }) {
             />
           </div>
         </section>
+
         <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pl-3 xl:pl-6">
-          <div className="h-32 rounded-2xl bg-slate-550">
-            <p
-              className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10 cursor-pointer"
-              onClick={() => handleContentClick('signIn')}
-            >
+          <Link
+            href={`/${contentRoutes['signIn']}`}
+            className="h-32 rounded-2xl bg-slate-550 cursor-pointer"
+          >
+            <p className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10">
               {t('users:SignIn')}
             </p>
-          </div>
-          <div
+          </Link>
+          <Link
+            href={`/${contentRoutes['connect']}`}
             className="p-5 lg:p-7 bg-th-secondary-10 rounded-2xl cursor-pointer h-auto xl:h-32"
-            onClick={() => handleContentClick('connect')}
           >
             {t('ConnectWithUs')}
-          </div>
+          </Link>
           <div className="p-3 lg:p-5 2xl:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 2xl:space-y-4 overflow-hidden">
             <p className="text-xs 2xl:text-base overflow-auto font-normal">
               {t('Verse.text')}
@@ -196,41 +243,50 @@ function StartPage({ defaultContentKey = null }) {
             </p>
           </div>
 
-          <div className="h-32 rounded-2xl bg-slate-550 cursor-pointer">
-            <p
-              className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl aftercursor-pointer after:rounded-2xl"
-              onClick={() => handleContentClick('download')}
-            >
+          <Link
+            href={`/${contentRoutes['download']}`}
+            className="h-32 rounded-2xl bg-slate-550 cursor-pointer"
+          >
+            <p className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl">
               {t('common:Download')}
             </p>
-          </div>
+          </Link>
         </aside>
         <div className="hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2  z-10">
           <CookiesAproove />
         </div>
       </main>
       <main className="relative flex md:hidden flex-col gap-5 p-5 font-medium text-lg">
-        <SectionBlock
-          sectionKey="logo"
-          content={<Logo t={t} />}
-          showSection={showSections.logo}
-          toggleSection={toggleSection}
-          isLogo={true}
-          label={<LevelLogo className="h-7" />}
-        />
+        <Link href={`/${contentRoutes['logo']}`}>
+          <SectionBlock
+            sectionKey="logo"
+            content={<Logo t={t} />}
+            showSection={showSections.logo}
+            toggleSection={toggleSection}
+            isLogo={true}
+            label={<LevelLogo className="h-7" />}
+          />
+        </Link>
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
             <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl z-20">
               <SwitchLocalization />
             </div>
           )}
-          <div
-            className={`p-5 rounded-xl ${
+          <Link
+            scroll={false}
+            href="/"
+            shallow
+            onClick={async (e) => {
+              e.preventDefault()
+              await router.push('/')
+              router.push(`/${contentRoutes['signIn']}`)
+            }}
+            className={`p-5 rounded-xl cursor-pointer ${
               showSections.signIn
                 ? 'col-span-2 bg-th-secondary-10'
                 : 'bg-slate-550 text-th-text-secondary-100'
             }`}
-            onClick={() => toggleSection('signIn')}
           >
             <p className={`${showSections.signIn ? 'mb-5 font-semibold' : ''}`}>
               {showSections.signIn ? t('users:LoginToAccount') : t('users:SignIn')}
@@ -239,22 +295,22 @@ function StartPage({ defaultContentKey = null }) {
               <Login
                 handleClick={() => {
                   toggleSection(
-                    showSections.signIn && showSections.feedback ? 'signIn' : 'feedback'
+                    showSections.signIn && showSections.connect ? 'signIn' : 'connect'
                   )
                 }}
               />
             )}
-          </div>
+          </Link>
         </div>
 
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.intro.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('intro')}
+          onClick={() => handleContentClick('intro')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/about-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/about-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.intro.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -270,13 +326,13 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.howItWork.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('howItWork')}
+          onClick={() => handleContentClick('howItWork')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/inside-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/inside-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.howItWork.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -289,13 +345,13 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.reviews.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('reviews')}
+          onClick={() => handleContentClick('reviews')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/reviews-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/reviews-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.reviews.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -308,13 +364,13 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden ${
+          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
             blocks.faq.clicked ? '' : 'h-36'
           }`}
-          onClick={() => toggleBlock('faq')}
+          onClick={() => handleContentClick('faq')}
         >
           <div
-            className={`absolute inset-0 bg-[url("../public/faq-mobile.jpg")] bg-cover bg-no-repeat transition-opacity duration-500 ${
+            className={`absolute inset-0 bg-[url("../public/main/faq-mobile.webp")] bg-cover bg-no-repeat transition-opacity duration-500 ${
               blocks.faq.clicked ? 'opacity-0' : 'opacity-100'
             }`}
           ></div>
@@ -326,51 +382,30 @@ function StartPage({ defaultContentKey = null }) {
             )}
           </div>
         </div>
-
-        <SectionBlock
-          sectionKey="partners"
-          label={t('Partners')}
-          content={<Partners t={t} />}
-          showSection={showSections.partners}
+        <Link scroll={false} href={`/${contentRoutes['partners']}`}>
+          <SectionBlock
+            sectionKey="partners"
+            label={t('Partners')}
+            content={<Partners t={t} />}
+            showSection={showSections.partners}
+            toggleSection={toggleSection}
+          />
+        </Link>
+        <Link scroll={false} href={`/${contentRoutes['connect']}`}>
+          <SectionBlock
+            sectionKey="connect"
+            label={t('ConnectWithUs')}
+            content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
+            showSection={showSections.connect}
+            toggleSection={toggleSection}
+          />
+        </Link>
+        <SectionContainer
+          showSections={showSections}
           toggleSection={toggleSection}
+          setContentKey={setContentKey}
+          t={t}
         />
-        <SectionBlock
-          sectionKey="feedback"
-          label={t('ConnectWithUs')}
-          content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
-          showSection={showSections.feedback}
-          toggleSection={toggleSection}
-        />
-        <div className="grid grid-cols-2 gap-5 text-center">
-          {!showSections.updates && (
-            <div
-              className={`p-5 bg-th-secondary-10 rounded-xl ${
-                showSections.download ? 'col-span-2' : ''
-              }`}
-              onClick={() => toggleSection('download')}
-            >
-              <p className={`mb-9 ${showSections.download ? 'font-semibold' : ''}`}>
-                {t('common:Download')}
-              </p>
-              {showSections.download && <Download t={t} />}
-            </div>
-          )}
-
-          {!showSections.download && (
-            <div
-              className={`p-5 bg-th-secondary-10 rounded-xl ${
-                showSections.updates ? 'col-span-2' : ''
-              }`}
-              onClick={() => toggleSection('updates')}
-            >
-              {!showSections.updates ? (
-                <p>{t('Updates')}</p>
-              ) : (
-                <AboutVersion isStartPage={true} />
-              )}
-            </div>
-          )}
-        </div>
 
         <div className="md:hidden block absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
           <CookiesAproove />

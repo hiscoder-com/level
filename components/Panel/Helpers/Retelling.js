@@ -9,7 +9,7 @@ import Recorder from 'components/Recorder'
 
 import { inactiveState } from '../../state/atoms'
 
-import BackButton from 'public/arrow-left.svg'
+import BackButton from 'public/icons/arrow-left.svg'
 
 export default function Retelling({ config }) {
   const [audioState, setAudioState] = useState('Main')

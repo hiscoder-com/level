@@ -12,7 +12,7 @@ import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
 
 import { stepConfigState } from './state/atoms'
-import Loading from 'public/progress.svg'
+import Loading from 'public/icons/progress.svg'
 
 export default function Footer({
   loading = false,

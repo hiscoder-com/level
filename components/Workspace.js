@@ -10,12 +10,12 @@ import Tool from 'components/Panel/Tool'
 
 import { inactiveState } from './state/atoms'
 
-import Dict from 'public/dictionary.svg'
-import TeamNote from 'public/team-note.svg'
-import Notepad from 'public/notes.svg'
-import Retelling from 'public/audio.svg'
-import Pencil from 'public/editor-pencil.svg'
-import Info from 'public/info.svg'
+import Dict from 'public/icons/dictionary.svg'
+import TeamNote from 'public/icons/team-note.svg'
+import Notepad from 'public/icons/notes.svg'
+import Retelling from 'public/icons/audio.svg'
+import Pencil from 'public/icons/editor-pencil.svg'
+import Info from 'public/icons/info.svg'
 
 const sizes = {
   '1': 'lg:w-1/6',

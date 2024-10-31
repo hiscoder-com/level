@@ -5,7 +5,7 @@ import { Disclosure } from '@headlessui/react'
 import { Placeholder } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
-import Down from 'public/arrow-down.svg'
+import Down from 'public/icons/arrow-down.svg'
 
 function TQ({ config, url, toolName }) {
   const { isLoading, data } = useGetResource({ config, url })

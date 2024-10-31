@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import Loading from 'public/progress.svg'
+import Loading from 'public/icons/progress.svg'
 
 const SwitchLoading = ({
   checked,

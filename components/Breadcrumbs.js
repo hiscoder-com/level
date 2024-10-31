@@ -2,7 +2,7 @@ import { Fragment, useEffect, useState } from 'react'
 
 import Link from 'next/link'
 
-import LeftArrow from 'public/left.svg'
+import LeftArrow from 'public/icons/left.svg'
 
 function Breadcrumbs({ links = [], full }) {
   const [arrowLink, setArrowLink] = useState('')

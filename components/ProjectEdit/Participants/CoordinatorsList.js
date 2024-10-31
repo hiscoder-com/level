@@ -6,7 +6,7 @@ import { Menu, Transition } from '@headlessui/react'
 
 import TranslatorImage from 'components/TranslatorImage'
 
-import Elipsis from 'public/elipsis.svg'
+import Elipsis from 'public/icons/elipsis.svg'
 
 function CoordinatorsList({ coordinators, setSelectedCoordinator, access }) {
   const { t } = useTranslation(['common', 'users'])

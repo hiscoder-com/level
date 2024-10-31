@@ -1,7 +1,7 @@
 import { Listbox } from '@headlessui/react'
 
-import Check from 'public/check.svg'
-import ArrowRight from 'public/folder-arrow-right.svg'
+import Check from 'public/icons/check.svg'
+import ArrowRight from 'public/icons/folder-arrow-right.svg'
 
 function ListBoxMultiple({
   options,
