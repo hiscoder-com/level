@@ -1,35 +1,13 @@
 {
-  "extends": ["next", "prettier"],
-  "plugins": ["prettier", "@ianvs/eslint-plugin-sort-imports"],
+  "extends": ["next","prettier"],
+  "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": [
-      "error",
-      {
-        "parser": "flow",
-        "useTabs": false,
-        "printWidth": 90,
-        "tabWidth": 2,
-        "trailingComma": "es5",
-        "singleQuote": true,
-        "bracketSameLine": false,
-        "semi": false,
-        "endOfLine": "auto"
-      }
+        "error",
+        {
+            "endOfLine": "auto"
+        }
     ],
-    "@next/next/no-img-element": "off",
-    "sort-imports": "off",
-    "import/order": [
-      "error",
-      {
-        "groups": [["builtin", "external", "internal"]],
-        "pathGroups": [
-          { "pattern": "react", "group": "builtin", "position": "before" },
-          { "pattern": "next/**", "group": "external", "position": "before" }
-        ],
-        "pathGroupsExcludedImportTypes": ["react"],
-        "newlines-between": "always",
-        "alphabetize": { "order": "asc", "caseInsensitive": true }
-      }
-    ]
+    "@next/next/no-img-element": "off"
   }
 }
