@@ -8,9 +8,9 @@ import ReactMarkdown from 'react-markdown'
 import { useRecoilState } from 'recoil'
 
 import packageJson from '../package.json'
-import updatesEN from '../public/updateVersionInfo/updates_en.md'
-import updatesES from '../public/updateVersionInfo/updates_es.md'
-import updatesRU from '../public/updateVersionInfo/updates_ru.md'
+import updatesEN from '../public/updates_en.md'
+import updatesES from '../public/updates_es.md'
+import updatesRU from '../public/updates_ru.md'
 import { modalsSidebar } from './state/atoms'
 
 function AboutVersion({ isStartPage = false, collapsed, onClose }) {
