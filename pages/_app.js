@@ -1,15 +1,16 @@
-import { UserContextProvider } from 'lib/UserContext'
 import { appWithTranslation } from 'next-i18next'
 import { RecoilRoot } from 'recoil'
 
 import Layout from 'components/Layout'
 
-import 'styles/globals.css'
+import { UserContextProvider } from 'lib/UserContext'
 
-import { roboto } from 'public/fonts/fonts'
+import 'styles/globals.css'
 
 import { useGetTheme } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
+
+import { roboto } from 'public/fonts/fonts'
 
 function MyApp({ Component, pageProps }) {
   const isIntranet = process.env.NEXT_PUBLIC_INTRANET ?? false

@@ -2,16 +2,16 @@ import { useState } from 'react'
 
 import Image from 'next/image'
 
-import LeftArrow from 'public/icons/arrow-left.svg'
-import Close from 'public/icons/close.svg'
+import ProgressBar from 'components/ProgressBar'
+
 import HowItWorkImage1 from 'public/how-it-work/how-it-work-01.webp'
 import HowItWorkImage2 from 'public/how-it-work/how-it-work-02.webp'
 import HowItWorkImage3 from 'public/how-it-work/how-it-work-03.webp'
 import HowItWorkImage4 from 'public/how-it-work/how-it-work-04.webp'
 import HowItWorkImage5 from 'public/how-it-work/how-it-work-05.webp'
 import HowItWorkImage6 from 'public/how-it-work/how-it-work-06.webp'
-
-import ProgressBar from 'components/ProgressBar'
+import LeftArrow from 'public/icons/arrow-left.svg'
+import Close from 'public/icons/close.svg'
 
 function HowItWorks({ t, opacity }) {
   const [image, setImage] = useState(1)

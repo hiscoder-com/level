@@ -1,9 +1,9 @@
-import { useCurrentUser } from 'lib/UserContext'
-
 import BookList from './BookList/BookList'
 import ParticipantInfo from './ParticipantInfo'
 import ProjectInfo from './ProjectInfo'
 import ResumeInfo from './ResumeInfo'
+
+import { useCurrentUser } from 'lib/UserContext'
 
 import { useAccess, useGetBrief, useProject } from 'utils/hooks'
 

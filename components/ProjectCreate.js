@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { useForm, useWatch } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
@@ -15,6 +14,8 @@ import CommitsList from './CommitsList'
 import LanguageCreate from './LanguageCreate'
 import SwitchLoading from './Panel/UI/SwitchLoading'
 import Steps from './Steps'
+
+import { useCurrentUser } from 'lib/UserContext'
 
 import { useLanguages, useMethod } from 'utils/hooks'
 

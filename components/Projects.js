@@ -1,7 +1,7 @@
-import { useCurrentUser } from 'lib/UserContext'
-
 import ProjectCard from './ProjectCard'
 import ProjectPersonalCard from './ProjectPersonalCard'
+
+import { useCurrentUser } from 'lib/UserContext'
 
 import { useProjects } from 'utils/hooks'
 

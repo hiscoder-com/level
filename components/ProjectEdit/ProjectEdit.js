@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 
 import { Tab } from '@headlessui/react'
 import axios from 'axios'
-import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
@@ -17,6 +16,8 @@ import Steps from '../Steps'
 import Brief from './Brief'
 import Participants from './Participants/Participants'
 import ResourceSettings from './ResourceSettings'
+
+import { useCurrentUser } from 'lib/UserContext'
 
 import { getBriefName } from 'utils/helper'
 import {

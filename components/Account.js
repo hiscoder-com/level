@@ -3,11 +3,12 @@ import { Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Menu, Tab } from '@headlessui/react'
-import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 
 import ProjectCreate from './ProjectCreate'
 import Projects from './Projects'
+
+import { useCurrentUser } from 'lib/UserContext'
 
 const sizeTabs = {
   1: 'w-1/6',

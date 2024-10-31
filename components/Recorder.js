@@ -1,19 +1,17 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
-
 import { useSetRecoilState } from 'recoil'
 
+import Modal from './Modal'
 import { inactiveState } from './state/atoms'
 
-import Modal from './Modal'
-
+import RecorderCrossedButton from 'public/icons/error-outline.svg'
+import PauseButton from 'public/icons/pause.svg'
+import PlayButton from 'public/icons/play.svg'
 import RecorderButton from 'public/icons/recorder.svg'
 import StopButton from 'public/icons/stop.svg'
-import RecorderCrossedButton from 'public/icons/error-outline.svg'
 import TrashButton from 'public/icons/trash.svg'
-import PlayButton from 'public/icons/play.svg'
-import PauseButton from 'public/icons/pause.svg'
 
 export default function Recorder() {
   const { t } = useTranslation(['audio', 'common'])
@@ -88,17 +86,17 @@ export default function Recorder() {
 
   return (
     <div className="flex flex-row items-center gap-7">
-      <button className="w-6 h-6" onClick={startStop}>
+      <button className="h-6 w-6" onClick={startStop}>
         {buttonRecord}
       </button>
       <audio ref={audioRef}></audio>
-      <button className="w-6 h-6" disabled={!voice?.length} onClick={playPause}>
+      <button className="h-6 w-6" disabled={!voice?.length} onClick={playPause}>
         {buttonPlay}
       </button>
 
       <button
         disabled={voice.length === 0}
-        className="w-6 h-6"
+        className="h-6 w-6"
         onClick={() => setVoice([])}
       >
         <TrashButton
@@ -109,7 +107,7 @@ export default function Recorder() {
       </button>
       <Modal isOpen={showModal} closeHandle={() => setShowModal(false)}>
         <div className="flex flex-col gap-7">
-          <div className="text-2xl text-center">{t('MicrophoneAccess')}</div>
+          <div className="text-center text-2xl">{t('MicrophoneAccess')}</div>
           <p>{t('TurnMicrophone')}</p>
           <div className="flex justify-end">
             <button className="btn-secondary" onClick={() => setShowModal(false)}>

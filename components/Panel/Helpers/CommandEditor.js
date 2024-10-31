@@ -3,11 +3,12 @@ import { useCallback, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-hot-toast'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
+
+import { useCurrentUser } from 'lib/UserContext'
 
 import { obsCheckAdditionalVerses } from 'utils/helper'
 import { useGetChapter, useProject, useScroll } from 'utils/hooks'
