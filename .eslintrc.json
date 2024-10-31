@@ -1,13 +1,44 @@
 {
-  "extends": ["next","prettier"],
+  "extends": ["next", "prettier"],
   "plugins": ["prettier"],
   "rules": {
     "prettier/prettier": [
-        "error",
-        {
-            "endOfLine": "auto"
-        }
+      "error",
+      {
+        "endOfLine": "auto"
+      }
     ],
     "@next/next/no-img-element": "off"
+  },
+  "settings": {
+    "import/order": [
+      "error",
+      {
+        "groups": [
+          ["builtin", "external", "internal"],
+          ["sibling", "parent", "index"]
+        ],
+        "newlines-between": "always",
+        "pathGroups": [
+          {
+            "pattern": "react",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "next/**",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "/public/**",
+            "group": "internal",
+            "position": "after"
+          }
+        ],
+        "pathGroupsExcludedImportTypes": ["react"],
+        "alphabetize": { "order": "asc", "caseInsensitive": true }
+      }
+    ]
   }
 }
