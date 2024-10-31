@@ -1,8 +1,6 @@
 import { useState } from 'react'
-
-import Plus from 'public/plus.svg'
-
 import DropdownMenu from './DropdownMenu'
+import Plus from 'public/icons/plus.svg'
 
 function MenuButtons({ classNames, menuItems, disabled = false }) {
   const [isOpenDotsMenu, setIsOpenDotsMenu] = useState(false)
@@ -11,7 +9,7 @@ function MenuButtons({ classNames, menuItems, disabled = false }) {
   const buttons = [
     {
       id: 'plus',
-      icon: <Plus className="stroke-th-text-secondary h-6 w-6 stroke-2" />,
+      icon: <Plus className="w-6 h-6 stroke-th-text-secondary stroke-2" />,
       menu: menuItems,
       action: setIsOpenPlusMenu,
       isOpen: isOpenPlusMenu,
@@ -19,9 +17,9 @@ function MenuButtons({ classNames, menuItems, disabled = false }) {
     {
       id: 'dots',
       icon: (
-        <div className="flex h-6 w-6 items-center justify-center gap-1">
+        <div className="flex items-center justify-center w-6 h-6 gap-1">
           {[...Array(3).keys()].map((key) => (
-            <div key={key} className="h-1 w-1 rounded-full bg-th-secondary-10" />
+            <div key={key} className="h-1 w-1 bg-th-secondary-10 rounded-full" />
           ))}
         </div>
       ),
@@ -31,12 +29,12 @@ function MenuButtons({ classNames, menuItems, disabled = false }) {
     },
   ].filter((item) => Object.keys(menuItems).includes(item.id))
   return (
-    <div className="relative flex gap-2 ltr:flex-row rtl:flex-row-reverse">
+    <div className="flex gap-2 relative ltr:flex-row rtl:flex-row-reverse">
       {buttons.map((button) => (
         <div key={button.id} className="relative">
           <button
             disabled={disabled}
-            className={`btn-tertiary mb-3 p-3 ${disabled ? 'opacity-70' : ''}`}
+            className={`btn-tertiary p-3 mb-3 ${disabled ? 'opacity-70' : ''}`}
             onClick={() => button.action((prev) => !prev)}
           >
             {button.icon}

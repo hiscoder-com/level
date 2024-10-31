@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import GlokasLogo from 'public/glokas-logo.svg'
+import GlokasLogo from 'public/icons/glokas-logo.svg'
 
 function Logo({ t }) {
   const { locale } = useRouter()

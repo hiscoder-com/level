@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 
 import axios from 'axios'
-import ArrowRight from 'public/folder-arrow-right.svg'
-import Loading from 'public/progress.svg'
-import { useTranslation } from 'react-i18next'
 import { useRecoilValue } from 'recoil'
+import { useTranslation } from 'react-i18next'
 
 import { currentVerse } from '../../../state/atoms'
-import Down from '/public/arrow-down.svg'
-
 import { useGetAquiferResources } from 'utils/hooks'
+
+import Down from '/public/icons/arrow-down.svg'
+import ArrowRight from 'public/icons/folder-arrow-right.svg'
+import Loading from 'public/icons/progress.svg'
 
 function Notes({
   resourceType,
@@ -69,7 +69,7 @@ function Notes({
   return (
     <>
       {isLoading && !resources?.length ? (
-        <Loading className="progress-custom-colors right-2 m-auto w-6 animate-spin stroke-th-primary-100" />
+        <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 right-2" />
       ) : (
         <ul>
           {resources.map((note) => (
@@ -80,9 +80,9 @@ function Notes({
                   getNoteContent(note.id)
                 }
               }}
-              className={`mt-2.5 flex items-center justify-between rounded-lg bg-th-secondary-100 px-5 text-lg leading-[47px] hover:bg-th-secondary-200 ltr:flex ${
+              className={`flex justify-between items-center px-5 mt-2.5 leading-[47px] text-lg rounded-lg bg-th-secondary-100 hover:bg-th-secondary-200 ltr:flex ${
                 loadingNoteId === note.id
-                  ? 'cursor-not-allowed opacity-70'
+                  ? 'opacity-70 cursor-not-allowed'
                   : 'cursor-pointer'
               }`}
             >
@@ -98,7 +98,7 @@ function Notes({
                 </span>
                 {loadingNoteId === note.id && (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <Loading className="h-6 w-6 animate-spin stroke-th-primary-100" />
+                    <Loading className="w-6 h-6 animate-spin stroke-th-primary-100" />
                   </div>
                 )}
               </div>
@@ -114,7 +114,7 @@ function Notes({
       )}
       {isShowLoadMoreButton && (
         <button
-          className="mt-2.5 flex w-full justify-center gap-1 border-t border-th-secondary-300 pt-3 text-th-secondary-300"
+          className="flex gap-1 justify-center w-full pt-3 border-t border-th-secondary-300 text-th-secondary-300 mt-2.5"
           onClick={loadMore}
           disabled={isLoadingMore}
         >

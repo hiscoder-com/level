@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router'
 
 import { Disclosure, Switch } from '@headlessui/react'
-import axios from 'axios'
 import { useTranslation } from 'next-i18next'
-import Down from 'public/arrow-down.svg'
+import axios from 'axios'
 
 import UpdateField from './UpdateField'
+
+import Down from 'public/icons/arrow-down.svg'
 
 function Steps({
   updateSteps,
@@ -46,24 +47,26 @@ function Steps({
           {({ open }) => (
             <div>
               <Disclosure.Button
-                className={`flex w-full items-center justify-between gap-2 border-x border-t border-th-secondary-300 px-4 py-3 text-start ${className} ${open ? 'rounded-t-md' : 'rounded-md border-b'}`}
+                className={`flex justify-between items-center gap-2 py-3 px-4 w-full text-start  border-x border-t border-th-secondary-300
+                ${className} 
+                ${open ? 'rounded-t-md' : 'rounded-md border-b'}`}
               >
                 <span>{step.title}</span>
                 <Down
-                  className={`h-5 w-5 stroke-th-text-primary transition-transform duration-200 ${
+                  className={`w-5 h-5 transition-transform duration-200 stroke-th-text-primary ${
                     open ? 'rotate-180' : 'rotate-0'
                   } `}
                 />
               </Disclosure.Button>
               <Disclosure.Panel
-                className={`space-y-7 rounded-b-md border-x border-b border-th-secondary-300 p-4 text-sm md:text-base ${className}`}
+                className={`p-4 space-y-7 border-x border-b border-th-secondary-300 rounded-b-md text-sm md:text-base ${className}`}
               >
                 {fields.map((field) => (
                   <div
-                    className="flex w-full flex-col items-start gap-2 md:flex-row md:items-center"
+                    className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full"
                     key={field.name}
                   >
-                    <span className="w-auto font-bold md:w-1/6">{field.title}</span>
+                    <span className="w-auto md:w-1/6 font-bold">{field.title}</span>
                     <div className="w-full md:w-5/6">
                       <UpdateField
                         value={step[field.name]}
@@ -76,20 +79,20 @@ function Steps({
                     </div>
                   </div>
                 ))}
-                <div className="flex w-full flex-col items-start gap-2 md:flex-row md:items-center">
-                  <div className="w-auto font-bold md:w-1/6">
+                <div className="flex flex-col md:flex-row items-start md:items-center gap-2 w-full">
+                  <div className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:Tools')}
                   </div>
-                  <div className="flex w-auto flex-wrap justify-start gap-2 md:w-5/6">
+                  <div className="flex flex-wrap justify-start gap-2 w-auto md:w-5/6">
                     {step?.config?.map((config, idx_config) => (
                       <div
                         key={idx_config}
-                        className="flex flex-wrap gap-2 border-r pr-2 last:border-r-0"
+                        className="flex flex-wrap gap-2 pr-2 border-r last:border-r-0"
                       >
                         {config.tools.map((tool) => (
                           <div
                             key={tool.name}
-                            className="btn-base pointer-events-none bg-th-secondary-200 hover:bg-th-secondary-200"
+                            className="btn-base bg-th-secondary-200 hover:bg-th-secondary-200 pointer-events-none "
                           >
                             {t('common:' + tool.name)}
                           </div>
@@ -98,26 +101,26 @@ function Steps({
                     ))}
                   </div>
                 </div>
-                <div className="flex w-full items-center gap-2">
-                  <span className="w-auto font-bold md:w-1/6">
+                <div className="flex items-center gap-2 w-full">
+                  <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:TranslatorsCount')}
                   </span>
-                  <div className="btn-base pointer-events-none bg-th-secondary-200 hover:bg-th-secondary-200">
+                  <div className="btn-base bg-th-secondary-200 hover:bg-th-secondary-200 pointer-events-none">
                     {step?.count_of_users}
                   </div>
                 </div>
-                <div className="flex w-full items-center gap-2">
-                  <span className="w-auto font-bold md:w-1/6">
+                <div className="flex items-center gap-2 w-full">
+                  <span className="w-auto md:w-1/6 font-bold">
                     {t('project-edit:ExecutionTime')}
                   </span>
-                  <div className="btn-base pointer-events-none bg-th-secondary-200 hover:bg-th-secondary-200">
+                  <div className="btn-base bg-th-secondary-200 hover:bg-th-secondary-200 pointer-events-none">
                     {step.time}
                   </div>
                 </div>
-                <div className="flex w-full items-center gap-2">
+                <div className="flex items-center gap-2 w-full">
                   {isShowAwaitingTeam && (
                     <>
-                      <span className="w-auto font-bold md:w-1/6">
+                      <span className="w-auto md:w-1/6 font-bold">
                         {t('project-edit:AwaitingTeam')}
                       </span>
                       <Switch
@@ -127,9 +130,9 @@ function Steps({
                         }
                         className={`${
                           step.is_awaiting_team
-                            ? 'border-th-primary-100 bg-th-primary-100'
-                            : 'border-th-secondary-300 bg-th-secondary-200'
-                        } relative inline-flex h-6 w-11 items-center rounded-full border`}
+                            ? 'bg-th-primary-100 border-th-primary-100'
+                            : 'bg-th-secondary-200 border-th-secondary-300'
+                        } relative inline-flex h-6 w-11 items-center border rounded-full`}
                       >
                         <span
                           className={`${

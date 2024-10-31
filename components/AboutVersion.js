@@ -1,17 +1,20 @@
 import { useEffect, useMemo, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 import { useRouter } from 'next/router'
-
 import { useTranslation } from 'next-i18next'
-import Close from 'public/close.svg'
-import ReactMarkdown from 'react-markdown'
+
 import { useRecoilState } from 'recoil'
 
-import packageJson from '../package.json'
-import updatesEN from '../public/updates_en.md'
-import updatesES from '../public/updates_es.md'
-import updatesRU from '../public/updates_ru.md'
 import { modalsSidebar } from './state/atoms'
+
+import packageJson from '../package.json'
+
+import updatesEN from '../public/updateVersionInfo/updates_en.md'
+import updatesRU from '../public/updateVersionInfo/updates_ru.md'
+import updatesES from '../public/updateVersionInfo/updates_es.md'
+
+import Close from 'public/icons/close.svg'
 
 function AboutVersion({ isStartPage = false, collapsed, onClose }) {
   const aboutVersion = {
@@ -51,19 +54,20 @@ function AboutVersion({ isStartPage = false, collapsed, onClose }) {
 
   if (isStartPage) {
     return (
-      <div className="relative flex w-full flex-col gap-6 md:gap-2.5">
+      <div className="relative flex flex-col w-full gap-6 md:gap-2.5">
         <p className="font-semibold md:font-bold">
           {t('Version')} {packageJson.version}
         </p>
         <Close
-          className={`absolute right-0 top-0 h-6 w-6 cursor-pointer stroke-black md:hidden`}
+          className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+          onClick={() => onClose && onClose()}
         />
         <div className="overflow-auto" onClick={(e) => e.stopPropagation()}>
-          <ReactMarkdown className="flex-grow overflow-auto whitespace-pre-line text-left text-sm font-normal leading-5 md:pr-5">
+          <ReactMarkdown className="flex-grow text-left overflow-auto md:pr-5 text-sm font-normal whitespace-pre-line leading-5">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
         </div>
-        <div className="mt-auto flex justify-center">
+        <div className="flex justify-center mt-auto">
           <button
             onClick={(e) => {
               e.stopPropagation()
@@ -84,18 +88,18 @@ function AboutVersion({ isStartPage = false, collapsed, onClose }) {
         className={`${collapsed && 'lg:hidden'} ${
           modalsSidebarState.aboutVersion
             ? 'text-th-text-primary'
-            : 'text-th-text-primary group-hover:text-th-text-primary lg:text-th-secondary-300'
+            : 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
         }`}
       >
         {t('Version')} {packageJson.version}
       </div>
       {modalsSidebarState.aboutVersion && (
         <div
-          className="absolute right-0 top-0 z-10 flex h-full min-h-full w-full cursor-default flex-col overflow-auto border-th-secondary-300 bg-th-secondary-10 bg-white pb-3 shadow-md sm:overflow-visible sm:border sm:pb-7 md:left-full md:ml-5 md:h-min md:max-h-full md:overflow-hidden md:rounded-xl lg:ml-0 lg:w-[30rem] lg:rounded-none"
+          className="absolute flex flex-col right-0 top-0 w-full h-full min-h-full bg-white z-10 md:h-min pb-3 sm:pb-7 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border md:max-h-full md:left-full md:ml-5 lg:ml-0 lg:w-[30rem] md:rounded-xl lg:rounded-none md:overflow-hidden"
           onClick={(e) => e.stopPropagation()}
         >
-          <div className="sticky top-0 flex items-center justify-center bg-th-secondary-400 px-7 py-4">
-            <p className="text-left text-lg font-medium text-th-secondary-10">
+          <div className="sticky top-0 flex items-center justify-center py-4 bg-th-secondary-400 px-7">
+            <p className="text-left text-th-secondary-10 text-lg font-medium">
               {t('Version')}
             </p>
             <button
@@ -105,16 +109,16 @@ function AboutVersion({ isStartPage = false, collapsed, onClose }) {
                   ...prev,
                   aboutVersion: false,
                 }))
-                onClose(false)
+                if (onClose) onClose()
               }}
             >
               <Close className="h-8 stroke-th-secondary-10" />
             </button>
           </div>
-          <ReactMarkdown className="flex-grow whitespace-pre-line px-7 py-5 leading-5 sm:max-h-full sm:overflow-auto">
+          <ReactMarkdown className="flex-grow py-5 whitespace-pre-line leading-5 sm:max-h-full sm:overflow-auto px-7">
             {showAllUpdates ? fullAboutVersion : currentAboutVersion}
           </ReactMarkdown>
-          <div className="mt-auto flex justify-center px-4 pt-5">
+          <div className="mt-auto flex justify-center pt-5 px-4">
             <button
               onClick={() => setShowAllUpdates((prev) => !prev)}
               className="btn-primary w-full"

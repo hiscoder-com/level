@@ -2,30 +2,33 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useCurrentUser } from 'lib/UserContext'
-import { useTranslation } from 'next-i18next'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Minus from 'public/minus.svg'
-import Plus from 'public/plus.svg'
 import toast from 'react-hot-toast'
 
-import Breadcrumbs from 'components/Breadcrumbs'
+import { useTranslation } from 'next-i18next'
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import Card from 'components/Project/Card'
-import ChapterMobileMenu from 'components/Project/ChapterList/ChapterMobileMenu'
-import ChapterProgressControls from 'components/Project/ChapterList/ChapterProgressControls'
+import Breadcrumbs from 'components/Breadcrumbs'
 import ProjectParticipants from 'components/Project/ChapterList/ProjectParticipants'
 import VerseDistributionButtons from 'components/Project/ChapterList/VerseDistributionButtons'
+import ChapterProgressControls from 'components/Project/ChapterList/ChapterProgressControls'
+import ChapterMobileMenu from 'components/Project/ChapterList/ChapterMobileMenu'
+
+import useSupabaseClient from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 
 import {
-  useAccess,
   useGetBook,
   useGetChapter,
   useGetChapters,
   useGetVerses,
   useProject,
   useTranslators,
+  useAccess,
 } from 'utils/hooks'
-import useSupabaseClient from 'utils/supabaseClient'
+
+import Plus from 'public/icons/plus.svg'
+import Minus from 'public/icons/minus.svg'
 
 const translatorColors = [
   {
@@ -306,7 +309,7 @@ function ChapterVersesPage() {
   return (
     <div className="mx-auto max-w-7xl pb-10">
       <div className="flex flex-row gap-7">
-        <div className="flex w-full flex-col gap-7 sm:w-3/5">
+        <div className="flex flex-col gap-7 w-full sm:w-3/5">
           <Breadcrumbs
             full
             links={[
@@ -323,7 +326,7 @@ function ChapterVersesPage() {
               onMouseDown={() => setIsHighlight(true)}
               onMouseUp={() => setIsHighlight(false)}
               onMouseLeave={() => setIsHighlight(false)}
-              className={`grid w-full select-none grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 ${
+              className={`w-full grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 select-none ${
                 translators?.length === 0 ? 'pointer-events-none' : ''
               }`}
             >
@@ -353,7 +356,7 @@ function ChapterVersesPage() {
                             coloring(index)
                           }
                         }}
-                        className={`h-24 truncate ${
+                        className={`truncate h-24 ${
                           currentTranslator && !isChapterStarted
                             ? 'verse-block cursor-pointer'
                             : ''
@@ -361,38 +364,38 @@ function ChapterVersesPage() {
                         key={index}
                       >
                         <div
-                          className={`${verse.color?.bg} ${
+                          className={`${verse.color?.bg}  ${
                             verse.color?.border
-                          } truncate rounded-2xl border-2 ${
+                          } border-2 truncate rounded-2xl ${
                             currentTranslator ? '' : 'flex'
-                          } h-full w-full flex-col justify-between p-4`}
+                          } w-full h-full flex-col p-4 justify-between`}
                         >
                           <div
                             className={`${
                               [0, 200].includes(verse.num) ? 'text-xl' : 'text-xl'
-                            } overflow-hidden text-ellipsis font-bold`}
+                            } font-bold text-ellipsis overflow-hidden`}
                           >
                             {verse.num === 0
                               ? t('Title')
                               : verse.num === 200
-                                ? t('Reference')
-                                : verse.num}
+                              ? t('Reference')
+                              : verse.num}
                           </div>
-                          <div className="overflow-hidden text-ellipsis">
+                          <div className="text-ellipsis overflow-hidden">
                             {verse.translator_name}
                           </div>
                         </div>
                         <div
                           className={`${
                             currentTranslator ? '' : 'hidden'
-                          } h-full w-full items-center justify-center rounded-2xl bg-th-primary-100 p-1`}
+                          } w-full h-full rounded-2xl justify-center p-1 items-center bg-th-primary-100`}
                         >
                           {!chapter?.started_at && (
-                            <div className="h-10 w-10 rounded-full border-2 bg-th-secondary-10 p-2 text-th-text-primary">
+                            <div className="w-10 h-10 p-2 text-th-text-primary bg-th-secondary-10 border-2 rounded-full">
                               {verse.translator_name ? (
-                                <Minus className="h-5 w-5 stroke-th-text-primary" />
+                                <Minus className="w-5 h-5 stroke-th-text-primary" />
                               ) : (
-                                <Plus className="h-5 w-5 stroke-th-text-primary" />
+                                <Plus className="w-5 h-5 stroke-th-text-primary" />
                               )}
                             </div>
                           )}
@@ -404,7 +407,7 @@ function ChapterVersesPage() {
                 <>
                   {[...Array(21).keys()].map((el) => (
                     <div role="status" className="h-24 animate-pulse" key={el}>
-                      <div className="h-full w-full rounded-2xl bg-th-secondary-100"></div>
+                      <div className="h-full w-full bg-th-secondary-100 rounded-2xl"></div>
                     </div>
                   ))}
                 </>
@@ -413,7 +416,7 @@ function ChapterVersesPage() {
           </div>
         </div>
 
-        <div className="hidden w-2/5 sm:block">
+        <div className="hidden sm:block w-2/5">
           <div className="sticky top-7 flex flex-col gap-7">
             <Card
               title={t('chapters:Assignment')}

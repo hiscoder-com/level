@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
+import Link from 'next/link'
+
 import axios from 'axios'
-import { useCurrentUser } from 'lib/UserContext'
+
 import { useTranslation } from 'next-i18next'
-import Progress from 'public/progress.svg'
 
 import ButtonLoading from '../ButtonLoading'
 import InputField from '../Panel/UI/InputField'
 
 import useSupabaseClient from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
+
+import Progress from 'public/icons/progress.svg'
 
 function PasswordRecovery() {
   const supabase = useSupabaseClient()
@@ -100,7 +103,7 @@ function PasswordRecovery() {
     if (successResult) {
       return (
         <div className="mx-auto text-center">
-          <div className="mb-4 text-th-text-primary">{successResult}</div>
+          <div className="text-th-text-primary mb-4">{successResult}</div>
           <Link
             className="hover:opacity-70"
             href={{
@@ -128,7 +131,7 @@ function PasswordRecovery() {
     if (!user) {
       return (
         <Link
-          className="text-center hover:opacity-70"
+          className="hover:opacity-70 text-center"
           href={{
             pathname: '/',
             query: {
@@ -174,10 +177,10 @@ function PasswordRecovery() {
             className="input-password"
           />
         ))}
-        {error && <div className="min-h-[1.5rem] opacity-100">{t(error)}</div>}
+        {error && <div className="opacity-100 min-h-[1.5rem]">{t(error)}</div>}
         <ButtonLoading
           type="button"
-          className="relative w-full rounded-lg bg-slate-550 px-5 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base"
+          className="relative w-full px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
           onClick={handleRecovery}
           isLoading={isRecovering}
         >
@@ -193,13 +196,13 @@ function PasswordRecovery() {
   }, [])
 
   return (
-    <div className="flex w-full flex-col">
-      <p className="mr-4 hidden md:block">{t('PasswordRecovery')}</p>
+    <div className="flex flex-col w-full">
+      <p className="hidden md:block mr-4">{t('PasswordRecovery')}</p>
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
         onClick={(e) => e.stopPropagation()}
       >
-        <form className="flex w-full flex-col space-y-4 text-sm text-th-primary-200 md:text-xl">
+        <form className="flex flex-col w-full space-y-4 text-th-primary-200 text-sm md:text-xl">
           {renderContent()}
         </form>
       </div>

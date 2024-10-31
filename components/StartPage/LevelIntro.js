@@ -1,24 +1,24 @@
-import Close from 'public/close.svg'
-import LevelIntroImage from 'public/level-intro.svg'
+import LevelIntroImage from 'public/main/level-intro.svg'
+import Close from 'public/icons/close.svg'
 
 function LevelIntro({ t, opacity }) {
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex flex-col w-full">
       <p
         className="font-semibold md:font-bold"
         dangerouslySetInnerHTML={{ __html: t('MainBlocks.WhatIsLevel') }}
       ></p>
       <Close
-        className={`absolute right-0 top-0 h-6 w-6 cursor-pointer stroke-black md:hidden`}
+        className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
       />
       <p
-        className={`mt-6 text-sm font-normal transition-opacity duration-700 md:mt-12 md:text-base ${
+        className={`mt-6 md:mt-12 text-sm md:text-base font-normal transition-opacity duration-700 ${
           opacity || ''
         }`}
       >
         {t('MainBlocks.LevelText')}
       </p>
-      <div className="flex flex-grow flex-col items-center justify-center pb-6 md:pb-0">
+      <div className="flex flex-grow flex-col justify-center items-center pb-6 md:pb-0">
         <LevelIntroImage className="w-full" />
       </div>
     </div>

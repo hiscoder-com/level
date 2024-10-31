@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import SearchIcon from 'public/search.svg'
-import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
+import toast from 'react-hot-toast'
+
+import SearchIcon from 'public/icons/search.svg'
 
 function Search({ setSearch, isLoading }) {
   const { t } = useTranslation('common')
@@ -33,7 +34,7 @@ function Search({ setSearch, isLoading }) {
   }, [handleSearch])
 
   return (
-    <div className="relative flex w-full items-center">
+    <div className="relative flex items-center w-full">
       <input
         className="input-primary bg-th-secondary-50"
         placeholder={t('Search')}
@@ -48,7 +49,7 @@ function Search({ setSearch, isLoading }) {
       />
       <button className="absolute right-2 z-10 cursor-pointer" disabled={isLoading}>
         <SearchIcon
-          className="р-6 w-6 stroke-th-secondary-300 stroke-2"
+          className="р-6 w-6 stroke-2 stroke-th-secondary-300"
           onClick={handleSearch}
         />
       </button>

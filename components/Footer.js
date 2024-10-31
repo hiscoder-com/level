@@ -1,18 +1,18 @@
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
+import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
-import Loading from 'public/progress.svg'
 import { useRecoilValue } from 'recoil'
 
+import Translators from 'components/Translators'
+import ProgressBar from 'components/ProgressBar'
 import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
-import ProgressBar from 'components/ProgressBar'
-import Translators from 'components/Translators'
 
 import { stepConfigState } from './state/atoms'
+import Loading from 'public/icons/progress.svg'
 
 export default function Footer({
   loading = false,
@@ -41,16 +41,16 @@ export default function Footer({
   }, [router.pathname])
 
   return (
-    <div className="relative mx-auto flex max-w-7xl flex-col items-center justify-between bg-th-secondary-100 py-4 md:w-full md:flex-row md:py-0 lg:px-4 xl:px-0">
+    <div className="relative flex flex-col justify-between items-center py-4 md:py-0 mx-auto md:w-full max-w-7xl bg-th-secondary-100 md:flex-row lg:px-4 xl:px-0">
       {isStepPage && (
         <>
-          <div className="absolute left-0 right-0 mx-auto hidden translate-y-1/3 pb-3 md:pb-0 lg:block">
+          <div className="hidden lg:block absolute mx-auto left-0 right-0 pb-3 md:pb-0 translate-y-1/3">
             <ProgressBar
               amountSteps={stepConfig.last_step}
               currentStep={stepConfig.current_step}
             />
           </div>
-          <div className="flex w-full items-center justify-between gap-2.5 pb-5 md:w-auto md:pb-0 lg:order-first">
+          <div className="flex gap-2.5 items-center justify-between pb-5 md:pb-0 w-full md:w-auto lg:order-first">
             <div>{t('Participants')}:</div>
             <Translators
               projectCode={stepConfig.project_code}
@@ -65,20 +65,20 @@ export default function Footer({
         </>
       )}
       <div
-        className={`relative flex h-12 w-full items-center md:h-14 md:w-auto ${
+        className={`relative flex items-center h-12 md:h-14 w-full md:w-auto ${
           !isStepPage ? 'ml-auto' : ''
         }`}
       >
         {!isAwaitTeam ? (
-          <div className="flex w-full flex-row items-center justify-between space-x-6">
+          <div className="flex flex-row justify-between w-full items-center space-x-6">
             <CheckBox
               onChange={() => setChecked((prev) => !prev)}
               checked={checked}
               className={{
                 accent:
-                  'border-th-secondary bg-th-secondary-10 checked:border-th-secondary-400 checked:bg-th-secondary-400 checked:before:bg-th-secondary-400',
+                  'bg-th-secondary-10 checked:bg-th-secondary-400 checked:border-th-secondary-400 checked:before:bg-th-secondary-400 border-th-secondary',
                 cursor:
-                  'fill-th-secondary-10 stroke-th-secondary-10 text-th-secondary-10',
+                  'fill-th-secondary-10 text-th-secondary-10 stroke-th-secondary-10',
               }}
               label={textCheckbox}
             />

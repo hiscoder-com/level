@@ -1,21 +1,21 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { useCurrentUser } from 'lib/UserContext'
-import Down from 'public/arrow-down.svg'
-import LevelLogo from 'public/level-logo.svg'
-import User from 'public/user.svg'
 import { useRecoilValue } from 'recoil'
 
 import Timer from 'components/Timer'
-
 import Dropdown from './Dropdown'
 import SideBar from './SideBar'
-import { stepConfigState } from './state/atoms'
 
+import { stepConfigState } from './state/atoms'
 import useSupabaseClient from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
+
+import LevelLogo from 'public/icons/level-logo.svg'
+import Down from 'public/icons/arrow-down.svg'
+import User from 'public/icons/user.svg'
 
 export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)
@@ -50,9 +50,9 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   }, [access, user])
 
   return (
-    <div className="sticky top-0 z-30 bg-th-primary-100">
+    <div className="bg-th-primary-100 sticky top-0 z-30">
       <div className="appbar" onClick={() => isOpenSideBar && setIsOpenSideBar(false)}>
-        <div className="relative flex h-10 items-center md:static md:justify-start md:gap-7">
+        <div className="relative md:static flex items-center h-10 md:justify-start md:gap-7">
           {![
             '/user-agreement',
             '/confession-steps',
@@ -67,7 +67,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
             />
           )}
           <div
-            className={`flex w-full justify-center ${
+            className={`flex justify-center w-full  ${
               access && !isStepPage ? 'lg:ms-4 xl:-ml-2 2xl:-ml-6' : ''
             }`}
           >
@@ -77,12 +77,12 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
           </div>
 
           {isStepPage && (
-            <div className="flex items-center gap-7 md:hidden">
-              <div className="rounded-3xl bg-th-secondary-10 px-5 py-2.5">
+            <div className="flex md:hidden items-center gap-7">
+              <div className="px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
               <Down
-                className={`h-6 w-6 stroke-th-text-secondary-100 transition-transform ${
+                className={`w-6 h-6 stroke-th-text-secondary-100 transition-transform ${
                   showFullAppbar ? 'rotate-180' : ''
                 }`}
                 onClick={() => setShowFullAppbar((prev) => !prev)}
@@ -93,7 +93,7 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
         {isStepPage && (
           <>
             <div
-              className={`block flex-col text-center text-th-text-secondary-100 md:flex ${
+              className={`block md:flex flex-col text-center text-th-text-secondary-100 ${
                 showFullAppbar ? '' : 'hidden'
               }`}
             >
@@ -103,17 +103,17 @@ export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
               )}
             </div>
             <div
-              className={`block items-center justify-center gap-4 text-th-text-primary md:flex md:justify-start ${
+              className={`block md:flex items-center gap-4 justify-center md:justify-start text-th-text-primary ${
                 showFullAppbar ? 'flex' : 'hidden'
               }`}
             >
               {stepConfig.count_of_users > 0 && (
-                <div className="flex cursor-default items-center gap-1 rounded-3xl bg-th-secondary-10 px-5 py-2.5">
-                  <User className="h-4 w-4 stroke-th-text-primary" />
+                <div className="flex px-5 py-2.5 items-center gap-1 cursor-default bg-th-secondary-10 rounded-3xl">
+                  <User className="w-4 h-4 stroke-th-text-primary" />
                   {stepConfig.count_of_users}
                 </div>
               )}
-              <div className="hidden rounded-3xl bg-th-secondary-10 px-5 py-2.5 md:flex">
+              <div className="hidden md:flex px-5 py-2.5 bg-th-secondary-10 rounded-3xl">
                 <Timer time={stepConfig.time} />
               </div>
               <Dropdown

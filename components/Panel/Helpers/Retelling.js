@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
-
 import { useTranslation } from 'next-i18next'
-import BackButton from 'public/arrow-left.svg'
+
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
 import Recorder from 'components/Recorder'
 
 import { inactiveState } from '../../state/atoms'
+
+import BackButton from 'public/icons/arrow-left.svg'
 
 export default function Retelling({ config }) {
   const [audioState, setAudioState] = useState('Main')
@@ -45,7 +46,7 @@ function Main({ setAudioState }) {
   const { t } = useTranslation(['audio'])
   const isIntranet = process.env.NEXT_PUBLIC_INTRANET ?? false
   return (
-    <div className="flex min-h-full flex-col items-center justify-center gap-5">
+    <div className="flex flex-col items-center gap-5 min-h-full justify-center">
       <button
         onClick={() => setAudioState('Retell Partner')}
         className="btn-base bg-th-secondary-300 text-th-text-secondary-100 hover:opacity-70"
@@ -72,17 +73,17 @@ function RetellPartner({ setAudioState, isYourselfRetelling }) {
   const { t } = useTranslation(['audio'])
 
   return (
-    <div className="relative flex min-h-full flex-col items-center justify-center gap-5">
+    <div className="flex flex-col items-center gap-5 min-h-full justify-center relative">
       {isYourselfRetelling && (
         <BackButtonComponent
           setAudioState={setAudioState}
           audioState={'Main Audio'}
-          className="absolute left-0 top-0 h-5 w-5"
+          className="w-5 h-5 absolute top-0 left-0"
         />
       )}
       {inactive ? (
         <button
-          className="btn-base mr-2 bg-th-secondary-300 text-th-text-secondary-100 hover:opacity-70"
+          className="btn-base bg-th-secondary-300 text-th-text-secondary-100 mr-2 hover:opacity-70"
           onClick={() => setInactive(false)}
         >
           {t('Finished')}
@@ -92,7 +93,7 @@ function RetellPartner({ setAudioState, isYourselfRetelling }) {
           <p>{t('StartRetelling')}</p>
           <div className="flex">
             <button
-              className="btn-base mr-2 bg-th-secondary-300 text-th-text-secondary-100 hover:opacity-70"
+              className="btn-base bg-th-secondary-300 text-th-text-secondary-100 mr-2 hover:opacity-70"
               onClick={() => setInactive(true)}
             >
               {t('InOriginalLanguage')}
@@ -118,13 +119,13 @@ function RetellYourself({ setAudioState }) {
       <BackButtonComponent
         setAudioState={setAudioState}
         audioState={'Main Audio Component'}
-        className="left-0 top-0 h-5 w-5"
+        className="w-5 h-5 top-0 left-0"
       />
-      <div className="mt-8 flex flex-wrap justify-center">
+      <div className="flex justify-center flex-wrap mt-8">
         {['OriginalRecording', 'TargetRecording'].map((recorderType) => (
           <div
             key={recorderType}
-            className="mb-4 w-full border-b-4 border-th-secondary-100 px-2 pb-4"
+            className="w-full pb-4 px-2 mb-4 border-b-4 border-th-secondary-100"
           >
             <p className="mb-4">{t(recorderType)}</p>
             <Recorder />

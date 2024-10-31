@@ -3,34 +3,39 @@ import { Fragment, useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { Menu, Transition } from '@headlessui/react'
-import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
-import About from 'public/about.svg'
-import Account from 'public/account.svg'
-import Burger from 'public/burger.svg'
-import Camera from 'public/camera.svg'
-import Close from 'public/close.svg'
-import CreateProject from 'public/create-project.svg'
-import Localization from 'public/localization.svg'
-import Notes from 'public/notes.svg'
-import Projects from 'public/projects.svg'
-import Users from 'public/users.svg'
-import VersionLogo from 'public/version.svg'
+
+import { Menu, Transition } from '@headlessui/react'
+
 import { useRecoilState } from 'recoil'
 
 import AboutVersion from 'components/AboutVersion'
-
-import AboutProject from './AboutProject'
 import AvatarSelector from './AvatarSelector'
+import SwitchLocalization from './SwitchLocalization'
+import TranslatorImage from './TranslatorImage'
+import ThemeSwitcher from './ThemeSwitcher'
+import SignOut from './SignOut'
 import ModalInSideBar from './ModalInSideBar'
 import { PersonalNotes } from './Panel'
 import ProjectCreate from './ProjectCreate'
-import SignOut from './SignOut'
+import AboutProject from './AboutProject'
+
 import { modalsSidebar } from './state/atoms'
-import SwitchLocalization from './SwitchLocalization'
-import ThemeSwitcher from './ThemeSwitcher'
-import TranslatorImage from './TranslatorImage'
+
+import { useCurrentUser } from 'lib/UserContext'
+
+import Localization from 'public/icons/localization.svg'
+import VersionLogo from 'public/icons/version.svg'
+import Burger from 'public/icons/burger.svg'
+import Close from 'public/icons/close.svg'
+import Camera from 'public/icons/camera.svg'
+
+import Account from 'public/icons/account.svg'
+import Projects from 'public/icons/projects.svg'
+import CreateProject from 'public/icons/create-project.svg'
+import Notes from 'public/icons/notes.svg'
+import Users from 'public/icons/users.svg'
+import About from 'public/icons/about.svg'
 
 const activeIconClass =
   'stroke-th-text-primary lg:stroke-th-secondary-300 group-hover:stroke-th-text-primary'
@@ -84,7 +89,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
       closeModal()
       setShowAbout(false)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpenSideBar])
 
   return (
@@ -118,8 +122,8 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
             leave="transition-opacity duration-200"
           >
             <Menu.Items
-              className={`fixed top-14 z-20 -mx-5 flex h-[calc(100vh-52px)] w-full cursor-default flex-col gap-7 transition-all duration-150 sm:top-20 sm:px-5 md:w-1/2 md:pr-3 lg:left-0 lg:top-16 lg:h-[calc(100vh-64px)] ${
-                !collapsed ? 'lg:w-56' : 'lg:ml-0 lg:w-[3.25rem] lg:p-0 2xl:mx-0'
+              className={`fixed flex flex-col w-full h-[calc(100vh-52px)] md:w-1/2 transition-all duration-150 gap-7 top-14 sm:top-20 lg:top-16 lg:h-[calc(100vh-64px)] lg:left-0 -mx-5 z-20 cursor-default sm:px-5 md:pr-3 ${
+                !collapsed ? 'lg:w-56' : 'lg:w-[3.25rem] lg:ml-0 lg:p-0 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -143,45 +147,45 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                 setShowAbout(false)
               }}
             >
-              <div className="relative flex h-full cursor-default flex-col gap-2 border border-th-secondary-300 bg-th-secondary-10 shadow-md sm:rounded-2xl lg:h-screen lg:rounded-none">
+              <div className="relative h-full flex flex-col gap-2 cursor-default border shadow-md border-th-secondary-300 bg-th-secondary-10 sm:rounded-2xl lg:h-screen lg:rounded-none">
                 <div
-                  className={`flex cursor-default items-center gap-2 overflow-hidden border-b border-th-secondary-300 px-4 py-4 lg:flex-col lg:items-start lg:border-b-0 ${
+                  className={`flex items-center gap-2 border-b cursor-default border-th-secondary-300 lg:flex-col lg:items-start lg:border-b-0 overflow-hidden py-4 px-4 ${
                     collapsed ? 'lg:w-0 lg:px-0' : 'lg:w-full'
                   }`}
                 >
                   <div
-                    className="group relative h-16 w-16 min-w-[3rem] rounded-full shadow-lg"
+                    className="relative w-16 h-16 min-w-[3rem] rounded-full shadow-lg group"
                     onClick={() => openModal('avatarSelector')}
                   >
                     <TranslatorImage item={{ users: user }} isPointerCursor="true" />
-                    <div className="absolute start-0 top-0 h-full w-full overflow-hidden rounded-full">
-                      <div className="absolute bottom-0 left-0 flex h-1/3 w-full cursor-pointer items-center justify-center bg-black opacity-70 transition-opacity duration-500 group-hover:opacity-70 md:opacity-0">
+                    <div className="absolute top-0 start-0 w-full h-full rounded-full overflow-hidden">
+                      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center cursor-pointer">
                         <Camera className="w-4 text-white" />
                       </div>
                     </div>
                   </div>
 
                   <div>
-                    <div className="text-2xl font-bold lg:text-base lg:font-medium">
+                    <div className="text-2xl font-bold lg:font-medium lg:text-base">
                       {user?.login}
                     </div>
                     <div className="lg:text-xs">{user?.email}</div>
                   </div>
                 </div>
 
-                <div className="f-screen-appbar flex grow flex-col justify-between sm:min-h-[60vh]">
-                  <div className="flex grow flex-col justify-between gap-8 text-sm">
+                <div className="f-screen-appbar flex flex-col justify-between sm:min-h-[60vh] grow">
+                  <div className="flex flex-col text-sm justify-between grow gap-8">
                     <div className="flex flex-col">
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group px-4 py-3 ${
+                        className={`group py-3 px-4 ${
                           router.query?.tab !== '0' ? 'opacity-70' : 'bg-th-secondary-200'
                         } hover:bg-th-secondary-200`}
                       >
                         <Link href="/account?tab=0" legacyBehavior>
                           <a
-                            className="flex cursor-pointer items-center gap-2"
+                            className="flex items-center gap-2 cursor-pointer"
                             onClick={() => {
                               closeModal()
                               setIsOpenSideBar(false)
@@ -191,7 +195,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           >
                             <div className="rounded-[23rem]">
                               <Account
-                                className={`ml-0.5 w-4 ${
+                                className={`w-4 ml-0.5 ${
                                   router.query?.tab === '0'
                                     ? 'stroke-th-text-primary'
                                     : activeIconClass
@@ -214,13 +218,13 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group px-4 py-3 ${
+                        className={`group py-3 px-4 ${
                           router.query?.tab !== '1' ? 'opacity-70' : 'bg-th-secondary-200'
                         } hover:bg-th-secondary-200`}
                       >
                         <Link href="/account?tab=1" legacyBehavior>
                           <a
-                            className="flex cursor-pointer items-center gap-2"
+                            className="flex items-center gap-2 cursor-pointer"
                             onClick={() => {
                               closeModal()
                               setIsOpenSideBar(false)
@@ -254,7 +258,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className={`group hidden px-4 py-3 md:block ${
+                          className={`group hidden md:block py-3 px-4 ${
                             router.query?.tab !== '2'
                               ? 'opacity-70'
                               : 'bg-th-secondary-200'
@@ -262,7 +266,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         >
                           <Link href="/account?tab=2" legacyBehavior>
                             <a
-                              className="flex cursor-pointer items-center gap-2"
+                              className="flex items-center gap-2 cursor-pointer"
                               onClick={() => {
                                 closeModal()
                                 setIsOpenSideBar(false)
@@ -272,7 +276,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             >
                               <div className="rounded-[23rem]">
                                 <CreateProject
-                                  className={`h-5 w-5 ${
+                                  className={`w-5 h-5 ${
                                     router.query?.tab === '2'
                                       ? 'stroke-th-text-primary'
                                       : activeIconClass
@@ -283,7 +287,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                                 className={`overflow-hidden ${
                                   collapsed
                                     ? 'lg:w-0'
-                                    : 'transition-all delay-700 duration-700 lg:w-auto'
+                                    : 'lg:w-auto transition-all duration-700 delay-700'
                                 }`}
                               >
                                 <span
@@ -305,12 +309,12 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className={`flex cursor-default items-center justify-between gap-2 px-4 py-3 md:hidden ${
+                          className={`flex px-4 py-3 items-center justify-between gap-2 cursor-default md:hidden ${
                             !showCreate ? 'opacity-70' : ''
                           }`}
                         >
                           <div
-                            className="flex w-full cursor-pointer items-center gap-2"
+                            className="flex w-full items-center gap-2 cursor-pointer"
                             onClick={() => {
                               setShowCreate((prev) => !prev)
                               openModal()
@@ -318,7 +322,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           >
                             <div className="rounded-[23rem] hover:opacity-70">
                               <CreateProject
-                                className={`h-5 w-5 ${
+                                className={`w-5 h-5 ${
                                   showCreate ? 'stroke-th-text-primary' : activeIconClass
                                 }`}
                               />
@@ -339,14 +343,14 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group flex cursor-default items-center justify-between gap-2 px-4 py-3 ${
+                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
                           modalsSidebarState.notepad
                             ? 'bg-th-secondary-200'
                             : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
-                          className="flex w-full cursor-pointer items-center gap-2"
+                          className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => {
                             openModal('notepad')
                             setShowAbout(false)
@@ -354,10 +358,10 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         >
                           <div className="rounded-[23rem]">
                             <Notes
-                              className={`h-5 w-5 ${
+                              className={`w-5 h-5 ${
                                 modalsSidebarState.notepad
                                   ? 'stroke-th-text-primary'
-                                  : 'text-th-text-primary group-hover:text-th-text-primary lg:text-th-secondary-300'
+                                  : 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
                               }`}
                             />
                           </div>
@@ -384,7 +388,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         <Menu.Item
                           as="div"
                           disabled
-                          className={`group px-4 py-3 ${
+                          className={`group py-3 px-4 ${
                             router.pathname === '/users'
                               ? 'bg-th-secondary-200'
                               : 'opacity-70'
@@ -392,7 +396,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         >
                           <Link href="/users" legacyBehavior>
                             <a
-                              className="flex cursor-pointer items-center gap-2"
+                              className="flex items-center gap-2 cursor-pointer"
                               onClick={() => {
                                 closeModal()
                                 setIsOpenSideBar(false)
@@ -428,28 +432,28 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           </Link>
                         </Menu.Item>
                       )}
-                      <div className="mt-2 space-y-2">
-                        <div className="h-px w-full bg-th-secondary-100" />
+                      <div className="space-y-2 mt-2">
+                        <div className="w-full h-px bg-th-secondary-100" />
                         <ThemeSwitcher collapsed={collapsed} />
-                        <div className="h-px w-full bg-th-secondary-100" />
+                        <div className="w-full h-px bg-th-secondary-100" />
                       </div>
                     </div>
                     <div className="flex flex-col">
                       <Menu.Item
                         as="div"
                         disabled
-                        className="group flex cursor-default items-center justify-between gap-2 px-4 py-2"
+                        className="group py-2 px-4 flex items-center justify-between gap-2 cursor-default "
                       >
                         <div className="flex items-center gap-2">
                           <div className="rounded-[23rem]">
                             <Localization
-                              className={`h-5 w-5 ${activeIconClass} ${
+                              className={`w-5 h-5 ${activeIconClass} ${
                                 collapsed && 'opacity-70'
                               } group-hover:opacity-70`}
                             />
                           </div>
                           <span
-                            className={`${collapsedSideBar} ${activeTextClass} opacity-70 group-hover:opacity-70 lg:opacity-100`}
+                            className={`${collapsedSideBar} ${activeTextClass} opacity-70 lg:opacity-100 group-hover:opacity-70`}
                           >
                             {t('Language')}
                           </span>
@@ -460,12 +464,12 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group flex cursor-default items-center justify-between gap-2 px-4 py-3 ${
+                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
                           showAbout ? 'bg-th-secondary-200' : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
-                          className="flex w-full cursor-pointer items-center gap-2"
+                          className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => {
                             setShowAbout((prev) => !prev)
                             openModal()
@@ -497,14 +501,14 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className={`group flex cursor-default items-center justify-between gap-2 px-4 py-3 ${
+                        className={`group py-3 px-4 flex items-center justify-between gap-2 cursor-default ${
                           modalsSidebarState.aboutVersion
                             ? 'bg-th-secondary-200'
                             : 'opacity-70'
                         } hover:bg-th-secondary-200`}
                       >
                         <div
-                          className="flex w-full cursor-pointer items-center gap-2"
+                          className="flex w-full items-center gap-2 cursor-pointer"
                           onClick={() => {
                             openModal('aboutVersion')
                             setShowAbout(false)
@@ -512,7 +516,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         >
                           <div className="rounded-[23rem]">
                             <VersionLogo
-                              className={`h-5 w-5 ${
+                              className={`w-5 h-5 ${
                                 modalsSidebarState.aboutVersion
                                   ? 'stroke-th-text-primary'
                                   : activeIconClass
@@ -532,7 +536,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                       <Menu.Item
                         as="div"
                         disabled
-                        className="group flex cursor-default items-center justify-between gap-2 rounded-b-2xl hover:bg-th-secondary-200 lg:rounded-b-none"
+                        className="group flex items-center justify-between gap-2 cursor-default hover:bg-th-secondary-200 rounded-b-2xl lg:rounded-b-none"
                       >
                         <SignOut collapsed={collapsed} />
                       </Menu.Item>

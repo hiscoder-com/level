@@ -1,20 +1,23 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 
 import { useRouter } from 'next/router'
 
-import axios from 'axios'
-import { useTranslation } from 'next-i18next'
-import Pencil from 'public/editor-pencil.svg'
 import toast from 'react-hot-toast'
 
+import { useTranslation } from 'next-i18next'
+
+import axios from 'axios'
+
+import UpdateField from 'components/UpdateField'
 import BriefEditQuestions from 'components/BriefEditQuestions'
 import ButtonLoading from 'components/ButtonLoading'
 import SwitchLoading from 'components/Panel/UI/SwitchLoading'
-import UpdateField from 'components/UpdateField'
 
-import { getBriefName } from 'utils/helper'
 import { useGetBrief, useProject } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
+import { getBriefName } from 'utils/helper'
+
+import Pencil from 'public/icons/editor-pencil.svg'
 
 function BriefBlock({ access, title = false }) {
   const supabase = useSupabaseClient()
@@ -134,11 +137,11 @@ function BriefBlock({ access, title = false }) {
   }, [briefName, t])
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex items-start justify-end sm:justify-between">
+      <div className="flex justify-end items-start sm:justify-between">
         {title && (
           <div className="flex items-center gap-2">
             {!isEditingBriefName ? (
-              <h3 className="text-lg font-bold md:text-xl">{titleBrief}</h3>
+              <h3 className="text-lg md:text-xl font-bold">{titleBrief}</h3>
             ) : (
               <input
                 value={briefName}
@@ -148,7 +151,7 @@ function BriefBlock({ access, title = false }) {
             )}
             {!access ? null : isEditingBriefName ? (
               <ButtonLoading
-                className="btn-primary relative"
+                className="relative btn-primary"
                 onClick={() => {
                   handleSaveBriefName()
                   setIsEditingBriefName(false)
@@ -159,12 +162,12 @@ function BriefBlock({ access, title = false }) {
               </ButtonLoading>
             ) : (
               <button className="btn-primary" onClick={() => setIsEditingBriefName(true)}>
-                <Pencil className="inline w-5" />
+                <Pencil className="w-5 inline" />
               </button>
             )}
           </div>
         )}
-        <div className="flex flex-col items-end justify-end gap-7 text-sm md:text-base lg:flex-row">
+        <div className="flex flex-col items-end lg:flex-row gap-7 justify-end text-sm md:text-base">
           {access && (
             <div className="flex items-center">
               <span className="mr-3">
@@ -210,12 +213,12 @@ function BriefBlock({ access, title = false }) {
       ) : (
         <div className="space-y-7">
           {briefDataCollection.length > 0 ? (
-            <div className="mb-4 flex w-full flex-col gap-4">
-              <ul className="ml-4 list-decimal space-y-7 text-sm text-th-text-primary md:text-base">
+            <div className="flex flex-col gap-4 w-full mb-4">
+              <ul className="list-decimal ml-4 text-sm md:text-base text-th-text-primary space-y-7">
                 {briefDataCollection.map((briefItem, index) => {
                   return (
                     <li key={index} className="space-y-3 font-bold">
-                      <div className="center flex justify-between gap-7">
+                      <div className="flex gap-7 center justify-between">
                         <p>{briefItem.title}</p>
                       </div>
                       <div className={hidden ? 'hidden' : 'space-y-7'}>
@@ -239,7 +242,7 @@ function BriefBlock({ access, title = false }) {
                         })}
                       </div>
                       <div className="space-y-7">
-                        <p className={hidden ? 'hidden' : 'mt-7 text-lg'}>
+                        <p className={hidden ? 'hidden' : 'text-lg mt-7'}>
                           {t('project-edit:Summary')}
                         </p>
                         <UpdateField
@@ -264,7 +267,7 @@ function BriefBlock({ access, title = false }) {
                   {[3, 7, 3, 4, 9, 6, 3, 10, 8].map((width, index) => (
                     <div
                       key={index}
-                      className={`h-7 w-${width}/12 mt-4 rounded-full bg-th-secondary-100`}
+                      className={`h-7 w-${width}/12 mt-4 bg-th-secondary-100 rounded-full`}
                     ></div>
                   ))}
                 </div>
@@ -273,7 +276,7 @@ function BriefBlock({ access, title = false }) {
           )}
           {access && (
             <ButtonLoading
-              className="btn-primary relative"
+              className="relative btn-primary"
               onClick={() => saveToDatabase(briefDataCollection, true)}
               isLoading={isSaving}
             >

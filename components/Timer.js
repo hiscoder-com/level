@@ -2,12 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useCurrentUser } from 'lib/UserContext'
-import Check from 'public/check.svg'
-import Time from 'public/time.svg'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import { useAccess } from 'utils/hooks'
-import useSupabaseClient from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
+
+import Time from 'public/icons/time.svg'
+import Check from 'public/icons/check.svg'
 
 function Timer({ time }) {
   const supabase = useSupabaseClient()
@@ -98,7 +99,7 @@ function Timer({ time }) {
   }
 
   return (
-    <div className="flex cursor-default items-center gap-1">
+    <div className="flex items-center gap-1 cursor-default">
       {isChanging ? (
         <>
           <Check onClick={handleSave} className="w-5" />

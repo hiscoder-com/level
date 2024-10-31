@@ -1,19 +1,21 @@
 import { useEffect, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
+import { useTranslation } from 'next-i18next'
 
 import axios from 'axios'
-import { useCurrentUser } from 'lib/UserContext'
-import { useTranslation } from 'next-i18next'
-import Close from 'public/close.svg'
-import Report from 'public/error-outline.svg'
-import Loading from 'public/progress.svg'
 
-import ButtonLoading from 'components/ButtonLoading'
 import Modal from 'components/Modal'
+import ButtonLoading from 'components/ButtonLoading'
 import InputField from 'components/Panel/UI/InputField'
 
+import { useCurrentUser } from 'lib/UserContext'
 import useSupabaseClient from 'utils/supabaseClient'
+
+import Report from 'public/icons/error-outline.svg'
+import Loading from 'public/icons/progress.svg'
+import Close from 'public/icons/close.svg'
+import Link from 'next/link'
 
 function Login({ handleClick = () => {} }) {
   const supabase = useSupabaseClient()
@@ -117,19 +119,23 @@ function Login({ handleClick = () => {} }) {
   }
 
   return (
-    <div className="relative flex w-full flex-col">
+    <div className="relative flex flex-col w-full">
       <p className="hidden md:block">{t('LoginToAccount')}</p>
       <Close
-        className={`absolute -top-12 right-0 h-6 w-6 cursor-pointer stroke-black md:hidden`}
+        className={`absolute md:hidden w-6 h-6 right-0 -top-12 stroke-black cursor-pointer`}
+        onClick={(e) => {
+          e.stopPropagation()
+          router.push('/')
+        }}
       />
       <div
         className="flex flex-grow items-center pb-6 md:pb-0"
         onClick={(e) => e.stopPropagation()}
       >
         {user?.id ? (
-          <Loading className="progress-custom-colors inset-0 mx-auto my-auto w-14 animate-spin stroke-th-primary-100" />
+          <Loading className="progress-custom-colors mx-auto my-auto inset-0 w-14 animate-spin stroke-th-primary-100" />
         ) : (
-          <form className="flex w-full flex-col space-y-4">
+          <form className="flex flex-col w-full space-y-4">
             <InputField
               refInput={loginRef}
               type="text"
@@ -158,13 +164,13 @@ function Login({ handleClick = () => {} }) {
             />
 
             {isError && (
-              <div className="flex flex-col items-center justify-between gap-4 lg:flex-row">
+              <div className="flex flex-col gap-4 lg:flex-row items-center justify-between">
                 <p className="flex text-xs text-th-invalid">
-                  <Report className="mr-1 h-4 w-4" /> {t('WrongLoginPassword')}
+                  <Report className="w-4 h-4 mr-1" /> {t('WrongLoginPassword')}
                 </p>
                 <button
                   type="button"
-                  className="text-sm text-th-primary-200 underline hover:opacity-70 md:text-base"
+                  className="underline text-th-primary-200 hover:opacity-70 text-sm md:text-base"
                   onClick={() => setIsOpenModal(true)}
                 >
                   {t('ForgotPassword')}?
@@ -172,29 +178,34 @@ function Login({ handleClick = () => {} }) {
               </div>
             )}
 
-            <div className="flex flex-col items-center gap-4 pt-1 lg:flex-row">
+            <div className="flex flex-col gap-4 lg:flex-row items-center pt-1">
               <ButtonLoading
                 disabled={loading}
                 onClick={handleLogin}
                 isLoading={isLoadingLogin}
-                className="relative w-full rounded-lg bg-slate-550 px-5 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base lg:w-1/2"
+                className="relative w-full lg:w-1/2 px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 bg-slate-550"
               >
                 {t('SignIn')}
               </ButtonLoading>
               <button
                 type="button"
-                className="w-full py-4 text-sm font-medium text-gray-300 hover:text-th-primary-100 md:text-base lg:w-1/2"
+                className="w-full lg:w-1/2 py-4 text-sm md:text-base font-medium text-gray-300 hover:text-th-primary-100"
                 onClick={() => setIsOpenModal(true)}
               >
                 {t('RestoreAccess')}
               </button>
             </div>
 
-            <p className="text-center text-base font-medium">
+            <p className="text-base text-center font-medium">
               {t('RegistrationTextStart')}{' '}
-              <span className="cursor-pointer text-th-primary-200" onClick={handleClick}>
+              <Link
+                href="/connect-with-us"
+                shallow
+                className="text-th-primary-200 cursor-pointer"
+                onClick={handleClick}
+              >
                 {t('RegistrationTextEnd')}
-              </span>
+              </Link>
             </p>
           </form>
         )}
@@ -204,9 +215,9 @@ function Login({ handleClick = () => {} }) {
           title={t('PasswordRecovery')}
         >
           {successMessageSendLink ? (
-            <div className="mt-7 text-center">{successMessageSendLink}</div>
+            <div className="text-center mt-7">{successMessageSendLink}</div>
           ) : (
-            <div className="mb-7 flex w-full flex-col gap-7">
+            <div className="flex flex-col gap-7 mb-7 w-full">
               <p className="mt-7">{t('WriteYourEmailRecovery')}</p>
               <div className="flex gap-4">
                 <input
@@ -217,7 +228,7 @@ function Login({ handleClick = () => {} }) {
                   }}
                 />
                 <ButtonLoading
-                  className="btn-secondary relative"
+                  className="relative btn-secondary"
                   disabled={!email}
                   isLoading={isSendingEmail}
                   onClick={handleSendRecoveryLink}

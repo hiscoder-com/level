@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
 
-import ArrowRight from 'public/folder-arrow-right.svg'
-import Loading from 'public/progress.svg'
-import Return from 'public/return.svg'
 import { useTranslation } from 'react-i18next'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import Modal from 'components/Modal'
 import { currentVerse, indexImageCarousel } from 'components/state/atoms'
-
 import FullSizeImageCarousel from './FullSizeImageCarousel'
 import ImageCard from './ImageCard'
 import LoadMoreButton from './LoadMoreButton'
+
+import ArrowRight from 'public/icons/folder-arrow-right.svg'
+import Loading from 'public/icons/progress.svg'
+import Return from 'public/icons/return.svg'
 
 function Carousel({
   images,
@@ -88,7 +88,7 @@ function Carousel({
   return (
     <>
       {isLoading && !images?.length ? (
-        <Loading className="progress-custom-colors right-2 m-auto w-6 animate-spin stroke-th-primary-100" />
+        <Loading className="progress-custom-colors m-auto w-6 animate-spin stroke-th-primary-100 right-2" />
       ) : (
         <>
           <div className="relative overflow-hidden">
@@ -132,21 +132,21 @@ function Carousel({
                   }`}
                 >
                   <button
-                    className="rounded-full bg-th-text-primary p-3.5 font-bold text-th-secondary-10 disabled:cursor-not-allowed disabled:bg-th-secondary-100 disabled:text-th-secondary-300"
+                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-th-secondary-300 disabled:cursor-not-allowed"
                     onClick={handlePrevClick}
                     disabled={currentIndex === 0 || images.length === 0}
                   >
-                    <ArrowRight className="rotate-180 stroke-2" />
+                    <ArrowRight className="stroke-2 rotate-180" />
                   </button>
                   <button
-                    className="rounded-full bg-th-text-primary p-3 font-bold text-th-secondary-10 disabled:cursor-not-allowed disabled:bg-th-secondary-100 disabled:text-th-secondary-300"
+                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3 rounded-full disabled:bg-th-secondary-100 disabled:text-th-secondary-300 disabled:cursor-not-allowed"
                     onClick={() => setCurrentIndex(0)}
                     disabled={currentIndex === 0 || images.length === 0}
                   >
                     <Return />
                   </button>
                   <button
-                    className="rounded-full bg-th-text-primary p-3.5 font-bold text-th-secondary-10 disabled:cursor-not-allowed disabled:bg-th-secondary-100 disabled:text-th-secondary-300"
+                    className="bg-th-text-primary text-th-secondary-10 font-bold p-3.5 rounded-full disabled:bg-th-secondary-100 disabled:text-th-secondary-300 disabled:cursor-not-allowed"
                     onClick={handleNextClick}
                     disabled={
                       (!insideBigCarousel && currentIndex === maxVisibleIndex) ||
@@ -166,13 +166,13 @@ function Carousel({
               setIsOpenModal(false)
             }}
             className={{
-              main: 'relative z-50',
+              main: 'z-50 relative',
               dialogTitle: 'text-center text-2xl font-medium leading-6',
               dialogPanel:
-                'text-th-text-primary-100 flex h-full w-full max-w-5xl transform overflow-y-auto rounded-3xl p-6 transition-all',
+                'w-full h-full flex max-w-5xl p-6 transform overflow-y-auto transition-all text-th-text-primary-100 rounded-3xl',
               transitionChild: 'fixed inset-0 bg-opacity-5 backdrop-brightness-50',
               content:
-                'fixed inset-0 top-4 flex min-h-full items-center justify-center overflow-y-auto p-4',
+                'inset-0 top-4 fixed flex items-center justify-center p-4 min-h-full overflow-y-auto',
             }}
           >
             <FullSizeImageCarousel

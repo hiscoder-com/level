@@ -1,4 +1,4 @@
-import Loading from 'public/progress.svg'
+import Loading from 'public/icons/progress.svg'
 
 function ButtonLoading({
   isLoading,

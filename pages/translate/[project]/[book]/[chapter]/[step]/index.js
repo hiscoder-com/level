@@ -3,19 +3,20 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
-import Progress from 'public/progress.svg'
+
 import { useSetRecoilState } from 'recoil'
 
 import Footer from 'components/Footer'
-import Modal from 'components/Modal'
-import { currentVerse, projectIdState, stepConfigState } from 'components/state/atoms'
 import Workspace from 'components/Workspace'
+import Modal from 'components/Modal'
 
-import useSupabaseClient from 'utils/supabaseClient'
+import { useCurrentUser } from 'lib/UserContext'
 import { supabaseService } from 'utils/supabaseService'
+import useSupabaseClient from 'utils/supabaseClient'
+import { projectIdState, stepConfigState, currentVerse } from 'components/state/atoms'
+import Progress from 'public/icons/progress.svg'
 
 export default function ProgressPage({ last_step }) {
   const supabase = useSupabaseClient()
@@ -270,8 +271,8 @@ export default function ProgressPage({ last_step }) {
           editable={true}
         />
       ) : (
-        <div className="h-empty-screen mx-auto flex max-w-7xl items-center justify-center py-5">
-          <Progress className="progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
+        <div className="h-empty-screen flex items-center justify-center mx-auto max-w-7xl py-5">
+          <Progress className=" progress-custom-colors w-14 animate-spin stroke-th-primary-100" />
         </div>
       )}
       <Footer
@@ -282,12 +283,12 @@ export default function ProgressPage({ last_step }) {
         isAwaitTeam={isAwaitTeamState}
       />
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        <div className="flex flex-col items-center justify-center gap-7">
-          <div className="flex flex-row gap-2 text-center text-2xl">
+        <div className="flex flex-col gap-7 justify-center items-center">
+          <div className="flex flex-row gap-2 text-2xl text-center">
             <p>{t('AreYouSureGoToNextStep')}</p>
           </div>
 
-          <div className="flex w-1/2 justify-center gap-7 self-center">
+          <div className="flex justify-center self-center gap-7 w-1/2">
             <button className="btn-secondary flex-1" onClick={handleNextStep}>
               {t('Yes')}
             </button>

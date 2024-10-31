@@ -1,5 +1,5 @@
-import EyeIcon from 'public/eye-icon.svg'
-import EyeOffIcon from 'public/eye-off-icon.svg'
+import EyeIcon from 'public/icons/eye-icon.svg'
+import EyeOffIcon from 'public/icons/eye-off-icon.svg'
 
 function InputField({
   setShowPassword,

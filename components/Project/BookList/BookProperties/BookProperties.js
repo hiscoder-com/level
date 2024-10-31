@@ -2,17 +2,20 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { Tab } from '@headlessui/react'
 import axios from 'axios'
+
 import { useTranslation } from 'next-i18next'
-import Reader from 'public/dictionary.svg'
+
 import toast from 'react-hot-toast'
 
-import Breadcrumbs from 'components/Breadcrumbs'
-import ButtonLoading from 'components/ButtonLoading'
-import CheckBox from 'components/CheckBox'
+import { Tab } from '@headlessui/react'
 
 import Property from './Property'
+import ButtonLoading from 'components/ButtonLoading'
+import Breadcrumbs from 'components/Breadcrumbs'
+import CheckBox from 'components/CheckBox'
+
+import Reader from 'public/icons/dictionary.svg'
 
 function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   const { query } = useRouter()
@@ -77,7 +80,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
   }
 
   return (
-    <div className="flex w-full flex-col">
+    <div className="flex flex-col w-full">
       <Breadcrumbs
         links={[
           { title: project?.title, href: '/projects/' + project?.code },
@@ -86,7 +89,7 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
         full
       />
       <Tab.Group defaultIndex={query?.levels ? 1 : 0}>
-        <Tab.List className="mt-9 flex w-full gap-4 px-5 text-center font-bold sm:w-2/3">
+        <Tab.List className="flex w-full sm:w-2/3 gap-4 mt-9 px-5 font-bold text-center">
           <Tab
             className={({ selected }) =>
               `flex-1 ${selected ? 'tab-active' : 'tab-inactive'}`
@@ -103,9 +106,9 @@ function BookProperties({ project, user, bookCode, type, mutateBooks, books }) {
           </Tab>
         </Tab.List>
         <Tab.Panels>
-          <div className="h-10 rounded-t-3xl bg-th-primary-500 px-10"></div>
+          <div className="px-10 h-10 rounded-t-3xl bg-th-primary-500"></div>
           <Tab.Panel>
-            <div className="flex flex-col rounded-b-2xl border border-th-secondary-300 bg-th-secondary-10 px-10 py-7">
+            <div className="flex flex-col py-7 px-10 border border-th-secondary-300 rounded-b-2xl bg-th-secondary-10">
               <div className="flex flex-col gap-4">
                 {renderProperties}
                 <ButtonLoading onClick={handleSaveProperties} isLoading={isSaving}>
@@ -166,7 +169,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
     }
   }, [book])
   return (
-    <div className="flex flex-col gap-4 rounded-b-2xl border border-th-secondary-300 bg-th-secondary-10 px-10 py-7">
+    <div className="flex flex-col gap-4 py-7 px-10 border border-th-secondary-300 rounded-b-2xl bg-th-secondary-10">
       <div className="flex flex-col gap-7">
         <div className="flex flex-col gap-4">
           <div className="font-bold">{t('TranslationLink')}</div>
@@ -179,7 +182,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
           />
           {book?.level_checks && (
             <div
-              className="flex cursor-pointer gap-4 text-th-primary-200 hover:opacity-70"
+              className="flex gap-4 cursor-pointer text-th-primary-200 hover:opacity-70"
               onClick={() =>
                 push({
                   pathname: `/projects/${project?.code}/books/read`,
@@ -194,7 +197,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
             </div>
           )}
         </div>
-        <div className="flex flex-col justify-between gap-7 sm:flex-row sm:items-end sm:gap-0">
+        <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-7 sm:gap-0">
           <div className="flex flex-col gap-4">
             <div className="font-bold">{t('LevelChecks')}</div>
             <div className="flex gap-5">
@@ -210,7 +213,7 @@ function LevelChecks({ t, book, user, project, mutateBooks }) {
                     checked={translationLink?.level === el || false}
                     className={{
                       accent:
-                        'checked:border-th-primary-100 checked:bg-th-primary-100 checked:before:bg-th-primary-100',
+                        'checked:bg-th-primary-100 checked:border-th-primary-100 checked:before:bg-th-primary-100',
                       cursor:
                         'fill-th-secondary-10 stroke-th-secondary-10 text-th-secondary-10',
                     }}

@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
 import axios from 'axios'
-import Resize from 'public/minimize_icon.svg'
 import toast from 'react-hot-toast'
 
 import ButtonLoading from './ButtonLoading'
+
+import Resize from 'public/icons/minimize_icon.svg'
 
 function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   const canvasRef = useRef(null)
@@ -254,7 +255,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
   }, [maxCropSize])
 
   return (
-    <div ref={parentRef} className="z-10 min-h-full overflow-auto bg-white">
+    <div ref={parentRef} className="overflow-auto min-h-full bg-white z-10">
       <canvas
         ref={canvasRef}
         style={{ border: '1px solid black', width: '100%', height: 'auto' }}
@@ -266,9 +267,9 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         onMouseMove={onMouseMove}
         onMouseUp={onMouseUp}
       />
-      <div className="mt-6 flex w-full flex-col justify-between gap-5 md:flex-row">
-        <div className="flex w-full items-center gap-3 md:w-fit">
-          <Resize className="h-6 w-6 stroke-th-text-primary" />
+      <div className="flex flex-col md:flex-row justify-between w-full mt-6 gap-5">
+        <div className="flex items-center gap-3 w-full md:w-fit">
+          <Resize className="w-6 h-6 stroke-th-text-primary" />
           <input
             ref={rangeSliderRef}
             type="range"
@@ -281,7 +282,7 @@ function ImageEditor({ selectedFile, id, updateAvatar, t, setSelectedFile }) {
         <ButtonLoading
           isLoading={isSaving}
           onClick={handleCrop}
-          className="btn-primary relative w-full md:w-fit"
+          className="relative btn-primary w-full md:w-fit"
         >
           {t('Save')}
         </ButtonLoading>

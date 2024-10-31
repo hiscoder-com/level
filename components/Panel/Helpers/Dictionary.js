@@ -1,31 +1,33 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
+import dynamic from 'next/dynamic'
 
-import { Disclosure } from '@headlessui/react'
-import axios from 'axios'
-import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
-import ArrowDown from 'public/arrow-down.svg'
-import ArrowLeft from 'public/arrow-left.svg'
-import ArrowRight from 'public/arrow-right.svg'
-import Close from 'public/close.svg'
-import Export from 'public/export.svg'
-import Import from 'public/import.svg'
-import Back from 'public/left.svg'
-import Plus from 'public/plus.svg'
-import Trash from 'public/trash.svg'
+
+import axios from 'axios'
+
 import toast from 'react-hot-toast'
 
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
+import { useCurrentUser } from 'lib/UserContext'
+import { useAccess, useAllWords, useProject } from 'utils/hooks'
 
 import Modal from 'components/Modal'
-
 import MenuButtons from '../UI/MenuButtons'
 
-import { removeCacheNote, saveCacheNote } from 'utils/helper'
-import { useAccess, useAllWords, useProject } from 'utils/hooks'
+import ArrowDown from 'public/icons/arrow-down.svg'
+
+import ArrowRight from 'public/icons/arrow-right.svg'
+import ArrowLeft from 'public/icons/arrow-left.svg'
+import Back from 'public/icons/left.svg'
+import Trash from 'public/icons/trash.svg'
+import Plus from 'public/icons/plus.svg'
+import Export from 'public/icons/export.svg'
+import Import from 'public/icons/import.svg'
+import Close from 'public/icons/close.svg'
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
+import { Disclosure } from '@headlessui/react'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),
@@ -399,11 +401,11 @@ function Dictionary({ config }) {
 
   return (
     <div className="relative">
-      <div className="flex w-full items-start gap-4">
+      <div className="flex gap-4 items-start w-full">
         {isModeratorAccess && (
           <div className="w-full">
-            <div className="flex w-full gap-2 rtl:flex-row-reverse">
-              <div className="relative mb-3 flex grow items-center" dir={termDirection}>
+            <div className="flex gap-2 rtl:flex-row-reverse w-full">
+              <div className="relative flex items-center mb-3 grow" dir={termDirection}>
                 <input
                   disabled={!!activeWord}
                   className="input-primary h-full"
@@ -419,7 +421,7 @@ function Dictionary({ config }) {
                   <button
                     disabled={!!activeWord}
                     onClick={getAll}
-                    className="р-6 absolute z-10 w-6 cursor-pointer disabled:cursor-auto disabled:opacity-70 ltr:right-1 rtl:left-1"
+                    className="absolute р-6 w-6 z-10 cursor-pointer ltr:right-1 rtl:left-1 disabled:opacity-70 disabled:cursor-auto"
                   >
                     <Close />
                   </button>
@@ -428,11 +430,11 @@ function Dictionary({ config }) {
               <div className="flex gap-2">
                 <button
                   disabled={!!activeWord}
-                  className={`btn-tertiary mb-3 p-3 ${!!activeWord ? 'opacity-70' : ''}`}
+                  className={`btn-tertiary p-3 mb-3 ${!!activeWord ? 'opacity-70' : ''}`}
                   onClick={addNote}
                   title={t('common:AddWord')}
                 >
-                  <Plus className="h-6 w-6 stroke-th-text-secondary-100 stroke-2" />
+                  <Plus className="w-6 h-6 stroke-th-text-secondary-100 stroke-2" />
                 </button>
                 <MenuButtons
                   disabled={!!activeWord}
@@ -455,13 +457,13 @@ function Dictionary({ config }) {
                         t={t}
                       />
                     </Disclosure.Panel>
-                    <Disclosure.Button className="w-full text-th-secondary-300">
-                      <div className="mb-4 flex w-full flex-col items-center justify-center">
-                        <div className="mb-3 h-px w-full bg-gray-450" />
+                    <Disclosure.Button className="text-th-secondary-300 w-full">
+                      <div className="w-full flex justify-center flex-col mb-4 items-center">
+                        <div className="h-px bg-gray-450 mb-3 w-full" />
                         <div className="flex gap-2">
                           <p>{t('common:Symbols')}</p>
                           <ArrowDown
-                            className={`h-5 w-5 stroke-gray-450 ${
+                            className={`w-5 h-5 stroke-gray-450  ${
                               open ? 'rotate-180' : ''
                             }`}
                           />
@@ -494,10 +496,10 @@ function Dictionary({ config }) {
                   titleBlock: 'flex justify-between items-center w-full',
                 }}
                 isShowDelBtn={isModeratorAccess}
-                delBtnChildren={<Trash className="h-4 w-4 stroke-th-text-primary" />}
+                delBtnChildren={<Trash className="w-4 h-4 stroke-th-text-primary" />}
               />
               {totalPageCount > 1 && (
-                <div className="bottom-0 left-0 flex justify-around">
+                <div className="flex justify-around bottom-0 left-0">
                   <button
                     className="arrow"
                     disabled={currentPageWords === 0}
@@ -508,7 +510,7 @@ function Dictionary({ config }) {
                       })
                     }
                   >
-                    <ArrowLeft className="h-5 w-5 stroke-th-text-primary" />
+                    <ArrowLeft className="w-5 h-5 stroke-th-text-primary" />
                   </button>
                   <button
                     className="arrow"
@@ -520,7 +522,7 @@ function Dictionary({ config }) {
                       })
                     }}
                   >
-                    <ArrowRight className="h-5 w-5 stroke-th-text-primary" />
+                    <ArrowRight className="w-5 h-5 stroke-th-text-primary" />
                   </button>
                 </div>
               )}
@@ -532,7 +534,7 @@ function Dictionary({ config }) {
       ) : (
         <div className="relative" dir={titleDirection}>
           <div
-            className="absolute left-0 top-0 flex w-fit cursor-pointer rounded-full bg-th-secondary-100 p-1 hover:opacity-70"
+            className="absolute top-0 left-0 flex w-fit p-1 cursor-pointer hover:opacity-70 rounded-full bg-th-secondary-100"
             onClick={() => {
               saveWord()
               setActiveWord(null)
@@ -559,7 +561,7 @@ function Dictionary({ config }) {
       )}
 
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        <div className="flex flex-col items-center gap-7">
+        <div className="flex flex-col gap-7 items-center">
           <div className="text-center text-2xl">
             {t('common:AreYouSureDelete') +
               ' ' +
@@ -609,7 +611,7 @@ function Alphabet({
   const uniqueAlphabet = [...new Set(alphabet)]
 
   return (
-    <div className="grid w-full grid-cols-12 rounded-xl bg-th-secondary-100 p-1 text-th-text-primary">
+    <div className="w-full grid grid-cols-12 bg-th-secondary-100 rounded-xl p-1 text-th-text-primary">
       {uniqueAlphabet &&
         uniqueAlphabet
           .sort((a, b) => a.localeCompare(b))
@@ -621,7 +623,7 @@ function Alphabet({
                 setSearchQuery(letter.toLowerCase())
               }}
               disabled={disabled}
-              className="cursor-pointer rounded-md py-1 hover:bg-th-secondary-200 disabled:cursor-auto disabled:hover:bg-th-secondary-100"
+              className="py-1 rounded-md cursor-pointer disabled:cursor-auto disabled:hover:bg-th-secondary-100 hover:bg-th-secondary-200"
             >
               {letter}
             </button>

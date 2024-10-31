@@ -1,37 +1,39 @@
 import { Fragment } from 'react'
 
-import { Menu, Transition } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
-import Elipsis from 'public/elipsis.svg'
+
+import { Menu, Transition } from '@headlessui/react'
 
 import TranslatorImage from 'components/TranslatorImage'
+
+import Elipsis from 'public/icons/elipsis.svg'
 
 function CoordinatorsList({ coordinators, setSelectedCoordinator, access }) {
   const { t } = useTranslation(['common', 'users'])
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex">
-        <div className="hidden w-1/3 md:block">{t('users:Login')}</div>
-        <div className="hidden w-full md:block md:w-2/6">{t('users:Email')}</div>
+      <div className="flex ">
+        <div className="hidden md:block w-1/3">{t('users:Login')}</div>
+        <div className="hidden md:block w-full md:w-2/6">{t('users:Email')}</div>
         <div className="w-1/3 md:w-1/6"></div>
         <div className="w-1/3 md:w-1/6"></div>
       </div>
       {coordinators?.map((el) => {
         return (
           <div key={el.users.id} className="flex items-center">
-            <div className="flex flex-1 items-center gap-2 truncate sm:w-1/3">
-              <div className="h-8 w-8 min-w-[2rem]">
+            <div className="flex flex-1 items-center gap-2 sm:w-1/3 truncate">
+              <div className="w-8 h-8 min-w-[2rem]">
                 <TranslatorImage item={el} />
               </div>
               <div className="hidden sm:block">{el.users.login}</div>
-              <div className="block truncate sm:hidden">
+              <div className="block sm:hidden truncate">
                 <div className="truncate">{el.users.login}</div>
                 <div className="truncate">{el.users.email}</div>
               </div>
             </div>
             <div className="hidden md:block md:w-2/6">{el.users.email}</div>
-            <div className="hidden w-auto sm:block sm:w-1/3 md:w-1/6"></div>
-            <div className="hidden w-1/3 justify-end sm:flex md:w-1/6">
+            <div className="hidden sm:block w-auto sm:w-1/3 md:w-1/6"></div>
+            <div className="hidden sm:flex justify-end w-1/3 md:w-1/6">
               {access && (
                 <>
                   <button
@@ -47,9 +49,9 @@ function CoordinatorsList({ coordinators, setSelectedCoordinator, access }) {
               {({ open }) => (
                 <>
                   <Menu.Button
-                    className={`relative flex transition-all duration-200 ease-in-out`}
+                    className={`relative flex duration-200 ease-in-out transition-all`}
                   >
-                    <Elipsis className="block h-6 min-h-[1.5rem] w-6 stroke-th-text-primary transition sm:hidden" />
+                    <Elipsis className="block sm:hidden w-6 h-6 min-h-[1.5rem] transition stroke-th-text-primary" />
                   </Menu.Button>
                   <Transition
                     as={Fragment}

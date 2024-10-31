@@ -1,16 +1,16 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
-import Tools from 'public/tools.svg'
-import { useRecoilValue } from 'recoil'
 
+import { useRecoilValue } from 'recoil'
 import Book from './Book'
 import Modal from './Modal'
-import { projectIdState } from './state/atoms'
 
 import { useGetBrief, useProject } from 'utils/hooks'
+import { projectIdState } from './state/atoms'
+
+import Tools from 'public/icons/tools.svg'
 
 function Dropdown({ description, isWholeBook = false }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)
@@ -50,7 +50,7 @@ function Dropdown({ description, isWholeBook = false }) {
   return (
     <div>
       <div
-        className="relative hidden cursor-pointer whitespace-nowrap rounded-md px-3 py-4 md:flex"
+        className="relative hidden md:flex px-3 py-4 rounded-md whitespace-nowrap cursor-pointer"
         onClick={toggle}
         ref={toolsButton}
       >
@@ -61,10 +61,10 @@ function Dropdown({ description, isWholeBook = false }) {
         <>
           <div
             ref={dropdownMenu}
-            className="border-th-primary-100-border absolute right-5 z-40 flex flex-col justify-center divide-y divide-solid rounded-md border bg-th-secondary-10 shadow-md xl:right-0"
+            className="absolute flex flex-col justify-center right-5 xl:right-0 border border-th-primary-100-border divide-y divide-solid bg-th-secondary-10 rounded-md shadow-md z-40"
           >
             <button
-              className="rounded-t-lg px-4 py-2 hover:bg-th-secondary-100 active:bg-th-secondary-100"
+              className="px-4 py-2 rounded-t-lg	hover:bg-th-secondary-100 active:bg-th-secondary-100"
               onClick={(e) => {
                 toggle()
                 setShowModalStepGoal(true)
@@ -75,7 +75,7 @@ function Dropdown({ description, isWholeBook = false }) {
             </button>
             {isWholeBook && (
               <button
-                className="rounded-t-lg px-4 py-2 hover:bg-th-secondary-100 active:bg-th-secondary-100"
+                className="px-4 py-2 rounded-t-lg hover:bg-th-secondary-100 active:bg-th-secondary-100"
                 onClick={(e) => {
                   toggle()
                   setShowModalFullBook(true)
@@ -87,7 +87,8 @@ function Dropdown({ description, isWholeBook = false }) {
             )}
             {brief?.is_enable && (
               <button
-                className="rounded-b-lg px-4 py-2 hover:bg-th-secondary-100 active:bg-th-secondary-100"
+                className="px-4 py-2 rounded-b-lg hover:bg-th-secondary-100
+			active:bg-th-secondary-100"
                 onClick={(e) => {
                   toggle()
                   setShowModalTranslationGoal(true)
@@ -115,9 +116,9 @@ function Dropdown({ description, isWholeBook = false }) {
           brief={brief}
         />
       )}
-      <div className="flex items-center divide-x divide-solid whitespace-nowrap rounded-md bg-th-secondary-10 py-1 text-xs font-bold md:hidden">
+      <div className="flex items-center py-1 whitespace-nowrap text-xs font-bold rounded-md divide-x divide-solid md:hidden bg-th-secondary-10">
         <button
-          className="rounded-l-lg px-2 hover:opacity-70"
+          className="px-2 rounded-l-lg hover:opacity-70"
           onClick={(e) => {
             setShowModalStepGoal(true)
             e.stopPropagation()
@@ -127,7 +128,7 @@ function Dropdown({ description, isWholeBook = false }) {
         </button>
         {brief?.is_enable && (
           <button
-            className="rounded-r-lg px-2 hover:opacity-70"
+            className="px-2 rounded-r-lg hover:opacity-70"
             onClick={(e) => {
               setShowModalTranslationGoal(true)
               e.stopPropagation()
@@ -148,8 +149,8 @@ function StepGoal({ showModalStepGoal, closeModal, description }) {
 
   return (
     <Modal isOpen={showModalStepGoal} closeHandle={closeModal} title={t('Goal')}>
-      <div className="my-6 max-h-[50vh] overflow-y-auto py-3 pr-4">
-        <p className="whitespace-pre-line text-sm text-th-secondary-10">
+      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-auto">
+        <p className="text-sm text-th-secondary-10 whitespace-pre-line">
           {description.replaceAll('\n\n', '\n')}
         </p>
       </div>
@@ -179,7 +180,7 @@ function TranslationGoal({ showModalTranslationGoal, closeModal, brief }) {
         }
       >
         <div
-          className="my-6 max-h-[50vh] overflow-y-auto py-3 pr-4 text-sm text-th-secondary-10"
+          className="my-6 py-3 pr-4 max-h-[50vh] text-sm text-th-secondary-10 overflow-y-auto"
           dir={brief?.is_rtl ? 'rtl' : 'ltr'}
         >
           {briefResume?.map((resumeItem, index) => (
@@ -215,7 +216,7 @@ function FullBook({ showModalFullBook, closeModal }) {
   }, [book, mainResource])
   return (
     <Modal isOpen={showModalFullBook} closeHandle={closeModal} title={t('WholeBook')}>
-      <div className="my-6 max-h-[50vh] min-h-[50vh] overflow-y-auto py-3 pr-4">
+      <div className="my-6 py-3 pr-4 max-h-[50vh] overflow-y-auto min-h-[50vh]">
         <Book url="/api/git/whole-book" config={{ mainResource, book, bookPath }} />
       </div>
       <div className="text-center">
