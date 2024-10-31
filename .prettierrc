@@ -8,7 +8,7 @@
   "bracketSameLine": false,
   "semi": false,
   "plugins": ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-tailwindcss"],
-   "importOrder": [
+  "importOrder": [
     "^react$",
     "",
     "^next/",
@@ -21,10 +21,10 @@
     "",
     "^[./]",
     "",
-    "^libs",
+    "^lib",
     "",
     "^utils",
     "",
-    "^/public/(.*)$"
-   ]
+    "^public/(.*)$"
+  ]
 }
