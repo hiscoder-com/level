@@ -4,13 +4,15 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { stepConfigState } from 'components/state/atoms'
-import Workspace from 'components/Workspace'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Progress from 'public/progress.svg'
 import { useSetRecoilState } from 'recoil'
+
+import { stepConfigState } from 'components/state/atoms'
+import Workspace from 'components/Workspace'
+
 import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
 

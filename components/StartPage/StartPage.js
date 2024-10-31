@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import AboutVersion from 'components/AboutVersion'
-import SwitchLocalization from 'components/SwitchLocalization'
 import { useTranslation } from 'next-i18next'
 import Close from 'public/close.svg'
 import LevelLogo from 'public/level-logo-color.svg'
+
+import AboutVersion from 'components/AboutVersion'
+import SwitchLocalization from 'components/SwitchLocalization'
 
 import CookiesAproove from './CookiesAproove'
 import Download from './Download'

@@ -3,17 +3,19 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import Timer from 'components/Timer'
 import { useCurrentUser } from 'lib/UserContext'
 import Down from 'public/arrow-down.svg'
 import LevelLogo from 'public/level-logo.svg'
 import User from 'public/user.svg'
 import { useRecoilValue } from 'recoil'
-import useSupabaseClient from 'utils/supabaseClient'
+
+import Timer from 'components/Timer'
 
 import Dropdown from './Dropdown'
 import SideBar from './SideBar'
 import { stepConfigState } from './state/atoms'
+
+import useSupabaseClient from 'utils/supabaseClient'
 
 export default function AppBar({ setIsOpenSideBar, isOpenSideBar }) {
   const [showFullAppbar, setShowFullAppbar] = useState(false)

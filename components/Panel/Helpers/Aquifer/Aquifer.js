@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
 
 import { Switch } from '@headlessui/react'
-import { TNTWLContent } from 'components/Panel/UI'
 import { useTranslation } from 'react-i18next'
-import { checkLSVal } from 'utils/helper'
+
+import { TNTWLContent } from 'components/Panel/UI'
 
 import Images from './Images'
 import ListBoxMultiple from './ListBoxMultiple'
 import Notes from './Notes'
 import Search from './Search'
+
+import { checkLSVal } from 'utils/helper'
 
 function Aquifer({ config }) {
   const { t } = useTranslation(['aquifer', 'common'])

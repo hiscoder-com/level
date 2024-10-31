@@ -2,11 +2,13 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import CheckBox from 'components/CheckBox'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import LeftArrow from 'public/arrow-left.svg'
+
+import CheckBox from 'components/CheckBox'
+
 import useSupabaseClient from 'utils/supabaseClient'
 
 export default function ConfessionSteps() {

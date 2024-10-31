@@ -3,19 +3,21 @@ import { Fragment, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Menu, Transition } from '@headlessui/react'
-import Modal from 'components/Modal'
 import { useTranslation } from 'next-i18next'
 import Reader from 'public/dictionary.svg'
 import DownloadIcon from 'public/download.svg'
 import Elipsis from 'public/elipsis.svg'
 import Gear from 'public/gear.svg'
 import Play from 'public/play.svg'
-import { checkBookCodeExists } from 'utils/helper'
-import { useGetBooks, useGetChaptersTranslate } from 'utils/hooks'
+
+import Modal from 'components/Modal'
 
 import Download from '../Download'
 import BookCreate from './BookCreate'
 import ChecksIcon from './ChecksIcon'
+
+import { checkBookCodeExists } from 'utils/helper'
+import { useGetBooks, useGetChaptersTranslate } from 'utils/hooks'
 
 function Testament({
   bookList,

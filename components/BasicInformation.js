@@ -1,10 +1,12 @@
 import { Fragment, useEffect, useState } from 'react'
 
 import { Combobox, Transition } from '@headlessui/react'
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
 import { useTranslation } from 'next-i18next'
 import Down from 'public/arrow-down.svg'
 import Plus from 'public/plus.svg'
+
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
+
 import { useLanguages, useProjects } from 'utils/hooks'
 
 function BasicInformation({

@@ -1,10 +1,11 @@
 import { useCurrentUser } from 'lib/UserContext'
-import { useAccess, useGetBrief, useProject } from 'utils/hooks'
 
 import BookList from './BookList/BookList'
 import ParticipantInfo from './ParticipantInfo'
 import ProjectInfo from './ProjectInfo'
 import ResumeInfo from './ResumeInfo'
+
+import { useAccess, useGetBrief, useProject } from 'utils/hooks'
 
 function Project({ code }) {
   const { user } = useCurrentUser()

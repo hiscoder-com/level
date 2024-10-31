@@ -3,15 +3,17 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-import Modal from 'components/Modal'
 import { useTranslation } from 'next-i18next'
-import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
-import useSupabaseClient from 'utils/supabaseClient'
+
+import Modal from 'components/Modal'
 
 import AssignParticipant from './AssignPartiсipant'
 import CoordinatorsList from './CoordinatorsList'
 import RemoveParticipant from './RemoveParticipant'
 import TranslatorsList from './TranslatorsList'
+
+import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
   const supabase = useSupabaseClient()

@@ -1,10 +1,12 @@
 import { useMemo } from 'react'
 
-import TranslatorImage from 'components/TranslatorImage'
 import { useTranslation } from 'next-i18next'
-import { useCoordinators, useTranslators } from 'utils/hooks'
+
+import TranslatorImage from 'components/TranslatorImage'
 
 import Card from './Card'
+
+import { useCoordinators, useTranslators } from 'utils/hooks'
 
 function ParticipantInfo({ project, access }) {
   const { t } = useTranslation()

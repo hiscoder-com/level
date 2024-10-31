@@ -1,9 +1,11 @@
-import MarkdownExtended from 'components/MarkdownExtended'
 import { useRecoilValue } from 'recoil'
-import { obsCheckAdditionalVerses } from 'utils/helper'
+
+import MarkdownExtended from 'components/MarkdownExtended'
 
 import { checkedVersesBibleState, isHideAllVersesState } from '../../../state/atoms'
 import Blur from './Blur'
+
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function VersesExtended({
   verseObjects,

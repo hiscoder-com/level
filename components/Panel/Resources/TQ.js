@@ -1,9 +1,10 @@
 import { Disclosure } from '@headlessui/react'
 import Down from 'public/arrow-down.svg'
 import ReactMarkdown from 'react-markdown'
-import { useGetResource, useScroll } from 'utils/hooks'
 
 import { Placeholder } from '../UI'
+
+import { useGetResource, useScroll } from 'utils/hooks'
 
 function TQ({ config, url, toolName }) {
   const { isLoading, data } = useGetResource({ config, url })

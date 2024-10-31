@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-hot-toast'
+
+import AutoSizeTextArea from '../UI/AutoSizeTextArea'
+
 import { obsCheckAdditionalVerses } from 'utils/helper'
 import { useScroll } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-
-import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 function Editor({ config }) {
   const supabase = useSupabaseClient()

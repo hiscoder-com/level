@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
 
-import MarkdownExtended from 'components/MarkdownExtended'
 import Loading from 'public/progress.svg'
 import { useTranslation } from 'react-i18next'
+
+import MarkdownExtended from 'components/MarkdownExtended'
+
 import { obsCheckAdditionalVerses } from 'utils/helper'
 import { useGetWholeBook } from 'utils/hooks'
 

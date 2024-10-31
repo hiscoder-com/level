@@ -4,11 +4,12 @@ import { useRouter } from 'next/router'
 
 import { Tab } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
-import { newTestamentList, oldTestamentList } from 'utils/config'
-import { useGetBooks } from 'utils/hooks'
 
 import BookProperties from './BookProperties/BookProperties'
 import Testament from './Testament'
+
+import { newTestamentList, oldTestamentList } from 'utils/config'
+import { useGetBooks } from 'utils/hooks'
 
 function BookList({ user, project, access }) {
   const { t } = useTranslation()

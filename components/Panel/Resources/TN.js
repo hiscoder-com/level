@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import { useQuotesTranslation } from '@texttree/tn-quote'
 import { useTranslation } from 'react-i18next'
 import ReactMarkdown from 'react-markdown'
-import { filterNotes } from 'utils/helper'
-import { useGetResource, useScroll } from 'utils/hooks'
+
+import { useQuotesTranslation } from '@texttree/tn-quote'
 
 import { Placeholder, TNTWLContent } from '../UI'
+
+import { filterNotes } from 'utils/helper'
+import { useGetResource, useScroll } from 'utils/hooks'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)

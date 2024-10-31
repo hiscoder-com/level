@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { useCurrentUser } from 'lib/UserContext'
 import Check from 'public/check.svg'
 import Time from 'public/time.svg'
+
 import { useAccess } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
 

@@ -3,10 +3,12 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-import ButtonLoading from 'components/ButtonLoading'
-import CommitsList from 'components/CommitsList'
 import { useTranslation } from 'next-i18next'
 import { toast } from 'react-hot-toast'
+
+import ButtonLoading from 'components/ButtonLoading'
+import CommitsList from 'components/CommitsList'
+
 import { useGetProjectResources, useMethod, useProject } from 'utils/hooks'
 
 function ResourceSettings() {

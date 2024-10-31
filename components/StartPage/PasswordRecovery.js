@@ -7,10 +7,11 @@ import axios from 'axios'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import Progress from 'public/progress.svg'
-import useSupabaseClient from 'utils/supabaseClient'
 
 import ButtonLoading from '../ButtonLoading'
 import InputField from '../Panel/UI/InputField'
+
+import useSupabaseClient from 'utils/supabaseClient'
 
 function PasswordRecovery() {
   const supabase = useSupabaseClient()

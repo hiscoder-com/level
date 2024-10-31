@@ -3,9 +3,10 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+import { toast, Toaster } from 'react-hot-toast'
+
 import ButtonLoading from 'components/ButtonLoading'
 import InputField from 'components/Panel/UI/InputField'
-import { toast, Toaster } from 'react-hot-toast'
 
 function Feedback({ t, onClose }) {
   const [feedback, setFeedback] = useState({ name: '', email: '', message: '' })

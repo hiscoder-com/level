@@ -4,9 +4,19 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { Combobox, Disclosure, Tab, Transition } from '@headlessui/react'
-import Breadcrumbs from 'components/Breadcrumbs'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
+
+import Breadcrumbs from 'components/Breadcrumbs'
+
+import ChecksIcon from './BookList/ChecksIcon'
+import Card from './Card'
+import ResumeInfo from './ResumeInfo'
+import Down from '/public/arrow-down.svg'
+import Gear from '/public/gear.svg'
+import Left from '/public/left.svg'
+import { newTestamentList, oldTestamentList, usfmFileNames } from '/utils/config'
+
 import {
   checkBookCodeExists,
   checkChapterVersesExist,
@@ -21,14 +31,6 @@ import {
   useGetResource,
   useProject,
 } from 'utils/hooks'
-
-import ChecksIcon from './BookList/ChecksIcon'
-import Card from './Card'
-import ResumeInfo from './ResumeInfo'
-import Down from '/public/arrow-down.svg'
-import Gear from '/public/gear.svg'
-import Left from '/public/left.svg'
-import { newTestamentList, oldTestamentList, usfmFileNames } from '/utils/config'
 
 function BookReader() {
   const { user } = useCurrentUser()

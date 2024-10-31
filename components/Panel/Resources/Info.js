@@ -1,7 +1,8 @@
 import MarkdownExtended from 'components/MarkdownExtended'
-import { useGetInfo } from 'utils/hooks'
 
 import { Placeholder } from '../UI'
+
+import { useGetInfo } from 'utils/hooks'
 
 function Info({ config, url }) {
   const { isLoading, data: intro } = useGetInfo({ config, url })

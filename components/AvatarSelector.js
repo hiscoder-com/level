@@ -5,10 +5,11 @@ import { useTranslation } from 'next-i18next'
 import Trash from 'public/trash.svg'
 import toast from 'react-hot-toast'
 import { useRecoilState, useRecoilValue } from 'recoil'
-import { useUser } from 'utils/hooks'
 
 import ImageEditor from './ImageEditor'
 import { modalsSidebar, userAvatarState } from './state/atoms'
+
+import { useUser } from 'utils/hooks'
 
 function AvatarSelector({ id }) {
   const { t } = useTranslation('common')

@@ -1,5 +1,6 @@
-import BookReader from 'components/Project/BookReader'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import BookReader from 'components/Project/BookReader'
 
 function BookReaderPage() {
   return <BookReader />

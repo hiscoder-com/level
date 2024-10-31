@@ -4,12 +4,13 @@ import { useRouter } from 'next/router'
 
 import { Tab } from '@headlessui/react'
 import axios from 'axios'
-import Breadcrumbs from 'components/Breadcrumbs'
-import ButtonLoading from 'components/ButtonLoading'
-import CheckBox from 'components/CheckBox'
 import { useTranslation } from 'next-i18next'
 import Reader from 'public/dictionary.svg'
 import toast from 'react-hot-toast'
+
+import Breadcrumbs from 'components/Breadcrumbs'
+import ButtonLoading from 'components/ButtonLoading'
+import CheckBox from 'components/CheckBox'
 
 import Property from './Property'
 

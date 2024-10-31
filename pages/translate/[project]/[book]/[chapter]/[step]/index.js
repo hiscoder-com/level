@@ -3,15 +3,17 @@ import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import Footer from 'components/Footer'
-import Modal from 'components/Modal'
-import { currentVerse, projectIdState, stepConfigState } from 'components/state/atoms'
-import Workspace from 'components/Workspace'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Progress from 'public/progress.svg'
 import { useSetRecoilState } from 'recoil'
+
+import Footer from 'components/Footer'
+import Modal from 'components/Modal'
+import { currentVerse, projectIdState, stepConfigState } from 'components/state/atoms'
+import Workspace from 'components/Workspace'
+
 import useSupabaseClient from 'utils/supabaseClient'
 import { supabaseService } from 'utils/supabaseService'
 

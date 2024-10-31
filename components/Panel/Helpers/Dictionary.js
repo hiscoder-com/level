@@ -4,9 +4,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 
 import { Disclosure } from '@headlessui/react'
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
 import axios from 'axios'
-import Modal from 'components/Modal'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import ArrowDown from 'public/arrow-down.svg'
@@ -19,10 +17,15 @@ import Back from 'public/left.svg'
 import Plus from 'public/plus.svg'
 import Trash from 'public/trash.svg'
 import toast from 'react-hot-toast'
-import { removeCacheNote, saveCacheNote } from 'utils/helper'
-import { useAccess, useAllWords, useProject } from 'utils/hooks'
+
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
+
+import Modal from 'components/Modal'
 
 import MenuButtons from '../UI/MenuButtons'
+
+import { removeCacheNote, saveCacheNote } from 'utils/helper'
+import { useAccess, useAllWords, useProject } from 'utils/hooks'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),

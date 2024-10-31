@@ -3,11 +3,12 @@ import { useMemo } from 'react'
 import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
-import { getBriefName } from 'utils/helper'
-import { useAccess, useBriefState } from 'utils/hooks'
 
 import Placeholder from './Placeholder'
 import Translators from './Translators'
+
+import { getBriefName } from 'utils/helper'
+import { useAccess, useBriefState } from 'utils/hooks'
 
 function ProjectCard({ project, user }) {
   const { t } = useTranslation(['projects', 'common'])

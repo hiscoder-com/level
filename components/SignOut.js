@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import LogOut from 'public/logout.svg'
+
 import useSupabaseClient from 'utils/supabaseClient'
 
 export default function SignOut({ collapsed }) {

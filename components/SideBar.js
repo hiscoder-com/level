@@ -4,7 +4,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { Menu, Transition } from '@headlessui/react'
-import AboutVersion from 'components/AboutVersion'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import About from 'public/about.svg'
@@ -19,6 +18,8 @@ import Projects from 'public/projects.svg'
 import Users from 'public/users.svg'
 import VersionLogo from 'public/version.svg'
 import { useRecoilState } from 'recoil'
+
+import AboutVersion from 'components/AboutVersion'
 
 import AboutProject from './AboutProject'
 import AvatarSelector from './AvatarSelector'

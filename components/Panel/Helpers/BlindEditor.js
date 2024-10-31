@@ -1,16 +1,18 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { Switch } from '@headlessui/react'
-import Modal from 'components/Modal'
 import { useTranslation } from 'next-i18next'
 import Check from 'public/check.svg'
 import Pencil from 'public/pencil.svg'
 import { toast } from 'react-hot-toast'
 import { useRecoilState, useSetRecoilState } from 'recoil'
-import { obsCheckAdditionalVerses } from 'utils/helper'
-import useSupabaseClient from 'utils/supabaseClient'
+
+import Modal from 'components/Modal'
 
 import { checkedVersesBibleState, isHideAllVersesState } from '../../state/atoms'
+
+import { obsCheckAdditionalVerses } from 'utils/helper'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function BlindEditor({ config }) {
   const supabase = useSupabaseClient()

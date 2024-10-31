@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
-import { useGetResource, useScroll } from 'utils/hooks'
 
 import { Placeholder, TNTWLContent } from '../UI'
+
+import { useGetResource, useScroll } from 'utils/hooks'
 
 function OBSTN({ config, url, toolName }) {
   const [item, setItem] = useState(null)

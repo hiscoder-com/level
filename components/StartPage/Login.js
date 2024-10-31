@@ -3,14 +3,16 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
-import ButtonLoading from 'components/ButtonLoading'
-import Modal from 'components/Modal'
-import InputField from 'components/Panel/UI/InputField'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import Close from 'public/close.svg'
 import Report from 'public/error-outline.svg'
 import Loading from 'public/progress.svg'
+
+import ButtonLoading from 'components/ButtonLoading'
+import Modal from 'components/Modal'
+import InputField from 'components/Panel/UI/InputField'
+
 import useSupabaseClient from 'utils/supabaseClient'
 
 function Login({ handleClick = () => {} }) {

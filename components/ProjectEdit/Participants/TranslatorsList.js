@@ -1,10 +1,11 @@
 import { Fragment } from 'react'
 
 import { Menu, Switch, Transition } from '@headlessui/react'
-import TranslatorImage from 'components/TranslatorImage'
 import { useTranslation } from 'next-i18next'
 import Elipsis from 'public/elipsis.svg'
 import Security from 'public/security.svg'
+
+import TranslatorImage from 'components/TranslatorImage'
 
 function TranslatorsList({
   translators,

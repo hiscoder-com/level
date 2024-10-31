@@ -5,11 +5,12 @@ import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
 import Tools from 'public/tools.svg'
 import { useRecoilValue } from 'recoil'
-import { useGetBrief, useProject } from 'utils/hooks'
 
 import Book from './Book'
 import Modal from './Modal'
 import { projectIdState } from './state/atoms'
+
+import { useGetBrief, useProject } from 'utils/hooks'
 
 function Dropdown({ description, isWholeBook = false }) {
   const [showModalTranslationGoal, setShowModalTranslationGoal] = useState(false)

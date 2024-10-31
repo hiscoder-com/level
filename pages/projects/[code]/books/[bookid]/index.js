@@ -1,5 +1,6 @@
-import ChapterList from 'components/Project/ChapterList/ChapterList'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
+import ChapterList from 'components/Project/ChapterList/ChapterList'
 
 function ChapterListPage() {
   return <ChapterList />

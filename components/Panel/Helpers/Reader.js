@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import AutoSizeTextArea from '../UI/AutoSizeTextArea'
+
 import { obsCheckAdditionalVerses } from 'utils/helper'
 import { useGetChapter } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-
-import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
 function Reader({ config }) {
   const supabase = useSupabaseClient()

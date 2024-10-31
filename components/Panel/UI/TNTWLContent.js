@@ -1,6 +1,7 @@
-import MarkdownExtended from 'components/MarkdownExtended'
 import Back from 'public/left.svg'
 import ReactMarkdown from 'react-markdown'
+
+import MarkdownExtended from 'components/MarkdownExtended'
 
 function TNTWLContent({ setItem, item }) {
   return (

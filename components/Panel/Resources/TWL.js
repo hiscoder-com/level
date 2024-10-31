@@ -3,11 +3,12 @@ import { useEffect, useState } from 'react'
 import { useTranslation } from 'next-i18next'
 import Down from 'public/arrow-down.svg'
 import ReactMarkdown from 'react-markdown'
+
+import { Placeholder, TNTWLContent } from '../UI'
+
 import { getFile } from 'utils/apiHelper'
 import { checkLSVal, filterNotes, getWords } from 'utils/helper'
 import { useGetResource, useScroll } from 'utils/hooks'
-
-import { Placeholder, TNTWLContent } from '../UI'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)

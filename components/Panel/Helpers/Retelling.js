@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import Recorder from 'components/Recorder'
 import { useTranslation } from 'next-i18next'
 import BackButton from 'public/arrow-left.svg'
 import { useRecoilState, useSetRecoilState } from 'recoil'
+
+import Recorder from 'components/Recorder'
 
 import { inactiveState } from '../../state/atoms'
 

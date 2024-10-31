@@ -2,11 +2,13 @@ import { useCallback, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import TranslatorImage from 'components/TranslatorImage'
 import { useTranslation } from 'next-i18next'
-import { useTranslators } from 'utils/hooks'
+
+import TranslatorImage from 'components/TranslatorImage'
 
 import Modal from './Modal'
+
+import { useTranslators } from 'utils/hooks'
 
 function Translators({
   projectCode,

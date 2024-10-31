@@ -5,10 +5,11 @@ import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
 import { useTranslation } from 'react-i18next'
 import { useRecoilValue } from 'recoil'
-import { useGetAquiferResources } from 'utils/hooks'
 
 import { currentVerse } from '../../../state/atoms'
 import Down from '/public/arrow-down.svg'
+
+import { useGetAquiferResources } from 'utils/hooks'
 
 function Notes({
   resourceType,

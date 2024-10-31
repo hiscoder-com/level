@@ -1,5 +1,6 @@
-import Modal from 'components/Modal'
 import { useTranslation } from 'next-i18next'
+
+import Modal from 'components/Modal'
 
 function RemoveParticipant({ selected, setSelected, remove, label, role }) {
   const { t } = useTranslation()

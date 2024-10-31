@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
+import { useTranslation } from 'next-i18next'
+import Loading from 'public/progress.svg'
+import { useRecoilValue } from 'recoil'
+
 import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
 import ProgressBar from 'components/ProgressBar'
 import Translators from 'components/Translators'
-import { useTranslation } from 'next-i18next'
-import Loading from 'public/progress.svg'
-import { useRecoilValue } from 'recoil'
 
 import { stepConfigState } from './state/atoms'
 

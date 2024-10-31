@@ -1,11 +1,13 @@
-import Layout from 'components/Layout'
 import { UserContextProvider } from 'lib/UserContext'
 import { appWithTranslation } from 'next-i18next'
 import { RecoilRoot } from 'recoil'
 
+import Layout from 'components/Layout'
+
 import 'styles/globals.css'
 
 import { roboto } from 'public/fonts/fonts'
+
 import { useGetTheme } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
 

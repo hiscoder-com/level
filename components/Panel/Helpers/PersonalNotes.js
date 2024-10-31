@@ -2,10 +2,7 @@ import { useEffect, useState } from 'react'
 
 import dynamic from 'next/dynamic'
 
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
 import axios from 'axios'
-import Modal from 'components/Modal'
-import { projectIdState } from 'components/state/atoms'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import CloseFolder from 'public/close-folder.svg'
@@ -22,6 +19,14 @@ import Rename from 'public/rename.svg'
 import Trash from 'public/trash.svg'
 import { toast } from 'react-hot-toast'
 import { useRecoilValue } from 'recoil'
+
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
+
+import Modal from 'components/Modal'
+import { projectIdState } from 'components/state/atoms'
+
+import MenuButtons from '../UI/MenuButtons'
+
 import {
   checkLSVal,
   convertNotesToTree,
@@ -31,8 +36,6 @@ import {
 } from 'utils/helper'
 import { useAllPersonalNotes, usePersonalNotes } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-
-import MenuButtons from '../UI/MenuButtons'
 
 const Redactor = dynamic(
   () => import('@texttree/notepad-rcl').then((mod) => mod.Redactor),

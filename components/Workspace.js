@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 
 import { Tab } from '@headlessui/react'
-import Tool from 'components/Panel/Tool'
 import { useTranslation } from 'next-i18next'
 import Retelling from 'public/audio.svg'
 import Dict from 'public/dictionary.svg'
@@ -10,6 +9,8 @@ import Info from 'public/info.svg'
 import Notepad from 'public/notes.svg'
 import TeamNote from 'public/team-note.svg'
 import { useRecoilValue } from 'recoil'
+
+import Tool from 'components/Panel/Tool'
 
 import { inactiveState } from './state/atoms'
 

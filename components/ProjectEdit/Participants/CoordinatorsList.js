@@ -1,9 +1,10 @@
 import { Fragment } from 'react'
 
 import { Menu, Transition } from '@headlessui/react'
-import TranslatorImage from 'components/TranslatorImage'
 import { useTranslation } from 'next-i18next'
 import Elipsis from 'public/elipsis.svg'
+
+import TranslatorImage from 'components/TranslatorImage'
 
 function CoordinatorsList({ coordinators, setSelectedCoordinator, access }) {
   const { t } = useTranslation(['common', 'users'])

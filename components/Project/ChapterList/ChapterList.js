@@ -3,11 +3,16 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import Breadcrumbs from 'components/Breadcrumbs'
-import Modal from 'components/Modal'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import Plus from 'public/plus.svg'
+
+import Breadcrumbs from 'components/Breadcrumbs'
+import Modal from 'components/Modal'
+
+import Download from '../Download'
+import ChapterCreate from './ChapterCreate'
+
 import { getBriefName, readableDate } from 'utils/helper'
 import {
   useAccess,
@@ -17,9 +22,6 @@ import {
   useProject,
 } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-
-import Download from '../Download'
-import ChapterCreate from './ChapterCreate'
 
 function ChapterList() {
   const { user } = useCurrentUser()

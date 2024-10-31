@@ -3,8 +3,12 @@ import { useEffect, useMemo, useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import Translators from 'components/Translators'
 import { useTranslation } from 'next-i18next'
+
+import Translators from 'components/Translators'
+
+import Reader from '/public/dictionary.svg'
+
 import { getBriefName, readableDate } from 'utils/helper'
 import {
   useAccess,
@@ -13,8 +17,6 @@ import {
   useGetChaptersTranslate,
 } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-
-import Reader from '/public/dictionary.svg'
 
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()

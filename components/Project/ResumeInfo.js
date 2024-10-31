@@ -1,10 +1,11 @@
 import { useMemo } from 'react'
 
 import { useTranslation } from 'next-i18next'
-import { getBriefName } from 'utils/helper'
-import { useGetBrief } from 'utils/hooks'
 
 import Card from './Card'
+
+import { getBriefName } from 'utils/helper'
+import { useGetBrief } from 'utils/hooks'
 
 function ResumeInfo({ project }) {
   const { t } = useTranslation(['common', 'projects'])

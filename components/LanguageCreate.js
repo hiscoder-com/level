@@ -1,13 +1,15 @@
 import { useState } from 'react'
 
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
 import axios from 'axios'
-import ButtonLoading from 'components/ButtonLoading'
-import CheckBox from 'components/CheckBox'
-import Modal from 'components/Modal'
 import { useTranslation } from 'next-i18next'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
+
+import ButtonLoading from 'components/ButtonLoading'
+import CheckBox from 'components/CheckBox'
+import Modal from 'components/Modal'
 
 function LanguageCreate({ isOpen, closeHandle, mutateLanguage, languages }) {
   const { t } = useTranslation(['projects', 'project-edit', 'common'])

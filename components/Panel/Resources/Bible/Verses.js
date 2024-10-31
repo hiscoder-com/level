@@ -1,4 +1,5 @@
 import MarkdownExtended from 'components/MarkdownExtended'
+
 import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Verses({ verseObjects, handleSaveScroll, currentScrollVerse, toolName }) {

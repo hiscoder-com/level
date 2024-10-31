@@ -3,9 +3,10 @@ import { Fragment, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import { Transition } from '@headlessui/react'
-import AppBar from 'components/AppBar'
 import Progress from 'public/progress.svg'
 import { Toaster } from 'react-hot-toast'
+
+import AppBar from 'components/AppBar'
 
 function Layout({ backgroundColor, children }) {
   const [isOpenSideBar, setIsOpenSideBar] = useState(false)

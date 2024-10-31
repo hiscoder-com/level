@@ -1,8 +1,8 @@
-import { useGetResource, useScroll } from 'utils/hooks'
-
 import { Placeholder } from '../../UI'
 import Verses from './Verses'
 import VersesExtended from './VersesExtended'
+
+import { useGetResource, useScroll } from 'utils/hooks'
 
 function Bible({ config, url, toolName }) {
   const { isLoading, data } = useGetResource({

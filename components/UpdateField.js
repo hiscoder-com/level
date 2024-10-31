@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 
-import { calculateRtlDirection } from '@texttree/notepad-rcl'
 import { useTranslation } from 'next-i18next'
+
+import { calculateRtlDirection } from '@texttree/notepad-rcl'
 
 function UpdateField({
   index,

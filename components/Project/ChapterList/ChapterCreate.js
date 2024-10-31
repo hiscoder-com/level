@@ -2,8 +2,10 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import Modal from 'components/Modal'
 import { useTranslation } from 'next-i18next'
+
+import Modal from 'components/Modal'
+
 import useSupabaseClient from 'utils/supabaseClient'
 
 function ChapterCreate({

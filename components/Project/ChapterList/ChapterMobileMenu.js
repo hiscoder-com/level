@@ -1,8 +1,9 @@
 import Link from 'next/link'
 
 import { Menu } from '@headlessui/react'
-import MobileMenu from 'components/Panel/UI/MobileMenu'
 import Gear from 'public/gear.svg'
+
+import MobileMenu from 'components/Panel/UI/MobileMenu'
 
 import ChapterProgressControls from './ChapterProgressControls'
 import ProjectParticipants from './ProjectParticipants'

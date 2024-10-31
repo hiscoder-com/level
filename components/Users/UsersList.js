@@ -1,6 +1,7 @@
 import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
+
 import { useUsers } from 'utils/hooks'
 
 function UsersList() {

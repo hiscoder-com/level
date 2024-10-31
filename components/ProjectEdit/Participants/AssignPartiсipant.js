@@ -1,6 +1,7 @@
+import { useTranslation } from 'next-i18next'
+
 import ComboboxAutocomplete from 'components/ComboboxAutocomplete'
 import Modal from 'components/Modal'
-import { useTranslation } from 'next-i18next'
 
 function AssignParticipant({
   openModalAssign,

@@ -8,15 +8,6 @@ import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-hot-toast'
-import { getBriefName } from 'utils/helper'
-import {
-  useAccess,
-  useGetBrief,
-  useGetSteps,
-  useLanguages,
-  useProject,
-  useUsers,
-} from 'utils/hooks'
 
 import BasicInformation from '../BasicInformation'
 import Breadcrumbs from '../Breadcrumbs'
@@ -26,6 +17,16 @@ import Steps from '../Steps'
 import Brief from './Brief'
 import Participants from './Participants/Participants'
 import ResourceSettings from './ResourceSettings'
+
+import { getBriefName } from 'utils/helper'
+import {
+  useAccess,
+  useGetBrief,
+  useGetSteps,
+  useLanguages,
+  useProject,
+  useUsers,
+} from 'utils/hooks'
 
 const classNameTabField =
   'p-3 sm:py-5 sm:px-8 border border-th-secondary-300 shadow-md bg-th-secondary-10 rounded-t-none rounded-b-2xl space-y-7'

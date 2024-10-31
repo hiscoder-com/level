@@ -1,6 +1,7 @@
-import { indexImageCarousel } from 'components/state/atoms'
 import Close from 'public/close.svg'
 import { useRecoilValue } from 'recoil'
+
+import { indexImageCarousel } from 'components/state/atoms'
 
 import Carousel from './Carousel'
 

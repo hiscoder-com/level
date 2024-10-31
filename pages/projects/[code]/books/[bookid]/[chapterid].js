@@ -2,18 +2,20 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import Breadcrumbs from 'components/Breadcrumbs'
-import Card from 'components/Project/Card'
-import ChapterMobileMenu from 'components/Project/ChapterList/ChapterMobileMenu'
-import ChapterProgressControls from 'components/Project/ChapterList/ChapterProgressControls'
-import ProjectParticipants from 'components/Project/ChapterList/ProjectParticipants'
-import VerseDistributionButtons from 'components/Project/ChapterList/VerseDistributionButtons'
 import { useCurrentUser } from 'lib/UserContext'
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import Minus from 'public/minus.svg'
 import Plus from 'public/plus.svg'
 import toast from 'react-hot-toast'
+
+import Breadcrumbs from 'components/Breadcrumbs'
+import Card from 'components/Project/Card'
+import ChapterMobileMenu from 'components/Project/ChapterList/ChapterMobileMenu'
+import ChapterProgressControls from 'components/Project/ChapterList/ChapterProgressControls'
+import ProjectParticipants from 'components/Project/ChapterList/ProjectParticipants'
+import VerseDistributionButtons from 'components/Project/ChapterList/VerseDistributionButtons'
+
 import {
   useAccess,
   useGetBook,

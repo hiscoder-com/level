@@ -3,13 +3,15 @@ import { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
+import Pencil from 'public/editor-pencil.svg'
+import toast from 'react-hot-toast'
+
 import BriefEditQuestions from 'components/BriefEditQuestions'
 import ButtonLoading from 'components/ButtonLoading'
 import SwitchLoading from 'components/Panel/UI/SwitchLoading'
 import UpdateField from 'components/UpdateField'
-import { useTranslation } from 'next-i18next'
-import Pencil from 'public/editor-pencil.svg'
-import toast from 'react-hot-toast'
+
 import { getBriefName } from 'utils/helper'
 import { useGetBrief, useProject } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'

@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 
-import Modal from 'components/Modal'
-import { currentVerse, indexImageCarousel } from 'components/state/atoms'
 import ArrowRight from 'public/folder-arrow-right.svg'
 import Loading from 'public/progress.svg'
 import Return from 'public/return.svg'
 import { useTranslation } from 'react-i18next'
 import { useRecoilState, useRecoilValue } from 'recoil'
+
+import Modal from 'components/Modal'
+import { currentVerse, indexImageCarousel } from 'components/state/atoms'
 
 import FullSizeImageCarousel from './FullSizeImageCarousel'
 import ImageCard from './ImageCard'
