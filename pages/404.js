@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import NotFound from 'public/404-error.svg'
 
 export default function PageNotFound() {

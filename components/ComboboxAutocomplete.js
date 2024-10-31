@@ -1,6 +1,7 @@
 import { Fragment, useState } from 'react'
 
 import { Combobox, Transition } from '@headlessui/react'
+
 import Down from 'public/icons/arrow-down.svg'
 
 function ComboboxAutocomplete({ options, selectedOption, setSelectedOption, t }) {
