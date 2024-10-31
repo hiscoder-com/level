@@ -1,6 +1,6 @@
 {
   "extends": ["next", "prettier"],
-  "plugins": ["prettier"],
+  "plugins": ["prettier", "tailwindcss"],
   "rules": {
     "prettier/prettier": [
       "error",
@@ -11,34 +11,9 @@
     "@next/next/no-img-element": "off"
   },
   "settings": {
-    "import/order": [
-      "error",
-      {
-        "groups": [
-          ["builtin", "external", "internal"],
-          ["sibling", "parent", "index"]
-        ],
-        "newlines-between": "always",
-        "pathGroups": [
-          {
-            "pattern": "react",
-            "group": "builtin",
-            "position": "before"
-          },
-          {
-            "pattern": "next/**",
-            "group": "builtin",
-            "position": "before"
-          },
-          {
-            "pattern": "/public/**",
-            "group": "internal",
-            "position": "after"
-          }
-        ],
-        "pathGroupsExcludedImportTypes": ["react"],
-        "alphabetize": { "order": "asc", "caseInsensitive": true }
-      }
-    ]
+    "tailwindcss": {
+      "callees": ["classnames", "ctl"],
+      "config": "tailwind.config.js"
+    }
   }
 }
