@@ -1,6 +1,6 @@
 {
   "extends": ["next", "prettier"],
-  "plugins": ["prettier", "tailwindcss"],
+  "plugins": ["prettier", "tailwindcss", "import-helpers"],
   "rules": {
     "prettier/prettier": [
       "error",
@@ -8,7 +8,25 @@
         "endOfLine": "auto"
       }
     ],
-    "@next/next/no-img-element": "off"
+    "@next/next/no-img-element": "off",
+    "import-helpers/order-imports": [
+      "error",
+      {
+        "newlinesBetween": "always",
+        "groups": [
+          "/^react$/",
+          "module",
+          "/^next/",
+          "/^@texttree/",
+          "/^components/",
+          "/^lib/",
+          "/^utils/",
+          "/^public/",
+          ["parent", "sibling", "index"]
+        ],
+        "alphabetize": { "order": "asc", "ignoreCase": true }
+      }
+    ]
   },
   "settings": {
     "tailwindcss": {
