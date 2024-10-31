@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { useGetTheme } from 'utils/hooks'
 import { Disclosure } from '@headlessui/react'
 import { useTranslation } from 'react-i18next'
 
-import Theme from 'public/icons/themes.svg'
+import { useGetTheme } from 'utils/hooks'
+
 import ArrowDown from 'public/icons/arrow-down.svg'
+import Theme from 'public/icons/themes.svg'
 
 const themes = [
   {
@@ -66,43 +67,37 @@ const ThemeSwitcher = ({ collapsed }) => {
       {({ open }) => (
         <>
           <Disclosure.Button
-            className={`group flex justify-between items-center w-full px-4 hover:bg-th-secondary-200 
-  ${!collapsed && !open ? 'opacity-70' : ''}`}
+            className={`group flex w-full items-center justify-between px-4 hover:bg-th-secondary-200 ${!collapsed && !open ? 'opacity-70' : ''}`}
           >
-            <div className="flex gap-2 items-center">
+            <div className="flex items-center gap-2">
               <div className="py-4">
                 <Theme
-                  className={`w-5 h-5 
-    ${collapsed ? 'stroke-th-text-primary lg:stroke-th-secondary-300' : ''} 
-    ${
-      !collapsed
-        ? open
-          ? 'stroke-th-text-primary'
-          : 'stroke-th-secondary-300 group-hover:stroke-th-text-primary'
-        : ''
-    }`}
+                  className={`h-5 w-5 ${collapsed ? 'stroke-th-text-primary lg:stroke-th-secondary-300' : ''} ${
+                    !collapsed
+                      ? open
+                        ? 'stroke-th-text-primary'
+                        : 'stroke-th-secondary-300 group-hover:stroke-th-text-primary'
+                      : ''
+                  }`}
                 />
               </div>
               <p
-                className={`${collapsed ? 'lg:hidden' : ''} 
-      ${
-        !open
-          ? 'text-th-text-primary lg:text-th-secondary-300 group-hover:text-th-text-primary'
-          : 'text-th-text-primary'
-      }`}
+                className={`${collapsed ? 'lg:hidden' : ''} ${
+                  !open
+                    ? 'text-th-text-primary group-hover:text-th-text-primary lg:text-th-secondary-300'
+                    : 'text-th-text-primary'
+                }`}
               >
                 {t('ChooseTheme')}
               </p>
             </div>
             <ArrowDown
-              className={`w-5 h-5 transition-all duration-150 
-    ${open ? 'rotate-180' : ''} 
-    ${collapsed ? 'lg:hidden' : ''}`}
+              className={`h-5 w-5 transition-all duration-150 ${open ? 'rotate-180' : ''} ${collapsed ? 'lg:hidden' : ''}`}
             />
           </Disclosure.Button>
 
           <Disclosure.Panel
-            className={`flex space-x-2 box-border mx-1 pl-4 my-4 ${
+            className={`mx-1 my-4 box-border flex space-x-2 pl-4 ${
               collapsed ? 'lg:hidden' : ''
             }`}
           >
@@ -112,14 +107,14 @@ const ThemeSwitcher = ({ collapsed }) => {
                   onClick={() => switchTheme(theme.name)}
                   onMouseOver={() => handleMouseOver(theme.name)}
                   onMouseLeave={handleMouseLeave}
-                  className={`half-circle w-8 h-8 rotate-45 cursor-pointer ${
+                  className={`half-circle h-8 w-8 rotate-45 cursor-pointer ${
                     currentTheme === theme.name
-                      ? `border-th-secondary-10 border-2 outline outline-3 ${theme.outline}`
+                      ? `outline-3 border-2 border-th-secondary-10 outline ${theme.outline}`
                       : ''
                   } ${theme.className}`}
                 />
                 <div
-                  className={`absolute -top-16 p-4 z-10 bg-th-secondary-200 rounded-xl ${
+                  className={`absolute -top-16 z-10 rounded-xl bg-th-secondary-200 p-4 ${
                     hoverTheme !== theme.name ? 'hidden' : ''
                   }`}
                 >

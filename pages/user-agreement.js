@@ -5,8 +5,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import Footer from 'components/Footer'
 
-import useSupabaseClient from 'utils/supabaseClient'
 import { useCurrentUser } from 'lib/UserContext'
+
+import useSupabaseClient from 'utils/supabaseClient'
 
 export default function UserAgreement() {
   const supabase = useSupabaseClient()
@@ -26,7 +27,7 @@ export default function UserAgreement() {
   return (
     <div className="layout-appbar">
       <div
-        className="max-w-7xl pb-6 px-6 lg:px-8 bg-th-secondary-10 rounded-lg text-justify overflow-auto text-th-text-primary"
+        className="max-w-7xl overflow-auto rounded-lg bg-th-secondary-10 px-6 pb-6 text-justify text-th-text-primary lg:px-8"
         style={{ height: 'calc(100vh - 15rem)' }}
       >
         <h1 className="pt-4 text-2xl md:text-4xl">{t('users:Agreement')}:</h1>

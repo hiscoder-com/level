@@ -1,13 +1,19 @@
 {
-  "extends": ["next","prettier"],
-  "plugins": ["prettier"],
+  "extends": ["next", "prettier"],
+  "plugins": ["prettier", "tailwindcss"],
   "rules": {
     "prettier/prettier": [
-        "error",
-        {
-            "endOfLine": "auto"
-        }
+      "error",
+      {
+        "endOfLine": "auto"
+      }
     ],
     "@next/next/no-img-element": "off"
+  },
+  "settings": {
+    "tailwindcss": {
+      "callees": ["classnames", "ctl"],
+      "config": "tailwind.config.js"
+    }
   }
 }

@@ -1,6 +1,6 @@
+import { getCountChaptersAndVerses } from 'utils/helper'
 import supabaseApi from 'utils/supabaseServer'
 import { supabaseService } from 'utils/supabaseService'
-import { getCountChaptersAndVerses } from 'utils/helper'
 
 export default async function handler(req, res) {
   let supabase

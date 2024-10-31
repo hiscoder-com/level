@@ -61,7 +61,7 @@ function ChapterProgressControls({
               return verse.project_translator_id === null
             })
           }
-          className="relative btn-primary"
+          className="btn-primary relative"
         >
           {t('chapters:StartChapter')}
         </ButtonLoading>
@@ -69,7 +69,7 @@ function ChapterProgressControls({
         <ButtonLoading
           onClick={changeFinishChapter}
           color={!isChapterFinished ? 'secondary' : 'primary'}
-          className="relative btn-primary"
+          className="btn-primary relative"
           disabled={isValidating}
           isLoading={isLoadingCancelFinish}
         >

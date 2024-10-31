@@ -1,29 +1,29 @@
 import { useEffect, useState } from 'react'
 
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import Link from 'next/link'
-
 import AboutVersion from 'components/AboutVersion'
-import Feedback from './Feedback'
-import Logo from './Logo'
-import Download from './Download'
-import Login from './Login'
-import Reviews from './Reviews'
-import PasswordRecovery from './PasswordRecovery'
-import HowItWorks from './HowItWorks'
-import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 import SwitchLocalization from 'components/SwitchLocalization'
+
+import CookiesAproove from './CookiesAproove'
+import Download from './Download'
+import Feedback from './Feedback'
+import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
+import HowItWorks from './HowItWorks'
 import LevelIntro from './LevelIntro'
+import Login from './Login'
+import Logo from './Logo'
 import Partners from './Partners'
+import PasswordRecovery from './PasswordRecovery'
+import Reviews from './Reviews'
 import SectionBlock from './SectionBlock'
+import SectionContainer from './SectionContainer'
 
 import Close from 'public/icons/close.svg'
 import LevelLogo from 'public/icons/level-logo-color.svg'
-import CookiesAproove from './CookiesAproove'
-import SectionContainer from './SectionContainer'
 
 const contentRoutes = {
   signIn: 'sign-in',
@@ -139,31 +139,31 @@ function StartPage({ defaultContentKey = null }) {
 
   return (
     <>
-      <main className="hidden relative md:flex mx-auto max-w-6xl w-full h-[84vh] max-h-[40rem] lg:max-h-[40rem] xl:max-h-[50rem] 2xl:max-h-[56.4rem] text-xl font-bold px-5 lg:px-16 xl:px-20 2xl:px-0">
-        <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pr-3 xl:pr-6">
+      <main className="relative mx-auto hidden h-[84vh] max-h-[40rem] w-full max-w-6xl px-5 text-xl font-bold md:flex lg:max-h-[40rem] lg:px-16 xl:max-h-[50rem] xl:px-20 2xl:max-h-[56.4rem] 2xl:px-0">
+        <aside className="flex w-1/4 flex-col gap-4 pr-3 xl:gap-7 xl:pr-6">
           <Link
             href={`/${contentRoutes['logo']}`}
-            className="flex flex-grow items-center justify-center p-5 lg:p-7 bg-white rounded-2xl cursor-pointer"
+            className="flex flex-grow cursor-pointer items-center justify-center rounded-2xl bg-white p-5 lg:p-7"
           >
             <LevelLogo className="" />
           </Link>
-          <div className="flex justify-between items-center h-[4.4rem] p-5 lg:p-7 bg-th-secondary-10 rounded-2xl z-20 text-base lg:text-lg">
+          <div className="z-20 flex h-[4.4rem] items-center justify-between rounded-2xl bg-th-secondary-10 p-5 text-base lg:p-7 lg:text-lg">
             <p>{t('projects:Language')}</p>
             <SwitchLocalization />
           </div>
           <Link
             href={`/${contentRoutes['updates']}`}
-            className="h-[19.4rem] rounded-2xl bg-slate-550 cursor-pointer"
+            className="h-[19.4rem] cursor-pointer rounded-2xl bg-slate-550"
           >
-            <p className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl">
+            <p className="green-two-layers z-10 h-full w-full rounded-2xl p-5 text-white after:rounded-2xl lg:p-7">
               {t('common:Updates')}
             </p>
           </Link>
           <Link
             href={`/${contentRoutes['partners']}`}
-            className="h-[19.4rem] rounded-2xl bg-white cursor-pointer"
+            className="h-[19.4rem] cursor-pointer rounded-2xl bg-white"
           >
-            <p className="gray-two-layers p-5 lg:p-7 h-full w-full z-10 rounded-2xl after:rounded-2xl">
+            <p className="gray-two-layers z-10 h-full w-full rounded-2xl p-5 after:rounded-2xl lg:p-7">
               {t('Partners')}
             </p>
           </Link>
@@ -171,44 +171,44 @@ function StartPage({ defaultContentKey = null }) {
 
         <section className="w-1/2 px-1 text-white">
           <div className={`${contentKey ? 'hidden' : 'flex'} h-full gap-4 xl:gap-7`}>
-            <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
+            <div className="flex w-1/2 flex-col justify-between gap-4 xl:gap-7">
               <Link
                 href={`/${contentRoutes['intro']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/about.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="h-1/2 transform cursor-pointer rounded-2xl bg-th-secondary-200 bg-[url('../public/main/about.webp')] bg-cover bg-no-repeat p-5 grayscale transition duration-300 hover:scale-105 hover:grayscale-0 lg:p-7"
               >
                 {t('MainBlocks.WhatIsLevel')}
               </Link>
               <Link
                 href={`/${contentRoutes['reviews']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/reviews.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="h-1/2 transform cursor-pointer rounded-2xl bg-th-secondary-200 bg-[url('../public/main/reviews.webp')] bg-cover bg-no-repeat p-5 grayscale transition duration-300 hover:scale-105 hover:grayscale-0 lg:p-7"
               >
                 {t('MainBlocks.Reviews')}
               </Link>
             </div>
-            <div className="flex flex-col justify-between w-1/2 gap-4 xl:gap-7">
+            <div className="flex w-1/2 flex-col justify-between gap-4 xl:gap-7">
               <Link
                 href={`/${contentRoutes['howItWork']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/inside.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="h-1/2 transform cursor-pointer rounded-2xl bg-th-secondary-200 bg-[url('../public/main/inside.webp')] bg-cover bg-no-repeat p-5 grayscale transition duration-300 hover:scale-105 hover:grayscale-0 lg:p-7"
               >
                 {t('MainBlocks.HowItWorks')}
               </Link>
 
               <Link
                 href={`/${contentRoutes['faq']}`}
-                className="p-5 lg:p-7 h-1/2 bg-th-secondary-200 rounded-2xl bg-[url('../public/main/faq.webp')] bg-cover bg-no-repeat grayscale transform transition duration-300 hover:scale-105 hover:grayscale-0 cursor-pointer"
+                className="h-1/2 transform cursor-pointer rounded-2xl bg-th-secondary-200 bg-[url('../public/main/faq.webp')] bg-cover bg-no-repeat p-5 grayscale transition duration-300 hover:scale-105 hover:grayscale-0 lg:p-7"
               >
                 {t('MainBlocks.FAQ')}
               </Link>
             </div>
           </div>
           <div
-            className={`relative text-3xl p-10 ${
+            className={`relative p-10 text-3xl ${
               contentKey ? 'flex' : 'hidden'
-            } h-full bg-white rounded-2xl w-full overflow-hidden text-black`}
+            } h-full w-full overflow-hidden rounded-2xl bg-white text-black`}
           >
             {contentObjects[contentKey]}
             <Close
-              className="absolute w-6 h-6 right-9 top-10 stroke-black cursor-pointer"
+              className="absolute right-9 top-10 h-6 w-6 cursor-pointer stroke-black"
               onClick={() => {
                 setContentKey(null)
                 if (defaultContentKey) {
@@ -219,44 +219,44 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </section>
 
-        <aside className="flex flex-col w-1/4 gap-4 xl:gap-7 pl-3 xl:pl-6">
+        <aside className="flex w-1/4 flex-col gap-4 pl-3 xl:gap-7 xl:pl-6">
           <Link
             href={`/${contentRoutes['signIn']}`}
-            className="h-32 rounded-2xl bg-slate-550 cursor-pointer"
+            className="h-32 cursor-pointer rounded-2xl bg-slate-550"
           >
-            <p className="p-5 lg:p-7 green-two-layers z-10 h-full w-full rounded-2xl after:rounded-2xl text-th-secondary-10">
+            <p className="green-two-layers z-10 h-full w-full rounded-2xl p-5 text-th-secondary-10 after:rounded-2xl lg:p-7">
               {t('users:SignIn')}
             </p>
           </Link>
           <Link
             href={`/${contentRoutes['connect']}`}
-            className="p-5 lg:p-7 bg-th-secondary-10 rounded-2xl cursor-pointer h-auto xl:h-32"
+            className="h-auto cursor-pointer rounded-2xl bg-th-secondary-10 p-5 lg:p-7 xl:h-32"
           >
             {t('ConnectWithUs')}
           </Link>
-          <div className="p-3 lg:p-5 2xl:p-7 flex-grow bg-th-secondary-10 rounded-2xl space-y-2 2xl:space-y-4 overflow-hidden">
-            <p className="text-xs 2xl:text-base overflow-auto font-normal">
+          <div className="flex-grow space-y-2 overflow-hidden rounded-2xl bg-th-secondary-10 p-3 lg:p-5 2xl:space-y-4 2xl:p-7">
+            <p className="overflow-auto text-xs font-normal 2xl:text-base">
               {t('Verse.text')}
             </p>
-            <p className="text-right text-xs 2xl:text-sm space-x-1 uppercase font-normal">
+            <p className="space-x-1 text-right text-xs font-normal uppercase 2xl:text-sm">
               {t('Verse.Matthew')}
             </p>
           </div>
 
           <Link
             href={`/${contentRoutes['download']}`}
-            className="h-32 rounded-2xl bg-slate-550 cursor-pointer"
+            className="h-32 cursor-pointer rounded-2xl bg-slate-550"
           >
-            <p className="green-two-layers p-5 lg:p-7 h-full w-full text-white z-10 rounded-2xl after:rounded-2xl">
+            <p className="green-two-layers z-10 h-full w-full rounded-2xl p-5 text-white after:rounded-2xl lg:p-7">
               {t('common:Download')}
             </p>
           </Link>
         </aside>
-        <div className="hidden md:block absolute bottom-0 left-1/2 -translate-x-1/2  z-10">
+        <div className="absolute bottom-0 left-1/2 z-10 hidden -translate-x-1/2 md:block">
           <CookiesAproove />
         </div>
       </main>
-      <main className="relative flex md:hidden flex-col gap-5 p-5 font-medium text-lg">
+      <main className="relative flex flex-col gap-5 p-5 text-lg font-medium md:hidden">
         <Link href={`/${contentRoutes['logo']}`}>
           <SectionBlock
             sectionKey="logo"
@@ -269,7 +269,7 @@ function StartPage({ defaultContentKey = null }) {
         </Link>
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
-            <div className="flex justify-center items-center p-4 bg-th-secondary-10 rounded-xl z-20">
+            <div className="z-20 flex items-center justify-center rounded-xl bg-th-secondary-10 p-4">
               <SwitchLocalization />
             </div>
           )}
@@ -282,7 +282,7 @@ function StartPage({ defaultContentKey = null }) {
               await router.push('/')
               router.push(`/${contentRoutes['signIn']}`)
             }}
-            className={`p-5 rounded-xl cursor-pointer ${
+            className={`cursor-pointer rounded-xl p-5 ${
               showSections.signIn
                 ? 'col-span-2 bg-th-secondary-10'
                 : 'bg-slate-550 text-th-text-secondary-100'
@@ -304,7 +304,7 @@ function StartPage({ defaultContentKey = null }) {
         </div>
 
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
+          className={`relative cursor-pointer overflow-hidden rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 ${
             blocks.intro.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('intro')}
@@ -326,7 +326,7 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
+          className={`relative cursor-pointer overflow-hidden rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 ${
             blocks.howItWork.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('howItWork')}
@@ -345,7 +345,7 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
+          className={`relative cursor-pointer overflow-hidden rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 ${
             blocks.reviews.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('reviews')}
@@ -364,7 +364,7 @@ function StartPage({ defaultContentKey = null }) {
           </div>
         </div>
         <div
-          className={`relative rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 overflow-hidden cursor-pointer ${
+          className={`relative cursor-pointer overflow-hidden rounded-2xl bg-th-secondary-10 p-5 transition-all duration-500 ${
             blocks.faq.clicked ? '' : 'h-36'
           }`}
           onClick={() => handleContentClick('faq')}
@@ -407,7 +407,7 @@ function StartPage({ defaultContentKey = null }) {
           t={t}
         />
 
-        <div className="md:hidden block absolute bottom-0 left-1/2 -translate-x-1/2 z-10">
+        <div className="absolute bottom-0 left-1/2 z-10 block -translate-x-1/2 md:hidden">
           <CookiesAproove />
         </div>
       </main>

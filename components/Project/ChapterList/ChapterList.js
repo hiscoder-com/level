@@ -1,15 +1,19 @@
 import { useEffect, useMemo, useState } from 'react'
 
-import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
-import ChapterCreate from './ChapterCreate'
-import Download from '../Download'
-import Modal from 'components/Modal'
 import Breadcrumbs from 'components/Breadcrumbs'
+import Modal from 'components/Modal'
 
+import Download from '../Download'
+import ChapterCreate from './ChapterCreate'
+
+import { useCurrentUser } from 'lib/UserContext'
+
+import { getBriefName, readableDate } from 'utils/helper'
 import {
   useAccess,
   useBriefState,
@@ -18,9 +22,6 @@ import {
   useProject,
 } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-import { getBriefName, readableDate } from 'utils/helper'
-
-import { useCurrentUser } from 'lib/UserContext'
 
 import Plus from 'public/icons/plus.svg'
 
@@ -97,7 +98,7 @@ function ChapterList() {
             <Link
               href={`/translate/${step.project}/${step.book}/${step.chapter}/${step.step}/intro`}
               onClick={(e) => e.stopPropagation()}
-              className="w-fit text-sm xl:text-lg hover:opacity-70"
+              className="w-fit text-sm hover:opacity-70 xl:text-lg"
             >
               {step.step} {t('Step').toLowerCase()}
             </Link>
@@ -108,8 +109,8 @@ function ChapterList() {
   }
   return (
     <div className="pb-10">
-      <div className="card bg-th-secondary-10 mx-auto max-w-7xl">
-        <div className="flex flex-col gap-7 w-full">
+      <div className="card mx-auto max-w-7xl bg-th-secondary-10">
+        <div className="flex w-full flex-col gap-7">
           <Breadcrumbs
             links={[
               { title: project?.title, href: '/projects/' + code },
@@ -117,7 +118,7 @@ function ChapterList() {
             ]}
           />
           <div className="flex flex-col gap-3 text-base">
-            <div className="w-full grid gap-3 grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-8">
               {chapters &&
                 chapters?.map((chapter) => {
                   const { id, num, started_at, finished_at } = chapter
@@ -137,14 +138,14 @@ function ChapterList() {
                       }
                     >
                       <div
-                        className={`flex flex-col justify-between px-5 py-3 h-24 rounded-2xl ${
+                        className={`flex h-24 flex-col justify-between rounded-2xl px-5 py-3 ${
                           isCoordinatorAccess ? 'cursor-pointer' : 'cursor-default'
                         } ${
                           finished_at
-                            ? 'bg-th-secondary-400 border-th-secondary-400 text-th-text-secondary-100'
+                            ? 'border-th-secondary-400 bg-th-secondary-400 text-th-text-secondary-100'
                             : isCreated
-                            ? 'text-th-text-secondary-100 bg-th-primary-100 border-th-primary-100'
-                            : 'bg-th-secondary-10 border-th-primary-100'
+                              ? 'border-th-primary-100 bg-th-primary-100 text-th-text-secondary-100'
+                              : 'border-th-primary-100 bg-th-secondary-10'
                         } border-2`}
                       >
                         <div className="flex justify-between">
@@ -176,7 +177,7 @@ function ChapterList() {
                               }
                             }}
                           >
-                            <p className="text-sm xl:text-lg hover:opacity-70">
+                            <p className="text-sm hover:opacity-70 xl:text-lg">
                               {t('Download')}
                             </p>
                           </div>
@@ -187,11 +188,11 @@ function ChapterList() {
                       <div
                         className={`${
                           isCreated ? 'hidden' : 'hidden hover:block'
-                        } justify-center items-center p-1 w-full h-full rounded-2xl border-0 cursor-pointer bg-th-primary-100 opacity-70`}
+                        } h-full w-full cursor-pointer items-center justify-center rounded-2xl border-0 bg-th-primary-100 p-1 opacity-70`}
                         onClick={() => setCreatingChapter(chapter)}
                       >
-                        <div className="w-10 h-10 p-2 shadow-md text-th-text-primary bg-th-secondary-10 border-th-secondary-10 border-2 rounded-full">
-                          <Plus className="w-5 h-5" />
+                        <div className="h-10 w-10 rounded-full border-2 border-th-secondary-10 bg-th-secondary-10 p-2 text-th-text-primary shadow-md">
+                          <Plus className="h-5 w-5" />
                         </div>
                       </div>
                     </div>
@@ -217,7 +218,7 @@ function ChapterList() {
             closeHandle={() => setIsOpenDownloading(false)}
             className={{
               dialogPanel:
-                'w-full max-w-md align-middle p-6 bg-th-primary-100 text-th-text-secondary-100 overflow-y-visible rounded-3xl',
+                'w-full max-w-md overflow-y-visible rounded-3xl bg-th-primary-100 p-6 align-middle text-th-text-secondary-100',
             }}
           >
             <Download

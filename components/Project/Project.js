@@ -1,9 +1,10 @@
-import ProjectInfo from './ProjectInfo'
-import ParticipantInfo from './ParticipantInfo'
-import ResumeInfo from './ResumeInfo'
 import BookList from './BookList/BookList'
+import ParticipantInfo from './ParticipantInfo'
+import ProjectInfo from './ProjectInfo'
+import ResumeInfo from './ResumeInfo'
 
 import { useCurrentUser } from 'lib/UserContext'
+
 import { useAccess, useGetBrief, useProject } from 'utils/hooks'
 
 function Project({ code }) {
@@ -18,10 +19,10 @@ function Project({ code }) {
     project_id: project?.id,
   })
   return (
-    <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
-      <div className="static xl:sticky top-7 flex flex-col sm:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
+    <div className="mx-auto flex max-w-7xl flex-col-reverse gap-7 pb-10 xl:flex-row">
+      <div className="static top-7 flex w-full flex-col gap-7 self-start sm:flex-row xl:sticky xl:w-1/3 xl:flex-col">
         <div
-          className={`flex flex-col gap-7 w-full xl:w-full xl:flex-col ${
+          className={`flex w-full flex-col gap-7 xl:w-full xl:flex-col ${
             brief?.is_enable ? 'sm:w-1/2' : 'sm:flex-row'
           }`}
         >

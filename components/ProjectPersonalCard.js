@@ -7,17 +7,16 @@ import { useTranslation } from 'next-i18next'
 
 import Translators from 'components/Translators'
 
-import {
-  useGetChaptersTranslate,
-  useBriefState,
-  useGetBooks,
-  useAccess,
-} from 'utils/hooks'
+import Reader from '/public/icons/dictionary.svg'
 
 import { getBriefName, readableDate } from 'utils/helper'
+import {
+  useAccess,
+  useBriefState,
+  useGetBooks,
+  useGetChaptersTranslate,
+} from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
-
-import Reader from '/public/icons/dictionary.svg'
 
 function ProjectPersonalCard({ project, user }) {
   const supabase = useSupabaseClient()
@@ -127,14 +126,14 @@ function ProjectPersonalCard({ project, user }) {
             return (
               <div
                 key={i}
-                className="card flex flex-col sm:flex-row gap-7 p-7 h-full bg-th-secondary-10 sm:bg-th-secondary-100"
+                className="card flex h-full flex-col gap-7 bg-th-secondary-10 p-7 sm:flex-row sm:bg-th-secondary-100"
               >
                 {!isLoading && currentSteps && project ? (
                   <>
-                    <div className="flex flex-col gap-6 w-auto sm:w-1/2 lg:w-1/3">
-                      <div className="flex gap-1 flex-wrap items-center">
+                    <div className="flex w-auto flex-col gap-6 sm:w-1/2 lg:w-1/3">
+                      <div className="flex flex-wrap items-center gap-1">
                         <Link
-                          className="text-xl font-bold text-th-primary-200 hover:opacity-70 cursor-pointer"
+                          className="cursor-pointer text-xl font-bold text-th-primary-200 hover:opacity-70"
                           href={`/projects/${project.code}/books/${book}`}
                         >
                           {t(`books:${book}`)}
@@ -156,7 +155,7 @@ function ProjectPersonalCard({ project, user }) {
                           </Link>
                           {(chaptersArray || levelChecks?.[book]) && (
                             <Reader
-                              className="w-6 min-w-[1.5rem] text-th-primary-200 hover:opacity-70 cursor-pointer"
+                              className="w-6 min-w-[1.5rem] cursor-pointer text-th-primary-200 hover:opacity-70"
                               onClick={() =>
                                 push({
                                   pathname: `/projects/${project?.code}/books/read`,
@@ -195,7 +194,7 @@ function ProjectPersonalCard({ project, user }) {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-wrap justify-center sm:justify-start content-start text-center w-auto sm:w-1/2 lg:w-2/3 gap-1 sm:gap-3">
+                    <div className="flex w-auto flex-wrap content-start justify-center gap-1 text-center sm:w-1/2 sm:justify-start sm:gap-3 lg:w-2/3">
                       {chapters[book].map((step, index) => {
                         const stepLink = (
                           <p className="space-x-1">
@@ -223,14 +222,14 @@ function ProjectPersonalCard({ project, user }) {
                                 ? '/intro'
                                 : ''
                             }`}
-                            className="step-link w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
+                            className="step-link w-[47%] text-xs sm:w-[55%] md:w-[46%] lg:w-[30%] lg:text-sm xl:w-1/4"
                           >
                             {stepLink}
                           </Link>
                         ) : (
                           <button
                             key={index}
-                            className="step-link px-5 w-[47%] sm:w-[55%] md:w-[46%] lg:w-[30%] xl:w-1/4 text-xs lg:text-sm"
+                            className="step-link w-[47%] px-5 text-xs sm:w-[55%] md:w-[46%] lg:w-[30%] lg:text-sm xl:w-1/4"
                             disabled
                           >
                             {stepLink}
@@ -250,13 +249,13 @@ function ProjectPersonalCard({ project, user }) {
                 ) : (
                   <div
                     role="status"
-                    className="flex flex-col gap-4 h-full w-full animate-pulse"
+                    className="flex h-full w-full animate-pulse flex-col gap-4"
                   >
-                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-1/4" />
-                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-1/2" />
-                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
-                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
-                    <div className="h-3 bg-th-secondary-100 rounded-2xl w-full" />
+                    <div className="h-3 w-1/4 rounded-2xl bg-th-secondary-100" />
+                    <div className="h-3 w-1/2 rounded-2xl bg-th-secondary-100" />
+                    <div className="h-3 w-full rounded-2xl bg-th-secondary-100" />
+                    <div className="h-3 w-full rounded-2xl bg-th-secondary-100" />
+                    <div className="h-3 w-full rounded-2xl bg-th-secondary-100" />
                   </div>
                 )}
               </div>

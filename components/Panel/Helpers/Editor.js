@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
-
 import { toast } from 'react-hot-toast'
 
 import AutoSizeTextArea from '../UI/AutoSizeTextArea'
 
-import useSupabaseClient from 'utils/supabaseClient'
 import { obsCheckAdditionalVerses } from 'utils/helper'
 import { useScroll } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function Editor({ config }) {
   const supabase = useSupabaseClient()
@@ -50,7 +49,7 @@ function Editor({ config }) {
         <div
           key={verseObject.verse_id}
           id={`translate_${verseObject.num}`}
-          className="flex my-3 pt-1"
+          className="my-3 flex pt-1"
           dir={config?.isRtl ? 'rtl' : 'ltr'}
         >
           <div>{obsCheckAdditionalVerses(verseObject.num)}</div>

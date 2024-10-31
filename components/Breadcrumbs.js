@@ -25,9 +25,9 @@ function Breadcrumbs({ links = [], full }) {
         {isLoading ? (
           <div role="status" className="w-full animate-pulse">
             <div className="flex flex-row">
-              <div className="h-7 w-1/12 mr-4 bg-th-secondary-100 rounded-full"></div>
-              <div className="h-7 w-5/12 mr-4 bg-th-secondary-100 rounded-full"></div>
-              <div className="h-7 w-3/12 mr-4 bg-th-secondary-100 rounded-full"></div>
+              <div className="mr-4 h-7 w-1/12 rounded-full bg-th-secondary-100"></div>
+              <div className="mr-4 h-7 w-5/12 rounded-full bg-th-secondary-100"></div>
+              <div className="mr-4 h-7 w-3/12 rounded-full bg-th-secondary-100"></div>
             </div>
           </div>
         ) : (

@@ -11,7 +11,7 @@ function ProjectParticipants({
   t,
 }) {
   return (
-    <div className="space-y-2.5 mb-2.5">
+    <div className="mb-2.5 space-y-2.5">
       <div className="flex justify-end">{t('chapters:ReadOnly')}</div>
       {participants.length > 0 ? (
         participants?.map((participant, index) => (
@@ -25,7 +25,7 @@ function ProjectParticipants({
             }}
           >
             <div
-              className={`flex flex-1 items-center gap-4 px-4 py-1 border rounded-3xl w-5/6 ${
+              className={`flex w-5/6 flex-1 items-center gap-4 rounded-3xl border px-4 py-1 ${
                 assignedTranslatorsIds?.includes(participant.id)
                   ? 'bg-th-secondary-200 text-th-text-secondary-100'
                   : ''
@@ -35,7 +35,7 @@ function ProjectParticipants({
                   : `${participant.color.text} text-th-text-primary`
               }`}
             >
-              <div className="w-7 h-7 min-w-[2rem]">
+              <div className="h-7 w-7 min-w-[2rem]">
                 <TranslatorImage item={participant} />
               </div>
               <div>
@@ -74,7 +74,7 @@ function ProjectParticipants({
         <>
           {[...Array(4).keys()].map((el) => (
             <div role="status" className="w-full animate-pulse" key={el}>
-              <div className="h-[68px] bg-th-secondary-100 rounded-2xl w-full"></div>
+              <div className="h-[68px] w-full rounded-2xl bg-th-secondary-100"></div>
             </div>
           ))}
         </>

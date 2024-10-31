@@ -22,10 +22,10 @@ function CommitsList({ methodId, setResourcesUrl, resourcesUrl }) {
         const isPrimary = customResources[resource]
         listOfResources.push(
           <div
-            className="flex flex-col md:flex-row gap-4 md:gap-7 items-start md:items-center text-sm md:text-base"
+            className="flex flex-col items-start gap-4 text-sm md:flex-row md:items-center md:gap-7 md:text-base"
             key={resource}
           >
-            <div className={`w-auto md:w-1/6 sm:w-1/6 ${isPrimary ? 'font-bold' : ''}`}>
+            <div className={`w-auto sm:w-1/6 md:w-1/6 ${isPrimary ? 'font-bold' : ''}`}>
               {resource}:
             </div>
             <input

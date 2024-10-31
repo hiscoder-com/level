@@ -7,10 +7,10 @@ function Logo({ t }) {
   const { locale } = useRouter()
   const isRuLocale = locale === 'ru'
   return (
-    <div className="flex flex-col w-full gap-6">
-      <p className="font-semibold md:font-bold mr-10">{t('LogoHeader')}</p>
+    <div className="flex w-full flex-col gap-6">
+      <p className="mr-10 font-semibold md:font-bold">{t('LogoHeader')}</p>
       <div
-        className={`overflow-auto pr-5 flex flex-col w-full gap-6 text-sm md:${
+        className={`flex w-full flex-col gap-6 overflow-auto pr-5 text-sm md:${
           isRuLocale ? 'text-sm' : 'text-base'
         } font-normal`}
       >
@@ -20,7 +20,7 @@ function Logo({ t }) {
         <p>{t('LogoText.p4')}</p>
         <p>{t('LogoText.p5')}</p>
 
-        <div className="flex items-center gap-5 md:gap-10 flex-col md:flex-row">
+        <div className="flex flex-col items-center gap-5 md:flex-row md:gap-10">
           <Link href="https://glokas.com" target="_blank">
             <GlokasLogo />
           </Link>

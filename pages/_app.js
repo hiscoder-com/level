@@ -7,8 +7,8 @@ import { UserContextProvider } from 'lib/UserContext'
 
 import 'styles/globals.css'
 
-import useSupabaseClient from 'utils/supabaseClient'
 import { useGetTheme } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
 
 import { roboto } from 'public/fonts/fonts'
 

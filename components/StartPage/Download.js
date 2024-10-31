@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
+
 import Link from 'next/link'
+
 import Close from 'public/icons/close.svg'
 
 const availableOs = ['Windows', 'Linux']
@@ -81,16 +83,16 @@ function Download({ t, onClose }) {
   ]
   const isAvailableCurrentOs = availableOs.includes(os.os)
   return (
-    <div className="relative flex flex-col w-full text-left">
-      <p className="hidden md:block mb-9">{t('common:Download')}</p>
+    <div className="relative flex w-full flex-col text-left">
+      <p className="mb-9 hidden md:block">{t('common:Download')}</p>
       <Close
-        className="absolute md:hidden w-6 h-6 right-0 -top-7 stroke-black cursor-pointer"
+        className="absolute -top-7 right-0 h-6 w-6 cursor-pointer stroke-black md:hidden"
         onClick={onClose}
       />
-      <div className="text-base font-medium flex flex-col gap-6 overflow-y-auto">
+      <div className="flex flex-col gap-6 overflow-y-auto text-base font-medium">
         <p>{t('Download.p1')}</p>
         <h2>{t('Download.Instruction')}</h2>
-        <ol className="list-decimal list-inside">
+        <ol className="list-inside list-decimal">
           <li>{t('Download.li1')}</li>
           <li>{t('Download.li2')}</li>
           <li>{t('Download.li3')}</li>

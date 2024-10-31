@@ -1,11 +1,11 @@
 import Head from 'next/head'
-
 import { useRouter } from 'next/router'
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'react-i18next'
 
 import StartPage from 'components/StartPage/StartPage'
+
 import { urlGlobal } from 'utils/openGraph'
 
 const SlugPage = () => {
@@ -80,7 +80,7 @@ const SlugPage = () => {
   const imageUrl = `${urlGlobal}/social.webp`
 
   return (
-    <main className="flex flex-col justify-center font-sans min-h-screen bg-th-secondary-100">
+    <main className="flex min-h-screen flex-col justify-center bg-th-secondary-100 font-sans">
       <Head>
         <title>{pageContent.title || t('LEVEL')}</title>
         <meta

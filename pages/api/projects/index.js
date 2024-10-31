@@ -1,5 +1,5 @@
-import supabaseApi from 'utils/supabaseServer'
 import { parseManifests, validationBrief } from 'utils/helper'
+import supabaseApi from 'utils/supabaseServer'
 
 export default async function languageProjectsHandler(req, res) {
   let supabase

@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+
 import { useTranslation } from 'next-i18next'
 
 function CookiesAproove() {
@@ -22,7 +23,7 @@ function CookiesAproove() {
   return (
     <>
       {isShowCookiesModal && (
-        <div className="max-w-sm bg-th-text-secondary-100 p-5 rounded-2xl shadow-2xl">
+        <div className="max-w-sm rounded-2xl bg-th-text-secondary-100 p-5 shadow-2xl">
           <p className="text-base font-bold">{t('Cookies.Title')}</p>
           <p className="text-sm font-medium">
             {t('Cookies.Text')}{' '}
@@ -34,14 +35,14 @@ function CookiesAproove() {
           </p>
           <div className="flex justify-center gap-7">
             <button
-              className="mt-5 btn-quaternary"
+              className="btn-quaternary mt-5"
               label="Accept"
               onClick={handleAcceptClick}
             >
               {t('Iagree')}
             </button>
             <button
-              className="mt-5 btn-secondary border"
+              className="btn-secondary mt-5 border"
               label="Accept"
               onClick={handleDeclineClick}
             >

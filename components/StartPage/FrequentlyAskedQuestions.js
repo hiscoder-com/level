@@ -40,13 +40,13 @@ function FrequentlyAskedQuestions({ t, opacity }) {
   ]
 
   return (
-    <div className="relative flex flex-col w-full gap-6 md:gap-12">
+    <div className="relative flex w-full flex-col gap-6 md:gap-12">
       <p className="font-semibold md:font-bold">{t('FAQ')}</p>
       <Close
-        className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+        className={`absolute right-0 top-0 h-6 w-6 cursor-pointer stroke-black md:hidden`}
       />
       <div
-        className={`text-sm md:text-base transition-opacity duration-700 overflow-auto pr-5 ${
+        className={`overflow-auto pr-5 text-sm transition-opacity duration-700 md:text-base ${
           opacity || ''
         }`}
       >
@@ -69,12 +69,12 @@ function FAQ({ t, questionKey, answerKey, isFirst }) {
 
   return (
     <div
-      className="flex flex-col gap-5 justify-center w-full p-5 mb-5 font-normal rounded-xl bg-th-secondary-100"
+      className="mb-5 flex w-full flex-col justify-center gap-5 rounded-xl bg-th-secondary-100 p-5 font-normal"
       onClick={(e) => e.stopPropagation()}
     >
       <p
         onClick={toggleExpanded}
-        className="font-bold text-base md:text-xl cursor-pointer"
+        className="cursor-pointer text-base font-bold md:text-xl"
       >
         {t(questionKey)}
       </p>

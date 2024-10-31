@@ -1,9 +1,9 @@
 import { useRecoilValue } from 'recoil'
 
+import { currentVerse } from '../../../state/atoms'
 import Carousel from './Carousel'
 
 import { useGetAquiferResources } from 'utils/hooks'
-import { currentVerse } from '../../../state/atoms'
 
 function Images({ resourceType, reference, languageCode, query, isShowAllChapter }) {
   const verse = useRecoilValue(currentVerse)

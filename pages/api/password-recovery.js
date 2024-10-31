@@ -1,4 +1,5 @@
 import { createPagesServerClient } from '@supabase/auth-helpers-nextjs'
+
 import { supabaseService } from 'utils/supabaseService'
 
 export default async function handler(req, res) {

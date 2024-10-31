@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 
-import ReactMarkdown from 'react-markdown'
-
 import { useTranslation } from 'react-i18next'
+import ReactMarkdown from 'react-markdown'
 
 import { useQuotesTranslation } from '@texttree/tn-quote'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
-import { useGetResource, useScroll } from 'utils/hooks'
-
 import { filterNotes } from 'utils/helper'
+import { useGetResource, useScroll } from 'utils/hooks'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
@@ -86,21 +84,21 @@ function TNList({ setItem, data, toolName, isLoading }) {
   return (
     <div
       id={`container_${toolName}`}
-      className="divide-y divide-th-text-primary divide-dashed h-full overflow-auto "
+      className="h-full divide-y divide-dashed divide-th-text-primary overflow-auto"
     >
       {data &&
         verses.map(([verseNumber, notes], index) => {
           return (
-            <div key={index} className="p-4 flex mx-4">
+            <div key={index} className="mx-4 flex p-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="pl-7 flex-1" id={`idtn_${verseNumber}`}>
+              <div className="flex-1 pl-7" id={`idtn_${verseNumber}`}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.ID}
                         id={'idtn' + note.ID}
-                        className={`p-2 cursor-pointer rounded-lg hover:bg-th-secondary-100 ${
+                        className={`cursor-pointer rounded-lg p-2 hover:bg-th-secondary-100 ${
                           highlightId === 'id' + note.ID ? 'bg-th-secondary-100' : ''
                         }`}
                         onClick={() => {

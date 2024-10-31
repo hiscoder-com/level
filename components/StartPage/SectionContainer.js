@@ -1,6 +1,8 @@
-import AboutVersion from 'components/AboutVersion'
-import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+
+import AboutVersion from 'components/AboutVersion'
+
 import Download from './Download'
 
 function SectionContainer({ showSections, toggleSection, t }) {
@@ -17,7 +19,7 @@ function SectionContainer({ showSections, toggleSection, t }) {
           href="/download"
           shallow
           scroll={false}
-          className={`p-5 bg-th-secondary-10 rounded-xl ${
+          className={`rounded-xl bg-th-secondary-10 p-5 ${
             showSections.download ? 'col-span-2' : ''
           }`}
         >
@@ -33,7 +35,7 @@ function SectionContainer({ showSections, toggleSection, t }) {
           href="/updates"
           shallow
           scroll={false}
-          className={`p-5 bg-th-secondary-10 rounded-xl ${
+          className={`rounded-xl bg-th-secondary-10 p-5 ${
             showSections.updates ? 'col-span-2' : ''
           }`}
         >

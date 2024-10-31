@@ -2,26 +2,24 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { useTranslation } from 'next-i18next'
-
-import axios from 'axios'
-import { toast } from 'react-hot-toast'
-import { useForm } from 'react-hook-form'
-
 import { Tab } from '@headlessui/react'
+import axios from 'axios'
+import { useTranslation } from 'next-i18next'
+import { useForm } from 'react-hook-form'
+import { toast } from 'react-hot-toast'
 
-import Brief from './Brief'
-import ResourceSettings from './ResourceSettings'
-import Participants from './Participants/Participants'
-import Breadcrumbs from '../Breadcrumbs'
-import Steps from '../Steps'
 import BasicInformation from '../BasicInformation'
-import LanguageCreate from '../LanguageCreate'
+import Breadcrumbs from '../Breadcrumbs'
 import ButtonLoading from '../ButtonLoading'
+import LanguageCreate from '../LanguageCreate'
+import Steps from '../Steps'
+import Brief from './Brief'
+import Participants from './Participants/Participants'
+import ResourceSettings from './ResourceSettings'
 
-const classNameTabField =
-  'p-3 sm:py-5 sm:px-8 border border-th-secondary-300 shadow-md bg-th-secondary-10 rounded-t-none rounded-b-2xl space-y-7'
+import { useCurrentUser } from 'lib/UserContext'
 
+import { getBriefName } from 'utils/helper'
 import {
   useAccess,
   useGetBrief,
@@ -30,8 +28,10 @@ import {
   useProject,
   useUsers,
 } from 'utils/hooks'
-import { useCurrentUser } from 'lib/UserContext'
-import { getBriefName } from 'utils/helper'
+
+const classNameTabField =
+  'p-3 sm:py-5 sm:px-8 border border-th-secondary-300 shadow-md bg-th-secondary-10 rounded-t-none rounded-b-2xl space-y-7'
+
 const sizeTabs = {
   1: 'w-1/6',
   2: 'w-2/6',
@@ -221,7 +221,7 @@ function ProjectEdit() {
           label: 'Resources',
           panel: (
             <>
-              <h3 className="text-lg md:text-xl font-bold">{t('ListResources')}</h3>
+              <h3 className="text-lg font-bold md:text-xl">{t('ListResources')}</h3>
               <ResourceSettings />
             </>
           ),
@@ -321,7 +321,7 @@ function ProjectEdit() {
   }, [])
 
   return (
-    <div className="flex flex-col gap-7 mx-auto pb-10 max-w-7xl">
+    <div className="mx-auto flex max-w-7xl flex-col gap-7 pb-10">
       <div className="hidden md:block">
         <Breadcrumbs
           links={[
@@ -331,13 +331,13 @@ function ProjectEdit() {
           full
         />
       </div>
-      <div className="hidden sm:flex flex-col">
+      <div className="hidden flex-col sm:flex">
         {user?.id && (
           <Tab.Group defaultIndex={tabs.length ? index : 0}>
             <Tab.List
               className={`flex px-5 ${
                 sizeTabs[tabs.length]
-              } gap-4 mt-2 lg:text-lg font-bold text-center`}
+              } mt-2 gap-4 text-center font-bold lg:text-lg`}
             >
               {tabs.map((tab) => (
                 <Tab
@@ -360,7 +360,7 @@ function ProjectEdit() {
               ))}
             </Tab.List>
 
-            <div className="px-5 h-12 bg-th-primary-500 rounded-t-3xl" />
+            <div className="h-12 rounded-t-3xl bg-th-primary-500 px-5" />
             <Tab.Panels>
               <>
                 {tabs.length > 0 ? (
@@ -377,7 +377,7 @@ function ProjectEdit() {
           </Tab.Group>
         )}
       </div>
-      <div className="flex flex-col sm:hidden px-4 py-10 -mt-5 -mx-5 -mb-10 gap-7 bg-th-secondary-10">
+      <div className="-mx-5 -mb-10 -mt-5 flex flex-col gap-7 bg-th-secondary-10 px-4 py-10 sm:hidden">
         <Breadcrumbs
           links={[
             { title: project?.title, href: '/projects/' + code },

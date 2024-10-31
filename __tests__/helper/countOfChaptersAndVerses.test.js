@@ -1,6 +1,6 @@
-import { calculateChaptersAndVerses } from '../../utils/helper'
-import usfmData3JN from '../../mocks/65-3JN'
 import multiChapterData from '../../mocks/13-1CH'
+import usfmData3JN from '../../mocks/65-3JN'
+import { calculateChaptersAndVerses } from '../../utils/helper'
 
 describe('calculateChaptersAndVerses', () => {
   test('should return correct verse counts for each chapter', () => {
