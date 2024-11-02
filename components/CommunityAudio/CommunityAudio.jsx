@@ -1,11 +1,12 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-import Verses from './Verses'
 import BookListReader from './BookListReader'
+import CommunityAudioRecorder from './CommunityAudioRecorder'
 import ParticipantInfo from 'components/Project/ParticipantInfo'
+
 import { useCurrentUser } from 'lib/UserContext'
 import {
   useAccess,
@@ -17,11 +18,23 @@ import {
 
 import { newTestamentList, oldTestamentList, usfmFileNames } from 'utils/config'
 import { checkBookCodeExists, getVerseObjectsForBookAndChapter } from 'utils/helper'
+
 import Left from '/public/left.svg'
-import CommunityAudioRecorder from './CommunityAudioRecorder'
+import Teleprompter from './Teleprompter'
 
 function CommunityAudio() {
   const [fontSize, setFontSize] = useState(16)
+  const [textSpeed, setTextSpeed] = useState(1)
+
+  const {
+    isRecording,
+    isPaused,
+    audioUrl,
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    resumeRecording,
+  } = useAudioRecorder()
 
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
@@ -139,19 +152,28 @@ function CommunityAudio() {
         </div>
       </div>
       <div className="w-full xl:w-2/3 space-y-7">
-        <CommunityAudioRecorder fontSize={fontSize} setFontSize={setFontSize} />
-        <div className="card flex flex-col gap-7 bg-th-secondary-10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
-            <Link href={'/projects/' + project?.code} className="p-3">
-              <Left className="w-5 h-5 stroke-th-primary-200 hover:opacity-70" />
-            </Link>
-          </div>
-          <Verses
+        <CommunityAudioRecorder
+          textSettings={{ fontSize, setFontSize, textSpeed, setTextSpeed }}
+          isRecording={isRecording}
+          isPaused={isPaused}
+          audioUrl={audioUrl}
+          audioMethods={{
+            startRecording,
+            stopRecording,
+            pauseRecording,
+            resumeRecording,
+          }}
+        />
+        <div className="card !p-0 flex flex-col gap-7 bg-th-secondary-10">
+          <Teleprompter
             fontSize={fontSize}
+            textSpeed={textSpeed}
             verseObjects={verseObjectsToUse}
             user={user}
             reference={reference}
             isLoading={isLoading}
+            isRecording={isRecording}
+            isPaused={isPaused}
           />
         </div>
       </div>
@@ -160,3 +182,68 @@ function CommunityAudio() {
 }
 
 export default CommunityAudio
+
+// ? Hooks
+function useAudioRecorder() {
+  const [isRecording, setIsRecording] = useState(false)
+  const [isPaused, setIsPaused] = useState(false)
+  const [audioUrl, setAudioUrl] = useState(null)
+  const mediaRecorder = useRef(null)
+  const audioChunks = useRef([])
+
+  const startRecording = useCallback(async () => {
+    audioChunks.current = []
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      mediaRecorder.current = new MediaRecorder(stream)
+
+      mediaRecorder.current.ondataavailable = (event) => {
+        audioChunks.current.push(event.data)
+      }
+
+      mediaRecorder.current.onstop = () => {
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' })
+        const audioUrl = URL.createObjectURL(audioBlob)
+        setAudioUrl(audioUrl)
+      }
+
+      mediaRecorder.current.start()
+      setIsRecording(true)
+      setIsPaused(false)
+    } catch (error) {
+      console.error('Error accessing microphone:', error)
+    }
+  }, [])
+
+  const stopRecording = useCallback(() => {
+    if (mediaRecorder.current) {
+      mediaRecorder.current.stop()
+      setIsRecording(false)
+      setIsPaused(false)
+    }
+  }, [])
+
+  const pauseRecording = useCallback(() => {
+    if (mediaRecorder.current) {
+      mediaRecorder.current.pause()
+      setIsPaused(true)
+    }
+  }, [])
+
+  const resumeRecording = useCallback(() => {
+    if (mediaRecorder.current) {
+      mediaRecorder.current.resume()
+      setIsPaused(false)
+    }
+  }, [])
+
+  return {
+    isRecording,
+    isPaused,
+    audioUrl,
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    resumeRecording,
+  }
+}

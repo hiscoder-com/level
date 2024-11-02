@@ -1,11 +1,8 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 
 import { useTranslation } from 'next-i18next'
-
-import { Disclosure, Combobox, Tab, Transition } from '@headlessui/react'
 
 import Breadcrumbs from 'components/Breadcrumbs'
 
@@ -15,7 +12,19 @@ import { getVerseCount, getVerseCountOBS } from 'utils/helper'
 
 import Gear from '/public/gear.svg'
 
-function Verses({ verseObjects, user, reference, isLoading, fontSize }) {
+function Teleprompter({
+  verseObjects,
+  user,
+  reference,
+  isLoading,
+  fontSize,
+  textSpeed,
+  isRecording,
+  isPaused,
+}) {
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [activeVerseIndex, setActiveVerseIndex] = useState(1)
+
   const {
     push,
     query: { bookid, code },
@@ -37,9 +46,69 @@ function Verses({ verseObjects, user, reference, isLoading, fontSize }) {
     }
   }, [books, project?.type, bookid, reference?.chapter])
 
+  const containerRef = useRef(null)
+
+  const scrollSpeed = useMemo(() => {
+    return 20 + (textSpeed * 180) / 100
+  }, [textSpeed])
+
+  const handlePlayPause = () => {
+    setIsPlaying(!isPlaying)
+  }
+
+  const handleReset = () => {
+    setIsPlaying(false)
+    setActiveVerseIndex(1)
+    if (containerRef.current) {
+      containerRef.current.scrollTop = 0
+    }
+  }
+
+  useEffect(() => {
+    if (isRecording) {
+      if (isPaused) {
+        setIsPlaying(false)
+      } else {
+        setIsPlaying(true)
+      }
+    } else {
+      handleReset()
+    }
+  }, [isRecording, isPaused])
+
+  useEffect(() => {
+    if (!isPlaying || !containerRef.current) return
+
+    const container = containerRef.current
+    const verses = container.querySelectorAll('.verse-line')
+    let currentIndex = activeVerseIndex
+
+    const scrollInterval = setInterval(() => {
+      if (currentIndex >= verses.length) {
+        setIsPlaying(false)
+        clearInterval(scrollInterval)
+        handleReset()
+        return
+      }
+
+      const verse = verses[currentIndex]
+      const verseTop = verse.offsetTop - container.offsetTop
+
+      container.scrollTo({
+        top: verseTop - 100,
+        behavior: 'smooth',
+      })
+
+      setActiveVerseIndex(currentIndex)
+      currentIndex++
+    }, (1000 * 60) / scrollSpeed)
+
+    return () => clearInterval(scrollInterval)
+  }, [isPlaying, scrollSpeed, activeVerseIndex])
+
   return (
     <div className="flex flex-col gap-5">
-      <div className="hidden xl:block">
+      <div className="hidden xl:block px-8 pt-5">
         <Breadcrumbs
           links={
             reference && [
@@ -50,15 +119,16 @@ function Verses({ verseObjects, user, reference, isLoading, fontSize }) {
         />
       </div>
       {reference?.chapter && (
-        <div className="text-xl font-bold">{`${t('books:' + bookid)} ${
+        <div className="text-xl font-bold px-8">{`${t('books:' + bookid)} ${
           reference?.chapter
         }`}</div>
       )}
 
-      {/*  */}
-
       <div
-        className={`flex flex-col gap-2 ${!verseObjects ? 'h-screen' : ''}`}
+        ref={containerRef}
+        className={`flex flex-col gap-4 ${
+          !verseObjects ? 'h-screen' : 'max-h-[70vh] overflow-y-auto'
+        }`}
         dir={project?.is_rtl ? 'rtl' : 'ltr'}
         style={{ fontSize: `${fontSize}px`, lineHeight: `${fontSize * 1.5}px` }}
       >
@@ -75,14 +145,26 @@ function Verses({ verseObjects, user, reference, isLoading, fontSize }) {
                     : ' '
 
                 return (
-                  <div className={`flex gap-2 ${text === ' ' ? 'mb-2' : ''}`} key={index}>
+                  <div
+                    className={`verse-line flex gap-2 px-5 ${
+                      index !== 0
+                        ? fontSize > 26
+                          ? fontSize > 32
+                            ? 'pt-10'
+                            : 'pt-6'
+                          : 'pt-2'
+                        : ''
+                    }
+                      ${activeVerseIndex === index ? 'bg-gray-200' : ''}`}
+                    key={index}
+                  >
                     {index !== 0 && <sup className="mt-2">{index}</sup>}
-                    <p>{text}</p>
+                    <p className="py-2">{text}</p>
                   </div>
                 )
               })}
               {verseObjects?.verseObjects && (
-                <div className="flex gap-2 mb-2">
+                <div className="verse-line flex gap-2 mb-2">
                   {verseObjects.verseObjects.find((verse) => verse.verse === 200)?.text}
                 </div>
               )}
@@ -125,4 +207,4 @@ function Verses({ verseObjects, user, reference, isLoading, fontSize }) {
   )
 }
 
-export default Verses
+export default Teleprompter
