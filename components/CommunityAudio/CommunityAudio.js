@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 
 import BookListReader from './BookListReader'
 import CommunityAudioRecorder from './CommunityAudioRecorder'
 import ParticipantInfo from 'components/Project/ParticipantInfo'
+import Teleprompter from './Teleprompter'
 
 import { useCurrentUser } from 'lib/UserContext'
 import {
@@ -18,9 +18,6 @@ import {
 
 import { newTestamentList, oldTestamentList, usfmFileNames } from 'utils/config'
 import { checkBookCodeExists, getVerseObjectsForBookAndChapter } from 'utils/helper'
-
-import Left from '/public/left.svg'
-import Teleprompter from './Teleprompter'
 
 function CommunityAudio() {
   const [fontSize, setFontSize] = useState(16)
@@ -76,7 +73,6 @@ function CommunityAudio() {
   const verseObjectsToUse =
     verseObjects ||
     getVerseObjectsForBookAndChapter(chapters, reference?.bookid, reference?.chapter)
-
   const createdNewTestamentBooks = useMemo(
     () =>
       books
@@ -97,7 +93,6 @@ function CommunityAudio() {
         : [],
     [books, chapters]
   )
-
   const createdOldTestamentBooks = useMemo(
     () =>
       books
@@ -168,12 +163,12 @@ function CommunityAudio() {
           <Teleprompter
             fontSize={fontSize}
             textSpeed={textSpeed}
+            isRecording={isRecording}
+            isPaused={isPaused}
             verseObjects={verseObjectsToUse}
             user={user}
             reference={reference}
             isLoading={isLoading}
-            isRecording={isRecording}
-            isPaused={isPaused}
           />
         </div>
       </div>

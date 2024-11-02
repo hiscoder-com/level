@@ -50,7 +50,6 @@ function CommunityAudioRecorder({
 export default CommunityAudioRecorder
 
 // ? Components
-
 function SpeedSetting({ textSpeed, setTextSpeed }) {
   const [isMounted, setIsMounted] = useState(false)
   const { t } = useTranslation(['common'])
