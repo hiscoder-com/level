@@ -2,6 +2,7 @@ import axios from 'axios'
 import usfm from 'usfm-js'
 
 import { parseChapter } from 'utils/usfmHelper'
+
 /**
  *  @swagger
  *  /api/git/whole-book:

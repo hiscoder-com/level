@@ -39,25 +39,25 @@ function Button({
     <button
       onClick={onClick}
       disabled={disabled}
-      className={`group flex flex-row items-center w-full p-2 cursor-pointer ${
+      className={`group flex w-full cursor-pointer flex-row items-center p-2 ${
         colors[color].border
-      } border-2 rounded-2xl font-semibold text-sm md:text-xl ${colors[color].text} ${
+      } rounded-2xl border-2 text-sm font-semibold md:text-xl ${colors[color].text} ${
         !disabled ? 'hover:shadow-md' : ''
       } ${!disabled ? colors[color].hover : ''} ${
         !disabled ? 'active:text-th-secondary-10' : ''
       } ${!disabled ? colors[color].active : ''}`}
     >
-      <div className="avatar-block w-0 md:w-10 flex-grow-0">{avatar}</div>
-      <div className="text-block flex-auto ml-2 overflow-hidden text-left text-ellipsis">
+      <div className="avatar-block w-0 flex-grow-0 md:w-10">{avatar}</div>
+      <div className="text-block ml-2 flex-auto overflow-hidden text-ellipsis text-left">
         {text}
       </div>
       <div className="icon-block flex-grow-0">
         <div
-          className={`p-2 ${colors[color].border} border-2 rounded-full ${
+          className={`p-2 ${colors[color].border} rounded-full border-2 ${
             !disabled ? colors[color].hover : ''
           } ${
             !disabled
-              ? 'group-hover:text-th-secondary-100 group-active:border-th-secondary-10 stroke-th-text-primary'
+              ? 'stroke-th-text-primary group-hover:text-th-secondary-100 group-active:border-th-secondary-10'
               : ''
           }`}
         >

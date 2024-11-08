@@ -1,20 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { Switch } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
-
+import { toast } from 'react-hot-toast'
 import { useRecoilState, useSetRecoilState } from 'recoil'
 
-import useSupabaseClient from 'utils/supabaseClient'
-
-import { toast } from 'react-hot-toast'
-import { Switch } from '@headlessui/react'
-
-import { checkedVersesBibleState, isHideAllVersesState } from '../../state/atoms'
 import Modal from 'components/Modal'
 
+import { checkedVersesBibleState, isHideAllVersesState } from '../../state/atoms'
+
 import { obsCheckAdditionalVerses } from 'utils/helper'
-import Pencil from 'public/pencil.svg'
-import Check from 'public/check.svg'
+import useSupabaseClient from 'utils/supabaseClient'
+
+import Check from 'public/icons/check.svg'
+import Pencil from 'public/icons/pencil.svg'
 
 function BlindEditor({ config }) {
   const supabase = useSupabaseClient()
@@ -146,7 +145,7 @@ function BlindEditor({ config }) {
           const isTranslating = enabledInputs.includes(verseObject.num.toString())
           const isTranslated = translatedVerses.includes(currentNumVerse)
           return (
-            <div key={verseObject.verse_id} className="flex my-3 items-start">
+            <div key={verseObject.verse_id} className="my-3 flex items-start">
               <button
                 onClick={() =>
                   handleSaveVerse({
@@ -157,21 +156,21 @@ function BlindEditor({ config }) {
                     isTranslating,
                   })
                 }
-                className={`p-3 rounded-2xl ${
-                  isTranslating ? 'bg-th-primary-100 cursor-auto' : 'bg-th-secondary-100'
+                className={`rounded-2xl p-3 ${
+                  isTranslating ? 'cursor-auto bg-th-primary-100' : 'bg-th-secondary-100'
                 }`}
                 disabled={disabledButton}
               >
                 {isTranslated ? (
-                  <Check className="w-5 h-5 stroke-2 stroke-th-secondary-300" />
+                  <Check className="h-5 w-5 stroke-th-secondary-300 stroke-2" />
                 ) : (
                   <Pencil
-                    className={`w-5 h-5 stroke-2 ${
+                    className={`h-5 w-5 stroke-2 ${
                       disabledButton
                         ? 'stroke-th-secondary-300'
                         : !isTranslating
-                        ? 'fill-th-secondary-100'
-                        : 'stroke-th-text-secondary-100'
+                          ? 'fill-th-secondary-100'
+                          : 'stroke-th-text-secondary-100'
                     }`}
                   />
                 )}
@@ -188,8 +187,8 @@ function BlindEditor({ config }) {
                   dir={config?.isRtl ? 'rtl' : 'ltr'}
                   autoFocus
                   rows={!isSingleBlockTranslation ? 1 : 10}
-                  className={`mt-3 w-full resize-none focus:outline-none focus:inline-none ${
-                    isSingleBlockTranslation ? 'border mx-4' : ''
+                  className={`focus:inline-none mt-3 w-full resize-none focus:outline-none ${
+                    isSingleBlockTranslation ? 'mx-4 border' : ''
                   }`}
                   onChange={(e) => {
                     e.target.style.height = 'inherit'
@@ -211,7 +210,7 @@ function BlindEditor({ config }) {
                 />
               ) : (
                 <div
-                  className="mt-3 whitespace-pre-line w-full"
+                  className="mt-3 w-full whitespace-pre-line"
                   dir={config?.isRtl ? 'rtl' : 'ltr'}
                 >
                   {verseObject.verse}
@@ -234,7 +233,7 @@ function BlindEditor({ config }) {
         )}
       </div>
       {isSingleBlockTranslation && (
-        <div className="flex items-center gap-2 mt-2">
+        <div className="mt-2 flex items-center gap-2">
           <span className="w-auto">{t('HideVerses')}</span>
           <Switch
             checked={isHideAllVerses}
@@ -252,9 +251,9 @@ function BlindEditor({ config }) {
         </div>
       )}
       <Modal isOpen={isOpenModal} closeHandle={() => setIsOpenModal(false)}>
-        <div className="flex flex-col gap-7 items-center">
+        <div className="flex flex-col items-center gap-7">
           <div className="text-center text-2xl">{t('AreYouSureWantStartBlind')}</div>
-          <div className="flex gap-7 w-1/2">
+          <div className="flex w-1/2 gap-7">
             <button
               className="btn-secondary flex-1"
               onClick={() => {

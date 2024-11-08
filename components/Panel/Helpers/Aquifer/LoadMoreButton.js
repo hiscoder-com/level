@@ -1,4 +1,4 @@
-import Loading from 'public/progress.svg'
+import Loading from 'public/icons/progress.svg'
 
 function LoadMoreButton({
   loadMore,
@@ -10,8 +10,8 @@ function LoadMoreButton({
   return (
     <button
       className={`flex-none ${
-        insideBigCarousel ? 'py-1 px-2 text-xs' : 'py-2 px-4'
-      } font-bold rounded-md cursor-pointer text-th-text-primary bg-th-secondary-200 hover:opacity-70`}
+        insideBigCarousel ? 'px-2 py-1 text-xs' : 'px-4 py-2'
+      } cursor-pointer rounded-md bg-th-secondary-200 font-bold text-th-text-primary hover:opacity-70`}
       onClick={loadMore}
       style={{
         width: `${cardSize}px`,

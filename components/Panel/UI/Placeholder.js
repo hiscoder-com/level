@@ -4,11 +4,11 @@ function Placeholder() {
       {[...Array(2).keys()].map((el) => (
         <div key={el}>
           <div className="flex flex-row">
-            <div className="h-2 bg-th-secondary-100 rounded-full w-1/12 mb-4 mr-4"></div>
-            <div className="h-2 bg-th-secondary-100 rounded-full w-11/12 mb-4 mr-4"></div>
+            <div className="mb-4 mr-4 h-2 w-1/12 rounded-full bg-th-secondary-100"></div>
+            <div className="mb-4 mr-4 h-2 w-11/12 rounded-full bg-th-secondary-100"></div>
           </div>
-          <div className="h-2 bg-th-secondary-100 rounded-full mb-4"></div>
-          <div className="h-2 bg-th-secondary-100 rounded-full max-w-xs mb-6"></div>
+          <div className="mb-4 h-2 rounded-full bg-th-secondary-100"></div>
+          <div className="mb-6 h-2 max-w-xs rounded-full bg-th-secondary-100"></div>
         </div>
       ))}
     </div>

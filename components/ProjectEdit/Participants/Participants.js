@@ -2,18 +2,18 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
+import axios from 'axios'
 import { useTranslation } from 'next-i18next'
 
-import axios from 'axios'
-
 import Modal from 'components/Modal'
-import TranslatorsList from './TranslatorsList'
+
+import AssignParticipant from './AssignPartiсipant'
 import CoordinatorsList from './CoordinatorsList'
 import RemoveParticipant from './RemoveParticipant'
-import AssignParticipant from './AssignPartiсipant'
+import TranslatorsList from './TranslatorsList'
 
-import useSupabaseClient from 'utils/supabaseClient'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
+import useSupabaseClient from 'utils/supabaseClient'
 
 function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
   const supabase = useSupabaseClient()
@@ -100,9 +100,9 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
   }
   return (
     <>
-      <div className="hidden sm:block divide-y divide-th-text-primary">
+      <div className="hidden divide-y divide-th-text-primary sm:block">
         <div className="flex flex-col gap-7 pb-5">
-          <div className="flex justify-between items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
             <div className="font-bold">{t('projects:Coordinators')}</div>
             {isAdminAccess && (
               <button
@@ -123,7 +123,7 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
           />
         </div>
         <div className="flex flex-col gap-7 pt-5">
-          <div className="flex justify-between items-center">
+          <div className="flex items-center justify-between">
             <div className="font-bold">{t('projects:Translators')}</div>
             <button
               onClick={() => {
@@ -146,14 +146,14 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
             isOpen={selectedModerator ? Object.keys(selectedModerator).length > 0 : false}
             closeHandle={() => setSelectedModerator(false)}
           >
-            <div className="flex flex-col justify-center gap-7 min-h-[15vh]">
-              <div className="text-base md:text-xl text-center">
+            <div className="flex min-h-[15vh] flex-col justify-center gap-7">
+              <div className="text-center text-base md:text-xl">
                 {moderatorIds?.includes(selectedModerator?.id)
                   ? t('project-edit:RemovingModerator')
                   : t('project-edit:AssigningModerator')}
               </div>
 
-              <div className="flex justify-center self-center gap-7 w-2/3 text-center">
+              <div className="flex w-2/3 justify-center gap-7 self-center text-center">
                 <button
                   className="btn-secondary flex-1"
                   onClick={() =>
@@ -181,9 +181,9 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
           </Modal>
         </div>
       </div>
-      <div className="block sm:hidden divide-y divide-th-text-primary">
+      <div className="block divide-y divide-th-text-primary sm:hidden">
         <div className="flex flex-col gap-3 pb-5">
-          <div className="flex justify-between items-center gap-2">
+          <div className="flex items-center justify-between gap-2">
             <div>{t('Coordinator', { count: 0 })}</div>
           </div>
           <CoordinatorsList
@@ -203,8 +203,8 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
             </button>
           )}
         </div>
-        <div className="flex flex-col gap-3 sm:gap-7 pt-5">
-          <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-3 pt-5 sm:gap-7">
+          <div className="flex items-center justify-between">
             <div>{t('projects:Translators')}</div>
           </div>
           <TranslatorsList

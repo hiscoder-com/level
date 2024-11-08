@@ -1,5 +1,6 @@
-import { obsCheckAdditionalVerses } from 'utils/helper'
 import MarkdownExtended from 'components/MarkdownExtended'
+
+import { obsCheckAdditionalVerses } from 'utils/helper'
 
 function Verses({ verseObjects, handleSaveScroll, currentScrollVerse, toolName }) {
   const idTool = `${toolName}_${currentScrollVerse}`
@@ -20,7 +21,7 @@ function Verses({ verseObjects, handleSaveScroll, currentScrollVerse, toolName }
           <div
             key={verseObject.verse}
             id={idVerse}
-            className={`p-2 rounded-lg ${
+            className={`rounded-lg p-2 ${
               isCurrentVerse(idTool, verseObject.verse, idVerse)
                 ? 'bg-th-secondary-100'
                 : ''

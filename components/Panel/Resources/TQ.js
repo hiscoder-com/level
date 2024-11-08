@@ -1,11 +1,11 @@
-import ReactMarkdown from 'react-markdown'
-
 import { Disclosure } from '@headlessui/react'
+import ReactMarkdown from 'react-markdown'
 
 import { Placeholder } from '../UI'
 
 import { useGetResource, useScroll } from 'utils/hooks'
-import Down from 'public/arrow-down.svg'
+
+import Down from 'public/icons/arrow-down.svg'
 
 function TQ({ config, url, toolName }) {
   const { isLoading, data } = useGetResource({ config, url })
@@ -47,9 +47,9 @@ function QuestionList({ data, viewAll, toolName, isLoading }) {
       {data &&
         Object.keys(data)?.map((key) => {
           return (
-            <div key={key} className="flex mx-4 p-4" id={`idtq_${key}`}>
+            <div key={key} className="mx-4 flex p-4" id={`idtq_${key}`}>
               <div className="text-2xl">{key}</div>
-              <div className="pl-7 w-full text-th-text-primary">
+              <div className="w-full pl-7 text-th-text-primary">
                 <ul>
                   {data[key]?.map((item) => {
                     return (
@@ -83,8 +83,8 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
       {({ open }) => (
         <>
           <Disclosure.Button
-            className={`flex items-center w-full p-2 text-left gap-2 justify-between ${
-              highlightId === 'id' + item.id ? 'bg-th-secondary-100 rounded-lg' : ''
+            className={`flex w-full items-center justify-between gap-2 p-2 text-left ${
+              highlightId === 'id' + item.id ? 'rounded-lg bg-th-secondary-100' : ''
             }`}
             onClick={() => {
               if (viewAll) {
@@ -94,7 +94,7 @@ function Answer({ item, reduceQuestions, viewAll, highlightId }) {
           >
             <ReactMarkdown>{item.title}</ReactMarkdown>
             <Down
-              className={`w-5 h-5 min-w-[1.25rem] stroke-th-text-primary ${
+              className={`h-5 w-5 min-w-[1.25rem] stroke-th-text-primary ${
                 open ? 'rotate-180' : ''
               }`}
             />

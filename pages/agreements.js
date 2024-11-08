@@ -2,8 +2,10 @@ import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
+
 import { useCurrentUser } from 'lib/UserContext'
-import Check from 'public/check.svg'
+
+import Check from 'public/icons/check.svg'
 
 export default function Agreements() {
   const { t } = useTranslation('users', 'common', 'user-agreement')
@@ -25,12 +27,12 @@ export default function Agreements() {
   ]
   return (
     <div className="layout-appbar">
-      <div className="my-auto card text-center bg-th-secondary-10">
-        <div className="flex flex-col sm:flex-row gap-5 mb-7 p-6 sm:px-0 sm:py-1">
+      <div className="card my-auto bg-th-secondary-10 text-center">
+        <div className="mb-7 flex flex-col gap-5 p-6 sm:flex-row sm:px-0 sm:py-1">
           {agreements.map((agreement) => (
             <div
               key={agreement.name}
-              className={`relative flex flex-col justify-start gap-5 py-5 pl-3 pr-4 max-w-xs text-start ${
+              className={`relative flex max-w-xs flex-col justify-start gap-5 py-5 pl-3 pr-4 text-start ${
                 agreement.done
                   ? 'bg-th-primary-100 text-th-text-secondary-100'
                   : 'bg-th-secondary-200 text-th-text-primary'
@@ -38,17 +40,16 @@ export default function Agreements() {
               onClick={() => push(agreement.link)}
             >
               <div
-                className={`absolute top-0 right-0 w-0 h-0 border-[24px] border-solid border-transparent
-              ${
-                agreement.done
-                  ? 'border-b-th-primary-400 border-l-th-primary-400'
-                  : 'border-b-th-secondary-300 border-l-th-secondary-300'
-              } rounded-bl-lg`}
+                className={`absolute right-0 top-0 h-0 w-0 border-[24px] border-solid border-transparent ${
+                  agreement.done
+                    ? 'border-b-th-primary-400 border-l-th-primary-400'
+                    : 'border-b-th-secondary-300 border-l-th-secondary-300'
+                } rounded-bl-lg`}
               />
-              <div className="absolute top-0 right-0 w-0 h-0 border-[24px] border-solid border-transparent border-t-th-secondary-10 border-r-th-secondary-10" />
+              <div className="absolute right-0 top-0 h-0 w-0 border-[24px] border-solid border-transparent border-r-th-secondary-10 border-t-th-secondary-10" />
               <div className="flex items-center gap-3">
-                <h1 className="font-bold text-lg">{agreement.name}</h1>
-                {agreement.done && <Check className="w-5 h-5 stroke-2" />}
+                <h1 className="text-lg font-bold">{agreement.name}</h1>
+                {agreement.done && <Check className="h-5 w-5 stroke-2" />}
               </div>
               <p
                 dangerouslySetInnerHTML={{

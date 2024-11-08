@@ -22,7 +22,7 @@ function AutoSizeTextArea({ updateVerse, index, verseObject, disabled = false })
           updateVerse(index, e.target.innerText.trim())
         }
       }}
-      className={`block w-full mx-3 focus:outline-none focus:inline-none whitespace-pre-line focus:bg-th-secondary-10 ${
+      className={`focus:inline-none mx-3 block w-full whitespace-pre-line focus:bg-th-secondary-10 focus:outline-none ${
         verseObject.verse || disabled ? '' : 'bg-th-secondary-100'
       }`}
     >

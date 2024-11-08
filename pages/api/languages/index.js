@@ -1,4 +1,5 @@
 import supabaseApi from 'utils/supabaseServer'
+
 /**
  * @swagger
  * components:

@@ -1,16 +1,16 @@
-import { useEffect, useState, useRef } from 'react'
-import { useTranslation } from 'next-i18next'
+import { useEffect, useRef, useState } from 'react'
 
 import axios from 'axios'
+import { useTranslation } from 'next-i18next'
 import toast from 'react-hot-toast'
 import { useRecoilState, useRecoilValue } from 'recoil'
 
 import ImageEditor from './ImageEditor'
+import { modalsSidebar, userAvatarState } from './state/atoms'
 
-import { userAvatarState, modalsSidebar } from './state/atoms'
 import { useUser } from 'utils/hooks'
 
-import Trash from 'public/trash.svg'
+import Trash from 'public/icons/trash.svg'
 
 function AvatarSelector({ id }) {
   const { t } = useTranslation('common')
@@ -186,24 +186,24 @@ function AvatarSelector({ id }) {
       {modalsSidebarState.avatarSelector &&
         (isDragOver ? (
           <div
-            className="absolute flex justify-center items-center right-0 top-0 w-full h-full md:h-4/6 shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5 md:bg-black md:bg-opacity-50"
+            className="absolute right-0 top-0 flex h-full w-full items-center justify-center border-th-secondary-300 bg-th-secondary-10 shadow-md sm:rounded-2xl sm:border md:left-full md:ml-5 md:h-4/6 md:max-h-full md:bg-black md:bg-opacity-50"
             onClick={() => setIsDragOver(false)}
             onDragEnter={handleDragEnterOver}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragEnterOver}
             onDrop={handleDrop}
           >
-            <p className="md:text-white text-center mb-40">{t('DropZoneText')}</p>
+            <p className="mb-40 text-center md:text-white">{t('DropZoneText')}</p>
           </div>
         ) : (
           <div
-            className="absolute flex flex-col right-0 top-0 w-full h-full md:h-min px-3 sm:px-7 pb-3 sm:pb-5 overflow-auto sm:overflow-visible cursor-default shadow-md bg-th-secondary-10 border-th-secondary-300 sm:border sm:rounded-2xl md:max-h-full md:left-full md:ml-5"
+            className="absolute right-0 top-0 flex h-full w-full cursor-default flex-col overflow-auto border-th-secondary-300 bg-th-secondary-10 px-3 pb-3 shadow-md sm:overflow-visible sm:rounded-2xl sm:border sm:px-7 sm:pb-5 md:left-full md:ml-5 md:h-min md:max-h-full"
             onClick={(e) => e.stopPropagation()}
             onDragEnter={handleDragEnterOver}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragEnterOver}
           >
-            <div className="sticky top-0 flex justify-center py-6 border-b border-th-secondary-300 bg-th-secondary-10">
+            <div className="sticky top-0 flex justify-center border-b border-th-secondary-300 bg-th-secondary-10 py-6">
               <button
                 onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
                 className="btn-primary w-full"
@@ -213,11 +213,11 @@ function AvatarSelector({ id }) {
             </div>
             {isLoading ? (
               <div role="status" className="w-full animate-pulse py-6">
-                <div className="flex flex-wrap gap-3 justify-between">
+                <div className="flex flex-wrap justify-between gap-3">
                   {[...Array(4)].map((_, index) => (
                     <div
                       key={index}
-                      className="w-16 h-16 bg-th-secondary-100 rounded-full"
+                      className="h-16 w-16 rounded-full bg-th-secondary-100"
                     ></div>
                   ))}
                 </div>
@@ -232,11 +232,11 @@ function AvatarSelector({ id }) {
               />
             ) : (
               <>
-                <div className="flex flex-wrap items-center justify-start gap-4 overflow-y-auto py-6 z-10 bg-white">
+                <div className="z-10 flex flex-wrap items-center justify-start gap-4 overflow-y-auto bg-white py-6">
                   {avatars?.map((avatar, index) => (
                     <div
                       key={index}
-                      className={`relative border-4 rounded-full overflow-hidden shadow-lg cursor-pointer group ${
+                      className={`group relative cursor-pointer overflow-hidden rounded-full border-4 shadow-lg ${
                         avatar.selected ? 'border-th-secondary-400' : 'border-transparent'
                       }`}
                       onClick={() => {
@@ -248,12 +248,12 @@ function AvatarSelector({ id }) {
                       <img
                         src={avatar.url}
                         alt={avatar.name}
-                        className="w-16 h-16 md:w-12 md:h-12 object-cover"
+                        className="h-16 w-16 object-cover md:h-12 md:w-12"
                         draggable="false"
                       />
                       {avatar.selected && (
                         <div
-                          className="absolute bottom-0 left-0 w-full h-1/3 bg-black opacity-70 md:opacity-0 group-hover:opacity-70 transition-opacity duration-500 flex justify-center items-center"
+                          className="absolute bottom-0 left-0 flex h-1/3 w-full items-center justify-center bg-black opacity-70 transition-opacity duration-500 group-hover:opacity-70 md:opacity-0"
                           onClick={(e) => {
                             e.stopPropagation()
                             resetAvatar(id)
@@ -265,7 +265,7 @@ function AvatarSelector({ id }) {
                     </div>
                   ))}
                 </div>
-                <p className="hidden md:block text-center text-gray-300">
+                <p className="hidden text-center text-gray-300 md:block">
                   {t('DropZoneHint')}
                 </p>
               </>

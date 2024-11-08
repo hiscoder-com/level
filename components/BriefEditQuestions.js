@@ -3,9 +3,9 @@ import { useTranslation } from 'react-i18next'
 
 import UpdateField from './UpdateField'
 
-import Down from 'public/arrow-down.svg'
-import Trash from 'public/trash-rounded.svg'
-import Plus from 'public/plus.svg'
+import Down from 'public/icons/arrow-down.svg'
+import Plus from 'public/icons/plus.svg'
+import Trash from 'public/icons/trash-rounded.svg'
 
 function BriefEditQuestions({
   setCustomBriefQuestions,
@@ -100,21 +100,21 @@ function BriefEditQuestions({
               <div className="flex items-start gap-5">
                 <div className="w-full">
                   <Disclosure.Button
-                    className={`flex flex-row justify-between items-center gap-2 py-2 px-4 w-full text-start text-sm md:text-base bg-th-secondary-10 border-x border-t border-th-secondary-300 ${
+                    className={`flex w-full flex-row items-center justify-between gap-2 border-x border-t border-th-secondary-300 bg-th-secondary-10 px-4 py-2 text-start text-sm md:text-base ${
                       open ? 'rounded-t-md' : 'rounded-md border-b'
                     }`}
                   >
                     <span>{blockQuestion.title}</span>
-                    <div className="flex gap-7 items-center">
+                    <div className="flex items-center gap-7">
                       <Down
-                        className={`w-5 h-5 transition-transform duration-200 stroke-th-text-primary ${
+                        className={`h-5 w-5 stroke-th-text-primary transition-transform duration-200 ${
                           open ? 'rotate-180' : 'rotate-0'
                         } `}
                       />
                     </div>
                   </Disclosure.Button>
-                  <Disclosure.Panel className="flex flex-col gap-7 p-4 bg-th-secondary-10 border-x border-b border-th-secondary-300 rounded-b-md text-sm md:text-base">
-                    <div className="flex flex-col md:flex-row items-start md:items-center gap-2">
+                  <Disclosure.Panel className="flex flex-col gap-7 rounded-b-md border-x border-b border-th-secondary-300 bg-th-secondary-10 p-4 text-sm md:text-base">
+                    <div className="flex flex-col items-start gap-2 md:flex-row md:items-center">
                       <div className="font-bold">{t('common:Title')}</div>
                       <UpdateField
                         value={blockQuestion.title}
@@ -146,14 +146,14 @@ function BriefEditQuestions({
                               })
                             }
                           >
-                            <Trash className="w-10 h-10 text-th-text-primary rounded-full" />
+                            <Trash className="h-10 w-10 rounded-full text-th-text-primary" />
                           </button>
                         </div>
                       ))}
                     </div>
                     <button
                       type="button"
-                      className="flex justify-center items-center py-2 px-4 rounded-md border border-th-text-primary gap-2"
+                      className="flex items-center justify-center gap-2 rounded-md border border-th-text-primary px-4 py-2"
                       onClick={() =>
                         addQuestionIntoBlock({
                           blocks: customBriefQuestions,
@@ -161,7 +161,7 @@ function BriefEditQuestions({
                         })
                       }
                     >
-                      <Plus className="w-6 h-6 stroke-2 border-2 border-th-text-primary stroke-th-text-primary rounded-full" />
+                      <Plus className="h-6 w-6 rounded-full border-2 border-th-text-primary stroke-th-text-primary stroke-2" />
                       <div>{t('project-edit:AddQuestion')}</div>
                     </button>
                   </Disclosure.Panel>
@@ -172,7 +172,7 @@ function BriefEditQuestions({
                     removeBlockByIndex({ blocks: customBriefQuestions, index })
                   }
                 >
-                  <Trash className="w-10 h-10 text-th-text-primary rounded-full" />
+                  <Trash className="h-10 w-10 rounded-full text-th-text-primary" />
                 </button>
               </div>
             )
@@ -181,10 +181,10 @@ function BriefEditQuestions({
       ))}
       <button
         type="button"
-        className="flex justify-center items-center gap-2 py-2 px-4 text-sm md:text-base bg-th-secondary-10 border border-th-text-primary rounded-md"
+        className="flex items-center justify-center gap-2 rounded-md border border-th-text-primary bg-th-secondary-10 px-4 py-2 text-sm md:text-base"
         onClick={() => addBlock(customBriefQuestions)}
       >
-        <Plus className="w-6 h-6 stroke-2 border-2 border-th-text-primary stroke-th-text-primary rounded-full" />
+        <Plus className="h-6 w-6 rounded-full border-2 border-th-text-primary stroke-th-text-primary stroke-2" />
         <div>{t('project-edit:AddBlock')}</div>
       </button>
     </>

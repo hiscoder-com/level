@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { useRouter } from 'next/router'
 
-import { toast, Toaster } from 'react-hot-toast'
 import axios from 'axios'
+import { toast, Toaster } from 'react-hot-toast'
 
 import ButtonLoading from 'components/ButtonLoading'
 import InputField from 'components/Panel/UI/InputField'
@@ -47,13 +47,13 @@ function Feedback({ t, onClose }) {
   }
 
   return (
-    <div className="flex flex-col w-full gap-6 md:gap-0">
+    <div className="flex w-full flex-col gap-6 md:gap-0">
       {isStartPage ? (
         <p className="font-semibold md:font-bold">{t('ConnectWithUs')}</p>
       ) : (
         !isSent && (
           <p
-            className={`font-semibold md:font-bold uppercase mb-4 ${
+            className={`mb-4 font-semibold uppercase md:font-bold ${
               isStartPage ? '' : 'text-th-primary-100'
             }`}
           >
@@ -64,7 +64,7 @@ function Feedback({ t, onClose }) {
       <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
         <Toaster />
         {!isSent ? (
-          <form className="flex flex-col w-full space-y-4" onSubmit={handleSubmit}>
+          <form className="flex w-full flex-col space-y-4" onSubmit={handleSubmit}>
             <InputField
               name="name"
               type="text"
@@ -94,13 +94,13 @@ function Feedback({ t, onClose }) {
               value={feedback.message}
               isError={isError && !feedback.message}
               onChange={handleChange}
-              className="overflow-auto max-h-40 mb-3"
+              className="mb-3 max-h-40 overflow-auto"
             />
 
             <ButtonLoading
               type="submit"
               isLoading={isSaving}
-              className={`relative px-5 py-4 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 ${
+              className={`relative rounded-lg px-5 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base ${
                 isStartPage ? 'bg-slate-550' : 'bg-th-primary-100'
               }`}
             >
@@ -111,10 +111,10 @@ function Feedback({ t, onClose }) {
             </p>
           </form>
         ) : (
-          <div className="text-center w-full">
+          <div className="w-full text-center">
             <p>{t('users:YourMessageSentThankYou')}</p>
             <button
-              className={`px-10 py-4 mt-14 rounded-lg text-center text-sm md:text-base font-medium text-th-text-secondary-100 ${
+              className={`mt-14 rounded-lg px-10 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base ${
                 isStartPage ? 'bg-slate-550' : 'bg-th-primary-100'
               }`}
               onClick={() => onClose()}

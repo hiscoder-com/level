@@ -1,4 +1,4 @@
-import Close from 'public/close.svg'
+import Close from 'public/icons/close.svg'
 
 function Reviews({ t, opacity }) {
   const reviewData = [
@@ -20,13 +20,13 @@ function Reviews({ t, opacity }) {
   ]
 
   return (
-    <div className="relative flex flex-col w-full gap-6 md:gap-12">
+    <div className="relative flex w-full flex-col gap-6 md:gap-12">
       <p className="font-semibold md:font-bold">{t('Reviews')}</p>
       <Close
-        className={`absolute md:hidden w-6 h-6 right-0 top-0 stroke-black cursor-pointer`}
+        className={`absolute right-0 top-0 h-6 w-6 cursor-pointer stroke-black md:hidden`}
       />
       <div
-        className={`text-sm md:text-base transition-opacity duration-700 overflow-auto pr-5 ${
+        className={`overflow-auto pr-5 text-sm transition-opacity duration-700 md:text-base ${
           opacity || ''
         }`}
       >
@@ -42,11 +42,11 @@ export default Reviews
 function Review({ t, nameKey, countryKey, textKey }) {
   return (
     <div
-      className="flex flex-col gap-2 md:gap-5 justify-center w-full p-5 mb-5 font-normal rounded-xl bg-th-secondary-100"
+      className="mb-5 flex w-full flex-col justify-center gap-2 rounded-xl bg-th-secondary-100 p-5 font-normal md:gap-5"
       onClick={(e) => e.stopPropagation()}
     >
       <div className="flex w-full justify-between">
-        <p className="font-semibold md:font-bold text-base md:text-xl">{t(nameKey)}</p>
+        <p className="text-base font-semibold md:text-xl md:font-bold">{t(nameKey)}</p>
         <p>{t(countryKey)}</p>
       </div>
       <p>{t(textKey)}</p>

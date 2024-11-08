@@ -1,17 +1,15 @@
-import { useEffect, useState, Fragment } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
 import { Tab } from '@headlessui/react'
-
 import { useTranslation } from 'next-i18next'
 
-import Testament from './Testament'
 import BookProperties from './BookProperties/BookProperties'
+import Testament from './Testament'
 
+import { newTestamentList, oldTestamentList } from 'utils/config'
 import { useGetBooks } from 'utils/hooks'
-
-import { oldTestamentList, newTestamentList } from 'utils/config'
 
 function BookList({ user, project, access }) {
   const { t } = useTranslation()
@@ -39,13 +37,13 @@ function BookList({ user, project, access }) {
   }, [query, books, setCurrentBook])
   return (
     <div className="flex flex-col gap-7">
-      <div className="flex sm:hidden flex-col gap-7">
+      <div className="flex flex-col gap-7 sm:hidden">
         <Tab.Group>
           {user &&
             project &&
             (!propertiesBook ? (
               <>
-                <Tab.List className="flex p-1 w-full bg-th-secondary-10 rounded-3xl shadow">
+                <Tab.List className="flex w-full rounded-3xl bg-th-secondary-10 p-1 shadow">
                   {testaments[project?.type]?.map((testament) => (
                     <Tab
                       as={Fragment}
@@ -54,14 +52,13 @@ function BookList({ user, project, access }) {
                     >
                       {({ selected }) => (
                         <div
-                          className={`w-full rounded-3xl p-2 text-center cursor-pointer ${
+                          className={`w-full cursor-pointer rounded-3xl p-2 text-center ${
                             project?.type === 'obs'
-                              ? 'bg-th-secondary-10 cursor-default'
+                              ? 'cursor-default bg-th-secondary-10'
                               : selected
-                              ? 'bg-th-primary-100 text-th-text-secondary-100'
-                              : ''
-                          }
-                      `}
+                                ? 'bg-th-primary-100 text-th-text-secondary-100'
+                                : ''
+                          } `}
                         >
                           {t(testament.title)}
                         </div>
@@ -101,7 +98,7 @@ function BookList({ user, project, access }) {
         </Tab.Group>
       </div>
       <div
-        className={`hidden sm:flex sm:flex-row gap-7 h-full ${
+        className={`hidden h-full gap-7 sm:flex sm:flex-row ${
           !currentBook && propertiesBook ? '' : 'card bg-th-secondary-10'
         }`}
       >
@@ -109,7 +106,7 @@ function BookList({ user, project, access }) {
           project &&
           (!propertiesBook ? (
             <>
-              <div className="flex flex-row w-full">
+              <div className="flex w-full flex-row">
                 {testaments?.[project?.type]?.map((testament) => (
                   <div
                     key={testament.title}

@@ -5,28 +5,28 @@ const partners = [
   {
     name: 'Unfolding Word',
     url: 'https://www.unfoldingword.org/',
-    logo: '/unfolding-word.svg',
+    logo: '/icons/unfolding-word.svg',
     width: 201,
     height: 35,
   },
   {
     name: 'Aquifer',
     url: 'https://aquifer.bible/',
-    logo: '/aquifer.svg',
+    logo: '/icons/aquifer.svg',
     width: 102,
     height: 37,
   },
   {
     name: 'Glokas',
     url: 'https://glokas.com/',
-    logo: '/glokas.svg',
+    logo: '/icons/glokas.svg',
     width: 126,
     height: 23,
   },
   {
     name: 'BibleVis',
     url: 'https://biblevis.com/',
-    logo: '/biblevis.svg',
+    logo: '/icons/biblevis.svg',
     width: 141,
     height: 22,
   },
@@ -34,7 +34,7 @@ const partners = [
 
 function Partners({ t }) {
   return (
-    <div className="flex flex-col w-full gap-6 md:gap-14">
+    <div className="flex w-full flex-col gap-6 md:gap-14">
       <p className="font-semibold md:font-bold">{t('Partners')}</p>
       <div className="grid grid-cols-2 gap-3">
         {partners.map((partner) => (

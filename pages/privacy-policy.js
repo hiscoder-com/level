@@ -1,7 +1,7 @@
 export default function PrivacyPolicy() {
   return (
-    <div className="mx-auto max-w-6xl w-full py-7 px-7">
-      <h1 className="text-3xl font-bold mb-4">Privacy Policy</h1>
+    <div className="mx-auto w-full max-w-6xl px-7 py-7">
+      <h1 className="mb-4 text-3xl font-bold">Privacy Policy</h1>
       <p>
         <strong>Effective Date:</strong> 08.01.2024
       </p>

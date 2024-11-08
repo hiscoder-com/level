@@ -1,14 +1,14 @@
-import dynamic from 'next/dynamic'
-
 import { useEffect, useState } from 'react'
+
+import dynamic from 'next/dynamic'
 
 import axios from 'axios'
 
 import { useCurrentUser } from 'lib/UserContext'
 
-const SwaggerUI = dynamic(import('swagger-ui-react'), { ssr: false })
-
 import 'swagger-ui-react/swagger-ui.css'
+
+const SwaggerUI = dynamic(import('swagger-ui-react'), { ssr: false })
 
 function ApiDoc() {
   const [spec, setSpec] = useState()
