@@ -1,3 +1,9 @@
+# Version 0.25.1
+## Date: 11/08/2024
+
+### **Added:**
+- added partner logos
+
 # Version 0.25.0
 ## Date: 10/17/2024
 
