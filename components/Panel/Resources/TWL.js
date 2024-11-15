@@ -6,13 +6,37 @@ import ReactMarkdown from 'react-markdown'
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { getFile } from 'utils/apiHelper'
-import { checkLSVal, filterNotes, getWords } from 'utils/helper'
+import { checkLSVal, filterNotes, getWord, getWords } from 'utils/helper'
 import { useGetResource, useScroll } from 'utils/hooks'
 
 import Down from 'public/icons/arrow-down.svg'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
+  const [href, setHref] = useState(null)
+  const [zip, setZip] = useState(null)
+  useEffect(() => {
+    const fetchWordData = async () => {
+      if (href && data.length > 0) {
+        const word = await getWord({
+          zip,
+          repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
+          TWLink: href,
+        })
+        const newItem = {
+          title: word?.title || '',
+          text: word?.text || '',
+        }
+
+        setItem(newItem)
+      }
+    }
+
+    fetchWordData()
+
+    // eslint-disable-next-line
+  }, [href, config.resource.repo])
+
   const { isLoading, data } = useGetResource({ config, url })
   const [wordObjects, setWordObjects] = useState([])
   const [isLoadingTW, setIsLoadingTW] = useState(false)
@@ -25,6 +49,7 @@ function TWL({ config, url, toolName }) {
         commit: config.resource.commit,
         apiUrl: '/api/git/tw',
       })
+      setZip(zip)
       const words = await getWords({
         zip,
         repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
@@ -48,7 +73,7 @@ function TWL({ config, url, toolName }) {
           id: ID,
           title,
           text,
-          url: TWLink,
+          url: TWLink, // TODO уточнить где используется
           isRepeatedInBook,
           isRepeatedInChapter,
           isRepeatedInVerse,
@@ -67,7 +92,7 @@ function TWL({ config, url, toolName }) {
   return (
     <>
       <div className="relative h-full">
-        <TNTWLContent setItem={setItem} item={item} />
+        <TNTWLContent setItem={setItem} item={item} setHref={setHref} />
         <TWLList
           setItem={setItem}
           data={wordObjects}
@@ -83,7 +108,6 @@ export default TWL
 
 function TWLList({ setItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
-
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
