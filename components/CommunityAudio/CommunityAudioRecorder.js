@@ -1,22 +1,20 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+
 import { useTranslation } from 'react-i18next'
 
-function CommunityAudioRecorder({ fontSize, setFontSize }) {
-  const {
-    isRecording,
-    isPaused,
-    audioUrl,
-    startRecording,
-    stopRecording,
-    pauseRecording,
-    resumeRecording,
-  } = useAudioRecorder()
+function CommunityAudioRecorder({
+  isRecording,
+  isPaused,
+  audioUrl,
+  recordingMethods: { startRecording, stopRecording, pauseRecording, resumeRecording },
+  textAdjustment: { fontSize, setFontSize, textSpeed, setTextSpeed },
+}) {
   const { isPlaying, play, pause } = useAudioPreview(audioUrl)
 
   return (
-    <div className="card flex justify-between w-full gap-3 sm:gap-7 bg-th-secondary-10 !pb-4">
+    <div className="card flex flex-col items-center md:flex-row justify-between w-full gap-3 sm:gap-7 bg-th-secondary-10 !pb-4">
       <div className="flex flex-col gap-4 justify-between">
-        <SpeedSetting />
+        <SpeedSetting textSpeed={textSpeed} setTextSpeed={setTextSpeed} />
         <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
       </div>
       <div className="flex items-end">
@@ -50,8 +48,7 @@ export default CommunityAudioRecorder
 
 // ? Components
 
-function SpeedSetting() {
-  const [speed, setSpeed] = useState(1)
+function SpeedSetting({ textSpeed, setTextSpeed }) {
   const [isMounted, setIsMounted] = useState(false)
   const { t } = useTranslation(['common'])
 
@@ -69,8 +66,8 @@ function SpeedSetting() {
       <div className="grid grid-cols-2 w-20 h-10 border border-th-primary-100 rounded-full overflow-hidden">
         <button
           className="flex justify-center items-center border border-e-th-primary-100 disabled:opacity-70"
-          onClick={() => setSpeed(speed - 1)}
-          disabled={speed === minSpeed}
+          onClick={() => setTextSpeed(textSpeed - 1)}
+          disabled={textSpeed === minSpeed}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -85,8 +82,8 @@ function SpeedSetting() {
         </button>
         <button
           className="flex justify-center items-center disabled:opacity-70"
-          onClick={() => setSpeed(speed + 1)}
-          disabled={speed === maxSpeed}
+          onClick={() => setTextSpeed(textSpeed + 1)}
+          disabled={textSpeed === maxSpeed}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -106,7 +103,7 @@ function SpeedSetting() {
       </div>
       <div className="flex items-center text-sm">
         <p>
-          <span className="font-semibold">{speed}</span> {t('TextSpeed')}
+          <span className="font-semibold">{textSpeed}</span> {t('TextSpeed')}
         </p>
       </div>
     </div>
@@ -290,70 +287,6 @@ function StopButton({ isRecording, stopRecording }) {
 }
 
 // ? Hooks
-function useAudioRecorder() {
-  const [isRecording, setIsRecording] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
-  const [audioUrl, setAudioUrl] = useState(null)
-  const mediaRecorder = useRef(null)
-  const audioChunks = useRef([])
-
-  const startRecording = useCallback(async () => {
-    audioChunks.current = []
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaRecorder.current = new MediaRecorder(stream)
-
-      mediaRecorder.current.ondataavailable = (event) => {
-        audioChunks.current.push(event.data)
-      }
-
-      mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' })
-        const audioUrl = URL.createObjectURL(audioBlob)
-        setAudioUrl(audioUrl)
-      }
-
-      mediaRecorder.current.start()
-      setIsRecording(true)
-      setIsPaused(false)
-    } catch (error) {
-      console.error('Error accessing microphone:', error)
-    }
-  }, [])
-
-  const stopRecording = useCallback(() => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.stop()
-      setIsRecording(false)
-      setIsPaused(false)
-    }
-  }, [])
-
-  const pauseRecording = useCallback(() => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.pause()
-      setIsPaused(true)
-    }
-  }, [])
-
-  const resumeRecording = useCallback(() => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.resume()
-      setIsPaused(false)
-    }
-  }, [])
-
-  return {
-    isRecording,
-    isPaused,
-    audioUrl,
-    startRecording,
-    stopRecording,
-    pauseRecording,
-    resumeRecording,
-  }
-}
-
 function useAudioPreview(audioUrl) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [preview, setPreview] = useState(null)
