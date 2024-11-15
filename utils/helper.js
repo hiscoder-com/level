@@ -699,6 +699,26 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
   return await Promise.all(promises)
 }
 
+export const getWord = async ({ zip, repo, TWLink }) => {
+  if (!zip || !repo || !TWLink) {
+    return null
+  }
+  let uriMd = repo + '/bible/' + TWLink
+  uriMd = uriMd.replace('/../', '/')
+
+  try {
+    const markdown = await zip.files[uriMd].async('string')
+    const splitter = markdown?.search('\n')
+    return {
+      title: markdown?.slice(0, splitter),
+      text: markdown?.slice(splitter),
+    }
+  } catch (error) {
+    console.error('Error fetching markdown:', error)
+    return null
+  }
+}
+
 export const stepValidation = (step) => {
   try {
     const obj = JSON.parse(JSON.stringify(step))
