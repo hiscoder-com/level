@@ -1,8 +1,9 @@
 import { useRouter } from 'next/router'
+
 import { useTranslation } from 'next-i18next'
 
-import MarkdownExtended from 'components/MarkdownExtended'
 import Footer from 'components/Footer'
+import MarkdownExtended from 'components/MarkdownExtended'
 
 function IntroStep({ title, markdown, nextLink }) {
   const { t } = useTranslation('common')
@@ -39,7 +40,7 @@ function IntroStep({ title, markdown, nextLink }) {
     <div className="f-screen-appbar mb-4 w-full max-w-3xl">
       <div
         style={{ height: 'calc(100vh - 11rem)' }}
-        className="mb-4 mx-auto py-6 px-6 lg:px-8 bg-th-secondary-10 overflow-auto rounded-lg"
+        className="mx-auto mb-4 overflow-auto rounded-lg bg-th-secondary-10 px-6 py-6 lg:px-8"
       >
         <h2 className="mb-4 text-3xl">{title.title}</h2>
         {title.subtitle && <h3 className="mb-4 text-xl">{title.subtitle}</h3>}

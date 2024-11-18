@@ -1,5 +1,5 @@
-import supabaseApi from 'utils/supabaseServer'
 import { stepsValidation } from 'utils/helper'
+import supabaseApi from 'utils/supabaseServer'
 
 export default async function stepsHandler(req, res) {
   let supabase

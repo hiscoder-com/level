@@ -1,24 +1,22 @@
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { useRouter } from 'next/router'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
+import { Combobox, Disclosure, Tab, Transition } from '@headlessui/react'
 import { useTranslation } from 'next-i18next'
 
-import { Disclosure, Combobox, Tab, Transition } from '@headlessui/react'
-
-import ResumeInfo from './ResumeInfo'
-import ChecksIcon from './BookList/ChecksIcon'
 import Breadcrumbs from 'components/Breadcrumbs'
 
+import ChecksIcon from './BookList/ChecksIcon'
+import Card from './Card'
+import ResumeInfo from './ResumeInfo'
+import Down from '/public/icons/arrow-down.svg'
+import Gear from '/public/icons/gear.svg'
+import Left from '/public/icons/left.svg'
+import { newTestamentList, oldTestamentList, usfmFileNames } from '/utils/config'
+
 import { useCurrentUser } from 'lib/UserContext'
-import {
-  useAccess,
-  useGetBooks,
-  useGetChaptersTranslate,
-  useGetResource,
-  useProject,
-} from 'utils/hooks'
 
 import {
   checkBookCodeExists,
@@ -27,13 +25,13 @@ import {
   getVerseCountOBS,
   getVerseObjectsForBookAndChapter,
 } from 'utils/helper'
-
-import { oldTestamentList, newTestamentList, usfmFileNames } from '/utils/config'
-
-import Down from '/public/arrow-down.svg'
-import Left from '/public/left.svg'
-import Gear from '/public/gear.svg'
-import Card from './Card'
+import {
+  useAccess,
+  useGetBooks,
+  useGetChaptersTranslate,
+  useGetResource,
+  useProject,
+} from 'utils/hooks'
 
 function BookReader() {
   const { user } = useCurrentUser()
@@ -123,9 +121,9 @@ function BookReader() {
   )
 
   return (
-    <div className="flex flex-col-reverse xl:flex-row gap-7 mx-auto max-w-7xl pb-10">
-      <div className="static xl:sticky top-7 flex flex-col md:flex-row xl:flex-col gap-7 w-full xl:w-1/3 self-start">
-        <div className="hidden xl:block md:w-1/2 xl:w-full">
+    <div className="mx-auto flex max-w-7xl flex-col-reverse gap-7 pb-10 xl:flex-row">
+      <div className="static top-7 flex w-full flex-col gap-7 self-start md:flex-row xl:sticky xl:w-1/3 xl:flex-col">
+        <div className="hidden md:w-1/2 xl:block xl:w-full">
           <BookListReader
             books={
               project?.type === 'obs'
@@ -143,9 +141,9 @@ function BookReader() {
       </div>
       <div className="w-full xl:w-2/3">
         <div className="card flex flex-col gap-7 bg-th-secondary-10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-12 xl:hidden">
+          <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code} className="p-3">
-              <Left className="w-5 h-5 stroke-th-primary-200 hover:opacity-70" />
+              <Left className="h-5 w-5 stroke-th-primary-200 hover:opacity-70" />
             </Link>
             <Navigation
               books={
@@ -234,7 +232,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
                 )
               })}
               {verseObjects?.verseObjects && (
-                <div className="flex gap-2 mb-2">
+                <div className="mb-2 flex gap-2">
                   {verseObjects.verseObjects.find((verse) => verse.verse === 200)?.text}
                 </div>
               )}
@@ -244,8 +242,7 @@ function Verses({ verseObjects, user, reference, isLoading }) {
               <p>{t('NoContent')}</p>
               {isCoordinatorAccess && (
                 <div
-                  className="flex gap-2
-                  text-th-primary-200 hover:opacity-70 cursor-pointer"
+                  className="flex cursor-pointer gap-2 text-th-primary-200 hover:opacity-70"
                   onClick={() =>
                     push({
                       pathname: `/projects/${project?.code}`,
@@ -263,11 +260,11 @@ function Verses({ verseObjects, user, reference, isLoading }) {
             </>
           )
         ) : (
-          <div className="p-4 md:p-6 h-full animate-pulse">
-            <div className="mb-4 h-2.5 w-1/4 bg-th-secondary-100 rounded-full"></div>
+          <div className="h-full animate-pulse p-4 md:p-6">
+            <div className="mb-4 h-2.5 w-1/4 rounded-full bg-th-secondary-100"></div>
             {[...Array(22).keys()].map((el) => (
               <div key={el}>
-                <div className="h-2 mb-4 bg-th-secondary-100 rounded-full"></div>
+                <div className="mb-4 h-2 rounded-full bg-th-secondary-100"></div>
               </div>
             ))}
           </div>
@@ -314,18 +311,17 @@ function Navigation({ books, reference, setReference }) {
         })
 
   return (
-    <div className="flex flex-wrap sm:flex-auto justify-center sm:justify-start gap-3 z-10">
+    <div className="z-10 flex flex-wrap justify-center gap-3 sm:flex-auto sm:justify-start">
       <button
-        className={`flex justify-around items-center gap-1 w-2/5 sm:w-auto px-7 py-3 bg-th-secondary-100 rounded-3xl ${
-          !prevChapter ? 'cursor-default' : 'bg-th-secondary-100 cursor-pointer'
-        }
-        }`}
+        className={`flex w-2/5 items-center justify-around gap-1 rounded-3xl bg-th-secondary-100 px-7 py-3 sm:w-auto ${
+          !prevChapter ? 'cursor-default' : 'cursor-pointer bg-th-secondary-100'
+        } }`}
         onClick={() =>
           prevChapter && setReference((prev) => ({ ...prev, chapter: prev.chapter - 1 }))
         }
       >
         <Down
-          className={`w-5 h-5 rotate-90 ${
+          className={`h-5 w-5 rotate-90 ${
             !prevChapter ? 'stroke-th-secondary-300' : 'stroke-th-text-primary'
           }`}
         />
@@ -347,12 +343,12 @@ function Navigation({ books, reference, setReference }) {
         {({ open }) => (
           <div className="relative text-th-text-primary">
             <div
-              className={`relative bg-th-secondary-10 cursor-default overflow-hidden transition-all duration-100 ease-in-out ${
+              className={`relative cursor-default overflow-hidden bg-th-secondary-10 transition-all duration-100 ease-in-out ${
                 open ? 'rounded-t-3xl' : 'rounded-3xl'
               }`}
             >
               <Combobox.Input
-                className={`w-full min-w-[15rem] py-3 pl-6 pr-12 bg-th-secondary-100 outline-none ${
+                className={`w-full min-w-[15rem] bg-th-secondary-100 py-3 pl-6 pr-12 outline-none ${
                   selectedBook && Object.keys(selectedBook)?.length
                     ? ''
                     : 'animate-pulse text-transparent'
@@ -361,7 +357,7 @@ function Navigation({ books, reference, setReference }) {
                 onChange={(event) => setQueryCombobox(event.target.value)}
               />
               <Combobox.Button className="absolute inset-y-0 right-0 pr-5">
-                {books?.length > 1 && <Down className="w-5 h-5 min-w-[1.5rem]" />}
+                {books?.length > 1 && <Down className="h-5 w-5 min-w-[1.5rem]" />}
               </Combobox.Button>
             </div>
 
@@ -372,7 +368,7 @@ function Navigation({ books, reference, setReference }) {
               leaveTo="opacity-0"
               afterLeave={() => setQueryCombobox('')}
             >
-              <Combobox.Options className="absolute w-full max-h-[50vh] overflow-y-auto rounded-b-3xl bg-th-secondary-100 z-10">
+              <Combobox.Options className="absolute z-10 max-h-[50vh] w-full overflow-y-auto rounded-b-3xl bg-th-secondary-100">
                 {filteredBooks.length === 0 && queryCombobox !== '' ? (
                   <div className="relative select-none px-6 py-2">
                     {t('NothingFound')}
@@ -382,7 +378,7 @@ function Navigation({ books, reference, setReference }) {
                     <Combobox.Option
                       key={book?.id}
                       className={({ active }) =>
-                        `relative cursor-pointer select-none py-2 px-6 ${
+                        `relative cursor-pointer select-none px-6 py-2 ${
                           active ? 'bg-th-secondary-100' : ''
                         }`
                       }
@@ -401,7 +397,7 @@ function Navigation({ books, reference, setReference }) {
                         <div
                           className={`${
                             selected ? 'opacity-70' : ''
-                          } w-full py-1 hover:opacity-70 cursor-pointer`}
+                          } w-full cursor-pointer py-1 hover:opacity-70`}
                         >
                           {t('books:' + book?.code)}
                         </div>
@@ -416,17 +412,16 @@ function Navigation({ books, reference, setReference }) {
       </Combobox>
 
       <div
-        className={`w-2/5 sm:w-auto px-7 py-3 bg-th-secondary-100 rounded-3xl ${
+        className={`w-2/5 rounded-3xl bg-th-secondary-100 px-7 py-3 sm:w-auto ${
           !isNextChapter ? 'cursor-default' : 'cursor-pointer'
-        }
-        }`}
+        } }`}
         onClick={() =>
           isNextChapter &&
           setReference((prev) => ({ ...prev, chapter: prev.chapter + 1 }))
         }
       >
         <div
-          className={`flex justify-around items-center gap-1 ${
+          className={`flex items-center justify-around gap-1 ${
             selectedBook && Object.keys(selectedBook)?.length
               ? 'opacity-auto'
               : 'opacity-0'
@@ -439,7 +434,7 @@ function Navigation({ books, reference, setReference }) {
             className={`hidden sm:block ${isNextChapter ? 'opacity-100' : 'opacity-0'}`}
           >{`${t('Chapter')}`}</span>
           <Down
-            className={`w-5 h-5 -rotate-90 ${
+            className={`h-5 w-5 -rotate-90 ${
               isNextChapter ? 'stroke-th-text-primary' : 'stroke-th-secondary-300'
             }`}
           />
@@ -525,15 +520,14 @@ function BookListReader({ books, setReference, reference, project }) {
     <Card>
       <div className="flex flex-col gap-7 bg-th-secondary-10">
         <Tab.Group defaultIndex={defaultIndex}>
-          <Tab.List className="flex p-1 w-full -mt-6 bg-th-secondary-10 border border-th-secondary-300 rounded-3xl shadow-md">
+          <Tab.List className="-mt-6 flex w-full rounded-3xl border border-th-secondary-300 bg-th-secondary-10 p-1 shadow-md">
             {tabs.map((tab) => (
               <Tab as={Fragment} key={tab}>
                 {({ selected }) => (
                   <div
-                    className={`p-2 w-full text-center rounded-3xl cursor-pointer ${
+                    className={`w-full cursor-pointer rounded-3xl p-2 text-center ${
                       selected ? 'bg-th-primary-100 text-th-text-secondary-100' : ''
-                    }
-                      `}
+                    } `}
                   >
                     {t(tab)}
                   </div>
@@ -551,7 +545,7 @@ function BookListReader({ books, setReference, reference, project }) {
                 ? [createdOldTestamentBooks]
                 : []),
             ].map((list, idx) => (
-              <Tab.Panel key={idx} className="pr-4 max-h-[70vh] overflow-y-scroll">
+              <Tab.Panel key={idx} className="max-h-[70vh] overflow-y-scroll pr-4">
                 {list?.map((book, index) => (
                   <Disclosure
                     as={'div'}
@@ -574,7 +568,7 @@ function BookListReader({ books, setReference, reference, project }) {
                                 { shallow: true }
                               )
                             }}
-                            className={`flex justify-between items-center py-2 w-full hover:opacity-70 ${
+                            className={`flex w-full items-center justify-between py-2 hover:opacity-70 ${
                               !open ? 'border-b border-th-secondary-300' : ''
                             }`}
                           >
@@ -589,7 +583,7 @@ function BookListReader({ books, setReference, reference, project }) {
                             />
                           </Disclosure.Button>
                           <Disclosure.Panel>
-                            <div className="flex flex-wrap gap-4 pb-5 w-full border-b border-th-secondary-300">
+                            <div className="flex w-full flex-wrap gap-4 border-b border-th-secondary-300 pb-5">
                               {[...Array(Object.keys(book.chapters).length).keys()]
                                 .map((el) => el + 1)
                                 .map((index) => (
@@ -601,24 +595,24 @@ function BookListReader({ books, setReference, reference, project }) {
                                         chapters
                                       ) && !reference?.checks
                                     }
-                                    className={`flex justify-center items-center w-10 h-10 rounded-md ${
+                                    className={`flex h-10 w-10 items-center justify-center rounded-md ${
                                       checkChapterVersesExist(
                                         book.code,
                                         index,
                                         chapters
                                       ) || reference?.checks
                                         ? 'cursor-pointer bg-th-primary-100'
-                                        : 'cursor-default bg-th-secondary-200 disabled text-th-text-secondary-100 rounded-md'
+                                        : 'disabled cursor-default rounded-md bg-th-secondary-200 text-th-text-secondary-100'
                                     } ${
                                       index === reference?.chapter
-                                        ? 'cursor-default bg-th-primary-100 text-th-text-secondary-100 rounded-md'
+                                        ? 'cursor-default rounded-md bg-th-primary-100 text-th-text-secondary-100'
                                         : checkChapterVersesExist(
-                                            book.code,
-                                            index,
-                                            chapters
-                                          ) || reference?.checks
-                                        ? 'hover:opacity-70 bg-th-secondary-200'
-                                        : ''
+                                              book.code,
+                                              index,
+                                              chapters
+                                            ) || reference?.checks
+                                          ? 'bg-th-secondary-200 hover:opacity-70'
+                                          : ''
                                     }`}
                                     key={index}
                                     onClick={() =>

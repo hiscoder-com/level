@@ -1,6 +1,6 @@
+import { validateNote, validateTitle } from 'utils/helper'
 import supabaseApi from 'utils/supabaseServer'
 import { supabaseService } from 'utils/supabaseService'
-import { validateNote, validateTitle } from 'utils/helper'
 
 const sendLog = async (log) => {
   const { data, error } = await supabaseService

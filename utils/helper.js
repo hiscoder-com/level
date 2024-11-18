@@ -1,10 +1,11 @@
 import axios from 'axios'
-import usfm from 'usfm-js'
 import jsyaml from 'js-yaml'
+import usfm from 'usfm-js'
 
 import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
 import { obsStoryVerses } from './config'
+
 const isServer = typeof window === 'undefined'
 
 export const checkLSVal = (el, val, type = 'string', ext = false) => {

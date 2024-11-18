@@ -1,3 +1,9 @@
+# Versión 0.25.1
+## Date: 11/08/2024
+
+### **Agregado:**
+- logotipos de socios agregados
+
 # Versión 0.25.0
 ## Date: 10/17/2024
 

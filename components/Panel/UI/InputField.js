@@ -1,5 +1,5 @@
-import EyeIcon from 'public/eye-icon.svg'
-import EyeOffIcon from 'public/eye-off-icon.svg'
+import EyeIcon from 'public/icons/eye-icon.svg'
+import EyeOffIcon from 'public/icons/eye-off-icon.svg'
 
 function InputField({
   setShowPassword,
@@ -54,7 +54,7 @@ function InputField({
 
       {showPasswordToggle && (
         <span
-          className="absolute right-4 bottom-4 cursor-pointer stroke-2 stroke-th-text-primary"
+          className="absolute bottom-4 right-4 cursor-pointer stroke-th-text-primary stroke-2"
           onClick={() => setShowPassword && setShowPassword(!showPassword)}
         >
           {showPassword ? <EyeOffIcon /> : <EyeIcon />}

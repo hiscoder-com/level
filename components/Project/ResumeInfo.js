@@ -1,8 +1,11 @@
 import { useMemo } from 'react'
+
 import { useTranslation } from 'next-i18next'
-import { useGetBrief } from 'utils/hooks'
+
 import Card from './Card'
+
 import { getBriefName } from 'utils/helper'
+import { useGetBrief } from 'utils/hooks'
 
 function ResumeInfo({ project }) {
   const { t } = useTranslation(['common', 'projects'])
@@ -22,7 +25,7 @@ function ResumeInfo({ project }) {
       isOpen={false}
       access
     >
-      <ul className="pl-6 text-lg list-decimal" dir={brief?.is_rtl ? 'rtl' : 'ltr'}>
+      <ul className="list-decimal pl-6 text-lg" dir={brief?.is_rtl ? 'rtl' : 'ltr'}>
         {brief?.data_collection?.map(
           (el) => el?.resume && <li key={el.id}>{el?.resume}</li>
         )}

@@ -1,6 +1,6 @@
 import { forwardRef } from 'react'
 
-import CheckboxShevron from 'public/checkbox-shevron.svg'
+import CheckboxShevron from 'public/icons/checkbox-shevron.svg'
 
 const CheckBox = forwardRef(
   (
@@ -17,7 +17,7 @@ const CheckBox = forwardRef(
     },
     ref
   ) => (
-    <div className={`flex gap-3 items-center ${className.wrapper}`}>
+    <div className={`flex items-center gap-3 ${className.wrapper}`}>
       <label
         className="relative flex cursor-pointer items-center rounded-full"
         htmlFor={id}
@@ -25,12 +25,12 @@ const CheckBox = forwardRef(
         <input
           id={id}
           type="checkbox"
-          className={`w-6 h-6 shadow-sm before:content[''] peer relative cursor-pointer appearance-none rounded-md border border-th-secondary-300 transition-all before:absolute before:top-1/2 before:left-1/2 before:block before:-translate-y-1/2 before:-translate-x-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10 ${className.accent}`}
+          className={`before:content[''] peer relative h-6 w-6 cursor-pointer appearance-none rounded-md border border-th-secondary-300 shadow-sm transition-all before:absolute before:left-1/2 before:top-1/2 before:block before:-translate-x-1/2 before:-translate-y-1/2 before:rounded-full before:opacity-0 before:transition-opacity hover:before:opacity-10 ${className.accent}`}
           ref={ref}
           {...props}
         />
         <div
-          className={`pointer-events-none absolute top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 opacity-0 transition-opacity peer-checked:opacity-100  ${className.cursor}`}
+          className={`pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 transition-opacity peer-checked:opacity-100 ${className.cursor}`}
         >
           <CheckboxShevron />
         </div>

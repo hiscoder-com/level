@@ -1,5 +1,5 @@
-import { supabaseService } from 'utils/supabaseService'
 import supabaseApi from 'utils/supabaseServer'
+import { supabaseService } from 'utils/supabaseService'
 
 function createCombinedData(uniqueBooks, booksData, chaptersData) {
   //Быстрый доступ к информации о книгах по их кодам.

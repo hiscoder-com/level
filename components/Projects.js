@@ -1,8 +1,9 @@
 import ProjectCard from './ProjectCard'
 import ProjectPersonalCard from './ProjectPersonalCard'
 
-import { useProjects } from 'utils/hooks'
 import { useCurrentUser } from 'lib/UserContext'
+
+import { useProjects } from 'utils/hooks'
 
 export default function Projects({ type }) {
   const { user } = useCurrentUser()

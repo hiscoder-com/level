@@ -48,23 +48,23 @@ function TNList({ setItem, data, toolName, isLoading }) {
   return (
     <div
       id={`container_${toolName}`}
-      className="divide-y divide-th-text-primary divide-dashed h-full overflow-auto"
+      className="h-full divide-y divide-dashed divide-th-text-primary overflow-auto"
     >
       {data &&
         verses.map(([verseNumber, notes], index) => {
           return (
-            <div key={index} className="p-4 flex mx-4">
+            <div key={index} className="mx-4 flex p-4">
               <div className="text-2xl">{verseNumber}</div>
-              <div className="text-th-text-primary pl-7 flex-1" id={'idtn' + verseNumber}>
+              <div className="flex-1 pl-7 text-th-text-primary" id={'idtn' + verseNumber}>
                 <ul>
                   {notes?.map((note) => {
                     return (
                       <li
                         key={note.id}
                         id={'idtn' + note.id}
-                        className={`p-2 cursor-pointer hover:bg-th-secondary-100 ${
+                        className={`cursor-pointer p-2 hover:bg-th-secondary-100 ${
                           highlightId === 'id' + note.id
-                            ? 'bg-th-secondary-100 rounded-lg'
+                            ? 'rounded-lg bg-th-secondary-100'
                             : ''
                         }`}
                         onClick={() => {

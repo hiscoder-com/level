@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import axios from 'axios'
-
 import { useTranslation } from 'next-i18next'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 

@@ -1,6 +1,6 @@
 import axios from 'axios'
-import localforage from 'localforage'
 import jszip from 'jszip'
+import localforage from 'localforage'
 
 const zipStore = localforage.createInstance({
   driver: [localforage.INDEXEDDB],
