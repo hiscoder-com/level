@@ -11,7 +11,7 @@ import { useGetChaptersTranslate } from 'utils/hooks'
 
 import { checkChapterVersesExist } from 'utils/helper'
 
-import Down from '/public/arrow-down.svg'
+import Down from 'public/icons/arrow-down.svg'
 
 function BookListReader({ books, setReference, reference, project }) {
   const [currentBook, setCurrentBook] = useState(null)

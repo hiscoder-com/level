@@ -19,7 +19,7 @@ import {
 import { newTestamentList, oldTestamentList, usfmFileNames } from 'utils/config'
 import { checkBookCodeExists, getVerseObjectsForBookAndChapter } from 'utils/helper'
 
-import Left from '/public/left.svg'
+import Left from 'public/icons/left.svg'
 
 function CommunityAudio() {
   const [fontSize, setFontSize] = useState(16)

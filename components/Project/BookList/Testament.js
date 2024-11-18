@@ -19,6 +19,7 @@ import DownloadIcon from 'public/icons/download.svg'
 import Elipsis from 'public/icons/elipsis.svg'
 import Gear from 'public/icons/gear.svg'
 import Play from 'public/icons/play.svg'
+import Recorder from 'public/icons/recorder.svg'
 
 function Testament({
   bookList,
@@ -222,7 +223,7 @@ function Testament({
                           }}
                         />
                       )}
-                      {isBookCreated && (
+                      {/* {isBookCreated && (
                         <Recorder
                           className="w-6 min-w-[1.5rem] stroke-th-text-primary cursor-pointer"
                           onClick={() =>
@@ -232,7 +233,17 @@ function Testament({
                             })
                           }
                         />
-                      )}
+                      )} */}
+
+                                <Recorder
+                                  className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
+                                  onClick={() =>
+                                    push({
+                                      pathname: `/projects/${project?.code}/books/${book}/community-audio`,
+                                      shallow: true,
+                                    })
+                                  }
+                                />
                       {isCoordinatorAccess && (
                         <>
                           {isBookCreated && (
