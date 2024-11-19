@@ -4,14 +4,26 @@ import remarkGfm from 'remark-gfm'
 
 import 'github-markdown-css/github-markdown-light.css'
 
-function MarkdownExtended({ children, className, onLinkClick }) {
-  const content = (typeof children === 'string' ? children : '')
-    .replace(/< *br *\/?>/gi, '\n')
-    .replaceAll('\\n', '\n')
+import TaContentInfo from './Panel/Resources/TAContentInfo'
+
+function MarkdownExtended({ children, className, onLinkClick, config, setItem }) {
+  const convertRcLinksToMarkdownLinks = (text) => {
+    return text.replace(/\[\[(rc:\/\/\S+?)\]\]/g, (match, url) => `[${url}](${url})`)
+  }
+
+  const content = convertRcLinksToMarkdownLinks(
+    (typeof children === 'string' ? children : '')
+      .replace(/< *br *\/?>/gi, '\n')
+      .replaceAll('\\n', '\n')
+  )
 
   const handleLinkClick = (href) => {
     if (href.endsWith('.md')) {
       onLinkClick?.(href)
+    } else if (href.startsWith('rc://')) {
+      onLinkClick?.(href)
+    } else {
+      console.log(href, 16)
     }
   }
 
@@ -23,13 +35,27 @@ function MarkdownExtended({ children, className, onLinkClick }) {
       return res ? res[1] : false
     }
 
-    if (props?.node?.properties?.href?.includes('translate')) {
+    const href = props?.node?.properties?.href
+    if (href?.includes('translate') && href.includes('ta')) {
+      return (
+        <TaContentInfo
+          href={href}
+          onClick={handleLinkClick}
+          config={config}
+          setItem={setItem}
+        >
+          {props.children}
+        </TaContentInfo>
+      )
+    }
+
+    if (href?.includes('translate')) {
       return (
         <a
-          href={props.href}
+          href={href}
           onClick={(e) => {
             e.preventDefault()
-            handleLinkClick(props?.node?.properties?.href)
+            handleLinkClick(href)
           }}
         >
           {props.children}
