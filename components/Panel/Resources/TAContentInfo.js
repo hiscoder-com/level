@@ -18,7 +18,7 @@ function TaContentInfo({ href, config, setItem }) {
       try {
         const zip = await getFile({
           owner: config.resource.owner,
-          repo: config.resource.repo.slice(0, -2) + 'ta',
+          repo: config.resource.repo.split('_')[0] + '_ta',
           commit: config.resource.commit,
           apiUrl: '/api/git/ta',
         })
@@ -45,7 +45,7 @@ function TaContentInfo({ href, config, setItem }) {
 
   return (
     <div
-      className="inline-block cursor-pointer text-blue-500 hover:underline"
+      className="inline-block cursor-pointer text-blue-600 hover:underline"
       onClick={(e) => {
         e.preventDefault()
         setItem?.({ title, text })
