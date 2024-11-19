@@ -50,7 +50,12 @@ function TN({ config, url, toolName }) {
       ) : (
         <div className="relative h-full">
           {item ? (
-            <TNTWLContent setItem={setItem} item={item} />
+            <TNTWLContent
+              setItem={setItem}
+              item={item}
+              setHref={setHref}
+              config={config}
+            />
           ) : (
             <TNList
               setItem={setItem}

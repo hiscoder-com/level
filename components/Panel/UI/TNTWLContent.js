@@ -4,7 +4,7 @@ import MarkdownExtended from 'components/MarkdownExtended'
 
 import Back from 'public/icons/left.svg'
 
-function TNTWLContent({ setItem, item, setHref }) {
+function TNTWLContent({ setItem, item, setHref, config }) {
   const handleMdLinkClick = (href) => {
     setHref(href)
   }
@@ -31,7 +31,12 @@ function TNTWLContent({ setItem, item, setHref }) {
         )}
       </div>
 
-      <MarkdownExtended className="markdown-body" onLinkClick={handleMdLinkClick}>
+      <MarkdownExtended
+        className="markdown-body"
+        onLinkClick={handleMdLinkClick}
+        config={config}
+        setItem={setItem}
+      >
         {item?.text}
       </MarkdownExtended>
     </div>

@@ -92,7 +92,7 @@ function TWL({ config, url, toolName }) {
   return (
     <>
       <div className="relative h-full">
-        <TNTWLContent setItem={setItem} item={item} setHref={setHref} />
+        <TNTWLContent setItem={setItem} item={item} setHref={setHref} config={config} />
         <TWLList
           setItem={setItem}
           data={wordObjects}
