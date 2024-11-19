@@ -158,7 +158,7 @@ function Teleprompter({
         }`}</div>
       )}
       <div className="relative max-h-[70vh]">
-        <div className="absolute top-0 left-0 right-0 h-12 bg-gray-500 z-10 opacity-20" />
+        <div className="absolute top-0 left-0 right-0 h-16 bg-gray-500 z-10 opacity-20" />
 
         <div
           ref={containerRef}

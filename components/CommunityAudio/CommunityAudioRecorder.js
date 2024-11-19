@@ -53,7 +53,7 @@ function SpeedSetting({ textSpeed, setTextSpeed }) {
   const { t } = useTranslation(['common'])
 
   const minSpeed = 1
-  const maxSpeed = 50
+  const maxSpeed = 15
 
   useEffect(() => {
     setIsMounted(true)
