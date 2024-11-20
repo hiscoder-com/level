@@ -12,6 +12,7 @@ import { useGetResource, useScroll } from 'utils/hooks'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
+  const [parentItem, setParentItem] = useState(null)
   const [tnotes, setTnotes] = useState([])
   const { isLoading, data } = useGetResource({ config, url })
   const { extraTNotes, setTnotes: updateTnotes } = useQuotesTranslation({
@@ -53,12 +54,14 @@ function TN({ config, url, toolName }) {
             <TNTWLContent
               setItem={setItem}
               item={item}
-              setHref={setHref}
+              parentItem={parentItem}
+              setParentItem={setParentItem}
               config={config}
             />
           ) : (
             <TNList
               setItem={setItem}
+              setParentItem={setParentItem}
               data={tnotes}
               toolName={toolName}
               isLoading={isLoading || tnotes}
@@ -72,7 +75,7 @@ function TN({ config, url, toolName }) {
 
 export default TN
 
-function TNList({ setItem, data, toolName, isLoading }) {
+function TNList({ setItem, setParentItem, data, toolName, isLoading }) {
   const { t } = useTranslation()
   const [verses, setVerses] = useState([])
   const { highlightId, handleSaveScroll } = useScroll({
@@ -108,9 +111,15 @@ function TNList({ setItem, data, toolName, isLoading }) {
                         }`}
                         onClick={() => {
                           handleSaveScroll(verseNumber, note.ID)
+                          setParentItem({
+                            text: note.Note,
+                            title: note.Quote || note.origQuote,
+                            type: 'tn',
+                          })
                           setItem({
                             text: note.Note,
                             title: note.Quote || note.origQuote,
+                            type: 'tn',
                           })
                         }}
                       >

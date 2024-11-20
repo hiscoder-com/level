@@ -8,7 +8,12 @@ import TaContentInfo from './Panel/Resources/TAContentInfo'
 
 function MarkdownExtended({ children, className, onLinkClick, config, setItem }) {
   const convertRcLinksToMarkdownLinks = (text) => {
-    return text.replace(/\[\[(rc:\/\/\S+?)\]\]/g, (match, url) => `[${url}](${url})`)
+    if (!config?.resource?.repo) return text
+    const locale = config.resource.repo.split('_')[0]
+
+    return text
+      .replace(/\*/g, locale)
+      .replace(/\[\[(rc:\/\/\S+?)\]\]/g, (_, url) => `[${url}](${url})`)
   }
 
   const content = convertRcLinksToMarkdownLinks(
@@ -22,8 +27,6 @@ function MarkdownExtended({ children, className, onLinkClick, config, setItem })
       onLinkClick?.(href)
     } else if (href.startsWith('rc://')) {
       onLinkClick?.(href)
-    } else {
-      console.log(href, 16)
     }
   }
 

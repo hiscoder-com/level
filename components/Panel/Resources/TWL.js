@@ -13,6 +13,8 @@ import Down from 'public/icons/arrow-down.svg'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
+  const [parentItem, setParentItem] = useState(null)
+
   const [href, setHref] = useState(null)
   const [zip, setZip] = useState(null)
   useEffect(() => {
@@ -26,6 +28,7 @@ function TWL({ config, url, toolName }) {
         const newItem = {
           title: word?.title || '',
           text: word?.text || '',
+          type: 'tw',
         }
 
         setItem(newItem)
@@ -92,9 +95,17 @@ function TWL({ config, url, toolName }) {
   return (
     <>
       <div className="relative h-full">
-        <TNTWLContent setItem={setItem} item={item} setHref={setHref} config={config} />
+        <TNTWLContent
+          setItem={setItem}
+          item={item}
+          parentItem={parentItem}
+          setParentItem={setParentItem}
+          setHref={setHref}
+          config={config}
+        />
         <TWLList
           setItem={setItem}
+          setParentItem={setParentItem}
           data={wordObjects}
           toolName={toolName}
           isLoading={isLoadingTW || isLoading}
@@ -106,7 +117,7 @@ function TWL({ config, url, toolName }) {
 
 export default TWL
 
-function TWLList({ setItem, data, toolName, isLoading }) {
+function TWLList({ setItem, setParentItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
@@ -173,7 +184,8 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                         } hover:bg-th-secondary-100 ${highlightId === 'id' + item.id ? 'bg-th-secondary-100' : ''} `}
                         onClick={() => {
                           handleSaveScroll(verseNumber, item.id)
-                          setItem({ text: item.text, title: item.title })
+                          setParentItem(item)
+                          setItem({ text: item.text, title: item.title, type: 'twl' })
                         }}
                       >
                         <ReactMarkdown>{item.title}</ReactMarkdown>

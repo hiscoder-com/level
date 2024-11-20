@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
@@ -6,17 +6,35 @@ import MarkdownExtended from 'components/MarkdownExtended'
 
 import Back from 'public/icons/left.svg'
 
-function TNTWLContent({ setItem, item, setHref, config }) {
+function TNTWLContent({ setItem, item, parentItem, setParentItem, setHref, config }) {
   const contentRef = useRef(null)
 
   useEffect(() => {
     if (contentRef.current) {
       contentRef.current.scrollTop = 0
     }
-  }, [item])
+  }, [item, parentItem])
 
   const handleMdLinkClick = (href) => {
-    setHref(href)
+    if (setHref) {
+      setHref(href)
+    }
+  }
+
+  const handleBackClick = () => {
+    if (item.type === 'ta' || item.type === 'tw') {
+      setItem(parentItem)
+      setParentItem(null)
+      if (setHref) {
+        setHref(null)
+      }
+    } else {
+      setItem(null)
+      setParentItem(null)
+      if (setHref) {
+        setHref(null)
+      }
+    }
   }
 
   return (
@@ -29,7 +47,7 @@ function TNTWLContent({ setItem, item, setHref, config }) {
       <div className="sticky top-0 flex bg-th-secondary-10 pb-4">
         <div
           className="mr-2.5 h-fit w-fit cursor-pointer rounded-full bg-th-secondary-100 p-1 hover:opacity-70"
-          onClick={() => setItem(null)}
+          onClick={handleBackClick}
         >
           <Back className="w-8 stroke-th-primary-200" />
         </div>

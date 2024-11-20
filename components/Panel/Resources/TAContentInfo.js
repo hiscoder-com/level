@@ -42,13 +42,14 @@ function TaContentInfo({ href, config, setItem }) {
   const description = words?.['title'] || words?.title || href
   const title = words?.['sub-title'] || words?.sub || href
   const text = words?.['01'] || words?.['01'] || href
+  const type = 'ta'
 
   return (
     <div
-      className="inline-block cursor-pointer text-blue-600 hover:underline"
+      className="inline-block cursor-pointer text-red-600 hover:underline"
       onClick={(e) => {
         e.preventDefault()
-        setItem?.({ title, text })
+        setItem?.({ title, text, type })
       }}
     >
       {description}
