@@ -223,9 +223,10 @@ function Testament({
                           }}
                         />
                       )}
-                      {/* {isBookCreated && (
+
+                      {isBookCreated && (
                         <Recorder
-                          className="w-6 min-w-[1.5rem] stroke-th-text-primary cursor-pointer"
+                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
                           onClick={() =>
                             push({
                               pathname: `/projects/${project?.code}/books/${book}/community-audio`,
@@ -233,17 +234,7 @@ function Testament({
                             })
                           }
                         />
-                      )} */}
-
-                                <Recorder
-                                  className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
-                                  onClick={() =>
-                                    push({
-                                      pathname: `/projects/${project?.code}/books/${book}/community-audio`,
-                                      shallow: true,
-                                    })
-                                  }
-                                />
+                      )}
                       {isCoordinatorAccess && (
                         <>
                           {isBookCreated && (

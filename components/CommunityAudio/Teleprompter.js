@@ -6,8 +6,8 @@ import { useTranslation } from 'next-i18next'
 
 import Breadcrumbs from 'components/Breadcrumbs'
 
-import { useAccess, useGetBooks, useProject } from 'utils/hooks'
 import { getVerseCount, getVerseCountOBS } from 'utils/helper'
+import { useAccess, useGetBooks, useProject } from 'utils/hooks'
 
 function Teleprompter({
   verseObjects,
@@ -29,7 +29,7 @@ function Teleprompter({
     code,
   })
   const [project] = useProject({ code })
-  const { t } = useTranslation()
+  const { t } = useTranslation(['common', 'books'])
   const [books] = useGetBooks({ code })
 
   const [isPlaying, setIsPlaying] = useState(false)
@@ -57,11 +57,11 @@ function Teleprompter({
   }, [])
 
   const LoadingSection = () => (
-    <div className="p-4 md:p-6 h-full animate-pulse">
-      <div className="mb-4 h-2.5 w-1/4 bg-th-secondary-100 rounded-full"></div>
+    <div className="h-full animate-pulse p-4 md:p-6">
+      <div className="mb-4 h-2.5 w-1/4 rounded-full bg-th-secondary-100"></div>
       {[...Array(22).keys()].map((el) => (
         <div key={el}>
-          <div className="h-2 mb-4 bg-th-secondary-100 rounded-full"></div>
+          <div className="mb-4 h-2 rounded-full bg-th-secondary-100"></div>
         </div>
       ))}
     </div>
@@ -72,7 +72,7 @@ function Teleprompter({
       <p>{t('NoContent')}</p>
       {isCoordinatorAccess && (
         <div
-          className="flex gap-2 text-th-primary-200 hover:opacity-70 cursor-pointer"
+          className="flex cursor-pointer gap-2 text-th-primary-200 hover:opacity-70"
           onClick={() =>
             push({
               pathname: `/projects/${project?.code}`,
@@ -158,11 +158,11 @@ function Teleprompter({
         }`}</div>
       )}
       <div className="relative max-h-[70vh]">
-        <div className="absolute top-0 left-0 right-0 h-16 bg-gray-500 z-10 opacity-20" />
+        <div className="absolute left-0 right-0 top-0 z-10 h-16 bg-gray-500 opacity-20" />
 
         <div
           ref={containerRef}
-          className="relative max-h-[70vh] overflow-y-auto scrollbar-hide"
+          className="scrollbar-hide relative max-h-[70vh] overflow-y-auto"
           dir={project?.is_rtl ? 'rtl' : 'ltr'}
           style={{
             fontSize: `${fontSize}px`,
@@ -172,6 +172,7 @@ function Teleprompter({
           {!isLoading ? (
             verseObjects ? (
               <div className="verse-container">
+                {`${t('books:' + bookid)} ${reference?.chapter}`}
                 {Array.from({ length: Math.min(verseCount + 1, 200) }).map((_, index) => {
                   const verseIndex = verseObjects?.verseObjects?.findIndex(
                     (verse) => parseInt(verse.verse) === index
@@ -183,8 +184,7 @@ function Teleprompter({
 
                   return (
                     <div
-                      className={`flex gap-2 p-2 ${text === ' ' ? 'mb-2' : ''}
-                        bg-white verse-line`}
+                      className={`flex gap-2 p-2 ${text === ' ' ? 'mb-2' : ''} verse-line bg-white`}
                       key={index}
                     >
                       {index !== 0 && <sup className="mt-2">{index}</sup>}
@@ -193,7 +193,7 @@ function Teleprompter({
                   )
                 })}
                 {verseObjects?.verseObjects && (
-                  <div className="flex gap-2 mb-2 p-2 bg-white">
+                  <div className="mb-2 flex gap-2 bg-white p-2">
                     {verseObjects.verseObjects.find((verse) => verse.verse === 200)?.text}
                   </div>
                 )}
