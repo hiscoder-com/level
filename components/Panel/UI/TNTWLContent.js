@@ -1,3 +1,5 @@
+import React, { useEffect, useRef } from 'react'
+
 import ReactMarkdown from 'react-markdown'
 
 import MarkdownExtended from 'components/MarkdownExtended'
@@ -5,12 +7,21 @@ import MarkdownExtended from 'components/MarkdownExtended'
 import Back from 'public/icons/left.svg'
 
 function TNTWLContent({ setItem, item, setHref, config }) {
+  const contentRef = useRef(null)
+
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0
+    }
+  }, [item])
+
   const handleMdLinkClick = (href) => {
     setHref(href)
   }
 
   return (
     <div
+      ref={contentRef}
       className={`absolute bottom-0 left-0 right-0 top-0 overflow-auto bg-th-secondary-10 pr-2 ${
         item ? '' : 'hidden'
       } z-10`}
