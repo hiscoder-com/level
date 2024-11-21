@@ -97,7 +97,7 @@ function Teleprompter({
     if (!isRecording) {
       handleReset()
     }
-  }, [fontSize, textSpeed, isRecording, isPaused])
+  }, [fontSize, textSpeed, isRecording, isPaused, handleReset])
 
   useEffect(() => {
     let previousTimestamp = null
@@ -138,7 +138,7 @@ function Teleprompter({
         cancelAnimationFrame(animationRef.current)
       }
     }
-  }, [isPlaying, textSpeed])
+  }, [isPlaying, textSpeed, handleReset, stopRecording])
 
   return (
     <div className="flex flex-col gap-5">
