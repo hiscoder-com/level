@@ -228,7 +228,7 @@ function useAudioRecorder() {
       }
 
       mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/wav' })
+        const audioBlob = new Blob(audioChunks.current, { type: 'audio/mpeg' })
         const audioUrl = URL.createObjectURL(audioBlob)
         setAudioUrl(audioUrl)
       }
