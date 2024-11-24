@@ -9,11 +9,11 @@ import { openGraph, urlGlobal } from '../utils/openGraph'
 
 const metadata = {
   title: {
-    default: 'LEVEL Bible Translation Platform',
+    default: 'LEVEL',
     template: '%s | Step-by-Step Bible Translation',
   },
   description:
-    'LEVEL is an innovative platform designed to support Bible translation in any language. Translators can use tools for each step of the process, get helpful resources, work with partners, and make their translation work faster and easier.',
+    'LEVEL is a platform for Bible translation in any language, offering tools, resources, and collaboration features to streamline and simplify the translation process.',
   openGraph: { ...openGraph },
   icons: {
     icon: '/favicon.ico',
