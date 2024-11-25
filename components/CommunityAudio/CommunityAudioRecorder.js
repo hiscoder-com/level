@@ -1,7 +1,3 @@
-import { useEffect, useState } from 'react'
-
-import { useTranslation } from 'react-i18next'
-
 import AudioPreview from './AudioPreview'
 import FontSizeSetting from './FontSizeSetting'
 import PauseButton from './PauseButton'
