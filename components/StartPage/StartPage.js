@@ -136,13 +136,13 @@ function StartPage({ defaultContentKey = null }) {
       })
     }
   }
-
+  const mainLink = router.pathname === '/' ? `/${contentRoutes['logo']}` : '/'
   return (
     <>
       <main className="relative mx-auto hidden h-[84vh] max-h-[40rem] w-full max-w-6xl px-5 text-xl font-bold md:flex lg:max-h-[40rem] lg:px-16 xl:max-h-[50rem] xl:px-20 2xl:max-h-[56.4rem] 2xl:px-0">
         <aside className="flex w-1/4 flex-col gap-4 pr-3 xl:gap-7 xl:pr-6">
           <Link
-            href={`/${contentRoutes['logo']}`}
+            href={mainLink}
             className="flex flex-grow cursor-pointer items-center justify-center rounded-2xl bg-white p-5 lg:p-7"
           >
             <LevelLogo className="" />
@@ -257,7 +257,7 @@ function StartPage({ defaultContentKey = null }) {
         </div>
       </main>
       <main className="relative flex flex-col gap-5 p-5 text-lg font-medium md:hidden">
-        <Link href={`/${contentRoutes['logo']}`}>
+        <div onClick={() => router.replace(mainLink)}>
           <SectionBlock
             sectionKey="logo"
             content={<Logo t={t} />}
@@ -266,7 +266,7 @@ function StartPage({ defaultContentKey = null }) {
             isLogo={true}
             label={<LevelLogo className="h-7" />}
           />
-        </Link>
+        </div>
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
             <div className="z-20 flex items-center justify-center rounded-xl bg-th-secondary-10 p-4">
