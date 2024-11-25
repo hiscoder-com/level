@@ -18,7 +18,7 @@ function CommunityAudioRecorder({
         <SpeedSetting textSpeed={textSpeed} setTextSpeed={setTextSpeed} />
         <FontSizeSetting fontSize={fontSize} setFontSize={setFontSize} />
       </div>
-      <div className="flex items-end">
+      <div className="flex items-center gap-1">
         <PauseButton
           isRecording={isRecording}
           onPause={pauseRecording}
@@ -75,7 +75,7 @@ function SpeedSetting({ textSpeed, setTextSpeed }) {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth={1.5}
+            strokeWidth={5}
             stroke="currentColor"
             className="size-6 h-3 w-3"
           >
@@ -91,7 +91,7 @@ function SpeedSetting({ textSpeed, setTextSpeed }) {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            strokeWidth={3}
+            strokeWidth={5}
             stroke="currentColor"
             className="size-6 h-3 w-3"
           >
@@ -105,7 +105,10 @@ function SpeedSetting({ textSpeed, setTextSpeed }) {
       </div>
       <div className="flex items-center text-sm">
         <p>
-          <span className="font-semibold">{textSpeed}</span> {t('TextSpeed')}
+          <span className="font-semibold">
+            {textSpeed < 10 ? `0${textSpeed}` : textSpeed}
+          </span>{' '}
+          {t('TextSpeed')}
         </p>
       </div>
     </div>
@@ -128,7 +131,7 @@ function FontSizeSetting({ fontSize, setFontSize }) {
 
   return (
     <div className="flex items-center gap-2 space-x-2">
-      <div className="grid h-10 w-20 grid-cols-2 overflow-hidden rounded-full border border-th-primary-100">
+      <div className="grid h-10 w-20 grid-cols-2 overflow-hidden rounded-full border border-th-primary-100 font-bold">
         <button
           className="flex items-center justify-center border border-e-th-primary-100 text-xs disabled:opacity-70"
           onClick={() => setFontSize(fontSize - 1)}
@@ -160,13 +163,18 @@ function AudioPreview({ audioUrl, onPlay, onPause, isPlaying, audioName }) {
         !audioUrl ? 'opacity-70' : ''
       }`}
     >
-      <p>{audioName}</p>
-      <a href={audioUrl} download={`${audioName}.mp3`}>
+      <p className="text-sm">{audioName}</p>
+      <a
+        href={audioUrl}
+        disabled={!audioUrl}
+        className="disabled:fill-gray-400"
+        download={`${audioName}.mp3`}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
           fill="currentColor"
-          className="size-6 h-4 w-4"
+          className="size-6 h-[18px] w-[18px]"
         >
           <path
             fillRule="evenodd"
@@ -176,9 +184,8 @@ function AudioPreview({ audioUrl, onPlay, onPause, isPlaying, audioName }) {
         </svg>
       </a>
       <button
-        className={`rounded-full p-2 ${
-          audioUrl ? 'bg-th-secondary-400' : 'bg-th-text-primary'
-        }`}
+        disabled={!audioUrl}
+        className="rounded-full bg-th-secondary-400 p-2 disabled:bg-th-text-primary"
         onClick={isPlaying ? onPause : onPlay}
       >
         {isPlaying ? (
@@ -226,7 +233,7 @@ function PauseButton({ isPaused, isRecording, onPause, onResume }) {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="#FFFFFF"
-        className="size-6 h-4 w-4"
+        className="h-[18px] w-[18px]"
       >
         <path
           fillRule="evenodd"
@@ -276,7 +283,7 @@ function StopButton({ isRecording, stopRecording }) {
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 24 24"
         fill="#FFFFFF"
-        className="size-6 h-4 w-4"
+        className="h-[18px] w-[18px]"
       >
         <path
           fillRule="evenodd"

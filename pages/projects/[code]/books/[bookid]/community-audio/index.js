@@ -1,20 +1,19 @@
-import { useRouter } from 'next/router'
-
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import CommunityAudio from 'components/CommunityAudio/CommunityAudio'
 
-function CommunityAudioPage() {
-  const router = useRouter()
-
-  return <CommunityAudio code={router.query.code} bookid={router.query.bookid} />
+function CommunityAudioPage({ bookid, code }) {
+  return <CommunityAudio code={code} bookid={bookid} />
 }
 
 export default CommunityAudioPage
 
-export async function getServerSideProps({ locale }) {
+export async function getServerSideProps({ locale, query }) {
+  const { bookid, code } = query
   return {
     props: {
+      bookid,
+      code,
       ...(await serverSideTranslations(locale, [
         'common',
         'books',

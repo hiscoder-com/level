@@ -141,9 +141,6 @@ function CommunityAudio() {
     reference &&
     `${t(`books:${reference.bookid}_abbr`)}_${reference.chapter}_${currentLang === 'ru' ? `${new Date().getDate()}${new Date().getMonth()}` : `${new Date().getMonth()}${new Date().getDate()}`}${new Date().getFullYear().toString().slice(2)}`
 
-  console.log(reference)
-  console.log(chapters)
-
   return (
     <div className="mx-auto flex max-w-7xl flex-col-reverse gap-7 pb-10 xl:flex-row">
       <div className="static top-7 flex w-full flex-col gap-7 self-start md:flex-row xl:sticky xl:w-1/3 xl:flex-col">
@@ -182,7 +179,7 @@ function CommunityAudio() {
             resumeRecording,
           }}
         />
-        <div className="card flex flex-col gap-7 bg-th-secondary-10">
+        <div className="card flex flex-col gap-7 overflow-hidden bg-th-secondary-10">
           <div className="flex flex-col items-start sm:flex-row sm:items-center sm:gap-12 xl:hidden">
             <Link href={'/projects/' + project?.code} className="p-3">
               <Left className="h-5 w-5 stroke-th-primary-200 hover:opacity-70" />
@@ -219,6 +216,7 @@ function useAudioRecorder() {
 
   const startRecording = useCallback(async () => {
     audioChunks.current = []
+
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
       mediaRecorder.current = new MediaRecorder(stream)
