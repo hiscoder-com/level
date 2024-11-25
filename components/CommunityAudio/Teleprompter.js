@@ -1,14 +1,13 @@
-import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
 
+import Breadcrumbs from './TeleprompterBreadCrumbs'
+
 import { getVerseCount, getVerseCountOBS } from 'utils/helper'
 import { useAccess, useGetBooks, useProject } from 'utils/hooks'
-
-import LeftArrow from 'public/icons/left.svg'
 
 function Teleprompter({
   verseObjects,
@@ -164,7 +163,9 @@ function Teleprompter({
           {!isLoading ? (
             verseObjects ? (
               <div className="px-4 pt-4">
-                <p className="-mb-2">{t('Chapter') + ' ' + reference?.chapter}</p>
+                {reference?.chapter && (
+                  <p className="-mb-2">{t('Chapter') + ' ' + reference?.chapter}</p>
+                )}
 
                 {Array.from({ length: Math.min(verseCount + 1, 200) }).map((_, index) => {
                   const verseIndex = verseObjects?.verseObjects?.findIndex(
@@ -207,17 +208,3 @@ function Teleprompter({
 }
 
 export default Teleprompter
-
-// ? Components
-function Breadcrumbs({ full, title, backLink }) {
-  return (
-    <div className={full ? 'card bg-th-secondary-10' : ''}>
-      <div className="relative flex flex-row items-center justify-center gap-2 overflow-x-auto whitespace-nowrap text-lg font-bold">
-        <Link href={backLink} className="absolute left-0 right-0 h-5 w-5">
-          <LeftArrow className="h-5 w-5 min-w-[1.25rem] text-th-primary-200 hover:opacity-70" />
-        </Link>
-        <h1>{title}</h1>
-      </div>
-    </div>
-  )
-}

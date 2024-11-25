@@ -20,6 +20,7 @@ export async function getServerSideProps({ locale, query }) {
         'users',
         'about',
         'start-page',
+        'audio',
       ])),
     },
   }

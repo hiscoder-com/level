@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -10,6 +10,7 @@ import ParticipantInfo from 'components/Project/ParticipantInfo'
 import BookListReader from './BookListReader'
 import CommunityAudioRecorder from './CommunityAudioRecorder'
 import Teleprompter from './Teleprompter'
+import { useAudioRecorder } from './useAudio'
 
 import { useCurrentUser } from 'lib/UserContext'
 
@@ -205,69 +206,3 @@ function CommunityAudio() {
 }
 
 export default CommunityAudio
-
-// ? Hooks
-function useAudioRecorder() {
-  const [isRecording, setIsRecording] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
-  const [audioUrl, setAudioUrl] = useState(null)
-  const mediaRecorder = useRef(null)
-  const audioChunks = useRef([])
-
-  const startRecording = useCallback(async () => {
-    audioChunks.current = []
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      mediaRecorder.current = new MediaRecorder(stream)
-
-      mediaRecorder.current.ondataavailable = (event) => {
-        audioChunks.current.push(event.data)
-      }
-
-      mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/mpeg' })
-        const audioUrl = URL.createObjectURL(audioBlob)
-        setAudioUrl(audioUrl)
-      }
-
-      mediaRecorder.current.start()
-      setIsRecording(true)
-      setIsPaused(false)
-    } catch (error) {
-      console.error('Error accessing microphone:', error)
-    }
-  }, [])
-
-  const stopRecording = useCallback(() => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.stop()
-      setIsRecording(false)
-      setIsPaused(false)
-    }
-  }, [])
-
-  const pauseRecording = useCallback(() => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.pause()
-      setIsPaused(true)
-    }
-  }, [])
-
-  const resumeRecording = useCallback(() => {
-    if (mediaRecorder.current) {
-      mediaRecorder.current.resume()
-      setIsPaused(false)
-    }
-  }, [])
-
-  return {
-    isRecording,
-    isPaused,
-    audioUrl,
-    startRecording,
-    stopRecording,
-    pauseRecording,
-    resumeRecording,
-  }
-}
