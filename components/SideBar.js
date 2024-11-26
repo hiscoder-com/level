@@ -13,6 +13,7 @@ import AboutProject from './AboutProject'
 import AvatarSelector from './AvatarSelector'
 import ModalInSideBar from './ModalInSideBar'
 import { PersonalNotes } from './Panel'
+import TaTopics from './Panel/UI/TaTopics'
 import ProjectCreate from './ProjectCreate'
 import SignOut from './SignOut'
 import { modalsSidebar } from './state/atoms'
@@ -58,6 +59,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
       aboutVersion: modalType === 'aboutVersion' ? !prevModals.aboutVersion : false,
       avatarSelector: modalType === 'avatarSelector' ? !prevModals.avatarSelector : false,
       notepad: modalType === 'notepad' ? !prevModals.notepad : false,
+      tAcademy: modalType === 'tAcademy' ? !prevModals.tAcademy : false,
     }))
   }
 
@@ -66,6 +68,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
       aboutVersion: false,
       avatarSelector: false,
       notepad: false,
+      tAcademy: false,
     })
   }
 
@@ -134,6 +137,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                   modalsSidebarState.notepad ||
                   modalsSidebarState.aboutVersion ||
                   modalsSidebarState.avatarSelector ||
+                  modalsSidebarState.tAcademy ||
                   showAbout
                 ) {
                   return
@@ -378,6 +382,49 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             collapsed={collapsed}
                           >
                             <PersonalNotes />
+                          </ModalInSideBar>
+                        </div>
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className={`group flex cursor-default items-center justify-between gap-2 px-4 py-3 ${
+                          modalsSidebarState.tAcademy
+                            ? 'bg-th-secondary-200'
+                            : 'opacity-70'
+                        } hover:bg-th-secondary-200`}
+                      >
+                        <div
+                          className="flex w-full cursor-pointer items-center gap-2"
+                          onClick={() => {
+                            openModal('tAcademy')
+                            setShowAbout(false)
+                          }}
+                        >
+                          <div className="rounded-[23rem]">
+                            <Notes
+                              className={`h-5 w-5 ${
+                                modalsSidebarState.tAcademy
+                                  ? 'stroke-th-text-primary'
+                                  : 'text-th-text-primary group-hover:text-th-text-primary lg:text-th-secondary-300'
+                              }`}
+                            />
+                          </div>
+                          <ModalInSideBar
+                            isOpen={modalsSidebarState.tAcademy}
+                            setIsOpen={(value) => {
+                              setModalsSidebarState((prev) => ({
+                                ...prev,
+                                tAcademy: value,
+                              }))
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
+                            modalTitle={t('academyArticles')}
+                            buttonTitle={t('academyArticles')}
+                            collapsed={collapsed}
+                          >
+                            <TaTopics />
                           </ModalInSideBar>
                         </div>
                       </Menu.Item>
