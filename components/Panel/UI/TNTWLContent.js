@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 
 import ReactMarkdown from 'react-markdown'
 
@@ -14,12 +14,6 @@ function TNTWLContent({ setItem, item, parentItem, setParentItem, setHref, confi
       contentRef.current.scrollTop = 0
     }
   }, [item, parentItem])
-
-  const handleMdLinkClick = (href) => {
-    if (setHref) {
-      setHref(href)
-    }
-  }
 
   const handleBackClick = () => {
     if (item.type === 'ta' || item.type === 'tw') {
@@ -62,7 +56,7 @@ function TNTWLContent({ setItem, item, parentItem, setParentItem, setHref, confi
 
       <MarkdownExtended
         className="markdown-body"
-        onLinkClick={handleMdLinkClick}
+        onLinkClick={setHref}
         config={config}
         setItem={setItem}
       >
