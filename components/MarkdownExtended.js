@@ -10,9 +10,8 @@ function MarkdownExtended({ children, className, onLinkClick, config, setItem })
   const convertRcLinksToMarkdownLinks = (text) => {
     if (!config?.resource?.repo) return text
     const locale = config.resource.repo.split('_')[0]
-
     return text
-      .replace(/\*/g, locale)
+      .replace(/\*\//g, locale + '/')
       .replace(/\[\[(rc:\/\/\S+?)\]\]/g, (_, url) => `[${url}](${url})`)
   }
 
