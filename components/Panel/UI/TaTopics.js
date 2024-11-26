@@ -12,10 +12,21 @@ function TaTopics() {
   const base = 'rc://ru/ta/man'
   const [href, setHref] = useState('intro/ta-intro')
   const [item, setItem] = useState(null)
+  const [history, setHistory] = useState([])
 
   const updateHref = (newRelativePath) => {
     const { absolutePath } = resolvePath(base, href, newRelativePath)
+    setHistory((prev) => [...prev, href])
     setHref(absolutePath.replace(base + '/', ''))
+  }
+
+  const goBack = () => {
+    setHistory((prev) => {
+      const newHistory = [...prev]
+      const lastHref = newHistory.pop()
+      if (lastHref) setHref(lastHref)
+      return newHistory
+    })
   }
 
   useEffect(() => {
@@ -62,6 +73,7 @@ function TaTopics() {
           config={config}
           setHref={(newRelativePath) => updateHref(newRelativePath)}
           setItem={setItem}
+          goBack={goBack}
           parentItem={item}
         />
       </div>

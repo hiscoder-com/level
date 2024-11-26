@@ -1,11 +1,12 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { getFile } from 'utils/apiHelper'
 import { getWordsAcademy } from 'utils/helper'
 
-function TaContentInfo({ href, config, setItem }) {
+function TaContentInfo({ href, config, setItem, returnImmediately = false }) {
   const [words, setWords] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
+  const hrefRef = useRef(href)
 
   useEffect(() => {
     if (!config || !config.resource) {
@@ -24,32 +25,49 @@ function TaContentInfo({ href, config, setItem }) {
         })
         const fetchedWords = await getWordsAcademy({
           zip,
-          href,
+          href: hrefRef.current,
         })
         setWords(fetchedWords)
+
+        if (returnImmediately) {
+          const title =
+            fetchedWords?.['sub-title'] || fetchedWords?.sub || hrefRef.current
+          const text = fetchedWords?.['01'] || hrefRef.current
+          const item = {
+            title,
+            text,
+            type: 'ta',
+          }
+          setItem?.(item)
+        }
       } finally {
         setIsLoading(false)
       }
     }
 
     getData()
-  }, [href, config])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [returnImmediately, setItem])
 
   if (isLoading) {
     return <span>Loading...</span>
   }
 
-  const description = words?.['title'] || words?.title || href
-  const title = words?.['sub-title'] || words?.sub || href
-  const text = words?.['01'] || words?.['01'] || href
-  const type = 'ta'
+  const description = words?.['title'] || words?.title || hrefRef.current
+  const title = words?.['sub-title'] || words?.sub || hrefRef.current
+  const text = words?.['01'] || hrefRef.current
+  const item = { title, text, type: 'ta' }
+
+  if (returnImmediately) {
+    return null
+  }
 
   return (
     <div
       className="inline-block cursor-pointer text-red-600 hover:underline"
       onClick={(e) => {
         e.preventDefault()
-        setItem?.({ title, text, type })
+        setItem?.(item)
       }}
     >
       {description}
