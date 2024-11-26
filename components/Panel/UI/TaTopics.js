@@ -12,7 +12,7 @@ import { getWordsAcademy, resolvePath } from 'utils/helper'
 function TaTopics() {
   const { locale } = useRouter()
 
-  const config = academyLinks[locale] || academyLinks['en']
+  const config = locale === 'ru' ? academyLinks['ru'] : academyLinks['en']
 
   const [href, setHref] = useState('intro/ta-intro')
   const [item, setItem] = useState(null)
