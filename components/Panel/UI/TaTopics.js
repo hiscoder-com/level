@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { useTranslation } from 'next-i18next'
 
@@ -13,6 +13,7 @@ function TaTopics() {
   const [href, setHref] = useState('intro/ta-intro')
   const [item, setItem] = useState(null)
   const [history, setHistory] = useState([])
+  const scrollRef = useRef(null)
 
   const updateHref = (newRelativePath) => {
     const { absolutePath } = resolvePath(base, href, newRelativePath)
@@ -56,6 +57,15 @@ function TaTopics() {
     getData()
   }, [href])
 
+  useEffect(() => {
+    if (scrollRef.current) {
+      const firstChild = scrollRef.current.firstElementChild
+      if (firstChild) {
+        firstChild.scrollIntoView({ behavior: 'auto', block: 'start' })
+      }
+    }
+  }, [item])
+
   const { t } = useTranslation(['common', 'error'])
 
   const config = {
@@ -67,7 +77,7 @@ function TaTopics() {
 
   return (
     <div className="relative flex h-screen flex-col">
-      <div className="flex-1 overflow-auto">
+      <div className="flex-1 overflow-auto" ref={scrollRef}>
         <TAContent
           item={item}
           config={config}
