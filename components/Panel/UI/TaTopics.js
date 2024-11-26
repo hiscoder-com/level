@@ -9,6 +9,8 @@ import { getFile } from 'utils/apiHelper'
 import { academyLinks } from 'utils/config'
 import { getWordsAcademy, resolvePath } from 'utils/helper'
 
+import Loading from 'public/icons/progress.svg'
+
 function TaTopics() {
   const { locale } = useRouter()
 
@@ -17,6 +19,7 @@ function TaTopics() {
   const [href, setHref] = useState('intro/ta-intro')
   const [item, setItem] = useState(null)
   const [history, setHistory] = useState([])
+  const [loading, setLoading] = useState(false)
   const scrollRef = useRef(null)
 
   const updateHref = (newRelativePath) => {
@@ -36,26 +39,33 @@ function TaTopics() {
 
   useEffect(() => {
     const getData = async () => {
-      const zip = await getFile({
-        owner: config.resource.owner,
-        repo: config.resource.repo.split('_')[0] + '_ta',
-        commit: config.resource.commit,
-        apiUrl: '/api/git/ta',
-      })
+      setLoading(true)
+      try {
+        const zip = await getFile({
+          owner: config.resource.owner,
+          repo: config.resource.repo.split('_')[0] + '_ta',
+          commit: config.resource.commit,
+          apiUrl: '/api/git/ta',
+        })
 
-      const fetchedWords = await getWordsAcademy({
-        zip,
-        href: `${config.base}/${href}`,
-      })
+        const fetchedWords = await getWordsAcademy({
+          zip,
+          href: `${config.base}/${href}`,
+        })
 
-      const title = fetchedWords?.['sub-title'] || href
-      const text = fetchedWords?.['01'] || href
-      const item = {
-        title,
-        text,
-        type: 'ta',
+        const title = fetchedWords?.['sub-title'] || href
+        const text = fetchedWords?.['01'] || href
+        const item = {
+          title,
+          text,
+          type: 'ta',
+        }
+        setItem?.(item)
+      } catch (error) {
+        console.error('Error fetching data:', error)
+      } finally {
+        setLoading(false)
       }
-      setItem?.(item)
     }
 
     getData()
@@ -72,6 +82,11 @@ function TaTopics() {
 
   return (
     <div className="relative flex h-screen flex-col">
+      {loading && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-white bg-opacity-50">
+          <Loading className="progress-custom-colors right-2 m-auto w-6 animate-spin stroke-th-primary-100" />
+        </div>
+      )}
       <div className="flex-1 overflow-auto" ref={scrollRef}>
         <TAContent
           item={item}
