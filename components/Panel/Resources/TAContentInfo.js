@@ -64,7 +64,7 @@ function TaContentInfo({ href, config, setItem, returnImmediately = false }) {
 
   return (
     <div
-      className="inline-block cursor-pointer text-red-600 hover:underline"
+      className="inline-block cursor-pointer text-blue-600 hover:underline"
       onClick={(e) => {
         e.preventDefault()
         setItem?.(item)
