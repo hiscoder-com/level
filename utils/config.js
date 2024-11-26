@@ -258,3 +258,27 @@ export const bookChapters = {
   rev: 22,
   obs: 50,
 }
+
+export const academyLinks = {
+  ru: {
+    resource: {
+      repo: 'ru_tn',
+      owner: 'ru_gl',
+    },
+    base: 'rc://ru/ta/man',
+  },
+  en: {
+    resource: {
+      repo: 'en_tn',
+      owner: 'unfoldingWord',
+    },
+    base: 'rc://en/ta/man',
+  },
+  es: {
+    resource: {
+      repo: 'es_tn',
+      owner: 'es_gl',
+    },
+    base: 'rc://es/ta/man',
+  },
+}

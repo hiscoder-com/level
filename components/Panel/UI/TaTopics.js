@@ -1,24 +1,28 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { useTranslation } from 'next-i18next'
+import { useRouter } from 'next/router'
 
 import TaContentInfo from '../Resources/TAContentInfo'
 import TAContent from './TAContent'
 
 import { getFile } from 'utils/apiHelper'
+import { academyLinks } from 'utils/config'
 import { getWordsAcademy, resolvePath } from 'utils/helper'
 
 function TaTopics() {
-  const base = 'rc://ru/ta/man'
+  const { locale } = useRouter()
+
+  const config = academyLinks[locale] || academyLinks['en']
+
   const [href, setHref] = useState('intro/ta-intro')
   const [item, setItem] = useState(null)
   const [history, setHistory] = useState([])
   const scrollRef = useRef(null)
 
   const updateHref = (newRelativePath) => {
-    const { absolutePath } = resolvePath(base, href, newRelativePath)
+    const { absolutePath } = resolvePath(config.base, href, newRelativePath)
     setHistory((prev) => [...prev, href])
-    setHref(absolutePath.replace(base + '/', ''))
+    setHref(absolutePath.replace(config.base + '/', ''))
   }
 
   const goBack = () => {
@@ -41,7 +45,7 @@ function TaTopics() {
 
       const fetchedWords = await getWordsAcademy({
         zip,
-        href: `${base}/${href}`,
+        href: `${config.base}/${href}`,
       })
 
       const title = fetchedWords?.['sub-title'] || href
@@ -55,7 +59,7 @@ function TaTopics() {
     }
 
     getData()
-  }, [href])
+  }, [href, config.base, config.resource])
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -65,15 +69,6 @@ function TaTopics() {
       }
     }
   }, [item])
-
-  const { t } = useTranslation(['common', 'error'])
-
-  const config = {
-    resource: {
-      repo: 'ru_tn',
-      owner: 'ru_gl',
-    },
-  }
 
   return (
     <div className="relative flex h-screen flex-col">
