@@ -274,11 +274,4 @@ export const academyLinks = {
     },
     base: 'rc://en/ta/man',
   },
-  es: {
-    resource: {
-      repo: 'es_tn',
-      owner: 'es_gl',
-    },
-    base: 'rc://es/ta/man',
-  },
 }
