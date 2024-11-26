@@ -421,8 +421,8 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                               setCollapsed(!value)
                               setIsOpenSideBar(value)
                             }}
-                            modalTitle={t('academyArticles')}
-                            buttonTitle={t('academyArticles')}
+                            modalTitle={t('translationAcademy')}
+                            buttonTitle={t('translationAcademy')}
                             collapsed={collapsed}
                           >
                             <TaTopics />
