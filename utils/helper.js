@@ -933,3 +933,28 @@ export const getImageUrl = (imageUrl) => {
   }
   return ''
 }
+
+export function resolvePath(base, currentPath, relativePath) {
+  let absolutePath = currentPath.startsWith('/') ? currentPath : `/${currentPath}`
+  const relativeParts = relativePath.split('/')
+
+  if (relativeParts.length && relativeParts[relativeParts.length - 1].includes('.')) {
+    relativeParts.pop()
+  }
+
+  const absoluteParts = absolutePath.split('/').filter(Boolean)
+
+  relativeParts.forEach((segment) => {
+    if (segment === '..') {
+      absoluteParts.pop()
+    } else if (segment && segment !== '.') {
+      absoluteParts.push(segment)
+    }
+  })
+
+  absolutePath = `${base}/${absoluteParts.join('/')}`
+
+  const updatedCurrentPath = `/${absoluteParts.join('/')}`
+
+  return { absolutePath, updatedCurrentPath }
+}
