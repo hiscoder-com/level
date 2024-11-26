@@ -7,11 +7,14 @@ import { useQuotesTranslation } from '@texttree/tn-quote'
 
 import { Placeholder, TNTWLContent } from '../UI'
 
-import { filterNotes } from 'utils/helper'
+import { getFile } from 'utils/apiHelper'
+import { filterNotes, getWordsAcademy } from 'utils/helper'
 import { useGetResource, useScroll } from 'utils/hooks'
 
 function TN({ config, url, toolName }) {
   const [item, setItem] = useState(null)
+  const [href, setHref] = useState(null)
+
   const [parentItem, setParentItem] = useState(null)
   const [tnotes, setTnotes] = useState([])
   const { isLoading, data } = useGetResource({ config, url })
@@ -29,6 +32,42 @@ function TN({ config, url, toolName }) {
           config.mainResource.repo,
     },
   })
+
+  useEffect(() => {
+    const fetchWordData = async () => {
+      if (href && data.length > 0) {
+        if (href?.includes('-')) {
+          const result = href.split('/')[1]
+          const zip = await getFile({
+            owner: config.resource.owner,
+            repo: config.resource.repo.split('_')[0] + '_ta',
+            commit: config.resource.commit,
+            apiUrl: '/api/git/ta',
+          })
+
+          const hrefNew = `rc://${config.resource.repo.split('_')[0]}/ta/man/translate/${result}`
+          const fetchedWords = await getWordsAcademy({
+            zip,
+            href: hrefNew,
+          })
+          const title = fetchedWords?.['sub-title'] || fetchedWords?.sub || href
+          const text = fetchedWords?.['01'] || href
+          const type = 'ta'
+          const item = {
+            title,
+            text,
+            type,
+          }
+          setItem?.(item)
+        }
+      }
+    }
+
+    fetchWordData()
+
+    // eslint-disable-next-line
+  }, [href, config.resource.repo])
+
   useEffect(() => {
     if (extraTNotes) {
       const _data = []
@@ -56,6 +95,7 @@ function TN({ config, url, toolName }) {
               item={item}
               parentItem={parentItem}
               setParentItem={setParentItem}
+              setHref={setHref}
               config={config}
             />
           ) : (

@@ -6,7 +6,7 @@ import ReactMarkdown from 'react-markdown'
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { getFile } from 'utils/apiHelper'
-import { checkLSVal, filterNotes, getWord, getWords } from 'utils/helper'
+import { checkLSVal, filterNotes, getWord, getWords, getWordsAcademy } from 'utils/helper'
 import { useGetResource, useScroll } from 'utils/hooks'
 
 import Down from 'public/icons/arrow-down.svg'
@@ -20,18 +20,43 @@ function TWL({ config, url, toolName }) {
   useEffect(() => {
     const fetchWordData = async () => {
       if (href && data.length > 0) {
-        const word = await getWord({
-          zip,
-          repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
-          TWLink: href,
-        })
-        const newItem = {
-          title: word?.title || '',
-          text: word?.text || '',
-          type: 'tw',
-        }
+        if (href?.includes('-')) {
+          const result = href.split('/')[1]
+          const zip = await getFile({
+            owner: config.resource.owner,
+            repo: config.resource.repo.split('_')[0] + '_ta',
+            commit: config.resource.commit,
+            apiUrl: '/api/git/ta',
+          })
 
-        setItem(newItem)
+          const hrefNew = `rc://${config.resource.repo.split('_')[0]}/ta/man/translate/${result}`
+          const fetchedWords = await getWordsAcademy({
+            zip,
+            href: hrefNew,
+          })
+          const title = fetchedWords?.['sub-title'] || fetchedWords?.sub || href
+          const text = fetchedWords?.['01'] || href
+          const type = 'ta'
+          const item = {
+            title,
+            text,
+            type,
+          }
+          setItem?.(item)
+        } else {
+          const word = await getWord({
+            zip,
+            repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
+            TWLink: href,
+          })
+          const newItem = {
+            title: word?.title || '',
+            text: word?.text || '',
+            type: 'tw',
+          }
+
+          setItem(newItem)
+        }
       }
     }
 
