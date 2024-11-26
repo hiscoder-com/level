@@ -24,6 +24,7 @@ import TranslatorImage from './TranslatorImage'
 import { useCurrentUser } from 'lib/UserContext'
 
 import About from 'public/icons/about.svg'
+import AcademicCap from 'public/icons/academicCap.svg'
 import Account from 'public/icons/account.svg'
 import Burger from 'public/icons/burger.svg'
 import Camera from 'public/icons/camera.svg'
@@ -402,7 +403,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           }}
                         >
                           <div className="rounded-[23rem]">
-                            <Notes
+                            <AcademicCap
                               className={`h-5 w-5 ${
                                 modalsSidebarState.tAcademy
                                   ? 'stroke-th-text-primary'
