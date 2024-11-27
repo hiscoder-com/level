@@ -2,7 +2,7 @@
 ## Date: 27.11.2024
 
 ### **Agregado:**
-- se ha añadido la visualización de los artículos De la Academia de traducción en la barra lateral
+- Academia de traducción en sidbar
 
 ### * * Modificado**
 - dentro de tWords funcionan los enlaces cruzados entre palabras

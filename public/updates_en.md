@@ -2,7 +2,7 @@
 ## Date: 27.11.2024
 
 ### **Added:**
-- added the display of articles of the Translation Academy in the sidebar
+- Translation Academy in sidebar
 
 ### **Changed**
 - inside tWords, cross-references between words work
