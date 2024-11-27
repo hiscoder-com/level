@@ -1,3 +1,13 @@
+# Version 0.26.0
+## Date: 27.11.2024
+
+### **Added:**
+- added the display of articles of the Translation Academy in the sidebar
+
+### **Changed**
+- inside tWords, cross-references between words work
+- links to articles of the Translation Academy work inside tWords and tNotes
+
 # Version 0.25.1
 ## Date: 11/08/2024
 
