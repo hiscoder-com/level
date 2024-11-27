@@ -13,6 +13,7 @@ function MarkdownExtended({ children, className, onLinkClick, config, setItem })
     return text
       .replace(/\*\//g, locale + '/')
       .replace(/\[\[(rc:\/\/\S+?)\]\]/g, (_, url) => `[${url}](${url})`)
+      .replace(/\[(\d+:\d+)\]\(\.\.\/\d+\/\d+\.md\)/g, (_, time) => time)
   }
 
   const content = convertRcLinksToMarkdownLinks(

@@ -16,18 +16,10 @@ function TNTWLContent({ setItem, item, parentItem, setParentItem, setHref, confi
   }, [item, parentItem])
 
   const handleBackClick = () => {
-    if (item.type === 'ta' || item.type === 'tw') {
-      setItem(parentItem)
-      setParentItem(null)
-      if (setHref) {
-        setHref(null)
-      }
-    } else {
-      setItem(null)
-      setParentItem(null)
-      if (setHref) {
-        setHref(null)
-      }
+    setItem(item.type === 'ta' || item.type === 'tw' ? parentItem : null)
+    setParentItem(null)
+    if (setHref) {
+      setHref(null)
     }
   }
 

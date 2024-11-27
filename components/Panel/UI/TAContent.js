@@ -23,12 +23,12 @@ function TAContent({ item, setHref, config, goBack }) {
             'Что такое «Академия перевода»?',
             'What is unfoldingWord® Translation Academy?',
           ].includes(item?.title) && (
-            <div
+            <button
               className="mr-2.5 h-fit w-fit cursor-pointer rounded-full bg-th-secondary-100 p-1 hover:opacity-70"
               onClick={handleBackClick}
             >
               <Back className="w-8 stroke-th-primary-200" />
-            </div>
+            </button>
           )}
           <div className="mt-1 text-xl font-bold">
             <ReactMarkdown className="bg-th-secondary-10 text-2xl">
