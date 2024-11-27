@@ -7,6 +7,7 @@ function ModalInSideBar({
   modalTitle,
   buttonTitle,
   collapsed,
+  contentClassName = 'p-4',
 }) {
   return (
     <>
@@ -31,7 +32,9 @@ function ModalInSideBar({
               <Close className="h-8 stroke-th-secondary-10" />
             </button>
           </div>
-          <div className="h-full overflow-y-auto overflow-x-hidden p-4 lg:px-7">
+          <div
+            className={`h-full overflow-y-auto overflow-x-hidden lg:px-7 ${contentClassName}`}
+          >
             {children}
           </div>
         </div>
