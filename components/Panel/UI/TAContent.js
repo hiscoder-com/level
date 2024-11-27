@@ -18,7 +18,7 @@ function TAContent({ item, setHref, config, goBack }) {
       }`}
     >
       <div className="flex h-full flex-col">
-        <div className="sticky top-0 flex bg-th-secondary-10 pb-4">
+        <div className="sticky top-0 z-10 flex items-center bg-th-secondary-10 pb-4">
           <div
             className="mr-2.5 h-fit w-fit cursor-pointer rounded-full bg-th-secondary-100 p-1 hover:opacity-70"
             onClick={handleBackClick}
