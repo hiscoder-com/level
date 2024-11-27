@@ -125,7 +125,9 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
           >
             <Menu.Items
               className={`fixed top-14 z-20 -mx-5 flex h-[calc(100vh-52px)] w-full cursor-default flex-col gap-7 transition-all duration-150 sm:top-20 sm:px-5 md:w-1/2 md:pr-3 lg:left-0 lg:top-16 lg:h-[calc(100vh-64px)] ${
-                !collapsed ? 'lg:w-56' : 'lg:ml-0 lg:w-[3.25rem] lg:p-0 2xl:mx-0'
+                !collapsed
+                  ? 'min-w-[16rem] lg:w-56'
+                  : 'lg:ml-0 lg:w-[3.25rem] lg:p-0 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -406,7 +408,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             <AcademicCap
                               className={`h-5 w-5 ${
                                 modalsSidebarState.tAcademy
-                                  ? 'stroke-th-text-primary'
+                                  ? ''
                                   : 'text-th-text-primary group-hover:text-th-text-primary lg:text-th-secondary-300'
                               }`}
                             />
