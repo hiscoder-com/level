@@ -24,8 +24,15 @@ function TaTopics() {
 
   const updateHref = (newRelativePath) => {
     const { absolutePath } = resolvePath(config.base, href, newRelativePath)
-    setHistory((prev) => [...prev, href])
-    setHref(absolutePath.replace(config.base + '/', ''))
+    const newHref = absolutePath.replace(config.base + '/', '')
+
+    if (newHref === href) {
+      setHref('')
+      setTimeout(() => setHref(newHref), 0)
+    } else {
+      setHistory((prev) => [...prev, href])
+      setHref(newHref)
+    }
   }
 
   const goBack = () => {
