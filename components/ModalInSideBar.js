@@ -33,7 +33,7 @@ function ModalInSideBar({
             </button>
           </div>
           <div
-            className={`h-full overflow-y-auto overflow-x-hidden lg:px-7 ${contentClassName}`}
+            className={`h-full overflow-y-auto overflow-x-hidden px-4 sm:px-7 ${contentClassName}`}
           >
             {children}
           </div>

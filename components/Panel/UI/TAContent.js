@@ -18,7 +18,7 @@ function TAContent({ item, setHref, config, goBack }) {
       }`}
     >
       <div className="flex h-full flex-col">
-        <div className="sticky top-0 z-10 flex items-center bg-th-secondary-10 pb-4">
+        <div className="sticky top-0 flex bg-th-secondary-10 pb-4">
           {![
             'Что такое «Академия перевода»?',
             'What is unfoldingWord® Translation Academy?',

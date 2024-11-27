@@ -426,7 +426,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             modalTitle={t('translationAcademy')}
                             buttonTitle={t('translationAcademy')}
                             collapsed={collapsed}
-                            contentClassName="p-0"
+                            contentClassName="mt-4 p-0"
                           >
                             <TaTopics />
                           </ModalInSideBar>
