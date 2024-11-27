@@ -1,6 +1,5 @@
 {
   "ComingSoon": "Próximamente",
-  "ConnectWithUs": "Contáctanos",
   "Cookies": {
     "Text": "Este sitio utiliza cookies para mejorar el rendimiento del sitio, analizar el tráfico y personalizar el contenido. Al continuar utilizando nuestro sitio, acepta el uso de cookies de acuerdo con nuestra",
     "Title": "Nosotros usamos cookies"
@@ -87,6 +86,7 @@
   "NotAllFieldFull": "No todos los campos han sido rellenados!",
   "Partners": "Asociarse",
   "PrivacyPolicy": "Política de Privacidad",
+  "WriteToUs": "Escríbenos",
   "Verse": {
     "Matthew": "Matthew 24:14",
     "text": "Y este evangelio del reino será predicado en todo el mundo como testimonio a todas las naciones, y entonces vendrá el final."
