@@ -60,7 +60,6 @@ function AboutProject() {
           })}
         </div>
       </div>
-      <Feedback t={t} />
     </>
   )
 }

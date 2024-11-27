@@ -1,6 +1,5 @@
 {
   "ComingSoon": "Coming soon",
-  "ConnectWithUs": "Connect with us",
   "Cookies": {
     "Text": "This site uses cookies to improve the site's performance, analyze traffic, and personalize content. By continuing to use our site, you agree to the use of cookies in accordance with our",
     "Title": "We use cookies"
@@ -87,6 +86,7 @@
   "NotAllFieldFull": "Not all fields are filled in!",
   "Partners": "Partners",
   "PrivacyPolicy": "Privacy Policy",
+  "WriteToUs": "Write to us",
   "Verse": {
     "Matthew": "Matthew 24:14",
     "text": "And this gospel of the kingdom will be preached in the whole world for a testimony to all the nations, and then the end will come."
