@@ -684,6 +684,37 @@ const transformHref = (href) => {
   return href
 }
 
+export const getTitleOfContent = async ({ zip, href }) => {
+  if (!zip || !href) {
+    console.error('The archive is not provided.')
+    return {}
+  }
+
+  const parts = href.slice(5).split('/')
+  const transformedHref = `${parts[0]}_${parts[1]}/${parts[3]}`
+
+  const targetFiles = [`${transformedHref}`]
+
+  const results = await Promise.all(
+    targetFiles.map(async (filePath) => {
+      const file = zip.files[filePath]
+      if (!file) {
+        console.warn(`The ${filePath} file was not found.`)
+        return { path: filePath, content: null }
+      }
+
+      const content = await file.async('text')
+      return { path: filePath, content }
+    })
+  )
+  const fileObject = results.reduce((acc, { path, content }) => {
+    const key = path.split('/').pop()
+    acc[key] = content
+    return acc
+  }, {})
+  return fileObject
+}
+
 export const getTableOfContent = async ({ zip, href }) => {
   if (!zip || !href) {
     console.error('The archive is not provided.')
@@ -705,7 +736,7 @@ export const getTableOfContent = async ({ zip, href }) => {
       return { path: filePath, content }
     })
   )
-
+  console.log(results, 708)
   const fileObject = results.reduce((acc, { path, content }) => {
     const key = path.split('/').pop()
     acc[key] = content
