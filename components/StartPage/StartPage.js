@@ -232,7 +232,7 @@ function StartPage({ defaultContentKey = null }) {
             href={`/${contentRoutes['connect']}`}
             className="h-auto cursor-pointer rounded-2xl bg-th-secondary-10 p-5 lg:p-7 xl:h-32"
           >
-            {t('ConnectWithUs')}
+            {t('WriteToUs')}
           </Link>
           <div className="flex-grow space-y-2 overflow-hidden rounded-2xl bg-th-secondary-10 p-3 lg:p-5 2xl:space-y-4 2xl:p-7">
             <p className="overflow-auto text-xs font-normal 2xl:text-base">
@@ -273,13 +273,10 @@ function StartPage({ defaultContentKey = null }) {
               <SwitchLocalization />
             </div>
           )}
-          <Link
+          <div
             scroll={false}
-            href="/"
-            shallow
             onClick={async (e) => {
               e.preventDefault()
-              await router.push('/')
               router.push(`/${contentRoutes['signIn']}`)
             }}
             className={`cursor-pointer rounded-xl p-5 ${
@@ -293,14 +290,14 @@ function StartPage({ defaultContentKey = null }) {
             </p>
             {showSections.signIn && (
               <Login
-                handleClick={() => {
+                handleClick={(e) => {
                   toggleSection(
                     showSections.signIn && showSections.connect ? 'signIn' : 'connect'
                   )
                 }}
               />
             )}
-          </Link>
+          </div>
         </div>
 
         <div
@@ -394,7 +391,7 @@ function StartPage({ defaultContentKey = null }) {
         <Link scroll={false} href={`/${contentRoutes['connect']}`}>
           <SectionBlock
             sectionKey="connect"
-            label={t('ConnectWithUs')}
+            label={t('WriteToUs')}
             content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
             showSection={showSections.connect}
             toggleSection={toggleSection}

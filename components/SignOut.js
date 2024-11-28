@@ -36,7 +36,7 @@ export default function SignOut({ collapsed }) {
       }`}
     >
       <LogOut
-        className={`w-5 stroke-th-text-primary group-hover:stroke-th-text-primary group-hover:opacity-70 lg:stroke-th-secondary-300 ${
+        className={`w-5 min-w-[1.25rem] stroke-th-text-primary group-hover:stroke-th-text-primary group-hover:opacity-70 lg:stroke-th-secondary-300 ${
           collapsed ? 'opacity-70' : ''
         }`}
       />

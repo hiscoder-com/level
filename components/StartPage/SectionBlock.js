@@ -31,7 +31,7 @@ function SectionBlock({
       className={`relative rounded-xl bg-th-secondary-10 p-5 ${
         isLogo ? 'flex justify-center' : 'text-center'
       }`}
-      onClick={handleSectionToggle}
+      // onClick={handleSectionToggle}
     >
       {showSection ? content : isLogo ? label : <p>{label}</p>}
       <Close

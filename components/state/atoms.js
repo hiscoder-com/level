@@ -76,6 +76,8 @@ export const modalsSidebar = atom({
     avatarSelector: false,
     notepad: false,
     tAcademy: false,
+    writeToUs: false,
+    about: false,
   },
 })
 

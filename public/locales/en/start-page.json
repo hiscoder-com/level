@@ -1,6 +1,5 @@
 {
   "ComingSoon": "Coming soon",
-  "ConnectWithUs": "Connect with us",
   "Cookies": {
     "Text": "This site uses cookies to improve the site's performance, analyze traffic, and personalize content. By continuing to use our site, you agree to the use of cookies in accordance with our",
     "Title": "We use cookies"
@@ -81,12 +80,13 @@
       }
     },
     "Screenshots": "Screenshots",
-    "LevelText": "LEVEL is a platform for step-by-step Bible translation using various helpful materials from our partners.",
+    "LevelText": "LEVEL is a free-to-use, open-source platform for step-by-step Bible translation that can accommodate any type of text materials. Available in online, intranet, and offline versions, it is designed to support church-based translation projects and beyond, offering a reliable, customizable, and accessible solution for translators and teams.\n\nIf you're looking to start translating the Bible, work on Open Bible Stories, or need support with an existing project facing challenges, please don't hesitate to contact us. We're here to help!",
     "WhatIsLevel": "What is LEVEL?"
   },
   "NotAllFieldFull": "Not all fields are filled in!",
   "Partners": "Partners",
   "PrivacyPolicy": "Privacy Policy",
+  "WriteToUs": "Write to us",
   "Verse": {
     "Matthew": "Matthew 24:14",
     "text": "And this gospel of the kingdom will be preached in the whole world for a testimony to all the nations, and then the end will come."

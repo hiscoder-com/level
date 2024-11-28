@@ -83,7 +83,7 @@ function AboutVersion({ isStartPage = false, collapsed, onClose }) {
   return (
     <>
       <div
-        className={`${collapsed && 'lg:hidden'} ${
+        className={`whitespace-nowrap ${collapsed && 'lg:hidden'} ${
           modalsSidebarState.aboutVersion
             ? 'text-th-text-primary'
             : 'text-th-text-primary group-hover:text-th-text-primary lg:text-th-secondary-300'
