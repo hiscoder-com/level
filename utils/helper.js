@@ -684,6 +684,69 @@ const transformHref = (href) => {
   return href
 }
 
+export const getTableOfContent = async ({ zip, href }) => {
+  if (!zip || !href) {
+    console.error('The archive is not provided.')
+    return {}
+  }
+  const transformedHref = transformHref(href)
+
+  const targetFiles = [`${transformedHref}`]
+
+  const results = await Promise.all(
+    targetFiles.map(async (filePath) => {
+      const file = zip.files[filePath]
+      if (!file) {
+        console.warn(`The ${filePath} file was not found.`)
+        return { path: filePath, content: null }
+      }
+
+      const content = await file.async('text')
+      return { path: filePath, content }
+    })
+  )
+
+  const fileObject = results.reduce((acc, { path, content }) => {
+    const key = path.split('/').pop()
+    acc[key] = content
+    return acc
+  }, {})
+  return fileObject
+}
+
+export const parseYAML = (yamlData) => {
+  const parsedData = jsyaml.load(yamlData)
+
+  if (!parsedData || !parsedData.sections || !Array.isArray(parsedData.sections)) {
+    throw new Error("Invalid YAML structure: 'sections' not found or not an array")
+  }
+
+  const processSections = (sections, depth = 0) => {
+    return sections.reduce((acc, section) => {
+      const { title, link, sections: childSections } = section
+
+      if (title && link) {
+        acc.push({ title, link, depth }) // Добавляем уровень вложенности
+      }
+      if (childSections && Array.isArray(childSections)) {
+        acc.push(...processSections(childSections, depth + 1)) // Увеличиваем вложенность для дочерних элементов
+      }
+      return acc
+    }, [])
+  }
+
+  const flattenedSections = processSections(parsedData.sections)
+
+  return {
+    titleLinkMap: flattenedSections.reduce((acc, { title, link }) => {
+      acc[title] = link
+      return acc
+    }, {}),
+    sections: flattenedSections,
+    title: parsedData.title || null,
+  }
+}
+
 export const getWordsAcademy = async ({ zip, href }) => {
   if (!zip || !href) {
     console.error('The archive is not provided.')
