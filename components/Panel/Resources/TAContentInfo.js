@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { getFile } from 'utils/apiHelper'
 import { getWordsAcademy } from 'utils/helper'
 
+import Loading from 'public/icons/progress.svg'
+
 function TaContentInfo({ href, config, setItem, returnImmediately = false }) {
   const [words, setWords] = useState(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -28,34 +30,27 @@ function TaContentInfo({ href, config, setItem, returnImmediately = false }) {
           href: hrefRef.current,
         })
         setWords(fetchedWords)
-
-        if (returnImmediately) {
-          const title =
-            fetchedWords?.['sub-title'] || fetchedWords?.sub || hrefRef.current
-          const text = fetchedWords?.['01'] || hrefRef.current
-          const item = {
-            title,
-            text,
-            type: 'ta',
-          }
-          setItem?.(item)
-        }
+      } catch (error) {
+        console.error('Error fetching data:', error)
       } finally {
         setIsLoading(false)
       }
     }
 
     getData()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [returnImmediately, setItem])
+  }, [config, returnImmediately, setItem])
 
   if (isLoading) {
-    return <span>Loading...</span>
+    return (
+      <Loading className="progress-custom-colors right-2 m-auto w-6 animate-spin stroke-th-primary-100" />
+    )
   }
 
-  const description = words?.['title'] || words?.title || hrefRef.current
-  const title = words?.['sub-title'] || words?.sub || hrefRef.current
-  const text = words?.['01'] || hrefRef.current
+  if (!words) return null
+
+  const description = words['title'] || words.title || hrefRef.current
+  const title = words['sub-title'] || words.sub || hrefRef.current
+  const text = words['01'] || hrefRef.current
   const item = { title, text, type: 'ta' }
 
   if (returnImmediately) {
@@ -64,7 +59,7 @@ function TaContentInfo({ href, config, setItem, returnImmediately = false }) {
 
   return (
     <div
-      className="inline-block cursor-pointer text-blue-600 hover:underline"
+      className="inline-block cursor-pointer text-[#0969da] hover:underline"
       onClick={(e) => {
         e.preventDefault()
         setItem?.(item)
