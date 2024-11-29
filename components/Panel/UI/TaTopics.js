@@ -53,6 +53,7 @@ function TaTopics() {
       const newCategory = event.target.value
       setSelectedCategory(newCategory)
       setSelectedTopic('')
+      setHistory((prev) => [...prev, href])
 
       const fetchTopicsForCategory = async () => {
         try {
@@ -87,12 +88,14 @@ function TaTopics() {
 
       fetchTopicsForCategory()
     },
-    [config.base, config.resource, processSections]
+    [config.base, config.resource, processSections, href]
   )
 
   const handleTopicChange = useCallback(
     async (newTopic) => {
       setSelectedTopic(newTopic)
+      setHistory((prev) => [...prev, href])
+
       if (selectedCategory && newTopic) {
         const newHref = `${selectedCategory}/${newTopic}`
         setHref(newHref)
@@ -125,8 +128,9 @@ function TaTopics() {
         }
       }
     },
-    [selectedCategory, config.base, config.resource]
+    [selectedCategory, config.base, config.resource, href]
   )
+
   useEffect(() => {
     if (topics.length > 0 && selectedCategory) {
       const isCurrentTopicValid = topics.some((topic) => topic.link === selectedTopic)
@@ -141,32 +145,31 @@ function TaTopics() {
   const updateHref = useCallback(
     (newRelativePath) => {
       const { absolutePath } = resolvePath(config.base, href, newRelativePath)
-      const newHref = absolutePath.replace(`${config.base}/`, '')
+      const newHref = absolutePath.replace(config.base + '/', '')
 
-      if (newHref === href) {
-        setHref('')
-        setTimeout(() => setHref(newHref), 0)
-      } else {
+      if (newHref !== href) {
         setHistory((prev) => [...prev, href])
         setHref(newHref)
-      }
 
-      const [newCategory, newTopic] = newHref.split('/')
-      if (newCategory && newCategory !== selectedCategory) {
-        setSelectedCategory(newCategory)
+        const [newCategory, newTopic] = newHref.split('/')
+        setSelectedCategory(newCategory || '')
         setSelectedTopic(newTopic || '')
-      } else if (newTopic && newTopic !== selectedTopic) {
-        setSelectedTopic(newTopic)
       }
     },
-    [href, config.base, selectedCategory, selectedTopic]
+    [href, config.base]
   )
 
   const goBack = useCallback(() => {
     setHistory((prev) => {
       const newHistory = [...prev]
       const lastHref = newHistory.pop()
-      if (lastHref) setHref(lastHref)
+      if (lastHref) {
+        setHref(lastHref)
+
+        const [category, topic] = lastHref.split('/')
+        setSelectedCategory(category || '')
+        setSelectedTopic(topic || '')
+      }
       return newHistory
     })
   }, [])
