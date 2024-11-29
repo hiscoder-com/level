@@ -34,61 +34,14 @@ function TaTopics() {
   const [topics, setTopics] = useState([])
   const [categoryOptions, setCategoryOptions] = useState([])
 
-  const processSections = useCallback((sections, parentTitle = '', depth = 0) => {
-    return sections.reduce((acc, section) => {
-      const { title, link, sections: childSections } = section
-      if (title && link) {
-        const fullPath = parentTitle ? `${parentTitle} > ${title}` : title
-        acc.push({ title: fullPath, link, depth })
-      }
-      if (childSections && Array.isArray(childSections)) {
-        acc.push(...processSections(childSections, fullPath || title, depth + 1))
-      }
-      return acc
-    }, [])
-  }, [])
-
   const handleCategoryChange = useCallback(
     (event) => {
       const newCategory = event.target.value
       setSelectedCategory(newCategory)
       setSelectedTopic('')
       setHistory((prev) => [...prev, href])
-
-      const fetchTopicsForCategory = async () => {
-        try {
-          setLoading(true)
-
-          const zip = await getFile({
-            owner: config.resource.owner,
-            repo: config.resource.repo.split('_')[0] + '_ta',
-            commit: config.resource.commit,
-            apiUrl: '/api/git/ta',
-          })
-
-          const tableContent = await getTableOfContent({
-            zip,
-            href: `${config.base}/${newCategory}/toc.yaml`,
-          })
-
-          const yamlString = tableContent['toc.yaml']
-          if (!yamlString) throw new Error('YAML-файл не найден')
-
-          const parsedYaml = parseYAML(yamlString)
-          const sections = parsedYaml?.sections || []
-
-          const processedTopics = processSections(sections)
-          setTopics(processedTopics)
-        } catch (error) {
-          console.error('Ошибка загрузки тем для категории:', error)
-        } finally {
-          setLoading(false)
-        }
-      }
-
-      fetchTopicsForCategory()
     },
-    [config.base, config.resource, processSections, href]
+    [href]
   )
 
   const handleTopicChange = useCallback(
@@ -220,8 +173,7 @@ function TaTopics() {
         const parsedYaml = parseYAML(yamlString)
         const sections = parsedYaml?.sections || []
 
-        const processedTopics = processSections(sections)
-        setTopics(processedTopics)
+        setTopics(sections)
 
         const fetchedWords = await getWordsAcademy({
           zip,
@@ -243,7 +195,7 @@ function TaTopics() {
     }
 
     fetchData()
-  }, [href, selectedCategory, config.base, config.resource, processSections])
+  }, [href, selectedCategory, config.base, config.resource])
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -283,7 +235,7 @@ function TaTopics() {
           >
             {topics.map((topic) => (
               <option key={topic.link} value={topic.link}>
-                {topic.title}
+                {`${'\u00A0'.repeat(topic.depth * 4)}${topic.title}`}{' '}
               </option>
             ))}
           </select>
