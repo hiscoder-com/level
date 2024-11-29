@@ -4,8 +4,6 @@ import { useRouter } from 'next/router'
 
 import yaml from 'js-yaml'
 
-import CustomComboBox from 'components/CustomComboBox'
-
 import TaContentInfo from '../Resources/TAContentInfo'
 import TAContent from './TAContent'
 
@@ -254,7 +252,7 @@ function TaTopics() {
       )}
 
       <div className="flex-1 overflow-auto" ref={scrollRef}>
-        <div className="relative z-20 flex items-center gap-4 bg-th-secondary-10 p-4">
+        <div className="relative z-20 flex flex-col gap-4 bg-th-secondary-10 p-4">
           <select
             value={selectedCategory}
             onChange={handleCategoryChange}
@@ -267,11 +265,17 @@ function TaTopics() {
             ))}
           </select>
 
-          <CustomComboBox
-            topics={topics}
-            selectedTopic={selectedTopic}
-            onChange={handleTopicChange}
-          />
+          <select
+            value={selectedTopic}
+            onChange={(e) => handleTopicChange(e.target.value)}
+            className="rounded border border-gray-300 p-2"
+          >
+            {topics.map((topic) => (
+              <option key={topic.link} value={topic.link}>
+                {topic.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         <TAContent
@@ -287,7 +291,8 @@ function TaTopics() {
         href={href}
         config={config}
         setItem={setItem}
-        returnImmediately={true}
+        returnImmediately={false}
+        enableArticleFiltering={false}
       />
     </div>
   )

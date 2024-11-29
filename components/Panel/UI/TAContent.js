@@ -13,7 +13,7 @@ function TAContent({ item, setHref, config, goBack }) {
 
   return (
     <div
-      className={`absolute bottom-0 left-0 right-0 top-0 z-10 bg-th-secondary-10 pr-2 pt-20 ${
+      className={`absolute bottom-0 left-0 right-0 top-0 z-10 bg-th-secondary-10 pr-2 pt-32 ${
         item ? '' : 'hidden'
       }`}
     >

@@ -26,7 +26,7 @@ function CustomComboBox({ topics, selectedTopic, onChange }) {
     topics.find((topic) => topic.link === selectedTopic)?.title || 'Select a topic'
 
   return (
-    <div className="relative w-52">
+    <div className="relative">
       <div
         className="h-10 w-full cursor-pointer truncate rounded border border-gray-300 p-2"
         onClick={() => setIsOpen(!isOpen)}
