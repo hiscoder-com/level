@@ -33,6 +33,10 @@ function TaTopics() {
   const [selectedTopic, setSelectedTopic] = useState('')
   const [topics, setTopics] = useState([])
   const [categoryOptions, setCategoryOptions] = useState([])
+  const [searchQuery, setSearchQuery] = useState('')
+  const filteredTopics = topics.filter((topic) =>
+    topic.title.toLowerCase().includes(searchQuery.toLowerCase())
+  )
 
   const handleCategoryChange = useCallback(
     (event) => {
@@ -40,6 +44,7 @@ function TaTopics() {
       setSelectedCategory(newCategory)
       setSelectedTopic('')
       setTopics([])
+      setSearchQuery('')
       setHistory((prev) => [...prev, href])
     },
     [href]
@@ -298,12 +303,20 @@ function TaTopics() {
             ))}
           </select>
 
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search topics"
+            className="rounded border border-gray-300 p-2"
+          />
+
           <select
             value={selectedTopic}
             onChange={(e) => handleTopicChange(e.target.value)}
             className="rounded border border-gray-300 p-2"
           >
-            {topics?.map((topic, index) => (
+            {filteredTopics?.map((topic, index) => (
               <option key={`${topic.link}-${index}`} value={topic.link}>
                 {`${'\u00A0'.repeat(topic.depth * 4)}${topic.title}`}
               </option>
