@@ -141,7 +141,7 @@ function TaTopics() {
   const updateHref = useCallback(
     (newRelativePath) => {
       const { absolutePath } = resolvePath(config.base, href, newRelativePath)
-      const newHref = absolutePath.replace(config.base + '/', '')
+      const newHref = absolutePath.replace(`${config.base}/`, '')
 
       if (newHref === href) {
         setHref('')
@@ -150,8 +150,16 @@ function TaTopics() {
         setHistory((prev) => [...prev, href])
         setHref(newHref)
       }
+
+      const [newCategory, newTopic] = newHref.split('/')
+      if (newCategory && newCategory !== selectedCategory) {
+        setSelectedCategory(newCategory)
+        setSelectedTopic(newTopic || '')
+      } else if (newTopic && newTopic !== selectedTopic) {
+        setSelectedTopic(newTopic)
+      }
     },
-    [href, config.base]
+    [href, config.base, selectedCategory, selectedTopic]
   )
 
   const goBack = useCallback(() => {
