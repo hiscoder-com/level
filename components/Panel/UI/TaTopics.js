@@ -1,6 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
+
+import yaml from 'js-yaml'
 
 import CustomComboBox from 'components/CustomComboBox'
 
@@ -9,7 +11,13 @@ import TAContent from './TAContent'
 
 import { getFile } from 'utils/apiHelper'
 import { academyLinks } from 'utils/config'
-import { getTableOfContent, getWordsAcademy, parseYAML, resolvePath } from 'utils/helper'
+import {
+  getTableOfContent,
+  getTitleOfContent,
+  getWordsAcademy,
+  parseYAML,
+  resolvePath,
+} from 'utils/helper'
 
 import Loading from 'public/icons/progress.svg'
 
@@ -23,11 +31,12 @@ function TaTopics() {
   const [loading, setLoading] = useState(false)
   const scrollRef = useRef(null)
 
-  const [selectedCategory, setSelectedCategory] = useState('intro')
+  const [selectedCategory, setSelectedCategory] = useState('')
   const [selectedTopic, setSelectedTopic] = useState('')
   const [topics, setTopics] = useState([])
+  const [categoryOptions, setCategoryOptions] = useState([])
 
-  const processSections = (sections, parentTitle = '', depth = 0) => {
+  const processSections = useCallback((sections, parentTitle = '', depth = 0) => {
     return sections.reduce((acc, section) => {
       const { title, link, sections: childSections } = section
       if (title && link) {
@@ -39,44 +48,122 @@ function TaTopics() {
       }
       return acc
     }, [])
-  }
+  }, [])
 
-  const updateHref = (newRelativePath) => {
-    const { absolutePath } = resolvePath(config.base, href, newRelativePath)
-    const newHref = absolutePath.replace(config.base + '/', '')
+  const handleCategoryChange = useCallback(
+    (event) => {
+      const newCategory = event.target.value
+      setSelectedCategory(newCategory)
+      setSelectedTopic('')
 
-    if (newHref === href) {
-      setHref('')
-      setTimeout(() => setHref(newHref), 0)
-    } else {
-      setHistory((prev) => [...prev, href])
-      setHref(newHref)
+      const fetchTopicsForCategory = async () => {
+        try {
+          setLoading(true)
+
+          const zip = await getFile({
+            owner: config.resource.owner,
+            repo: config.resource.repo.split('_')[0] + '_ta',
+            commit: config.resource.commit,
+            apiUrl: '/api/git/ta',
+          })
+
+          const tableContent = await getTableOfContent({
+            zip,
+            href: `${config.base}/${newCategory}/toc.yaml`,
+          })
+
+          const yamlString = tableContent['toc.yaml']
+          if (!yamlString) throw new Error('YAML-файл не найден')
+
+          const parsedYaml = parseYAML(yamlString)
+          const sections = parsedYaml?.sections || []
+
+          const processedTopics = processSections(sections)
+          setTopics(processedTopics)
+        } catch (error) {
+          console.error('Ошибка загрузки тем для категории:', error)
+        } finally {
+          setLoading(false)
+        }
+      }
+
+      fetchTopicsForCategory()
+    },
+    [config.base, config.resource, processSections]
+  )
+
+  const handleTopicChange = useCallback(
+    async (newTopic) => {
+      setSelectedTopic(newTopic)
+      if (selectedCategory && newTopic) {
+        const newHref = `${selectedCategory}/${newTopic}`
+        setHref(newHref)
+
+        try {
+          setLoading(true)
+          const zip = await getFile({
+            owner: config.resource.owner,
+            repo: config.resource.repo.split('_')[0] + '_ta',
+            commit: config.resource.commit,
+            apiUrl: '/api/git/ta',
+          })
+
+          const fetchedWords = await getWordsAcademy({
+            zip,
+            href: `${config.base}/${newHref}`,
+          })
+
+          const title = fetchedWords?.['sub-title'] || newHref
+          const text = fetchedWords?.['01'] || newHref
+          setItem({
+            title,
+            text,
+            type: 'ta',
+          })
+        } catch (error) {
+          console.error('Error fetching topic content:', error)
+        } finally {
+          setLoading(false)
+        }
+      }
+    },
+    [selectedCategory, config.base, config.resource]
+  )
+  useEffect(() => {
+    if (topics.length > 0 && selectedCategory) {
+      const isCurrentTopicValid = topics.some((topic) => topic.link === selectedTopic)
+      if (!isCurrentTopicValid) {
+        const firstTopicLink = topics[0].link
+        setSelectedTopic(firstTopicLink)
+        setHref(`${selectedCategory}/${firstTopicLink}`)
+      }
     }
-  }
+  }, [topics, selectedCategory])
 
-  const goBack = () => {
+  const updateHref = useCallback(
+    (newRelativePath) => {
+      const { absolutePath } = resolvePath(config.base, href, newRelativePath)
+      const newHref = absolutePath.replace(config.base + '/', '')
+
+      if (newHref === href) {
+        setHref('')
+        setTimeout(() => setHref(newHref), 0)
+      } else {
+        setHistory((prev) => [...prev, href])
+        setHref(newHref)
+      }
+    },
+    [href, config.base]
+  )
+
+  const goBack = useCallback(() => {
     setHistory((prev) => {
       const newHistory = [...prev]
       const lastHref = newHistory.pop()
       if (lastHref) setHref(lastHref)
       return newHistory
     })
-  }
-
-  const handleCategoryChange = (event) => {
-    const newCategory = event.target.value
-    setSelectedCategory(newCategory)
-    setSelectedTopic('')
-    setHref(`${newCategory}/`)
-  }
-
-  const handleTopicChange = (newTopic) => {
-    setSelectedTopic(newTopic)
-    if (selectedCategory && newTopic) {
-      const newHref = `${selectedCategory}/${newTopic}`
-      setHref(newHref)
-    }
-  }
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -89,12 +176,37 @@ function TaTopics() {
           apiUrl: '/api/git/ta',
         })
 
+        const titleContent = await getTitleOfContent({
+          zip,
+          href: `${config.base}/manifest.yaml`,
+        })
+
+        const titleContentDataString = titleContent['manifest.yaml']
+        const titleContentData = yaml.load(titleContentDataString)
+
+        const projects = titleContentData?.projects
+        if (!projects || projects.length === 0) {
+          console.error('Projects not found in manifest.yaml')
+          return
+        }
+
+        const projectOptions = projects.map((project) => ({
+          value: project.identifier,
+          label: project.title,
+        }))
+        setCategoryOptions(projectOptions)
+
+        if (!selectedCategory) {
+          setSelectedCategory(projectOptions[0]?.value || '')
+        }
+
         const tableContent = await getTableOfContent({
           zip,
-          href: `${config.base}/${selectedCategory}/toc.yaml`,
+          href: `${config.base}/${selectedCategory || projectOptions[0]?.value || ''}/toc.yaml`,
         })
+
         const yamlString = tableContent['toc.yaml']
-        if (!yamlString) throw new Error('YAML-файл не найден')
+        if (!yamlString) throw new Error('YAML file not found')
 
         const parsedYaml = parseYAML(yamlString)
         const sections = parsedYaml?.sections || []
@@ -122,7 +234,7 @@ function TaTopics() {
     }
 
     fetchData()
-  }, [href, selectedCategory, config.base, config.resource])
+  }, [href, selectedCategory, config.base, config.resource, processSections])
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -148,10 +260,11 @@ function TaTopics() {
             onChange={handleCategoryChange}
             className="rounded border border-gray-300 p-2"
           >
-            <option value="intro">intro</option>
-            <option value="process">process</option>
-            <option value="translate">translate</option>
-            <option value="checking">checking</option>
+            {categoryOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
           </select>
 
           <CustomComboBox

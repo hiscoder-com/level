@@ -736,7 +736,6 @@ export const getTableOfContent = async ({ zip, href }) => {
       return { path: filePath, content }
     })
   )
-  console.log(results, 708)
   const fileObject = results.reduce((acc, { path, content }) => {
     const key = path.split('/').pop()
     acc[key] = content
@@ -757,10 +756,10 @@ export const parseYAML = (yamlData) => {
       const { title, link, sections: childSections } = section
 
       if (title && link) {
-        acc.push({ title, link, depth }) // Добавляем уровень вложенности
+        acc.push({ title, link, depth })
       }
       if (childSections && Array.isArray(childSections)) {
-        acc.push(...processSections(childSections, depth + 1)) // Увеличиваем вложенность для дочерних элементов
+        acc.push(...processSections(childSections, depth + 1))
       }
       return acc
     }, [])
