@@ -181,9 +181,13 @@ function TaTopics() {
           }, {})
 
           const updateSections = (sections) => {
-            return sections.map((section) => {
+            return sections.map((section, index, array) => {
               const updatedSection = { ...section }
               const tempLink = `${selectedCategory}/${updatedSection.link}`
+
+              if (!updatedSection.link && array[index + 1]?.link) {
+                updatedSection.link = array[index + 1].link
+              }
 
               if (updatedSection.link && titleMap[tempLink]) {
                 updatedSection.title = titleMap[tempLink]
