@@ -39,6 +39,7 @@ function TaTopics() {
       const newCategory = event.target.value
       setSelectedCategory(newCategory)
       setSelectedTopic('')
+      setTopics([])
       setHistory((prev) => [...prev, href])
     },
     [href]
@@ -138,6 +139,70 @@ function TaTopics() {
           apiUrl: '/api/git/ta',
         })
 
+        const getFileContent = async (fileName) => {
+          const file = zip.files[fileName]
+          if (file) {
+            const content = await file.async('text')
+            return content
+          }
+          throw new Error(`File not found: ${fileName}`)
+        }
+
+        const names = Object.values(zip.files).map((item) => item.name)
+
+        const filteredArray = names.filter(
+          (name) => name.includes('title.md') && !name.includes('sub-title.md')
+        )
+
+        const titleFiles = []
+
+        for (const file of filteredArray) {
+          const fileRef = file
+            .replace(/^.*?\/(.*)/, '$1')
+            .split('/')
+            .slice(0, -1)
+            .join('/')
+          try {
+            const fileContent = await getFileContent(file)
+
+            titleFiles.push({
+              title: fileContent,
+              ref: fileRef,
+            })
+          } catch (error) {
+            console.error(`Error reading file ${file}:`, error)
+          }
+        }
+
+        const updateParsedYamlTitles = (parsedYaml, titleFiles, selectedCategory) => {
+          const titleMap = titleFiles.reduce((map, file) => {
+            map[file.ref] = file.title
+            return map
+          }, {})
+
+          const updateSections = (sections) => {
+            return sections.map((section) => {
+              const updatedSection = { ...section }
+              const tempLink = `${selectedCategory}/${updatedSection.link}`
+
+              if (updatedSection.link && titleMap[tempLink]) {
+                updatedSection.title = titleMap[tempLink]
+              }
+
+              if (updatedSection.sections) {
+                updatedSection.sections = updateSections(updatedSection.sections)
+              }
+
+              return updatedSection
+            })
+          }
+
+          return {
+            ...parsedYaml,
+            sections: updateSections(parsedYaml.sections),
+          }
+        }
+
         const titleContent = await getTitleOfContent({
           zip,
           href: `${config.base}/manifest.yaml`,
@@ -170,9 +235,10 @@ function TaTopics() {
         const yamlString = tableContent['toc.yaml']
         if (!yamlString) throw new Error('YAML file not found')
 
-        const parsedYaml = parseYAML(yamlString)
-        const sections = parsedYaml?.sections || []
+        const tempYAML = parseYAML(yamlString)
 
+        const parsedYaml = updateParsedYamlTitles(tempYAML, titleFiles, selectedCategory)
+        const sections = parsedYaml?.sections || []
         setTopics(sections)
 
         const fetchedWords = await getWordsAcademy({
@@ -221,8 +287,8 @@ function TaTopics() {
             onChange={handleCategoryChange}
             className="rounded border border-gray-300 p-2"
           >
-            {categoryOptions.map((option) => (
-              <option key={option.value} value={option.value}>
+            {categoryOptions?.map((option, index) => (
+              <option key={`${option.value}-${index}`} value={option.value}>
                 {option.label}
               </option>
             ))}
@@ -233,9 +299,9 @@ function TaTopics() {
             onChange={(e) => handleTopicChange(e.target.value)}
             className="rounded border border-gray-300 p-2"
           >
-            {topics.map((topic) => (
-              <option key={topic.link} value={topic.link}>
-                {`${'\u00A0'.repeat(topic.depth * 4)}${topic.title}`}{' '}
+            {topics?.map((topic, index) => (
+              <option key={`${topic.link}-${index}`} value={topic.link}>
+                {`${'\u00A0'.repeat(topic.depth * 4)}${topic.title}`}
               </option>
             ))}
           </select>
