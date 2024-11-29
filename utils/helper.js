@@ -751,27 +751,35 @@ export const parseYAML = (yamlData) => {
     throw new Error("Invalid YAML structure: 'sections' not found or not an array")
   }
 
-  const processSections = (sections, depth = 0) => {
-    return sections.reduce((acc, section) => {
+  const processSections = (
+    sections,
+    depth = 0,
+    titleLinkMap = {},
+    flattenedSections = []
+  ) => {
+    sections.forEach((section) => {
       const { title, link, sections: childSections } = section
 
-      if (title && link) {
-        acc.push({ title, link, depth })
+      if (title) {
+        const resolvedLink = link || titleLinkMap[title]
+
+        titleLinkMap[title] = resolvedLink
+
+        flattenedSections.push({ title, link: resolvedLink, depth })
       }
+
       if (childSections && Array.isArray(childSections)) {
-        acc.push(...processSections(childSections, depth + 1))
+        processSections(childSections, depth + 1, titleLinkMap, flattenedSections)
       }
-      return acc
-    }, [])
+    })
+
+    return { titleLinkMap, flattenedSections }
   }
 
-  const flattenedSections = processSections(parsedData.sections)
+  const { titleLinkMap, flattenedSections } = processSections(parsedData.sections)
 
   return {
-    titleLinkMap: flattenedSections.reduce((acc, { title, link }) => {
-      acc[title] = link
-      return acc
-    }, {}),
+    titleLinkMap,
     sections: flattenedSections,
     title: parsedData.title || null,
   }
