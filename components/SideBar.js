@@ -13,6 +13,7 @@ import AboutProject from './AboutProject'
 import AvatarSelector from './AvatarSelector'
 import ModalInSideBar from './ModalInSideBar'
 import { PersonalNotes } from './Panel'
+import TaTopics from './Panel/UI/TaTopics'
 import ProjectCreate from './ProjectCreate'
 import SignOut from './SignOut'
 import Feedback from './StartPage/Feedback'
@@ -24,6 +25,7 @@ import TranslatorImage from './TranslatorImage'
 import { useCurrentUser } from 'lib/UserContext'
 
 import About from 'public/icons/about.svg'
+import AcademicCap from 'public/icons/academicCap.svg'
 import Account from 'public/icons/account.svg'
 import Burger from 'public/icons/burger.svg'
 import Camera from 'public/icons/camera.svg'
@@ -60,6 +62,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
         aboutVersion: false,
         avatarSelector: false,
         notepad: false,
+        tAcademy: false,
         writeToUs: false,
         about: false,
       }
@@ -75,6 +78,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
       aboutVersion: false,
       avatarSelector: false,
       notepad: false,
+      tAcademy: false,
       writeToUs: false,
       about: false,
     })
@@ -133,7 +137,9 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
           >
             <Menu.Items
               className={`fixed top-14 z-20 -mx-5 flex h-[calc(100vh-52px)] w-full cursor-default flex-col gap-7 transition-all duration-150 sm:top-20 sm:px-5 md:w-1/2 md:pr-3 lg:left-0 lg:top-16 lg:h-[calc(100vh-64px)] ${
-                !collapsed ? 'lg:w-56' : 'lg:ml-0 lg:w-[3.25rem] lg:p-0 2xl:mx-0'
+                !collapsed
+                  ? 'min-w-[16rem] lg:w-56'
+                  : 'lg:ml-0 lg:w-[3.25rem] lg:p-0 2xl:mx-0'
               }`}
               onClick={(e) => e.stopPropagation()}
               onMouseEnter={() => {
@@ -147,6 +153,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                   modalsSidebarState.aboutVersion ||
                   modalsSidebarState.avatarSelector ||
                   modalsSidebarState.writeToUs ||
+                  modalsSidebarState.tAcademy ||
                   modalsSidebarState.about
                 ) {
                   return
@@ -384,6 +391,50 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             collapsed={collapsed}
                           >
                             <PersonalNotes />
+                          </ModalInSideBar>
+                        </div>
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className={`group flex cursor-default items-center justify-between gap-2 px-4 py-3 ${
+                          modalsSidebarState.tAcademy
+                            ? 'bg-th-secondary-200'
+                            : 'opacity-70'
+                        } hover:bg-th-secondary-200`}
+                      >
+                        <div
+                          className="flex w-full cursor-pointer items-center gap-2"
+                          onClick={() => {
+                            openModal('tAcademy')
+                            setShowAbout(false)
+                          }}
+                        >
+                          <div className="rounded-[23rem]">
+                            <AcademicCap
+                              className={`h-5 w-5 ${
+                                modalsSidebarState.tAcademy
+                                  ? ''
+                                  : 'text-th-text-primary group-hover:text-th-text-primary lg:text-th-secondary-300'
+                              }`}
+                            />
+                          </div>
+                          <ModalInSideBar
+                            isOpen={modalsSidebarState.tAcademy}
+                            setIsOpen={(value) => {
+                              setModalsSidebarState((prev) => ({
+                                ...prev,
+                                tAcademy: value,
+                              }))
+                              setCollapsed(!value)
+                              setIsOpenSideBar(value)
+                            }}
+                            modalTitle={t('translationAcademy')}
+                            buttonTitle={t('translationAcademy')}
+                            collapsed={collapsed}
+                            contentClassName="mt-4 p-0"
+                          >
+                            <TaTopics />
                           </ModalInSideBar>
                         </div>
                       </Menu.Item>

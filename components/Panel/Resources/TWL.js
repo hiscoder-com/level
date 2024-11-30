@@ -6,13 +6,65 @@ import ReactMarkdown from 'react-markdown'
 import { Placeholder, TNTWLContent } from '../UI'
 
 import { getFile } from 'utils/apiHelper'
-import { checkLSVal, filterNotes, getWords } from 'utils/helper'
+import { checkLSVal, filterNotes, getWord, getWords, getWordsAcademy } from 'utils/helper'
 import { useGetResource, useScroll } from 'utils/hooks'
 
 import Down from 'public/icons/arrow-down.svg'
 
 function TWL({ config, url, toolName }) {
   const [item, setItem] = useState(null)
+  const [parentItem, setParentItem] = useState(null)
+
+  const [href, setHref] = useState(null)
+  const [zip, setZip] = useState(null)
+  useEffect(() => {
+    const fetchWordData = async () => {
+      if (href && data.length > 0) {
+        if (href?.includes('-')) {
+          const result = href.split('/')[1]
+          const zip = await getFile({
+            owner: config.resource.owner,
+            repo: config.resource.repo.split('_')[0] + '_ta',
+            commit: config.resource.commit,
+            apiUrl: '/api/git/ta',
+          })
+
+          const hrefNew = `rc://${config.resource.repo.split('_')[0]}/ta/man/translate/${result}`
+          const fetchedWords = await getWordsAcademy({
+            zip,
+            href: hrefNew,
+          })
+          const title = fetchedWords?.['sub-title'] || fetchedWords?.sub || href
+          const text = fetchedWords?.['01'] || href
+          const type = 'ta'
+          const item = {
+            title,
+            text,
+            type,
+          }
+          setItem?.(item)
+        } else {
+          const word = await getWord({
+            zip,
+            repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
+            TWLink: href,
+          })
+          const newItem = {
+            title: word?.title || '',
+            text: word?.text || '',
+            type: 'tw',
+          }
+
+          setItem(newItem)
+        }
+      }
+    }
+
+    fetchWordData()
+
+    // eslint-disable-next-line
+  }, [href, config.resource.repo])
+
   const { isLoading, data } = useGetResource({ config, url })
   const [wordObjects, setWordObjects] = useState([])
   const [isLoadingTW, setIsLoadingTW] = useState(false)
@@ -25,6 +77,7 @@ function TWL({ config, url, toolName }) {
         commit: config.resource.commit,
         apiUrl: '/api/git/tw',
       })
+      setZip(zip)
       const words = await getWords({
         zip,
         repo: config.resource.repo.slice(0, -1).replace('obs-', ''),
@@ -48,7 +101,7 @@ function TWL({ config, url, toolName }) {
           id: ID,
           title,
           text,
-          url: TWLink,
+          url: TWLink, // TODO уточнить где используется
           isRepeatedInBook,
           isRepeatedInChapter,
           isRepeatedInVerse,
@@ -67,9 +120,17 @@ function TWL({ config, url, toolName }) {
   return (
     <>
       <div className="relative h-full">
-        <TNTWLContent setItem={setItem} item={item} />
+        <TNTWLContent
+          setItem={setItem}
+          item={item}
+          parentItem={parentItem}
+          setParentItem={setParentItem}
+          setHref={setHref}
+          config={config}
+        />
         <TWLList
           setItem={setItem}
+          setParentItem={setParentItem}
           data={wordObjects}
           toolName={toolName}
           isLoading={isLoadingTW || isLoading}
@@ -81,9 +142,8 @@ function TWL({ config, url, toolName }) {
 
 export default TWL
 
-function TWLList({ setItem, data, toolName, isLoading }) {
+function TWLList({ setItem, setParentItem, data, toolName, isLoading }) {
   const [verses, setVerses] = useState([])
-
   const [filter, setFilter] = useState(() => {
     return checkLSVal('filter_words', 'disabled', 'string')
   })
@@ -149,7 +209,8 @@ function TWLList({ setItem, data, toolName, isLoading }) {
                         } hover:bg-th-secondary-100 ${highlightId === 'id' + item.id ? 'bg-th-secondary-100' : ''} `}
                         onClick={() => {
                           handleSaveScroll(verseNumber, item.id)
-                          setItem({ text: item.text, title: item.title })
+                          setParentItem(item)
+                          setItem({ text: item.text, title: item.title, type: 'twl' })
                         }}
                       >
                         <ReactMarkdown>{item.title}</ReactMarkdown>
