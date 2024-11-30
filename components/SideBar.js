@@ -48,7 +48,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
 
   const [collapsed, setCollapsed] = useState(true)
   const [isLargeScreen, setIsLargeScreen] = useState(false)
-  const [showAbout, setShowAbout] = useState(false)
   const [showCreate, setShowCreate] = useState(false)
 
   const collapsedSideBar = collapsed ? 'lg:hidden' : ''
@@ -187,30 +186,128 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                 <div className="f-screen-appbar flex grow flex-col justify-between sm:min-h-[60vh]">
                   <div className="flex grow flex-col justify-between gap-8 text-sm">
                     <div className="flex flex-col">
-                      <MenuItemLink
-                        collapsedSideBar={collapsedSideBar}
-                        tab="0"
-                        clear={clear}
-                        Icon={Account}
-                        name={t('Account')}
-                      />
-                      <MenuItemLink
-                        collapsedSideBar={collapsedSideBar}
-                        tab="1"
-                        clear={clear}
-                        Icon={Projects}
-                        name={t('Projects')}
-                      />
-
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className={`group px-4 py-3 ${
+                          router.query?.tab !== '0' ? 'opacity-70' : 'bg-th-secondary-200'
+                        } hover:bg-th-secondary-200`}
+                      >
+                        <Link href="/account?tab=0" legacyBehavior>
+                          <a
+                            className="flex cursor-pointer items-center gap-2"
+                            onClick={() => {
+                              closeModal()
+                              setIsOpenSideBar(false)
+                              close()
+                            }}
+                          >
+                            <div className="rounded-[23rem]">
+                              <Account
+                                className={`ml-0.5 w-4 ${
+                                  router.query?.tab === '0'
+                                    ? 'stroke-th-text-primary'
+                                    : activeIconClass
+                                }`}
+                              />
+                            </div>
+                            <span
+                              className={`whitespace-nowrap ${collapsedSideBar} ${
+                                router.query?.tab === '0'
+                                  ? 'text-th-text-primary'
+                                  : activeTextClass
+                              }`}
+                            >
+                              {t('Account')}
+                            </span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className={`group px-4 py-3 ${
+                          router.query?.tab !== '1' ? 'opacity-70' : 'bg-th-secondary-200'
+                        } hover:bg-th-secondary-200`}
+                      >
+                        <Link href="/account?tab=1" legacyBehavior>
+                          <a
+                            className="flex cursor-pointer items-center gap-2"
+                            onClick={() => {
+                              closeModal()
+                              setIsOpenSideBar(false)
+                              close()
+                            }}
+                          >
+                            <div className="rounded-[23rem]">
+                              <Projects
+                                className={`w-5 ${
+                                  router.query?.tab === '1'
+                                    ? 'stroke-th-text-primary'
+                                    : activeIconClass
+                                }`}
+                              />
+                            </div>
+                            <span
+                              className={`${collapsedSideBar} ${
+                                router.query?.tab === '1'
+                                  ? 'text-th-text-primary'
+                                  : activeTextClass
+                              }`}
+                            >
+                              {t('Projects')}
+                            </span>
+                          </a>
+                        </Link>
+                      </Menu.Item>
                       {user?.is_admin && (
-                        <MenuItemLink
-                          collapsedSideBar={collapsedSideBar}
-                          tab="2"
-                          clear={clear}
-                          Icon={CreateProject}
-                          name={t('CreateProject')}
-                          additionalClassName="hidden md:block"
-                        />
+                        <Menu.Item
+                          as="div"
+                          disabled
+                          className={`group hidden px-4 py-3 md:block ${
+                            router.query?.tab !== '2'
+                              ? 'opacity-70'
+                              : 'bg-th-secondary-200'
+                          } hover:bg-th-secondary-200`}
+                        >
+                          <Link href="/account?tab=2" legacyBehavior>
+                            <a
+                              className="flex cursor-pointer items-center gap-2"
+                              onClick={() => {
+                                closeModal()
+                                setIsOpenSideBar(false)
+                                close()
+                              }}
+                            >
+                              <div className="rounded-[23rem]">
+                                <CreateProject
+                                  className={`h-5 w-5 ${
+                                    router.query?.tab === '2'
+                                      ? 'stroke-th-text-primary'
+                                      : activeIconClass
+                                  }`}
+                                />
+                              </div>
+                              <div
+                                className={`overflow-hidden ${
+                                  collapsed
+                                    ? 'lg:w-0'
+                                    : 'transition-all delay-700 duration-700 lg:w-auto'
+                                }`}
+                              >
+                                <span
+                                  className={`whitespace-nowrap ${collapsedSideBar} ${
+                                    router.query?.tab === '2'
+                                      ? 'text-th-text-primary'
+                                      : activeTextClass
+                                  }`}
+                                >
+                                  {t('CreateProject')}
+                                </span>
+                              </div>
+                            </a>
+                          </Link>
+                        </Menu.Item>
                       )}
 
                       {user?.is_admin && (
@@ -462,7 +559,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           className="flex w-full cursor-pointer items-center gap-2"
                           onClick={() => {
                             openModal('aboutVersion')
-                            setShowAbout(false)
                           }}
                         >
                           <div className="rounded-[23rem]">
@@ -505,34 +601,3 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
 }
 
 export default SideBar
-
-function MenuItemLink({ collapsedSideBar, tab, clear, Icon, name, additionalClassName }) {
-  const router = useRouter()
-  const iconClassName = `w-5 ${
-    router.query?.tab === tab ? 'stroke-th-text-primary' : activeIconClass
-  }`
-  return (
-    <Menu.Item
-      as="div"
-      disabled
-      className={`group px-4 ${
-        router.query?.tab !== tab ? 'opacity-70' : 'bg-th-secondary-200'
-      } hover:bg-th-secondary-200 ${additionalClassName}`}
-    >
-      <Link href={`/account?tab=${tab}`} legacyBehavior shallow>
-        <a className="flex cursor-pointer items-center gap-2 py-3" onClick={clear}>
-          <div className="rounded-[23rem]">
-            <Icon className={iconClassName} />
-          </div>
-          <span
-            className={`whitespace-nowrap ${collapsedSideBar} ${
-              router.query?.tab === tab ? 'text-th-text-primary' : activeTextClass
-            }`}
-          >
-            {name}
-          </span>
-        </a>
-      </Link>
-    </Menu.Item>
-  )
-}
