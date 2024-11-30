@@ -190,5 +190,7 @@
   "Projects": "Проекты",
   "CreateProject": "Создать проект",
   "About": "О проекте",
-  "Language": "Язык"
+  "Language": "Язык",
+  "TextSpeed": "Прокрутка текста",
+  "FontSize": "Размер текста"
 }

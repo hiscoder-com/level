@@ -190,5 +190,7 @@
   "Projects": "Proyectos",
   "CreateProject": "Crear un proyecto",
   "About": "Sobre el proyecto",
-  "Language": "Idioma"
+  "Language": "Idioma",
+  "TextSpeed": "Velocidad del texto",
+  "FontSize": "Tamaño de letra"
 }

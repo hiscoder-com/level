@@ -421,3 +421,21 @@
 .progress-light path {
 @apply stroke-th-secondary-10
 }
+
+.verse-container {
+  position: relative;
+  padding: 1rem;
+}
+
+.verse-line {
+  transition: all 0.3s ease;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari and Opera */
+}
