@@ -42,7 +42,7 @@ export default function SignOut({ collapsed }) {
       />
 
       <p
-        className={`opacity-70 lg:text-th-secondary-300 ${
+        className={`whitespace-nowrap opacity-70 lg:text-th-secondary-300 ${
           collapsed ? 'lg:hidden' : ''
         } group-hover:text-th-text-primary group-hover:opacity-70`}
       >
