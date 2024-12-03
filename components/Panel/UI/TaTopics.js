@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 
 import yaml from 'js-yaml'
 
+import DropdownSearch from 'components/DropdownSearch'
+
 import TaContentInfo from '../Resources/TAContentInfo'
 import TAContent from './TAContent'
 
@@ -37,15 +39,15 @@ function TaTopics() {
   const [allTopics, setAllTopics] = useState([])
 
   const filteredTopics = (() => {
-    if (!searchQuery.trim()) {
-      return topics.map((topic) => ({ ...topic, category: selectedCategory }))
-    } else {
-      const query = searchQuery.toLowerCase()
-      const result = allTopics
-        .filter((topic) => topic.title.toLowerCase().includes(query))
-        .map((topic) => ({ ...topic, category: topic.category || selectedCategory }))
-      return result
+    const query = searchQuery.trim().toLowerCase()
+
+    if (!query) {
+      return allTopics
+        .filter((topic) => topic.category === selectedCategory)
+        .map((topic) => ({ ...topic, category: selectedCategory }))
     }
+
+    return allTopics.filter((topic) => topic.title.toLowerCase().includes(query))
   })()
 
   const handleCategoryChange = useCallback(
@@ -325,25 +327,16 @@ function TaTopics() {
             ))}
           </select>
 
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search topics"
-            className="rounded border border-gray-300 p-2"
-          />
-
-          <select
-            value={selectedTopic}
-            onChange={(e) => handleTopicChange(e.target.value)}
-            className="rounded border border-gray-300 p-2"
-          >
-            {filteredTopics?.map((topic, index) => (
-              <option key={`${topic.link}-${index}`} value={topic.link}>
-                {`${'\u00A0'.repeat(topic.depth * 4)}${topic.title}`}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <DropdownSearch
+              options={filteredTopics}
+              value={selectedTopic}
+              onChange={(newValue) => handleTopicChange(newValue)}
+              placeholder="Search topics"
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+            />
+          </div>
         </div>
 
         <TAContent
