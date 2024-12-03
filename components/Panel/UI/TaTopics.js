@@ -62,27 +62,26 @@ function TaTopics() {
 
   const handleTopicChange = useCallback(
     async (newTopic) => {
-      setSelectedTopic(newTopic)
-      setHistory((prev) => [...prev, href])
-
-      if (selectedCategory && newTopic) {
+      if (newTopic) {
+        setSelectedTopic(newTopic)
+        setHistory((prev) => [...prev, href])
         const newHref = `${selectedCategory}/${newTopic}`
         setHref(newHref)
       }
     },
-    [selectedCategory, config, href]
+    [selectedCategory, href]
   )
 
   useEffect(() => {
     if (topics.length > 0 && selectedCategory) {
       const isCurrentTopicValid = topics.some((topic) => topic.link === selectedTopic)
-      if (!isCurrentTopicValid) {
+      if (!isCurrentTopicValid && selectedTopic === '') {
         const firstTopicLink = topics[0].link
         setSelectedTopic(firstTopicLink)
         setHref(`${selectedCategory}/${firstTopicLink}`)
       }
     }
-  }, [topics, selectedCategory])
+  }, [topics, selectedCategory, selectedTopic])
 
   const updateHref = useCallback(
     (newRelativePath) => {
