@@ -314,7 +314,7 @@ function TaTopics() {
       )}
 
       <div className="flex-1 overflow-auto" ref={scrollRef}>
-        <div className="relative z-20 flex flex-col gap-4 bg-th-secondary-10 p-4">
+        <div className="relative z-20 flex flex-row gap-4 bg-th-secondary-10 p-4">
           <select
             value={selectedCategory}
             onChange={handleCategoryChange}
@@ -327,16 +327,14 @@ function TaTopics() {
             ))}
           </select>
 
-          <div className="relative">
-            <DropdownSearch
-              options={filteredTopics}
-              value={selectedTopic}
-              onChange={(newValue) => handleTopicChange(newValue)}
-              placeholder="Search topics"
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-            />
-          </div>
+          <DropdownSearch
+            options={filteredTopics}
+            value={selectedTopic}
+            onChange={(newValue) => handleTopicChange(newValue)}
+            placeholder="Search topics"
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+          />
         </div>
 
         <TAContent

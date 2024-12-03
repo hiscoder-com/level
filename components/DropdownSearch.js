@@ -57,7 +57,7 @@ function DropdownSearch({
               </div>
             ))
           ) : (
-            <div className="px-4 py-2 text-gray-500">Нет совпадений</div>
+            <div className="px-4 py-2 text-gray-500">There are no matches</div>
           )}
         </div>
       )}
