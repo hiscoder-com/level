@@ -38,12 +38,12 @@ function TaTopics() {
 
   const filteredTopics = (() => {
     if (!searchQuery.trim()) {
-      return topics
+      return topics.map((topic) => ({ ...topic, category: selectedCategory }))
     } else {
       const query = searchQuery.toLowerCase()
-      const result = allTopics.filter((topic) =>
-        topic.title.toLowerCase().includes(query)
-      )
+      const result = allTopics
+        .filter((topic) => topic.title.toLowerCase().includes(query))
+        .map((topic) => ({ ...topic, category: topic.category || selectedCategory }))
       return result
     }
   })()
@@ -65,11 +65,15 @@ function TaTopics() {
       if (newTopic) {
         setSelectedTopic(newTopic)
         setHistory((prev) => [...prev, href])
-        const newHref = `${selectedCategory}/${newTopic}`
+
+        const topicData = allTopics.find((topic) => topic.link === newTopic)
+        const categoryForTopic = topicData?.category || selectedCategory
+
+        const newHref = `${categoryForTopic}/${newTopic}`
         setHref(newHref)
       }
     },
-    [selectedCategory, href]
+    [allTopics, selectedCategory, href]
   )
 
   useEffect(() => {
@@ -82,6 +86,19 @@ function TaTopics() {
       }
     }
   }, [topics, selectedCategory, selectedTopic])
+
+  useEffect(() => {
+    if (filteredTopics.length > 0) {
+      const firstTopic = filteredTopics[0]
+      if (
+        !selectedTopic ||
+        !filteredTopics.some((topic) => topic.link === selectedTopic)
+      ) {
+        setSelectedTopic(firstTopic.link)
+        setHref(`${firstTopic.category}/${firstTopic.link}`)
+      }
+    }
+  }, [filteredTopics, selectedTopic])
 
   const updateHref = useCallback(
     (newRelativePath) => {
@@ -233,7 +250,12 @@ function TaTopics() {
             project.identifier
           )
 
-          tempAllTopics.push(...(updatedYaml.sections || []))
+          const sectionsWithCategory = (updatedYaml.sections || []).map((section) => ({
+            ...section,
+            category: project.identifier,
+          }))
+
+          tempAllTopics.push(...sectionsWithCategory)
         }
         setAllTopics(tempAllTopics)
         const tableContent = await getTableOfContent({
