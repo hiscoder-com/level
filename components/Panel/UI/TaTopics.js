@@ -34,9 +34,19 @@ function TaTopics() {
   const [topics, setTopics] = useState([])
   const [categoryOptions, setCategoryOptions] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
-  const filteredTopics = topics.filter((topic) =>
-    topic.title.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  const [allTopics, setAllTopics] = useState([])
+
+  const filteredTopics = (() => {
+    if (!searchQuery.trim()) {
+      return topics
+    } else {
+      const query = searchQuery.toLowerCase()
+      const result = allTopics.filter((topic) =>
+        topic.title.toLowerCase().includes(query)
+      )
+      return result
+    }
+  })()
 
   const handleCategoryChange = useCallback(
     (event) => {
@@ -58,36 +68,9 @@ function TaTopics() {
       if (selectedCategory && newTopic) {
         const newHref = `${selectedCategory}/${newTopic}`
         setHref(newHref)
-
-        try {
-          setLoading(true)
-          const zip = await getFile({
-            owner: config.resource.owner,
-            repo: config.resource.repo.split('_')[0] + '_ta',
-            commit: config.resource.commit,
-            apiUrl: '/api/git/ta',
-          })
-
-          const fetchedWords = await getWordsAcademy({
-            zip,
-            href: `${config.base}/${newHref}`,
-          })
-
-          const title = fetchedWords?.['sub-title'] || newHref
-          const text = fetchedWords?.['01'] || newHref
-          setItem({
-            title,
-            text,
-            type: 'ta',
-          })
-        } catch (error) {
-          console.error('Error fetching topic content:', error)
-        } finally {
-          setLoading(false)
-        }
       }
     },
-    [selectedCategory, config.base, config.resource, href]
+    [selectedCategory, config, href]
   )
 
   useEffect(() => {
@@ -231,11 +214,29 @@ function TaTopics() {
           label: project.title,
         }))
         setCategoryOptions(projectOptions)
+        if (!selectedCategory) setSelectedCategory(projectOptions[0]?.value || '')
 
-        if (!selectedCategory) {
-          setSelectedCategory(projectOptions[0]?.value || '')
+        const tempAllTopics = []
+
+        for (const project of projects) {
+          const tableContent = await getTableOfContent({
+            zip,
+            href: `${config.base}/${project.identifier}/toc.yaml`,
+          })
+
+          const yamlString = tableContent['toc.yaml']
+          if (!yamlString) throw new Error('YAML file not found')
+
+          const parsedYaml = parseYAML(yamlString)
+          const updatedYaml = updateParsedYamlTitles(
+            parsedYaml,
+            titleFiles,
+            project.identifier
+          )
+
+          tempAllTopics.push(...(updatedYaml.sections || []))
         }
-
+        setAllTopics(tempAllTopics)
         const tableContent = await getTableOfContent({
           zip,
           href: `${config.base}/${selectedCategory || projectOptions[0]?.value || ''}/toc.yaml`,
