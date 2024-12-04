@@ -15,11 +15,10 @@ function DropdownSearch({
     setSearchQuery(e.target.value)
   }
 
-  // Обработчик кликов вне компонента
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false) // Закрываем dropdown
+        setIsOpen(false)
       }
     }
 
@@ -53,7 +52,7 @@ function DropdownSearch({
                   value === option.link ? 'bg-gray-200' : ''
                 }`}
               >
-                {option.title}
+                {`${'\u00A0'.repeat((option.depth || 0) * 4)}${option.title}`}
               </div>
             ))
           ) : (
