@@ -44,7 +44,7 @@ function TaTopics() {
     if (!query) {
       return allTopics
         .filter((topic) => topic.category === selectedCategory)
-        .map((topic) => ({ ...topic, category: selectedCategory }))
+        .map((topic) => ({ ...topic }))
     }
 
     return allTopics.filter((topic) => topic.title.toLowerCase().includes(query))
@@ -57,16 +57,20 @@ function TaTopics() {
       setSelectedTopic('')
       setTopics([])
       setSearchQuery('')
-      setHistory((prev) => [...prev, href])
+      setHistory((prev) =>
+        prev.length > 10 ? [...prev.slice(-10), href] : [...prev, href]
+      )
     },
-    [href]
+    [href, setHistory]
   )
 
   const handleTopicChange = useCallback(
     async (newTopic) => {
       if (newTopic) {
         setSelectedTopic(newTopic)
-        setHistory((prev) => [...prev, href])
+        setHistory((prev) =>
+          prev.length > 10 ? [...prev.slice(-10), href] : [...prev, href]
+        )
 
         const topicData = allTopics.find((topic) => topic.link === newTopic)
         const categoryForTopic = topicData?.category || selectedCategory
@@ -79,28 +83,17 @@ function TaTopics() {
   )
 
   useEffect(() => {
-    if (topics.length > 0 && selectedCategory) {
-      const isCurrentTopicValid = topics.some((topic) => topic.link === selectedTopic)
-      if (!isCurrentTopicValid && selectedTopic === '') {
-        const firstTopicLink = topics[0].link
+    if (filteredTopics.length > 0 || topics.length > 0) {
+      const list = filteredTopics.length ? filteredTopics : topics
+      const isCurrentTopicValid = list.some((topic) => topic.link === selectedTopic)
+
+      if (!isCurrentTopicValid) {
+        const firstTopicLink = list[0].link
         setSelectedTopic(firstTopicLink)
         setHref(`${selectedCategory}/${firstTopicLink}`)
       }
     }
-  }, [topics, selectedCategory, selectedTopic])
-
-  useEffect(() => {
-    if (filteredTopics.length > 0) {
-      const firstTopic = filteredTopics[0]
-      if (
-        !selectedTopic ||
-        !filteredTopics.some((topic) => topic.link === selectedTopic)
-      ) {
-        setSelectedTopic(firstTopic.link)
-        setHref(`${firstTopic.category}/${firstTopic.link}`)
-      }
-    }
-  }, [filteredTopics, selectedTopic])
+  }, [filteredTopics, topics, selectedCategory, selectedTopic])
 
   const updateHref = useCallback(
     (newRelativePath) => {
@@ -108,7 +101,10 @@ function TaTopics() {
       const newHref = absolutePath.replace(config.base + '/', '')
 
       if (newHref !== href) {
-        setHistory((prev) => [...prev, href])
+        setHistory((prev) =>
+          prev.length > 10 ? [...prev.slice(-10), href] : [...prev, href]
+        )
+
         setHref(newHref)
 
         const [newCategory, newTopic] = newHref.split('/')
