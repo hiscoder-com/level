@@ -16,7 +16,23 @@ function LevelIntro({ t, opacity }) {
           opacity || ''
         }`}
       >
-        <ReactMarkdown>{t('MainBlocks.LevelText')}</ReactMarkdown>
+        <ReactMarkdown
+          components={{
+            a: ({ href, children }) => (
+              <a
+                href={href}
+                style={{
+                  color: '#007bff',
+                  textDecoration: 'underline',
+                }}
+              >
+                {children}
+              </a>
+            ),
+          }}
+        >
+          {t('MainBlocks.LevelText')}
+        </ReactMarkdown>
       </div>
       <div className="flex flex-grow flex-col items-center justify-center pb-6 md:mt-4 md:pb-0">
         <LevelIntroImage className="w-3/5 lg:w-2/3 xl:w-3/4" />
