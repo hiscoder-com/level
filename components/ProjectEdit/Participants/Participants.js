@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
+import toast from 'react-hot-toast'
 
 import Modal from 'components/Modal'
 
@@ -90,14 +91,24 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
     }
   }, [translators])
   const remove = (userId, role) => {
-    axios
+    return axios
       .delete(`/api/projects/${code}/${role}/${userId}`)
       .then(() => {
         roleActions[role].reset(false)
         roleActions[role].mutate()
       })
-      .catch(console.log)
+      .catch((error) => {
+        if (
+          error.response?.data?.error === 'Cannot remove translator with assigned verses'
+        ) {
+          toast.error(t('project-edit:CannotRemoveTranslatorWithVerses'))
+        } else {
+          toast.error(t('common:SomethingWentWrong'))
+        }
+        throw error
+      })
   }
+
   return (
     <>
       <div className="hidden divide-y divide-th-text-primary sm:block">
