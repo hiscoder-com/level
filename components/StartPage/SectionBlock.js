@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import Close from 'public/icons/close.svg'
@@ -32,7 +31,7 @@ function SectionBlock({
       className={`relative rounded-xl bg-th-secondary-10 p-5 ${
         isLogo ? 'flex justify-center' : 'text-center'
       }`}
-      onClick={handleSectionToggle}
+      // onClick={handleSectionToggle}
     >
       {showSection ? content : isLogo ? label : <p>{label}</p>}
       <Close
@@ -41,14 +40,6 @@ function SectionBlock({
           showSection ? '' : 'hidden'
         }`}
       />
-      {showSection && (
-        <Link
-          href="/"
-          className="absolute z-10 cursor-pointer"
-          onClick={(e) => e.stopPropagation()}
-          scroll={false}
-        ></Link>
-      )}
     </div>
   )
 }

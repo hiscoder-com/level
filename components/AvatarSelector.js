@@ -10,14 +10,15 @@ import { modalsSidebar, userAvatarState } from './state/atoms'
 
 import { useUser } from 'utils/hooks'
 
+import Close from 'public/icons/close.svg'
 import Trash from 'public/icons/trash.svg'
 
 function AvatarSelector({ id }) {
   const { t } = useTranslation('common')
   const fileInputRef = useRef(null)
-  const modalsSidebarState = useRecoilValue(modalsSidebar)
-  const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
+  const [modalsSidebarState, setModalsSidebarState] = useRecoilState(modalsSidebar)
   const [avatars, setAvatars] = useState([])
+  const [userAvatar, setUserAvatar] = useRecoilState(userAvatarState)
   const [isLoading, setIsLoading] = useState(true)
   const [selectedFile, setSelectedFile] = useState(null)
   const [isDragOver, setIsDragOver] = useState(false)
@@ -197,13 +198,29 @@ function AvatarSelector({ id }) {
           </div>
         ) : (
           <div
-            className="absolute right-0 top-0 flex h-full w-full cursor-default flex-col overflow-auto border-th-secondary-300 bg-th-secondary-10 px-3 pb-3 shadow-md sm:overflow-visible sm:rounded-2xl sm:border sm:px-7 sm:pb-5 md:left-full md:ml-5 md:h-min md:max-h-full"
+            className="absolute right-0 top-0 z-20 flex h-full min-h-full w-full cursor-default flex-col overflow-auto rounded-none border-th-secondary-300 bg-th-secondary-10 pb-3 shadow-md sm:overflow-visible sm:rounded-2xl sm:border-x sm:border-b sm:pb-5 md:left-full md:ml-5 md:h-min md:max-h-full md:rounded-xl lg:ml-0 lg:w-[30rem] lg:rounded-none"
             onClick={(e) => e.stopPropagation()}
             onDragEnter={handleDragEnterOver}
             onDragLeave={handleDragLeave}
             onDragOver={handleDragEnterOver}
           >
-            <div className="sticky top-0 flex justify-center border-b border-th-secondary-300 bg-th-secondary-10 py-6">
+            <div className="sticky top-0 flex h-[3.75rem] items-center justify-center rounded-none bg-th-secondary-400 py-4 sm:rounded-t-xl md:rounded-t-xl lg:rounded-none lg:px-7">
+              <button
+                className="absolute right-4"
+                onClick={() => {
+                  setModalsSidebarState({
+                    aboutVersion: false,
+                    avatarSelector: false,
+                    notepad: false,
+                    writeToUs: false,
+                    about: false,
+                  })
+                }}
+              >
+                <Close className="h-8 stroke-th-secondary-10" />
+              </button>
+            </div>
+            <div className="sticky top-0 flex justify-center border-b border-th-secondary-300 bg-th-secondary-10 px-7 py-6">
               <button
                 onClick={selectedFile ? () => setSelectedFile(null) : handleFileUpload}
                 className="btn-primary w-full"
@@ -212,7 +229,7 @@ function AvatarSelector({ id }) {
               </button>
             </div>
             {isLoading ? (
-              <div role="status" className="w-full animate-pulse py-6">
+              <div role="status" className="w-full animate-pulse px-7 py-6">
                 <div className="flex flex-wrap justify-between gap-3">
                   {[...Array(4)].map((_, index) => (
                     <div
@@ -232,7 +249,7 @@ function AvatarSelector({ id }) {
               />
             ) : (
               <>
-                <div className="z-10 flex flex-wrap items-center justify-start gap-4 overflow-y-auto bg-white py-6">
+                <div className="z-10 flex flex-wrap items-center justify-start gap-4 overflow-y-auto bg-white px-7 py-6">
                   {avatars?.map((avatar, index) => (
                     <div
                       key={index}

@@ -136,13 +136,13 @@ function StartPage({ defaultContentKey = null }) {
       })
     }
   }
-
+  const mainLink = router.pathname === '/' ? `/${contentRoutes['logo']}` : '/'
   return (
     <>
       <main className="relative mx-auto hidden h-[84vh] max-h-[40rem] w-full max-w-6xl px-5 text-xl font-bold md:flex lg:max-h-[40rem] lg:px-16 xl:max-h-[50rem] xl:px-20 2xl:max-h-[56.4rem] 2xl:px-0">
         <aside className="flex w-1/4 flex-col gap-4 pr-3 xl:gap-7 xl:pr-6">
           <Link
-            href={`/${contentRoutes['logo']}`}
+            href={mainLink}
             className="flex flex-grow cursor-pointer items-center justify-center rounded-2xl bg-white p-5 lg:p-7"
           >
             <LevelLogo className="" />
@@ -232,7 +232,7 @@ function StartPage({ defaultContentKey = null }) {
             href={`/${contentRoutes['connect']}`}
             className="h-auto cursor-pointer rounded-2xl bg-th-secondary-10 p-5 lg:p-7 xl:h-32"
           >
-            {t('ConnectWithUs')}
+            {t('WriteToUs')}
           </Link>
           <div className="flex-grow space-y-2 overflow-hidden rounded-2xl bg-th-secondary-10 p-3 lg:p-5 2xl:space-y-4 2xl:p-7">
             <p className="overflow-auto text-xs font-normal 2xl:text-base">
@@ -257,7 +257,7 @@ function StartPage({ defaultContentKey = null }) {
         </div>
       </main>
       <main className="relative flex flex-col gap-5 p-5 text-lg font-medium md:hidden">
-        <Link href={`/${contentRoutes['logo']}`}>
+        <div onClick={() => router.replace(mainLink)}>
           <SectionBlock
             sectionKey="logo"
             content={<Logo t={t} />}
@@ -266,20 +266,17 @@ function StartPage({ defaultContentKey = null }) {
             isLogo={true}
             label={<LevelLogo className="h-7" />}
           />
-        </Link>
+        </div>
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
             <div className="z-20 flex items-center justify-center rounded-xl bg-th-secondary-10 p-4">
               <SwitchLocalization />
             </div>
           )}
-          <Link
+          <div
             scroll={false}
-            href="/"
-            shallow
             onClick={async (e) => {
               e.preventDefault()
-              await router.push('/')
               router.push(`/${contentRoutes['signIn']}`)
             }}
             className={`cursor-pointer rounded-xl p-5 ${
@@ -293,14 +290,14 @@ function StartPage({ defaultContentKey = null }) {
             </p>
             {showSections.signIn && (
               <Login
-                handleClick={() => {
+                handleClick={(e) => {
                   toggleSection(
                     showSections.signIn && showSections.connect ? 'signIn' : 'connect'
                   )
                 }}
               />
             )}
-          </Link>
+          </div>
         </div>
 
         <div
@@ -394,7 +391,7 @@ function StartPage({ defaultContentKey = null }) {
         <Link scroll={false} href={`/${contentRoutes['connect']}`}>
           <SectionBlock
             sectionKey="connect"
-            label={t('ConnectWithUs')}
+            label={t('WriteToUs')}
             content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
             showSection={showSections.connect}
             toggleSection={toggleSection}

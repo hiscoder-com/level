@@ -1,3 +1,13 @@
+# Versión 0.26.0
+## Date: 27.11.2024
+
+### **Agregado:**
+- Academia de traducción en sidbar
+
+### * * Modificado**
+- dentro de tWords funcionan los enlaces cruzados entre palabras
+- dentro de tWords y tNotes funcionan enlaces a artículos De la Academia de traducción
+
 # Versión 0.25.1
 ## Date: 11/08/2024
 

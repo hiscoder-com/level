@@ -36,13 +36,13 @@ export default function SignOut({ collapsed }) {
       }`}
     >
       <LogOut
-        className={`w-5 stroke-th-text-primary group-hover:stroke-th-text-primary group-hover:opacity-70 lg:stroke-th-secondary-300 ${
+        className={`w-5 min-w-[1.25rem] stroke-th-text-primary group-hover:stroke-th-text-primary group-hover:opacity-70 lg:stroke-th-secondary-300 ${
           collapsed ? 'opacity-70' : ''
         }`}
       />
 
       <p
-        className={`opacity-70 lg:text-th-secondary-300 ${
+        className={`whitespace-nowrap opacity-70 lg:text-th-secondary-300 ${
           collapsed ? 'lg:hidden' : ''
         } group-hover:text-th-text-primary group-hover:opacity-70`}
       >

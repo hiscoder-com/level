@@ -676,6 +676,47 @@ export const validationBrief = (brief_data) => {
   return { error: null }
 }
 
+const transformHref = (href) => {
+  if (href.startsWith('rc://')) {
+    const parts = href.slice(5).split('/')
+    return `${parts[0]}_${parts[1]}/${parts[3]}/${parts[4]}`
+  }
+  return href
+}
+
+export const getWordsAcademy = async ({ zip, href }) => {
+  if (!zip || !href) {
+    console.error('The archive is not provided.')
+    return {}
+  }
+  const transformedHref = transformHref(href)
+  const targetFiles = [
+    `${transformedHref}/title.md`,
+    `${transformedHref}/01.md`,
+    `${transformedHref}/sub-title.md`,
+  ]
+
+  const results = await Promise.all(
+    targetFiles.map(async (filePath) => {
+      const file = zip.files[filePath]
+      if (!file) {
+        console.warn(`The ${filePath} file was not found.`)
+        return { path: filePath, content: null }
+      }
+
+      const content = await file.async('text')
+      return { path: filePath, content }
+    })
+  )
+
+  const fileObject = results.reduce((acc, { path, content }) => {
+    const key = path.split('/').pop().replace('.md', '')
+    acc[key] = content
+    return acc
+  }, {})
+  return fileObject
+}
+
 export const getWords = async ({ zip, repo, wordObjects }) => {
   if (!zip || !repo || !wordObjects) {
     return []
@@ -697,6 +738,26 @@ export const getWords = async ({ zip, repo, wordObjects }) => {
     }
   })
   return await Promise.all(promises)
+}
+
+export const getWord = async ({ zip, repo, TWLink }) => {
+  if (!zip || !repo || !TWLink) {
+    return null
+  }
+  let uriMd = repo + '/bible/' + TWLink
+  uriMd = uriMd.replace('/../', '/')
+
+  try {
+    const markdown = await zip.files[uriMd].async('string')
+    const splitter = markdown?.search('\n')
+    return {
+      title: markdown?.slice(0, splitter),
+      text: markdown?.slice(splitter),
+    }
+  } catch (error) {
+    console.error('Error fetching markdown:', error)
+    return null
+  }
 }
 
 export const stepValidation = (step) => {
@@ -871,4 +932,29 @@ export const getImageUrl = (imageUrl) => {
     return imageUrl
   }
   return ''
+}
+
+export function resolvePath(base, currentPath, relativePath) {
+  let absolutePath = currentPath.startsWith('/') ? currentPath : `/${currentPath}`
+  const relativeParts = relativePath.split('/')
+
+  if (relativeParts.length && relativeParts[relativeParts.length - 1].includes('.')) {
+    relativeParts.pop()
+  }
+
+  const absoluteParts = absolutePath.split('/').filter(Boolean)
+
+  relativeParts.forEach((segment) => {
+    if (segment === '..') {
+      absoluteParts.pop()
+    } else if (segment && segment !== '.') {
+      absoluteParts.push(segment)
+    }
+  })
+
+  absolutePath = `${base}/${absoluteParts.join('/')}`
+
+  const updatedCurrentPath = `/${absoluteParts.join('/')}`
+
+  return { absolutePath, updatedCurrentPath }
 }
