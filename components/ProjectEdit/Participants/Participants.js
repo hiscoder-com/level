@@ -16,7 +16,7 @@ import TranslatorsList from './TranslatorsList'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
 
-function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
+function Participants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
   const supabase = useSupabaseClient()
 
   const { t } = useTranslation(['common', 'project-edit', 'projects'])
@@ -292,4 +292,4 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
     </>
   )
 }
-export default Parcticipants
+export default Participants
