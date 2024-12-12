@@ -8,6 +8,11 @@
 - inside tWords, cross-references between words work
 - links to articles of the Translation Academy work inside tWords and tNotes
 
+## Date: 12/11/2024
+
+### **Added:**
+- community audio
+
 # Version 0.25.1
 ## Date: 11/08/2024
 

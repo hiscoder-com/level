@@ -57,9 +57,7 @@ export default function SpeedSetting({ textSpeed, setTextSpeed }) {
       </div>
       <div className="flex items-center text-sm">
         <p>
-          <span className="font-semibold">
-            {textSpeed < 10 ? `0${textSpeed}` : textSpeed}
-          </span>{' '}
+          <span className="font-semibold">{textSpeed.toString().padStart(2, '0')}</span>{' '}
           {t('TextSpeed')}
         </p>
       </div>

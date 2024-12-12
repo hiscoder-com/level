@@ -8,6 +8,11 @@
 - dentro de tWords funcionan los enlaces cruzados entre palabras
 - dentro de tWords y tNotes funcionan enlaces a artículos De la Academia de traducción
 
+## Date: 12/11/2024
+
+### **Added:**
+- audio comunitario
+
 # Versión 0.25.1
 ## Date: 11/08/2024
 

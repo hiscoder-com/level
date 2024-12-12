@@ -1,3 +1,6 @@
+import AudioPause from 'public/icons/audioPause.svg'
+import AudioPlay from 'public/icons/audioPlay.svg'
+
 export default function AudioPreview({
   audioUrl,
   onPlay,
@@ -12,12 +15,7 @@ export default function AudioPreview({
       }`}
     >
       <p className="text-sm">{audioName}</p>
-      <a
-        href={audioUrl}
-        disabled={!audioUrl}
-        className="disabled:fill-gray-400"
-        download={`${audioName}.mp3`}
-      >
+      <a href={audioUrl} className="disabled:fill-gray-400" download={`${audioName}.mp3`}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 24 24"
@@ -37,31 +35,9 @@ export default function AudioPreview({
         onClick={isPlaying ? onPause : onPlay}
       >
         {isPlaying ? (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="#FFFFFF"
-            className="size-6 h-5 w-5"
-          >
-            <path
-              fillRule="evenodd"
-              d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <AudioPause className="h-5 w-5" />
         ) : (
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="#FFFFFF"
-            className="size-6 h-5 w-5"
-          >
-            <path
-              fillRule="evenodd"
-              d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-              clipRule="evenodd"
-            />
-          </svg>
+          <AudioPlay className="h-5 w-5" />
         )}
       </button>
     </div>
