@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { Mp3Encoder } from 'lamejs'
 import toast from 'react-hot-toast'
-import { useTranslation } from 'react-i18next'
 
 export function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false)
@@ -10,6 +10,44 @@ export function useAudioRecorder() {
   const mediaRecorder = useRef(null)
   const audioChunks = useRef([])
   const { t } = useTranslation(['audio'])
+
+  const encodeToMp3 = async (chunks) => {
+    try {
+      const audioBlob = new Blob(chunks, { type: 'audio/webm' })
+      const arrayBuffer = await audioBlob.arrayBuffer()
+
+      const audioContext = new AudioContext()
+      const audioBuffer = await audioContext.decodeAudioData(arrayBuffer)
+
+      const mp3Data = []
+      const encoder = new Mp3Encoder(1, audioBuffer.sampleRate, 128)
+
+      const samples = audioBuffer.getChannelData(0)
+      const buffer = new Int16Array(samples.length)
+
+      for (let i = 0; i < samples.length; i++) {
+        buffer[i] = samples[i] * 32767
+      }
+
+      let sampleIndex = 0
+      while (sampleIndex < buffer.length) {
+        const sampleChunk = buffer.subarray(sampleIndex, sampleIndex + 1152)
+        const mp3Chunk = encoder.encodeBuffer(sampleChunk)
+        if (mp3Chunk.length > 0) mp3Data.push(new Uint8Array(mp3Chunk))
+        sampleIndex += 1152
+      }
+
+      const mp3Final = encoder.flush()
+      if (mp3Final.length > 0) mp3Data.push(new Uint8Array(mp3Final))
+
+      const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' })
+      return URL.createObjectURL(mp3Blob)
+    } catch (error) {
+      console.error('Error encoding MP3:', error)
+      toast.error(t('audio:EncodingError'), { position: 'bottom-right' })
+      return null
+    }
+  }
 
   const startRecording = useCallback(async () => {
     audioChunks.current = []
@@ -22,10 +60,9 @@ export function useAudioRecorder() {
         audioChunks.current.push(event.data)
       }
 
-      mediaRecorder.current.onstop = () => {
-        const audioBlob = new Blob(audioChunks.current, { type: 'audio/mpeg' })
-        const audioUrl = URL.createObjectURL(audioBlob)
-        setAudioUrl(audioUrl)
+      mediaRecorder.current.onstop = async () => {
+        const mp3Url = await encodeToMp3(audioChunks.current)
+        setAudioUrl(mp3Url)
       }
 
       mediaRecorder.current.start()
@@ -35,7 +72,7 @@ export function useAudioRecorder() {
       toast.error(t('audio:TurnMicrophone'), { position: 'bottom-right' })
       console.error('Error accessing microphone:', error)
     }
-  }, [])
+  }, [t])
 
   const stopRecording = useCallback(() => {
     if (mediaRecorder.current) {
