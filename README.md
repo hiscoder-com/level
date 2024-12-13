@@ -29,7 +29,7 @@
 <br />
 <div align="center">
   <a href="https://github.com/hiscoder-com/level">
-    <img src="public/level-logo-color.svg" alt="Logo" width="200" height="80">
+    <img src="public/logo.jpg" alt="Logo" width="200" >
   </a>
 
 <h3 align="center">LEVEL</h3>
