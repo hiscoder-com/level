@@ -1,6 +1,6 @@
 {
   "version": "0.25.1",
-  "logo": "https://raw.githubusercontent.com/hiscoder-com/level/master/public/logo.jpg",
+  "logo": "https://raw.githubusercontent.com/hiscoder-com/level/master/public/logo-level.jpg",
   "date": "2024-11-14",
   "dependencies": [
     "npm/@texttree/notepad-rcl",
