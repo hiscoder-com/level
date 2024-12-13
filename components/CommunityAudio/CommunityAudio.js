@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -41,6 +41,7 @@ function CommunityAudio() {
     stopRecording,
     pauseRecording,
     resumeRecording,
+    loading,
   } = useAudioRecorder()
 
   const { user } = useCurrentUser()
@@ -173,6 +174,7 @@ function CommunityAudio() {
           isRecording={isRecording}
           isPaused={isPaused}
           audioUrl={audioUrl}
+          loading={loading}
           recordingMethods={{
             startRecording,
             stopRecording,

@@ -11,6 +11,7 @@ function CommunityAudioRecorder({
   isPaused,
   audioUrl,
   audioName,
+  loading,
   recordingMethods: { startRecording, stopRecording, pauseRecording, resumeRecording },
   textAdjustment: { fontSize, setFontSize, textSpeed, setTextSpeed },
 }) {
@@ -39,6 +40,7 @@ function CommunityAudioRecorder({
       </div>
       <div className="flex items-center">
         <AudioPreview
+          loading={loading}
           audioName={audioName}
           audioUrl={audioUrl}
           onPlay={play}

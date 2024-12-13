@@ -1,5 +1,6 @@
 import AudioPause from 'public/icons/audioPause.svg'
 import AudioPlay from 'public/icons/audioPlay.svg'
+import Loading from 'public/icons/progress.svg'
 
 export default function AudioPreview({
   audioUrl,
@@ -7,11 +8,12 @@ export default function AudioPreview({
   onPause,
   isPlaying,
   audioName,
+  loading,
 }) {
   return (
     <div
       className={`flex items-center gap-2 rounded-full border border-th-text-primary p-2 ${
-        !audioUrl ? 'opacity-70' : ''
+        !audioUrl || loading ? 'opacity-70' : ''
       }`}
     >
       <p className="text-sm">{audioName}</p>
@@ -34,7 +36,9 @@ export default function AudioPreview({
         className="rounded-full bg-th-secondary-400 p-2 disabled:bg-th-text-primary"
         onClick={isPlaying ? onPause : onPlay}
       >
-        {isPlaying ? (
+        {loading ? (
+          <Loading className="progress-custom-colors h-5 w-5 animate-spin stroke-th-secondary-100" />
+        ) : isPlaying ? (
           <AudioPause className="h-5 w-5" />
         ) : (
           <AudioPlay className="h-5 w-5" />

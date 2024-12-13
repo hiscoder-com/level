@@ -2,13 +2,17 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Mp3Encoder } from 'lamejs'
 import toast from 'react-hot-toast'
+import { useTranslation } from 'react-i18next'
 
 export function useAudioRecorder() {
   const [isRecording, setIsRecording] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [audioUrl, setAudioUrl] = useState(null)
+  const [loading, setLoading] = useState(false)
+
   const mediaRecorder = useRef(null)
   const audioChunks = useRef([])
+
   const { t } = useTranslation(['audio'])
 
   const encodeToMp3 = async (chunks) => {
@@ -79,6 +83,7 @@ export function useAudioRecorder() {
       mediaRecorder.current.stop()
       setIsRecording(false)
       setIsPaused(false)
+      setLoading(true)
     }
   }, [])
 
@@ -96,6 +101,10 @@ export function useAudioRecorder() {
     }
   }, [])
 
+  useEffect(() => {
+    if (audioUrl) setLoading(false)
+  }, [audioUrl])
+
   return {
     isRecording,
     isPaused,
@@ -104,6 +113,7 @@ export function useAudioRecorder() {
     stopRecording,
     pauseRecording,
     resumeRecording,
+    loading,
   }
 }
 
