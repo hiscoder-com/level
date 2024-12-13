@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 
 import axios from 'axios'
 import { useTranslation } from 'next-i18next'
+import toast from 'react-hot-toast'
 
 import Modal from 'components/Modal'
 
@@ -15,7 +16,7 @@ import TranslatorsList from './TranslatorsList'
 import { useCoordinators, useProject, useTranslators } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
 
-function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
+function Participants({ users, access: { isCoordinatorAccess, isAdminAccess } }) {
   const supabase = useSupabaseClient()
 
   const { t } = useTranslation(['common', 'project-edit', 'projects'])
@@ -90,14 +91,24 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
     }
   }, [translators])
   const remove = (userId, role) => {
-    axios
+    return axios
       .delete(`/api/projects/${code}/${role}/${userId}`)
       .then(() => {
         roleActions[role].reset(false)
         roleActions[role].mutate()
       })
-      .catch(console.log)
+      .catch((error) => {
+        if (
+          error.response?.data?.error === 'Cannot remove translator with assigned verses'
+        ) {
+          toast.error(t('project-edit:CannotRemoveTranslatorWithVerses'))
+        } else {
+          toast.error(t('common:SomethingWentWrong'))
+        }
+        throw error
+      })
   }
+
   return (
     <>
       <div className="hidden divide-y divide-th-text-primary sm:block">
@@ -281,4 +292,4 @@ function Parcticipants({ users, access: { isCoordinatorAccess, isAdminAccess } }
     </>
   )
 }
-export default Parcticipants
+export default Participants

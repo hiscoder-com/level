@@ -1828,9 +1828,6 @@ ALTER TABLE ONLY "public"."languages"
 ALTER TABLE ONLY "public"."logs"
     ADD CONSTRAINT "logs_pkey" PRIMARY KEY ("id");
 
-ALTER TABLE ONLY "public"."methods"
-    ADD CONSTRAINT "methods_pkey" PRIMARY KEY ("id");
-
 ALTER TABLE ONLY "public"."personal_notes"
     ADD CONSTRAINT "personal_notes_pkey" PRIMARY KEY ("id");
 
