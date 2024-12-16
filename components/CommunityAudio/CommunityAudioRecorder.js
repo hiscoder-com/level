@@ -7,15 +7,15 @@ import StopButton from './StopButton'
 import { useAudioPreview } from './useAudio'
 
 function CommunityAudioRecorder({
-  isRecording,
-  isPaused,
+  isRecording = false,
+  isPaused = false,
   audioUrl,
-  audioName,
-  loading,
+  audioName = '',
+  loading = false,
   recordingMethods: { startRecording, stopRecording, pauseRecording, resumeRecording },
-  textAdjustment: { fontSize, setFontSize, textSpeed, setTextSpeed },
+  textAdjustment: { fontSize = 16, setFontSize, textSpeed = 1, setTextSpeed },
 }) {
-  const { isPlaying, play, pause } = useAudioPreview(audioUrl)
+  const { isPlaying, play, pause } = useAudioPreview(audioUrl || '')
 
   return (
     <div className="card flex w-full flex-col items-center justify-between gap-3 bg-th-secondary-10 !pb-4 sm:gap-7 md:flex-row">

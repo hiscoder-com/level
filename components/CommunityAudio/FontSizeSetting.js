@@ -14,7 +14,7 @@ export default function FontSizeSetting({ fontSize, setFontSize }) {
     setIsMounted(true)
   }, [])
 
-  if (!isMounted) return null
+  if (!isMounted || !fontSize || !setFontSize) return null
 
   return (
     <div className="flex items-center gap-2 space-x-2">

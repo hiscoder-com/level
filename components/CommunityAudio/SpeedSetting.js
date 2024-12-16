@@ -2,6 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { useTranslation } from 'react-i18next'
 
+import Minus from 'public/icons/audioMinus.svg'
+import Plus from 'public/icons/audioPlus.svg'
+
 export default function SpeedSetting({ textSpeed, setTextSpeed }) {
   const [isMounted, setIsMounted] = useState(false)
   const { t } = useTranslation(['common'])
@@ -13,7 +16,7 @@ export default function SpeedSetting({ textSpeed, setTextSpeed }) {
     setIsMounted(true)
   }, [])
 
-  if (!isMounted) return null
+  if (!isMounted || !textSpeed || !setTextSpeed) return null
 
   return (
     <div className="flex items-center gap-2 space-x-2">
@@ -23,36 +26,14 @@ export default function SpeedSetting({ textSpeed, setTextSpeed }) {
           onClick={() => setTextSpeed(textSpeed - 1)}
           disabled={textSpeed === minSpeed}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={5}
-            stroke="currentColor"
-            className="size-6 h-3 w-3"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" d="M5 12h14" />
-          </svg>
+          <Minus />
         </button>
         <button
           className="flex items-center justify-center disabled:opacity-70"
           onClick={() => setTextSpeed(textSpeed + 1)}
           disabled={textSpeed === maxSpeed}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={5}
-            stroke="currentColor"
-            className="size-6 h-3 w-3"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M12 4.5v15m7.5-7.5h-15"
-            />
-          </svg>
+          <Plus />
         </button>
       </div>
       <div className="flex items-center text-sm">

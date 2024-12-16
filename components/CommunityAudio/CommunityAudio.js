@@ -26,12 +26,15 @@ import {
 
 import Left from 'public/icons/left.svg'
 
-function CommunityAudio() {
-  const [fontSize, setFontSize] = useState(16)
-  const [textSpeed, setTextSpeed] = useState(1)
+function CommunityAudio({ code, bookid }) {
+  const defaultValues = {
+    fontSize: 16,
+    textSpeed: 1,
+  }
+  const [fontSize, setFontSize] = useState(defaultValues.fontSize)
+  const [textSpeed, setTextSpeed] = useState(defaultValues.textSpeed)
   const { t } = useTranslation(['books'])
-  const router = useRouter()
-  const currentLang = router.locale
+  const { lang } = useRouter()
 
   const {
     isRecording,
@@ -46,9 +49,6 @@ function CommunityAudio() {
 
   const { user } = useCurrentUser()
   const [reference, setReference] = useState()
-  const {
-    query: { code, bookid },
-  } = useRouter()
   const [books] = useGetBooks({
     code,
   })
@@ -84,48 +84,42 @@ function CommunityAudio() {
     verseObjects ||
     getVerseObjectsForBookAndChapter(chapters, reference?.bookid, reference?.chapter)
 
-  const createdNewTestamentBooks = useMemo(
-    () =>
-      books
-        ? books
-            .filter((book) =>
-              Object.keys(newTestamentList).some(
-                (nt) =>
-                  nt === book.code &&
-                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
-              )
+  const { createdNewTestamentBooks, createdOldTestamentBooks } = useMemo(() => {
+    const createdNewTestamentBooks = books
+      ? books
+          .filter((book) =>
+            Object.keys(newTestamentList).some(
+              (nt) =>
+                nt === book.code &&
+                (book?.level_checks || checkBookCodeExists(book.code, chapters))
             )
-            .sort((a, b) => {
-              return (
-                Object.keys(newTestamentList).indexOf(a.code) -
-                Object.keys(newTestamentList).indexOf(b.code)
-              )
-            })
-        : [],
-    [books, chapters]
-  )
-
-  const createdOldTestamentBooks = useMemo(
-    () =>
-      books
-        ? books
-            .filter((book) =>
-              Object.keys(oldTestamentList).some(
-                (ot) =>
-                  ot === book.code &&
-                  (book?.level_checks || checkBookCodeExists(book.code, chapters))
-              )
+          )
+          .sort((a, b) => {
+            return (
+              Object.keys(newTestamentList).indexOf(a.code) -
+              Object.keys(newTestamentList).indexOf(b.code)
             )
-            .sort((a, b) => {
-              return (
-                Object.keys(oldTestamentList).indexOf(a.code) -
-                Object.keys(oldTestamentList).indexOf(b.code)
-              )
-            })
-        : [],
+          })
+      : []
+    const createdOldTestamentBooks = books
+      ? books
+          .filter((book) =>
+            Object.keys(oldTestamentList).some(
+              (ot) =>
+                ot === book.code &&
+                (book?.level_checks || checkBookCodeExists(book.code, chapters))
+            )
+          )
+          .sort((a, b) => {
+            return (
+              Object.keys(oldTestamentList).indexOf(a.code) -
+              Object.keys(oldTestamentList).indexOf(b.code)
+            )
+          })
+      : []
 
-    [books, chapters]
-  )
+    return { createdNewTestamentBooks, createdOldTestamentBooks }
+  }, [books, chapters])
 
   useEffect(() => {
     if (bookid && books) {
@@ -141,7 +135,7 @@ function CommunityAudio() {
 
   const audioName =
     reference &&
-    `${t(`books:${reference.bookid}_abbr`)}_${reference.chapter}_${currentLang === 'ru' ? `${new Date().getDate()}${new Date().getMonth()}` : `${new Date().getMonth()}${new Date().getDate()}`}${new Date().getFullYear().toString().slice(2)}`
+    `${t(`books:${reference.bookid}_abbr`)}_${reference.chapter}_${lang === 'ru' ? `${new Date().getDate()}${new Date().getMonth()}` : `${new Date().getMonth()}${new Date().getDate()}`}${new Date().getFullYear().toString().slice(2)}`
 
   return (
     <div className="mx-auto flex max-w-7xl flex-col-reverse gap-7 pb-10 xl:flex-row">
@@ -156,6 +150,7 @@ function CommunityAudio() {
             setReference={setReference}
             reference={reference}
             project={project}
+            code={code}
           />
         </div>
         <div className="w-full">

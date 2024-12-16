@@ -13,15 +13,12 @@ import { useGetChaptersTranslate } from 'utils/hooks'
 
 import Down from 'public/icons/arrow-down.svg'
 
-function BookListReader({ books, setReference, reference, project }) {
+function BookListReader({ books, setReference, reference, project, code }) {
   const [currentBook, setCurrentBook] = useState(null)
   const [createdOldTestamentBooks, createdNewTestamentBooks] = books
   const { query, replace } = useRouter()
   const { t } = useTranslation(['common', 'books'])
   const refs = useRef([])
-  const {
-    query: { code, bookid },
-  } = useRouter()
   const [chapters] = useGetChaptersTranslate({ code })
 
   const scrollRefs = useRef({})
@@ -54,19 +51,18 @@ function BookListReader({ books, setReference, reference, project }) {
     currentBook.parentNode.scrollTo({ left: 0, top: top + offset, behavior: 'smooth' })
   }
 
-  const defaultIndex = useMemo(() => {
+  const { tabs, defaultIndex } = useMemo(() => {
     const index = [createdNewTestamentBooks, createdOldTestamentBooks]?.findIndex(
       (list) => list?.find((el) => el.code === query.bookid)
     )
 
-    return index === -1 ? 0 : index
-  }, [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid])
+    const tabs =
+      project?.type === 'obs' ? ['OpenBibleStories'] : ['NewTestament', 'OldTestament']
 
-  const tabs = useMemo(
-    () =>
-      project?.type === 'obs' ? ['OpenBibleStories'] : ['NewTestament', 'OldTestament'],
-    [project?.type]
-  )
+    const defaultIndex = index === -1 ? 0 : index
+
+    return { defaultIndex, tabs }
+  }, [createdNewTestamentBooks, createdOldTestamentBooks, query.bookid, project?.type])
 
   const verseRef = useCallback((node) => {
     if (node !== null) {
