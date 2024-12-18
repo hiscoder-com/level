@@ -29,17 +29,17 @@ function DropdownSearch({
   }, [])
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative w-80" ref={dropdownRef}>
       <input
         type="text"
         value={searchQuery}
         onChange={handleInputChange}
         onFocus={() => setIsOpen(true)}
         placeholder={placeholder}
-        className="w-full rounded border border-gray-300 p-2"
+        className="w-full rounded border border-gray-300 p-3"
       />
       {isOpen && (
-        <div className="absolute z-10 mt-1 max-h-40 w-full overflow-auto rounded border border-gray-300 bg-white shadow-lg">
+        <div className="absolute z-10 mt-1 max-h-44 w-full overflow-auto rounded border border-gray-300 bg-white shadow-lg">
           {options.length > 0 ? (
             options.map((option, index) => (
               <div

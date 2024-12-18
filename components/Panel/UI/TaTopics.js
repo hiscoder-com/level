@@ -310,7 +310,7 @@ function TaTopics() {
       )}
 
       <div className="flex-1 overflow-auto" ref={scrollRef}>
-        <div className="relative z-20 flex flex-row gap-4 bg-th-secondary-10 p-4">
+        <div className="relative z-20 flex flex-row gap-5 bg-th-secondary-10 py-4">
           <select
             value={selectedCategory}
             onChange={handleCategoryChange}
