@@ -1,3 +1,9 @@
+# Versión 0.27.0
+## Date: 12/16/2024
+
+### **Added:**
+- audio comunitario
+
 # Versión 0.26.0
 ## Date: 27.11.2024
 
