@@ -407,7 +407,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           className="flex w-full cursor-pointer items-center gap-2"
                           onClick={() => {
                             openModal('tAcademy')
-                            setShowAbout(false)
                           }}
                         >
                           <div className="rounded-[23rem]">
