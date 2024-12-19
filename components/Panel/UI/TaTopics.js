@@ -310,11 +310,11 @@ function TaTopics() {
       )}
 
       <div className="flex-1 overflow-auto" ref={scrollRef}>
-        <div className="relative z-20 flex flex-row gap-5 bg-th-secondary-10 py-4">
+        <div className="relative z-20 flex flex-col gap-5 bg-th-secondary-10 py-2 sm:flex-row sm:py-4">
           <select
             value={selectedCategory}
             onChange={handleCategoryChange}
-            className="rounded border border-gray-300 p-2"
+            className="rounded border border-gray-300 px-1 py-3"
           >
             {categoryOptions?.map((option, index) => (
               <option key={`${option.value}-${index}`} value={option.value}>
@@ -330,6 +330,7 @@ function TaTopics() {
             placeholder="Search topics"
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
+            className="mt-2 sm:mt-0"
           />
         </div>
 
@@ -342,6 +343,7 @@ function TaTopics() {
           parentItem={item}
         />
       </div>
+
       <TaContentInfo
         href={href}
         config={config}

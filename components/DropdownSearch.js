@@ -29,7 +29,7 @@ function DropdownSearch({
   }, [])
 
   return (
-    <div className="relative w-80" ref={dropdownRef}>
+    <div className="relative w-full" ref={dropdownRef}>
       <input
         type="text"
         value={searchQuery}
