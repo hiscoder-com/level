@@ -191,5 +191,7 @@
   "WithoutImages": "Without images",
   "WordExist": "Duplicated word exists:",
   "WrongResource": "Wrong resource",
-  "Yes": "Yes"
+  "Yes": "Yes",
+  "TextSpeed": "Text speed",
+  "FontSize": "Font size"
 }
