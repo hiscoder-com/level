@@ -20,7 +20,7 @@ import { useCurrentUser } from 'lib/UserContext'
 import { useLanguages, useMethod } from 'utils/hooks'
 
 function ProjectCreate() {
-  const { t } = useTranslation(['projects', 'project-edit', 'common'])
+  const { t } = useTranslation(['common', 'projects', 'project-edit'])
   const { user } = useCurrentUser()
   const [_methods] = useMethod()
   const router = useRouter()

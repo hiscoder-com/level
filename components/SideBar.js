@@ -407,7 +407,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           className="flex w-full cursor-pointer items-center gap-2"
                           onClick={() => {
                             openModal('tAcademy')
-                            setShowAbout(false)
                           }}
                         >
                           <div className="rounded-[23rem]">
@@ -433,6 +432,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             buttonTitle={t('translationAcademy')}
                             collapsed={collapsed}
                             contentClassName="mt-4 p-0"
+                            width="60rem"
                           >
                             <TaTopics />
                           </ModalInSideBar>
