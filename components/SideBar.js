@@ -432,6 +432,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             buttonTitle={t('translationAcademy')}
                             collapsed={collapsed}
                             contentClassName="mt-4 p-0"
+                            width="60rem"
                           >
                             <TaTopics />
                           </ModalInSideBar>

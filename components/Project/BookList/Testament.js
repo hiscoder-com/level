@@ -19,6 +19,7 @@ import DownloadIcon from 'public/icons/download.svg'
 import Elipsis from 'public/icons/elipsis.svg'
 import Gear from 'public/icons/gear.svg'
 import Play from 'public/icons/play.svg'
+import Recorder from 'public/icons/recorder.svg'
 
 function Testament({
   bookList,
@@ -106,6 +107,20 @@ function Testament({
                       >
                         <Menu.Items>
                           <div className="flex gap-2">
+                            <Menu.Item>
+                              <button>
+                                <Recorder
+                                  className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
+                                  onClick={() =>
+                                    push({
+                                      pathname: `/projects/${project?.code}/books/${book}/community-audio`,
+                                      shallow: true,
+                                    })
+                                  }
+                                />
+                              </button>
+                            </Menu.Item>
+
                             {isCoordinatorAccess && isBookCreated && (
                               <Menu.Item>
                                 <button>
@@ -124,6 +139,7 @@ function Testament({
                                 </button>
                               </Menu.Item>
                             )}
+
                             {!isBookCreated && isCoordinatorAccess && (
                               <Menu.Item>
                                 <button>
@@ -171,6 +187,7 @@ function Testament({
                     </>
                   )}
                 </Menu>
+
                 {!isLoading ? (
                   <>
                     <div className="hidden gap-2 sm:flex">
@@ -204,6 +221,18 @@ function Testament({
                             setIsOpenDownloading(true)
                             setDownloadingBook(book)
                           }}
+                        />
+                      )}
+
+                      {(checkBookCodeExists(book, chapters) || levelChecks?.[book]) && (
+                        <Recorder
+                          className="w-6 min-w-[1.5rem] cursor-pointer stroke-th-text-primary"
+                          onClick={() =>
+                            push({
+                              pathname: `/projects/${project?.code}/books/${book}/community-audio`,
+                              shallow: true,
+                            })
+                          }
                         />
                       )}
                       {isCoordinatorAccess && (

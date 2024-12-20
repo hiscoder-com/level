@@ -1,6 +1,21 @@
-drop function if exists "public"."update_project_basic"(project_code text, title text, orig_title text, code text, language_id bigint);
+drop function if exists "public"."update_project_basic"(project_code text, title text, orig_title text, code text, language_id bigint, is_rtl boolean);
+
+alter table "public"."users" add column "comcheck_token" text;
 
 set check_function_bodies = off;
+
+CREATE OR REPLACE FUNCTION public.has_assigned_verses(project_translator_id bigint)
+ RETURNS boolean
+ LANGUAGE plpgsql
+AS $function$
+BEGIN
+  RETURN EXISTS (
+    SELECT 1 FROM verses 
+    WHERE verses.project_translator_id = has_assigned_verses.project_translator_id
+  );
+END;
+$function$
+;
 
 create or replace view "public"."methods_view" as  SELECT methods.title,
     methods.steps,
@@ -1293,19 +1308,6 @@ AS $function$
 
     END;
   $function$
-;
-
-CREATE OR REPLACE FUNCTION public.has_assigned_verses(project_translator_id bigint)
- RETURNS boolean
- LANGUAGE plpgsql
-AS $function$
-BEGIN
-  RETURN EXISTS (
-    SELECT 1 FROM verses 
-    WHERE verses.project_translator_id = has_assigned_verses.project_translator_id
-  );
-END;
-$function$
 ;
 
 CREATE OR REPLACE FUNCTION public.insert_additional_chapter(book_id bigint, verses integer, project_id bigint, num smallint)

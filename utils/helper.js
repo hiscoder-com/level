@@ -684,6 +684,100 @@ const transformHref = (href) => {
   return href
 }
 
+const readFileFromZip = async (zip, filePath) => {
+  const file = zip.files[filePath]
+  if (!file) {
+    console.warn(`The ${filePath} file was not found.`)
+    return { path: filePath, content: null }
+  }
+
+  const content = await file.async('text')
+  return { path: filePath, content }
+}
+
+export const getTitleOfContent = async ({ zip, href }) => {
+  if (!zip || !href) {
+    console.error('The archive is not provided.')
+    return {}
+  }
+
+  const parts = href.slice(5).split('/')
+  const transformedHref = `${parts[0]}_${parts[1]}/${parts[3]}`
+
+  const targetFiles = [`${transformedHref}`]
+
+  const results = await Promise.all(
+    targetFiles.map((filePath) => readFileFromZip(zip, filePath))
+  )
+  const fileObject = results.reduce((acc, { path, content }) => {
+    const key = path.split('/').pop()
+    acc[key] = content
+    return acc
+  }, {})
+  return fileObject
+}
+
+export const getTableOfContent = async ({ zip, href }) => {
+  if (!zip || !href) {
+    console.error('The archive is not provided.')
+    return {}
+  }
+  const transformedHref = transformHref(href)
+
+  const targetFiles = [`${transformedHref}`]
+
+  const results = await Promise.all(
+    targetFiles.map((filePath) => readFileFromZip(zip, filePath))
+  )
+  const fileObject = results.reduce((acc, { path, content }) => {
+    const key = path.split('/').pop()
+    acc[key] = content
+    return acc
+  }, {})
+  return fileObject
+}
+
+export const parseYAML = (yamlData) => {
+  const parsedData = jsyaml.load(yamlData)
+
+  if (!parsedData || !parsedData.sections || !Array.isArray(parsedData.sections)) {
+    throw new Error("Invalid YAML structure: 'sections' not found or not an array")
+  }
+
+  const processSections = (
+    sections,
+    depth = 0,
+    titleLinkMap = {},
+    flattenedSections = []
+  ) => {
+    sections.forEach((section) => {
+      const { title, link, sections: childSections } = section
+
+      if (title) {
+        const resolvedLink = link || titleLinkMap[title]
+
+        titleLinkMap[title] = resolvedLink
+
+        flattenedSections.push({ title, link: resolvedLink, depth })
+      }
+
+      if (childSections && Array.isArray(childSections)) {
+        processSections(childSections, depth + 1, titleLinkMap, flattenedSections)
+      }
+    })
+
+    return { titleLinkMap, flattenedSections }
+  }
+
+  const { titleLinkMap, flattenedSections } = processSections(parsedData.sections)
+
+  return {
+    titleLinkMap,
+    sections: flattenedSections,
+    title: parsedData.title || null,
+  }
+}
+
 export const getWordsAcademy = async ({ zip, href }) => {
   if (!zip || !href) {
     console.error('The archive is not provided.')
