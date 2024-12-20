@@ -359,7 +359,6 @@ function Download({
         }
       }
     }
-    console.log(389)
   }
   const addChaptersToZip = (zip, chapters) => {
     const chaptersFolder = zip.folder('chapters')
@@ -397,7 +396,6 @@ function Download({
       }
       const zip = new JSZip()
       createProjectFiles(zip)
-      console.log(300)
 
       const resourcesUrls = await getResourcesUrls(project.resources)
       if (!resourcesUrls) {
