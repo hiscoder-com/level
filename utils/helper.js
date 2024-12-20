@@ -684,6 +684,17 @@ const transformHref = (href) => {
   return href
 }
 
+const readFileFromZip = async (zip, filePath) => {
+  const file = zip.files[filePath]
+  if (!file) {
+    console.warn(`The ${filePath} file was not found.`)
+    return { path: filePath, content: null }
+  }
+
+  const content = await file.async('text')
+  return { path: filePath, content }
+}
+
 export const getTitleOfContent = async ({ zip, href }) => {
   if (!zip || !href) {
     console.error('The archive is not provided.')
@@ -696,16 +707,7 @@ export const getTitleOfContent = async ({ zip, href }) => {
   const targetFiles = [`${transformedHref}`]
 
   const results = await Promise.all(
-    targetFiles.map(async (filePath) => {
-      const file = zip.files[filePath]
-      if (!file) {
-        console.warn(`The ${filePath} file was not found.`)
-        return { path: filePath, content: null }
-      }
-
-      const content = await file.async('text')
-      return { path: filePath, content }
-    })
+    targetFiles.map((filePath) => readFileFromZip(zip, filePath))
   )
   const fileObject = results.reduce((acc, { path, content }) => {
     const key = path.split('/').pop()
@@ -725,16 +727,7 @@ export const getTableOfContent = async ({ zip, href }) => {
   const targetFiles = [`${transformedHref}`]
 
   const results = await Promise.all(
-    targetFiles.map(async (filePath) => {
-      const file = zip.files[filePath]
-      if (!file) {
-        console.warn(`The ${filePath} file was not found.`)
-        return { path: filePath, content: null }
-      }
-
-      const content = await file.async('text')
-      return { path: filePath, content }
-    })
+    targetFiles.map((filePath) => readFileFromZip(zip, filePath))
   )
   const fileObject = results.reduce((acc, { path, content }) => {
     const key = path.split('/').pop()
