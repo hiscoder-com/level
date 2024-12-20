@@ -255,7 +255,7 @@ function StartPageMobile({ defaultContentKey = null }) {
           }
         >
           <SectionBlock
-            sectionKey="partners"
+            sectionKey={contentKey}
             label={t('Partners')}
             content={<Partners t={t} />}
             showSection={showSections.partners}
@@ -272,7 +272,7 @@ function StartPageMobile({ defaultContentKey = null }) {
           }
         >
           <SectionBlock
-            sectionKey="connect"
+            sectionKey={contentKey}
             label={t('WriteToUs')}
             content={
               <div className="flex w-full flex-col gap-6 md:gap-0">
