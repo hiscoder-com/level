@@ -8,7 +8,7 @@ function HiscoderLink() {
       <Link
         href="https://hiscoder.com"
         target="_blank"
-        className="flex items-center gap-4 text-[#CACACA] hover:text-gray-400"
+        className="flex items-center gap-4 p-2 text-[#CACACA] hover:text-gray-400"
       >
         <span>Powered by</span>
         <Hiscoder className="h-8" />
