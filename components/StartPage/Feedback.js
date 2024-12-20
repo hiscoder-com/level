@@ -16,7 +16,7 @@ function Feedback({ onClose }) {
   const [isSaving, setIsSaving] = useState(false)
   const [isSent, setIsSent] = useState(false)
   const router = useRouter()
-  const isStartPage = router.asPath === '/'
+  const isConnectWithUsPage = router.asPath === '/connect-with-us'
 
   const handleChange = (e) => {
     setFeedback({ ...feedback, [e.target.name]: e.target.value })
@@ -50,9 +50,10 @@ function Feedback({ onClose }) {
 
   return (
     <div className="flex w-full flex-col gap-6 md:gap-0">
-      {isStartPage && (
+      {isConnectWithUsPage && (
         <p className="font-semibold md:font-bold">{t('start-page:WriteToUs')}</p>
       )}
+
       <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
         <Toaster />
         {!isSent ? (
@@ -93,7 +94,7 @@ function Feedback({ onClose }) {
               type="submit"
               isLoading={isSaving}
               className={`relative rounded-lg px-5 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base ${
-                isStartPage ? 'bg-slate-550' : 'bg-th-primary-100'
+                isConnectWithUsPage ? 'bg-slate-550' : 'bg-th-primary-100'
               }`}
             >
               {t('users:Send')}

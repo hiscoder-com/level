@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
+import HiscoderLink from 'components/StartPage/HiscoderLink'
 import StartPage from 'components/StartPage/StartPage'
 
 import { openGraph, urlGlobal } from '../utils/openGraph'
@@ -24,7 +25,7 @@ export default function Home() {
   const { query } = useRouter()
 
   return (
-    <main className="flex min-h-screen flex-col justify-center bg-th-secondary-100 font-sans">
+    <main className="flex min-h-screen flex-col bg-th-secondary-100 font-sans">
       <Head>
         <title>{metadata.title.template.replace('%s', metadata.title.default)}</title>
         <meta name="description" content={metadata.description} />
@@ -45,7 +46,10 @@ export default function Home() {
 
         <link rel="icon" href={metadata.icons.icon} sizes="any" />
       </Head>
-      <StartPage defaultContentKey={query?.contentKey || null} />
+      <div className="flex flex-1 flex-col justify-center">
+        <StartPage defaultContentKey={query?.contentKey || null} />
+      </div>
+      <HiscoderLink />
     </main>
   )
 }
