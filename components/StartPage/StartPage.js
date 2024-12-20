@@ -61,7 +61,12 @@ function StartPage({ defaultContentKey = null }) {
 
   const contentObjects = {
     signIn: <Login handleClick={() => handleContentClick('connect')} />,
-    connect: <Feedback t={t} onClose={() => setContentKey(null)} />,
+    connect: (
+      <div className="flex w-full flex-col gap-6 md:gap-0">
+        <p className="mb-4 font-semibold md:font-bold">{t('start-page:WriteToUs')}</p>
+        <Feedback t={t} onClose={() => setContentKey(null)} />
+      </div>
+    ),
     updates: <AboutVersion isStartPage={true} />,
     partners: <Partners t={t} />,
     intro: <LevelIntro t={t} />,

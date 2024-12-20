@@ -49,74 +49,68 @@ function Feedback({ onClose }) {
   }
 
   return (
-    <div className="flex w-full flex-col gap-6 md:gap-0">
-      {isConnectWithUsPage && (
-        <p className="font-semibold md:font-bold">{t('start-page:WriteToUs')}</p>
+    <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
+      <Toaster />
+      {!isSent ? (
+        <form className="flex w-full flex-col space-y-4" onSubmit={handleSubmit}>
+          <InputField
+            name="name"
+            type="text"
+            id="floating_name"
+            label={t('users:YourName')}
+            value={feedback.name}
+            isError={isError && !feedback.name}
+            onChange={handleChange}
+          />
+
+          <InputField
+            name="email"
+            type="email"
+            id="floating_email"
+            label={t('users:Email')}
+            value={feedback.email}
+            isError={isError && !feedback.email}
+            onChange={handleChange}
+          />
+
+          <InputField
+            rows="3"
+            name="message"
+            type="textarea"
+            id="floating_message"
+            label={t('users:Message')}
+            value={feedback.message}
+            isError={isError && !feedback.message}
+            onChange={handleChange}
+            className="mb-3 max-h-40 overflow-auto"
+          />
+
+          <ButtonLoading
+            type="submit"
+            isLoading={isSaving}
+            className={`relative rounded-lg px-5 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base ${
+              isConnectWithUsPage ? 'bg-slate-550' : 'bg-th-primary-100'
+            }`}
+          >
+            {t('users:Send')}
+          </ButtonLoading>
+          <p className="text-center text-sm font-light">
+            {t('users:ConditionOfConsent')}
+          </p>
+        </form>
+      ) : (
+        <div className="w-full text-center">
+          <p>{t('users:YourMessageSentThankYou')}</p>
+          <button
+            className={`mt-14 rounded-lg px-10 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base ${
+              isStartPage ? 'bg-slate-550' : 'bg-th-primary-100'
+            }`}
+            onClick={() => onClose()}
+          >
+            {t('common:Close')}
+          </button>
+        </div>
       )}
-
-      <div className="flex flex-grow items-center" onClick={(e) => e.stopPropagation()}>
-        <Toaster />
-        {!isSent ? (
-          <form className="flex w-full flex-col space-y-4" onSubmit={handleSubmit}>
-            <InputField
-              name="name"
-              type="text"
-              id="floating_name"
-              label={t('users:YourName')}
-              value={feedback.name}
-              isError={isError && !feedback.name}
-              onChange={handleChange}
-            />
-
-            <InputField
-              name="email"
-              type="email"
-              id="floating_email"
-              label={t('users:Email')}
-              value={feedback.email}
-              isError={isError && !feedback.email}
-              onChange={handleChange}
-            />
-
-            <InputField
-              rows="3"
-              name="message"
-              type="textarea"
-              id="floating_message"
-              label={t('users:Message')}
-              value={feedback.message}
-              isError={isError && !feedback.message}
-              onChange={handleChange}
-              className="mb-3 max-h-40 overflow-auto"
-            />
-
-            <ButtonLoading
-              type="submit"
-              isLoading={isSaving}
-              className={`relative rounded-lg px-5 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base ${
-                isConnectWithUsPage ? 'bg-slate-550' : 'bg-th-primary-100'
-              }`}
-            >
-              {t('users:Send')}
-            </ButtonLoading>
-            <p className="text-center text-sm font-light">
-              {t('users:ConditionOfConsent')}
-            </p>
-          </form>
-        ) : (
-          <div className="w-full text-center">
-            <p>{t('users:YourMessageSentThankYou')}</p>
-            <button
-              className={`mt-14 rounded-lg px-10 py-4 text-center text-sm font-medium text-th-text-secondary-100 md:text-base ${
-                isStartPage ? 'bg-slate-550' : 'bg-th-primary-100'
-              }`}
-              onClick={() => onClose()}
-            >
-              {t('common:Close')}
-            </button>
-          </div>
-        )}
-      </div>
     </div>
   )
 }

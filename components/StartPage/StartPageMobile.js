@@ -274,7 +274,14 @@ function StartPageMobile({ defaultContentKey = null }) {
           <SectionBlock
             sectionKey="connect"
             label={t('WriteToUs')}
-            content={<Feedback t={t} onClose={() => toggleSection('feedback')} />}
+            content={
+              <div className="flex w-full flex-col gap-6 md:gap-0">
+                <p className="mb-4 font-semibold md:font-bold">
+                  {t('start-page:WriteToUs')}
+                </p>
+                <Feedback t={t} onClose={() => toggleSection('feedback')} />
+              </div>
+            }
             showSection={showSections.connect}
             toggleSection={toggleSection}
           />
