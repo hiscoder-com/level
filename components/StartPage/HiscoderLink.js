@@ -4,9 +4,13 @@ import Hiscoder from 'public/icons/hiscoder.svg'
 
 function HiscoderLink() {
   return (
-    <div className="flex items-center justify-center gap-4 pb-4 text-[#CACACA]">
-      <div>Powered by</div>
-      <Link href="https://hiscoder.com" target="_blank">
+    <div className="mx-auto flex flex-1 items-center">
+      <Link
+        href="https://hiscoder.com"
+        target="_blank"
+        className="flex items-center gap-4 text-[#CACACA] hover:text-gray-400"
+      >
+        <span>Powered by</span>
         <Hiscoder className="h-8" />
       </Link>
     </div>
