@@ -1,3 +1,9 @@
+# Version 0.28.0
+## Date: 12/19/2024
+
+### **Added:**
+- navigation and search to the Translation Academy
+
 # Version 0.27.0
 ## Date: 12/16/2024
 

@@ -1,3 +1,9 @@
+# Versión 0.28.0
+## Date: 19.12.2024
+
+### **Agregado:**
+- navegar y buscar En la Academia de traducción
+
 # Versión 0.27.0
 ## Date: 12/16/2024
 

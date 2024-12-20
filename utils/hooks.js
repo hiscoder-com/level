@@ -147,7 +147,7 @@ export function useUser(id) {
  */
 export function useProjects() {
   const { data, mutate, error, isLoading } = useSWR([`/api/projects`], fetcher, {
-    revalidateOnFocus: false,
+    revalidateOnFocus: true,
     revalidateIfStale: false,
   })
   // TODO форматировать data, нужно пройтись по всем проектам и раскидать, чтобы каждый проект лежал внутри языка
