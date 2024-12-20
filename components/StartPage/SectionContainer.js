@@ -13,15 +13,12 @@ function SectionContainer({ showSections, toggleSection, t }) {
   }
 
   const handleSectionClick = async (section) => {
-    // Закрываем текущий блок перед открытием нового
     if (!showSections[section]) {
       await router.replace('/', undefined, { shallow: true, scroll: false })
     }
 
-    // Переключаем состояние секции
     toggleSection({ [section]: !showSections[section] })
 
-    // Переходим к нужному маршруту
     await router.replace(`/${section}`, undefined, { shallow: true, scroll: false })
   }
 
