@@ -245,7 +245,15 @@ function StartPageMobile({ defaultContentKey = null }) {
             )}
           </div>
         </div>
-        <Link scroll={false} href={`/${contentRoutes['partners']}`}>
+        <div
+          scroll={false}
+          onClick={() =>
+            router.push(contentRoutes['partners'], undefined, {
+              shallow: true,
+              scroll: false,
+            })
+          }
+        >
           <SectionBlock
             sectionKey="partners"
             label={t('Partners')}
@@ -253,8 +261,16 @@ function StartPageMobile({ defaultContentKey = null }) {
             showSection={showSections.partners}
             toggleSection={toggleSection}
           />
-        </Link>
-        <Link scroll={false} href={`/${contentRoutes['connect']}`}>
+        </div>
+        <div
+          scroll={false}
+          onClick={() =>
+            router.push(contentRoutes['connect'], undefined, {
+              shallow: true,
+              scroll: false,
+            })
+          }
+        >
           <SectionBlock
             sectionKey="connect"
             label={t('WriteToUs')}
@@ -262,7 +278,7 @@ function StartPageMobile({ defaultContentKey = null }) {
             showSection={showSections.connect}
             toggleSection={toggleSection}
           />
-        </Link>
+        </div>
         <SectionContainer
           showSections={showSections}
           toggleSection={toggleSection}

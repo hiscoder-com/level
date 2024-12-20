@@ -1,4 +1,3 @@
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import AboutVersion from 'components/AboutVersion'
@@ -12,14 +11,26 @@ function SectionContainer({ showSections, toggleSection, t }) {
     router.replace('/', undefined, { shallow: true, scroll: false })
     toggleSection({ download: false, updates: false })
   }
+
+  const handleSectionClick = async (section) => {
+    // Закрываем текущий блок перед открытием нового
+    if (!showSections[section]) {
+      await router.replace('/', undefined, { shallow: true, scroll: false })
+    }
+
+    // Переключаем состояние секции
+    toggleSection({ [section]: !showSections[section] })
+
+    // Переходим к нужному маршруту
+    await router.replace(`/${section}`, undefined, { shallow: true, scroll: false })
+  }
+
   return (
     <div className="grid grid-cols-2 gap-5 text-center">
       {!showSections.updates && (
-        <Link
-          href="/download"
-          shallow
-          scroll={false}
-          className={`rounded-xl bg-th-secondary-10 p-5 ${
+        <div
+          onClick={() => handleSectionClick('download')}
+          className={`cursor-pointer rounded-xl bg-th-secondary-10 p-5 ${
             showSections.download ? 'col-span-2' : ''
           }`}
         >
@@ -27,15 +38,13 @@ function SectionContainer({ showSections, toggleSection, t }) {
             {t('common:Download')}
           </p>
           {showSections.download && <Download t={t} onClose={onClose} />}
-        </Link>
+        </div>
       )}
 
       {!showSections.download && (
-        <Link
-          href="/updates"
-          shallow
-          scroll={false}
-          className={`rounded-xl bg-th-secondary-10 p-5 ${
+        <div
+          onClick={() => handleSectionClick('updates')}
+          className={`cursor-pointer rounded-xl bg-th-secondary-10 p-5 ${
             showSections.updates ? 'col-span-2' : ''
           }`}
         >
@@ -44,7 +53,7 @@ function SectionContainer({ showSections, toggleSection, t }) {
           ) : (
             <AboutVersion isStartPage={true} onClose={onClose} />
           )}
-        </Link>
+        </div>
       )}
     </div>
   )

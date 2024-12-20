@@ -86,7 +86,7 @@ function Download({ t, onClose }) {
     <div className="relative flex w-full flex-col text-left">
       <p className="mb-9 hidden md:block">{t('common:Download')}</p>
       <Close
-        className="absolute -top-7 right-0 h-6 w-6 cursor-pointer stroke-black md:hidden"
+        className="absolute -top-16 right-0 h-6 w-6 cursor-pointer stroke-black md:hidden"
         onClick={onClose}
       />
       <div className="flex flex-col gap-6 overflow-y-auto text-base font-medium">
