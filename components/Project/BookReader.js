@@ -58,6 +58,7 @@ function BookReader() {
       }
     }
   }, [project?.type, reference?.bookid, reference?.checks])
+
   const { isLoading, data: verseObjects } = useGetResource({
     config: {
       reference: { book: reference?.bookid, chapter: reference?.chapter },
@@ -65,15 +66,18 @@ function BookReader() {
     },
     url: `/api/git/${project?.type}`,
   })
+
   const verseObjectsToUse =
     verseObjects ||
     getVerseObjectsForBookAndChapter(chapters, reference?.bookid, reference?.chapter)
+
   useEffect(() => {
     if (bookid && books) {
       const book = books.find((book) => book.code === bookid)
       setReference((prev) => ({ ...prev, chapter: 1, bookid, checks: book.level_checks }))
     }
   }, [bookid, books])
+
   const createdNewTestamentBooks = useMemo(
     () =>
       books
@@ -115,6 +119,7 @@ function BookReader() {
 
     [books, chapters]
   )
+
   return (
     <div className="mx-auto flex max-w-7xl flex-col-reverse gap-7 pb-10 xl:flex-row">
       <div className="static top-7 flex w-full flex-col gap-7 self-start md:flex-row xl:sticky xl:w-1/3 xl:flex-col">
@@ -163,6 +168,7 @@ function BookReader() {
 }
 
 export default BookReader
+
 function Verses({ verseObjects, user, reference, isLoading }) {
   const {
     push,
