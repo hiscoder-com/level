@@ -1,7 +1,5 @@
 drop function if exists "public"."update_project_basic"(project_code text, title text, orig_title text, code text, language_id bigint, is_rtl boolean);
 
-alter table "public"."users" add column "comcheck_token" text;
-
 set check_function_bodies = off;
 
 CREATE OR REPLACE FUNCTION public.has_assigned_verses(project_translator_id bigint)
