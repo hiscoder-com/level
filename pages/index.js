@@ -5,6 +5,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 
 import HiscoderLink from 'components/StartPage/HiscoderLink'
 import StartPage from 'components/StartPage/StartPage'
+import StartPageMobile from 'components/StartPage/StartPageMobile'
 
 import { openGraph, urlGlobal } from '../utils/openGraph'
 
@@ -46,8 +47,11 @@ export default function Home() {
 
         <link rel="icon" href={metadata.icons.icon} sizes="any" />
       </Head>
-      <div className="flex flex-1 flex-col justify-center">
+      <div className="flex flex-1 flex-col justify-center md:block">
         <StartPage defaultContentKey={query?.contentKey || null} />
+      </div>
+      <div className="flex flex-1 flex-col justify-center md:hidden">
+        <StartPageMobile defaultContentKey={query?.contentKey || null} />
       </div>
       <HiscoderLink />
     </main>

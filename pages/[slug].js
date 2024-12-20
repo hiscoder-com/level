@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next'
 
 import HiscoderLink from 'components/StartPage/HiscoderLink'
 import StartPage from 'components/StartPage/StartPage'
+import StartPageMobile from 'components/StartPage/StartPageMobile'
 
 import { urlGlobal } from 'utils/openGraph'
 
@@ -115,8 +116,11 @@ const SlugPage = () => {
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-1 flex-col justify-center">
+      <div className="flex flex-1 flex-col justify-center md:block">
         <StartPage defaultContentKey={pageContent.contentKey || null} />
+      </div>
+      <div className="flex flex-1 flex-col justify-center md:hidden">
+        <StartPageMobile defaultContentKey={pageContent.contentKey || null} />
       </div>
       <HiscoderLink />
     </main>
