@@ -116,11 +116,14 @@ const SlugPage = () => {
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="flex flex-1 flex-col justify-center md:block">
-        <StartPage defaultContentKey={pageContent.contentKey || null} />
-      </div>
-      <div className="flex flex-1 flex-col justify-center md:hidden">
-        <StartPageMobile defaultContentKey={pageContent.contentKey || null} />
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <div className="hidden md:block">
+          <StartPage defaultContentKey={pageContent.contentKey || null} />
+        </div>
+
+        <div className="block w-full md:hidden">
+          <StartPageMobile defaultContentKey={pageContent.contentKey || null} />
+        </div>
       </div>
       <HiscoderLink />
     </main>

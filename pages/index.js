@@ -47,11 +47,14 @@ export default function Home() {
 
         <link rel="icon" href={metadata.icons.icon} sizes="any" />
       </Head>
-      <div className="flex flex-1 flex-col justify-center md:block">
-        <StartPage defaultContentKey={query?.contentKey || null} />
-      </div>
-      <div className="flex flex-1 flex-col justify-center md:hidden">
-        <StartPageMobile defaultContentKey={query?.contentKey || null} />
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <div className="hidden md:block">
+          <StartPage defaultContentKey={query?.contentKey || null} />
+        </div>
+
+        <div className="block w-full md:hidden">
+          <StartPageMobile defaultContentKey={query?.contentKey || null} />
+        </div>
       </div>
       <HiscoderLink />
     </main>
