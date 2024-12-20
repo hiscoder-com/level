@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { useRouter } from 'next/router'
 
@@ -38,7 +38,7 @@ function TaTopics() {
   const [searchQuery, setSearchQuery] = useState('')
   const [allTopics, setAllTopics] = useState([])
 
-  const filteredTopics = (() => {
+  const filteredTopics = useMemo(() => {
     const query = searchQuery.trim().toLowerCase()
 
     if (!query) {
@@ -48,7 +48,7 @@ function TaTopics() {
     }
 
     return allTopics.filter((topic) => topic.title.toLowerCase().includes(query))
-  })()
+  }, [searchQuery, selectedCategory, allTopics])
 
   const handleCategoryChange = useCallback(
     (event) => {
