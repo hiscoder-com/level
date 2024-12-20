@@ -15,6 +15,7 @@
   "BriefToggleError": "Failed to toggle the brief",
   "BriefToggleisenableSuccessDisabled": "The brief has been disabled",
   "BriefToggleisenableSuccessEnabled": "The brief has been enabled",
+  "CannotRemoveTranslatorWithVerses": "Cannot remove translator with verses in unfinished chapters. Please reassign verses or finish chapters first",
   "CodeLanguageNotUnique": "The code of the language is not unique",
   "CodeLanguageRequired": "The code of the language is required",
   "CreateNewProject": "Create a new project",

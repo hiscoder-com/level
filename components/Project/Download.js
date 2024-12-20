@@ -231,6 +231,10 @@ function Download({
     const urls = {}
     for (const resource in resources) {
       if (Object.hasOwnProperty.call(resources, resource)) {
+        //TODO- продумать другое решение
+        if (resource === 'tAcademy') {
+          continue
+        }
         const { owner, repo, commit, manifest } = resources[resource]
         const bookPath = manifest.projects.find((el) => el.identifier === bookCode)?.path
         const url = ` ${
@@ -392,6 +396,7 @@ function Download({
       }
       const zip = new JSZip()
       createProjectFiles(zip)
+
       const resourcesUrls = await getResourcesUrls(project.resources)
       if (!resourcesUrls) {
         throw new Error('Resource URLs not found')

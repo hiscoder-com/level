@@ -31,6 +31,7 @@ import Burger from 'public/icons/burger.svg'
 import Camera from 'public/icons/camera.svg'
 import Close from 'public/icons/close.svg'
 import CreateProject from 'public/icons/create-project.svg'
+import Hiscoder from 'public/icons/hiscoder-short.svg'
 import Localization from 'public/icons/localization.svg'
 import Notes from 'public/icons/notes.svg'
 import Projects from 'public/icons/projects.svg'
@@ -407,7 +408,6 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                           className="flex w-full cursor-pointer items-center gap-2"
                           onClick={() => {
                             openModal('tAcademy')
-                            setShowAbout(false)
                           }}
                         >
                           <div className="rounded-[23rem]">
@@ -433,6 +433,7 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                             buttonTitle={t('translationAcademy')}
                             collapsed={collapsed}
                             contentClassName="mt-4 p-0"
+                            width="60rem"
                           >
                             <TaTopics />
                           </ModalInSideBar>
@@ -637,6 +638,20 @@ function SideBar({ setIsOpenSideBar, access, isOpenSideBar }) {
                         className="group flex cursor-default items-center justify-between gap-2 rounded-b-2xl hover:bg-th-secondary-200 lg:rounded-b-none"
                       >
                         <SignOut collapsed={collapsed} />
+                      </Menu.Item>
+                      <Menu.Item
+                        as="div"
+                        disabled
+                        className="group flex cursor-default items-center justify-between gap-2 rounded-b-2xl hover:bg-th-secondary-200 lg:rounded-b-none"
+                      >
+                        <Link
+                          href="https://hiscoder.com"
+                          target="_blank"
+                          className={`flex gap-2.5 py-3 pl-4 text-th-text-primary group-hover:text-th-text-primary group-hover:opacity-70 lg:text-th-secondary-300`}
+                        >
+                          <Hiscoder className="w-6 min-w-[1.25rem]" />
+                          {!collapsed && <p>Powered by HisCoder.com</p>}
+                        </Link>
                       </Menu.Item>
                     </div>
                   </div>

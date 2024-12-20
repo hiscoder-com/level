@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'react-i18next'
 
+import HiscoderLink from 'components/StartPage/HiscoderLink'
 import StartPage from 'components/StartPage/StartPage'
 
 import { urlGlobal } from 'utils/openGraph'
@@ -80,7 +81,7 @@ const SlugPage = () => {
   const imageUrl = `${urlGlobal}/social.webp`
 
   return (
-    <main className="flex min-h-screen flex-col justify-center bg-th-secondary-100 font-sans">
+    <main className="flex min-h-screen flex-col bg-th-secondary-100 font-sans">
       <Head>
         <title>{pageContent.title || t('LEVEL')}</title>
         <meta
@@ -114,7 +115,10 @@ const SlugPage = () => {
 
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <StartPage defaultContentKey={pageContent.contentKey || null} />
+      <div className="flex flex-1 flex-col justify-center">
+        <StartPage defaultContentKey={pageContent.contentKey || null} />
+      </div>
+      <HiscoderLink />
     </main>
   )
 }
