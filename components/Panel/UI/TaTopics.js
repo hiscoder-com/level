@@ -82,19 +82,6 @@ function TaTopics() {
     [allTopics, selectedCategory, href]
   )
 
-  useEffect(() => {
-    if (filteredTopics.length > 0 || topics.length > 0) {
-      const list = filteredTopics.length ? filteredTopics : topics
-      const isCurrentTopicValid = list.some((topic) => topic.link === selectedTopic)
-
-      if (!isCurrentTopicValid) {
-        const firstTopicLink = list[0].link
-        setSelectedTopic(firstTopicLink)
-        setHref(`${selectedCategory}/${firstTopicLink}`)
-      }
-    }
-  }, [filteredTopics, topics, selectedCategory, selectedTopic])
-
   const updateHref = useCallback(
     (newRelativePath) => {
       const { absolutePath } = resolvePath(config.base, href, newRelativePath)
