@@ -1,6 +1,8 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+import Close from 'public/icons/close.svg'
+
 const partners = [
   {
     name: 'Unfolding Word',
@@ -32,9 +34,14 @@ const partners = [
   },
 ]
 
-function Partners({ t }) {
+function Partners({ t, onClose }) {
   return (
-    <div className="flex w-full flex-col gap-6 md:gap-14">
+    <div className="relative flex w-full flex-col gap-6 md:gap-14">
+      <Close
+        className="absolute right-0 top-0 h-6 w-6 cursor-pointer stroke-black md:hidden"
+        onClick={onClose}
+      />
+
       <p className="font-semibold md:font-bold">{t('Partners')}</p>
       <div className="grid grid-cols-2 gap-3">
         {partners.map((partner) => (
