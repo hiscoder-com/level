@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import Link from 'next/link'
 import { useRouter } from 'next/router'
 
 import { useTranslation } from 'next-i18next'
@@ -8,15 +7,12 @@ import { useTranslation } from 'next-i18next'
 import SwitchLocalization from 'components/SwitchLocalization'
 
 import CookiesAproove from './CookiesAproove'
-import Feedback from './Feedback'
 import FrequentlyAskedQuestions from './FrequentlyAskedQuestions'
 import HowItWorks from './HowItWorks'
 import LevelIntro from './LevelIntro'
 import Login from './Login'
-import Logo from './Logo'
-import Partners from './Partners'
+import OneSection from './OneSection'
 import Reviews from './Reviews'
-import SectionBlock from './SectionBlock'
 import SectionContainer from './SectionContainer'
 
 import LevelLogo from 'public/icons/level-logo-color.svg'
@@ -119,20 +115,16 @@ function StartPageMobile({ defaultContentKey = null }) {
       })
     }
   }
-  const mainLink = router.pathname === '/' ? `/${contentRoutes['logo']}` : '/'
   return (
     <>
       <main className="relative flex flex-col gap-5 p-5 text-lg font-medium md:hidden">
-        <div onClick={() => router.replace(mainLink)}>
-          <SectionBlock
-            sectionKey="logo"
-            content={<Logo t={t} />}
-            showSection={showSections.logo}
-            toggleSection={toggleSection}
-            isLogo={true}
-            label={<LevelLogo className="h-7" />}
-          />
-        </div>
+        <OneSection
+          showSections={showSections}
+          label={t('logo')}
+          logo={<LevelLogo className="h-7" />}
+          toggleSection={toggleSection}
+          t={t}
+        />
         <div className="grid grid-cols-2 gap-5 text-center">
           {!showSections.signIn && (
             <div className="z-20 flex items-center justify-center rounded-xl bg-th-secondary-10 p-4">
@@ -245,54 +237,24 @@ function StartPageMobile({ defaultContentKey = null }) {
             )}
           </div>
         </div>
-        <div
-          scroll={false}
-          onClick={() =>
-            router.push(contentRoutes['partners'], undefined, {
-              shallow: true,
-              scroll: false,
-            })
-          }
-        >
-          <SectionBlock
-            sectionKey={contentKey}
-            label={t('Partners')}
-            content={<Partners t={t} />}
-            showSection={showSections.partners}
-            toggleSection={toggleSection}
-          />
-        </div>
-        <div
-          scroll={false}
-          onClick={() =>
-            router.push(contentRoutes['connect'], undefined, {
-              shallow: true,
-              scroll: false,
-            })
-          }
-        >
-          <SectionBlock
-            sectionKey={contentKey}
-            label={t('WriteToUs')}
-            content={
-              <div className="flex w-full flex-col gap-6 md:gap-0">
-                <p className="mb-4 font-semibold md:font-bold">
-                  {t('start-page:WriteToUs')}
-                </p>
-                <Feedback t={t} onClose={() => toggleSection('feedback')} />
-              </div>
-            }
-            showSection={showSections.connect}
-            toggleSection={toggleSection}
-          />
-        </div>
+        <OneSection
+          showSections={showSections}
+          label={t('Partners')}
+          toggleSection={toggleSection}
+          t={t}
+        />
+        <OneSection
+          showSections={showSections}
+          label={t('WriteToUs')}
+          toggleSection={toggleSection}
+          t={t}
+        />
         <SectionContainer
           showSections={showSections}
           toggleSection={toggleSection}
           setContentKey={setContentKey}
           t={t}
         />
-
         <div className="absolute bottom-0 left-1/2 z-10 block -translate-x-1/2 md:hidden">
           <CookiesAproove />
         </div>
