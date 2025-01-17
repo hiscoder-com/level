@@ -217,7 +217,7 @@ function ProjectEdit() {
         },
         {
           id: 'resources',
-          access: isAdminAccess,
+          access: isCoordinatorAccess,
           label: 'Resources',
           panel: (
             <>
