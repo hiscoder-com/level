@@ -226,9 +226,19 @@ function Download({
       if (Object.hasOwnProperty.call(chapterVerse, chapterNum)) {
         const verses = chapterVerse[chapterNum]
         const newVerses = {}
+
+        if (typeProject === 'obs') {
+          newVerses[0] = { text: '', enabled: false, history: [] }
+        }
+
         for (let index = 1; index < verses + 1; index++) {
           newVerses[index] = { text: '', enabled: false, history: [] }
         }
+
+        if (typeProject === 'obs') {
+          newVerses[200] = { text: '', enabled: false, history: [] }
+        }
+
         chapters[chapterNum] = newVerses
       }
     }
