@@ -210,12 +210,7 @@ function Download({
     if (!bookLink) return null
     let chapterVerse = {}
     if (typeProject === 'obs') {
-      const _obsStoryVerses = Object.fromEntries(
-        Object.entries(obsStoryVerses)
-          .map(([key, value]) => [parseInt(key, 10), value])
-          .sort(([a], [b]) => a - b)
-      )
-      chapterVerse = _obsStoryVerses
+      chapterVerse = obsStoryVerses
     } else {
       const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
         await getCountChaptersAndVerses({
@@ -341,7 +336,13 @@ function Download({
     if (!chapters || !project) {
       return null
     }
-    const initChapters = Object.keys(chapters).reduce((acc, chapter) => {
+
+    const sortedChapters = Object.fromEntries(
+      Object.entries(chapters)
+        .map(([key, value]) => [parseInt(key, 10), value])
+        .sort(([a], [b]) => a - b)
+    )
+    const initChapters = Object.keys(sortedChapters).reduce((acc, chapter) => {
       acc[chapter] = 0
       return acc
     }, {})
@@ -396,6 +397,22 @@ function Download({
 
           const newObsZipContent = await newObsZip.generateAsync({ type: 'nodebuffer' })
           zip.file('obs.zip', newObsZipContent)
+
+          const { data: obsImagesUrl } = await getOBSImages()
+          if (!obsImagesUrl) throw new Error('OBS images URL is not defined')
+          const responseObsImages = await axios.get(obsImagesUrl, {
+            responseType: 'arraybuffer',
+          })
+
+          if (responseObsImages.status !== 200)
+            throw new Error(`Failed to fetch OBS images from storage: ${obsImagesUrl}`)
+
+          const obsImagesZip = await JSZip.loadAsync(responseObsImages.data)
+
+          const obsImagesZipContent = await obsImagesZip.generateAsync({
+            type: 'nodebuffer',
+          })
+          zip.file('obs-images-360px.zip', obsImagesZipContent)
         } else {
           const response = await axios.get(url)
           if (response.status === 200) {
@@ -431,6 +448,21 @@ function Download({
     folders.forEach((foldername) => {
       zip.folder(foldername)
     })
+  }
+  const getOBSImages = async () => {
+    try {
+      const response = await axios.get(`/api/obs-images`)
+
+      if (response.status === 200) {
+        const content = response.data
+        return content
+      } else {
+        throw new Error(`Failed to fetch resource: ${url}`)
+      }
+    } catch (error) {
+      console.error(`Error loading ${url}:`, error)
+      return null
+    }
   }
   const createOfflineProject = async (project, bookCode) => {
     try {
