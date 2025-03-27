@@ -15,7 +15,7 @@ import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
 import ListBox from 'components/ListBox'
 
-import { newTestamentList, usfmFileNames } from 'utils/config'
+import { newTestamentList, obsStoryVerses, usfmFileNames } from 'utils/config'
 import {
   compileChapter,
   convertToUsfm,
@@ -60,7 +60,10 @@ function Download({
     switch (project?.type) {
       case 'obs':
         if (isBook) {
-          extraOptions = [{ label: 'ZIP', value: 'zip' }]
+          extraOptions = [
+            { label: 'ZIP', value: 'zip' },
+            { label: t('projects:Project'), value: 'project' },
+          ]
         } else {
           extraOptions = [{ label: 'Markdown', value: 'markdown' }]
         }
@@ -203,20 +206,30 @@ function Download({
         : t('books:' + bookCode),
     },
   ]
-  const createChapters = async (bookLink) => {
+  const createChapters = async (bookLink, typeProject) => {
     if (!bookLink) return null
-
-    const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
-      await getCountChaptersAndVerses({
-        link: bookLink,
-      })
-    if (errorJsonChapterVerse) {
-      return null
+    let chapterVerse = {}
+    if (typeProject === 'obs') {
+      const _obsStoryVerses = Object.fromEntries(
+        Object.entries(obsStoryVerses)
+          .map(([key, value]) => [parseInt(key, 10), value])
+          .sort(([a], [b]) => a - b)
+      )
+      chapterVerse = _obsStoryVerses
+    } else {
+      const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
+        await getCountChaptersAndVerses({
+          link: bookLink,
+        })
+      chapterVerse = jsonChapterVerse
+      if (errorJsonChapterVerse) {
+        return null
+      }
     }
     const chapters = {}
-    for (const chapterNum in jsonChapterVerse) {
-      if (Object.hasOwnProperty.call(jsonChapterVerse, chapterNum)) {
-        const verses = jsonChapterVerse[chapterNum]
+    for (const chapterNum in chapterVerse) {
+      if (Object.hasOwnProperty.call(chapterVerse, chapterNum)) {
+        const verses = chapterVerse[chapterNum]
         const newVerses = {}
         for (let index = 1; index < verses + 1; index++) {
           newVerses[index] = { text: '', enabled: false, history: [] }
@@ -226,6 +239,7 @@ function Download({
     }
     return chapters
   }
+
   const getResourcesUrls = async (resources) => {
     if (!resources) return null
     const urls = {}
@@ -233,6 +247,14 @@ function Download({
       if (Object.hasOwnProperty.call(resources, resource)) {
         //TODO- продумать другое решение
         if (resource === 'tAcademy') {
+          continue
+        }
+        if (resource === 'obs') {
+          const { owner, repo } = resources[resource]
+          const url = ` ${
+            process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+          }/${owner}/${repo}/archive/master.zip`
+          urls[resource] = url
           continue
         }
         const { owner, repo, commit, manifest } = resources[resource]
@@ -265,7 +287,7 @@ function Download({
     try {
       const parts = url.split('/')
       const baseUrl = parts.slice(0, 3).join('/')
-      const repo = parts[4].slice(0, -1)
+      const repo = parts[4].split('_')[0] + '_tw'
       const owner = parts[3]
       const newUrl = `${baseUrl}/${owner}/${repo}/archive/master.zip`
       const response = await axios.get(newUrl, { responseType: 'arraybuffer' })
@@ -338,15 +360,43 @@ function Download({
       book: { code: bookCode, name: bookName },
       resources: addResourceName(project.resources),
       mainResource: project.base_manifest.resource,
+      typeProject: project.type,
+      language: { is_rtl: project.is_rtl },
     }
     return JSON.stringify(config)
   }
 
-  const downloadResources = async (resourcesUrls, zip) => {
+  const downloadResources = async (resourcesUrls, zip, typeProject) => {
     for (const resource in resourcesUrls) {
-      if (Object.hasOwnProperty.call(resourcesUrls, resource)) {
-        const url = resourcesUrls[resource]
-        try {
+      if (!Object.hasOwnProperty.call(resourcesUrls, resource)) continue
+
+      const url = resourcesUrls[resource]
+      try {
+        if (resource === 'obs') {
+          const response = await axios.get(url, { responseType: 'arraybuffer' })
+          if (response.status !== 200)
+            throw new Error(`Failed to fetch OBS archive: ${url}`)
+
+          const obsZip = await JSZip.loadAsync(response.data)
+
+          const rootFolder = Object.keys(obsZip.files).find(
+            (path) => obsZip.files[path].dir
+          )
+          if (!rootFolder) throw new Error('No root folder found in OBS archive')
+
+          const newObsZip = new JSZip()
+          for (const filePath of Object.keys(obsZip.files)) {
+            const file = obsZip.files[filePath]
+            if (file.dir || !filePath.startsWith(rootFolder)) continue
+
+            const newPath = filePath.slice(rootFolder.length)
+            const content = await file.async('nodebuffer')
+            newObsZip.file(newPath, content)
+          }
+
+          const newObsZipContent = await newObsZip.generateAsync({ type: 'nodebuffer' })
+          zip.file('obs.zip', newObsZipContent)
+        } else {
           const response = await axios.get(url)
           if (response.status === 200) {
             const content = response.data
@@ -354,9 +404,9 @@ function Download({
           } else {
             throw new Error(`Failed to fetch resource: ${url}`)
           }
-        } catch (error) {
-          console.error(`Error loading: ${url}`, error)
         }
+      } catch (error) {
+        console.error(`Error loading ${url}:`, error)
       }
     }
   }
@@ -390,7 +440,7 @@ function Download({
       if (!bookLink) {
         throw new Error('Book link not found')
       }
-      const chapters = await createChapters(bookLink)
+      const chapters = await createChapters(bookLink, project.type)
       if (!chapters) {
         throw new Error('Chapters not created')
       }
@@ -401,7 +451,7 @@ function Download({
       if (!resourcesUrls) {
         throw new Error('Resource URLs not found')
       }
-      await downloadResources(resourcesUrls, zip)
+      await downloadResources(resourcesUrls, zip, project.type)
       const tWordsBuffer = await getTwords(resourcesUrls['twords'])
       if (!tWordsBuffer) {
         throw new Error('tWords not fetched')
