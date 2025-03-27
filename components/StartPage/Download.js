@@ -53,32 +53,33 @@ function Download({ t, onClose }) {
     fetchVersion()
   }, [])
 
-  const getDownloadLink = () => {
+  const getDownloadLink = (type) => {
     if (os.os === 'Windows') {
       return os.architecture === '64-bit'
-        ? `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-x64-${version}.exe`
-        : `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-ia32-${version}.exe`
+        ? `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-x64-${version}-${type}.exe`
+        : `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-ia32-${version}-${type}.exe`
     } else if (os.os === 'Linux') {
-      return `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}.deb`
+      return `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}-${type}.deb`
     }
     return '#'
   }
+
   const allLinks = [
     {
       label: 'Windows 64-bit',
-      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-x64-${version}.exe`,
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-x64-${version}-obs.exe`,
     },
     {
       label: 'Windows 32-bit',
-      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-ia32-${version}.exe`,
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL-win-ia32-${version}-obs.exe`,
     },
     {
       label: 'Linux .deb',
-      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}.deb`,
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}-bible.deb`,
     },
     {
       label: 'Linux AppImage',
-      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}.AppImage`,
+      link: `https://github.com/hiscoder-com/level-desktop/releases/download/v${version}/LEVEL_${version}-bible.AppImage`,
     },
   ]
   const isAvailableCurrentOs = availableOs.includes(os.os)
@@ -99,9 +100,17 @@ function Download({ t, onClose }) {
         </ol>
         <p>{t('Download.p2')}</p>
         {isAvailableCurrentOs ? (
-          <Link href={getDownloadLink()} className="font-bold text-th-primary-100">
-            {t('Download.link')}
-          </Link>
+          <>
+            <Link href={getDownloadLink('obs')} className="font-bold text-th-primary-100">
+              {t('Download.linkObs')}
+            </Link>
+            <Link
+              href={getDownloadLink('bible')}
+              className="font-bold text-th-primary-100"
+            >
+              {t('Download.linkBible')}
+            </Link>
+          </>
         ) : (
           allLinks.map((download) => (
             <Link
