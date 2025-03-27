@@ -11,7 +11,8 @@
     "li2": "Run the file and follow the installation prompts.",
     "li3": "Once installed, open the program to explore the test project and familiarize yourself with the platform.",
     "p2": "We hope you enjoy using LEVEL! Stay tuned for updates and future releases for other operating systems.",
-    "link": "Download LEVEL Desktop"
+    "linkObs": "Download LEVEL Desktop with OBS project",
+    "linkBible": "Download LEVEL Desktop with Bible project"
   },
   "Iagree": "I agree",
   "Idecline": "I decline",
