@@ -1,6 +1,6 @@
-import axios from "../../../lib/axios"
-
 import { tsvToJSON } from '@texttree/tn-quote'
+
+import axios from '../../../lib/axios'
 
 /**
  *  @swagger

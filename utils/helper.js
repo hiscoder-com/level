@@ -1,11 +1,10 @@
 import axios from 'axios'
-import gitDoorAxios from '../lib/axios'
-
 import jsyaml from 'js-yaml'
 import usfm from 'usfm-js'
 
 import { JsonToPdf } from '@texttree/obs-format-convert-rcl'
 
+import gitDoorAxios from '../lib/axios'
 import { obsStoryVerses } from './config'
 
 const isServer = typeof window === 'undefined'

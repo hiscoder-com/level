@@ -12,5 +12,6 @@
     "editor.formatOnSave": true
   },
   "files.eol": "\n",
-  "editor.tabSize": 2
+  "editor.tabSize": 2,
+  "i18next.i18nPaths": "d:/Gecraft/level/public/locales"
 }

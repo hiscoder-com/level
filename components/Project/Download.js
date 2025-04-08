@@ -15,6 +15,8 @@ import ButtonLoading from 'components/ButtonLoading'
 import CheckBox from 'components/CheckBox'
 import ListBox from 'components/ListBox'
 
+import gitDoorAxios from '../../lib/axios'
+
 import { newTestamentList, obsStoryVerses, usfmFileNames } from 'utils/config'
 import {
   compileChapter,
@@ -24,7 +26,6 @@ import {
   downloadPdf,
   getCountChaptersAndVerses,
 } from 'utils/helper'
-import gitDoorAxios  from '../../lib/axios'
 import { useGetBook, useGetChapters } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
 

@@ -1,5 +1,6 @@
 import usfm from 'usfm-js'
-import axios from "../../../lib/axios"
+
+import axios from '../../../lib/axios'
 
 import { parseChapter } from 'utils/usfmHelper'
 
