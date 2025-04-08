@@ -24,6 +24,7 @@ import {
   downloadPdf,
   getCountChaptersAndVerses,
 } from 'utils/helper'
+import gitDoorAxios  from '../../lib/axios'
 import { useGetBook, useGetChapters } from 'utils/hooks'
 import useSupabaseClient from 'utils/supabaseClient'
 
@@ -295,7 +296,7 @@ function Download({
       const repo = parts[4].split('_')[0] + '_tw'
       const owner = parts[3]
       const newUrl = `${baseUrl}/${owner}/${repo}/archive/master.zip`
-      const response = await axios.get(newUrl, { responseType: 'arraybuffer' })
+      const response = await gitDoorAxios.get(newUrl, { responseType: 'arraybuffer' })
       const zip = new JSZip()
       await zip.loadAsync(response.data)
       const newZip = new JSZip()
@@ -335,7 +336,7 @@ function Download({
       usfmFileNames[bookCode]
     }`
     try {
-      const response = await axios.get(newUrl)
+      const response = await gitDoorAxios.get(newUrl)
       return response.data
     } catch (error) {
       console.error('Error fetching original USFM:', error)
@@ -356,7 +357,7 @@ function Download({
       acc[chapter] = 0
       return acc
     }, {})
-    const methods = await axios.get('/api/methods')
+    const methods = await gitDoorAxios.get('/api/methods')
     const method = methods.data.find((method) => method.title === project.method)
     if (!method?.offline_steps) {
       return null
@@ -384,7 +385,7 @@ function Download({
       const url = resourcesUrls[resource]
       try {
         if (resource === 'obs') {
-          const response = await axios.get(url, { responseType: 'arraybuffer' })
+          const response = await gitDoorAxios.get(url, { responseType: 'arraybuffer' })
           if (response.status !== 200)
             throw new Error(`Failed to fetch OBS archive: ${url}`)
 

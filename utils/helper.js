@@ -1,4 +1,6 @@
 import axios from 'axios'
+import gitDoorAxios from '../lib/axios'
+
 import jsyaml from 'js-yaml'
 import usfm from 'usfm-js'
 
@@ -404,7 +406,7 @@ export const parseManifests = async ({ resources, current_method }) => {
     const urlArray = pathname.split('/')
     const url = getBaseResourceUrl(urlArray)
     const manifestUrl = getBaseResourceUrl(urlArray) + '/manifest.yaml'
-    const { data } = await axios.get(manifestUrl)
+    const { data } = await gitDoorAxios.get(manifestUrl)
     const manifest = jsyaml.load(data, { json: true })
 
     if (current_method.resources[el]) {
@@ -474,7 +476,7 @@ export const getCountChaptersAndVerses = async ({ link, book_code }) => {
   }
 
   try {
-    const { data } = await axios.get(link)
+    const { data } = await gitDoorAxios.get(link)
     return calculateChaptersAndVerses(data)
   } catch (error) {
     return { data: null, error }
