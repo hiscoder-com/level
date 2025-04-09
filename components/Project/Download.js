@@ -208,15 +208,24 @@ function Download({
         : t('books:' + bookCode),
     },
   ]
+  const reformatLink = (link) => {
+    if (link.includes('commit')) {
+      const newLink = link.replace(/commit\/[a-f0-9]+/, 'branch/master')
+      return newLink
+    }
+
+    return link
+  }
   const createChapters = async (bookLink, typeProject) => {
     if (!bookLink) return null
+    const reformatedBookLink = reformatLink(bookLink)
     let chapterVerse = {}
     if (typeProject === 'obs') {
       chapterVerse = obsStoryVerses
     } else {
       const { data: jsonChapterVerse, error: errorJsonChapterVerse } =
         await getCountChaptersAndVerses({
-          link: bookLink,
+          link: reformatedBookLink,
         })
       chapterVerse = jsonChapterVerse
       if (errorJsonChapterVerse) {
@@ -266,9 +275,13 @@ function Download({
         }
         const { owner, repo, commit, manifest } = resources[resource]
         const bookPath = manifest.projects.find((el) => el.identifier === bookCode)?.path
+        // const url = ` ${
+        //   process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
+        // }/${owner}/${repo}/raw/commit/${commit}/${bookPath.replace(/^\.\//, '')}`
+        // urls[resource] = url
         const url = ` ${
           process.env.NEXT_PUBLIC_NODE_HOST ?? 'https://git.door43.org'
-        }/${owner}/${repo}/raw/commit/${commit}/${bookPath.replace(/^\.\//, '')}`
+        }/${owner}/${repo}/raw/branch/master/${bookPath.replace(/^\.\//, '')}`
         urls[resource] = url
       }
     }
@@ -358,7 +371,7 @@ function Download({
       acc[chapter] = 0
       return acc
     }, {})
-    const methods = await gitDoorAxios.get('/api/methods')
+    const methods = await axios.get('/api/methods')
     const method = methods.data.find((method) => method.title === project.method)
     if (!method?.offline_steps) {
       return null
@@ -426,7 +439,7 @@ function Download({
           })
           zip.file('obs-images-360px.zip', obsImagesZipContent)
         } else {
-          const response = await axios.get(url)
+          const response = await gitDoorAxios.get(url)
           if (response.status === 200) {
             const content = response.data
             zip.file(`${resource}.${url.split('.').pop()}`, content)
