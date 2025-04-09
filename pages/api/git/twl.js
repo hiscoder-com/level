@@ -1,6 +1,6 @@
-import axios from 'axios'
-
 import { markRepeatedWords, tsvToJson } from '@texttree/translation-words-helpers'
+
+import axios from '../../../lib/axios'
 
 /**
  *  @swagger
