@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations'
 import { useTranslation } from 'react-i18next'
 
-import HiscoderLink from 'components/StartPage/HiscoderLink'
+import GeCraftLink from 'components/StartPage/GeCraftLink'
 import StartPage from 'components/StartPage/StartPage'
 import StartPageMobile from 'components/StartPage/StartPageMobile'
 
@@ -125,7 +125,7 @@ const SlugPage = () => {
           <StartPageMobile defaultContentKey={pageContent.contentKey || null} />
         </div>
       </div>
-      <HiscoderLink />
+      <GeCraftLink />
     </main>
   )
 }
