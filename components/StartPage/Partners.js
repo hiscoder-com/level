@@ -19,13 +19,6 @@ const partners = [
     height: 37,
   },
   {
-    name: 'Glokas',
-    url: 'https://glokas.com/',
-    logo: '/icons/glokas.svg',
-    width: 126,
-    height: 23,
-  },
-  {
     name: 'BibleVis',
     url: 'https://biblevis.com/',
     logo: '/icons/biblevis.svg',
